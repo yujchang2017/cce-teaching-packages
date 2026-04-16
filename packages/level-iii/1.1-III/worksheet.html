@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候小偵探阿奇的一天 | 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#fef3c7,#bfdbfe); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:120px; transition: background .2s; }
+  .drop-zone.over { background:#fde68a; }
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#f59e0b; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+</style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-3xl mx-auto">
+
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-amber-600">🔍 氣候小偵探阿奇的一天</h1>
+      <p class="text-sm text-slate-600 mt-1">幫阿奇解開氣候四大謎題，成為氣候英雄！</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> 分</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-3 text-sm text-slate-600">關卡 <span id="step">1</span>/4</span>
+  </div>
+
+  <!-- Level 1: 天氣 vs 氣候 -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🕵️</div>
+      <div>
+        <h2 class="text-xl font-bold text-sky-700">關卡 1：天氣還是氣候？</h2>
+        <p class="text-sm text-slate-700 mt-1">阿奇說：「爺爺常搞不清楚天氣和氣候！<b>天氣</b>是此時此刻的狀態，<b>氣候</b>是約 30 年的長期平均。把卡片拖到正確的籃子裡吧！」</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 my-4" id="items-box">
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="weather">☔ 今天下午下大雨</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="climate">🌴 臺灣夏天悶熱潮濕</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="weather">🌡️ 現在氣溫 28°C</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="climate">🍂 臺灣有明顯四季</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="weather">💨 明天有強風</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="climate">❄️ 北極長年冰雪覆蓋</div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div class="drop-zone bg-sky-50 border-4 border-dashed border-sky-400 rounded-2xl p-3" data-accept="weather">
+        <div class="font-bold text-sky-700 text-center">🌤️ 天氣籃（短時間）</div>
+        <div class="dz-items flex flex-wrap gap-2 mt-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-emerald-50 border-4 border-dashed border-emerald-400 rounded-2xl p-3" data-accept="climate">
+        <div class="font-bold text-emerald-700 text-center">🌍 氣候籃（約 30 年平均）</div>
+        <div class="dz-items flex flex-wrap gap-2 mt-2 justify-center"></div>
+      </div>
+    </div>
+
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <button id="l1-next" disabled class="btn mt-2 w-full bg-slate-300 text-white py-3 rounded-xl font-bold">完成分類即可前往下一關 →</button>
+  </section>
+
+  <!-- Level 2: 數據滑桿 -->
+  <section id="level-2" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">📈</div>
+      <div>
+        <h2 class="text-xl font-bold text-sky-700">關卡 2：看數據說故事</h2>
+        <p class="text-sm text-slate-700 mt-1">拖動滑桿看看全球平均溫度從 1880 年以來如何變化（資料來源：NASA）。</p>
+      </div>
+    </div>
+
+    <div class="bg-slate-50 rounded-xl p-4 my-3">
+      <div class="flex justify-between text-sm font-bold mb-2">
+        <span>年份：<span id="year-label" class="text-amber-600 text-lg">1880</span></span>
+        <span>較 19 世紀末升溫：<span id="temp-label" class="text-red-500 text-lg">0.00</span> °C</span>
+      </div>
+      <input id="year-slider" type="range" min="1880" max="2024" value="1880" class="w-full accent-amber-500">
+      <div class="h-28 flex items-end gap-1 mt-3" id="bar-chart"></div>
+    </div>
+
+    <p class="font-bold mt-4">🧠 根據數據，下列哪一句話<u>最正確</u>？</p>
+    <div class="flex flex-col gap-2 mt-2" id="l2-options">
+      <button class="btn quiz-opt bg-white border-2 border-sky-300 rounded-xl p-3 text-left" data-ans="0">A. 全球溫度每年都一樣，沒有變化。</button>
+      <button class="btn quiz-opt bg-white border-2 border-sky-300 rounded-xl p-3 text-left" data-ans="1">B. 2024 年全球均溫約比 19 世紀末高 1.47°C，是有紀錄最暖。</button>
+      <button class="btn quiz-opt bg-white border-2 border-sky-300 rounded-xl p-3 text-left" data-ans="0">C. 近十年全球溫度反而下降。</button>
+    </div>
+    <p id="l2-feedback" class="mt-3 font-bold min-h-[24px]"></p>
+  </section>
+
+  <!-- Level 3: 分支選擇 -->
+  <section id="level-3" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🏘️</div>
+      <div>
+        <h2 class="text-xl font-bold text-sky-700">關卡 3：熱浪來襲，你是里長！</h2>
+        <p class="text-sm text-slate-700 mt-1">臺灣過去約 110 年已升溫 <b>1.6°C</b>（TCCIP 資料，約是全球 2 倍），炎熱日數明顯增加。本週預報熱浪來襲，你會先做哪件事？</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-3 my-3" id="l3-choices">
+      <button class="btn choice bg-rose-100 border-2 border-rose-400 rounded-xl p-3 text-left" data-c="a">
+        <b>A.</b> 不理會，反正每年夏天都很熱。
+      </button>
+      <button class="btn choice bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-left" data-c="b">
+        <b>B.</b> 開放社區活動中心當<b>涼心據點</b>，並關懷獨居長輩。
+      </button>
+      <button class="btn choice bg-emerald-100 border-2 border-emerald-400 rounded-xl p-3 text-left" data-c="c">
+        <b>C.</b> 招募志工在校園與街道<b>種耐旱樹</b>，長期降溫。
+      </button>
+    </div>
+    <div id="l3-story" class="bg-slate-100 rounded-xl p-4 min-h-[80px] text-sm"></div>
+    <button id="l3-next" class="hidden btn mt-3 w-full bg-amber-500 text-white py-3 rounded-xl font-bold">前往最後一關 →</button>
+  </section>
+
+  <!-- Level 4: 行動承諾 -->
+  <section id="level-4" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">💪</div>
+      <div>
+        <h2 class="text-xl font-bold text-sky-700">關卡 4：我的行動承諾卡</h2>
+        <p class="text-sm text-slate-700 mt-1">地球升溫了 <b>1.47°C</b>，阿奇也需要你！寫下一個<b>你做得到</b>的減碳行動：</p>
+      </div>
+    </div>
+    <input id="action-input" type="text" placeholder="例：每週吃一天蔬食、隨手關燈…" class="w-full border-2 border-slate-300 rounded-xl p-3 focus:border-amber-500 outline-none">
+    <button id="make-card" class="btn w-full mt-3 bg-amber-500 text-white py-3 rounded-xl font-bold">🎴 生成我的行動卡</button>
+    <div id="card-result" class="hidden mt-4 bg-gradient-to-br from-emerald-200 to-sky-200 rounded-2xl p-5 text-center border-4 border-white pop">
+      <div class="text-5xl">🌱</div>
+      <div class="text-sm text-slate-600 mt-2">氣候小英雄行動卡</div>
+      <div id="action-text" class="text-xl font-bold my-2 text-emerald-800"></div>
+      <div class="text-xs text-slate-700">— 我是阿奇的氣候夥伴！</div>
+    </div>
+    <div id="wsa-box" class="hidden mt-4 bg-white border-2 border-dashed border-sky-400 rounded-2xl p-4 fade-in">
+      <h3 class="font-bold text-sky-700 mb-1">🏫 WSA Challenge：全校一起做</h3>
+      <p class="text-xs text-slate-600 mb-2">氣候行動不只在教室！從四個面向各選一件事（每項 +10 分）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="課程整合"><span class="text-sm"><b>📚 課程整合</b>：做 30 天校園氣候日記（結合自然/社會/藝術課）</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="校園營運"><span class="text-sm"><b>💡 校園營運</b>：班級認養一棵樹或檢查電器使用</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="社區連結"><span class="text-sm"><b>🤝 社區連結</b>：做氣候行動小卡帶回家給家人</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="學生治理"><span class="text-sm"><b>🙋 學生治理</b>：在班會提出一個減碳公約</span>
+      </label>
+      <p id="wsa-feedback" class="text-center font-bold text-emerald-600 mt-2 min-h-[20px]"></p>
+    </div>
+    <button id="l4-next" class="hidden btn mt-3 w-full bg-emerald-600 text-white py-3 rounded-xl font-bold">查看我的成就 🏆</button>
+  </section>
+
+  <!-- Final -->
+  <section id="final" class="card p-6 hidden-screen text-center">
+    <div class="text-6xl pop">🏆</div>
+    <h2 class="text-2xl font-bold text-amber-600 mt-2">恭喜你破關！</h2>
+    <p class="text-slate-700 mt-1">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> 分</p>
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <div class="bg-sky-50 rounded-xl p-4 text-left mt-3">
+      <h3 class="font-bold text-sky-700 mb-2">🤔 三個延伸思考</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>如果臺灣的升溫速度是全球的 2 倍，20 年後你家附近的夏天可能變成什麼樣？</li>
+        <li>家裡大人開車、開冷氣、吃肉…哪一件最容易先改變？為什麼？</li>
+        <li>你願意邀請哪三位朋友一起實行你的行動承諾？怎麼邀請？</li>
+      </ol>
+    </div>
+
+    <button onclick="location.reload()" class="btn mt-4 bg-amber-500 text-white py-3 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+  </section>
+</div>
+
+<script>
+let score = 0;
+const setScore = v => { score = v; document.getElementById('score').textContent = v; };
+const addScore = n => setScore(score + n);
+const badges = [];
+
+function confetti(){
+  const colors=['#f59e0b','#10b981','#3b82f6','#ef4444','#a855f7'];
+  for(let i=0;i<30;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2500);
+  }
+}
+
+function goStep(n){
+  for(let i=1;i<=5;i++){
+    const sec = document.getElementById(i===5?'final':'level-'+i);
+    if(sec) sec.classList.add('hidden-screen');
+    const d = document.getElementById('dot-'+i);
+    if(d){ d.classList.remove('active','done'); if(i<n) d.classList.add('done'); if(i===n) d.classList.add('active'); }
+  }
+  const target = document.getElementById(n===5?'final':'level-'+n);
+  target.classList.remove('hidden-screen');
+  target.classList.add('fade-in');
+  document.getElementById('step').textContent = Math.min(n,4);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===== Level 1: drag-drop ===== */
+let l1Correct = 0;
+const total1 = document.querySelectorAll('#items-box .drag-item').length;
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
+  // touch fallback: tap then tap zone
+  el.addEventListener('click', ()=>{
+    document.querySelectorAll('.drag-item').forEach(x=>x.classList.remove('ring-4','ring-amber-400'));
+    el.classList.add('ring-4','ring-amber-400');
+    dragged = el;
+  });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{ e.preventDefault(); z.classList.remove('over'); handleDrop(z); });
+  z.addEventListener('click', ()=>{ if(dragged) handleDrop(z); });
+});
+function handleDrop(zone){
+  if(!dragged) return;
+  const fb = document.getElementById('l1-feedback');
+  if(dragged.dataset.type === zone.dataset.accept){
+    zone.querySelector('.dz-items').appendChild(dragged);
+    dragged.setAttribute('draggable','false');
+    dragged.classList.remove('ring-4','ring-amber-400','bg-yellow-100','border-yellow-400');
+    dragged.classList.add('bg-green-100','border-green-500');
+    addScore(10);
+    l1Correct++;
+    fb.textContent='答對了！ 👏 +10 分';
+    fb.className='mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+    confetti();
+    if(l1Correct === total1){
+      badges.push('🌤️ 天氣氣候小達人');
+      const btn=document.getElementById('l1-next');
+      btn.disabled=false;
+      btn.className='btn mt-2 w-full bg-amber-500 text-white py-3 rounded-xl font-bold';
+      btn.onclick=()=>goStep(2);
+    }
+  } else {
+    dragged.classList.add('shake');
+    setTimeout(()=>dragged.classList.remove('shake'),400);
+    fb.textContent='再想想！提示：氣候是「長時間」的平均狀態，天氣則是眼前的短時變化 💡';
+    fb.className='mt-3 text-center font-bold min-h-[24px] text-rose-500';
+  }
+  dragged=null;
+}
+
+/* ===== Level 2: slider + quiz ===== */
+const slider = document.getElementById('year-slider');
+const yearLabel = document.getElementById('year-label');
+const tempLabel = document.getElementById('temp-label');
+const chart = document.getElementById('bar-chart');
+function tempAt(year){
+  // piecewise approximation from NASA data
+  if(year<=1940) return (year-1880)/60*0.2;
+  if(year<=1980) return 0.2 + (year-1940)/40*0.1;
+  if(year<=2000) return 0.3 + (year-1980)/20*0.35;
+  return 0.65 + (year-2000)/24*0.82;
+}
+// render bars
+for(let y=1880; y<=2024; y+=6){
+  const t = tempAt(y);
+  const bar = document.createElement('div');
+  bar.style.flex='1';
+  bar.style.height = Math.max(3, t*70)+'px';
+  bar.style.background = t<0.5?'#60a5fa':(t<1?'#fbbf24':'#ef4444');
+  bar.style.borderRadius='3px';
+  bar.title = y+': +'+t.toFixed(2)+'°C';
+  chart.appendChild(bar);
+}
+slider.addEventListener('input', ()=>{
+  const y = +slider.value;
+  yearLabel.textContent = y;
+  tempLabel.textContent = tempAt(y).toFixed(2);
+});
+document.querySelectorAll('#l2-options .quiz-opt').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const fb = document.getElementById('l2-feedback');
+    if(btn.dataset.ans === '1'){
+      btn.classList.add('bg-emerald-200','border-emerald-500');
+      fb.textContent='太棒了！2024 年正是有紀錄以來最暖的一年（NASA）。+20 分 🎉';
+      fb.className='mt-3 font-bold min-h-[24px] text-emerald-600 pop';
+      addScore(20);
+      badges.push('📊 數據觀察家');
+      confetti();
+      document.querySelectorAll('#l2-options .quiz-opt').forEach(b=>b.disabled=true);
+      setTimeout(()=>goStep(3), 1400);
+    } else {
+      btn.classList.add('shake');
+      setTimeout(()=>btn.classList.remove('shake'),400);
+      fb.textContent='提示：看看滑桿拉到 2024 時的數字，再比較 1880 年喔！';
+      fb.className='mt-3 font-bold min-h-[24px] text-rose-500';
+    }
+  });
+});
+
+/* ===== Level 3: branching ===== */
+const stories = {
+  a: {text:'😟 一週後：社區有三位長輩因高溫送醫，大家希望你更積極一點。（+0 分）', score:0, badge:null},
+  b: {text:'🙌 涼心據點擠滿乘涼的鄰居，長輩平安度過熱浪！短期救命成功！ +15 分', score:15, badge:'❤️ 社區守護者'},
+  c: {text:'🌳 三年後，樹蔭讓街道降溫 2°C，社區成為「減碳模範里」！長期效益最大！ +20 分', score:20, badge:'🌳 永續規劃師'}
+};
+document.querySelectorAll('#l3-choices .choice').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const s = stories[btn.dataset.c];
+    document.getElementById('l3-story').textContent = s.text;
+    document.getElementById('l3-story').className='bg-yellow-50 rounded-xl p-4 text-sm fade-in';
+    if(s.score>0){ addScore(s.score); if(s.badge) badges.push(s.badge); confetti(); }
+    document.querySelectorAll('#l3-choices .choice').forEach(b=>b.disabled=true);
+    btn.classList.add('ring-4','ring-sky-500');
+    const nxt=document.getElementById('l3-next');
+    nxt.classList.remove('hidden');
+    nxt.onclick=()=>goStep(4);
+  });
+});
+
+/* ===== Level 4: action card ===== */
+document.getElementById('make-card').addEventListener('click', ()=>{
+  const v = document.getElementById('action-input').value.trim();
+  if(v.length<2){
+    alert('提示：寫下一個具體的小行動，例如「隨手關燈」或「走樓梯」喔！');
+    return;
+  }
+  document.getElementById('action-text').textContent='「我承諾：'+v+'」';
+  document.getElementById('card-result').classList.remove('hidden');
+  addScore(15);
+  badges.push('🌱 行動實踐者');
+  confetti();
+  document.getElementById('wsa-box').classList.remove('hidden');
+  document.getElementById('l4-next').classList.remove('hidden');
+  document.getElementById('l4-next').onclick = showFinal;
+});
+
+/* ===== WSA Challenge ===== */
+const wsaChecked = new Set();
+document.querySelectorAll('.wsa-cb').forEach(cb=>{
+  cb.addEventListener('change', ()=>{
+    const key = cb.dataset.w;
+    const fb = document.getElementById('wsa-feedback');
+    if(cb.checked && !wsaChecked.has(key)){
+      wsaChecked.add(key);
+      addScore(10);
+      fb.textContent = '＋10 分！已選 '+wsaChecked.size+'/4 面向';
+      if(wsaChecked.size === 4){
+        fb.textContent = '🏆 全校英雄！四大面向全破關！';
+        if(!badges.includes('🏫 全校英雄')) badges.push('🏫 全校英雄');
+        confetti();
+      }
+    } else if(!cb.checked && wsaChecked.has(key)){
+      wsaChecked.delete(key);
+      addScore(-10);
+      fb.textContent = '已取消一項，目前 '+wsaChecked.size+'/4';
+    }
+  });
+});
+
+function showFinal(){
+  goStep(5);
+  document.getElementById('final-score').textContent = score;
+  const box = document.getElementById('badges');
+  box.innerHTML='';
+  if(badges.length===0) badges.push('🔍 氣候小偵探');
+  badges.forEach(b=>{
+    const chip=document.createElement('span');
+    chip.className='bg-amber-100 border-2 border-amber-400 rounded-full px-3 py-1 text-sm font-bold pop';
+    chip.textContent=b;
+    box.appendChild(chip);
+  });
+  confetti();
+}
+</script>
+</body>
+</html>
