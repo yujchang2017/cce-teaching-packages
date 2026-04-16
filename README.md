@@ -1,7 +1,9 @@
 # CCE Teaching Packages — 氣候變遷教育教學組合包
 
 > UNESCO Climate Change Education (CCE) 教學組合包開源社群
-> 國教院 115 年度「氣候變遷教育教學資源研發」計畫 · 開放共創版
+> 115 年中小學氣候變遷教育推動計畫 · 開放共創版
+>
+> **主辦：** 教育部資訊及科技教育司　|　**執行：** 臺北市立大學　|　**計畫：** 115 年中小學氣候變遷教育推動計畫
 
 ---
 
@@ -19,11 +21,13 @@
 
 ## 目前收錄的教學包（Phase 0 POC）
 
-| Key ID | 主題 | 年段 | 狀態 |
-|---|---|---|---|
-| [1.1-III](packages/level-iii/1.1-III/) | 天氣、氣候與氣候變遷 | Level III（9–12 歲） | 已上線 |
+| Key ID | 主題 | 年段 | 線上預覽 | 狀態 |
+|---|---|---|---|---|
+| [1.1-III](packages/level-iii/1.1-III/) | 天氣、氣候與氣候變遷 | Level III（9–12 歲） | [互動學習單](https://yujchang2017.github.io/cce-teaching-packages/packages/level-iii/1.1-III/worksheet.html) | 已上線 |
 
 > 其餘 135 包將於 Phase 1–2 陸續推出。詳見 [community.cce.tw](https://community.cce.tw) （暫定，建置中）。
+>
+> **線上預覽說明**：本倉庫已啟用 GitHub Pages（`https://yujchang2017.github.io/cce-teaching-packages/`）直接提供互動 HTML。請**避免**使用 `htmlpreview.github.io/?...` 連結——其 iframe sandbox 會讓 Tailwind CDN 與 drag/drop 事件失效，造成「畫面跑出來但無法互動」的情況。
 
 ## 授權
 
@@ -42,7 +46,10 @@
 - 整倉庫下載：`git clone https://github.com/yujchang2017/cce-teaching-packages.git`
 
 ### 離線使用
-所有 `worksheet.html` 均為單檔、無外部 JS 依賴，**可直接用瀏覽器打開教學**。
+所有 `worksheet.html` 為單檔 HTML，**可直接用瀏覽器打開教學**。需連網一次以載入 Tailwind CSS CDN（瀏覽器快取後可離線使用）。
+
+### 線上互動（推薦做法）
+直接點各教學包表格中的「線上預覽」連結 —— 由 GitHub Pages 原生網域提供，拖放、按鈕、動畫皆可正常運作。
 
 ## 如何參與改編
 
@@ -64,9 +71,11 @@
 
 *（待第一位改編者加入）*
 
-原作：國教院 115 年度計畫團隊 · 2026-04-16
+原作：115 年中小學氣候變遷教育推動計畫團隊 · 2026-04-16
 
 ---
 
-**計畫主持**：國家教育研究院
+**主辦機關**：教育部資訊及科技教育司
+**執行單位**：臺北市立大學
+**計畫名稱**：115 年中小學氣候變遷教育推動計畫
 **聯絡窗口**：（暫定，待 community.cce.tw 上線後公告）

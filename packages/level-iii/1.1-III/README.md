@@ -1,6 +1,8 @@
 # 1.1-III 天氣、氣候與氣候變遷
 
 > UNESCO CCE Theme 1 · Topic 1 · Level III（國小中高年級，9–12 歲）
+>
+> **主辦：** 教育部資訊及科技教育司　|　**執行：** 臺北市立大學　|　**計畫：** 115 年中小學氣候變遷教育推動計畫
 
 ---
 
@@ -51,14 +53,17 @@
 
 ## 快速操作
 
+- **線上互動預覽**（推薦）：[worksheet.html（GitHub Pages）](https://yujchang2017.github.io/cce-teaching-packages/packages/level-iii/1.1-III/worksheet.html) — 點開即可直接與學習單互動（拖放、答題、回饋動畫皆可用）
 - **下載整包**：點 [此連結](https://downgit.github.io/#/home?url=https://github.com/yujchang2017/cce-teaching-packages/tree/main/packages/level-iii/1.1-III) 用 DownGit 打包下載
-- **線上預覽學習單**：[worksheet.html raw 版](https://raw.githubusercontent.com/yujchang2017/cce-teaching-packages/main/packages/level-iii/1.1-III/worksheet.html)（建議右鍵另存後用瀏覽器開啟）
+- **離線使用**：將 `worksheet.html` 下載後雙擊用瀏覽器開啟即可（需連網載入 Tailwind CDN）
 - **改編此教案**：Fork 本倉庫，或參閱 [CONTRIBUTING](../../../CONTRIBUTING.md)
+
+> 註：若舊版說明指向 `htmlpreview.github.io/?...` 或 `raw.githubusercontent.com/...`，請改用上方 GitHub Pages 連結 —— htmlpreview 會把頁面放進 sandbox iframe，Tailwind JIT 與 drag/drop 事件在該情境下無法正常運作。
 
 ## 改編歷程（Fork Tree）
 
 ```
-原作 · 計畫團隊 · 2026-04-16 · v1.0.0
+原作 · 115 年中小學氣候變遷教育推動計畫團隊 · 2026-04-16 · v1.0.0
 └── （尚無衍生版本）
 ```
 
