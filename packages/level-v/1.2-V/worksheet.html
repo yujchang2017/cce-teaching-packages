@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>從 -18°C 到淨零 | 高中溫室氣體互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#0f172a,#1e293b,#0f172a); min-height:100vh; color:#e2e8f0;}
+  .card { background:#1e293b; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.3); border:1px solid #334155;}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.15);}
+  .btn:disabled { opacity:.4; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:60px; transition: background .2s; border:2px dashed #475569; border-radius:.75rem;}
+  .drop-zone.over { background:rgba(99,102,241,.2); border-color:#818cf8;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.15);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#475569; transition:all .3s;}
+  .progress-dot.active { background:#818cf8; transform:scale(1.3); box-shadow:0 0 8px #818cf8;}
+  .progress-dot.done { background:#34d399;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea.cer { border:1px solid #475569; border-radius:.5rem; padding:.75rem; width:100%; font-size:.95rem; background:#0f172a; color:#e2e8f0; resize:vertical;}
+  textarea.cer:focus { border-color:#818cf8; outline:none; box-shadow:0 0 0 2px rgba(129,140,248,.3);}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  .badge-lock { filter:grayscale(1); opacity:.35;}
+  svg text { pointer-events:none; }
+  svg .loop-slot { cursor: pointer; }
+  svg .loop-slot.over { fill:rgba(129,140,248,.3); stroke-width:3; }
+  .depth-tag { font-size:.65rem; padding:.1rem .4rem; border-radius:4px; vertical-align:middle; }
+  input[type="radio"] { accent-color:#818cf8; }
+  .word-count { font-size:.7rem; color:#94a3b8; }
+  select { background:#0f172a; color:#e2e8f0; border:1px solid #475569; border-radius:.5rem; padding:.4rem .6rem;}
+  select:focus { border-color:#818cf8; outline:none;}
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-indigo-400">From -18 to Net Zero</h1>
+    <p class="text-sm text-slate-400 mt-1">你是『氣候政策智庫研究員』：14 個深度任務，完成即為 Level V 氣候公民。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">智庫積分</div>
+    <div class="text-2xl font-bold text-emerald-400"><span id="score">0</span> / 200</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-1 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs text-slate-500">能量流</span>
+  <div class="h-px w-3 bg-slate-600"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs text-slate-500">GHG</span>
+  <div class="h-px w-3 bg-slate-600"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs text-slate-500">GWP</span>
+  <div class="h-px w-3 bg-slate-600"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs text-slate-500">排放</span>
+  <div class="h-px w-3 bg-slate-600"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs text-slate-500">臭氧</span>
+  <div class="h-px w-3 bg-slate-600"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs text-slate-500">資料1</span>
+  <div class="h-px w-3 bg-slate-600"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs text-slate-500">資料2</span>
+  <div class="h-px w-3 bg-slate-600"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs text-slate-500">系統</span>
+  <div class="h-px w-3 bg-slate-600"></div>
+  <div class="progress-dot" id="dot-9"></div><span class="text-xs text-slate-500">倫理</span>
+  <div class="h-px w-3 bg-slate-600"></div>
+  <div class="progress-dot" id="dot-10"></div><span class="text-xs text-slate-500">CER</span>
+  <div class="h-px w-3 bg-slate-600"></div>
+  <div class="progress-dot" id="dot-11"></div><span class="text-xs text-slate-500">政策</span>
+  <div class="h-px w-3 bg-slate-600"></div>
+  <div class="progress-dot" id="dot-12"></div><span class="text-xs text-slate-500">數據</span>
+  <div class="h-px w-3 bg-slate-600"></div>
+  <div class="progress-dot" id="dot-13"></div><span class="text-xs text-slate-500">跨域</span>
+  <div class="h-px w-3 bg-slate-600"></div>
+  <div class="progress-dot" id="dot-14"></div><span class="text-xs text-slate-500">後設</span>
+</div>
+
+<!-- ===== 1: 溫室效應能量流標示 (基礎) ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#9728;&#65039;</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-400">任務 1｜溫室效應能量流</h2>
+      <p class="text-sm text-slate-400 mt-1">將下方 5 個能量流步驟拖到正確的位置。溫室效應讓地球從 -18°C 變成 15°C。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：大氣物理學家 ｜ 10 分</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-amber-900/40 border-2 border-amber-500 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="s1">太陽短波輻射</div>
+    <div class="drag-item bg-amber-900/40 border-2 border-amber-500 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="s2">地表吸收</div>
+    <div class="drag-item bg-amber-900/40 border-2 border-amber-500 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="s3">紅外線上行</div>
+    <div class="drag-item bg-amber-900/40 border-2 border-amber-500 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="s4">GHG 吸收再輻射</div>
+    <div class="drag-item bg-amber-900/40 border-2 border-amber-500 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="s5">地表增溫 +33°C</div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-5 gap-2">
+    <div class="drop-zone p-2 text-center text-xs" data-accept="s1">步驟 1</div>
+    <div class="drop-zone p-2 text-center text-xs" data-accept="s2">步驟 2</div>
+    <div class="drop-zone p-2 text-center text-xs" data-accept="s3">步驟 3</div>
+    <div class="drop-zone p-2 text-center text-xs" data-accept="s4">步驟 4</div>
+    <div class="drop-zone p-2 text-center text-xs" data-accept="s5">步驟 5</div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <button id="btn-next-1" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 &#8594;</button>
+</section>
+
+<!-- ===== 2: GHG 比較表 (基礎) ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#128300;</div>
+    <div>
+      <h2 class="text-xl font-bold text-violet-400">任務 2｜GHG 家族比較</h2>
+      <p class="text-sm text-slate-400 mt-1">為每種溫室氣體選出正確的 GWP-100 值和大氣壽命。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：IPCC 審稿員 ｜ 12 分</p>
+    </div>
+  </div>
+  <div class="overflow-x-auto">
+  <table class="w-full text-sm border-collapse mt-2">
+    <thead><tr class="text-left text-slate-400 border-b border-slate-600">
+      <th class="p-2">氣體</th><th class="p-2">主要來源</th><th class="p-2">GWP-100</th><th class="p-2">大氣壽命</th>
+    </tr></thead>
+    <tbody>
+      <tr class="border-b border-slate-700"><td class="p-2 font-bold">CO&#8322;</td><td class="p-2 text-xs">化石燃料、水泥、土地</td>
+        <td class="p-2"><select id="gwp-co2" class="text-xs"><option value="">選擇</option><option value="1">1</option><option value="28">28</option><option value="273">273</option></select></td>
+        <td class="p-2"><select id="life-co2" class="text-xs"><option value="">選擇</option><option value="12">~12年</option><option value="109">~109年</option><option value="1000">數千年</option></select></td></tr>
+      <tr class="border-b border-slate-700"><td class="p-2 font-bold">CH&#8324;</td><td class="p-2 text-xs">畜牧、濕地、油氣洩漏</td>
+        <td class="p-2"><select id="gwp-ch4" class="text-xs"><option value="">選擇</option><option value="1">1</option><option value="28">28</option><option value="273">273</option></select></td>
+        <td class="p-2"><select id="life-ch4" class="text-xs"><option value="">選擇</option><option value="12">~12年</option><option value="109">~109年</option><option value="1000">數千年</option></select></td></tr>
+      <tr class="border-b border-slate-700"><td class="p-2 font-bold">N&#8322;O</td><td class="p-2 text-xs">農業施肥、化工</td>
+        <td class="p-2"><select id="gwp-n2o" class="text-xs"><option value="">選擇</option><option value="1">1</option><option value="28">28</option><option value="273">273</option></select></td>
+        <td class="p-2"><select id="life-n2o" class="text-xs"><option value="">選擇</option><option value="12">~12年</option><option value="109">~109年</option><option value="1000">數千年</option></select></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <button id="btn-check-2" class="btn mt-3 bg-violet-600 text-white px-5 py-2 rounded-lg font-bold text-sm">檢查答案</button>
+  <div id="feedback-2" class="mt-2 text-sm"></div>
+  <button id="btn-next-2" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 &#8594;</button>
+</section>
+
+<!-- ===== 3: GWP 計算 (基礎) ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#128290;</div>
+    <div>
+      <h2 class="text-xl font-bold text-cyan-400">任務 3｜CO&#8322;e 計算挑戰</h2>
+      <p class="text-sm text-slate-400 mt-1">使用公式 CO&#8322;e = 排放量 x GWP-100，計算以下場景的碳足跡。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：碳會計師 ｜ 12 分</p>
+    </div>
+  </div>
+  <div class="space-y-4 mt-3">
+    <div class="bg-slate-800 rounded-lg p-3">
+      <p class="text-sm font-semibold">Q1：一座養牛場年排 500 噸 CH&#8324;，換算 CO&#8322;e = ?</p>
+      <input type="number" id="calc-q1" class="mt-2 bg-slate-900 border border-slate-600 rounded px-3 py-1 text-sm w-32" placeholder="噸 CO2e">
+      <span class="text-xs text-slate-500 ml-2">（提示：500 x GWP-100 of CH4）</span>
+    </div>
+    <div class="bg-slate-800 rounded-lg p-3">
+      <p class="text-sm font-semibold">Q2：一座工廠年排 200 噸 N&#8322;O，CO&#8322;e = ?</p>
+      <input type="number" id="calc-q2" class="mt-2 bg-slate-900 border border-slate-600 rounded px-3 py-1 text-sm w-32" placeholder="噸 CO2e">
+    </div>
+    <div class="bg-slate-800 rounded-lg p-3">
+      <p class="text-sm font-semibold">Q3：同一工廠另排 8,000 噸 CO&#8322; + 200 噸 N&#8322;O，總 CO&#8322;e = ?</p>
+      <input type="number" id="calc-q3" class="mt-2 bg-slate-900 border border-slate-600 rounded px-3 py-1 text-sm w-32" placeholder="噸 CO2e">
+    </div>
+  </div>
+  <button id="btn-check-3" class="btn mt-3 bg-cyan-600 text-white px-5 py-2 rounded-lg font-bold text-sm">檢查答案</button>
+  <div id="feedback-3" class="mt-2 text-sm"></div>
+  <button id="btn-next-3" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 &#8594;</button>
+</section>
+
+<!-- ===== 4: 全球排放結構配對 (基礎) ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#127758;</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-400">任務 4｜全球排放拼圖</h2>
+      <p class="text-sm text-slate-400 mt-1">2022 年全球 GHG 排放約 574 億噸 CO&#8322;e。將各氣體配對到正確的百分比。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：UNEP 分析師 ｜ 8 分</p>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-4">
+    <div class="drag-item bg-emerald-900/40 border-2 border-emerald-500 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="p74">CO&#8322; (74%)</div>
+    <div class="drag-item bg-emerald-900/40 border-2 border-emerald-500 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="p18">CH&#8324; (18%)</div>
+    <div class="drag-item bg-emerald-900/40 border-2 border-emerald-500 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="p4">N&#8322;O (4%)</div>
+    <div class="drag-item bg-emerald-900/40 border-2 border-emerald-500 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="p2">F-gases (2%)</div>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+    <div class="drop-zone p-2 text-center text-xs" data-accept="p74">能源+工業</div>
+    <div class="drop-zone p-2 text-center text-xs" data-accept="p18">農牧+油氣洩漏</div>
+    <div class="drop-zone p-2 text-center text-xs" data-accept="p4">農業施肥+化工</div>
+    <div class="drop-zone p-2 text-center text-xs" data-accept="p2">冷媒+半導體</div>
+  </div>
+  <div id="feedback-4" class="mt-3 text-sm"></div>
+  <button id="btn-next-4" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 &#8594;</button>
+</section>
+
+<!-- ===== 5: 蒙特婁 vs 巴黎 比較 (基礎) ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#127760;</div>
+    <div>
+      <h2 class="text-xl font-bold text-sky-400">任務 5｜兩大條約比較</h2>
+      <p class="text-sm text-slate-400 mt-1">判斷以下陳述屬於蒙特婁議定書(M)還是巴黎協定(P)。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：國際法分析師 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="space-y-3" id="q5-box">
+    <div class="quiz-item border border-slate-600 rounded-lg p-3" data-correct="M">
+      <p class="text-sm">① 管制消耗臭氧層物質的生產與使用，已削減 99% CFC 產量。</p>
+      <div class="flex gap-2 mt-2"><button class="btn btn-ans bg-sky-600 text-white px-4 py-1 rounded text-sm" data-ans="M">蒙特婁 M</button><button class="btn btn-ans bg-rose-600 text-white px-4 py-1 rounded text-sm" data-ans="P">巴黎 P</button></div>
+    </div>
+    <div class="quiz-item border border-slate-600 rounded-lg p-3" data-correct="P">
+      <p class="text-sm">② 各國自定 NDC，每 5 年更新且只能更嚴格（棘輪機制）。</p>
+      <div class="flex gap-2 mt-2"><button class="btn btn-ans bg-sky-600 text-white px-4 py-1 rounded text-sm" data-ans="M">蒙特婁 M</button><button class="btn btn-ans bg-rose-600 text-white px-4 py-1 rounded text-sm" data-ans="P">巴黎 P</button></div>
+    </div>
+    <div class="quiz-item border border-slate-600 rounded-lg p-3" data-correct="P">
+      <p class="text-sm">③ 目標是將全球升溫控制在遠低於 2°C、努力限制 1.5°C。</p>
+      <div class="flex gap-2 mt-2"><button class="btn btn-ans bg-sky-600 text-white px-4 py-1 rounded text-sm" data-ans="M">蒙特婁 M</button><button class="btn btn-ans bg-rose-600 text-white px-4 py-1 rounded text-sm" data-ans="P">巴黎 P</button></div>
+    </div>
+    <div class="quiz-item border border-slate-600 rounded-lg p-3" data-correct="M">
+      <p class="text-sm">④ 被譽為「最成功的環境條約」，受管制物質有明確的工業替代品。</p>
+      <div class="flex gap-2 mt-2"><button class="btn btn-ans bg-sky-600 text-white px-4 py-1 rounded text-sm" data-ans="M">蒙特婁 M</button><button class="btn btn-ans bg-rose-600 text-white px-4 py-1 rounded text-sm" data-ans="P">巴黎 P</button></div>
+    </div>
+  </div>
+  <div id="feedback-5" class="mt-3 text-sm"></div>
+  <button id="btn-next-5" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 &#8594;</button>
+</section>
+
+<!-- ===== 6: 資料詮釋 #1 — Keeling Curve COVID (深度 ⑥) ===== -->
+<section id="level-6" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#128200;</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-400">任務 6｜資料詮釋：COVID 與 Keeling Curve</h2>
+      <p class="text-sm text-slate-400 mt-1">2020 年全球封城，CO&#8322; 排放降約 5.4%，但 Keeling Curve 幾乎看不出下降。為什麼？</p>
+      <p class="text-xs text-slate-500 mt-1">角色：數據科學家 ｜ 14 分 ｜ <span class="chip bg-teal-900 text-teal-300 depth-tag">資料詮釋 #1</span></p>
+    </div>
+  </div>
+  <svg viewBox="0 0 420 160" class="w-full max-w-xl mx-auto block bg-slate-800 rounded mt-2">
+    <line x1="40" y1="140" x2="400" y2="140" stroke="#64748b" stroke-width="1"/>
+    <line x1="40" y1="10" x2="40" y2="140" stroke="#64748b" stroke-width="1"/>
+    <text x="5" y="18" font-size="9" fill="#94a3b8">ppm</text>
+    <text x="15" y="140" font-size="9" fill="#94a3b8">410</text>
+    <text x="15" y="80" font-size="9" fill="#94a3b8">420</text>
+    <text x="15" y="20" font-size="9" fill="#94a3b8">430</text>
+    <text x="60" y="155" font-size="9" fill="#94a3b8">2018</text>
+    <text x="150" y="155" font-size="9" fill="#94a3b8">2019</text>
+    <text x="240" y="155" font-size="9" fill="#94a3b8">2020</text>
+    <text x="330" y="155" font-size="9" fill="#94a3b8">2021</text>
+    <polyline fill="none" stroke="#2dd4bf" stroke-width="2"
+      points="50,125 70,118 90,130 110,112 130,105 150,118 170,100 190,93 210,108 230,90 250,83 270,98 290,80 310,73 330,88 350,70 370,63 390,78"/>
+    <text x="255" y="50" font-size="9" fill="#f87171">COVID 封城期 (2020)</text>
+    <line x1="240" y1="55" x2="240" y2="135" stroke="#f87171" stroke-width="1" stroke-dasharray="4"/>
+    <line x1="310" y1="55" x2="310" y2="135" stroke="#f87171" stroke-width="1" stroke-dasharray="4"/>
+  </svg>
+  <div class="mt-4 space-y-3">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q6-1｜以下哪個陳述最正確？（5 分）</label>
+      <div class="space-y-1" id="q61">
+        <label class="block text-sm"><input type="radio" name="q61" value="A"> A. COVID 封城讓大氣 CO&#8322; 明顯下降</label>
+        <label class="block text-sm"><input type="radio" name="q61" value="B"> B. 年排放減 5.4% 對大氣累積存量影響微小，曲線仍上升</label>
+        <label class="block text-sm"><input type="radio" name="q61" value="C"> C. 封城期間植物光合作用增加，抵銷了排放下降</label>
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q6-2｜這個觀察對「淨零 2050」目標有什麼啟示？請寫出你的詮釋。（9 分）</label>
+      <textarea class="cer" id="q62" rows="4" placeholder="以存量 vs 流量的角度分析..."></textarea>
+      <div class="word-count mt-1">字數：<span id="wc-q62">0</span></div>
+    </div>
+  </div>
+  <button id="btn-next-6" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 &#8594;</button>
+</section>
+
+<!-- ===== 7: 資料詮釋 #2 — 三情境溫度推估 (深度 ⑥) ===== -->
+<section id="level-7" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#127777;&#65039;</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-400">任務 7｜資料詮釋：三種未來</h2>
+      <p class="text-sm text-slate-400 mt-1">分析 Climate Action Tracker 2025 年三情境推估，判讀差距。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：UNFCCC 政策分析師 ｜ 14 分 ｜ <span class="chip bg-orange-900 text-orange-300 depth-tag">資料詮釋 #2</span></p>
+    </div>
+  </div>
+  <svg viewBox="0 0 400 180" class="w-full max-w-md mx-auto block bg-slate-800 rounded mt-2">
+    <rect x="60" y="30" width="60" height="120" rx="4" fill="#ef4444" opacity="0.7"/>
+    <text x="90" y="25" text-anchor="middle" font-size="10" fill="#fca5a5">現行政策</text>
+    <text x="90" y="95" text-anchor="middle" font-size="14" fill="white" font-weight="bold">2.6°C</text>
+    <rect x="170" y="50" width="60" height="100" rx="4" fill="#f59e0b" opacity="0.7"/>
+    <text x="200" y="45" text-anchor="middle" font-size="10" fill="#fcd34d">NDC全達成</text>
+    <text x="200" y="105" text-anchor="middle" font-size="14" fill="white" font-weight="bold">2.2°C</text>
+    <rect x="280" y="65" width="60" height="85" rx="4" fill="#22c55e" opacity="0.7"/>
+    <text x="310" y="60" text-anchor="middle" font-size="10" fill="#86efac">淨零承諾</text>
+    <text x="310" y="112" text-anchor="middle" font-size="14" fill="white" font-weight="bold">1.9°C</text>
+    <line x1="40" y1="150" x2="380" y2="150" stroke="#818cf8" stroke-width="2" stroke-dasharray="6"/>
+    <text x="385" y="153" font-size="9" fill="#818cf8">1.5°C</text>
+  </svg>
+  <div class="mt-4 space-y-3">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q7-1｜三個情境與 1.5°C 目標的差距分別是多少？（4 分）</label>
+      <div class="grid grid-cols-3 gap-2">
+        <input type="text" id="gap1" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-center" placeholder="現行政策差距">
+        <input type="text" id="gap2" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-center" placeholder="NDC差距">
+        <input type="text" id="gap3" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-center" placeholder="淨零差距">
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q7-2｜哪個情境最可能成為現實？用至少兩項證據支持你的判斷。（10 分）</label>
+      <textarea class="cer" id="q72" rows="4" placeholder="我認為最可能的情境是...因為..."></textarea>
+      <div class="word-count mt-1">字數：<span id="wc-q72">0</span></div>
+    </div>
+  </div>
+  <button id="btn-next-7" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 &#8594;</button>
+</section>
+
+<!-- ===== 8: 系統思考 — 氣候反饋 (深度 ③) ===== -->
+<section id="level-8" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#128260;</div>
+    <div>
+      <h2 class="text-xl font-bold text-rose-400">任務 8｜系統思考：GHG 反饋循環</h2>
+      <p class="text-sm text-slate-400 mt-1">完成「永凍土解凍→甲烷釋放」的正反饋循環圖，並分析其對 CO&#8322;e 總量的影響。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統動力學分析師 ｜ 16 分 ｜ <span class="chip bg-rose-900 text-rose-300 depth-tag">系統思考</span></p>
+    </div>
+  </div>
+  <svg viewBox="0 0 500 260" class="w-full bg-slate-800 rounded mt-2">
+    <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L0,10 L10,5 z" fill="#94a3b8"/></marker></defs>
+    <rect x="10" y="10" width="160" height="50" rx="8" fill="rgba(244,63,94,.15)" stroke="#f43f5e" class="loop-slot" data-slot="A"/>
+    <text x="90" y="40" text-anchor="middle" fill="#fda4af" font-size="11" id="slot-A-text">(拖這裡 A)</text>
+    <rect x="330" y="10" width="160" height="50" rx="8" fill="rgba(244,63,94,.15)" stroke="#f43f5e" class="loop-slot" data-slot="B"/>
+    <text x="410" y="40" text-anchor="middle" fill="#fda4af" font-size="11" id="slot-B-text">(拖這裡 B)</text>
+    <rect x="330" y="200" width="160" height="50" rx="8" fill="rgba(244,63,94,.15)" stroke="#f43f5e" class="loop-slot" data-slot="C"/>
+    <text x="410" y="230" text-anchor="middle" fill="#fda4af" font-size="11" id="slot-C-text">(拖這裡 C)</text>
+    <rect x="10" y="200" width="160" height="50" rx="8" fill="rgba(244,63,94,.15)" stroke="#f43f5e" class="loop-slot" data-slot="D"/>
+    <text x="90" y="230" text-anchor="middle" fill="#fda4af" font-size="11" id="slot-D-text">(拖這裡 D)</text>
+    <line x1="170" y1="35" x2="330" y2="35" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="410" y1="60" x2="410" y2="200" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="330" y1="225" x2="170" y2="225" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="90" y1="200" x2="90" y2="60" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="250" y="130" text-anchor="middle" font-size="14" fill="#f43f5e" font-weight="bold">正反饋 (+)</text>
+  </svg>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3" id="loop-items-8">
+    <div class="drag-item bg-rose-900/30 border-2 border-rose-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-slot-match="A">全球升溫加劇</div>
+    <div class="drag-item bg-rose-900/30 border-2 border-rose-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-slot-match="B">永凍土解凍</div>
+    <div class="drag-item bg-rose-900/30 border-2 border-rose-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-slot-match="C">CH&#8324; 大量釋放</div>
+    <div class="drag-item bg-rose-900/30 border-2 border-rose-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-slot-match="D">大氣 GHG 濃度升高</div>
+  </div>
+  <div class="mt-4">
+    <label class="block text-sm font-semibold mb-1">延伸分析：若每年因永凍土解凍額外釋放 1 億噸 CH&#8324;，以 GWP-100 計算相當於多少噸 CO&#8322;e？這對 574 億噸年排放有多大影響？</label>
+    <textarea class="cer" id="q8-ext" rows="3" placeholder="計算：1億噸 CH4 x 28 = ...，佔全球排放...%"></textarea>
+  </div>
+  <div id="feedback-8" class="mt-3 text-sm"></div>
+  <button id="btn-next-8" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 &#8594;</button>
+</section>
+
+<!-- ===== 9: 倫理兩難 — CBAM (深度 ④) ===== -->
+<section id="level-9" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#9878;&#65039;</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-400">任務 9｜倫理兩難：碳關稅是正義還是保護主義？</h2>
+      <p class="text-sm text-slate-400 mt-1">歐盟 2026 年實施 CBAM 碳邊境調整機制。這是氣候正義還是綠色保護主義？</p>
+      <p class="text-xs text-slate-500 mt-1">角色：國際貿易倫理委員 ｜ 16 分 ｜ <span class="chip bg-amber-900 text-amber-300 depth-tag">倫理兩難</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800 rounded-lg p-4 mt-2 text-sm">
+    <p><strong>情境</strong>：歐盟自 2026 年起，進口鋼鐵、水泥等高碳商品須購買等值碳憑證。已開發國家認為這防止「碳洩漏」；開發中國家批評這是用環保之名行貿易壁壘之實，違反 CBDR 原則（共同但差異責任）。臺灣鋼鐵與石化業直接受影響。</p>
+  </div>
+  <div class="mt-4 space-y-3">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q9-1｜你認為 CBAM 更接近「氣候正義」還是「貿易保護主義」？（請選擇你的立場）</label>
+      <div class="flex gap-3 mt-1">
+        <label class="text-sm"><input type="radio" name="q91" value="justice"> 氣候正義</label>
+        <label class="text-sm"><input type="radio" name="q91" value="protect"> 貿易保護主義</label>
+        <label class="text-sm"><input type="radio" name="q91" value="both"> 兼具兩者</label>
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q9-2｜論述你的立場。須包含：(a) 對支持方的論點回應 (b) 對反對方的論點回應 (c) 對臺灣的具體影響分析。（至少 120 字）</label>
+      <textarea class="cer" id="q92" rows="6" placeholder="我的立場是...&#10;支持方認為...，但我認為...&#10;反對方主張...，然而...&#10;對臺灣而言..."></textarea>
+      <div class="word-count mt-1">字數：<span id="wc-q92">0</span></div>
+    </div>
+  </div>
+  <button id="btn-next-9" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 &#8594;</button>
+</section>
+
+<!-- ===== 10: CER + 反駁 — GWP 時間尺度 (深度 ⑤) ===== -->
+<section id="level-10" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#128221;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-400">任務 10｜CER + 反駁：GWP 該用 20 年還是 100 年？</h2>
+      <p class="text-sm text-slate-400 mt-1">IPCC 以 GWP-100 為標準，但有學者主張 GWP-20 更能反映短壽命氣體的急迫性。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：氣候政策辯手 ｜ 18 分 ｜ <span class="chip bg-indigo-900 text-indigo-300 depth-tag">CER+反駁</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800 rounded-lg p-3 mt-2 text-sm">
+    <p>背景資料：CH&#8324; 的 GWP-20 = 81，GWP-100 = 28。若改用 GWP-20，農牧業國家排放帳面增近 3 倍。</p>
+  </div>
+  <div class="mt-4 space-y-3">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Claim（主張）：IPCC 應繼續使用 GWP-100，還是改用 GWP-20，或採混合制？</label>
+      <textarea class="cer" id="cer-c" rows="2" placeholder="我主張..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Evidence（證據）：引用至少 2 項數據支持你的主張。</label>
+      <textarea class="cer" id="cer-e" rows="3" placeholder="證據一：...&#10;證據二：..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Reasoning（推理）：為什麼這些證據支持你的主張？</label>
+      <textarea class="cer" id="cer-r" rows="3" placeholder="這些證據支持我的主張，因為..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Rebuttal（反駁）：預期反對者會怎麼說？你如何回應？</label>
+      <textarea class="cer" id="cer-rb" rows="3" placeholder="反對者可能主張...，但我認為...因為..."></textarea>
+    </div>
+  </div>
+  <button id="btn-next-10" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 &#8594;</button>
+</section>
+
+<!-- ===== 11: 政策倡議 — 校園淨零提案 (深度 ⑦) ===== -->
+<section id="level-11" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#127970;</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-400">任務 11｜政策倡議：校園淨零行動提案</h2>
+      <p class="text-sm text-slate-400 mt-1">設計一份正式的校園淨零行動提案書，準備提交學生議會。包含碳盤查、永續預算、WSA 四面向檢核。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生議會提案委員 ｜ 20 分 ｜ <span class="chip bg-emerald-900 text-emerald-300 depth-tag">政策倡議</span></p>
+    </div>
+  </div>
+  <div class="mt-3 space-y-3">
+    <div>
+      <label class="block text-sm font-semibold mb-1">提案名稱</label>
+      <input type="text" id="prop-title" class="w-full bg-slate-900 border border-slate-600 rounded px-3 py-2 text-sm" placeholder="例：校園午餐低碳化計畫">
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">現況碳盤查（估算你的學校主要碳排來源與大致數量）</label>
+      <textarea class="cer" id="prop-audit" rows="3" placeholder="學校約...人，主要碳排來源包括..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">CER 論證＋反駁（主張、證據、推理、預期反對與回應）</label>
+      <textarea class="cer" id="prop-cer" rows="5" placeholder="C: 我主張學校應...&#10;E: 根據...數據...&#10;R: 因為...&#10;反駁回應: 有人可能說...但..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">永續預算估算（經費來源、金額、預期減碳量）</label>
+      <textarea class="cer" id="prop-budget" rows="3" placeholder="預計需要...元，來源為...，預期每年減少...噸CO2e"></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">WSA 四面向檢核（勾選你的提案涵蓋的面向）</label>
+      <div class="grid grid-cols-2 gap-2 mt-1">
+        <label class="text-sm"><input type="checkbox" id="wsa-gov"> 治理（學生議會/委員會）</label>
+        <label class="text-sm"><input type="checkbox" id="wsa-cur"> 課程（跨科連結）</label>
+        <label class="text-sm"><input type="checkbox" id="wsa-ops"> 營運（能源/餐食/採購）</label>
+        <label class="text-sm"><input type="checkbox" id="wsa-com"> 社群（家長/NGO/社區）</label>
+      </div>
+    </div>
+  </div>
+  <button id="btn-next-11" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 &#8594;</button>
+</section>
+
+<!-- ===== 12: 數據科學分析 — 人均排放比較 (深度 ⑧) ===== -->
+<section id="level-12" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#128202;</div>
+    <div>
+      <h2 class="text-xl font-bold text-purple-400">任務 12｜數據科學分析：人均排放的正義問題</h2>
+      <p class="text-sm text-slate-400 mt-1">分析以下數據，計算衍生指標，並用數據支持你的政策建議。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：數據科學家 ｜ 18 分 ｜ <span class="chip bg-purple-900 text-purple-300 depth-tag">數據科學</span></p>
+    </div>
+  </div>
+  <div class="overflow-x-auto mt-3">
+  <table class="w-full text-xs border-collapse">
+    <thead><tr class="text-slate-400 border-b border-slate-600">
+      <th class="p-2">國家/地區</th><th class="p-2">總排放(億噸CO2e)</th><th class="p-2">人口(億)</th><th class="p-2">人均(噸)</th><th class="p-2">GDP(兆美元)</th><th class="p-2">碳強度</th>
+    </tr></thead>
+    <tbody class="text-center">
+      <tr class="border-b border-slate-700"><td class="p-2">中國</td><td>140</td><td>14.1</td><td>9.9</td><td>18.5</td><td class="p-2"><input type="text" id="ci-cn" class="bg-slate-900 border border-slate-600 rounded px-1 py-0.5 w-16 text-center text-xs" placeholder="?"></td></tr>
+      <tr class="border-b border-slate-700"><td class="p-2">美國</td><td>52</td><td>3.3</td><td>15.8</td><td>27.4</td><td class="p-2"><input type="text" id="ci-us" class="bg-slate-900 border border-slate-600 rounded px-1 py-0.5 w-16 text-center text-xs" placeholder="?"></td></tr>
+      <tr class="border-b border-slate-700"><td class="p-2">印度</td><td>38</td><td>14.4</td><td>2.6</td><td>3.9</td><td class="p-2"><input type="text" id="ci-in" class="bg-slate-900 border border-slate-600 rounded px-1 py-0.5 w-16 text-center text-xs" placeholder="?"></td></tr>
+      <tr class="border-b border-slate-700"><td class="p-2">臺灣</td><td>2.87</td><td>0.23</td><td>12.5</td><td>0.79</td><td class="p-2"><input type="text" id="ci-tw" class="bg-slate-900 border border-slate-600 rounded px-1 py-0.5 w-16 text-center text-xs" placeholder="?"></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="text-xs text-slate-500 mt-2">碳強度 = 總排放(億噸) / GDP(兆美元)，單位：億噸/兆美元。請計算並填入。</p>
+  <div class="mt-4 space-y-3">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q12-1｜哪個國家碳強度最高？這代表什麼意涵？（6 分）</label>
+      <textarea class="cer" id="q121" rows="3" placeholder="碳強度最高的是...，代表每創造一單位GDP所排放的GHG..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q12-2｜如果用「人均排放」vs「碳強度」vs「總排放」三個指標分別排名，哪個指標最適合作為減碳責任的分配依據？為什麼？（12 分）</label>
+      <textarea class="cer" id="q122" rows="5" placeholder="三種指標的排名分別是...&#10;我認為最適合的指標是...因為...&#10;但這個指標也有限制..."></textarea>
+      <div class="word-count mt-1">字數：<span id="wc-q122">0</span></div>
+    </div>
+  </div>
+  <button id="btn-next-12" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 &#8594;</button>
+</section>
+
+<!-- ===== 13: 跨域短論文 — 淨零的科學、經濟與倫理 (深度 ⑨) ===== -->
+<section id="level-13" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#128218;</div>
+    <div>
+      <h2 class="text-xl font-bold text-pink-400">任務 13｜跨域短論文：淨零排放的科學、經濟與倫理</h2>
+      <p class="text-sm text-slate-400 mt-1">撰寫一篇 500+ 字的跨域分析短論文，整合本單元所學。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學術期刊審稿員 ｜ 30 分 ｜ <span class="chip bg-pink-900 text-pink-300 depth-tag">跨域論文</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800 rounded-lg p-4 mt-2 text-sm">
+    <p><strong>題目</strong>：「從溫室效應科學到淨零政策——論 CO&#8322; 當量作為全球減碳治理工具的效力與限制」</p>
+    <p class="mt-2"><strong>要求</strong>：</p>
+    <ul class="list-disc list-inside text-xs text-slate-400 mt-1 space-y-1">
+      <li>科學面向：溫室效應機制、GWP 計算邏輯、CO&#8322;e 的統一比較功能</li>
+      <li>經濟面向：CBAM 碳關稅、DAC 成本效益、碳交易市場</li>
+      <li>倫理面向：CBDR 原則、人均 vs 總量的責任分配、代際正義</li>
+      <li>引用至少 4 項本單元學到的數據（含出處）</li>
+      <li>明確提出你的論點（thesis statement）並在結論重申</li>
+      <li>字數：500 字以上</li>
+    </ul>
+  </div>
+  <div class="mt-4">
+    <textarea class="cer" id="essay" rows="16" placeholder="引言：&#10;&#10;科學面向：&#10;&#10;經濟面向：&#10;&#10;倫理面向：&#10;&#10;結論："></textarea>
+    <div class="word-count mt-1">字數：<span id="wc-essay">0</span> / 500+</div>
+  </div>
+  <button id="btn-next-13" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 &#8594;</button>
+</section>
+
+<!-- ===== 14: 後設認知 (深度 ② 開放反思) ===== -->
+<section id="level-14" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">&#129504;</div>
+    <div>
+      <h2 class="text-xl font-bold text-slate-300">任務 14｜後設認知：你的思考如何改變？</h2>
+      <p class="text-sm text-slate-400 mt-1">回顧這四節課的學習歷程，反思你的認知變化與方法論成長。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：自我導向學習者 ｜ 14 分 ｜ <span class="chip bg-slate-700 text-slate-300 depth-tag">後設認知</span></p>
+    </div>
+  </div>
+  <div class="mt-3 space-y-4">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q14-1｜學習前後你對「溫室效應」的理解有何改變？具體指出哪個資料或活動讓你改變。（100+ 字）</label>
+      <textarea class="cer" id="meta-1" rows="5" placeholder="學習前我認為溫室效應...&#10;現在我理解到...&#10;改變我想法的關鍵是...因為..."></textarea>
+      <div class="word-count mt-1">字數：<span id="wc-meta1">0</span> / 100+</div>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q14-2｜這個單元中你學到的最重要的「思考方法」是什麼？（不是知識內容，而是思考方式）（100+ 字）</label>
+      <textarea class="cer" id="meta-2" rows="5" placeholder="我學到的思考方法是...&#10;例如在任務...中，我體會到...&#10;這個方法可以遷移到..."></textarea>
+      <div class="word-count mt-1">字數：<span id="wc-meta2">0</span> / 100+</div>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q14-3｜你還有什麼問題想繼續追問？列出至少 2 個。</label>
+      <textarea class="cer" id="meta-3" rows="3" placeholder="1. ...&#10;2. ..."></textarea>
+    </div>
+  </div>
+  <button id="btn-finish" class="btn mt-4 bg-emerald-600 text-white px-8 py-3 rounded-lg font-bold text-lg">完成所有任務 &#10003;</button>
+</section>
+
+<!-- ===== 完成畫面 ===== -->
+<section id="level-done" class="card p-8 hidden-screen fade-in text-center">
+  <div class="text-6xl mb-4">&#127942;</div>
+  <h2 class="text-3xl font-bold text-emerald-400">Level V 氣候公民認證完成</h2>
+  <p class="text-slate-400 mt-2">你完成了 14 個深度任務，涵蓋科學、計算、資料詮釋、系統思考、倫理辯證、CER 論證、政策倡議、數據分析、跨域論文與後設認知。</p>
+  <div class="text-4xl font-bold text-emerald-400 mt-4"><span id="final-score">0</span> / 200</div>
+</section>
+
+</div><!-- max-w -->
+
+<script>
+(function(){
+  let score=0, currentLevel=1;
+  const totalLevels=14;
+  const pointsPerLevel=[10,12,12,8,10,14,14,16,16,18,20,18,30,14]; // sum=212, we cap display at 200
+
+  // --- Utility ---
+  function $(id){return document.getElementById(id);}
+  function show(n){document.querySelectorAll('[id^="level-"]').forEach(s=>{s.classList.add('hidden-screen');s.classList.remove('fade-in');});const el=$('level-'+n);if(el){el.classList.remove('hidden-screen');el.classList.add('fade-in');}}
+  function addScore(pts){score+=pts; $('score').textContent=Math.min(score,200);}
+  function updateDots(n){for(let i=1;i<=totalLevels;i++){const d=$('dot-'+i);if(!d)continue;d.className='progress-dot';if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}}
+  function confetti(){for(let i=0;i<30;i++){const c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.background=['#818cf8','#34d399','#f59e0b','#f43f5e','#2dd4bf'][Math.floor(Math.random()*5)];c.style.animationDelay=Math.random()+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),2500);}}
+  function nextLevel(){currentLevel++;if(currentLevel>totalLevels){show('done');$('final-score').textContent=Math.min(score,200);confetti();}else{show(currentLevel);updateDots(currentLevel);}}
+  function wordCount(id,wcId){const ta=$(id);const wc=$(wcId);if(!ta||!wc)return;ta.addEventListener('input',()=>{wc.textContent=ta.value.replace(/\s/g,'').length;});}
+
+  // --- Drag & Drop for Level 1,4 ---
+  function setupDrag(containerSel, zoneSel, matchAttr, feedbackId, btnId, pts){
+    const container=document.querySelector(containerSel);
+    if(!container) return;
+    const items=container.querySelectorAll('.drag-item');
+    const zones=document.querySelectorAll(zoneSel+' .drop-zone');
+    let filled=0, total=zones.length;
+    items.forEach(item=>{
+      item.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',item.getAttribute(matchAttr));item.classList.add('dragging');});
+      item.addEventListener('dragend',()=>item.classList.remove('dragging'));
+    });
+    zones.forEach(zone=>{
+      zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('over');});
+      zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
+      zone.addEventListener('dragenter',e=>e.preventDefault());
+      zone.addEventListener('drop',e=>{
+        e.preventDefault();zone.classList.remove('over');
+        const val=e.dataTransfer.getData('text/plain');
+        if(val===zone.dataset.accept){
+          const src=container.querySelector('['+matchAttr+'="'+val+'"]');
+          if(src){zone.appendChild(src);src.draggable=false;src.classList.add('pop');filled++;
+            if(filled>=total){$(feedbackId).innerHTML='<span class="text-emerald-400 font-bold">全部正確!</span>';$(btnId).disabled=false;addScore(pts);}}
+        } else {zone.classList.add('shake');setTimeout(()=>zone.classList.remove('shake'),400);}
+      });
+    });
+  }
+
+  // --- Level 1 drag ---
+  setupDrag('#items-box-1','#level-1','data-match','feedback-1','btn-next-1',pointsPerLevel[0]);
+  $('btn-next-1').addEventListener('click',nextLevel);
+
+  // --- Level 2 select quiz ---
+  $('btn-check-2').addEventListener('click',()=>{
+    const answers={co2:['1','1000'],ch4:['28','12'],n2o:['273','109']};
+    let correct=0;
+    ['co2','ch4','n2o'].forEach(g=>{
+      if($('gwp-'+g).value===answers[g][0])correct++;
+      if($('life-'+g).value===answers[g][1])correct++;
+    });
+    if(correct>=5){$('feedback-2').innerHTML='<span class="text-emerald-400 font-bold">'+correct+'/6 正確!</span>';$('btn-next-2').disabled=false;addScore(pointsPerLevel[1]);}
+    else{$('feedback-2').innerHTML='<span class="text-rose-400">'+correct+'/6 正確，請再試。</span>';}
+  });
+  $('btn-next-2').addEventListener('click',nextLevel);
+
+  // --- Level 3 calc ---
+  $('btn-check-3').addEventListener('click',()=>{
+    const a1=parseInt($('calc-q1').value), a2=parseInt($('calc-q2').value), a3=parseInt($('calc-q3').value);
+    let c=0;
+    if(a1===14000)c++; if(a2===54600)c++; if(a3===62600)c++;
+    if(c>=2){$('feedback-3').innerHTML='<span class="text-emerald-400 font-bold">'+c+'/3 正確!</span>';$('btn-next-3').disabled=false;addScore(pointsPerLevel[2]);}
+    else{$('feedback-3').innerHTML='<span class="text-rose-400">'+c+'/3 正確。提示：CO2e = 排放量 x GWP-100</span>';}
+  });
+  $('btn-next-3').addEventListener('click',nextLevel);
+
+  // --- Level 4 drag ---
+  setupDrag('#items-box-4','#level-4','data-match','feedback-4','btn-next-4',pointsPerLevel[3]);
+  $('btn-next-4').addEventListener('click',nextLevel);
+
+  // --- Level 5 quiz ---
+  (function(){
+    const box=$('q5-box');if(!box)return;
+    let answered=0;
+    box.querySelectorAll('.quiz-item').forEach(qi=>{
+      qi.querySelectorAll('.btn-ans').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          const correct=qi.dataset.correct;
+          qi.querySelectorAll('.btn-ans').forEach(b=>b.disabled=true);
+          if(btn.dataset.ans===correct){qi.style.borderColor='#34d399';answered++;}
+          else{qi.style.borderColor='#f43f5e';qi.classList.add('shake');setTimeout(()=>qi.classList.remove('shake'),400);}
+          if(answered>=3){$('feedback-5').innerHTML='<span class="text-emerald-400 font-bold">全部正確!</span>';$('btn-next-5').disabled=false;addScore(pointsPerLevel[4]);}
+        });
+      });
+    });
+  })();
+  $('btn-next-5').addEventListener('click',nextLevel);
+
+  // --- Level 6 資料詮釋 #1 ---
+  wordCount('q62','wc-q62');
+  (function(){
+    const radios=document.querySelectorAll('input[name="q61"]');
+    function check6(){
+      const sel=document.querySelector('input[name="q61"]:checked');
+      const txt=$('q62').value.replace(/\s/g,'');
+      if(sel && sel.value==='B' && txt.length>=20){$('btn-next-6').disabled=false;}
+    }
+    radios.forEach(r=>r.addEventListener('change',check6));
+    $('q62').addEventListener('input',check6);
+  })();
+  $('btn-next-6').addEventListener('click',()=>{addScore(pointsPerLevel[5]);nextLevel();});
+
+  // --- Level 7 資料詮釋 #2 ---
+  wordCount('q72','wc-q72');
+  (function(){
+    function check7(){
+      const g1=$('gap1').value.trim(), g2=$('gap2').value.trim(), g3=$('gap3').value.trim();
+      const txt=$('q72').value.replace(/\s/g,'');
+      if(g1&&g2&&g3&&txt.length>=30){$('btn-next-7').disabled=false;}
+    }
+    ['gap1','gap2','gap3'].forEach(id=>$(id).addEventListener('input',check7));
+    $('q72').addEventListener('input',check7);
+  })();
+  $('btn-next-7').addEventListener('click',()=>{addScore(pointsPerLevel[6]);nextLevel();});
+
+  // --- Level 8 系統思考 drag ---
+  (function(){
+    const items=document.querySelectorAll('#loop-items-8 .drag-item');
+    const slots=document.querySelectorAll('#level-8 .loop-slot');
+    let filled8=0;
+    items.forEach(item=>{
+      item.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',item.dataset.slotMatch);item.classList.add('dragging');});
+      item.addEventListener('dragend',()=>item.classList.remove('dragging'));
+    });
+    slots.forEach(slot=>{
+      slot.addEventListener('dragover',e=>e.preventDefault());
+      slot.addEventListener('dragenter',e=>{e.preventDefault();slot.classList.add('over');});
+      slot.addEventListener('dragleave',()=>slot.classList.remove('over'));
+      slot.addEventListener('drop',e=>{
+        e.preventDefault();slot.classList.remove('over');
+        const val=e.dataTransfer.getData('text/plain');
+        if(val===slot.dataset.slot){
+          const textEl=$('slot-'+val+'-text');
+          const src=document.querySelector('#loop-items-8 [data-slot-match="'+val+'"]');
+          if(textEl&&src){textEl.textContent=src.textContent;src.remove();filled8++;
+            if(filled8>=4){$('feedback-8').innerHTML='<span class="text-emerald-400 font-bold">反饋循環完成!</span>';
+              function check8ext(){if($('q8-ext').value.replace(/\s/g,'').length>=20)$('btn-next-8').disabled=false;}
+              $('q8-ext').addEventListener('input',check8ext);check8ext();}}
+        } else {slot.classList.add('shake');setTimeout(()=>slot.classList.remove('shake'),400);}
+      });
+    });
+  })();
+  $('btn-next-8').addEventListener('click',()=>{addScore(pointsPerLevel[7]);nextLevel();});
+
+  // --- Level 9 倫理兩難 ---
+  wordCount('q92','wc-q92');
+  (function(){
+    function check9(){
+      const sel=document.querySelector('input[name="q91"]:checked');
+      const txt=$('q92').value.replace(/\s/g,'');
+      if(sel&&txt.length>=100){$('btn-next-9').disabled=false;}
+    }
+    document.querySelectorAll('input[name="q91"]').forEach(r=>r.addEventListener('change',check9));
+    $('q92').addEventListener('input',check9);
+  })();
+  $('btn-next-9').addEventListener('click',()=>{addScore(pointsPerLevel[8]);nextLevel();});
+
+  // --- Level 10 CER+反駁 ---
+  (function(){
+    function check10(){
+      const c=$('cer-c').value.replace(/\s/g,'').length;
+      const e=$('cer-e').value.replace(/\s/g,'').length;
+      const r=$('cer-r').value.replace(/\s/g,'').length;
+      const rb=$('cer-rb').value.replace(/\s/g,'').length;
+      if(c>=10&&e>=20&&r>=20&&rb>=20)$('btn-next-10').disabled=false;
+    }
+    ['cer-c','cer-e','cer-r','cer-rb'].forEach(id=>$(id).addEventListener('input',check10));
+  })();
+  $('btn-next-10').addEventListener('click',()=>{addScore(pointsPerLevel[9]);nextLevel();});
+
+  // --- Level 11 政策倡議 ---
+  (function(){
+    function check11(){
+      const title=$('prop-title').value.trim().length;
+      const audit=$('prop-audit').value.replace(/\s/g,'').length;
+      const cer=$('prop-cer').value.replace(/\s/g,'').length;
+      const budget=$('prop-budget').value.replace(/\s/g,'').length;
+      const wsaCount=document.querySelectorAll('#level-11 input[type="checkbox"]:checked').length;
+      if(title>=3&&audit>=20&&cer>=40&&budget>=20&&wsaCount>=2)$('btn-next-11').disabled=false;
+    }
+    ['prop-title','prop-audit','prop-cer','prop-budget'].forEach(id=>$(id).addEventListener('input',check11));
+    document.querySelectorAll('#level-11 input[type="checkbox"]').forEach(cb=>cb.addEventListener('change',check11));
+  })();
+  $('btn-next-11').addEventListener('click',()=>{addScore(pointsPerLevel[10]);nextLevel();});
+
+  // --- Level 12 數據科學 ---
+  wordCount('q122','wc-q122');
+  (function(){
+    function check12(){
+      const ci=['ci-cn','ci-us','ci-in','ci-tw'].every(id=>$(id).value.trim().length>0);
+      const a1=$('q121').value.replace(/\s/g,'').length>=20;
+      const a2=$('q122').value.replace(/\s/g,'').length>=40;
+      if(ci&&a1&&a2)$('btn-next-12').disabled=false;
+    }
+    ['ci-cn','ci-us','ci-in','ci-tw','q121','q122'].forEach(id=>$(id).addEventListener('input',check12));
+  })();
+  $('btn-next-12').addEventListener('click',()=>{addScore(pointsPerLevel[11]);nextLevel();});
+
+  // --- Level 13 跨域論文 ---
+  wordCount('essay','wc-essay');
+  (function(){
+    $('essay').addEventListener('input',()=>{
+      if($('essay').value.replace(/\s/g,'').length>=400)$('btn-next-13').disabled=false;
+      else $('btn-next-13').disabled=true;
+    });
+  })();
+  $('btn-next-13').addEventListener('click',()=>{addScore(pointsPerLevel[12]);nextLevel();});
+
+  // --- Level 14 後設認知 ---
+  wordCount('meta-1','wc-meta1');
+  wordCount('meta-2','wc-meta2');
+  (function(){
+    function check14(){
+      const m1=$('meta-1').value.replace(/\s/g,'').length;
+      const m2=$('meta-2').value.replace(/\s/g,'').length;
+      const m3=$('meta-3').value.replace(/\s/g,'').length;
+      if(m1>=80&&m2>=80&&m3>=10)$('btn-finish').disabled=false;
+    }
+    ['meta-1','meta-2','meta-3'].forEach(id=>$(id).addEventListener('input',check14));
+  })();
+  $('btn-finish').addEventListener('click',()=>{addScore(pointsPerLevel[13]);currentLevel=totalLevels+1;show('done');$('final-score').textContent=Math.min(score,200);confetti();});
+
+  // Init
+  show(1);updateDots(1);
+})();
+</script>
+</body>
+</html>

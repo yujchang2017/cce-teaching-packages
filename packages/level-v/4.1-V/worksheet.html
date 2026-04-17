@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候社會衝擊分析師 | 高中互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#0f172a,#1e293b,#0f172a); min-height:100vh; color:#e2e8f0;}
+  .card { background:rgba(30,41,59,.92); border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.3); border:1px solid rgba(99,102,241,.2);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.15);}
+  .btn:disabled { opacity:.45; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:80px; transition: background .2s; border:2px dashed rgba(148,163,184,.4); border-radius:.75rem;}
+  .drop-zone.over { background:rgba(234,179,8,.15); border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.15);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:rgba(148,163,184,.35); transition:all .3s;}
+  .progress-dot.active { background:#818cf8; transform:scale(1.3); box-shadow:0 0 12px rgba(129,140,248,.5);}
+  .progress-dot.done { background:#34d399; box-shadow:0 0 8px rgba(52,211,153,.4);}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea { border:1px solid rgba(148,163,184,.3); border-radius:.5rem; padding:.75rem; width:100%; font-size:.95rem; background:rgba(15,23,42,.6); color:#e2e8f0; resize:vertical;}
+  textarea:focus { outline:none; border-color:#818cf8; box-shadow:0 0 0 2px rgba(129,140,248,.25);}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  .badge-lock { filter:grayscale(1); opacity:.35;}
+  svg text { pointer-events:none; }
+  svg .loop-slot { cursor: pointer; }
+  svg .loop-slot.over { fill:rgba(234,179,8,.25); stroke-width:3; }
+  input[type="number"] { background:rgba(15,23,42,.6); border:1px solid rgba(148,163,184,.3); color:#e2e8f0; border-radius:.375rem; padding:.25rem .5rem; }
+  input[type="number"]:focus { outline:none; border-color:#818cf8; }
+  .ref-tag { font-size:.65rem; background:rgba(99,102,241,.2); color:#a5b4fc; padding:.1rem .4rem; border-radius:.25rem; }
+  select { background:rgba(15,23,42,.6); border:1px solid rgba(148,163,184,.3); color:#e2e8f0; border-radius:.375rem; padding:.25rem .5rem; }
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-indigo-300">氣候社會衝擊分析師</h1>
+    <p class="text-sm text-slate-400 mt-1">你是「社會衝擊分析師」：12 個關卡、9 種高層次任務。揭露不平等、建構論證、推動行動。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">分析師積分</div>
+    <div class="text-2xl font-bold text-emerald-400"><span id="score">0</span> / 120</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-1.5 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs text-slate-500">健康</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs text-slate-500">糧食</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs text-slate-500">差異</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs text-slate-500">遷移</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs text-slate-500">倫理</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs text-slate-500">系統</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs text-slate-500">政策</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs text-slate-500">CER</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-9"></div><span class="text-xs text-slate-500">倡議</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-10"></div><span class="text-xs text-slate-500">跨域</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-11"></div><span class="text-xs text-slate-500">後設</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-12"></div><span class="text-xs text-slate-500">反思</span>
+</div>
+
+<!-- Badges -->
+<div class="card p-3 mb-6 flex flex-wrap gap-2 justify-center">
+  <span class="text-lg badge-lock" id="badge-1" title="健康衝擊分析師">🏥</span>
+  <span class="text-lg badge-lock" id="badge-2" title="糧食安全守護者">🌾</span>
+  <span class="text-lg badge-lock" id="badge-3" title="正義分析師">⚖️</span>
+  <span class="text-lg badge-lock" id="badge-4" title="遷移地圖專家">🗺️</span>
+  <span class="text-lg badge-lock" id="badge-5" title="系統思考者">🔄</span>
+  <span class="text-lg badge-lock" id="badge-6" title="論證大師">🏛️</span>
+  <span class="text-lg badge-lock" id="badge-7" title="政策倡議者">📢</span>
+  <span class="text-lg badge-lock" id="badge-8" title="跨域整合者">🌐</span>
+  <span class="text-lg badge-lock" id="badge-9" title="後設認知者">🧠</span>
+</div>
+
+<!-- ===== Level 1: 氣候-健康因果網絡 ===== -->
+<section id="level-1" class="card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🏥</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 1｜氣候-健康因果網絡</h2>
+      <p class="text-sm text-slate-400 mt-1">根據 WHO 與 IPCC 數據，建構氣候變遷影響健康的因果網絡。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：公衛分析師 ｜ 10 分 <span class="ref-tag">dp1, dp6</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-3" id="q1-box">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">① WHO 估計 2030-2050 年間氣候變遷每年造成約 <input type="number" step="10000" class="w-28 text-center q1-input" data-answer="250000" placeholder="?"> 人額外死亡</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">② 全球熱相關死亡中有 <input type="number" step="1" class="w-20 text-center q1-input" data-answer="37"> % 歸因於人為氣候變遷</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">③ 臺灣 2023 年登革熱本土病例逾 <input type="number" step="1000" class="w-24 text-center q1-input" data-answer="25000" placeholder="?"> 例，創歷史新高</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">④ 寫出氣候變遷影響健康的至少 4 條因果路徑（每條含「原因→中介→健康結果」）：</p>
+      <textarea class="q1-text" rows="5" placeholder="例如：(1) 氣溫上升 → 病媒蚊北移 → 登革熱擴散；(2) 極端高溫 → 熱傷害 → 老年人急診增加；(3)⋯⋯ (4)⋯⋯"></textarea>
+    </div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <button id="btn-check-1" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-1" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 →</button>
+</section>
+
+<!-- ===== Level 2: 糧食安全壓力測試（數據科學分析 ⑧） ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🌾</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-300">關卡 2｜糧食安全壓力測試</h2>
+      <p class="text-sm text-slate-400 mt-1">運用 FAO 與 IPCC 數據，分析臺灣糧食安全的氣候風險。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：糧食安全分析師 ｜ 10 分 <span class="chip bg-amber-900/50 text-amber-300">數據科學分析 ⑧</span> <span class="ref-tag">dp5</span></p>
+    </div>
+  </div>
+
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm space-y-2">
+    <p><strong>已知條件：</strong></p>
+    <ul class="list-disc list-inside space-y-1 text-slate-300">
+      <li>全球約 7.35 億人面臨飢餓（FAO 2023）</li>
+      <li>IPCC AR6 預估升溫 2°C 時全球主要穀物減產 3-7%</li>
+      <li>臺灣糧食自給率約 31%（即 69% 仰賴進口）</li>
+      <li>臺灣 2023 年糧食進口金額約 NT$5,800 億</li>
+    </ul>
+  </div>
+
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">① 若全球穀物減產 5%，假設價格彈性使進口成本上升 8%，臺灣年增糧食進口成本約多少億元？</p>
+      <input type="number" class="w-24 q2-input" data-answer="464" placeholder="?" step="10"> 億元
+      <p class="text-xs text-slate-600 mt-1">（提示：5800 × 8% = ?）</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">② 若將此成本分攤至全臺約 2,300 萬人，每人每年約增加多少元？</p>
+      <input type="number" class="w-24 q2-input" data-answer="2017" placeholder="?" step="100"> 元
+      <p class="text-xs text-slate-600 mt-1">（提示：464 億 ÷ 2300 萬 ≈ ?）</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">③ 這個壓力測試有哪些局限？至少寫出兩點（每點 30+ 字）：</p>
+      <textarea class="q2-text" rows="4" placeholder="例如：(1) 價格彈性假設過於簡化，實際市場受多重因素影響⋯⋯ (2) 未考慮臺灣可能提高國內糧食生產⋯⋯"></textarea>
+    </div>
+  </div>
+  <div id="feedback-2" class="mt-3 text-sm"></div>
+  <button id="btn-check-2" class="btn mt-3 bg-amber-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-2" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 →</button>
+</section>
+
+<!-- ===== Level 3: 差異衝擊四維度分析（資料詮釋 ⑤-1） ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">⚖️</div>
+    <div>
+      <h2 class="text-xl font-bold text-rose-300">關卡 3｜差異衝擊四維度分析</h2>
+      <p class="text-sm text-slate-400 mt-1">分析氣候變遷依性別、年齡、族群、地理位置產生的差異衝擊。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：正義分析師 ｜ 10 分 <span class="chip bg-rose-900/50 text-rose-300">資料詮釋 ⑤-1</span> <span class="ref-tag">dp2, dp4, dp8</span></p>
+    </div>
+  </div>
+
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm">
+    <p class="font-bold text-rose-300 mb-2">關鍵數據：</p>
+    <ul class="list-disc list-inside space-y-1 text-slate-300">
+      <li>脆弱地區極端天氣死亡率 = 低脆弱地區的 <strong>15 倍</strong></li>
+      <li>最富 10% 排放占 36-45%；最窮 50% 僅占 12%</li>
+      <li>女性災後死亡率高於男性（社會限制因素）</li>
+      <li>原住民族：高土地依存 → 高衝擊，但傳統知識 = 調適資源</li>
+    </ul>
+  </div>
+
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">① 15 倍死亡率差距的主要原因是什麼？（複選）</p>
+      <label class="flex items-center gap-2 text-sm mb-1"><input type="checkbox" class="q3-cb" data-correct="true"> 基礎設施品質不足（預警系統、避難設施）</label>
+      <label class="flex items-center gap-2 text-sm mb-1"><input type="checkbox" class="q3-cb" data-correct="true"> 醫療資源分配不均</label>
+      <label class="flex items-center gap-2 text-sm mb-1"><input type="checkbox" class="q3-cb" data-correct="false"> 脆弱地區的極端天氣本身強度更大</label>
+      <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="q3-cb" data-correct="true"> 貧窮限制了避災與復原能力</label>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">② 以臺灣莫拉克風災為例，從四個維度各舉一個差異衝擊實例（每維度 30+ 字）：</p>
+      <p class="text-xs text-slate-500 mb-1">性別：</p>
+      <textarea class="q3-dim" rows="2" placeholder="例如：災後女性承擔更多照護工作但在重建決策中代表性不足⋯⋯"></textarea>
+      <p class="text-xs text-slate-500 mb-1 mt-2">年齡：</p>
+      <textarea class="q3-dim" rows="2" placeholder="例如：老人與幼兒的傷亡率高於青壯年⋯⋯"></textarea>
+      <p class="text-xs text-slate-500 mb-1 mt-2">族群：</p>
+      <textarea class="q3-dim" rows="2" placeholder="例如：原住民部落（如小林村）損失最為慘重⋯⋯"></textarea>
+      <p class="text-xs text-slate-500 mb-1 mt-2">地理：</p>
+      <textarea class="q3-dim" rows="2" placeholder="例如：山區部落暴露度遠高於平地都市⋯⋯"></textarea>
+    </div>
+  </div>
+  <div id="feedback-3" class="mt-3 text-sm"></div>
+  <button id="btn-check-3" class="btn mt-3 bg-rose-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-3" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 →</button>
+</section>
+
+<!-- ===== Level 4: 氣候遷移地圖（資料詮釋 ⑤-2） ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🗺️</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-300">關卡 4｜氣候遷移熱點分析</h2>
+      <p class="text-sm text-slate-400 mt-1">分析世界銀行 Groundswell 報告的六大區域遷移推估。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：遷移政策研究員 ｜ 10 分 <span class="chip bg-teal-900/50 text-teal-300">資料詮釋 ⑤-2</span> <span class="ref-tag">dp3</span></p>
+    </div>
+  </div>
+
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm">
+    <p class="font-bold text-teal-300 mb-2">世界銀行 2050 氣候內遷推估（百萬人）：</p>
+    <table class="w-full text-xs">
+      <tr class="border-b border-slate-700"><th class="text-left py-1 text-slate-400">區域</th><th class="text-right py-1 text-slate-400">推估人數（百萬）</th></tr>
+      <tr class="border-b border-slate-700/50"><td class="py-1">撒哈拉以南非洲</td><td class="text-right text-red-400">86</td></tr>
+      <tr class="border-b border-slate-700/50"><td class="py-1">東亞與太平洋</td><td class="text-right text-amber-400">49</td></tr>
+      <tr class="border-b border-slate-700/50"><td class="py-1">南亞</td><td class="text-right text-amber-400">40</td></tr>
+      <tr class="border-b border-slate-700/50"><td class="py-1">北非</td><td class="text-right text-blue-400">19</td></tr>
+      <tr class="border-b border-slate-700/50"><td class="py-1">拉丁美洲</td><td class="text-right text-blue-400">17</td></tr>
+      <tr><td class="py-1">東歐與中亞</td><td class="text-right text-slate-400">5</td></tr>
+    </table>
+    <p class="text-xs text-slate-500 mt-2">合計約 2.16 億人；積極行動可減少 80%</p>
+  </div>
+
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">① 描述層：哪個區域遷移人數最多？占全球比例約多少？</p>
+      <select class="q4-sel" data-answer="sahara">
+        <option value="">-- 選擇 --</option>
+        <option value="sahara">撒哈拉以南非洲（約 40%）</option>
+        <option value="eastasia">東亞與太平洋（約 23%）</option>
+        <option value="southasia">南亞（約 19%）</option>
+      </select>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">② 解釋層：為什麼撒哈拉以南非洲遷移人數最高？（60+ 字）</p>
+      <textarea class="q4-text" rows="3" placeholder="考慮：乾旱頻率、農業依存度、治理能力、人口增長、基礎設施⋯⋯"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">③ 推論層：「積極行動可減少 80%」相當於多少人免於被迫遷移？這對政策有何意涵？（80+ 字）</p>
+      <textarea class="q4-text2" rows="4" placeholder="計算：216M × 80% = ? 引用數據，提出政策建議⋯⋯"></textarea>
+    </div>
+  </div>
+  <div id="feedback-4" class="mt-3 text-sm"></div>
+  <button id="btn-check-4" class="btn mt-3 bg-teal-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-4" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 →</button>
+</section>
+
+<!-- ===== Level 5: 倫理兩難（倫理兩難 ③） ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">⚖️</div>
+    <div>
+      <h2 class="text-xl font-bold text-rose-300">關卡 5｜倫理兩難：高排放國家的道德義務</h2>
+      <p class="text-sm text-slate-400 mt-1">已開發國家累積排放 46%，2.16 億人面臨氣候遷移——高排放國家是否有道德義務接納氣候難民？</p>
+      <p class="text-xs text-slate-600 mt-1">角色：倫理委員會委員 ｜ 10 分 <span class="chip bg-rose-900/50 text-rose-300">倫理兩難 ③</span> <span class="ref-tag">dp3, dp4</span></p>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-3 mb-3">
+    <div class="bg-red-900/20 rounded-lg p-3 border border-red-800/30">
+      <p class="text-sm font-bold text-red-300 mb-1">立場 A：有道德義務</p>
+      <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+        <li>歷史累積排放 46% 構成因果責任</li>
+        <li>CBDR 原則要求差異承擔</li>
+        <li>氣候難民的苦難是排放國行為的外部性</li>
+      </ul>
+    </div>
+    <div class="bg-blue-900/20 rounded-lg p-3 border border-blue-800/30">
+      <p class="text-sm font-bold text-blue-300 mb-1">立場 B：無法律義務</p>
+      <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+        <li>主權國家有邊境管控權</li>
+        <li>應聚焦源頭減排而非事後補救</li>
+        <li>接納難民可能造成社會資源稀釋</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">選擇你的立場：</p>
+      <select class="q5-select">
+        <option value="">-- 選擇 --</option>
+        <option value="A">立場 A：高排放國家有道德義務接納氣候難民</option>
+        <option value="B">立場 B：高排放國家無法律義務，應聚焦源頭減排</option>
+      </select>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">闡述你的立場（100+ 字，需引用至少 2 筆數據）：</p>
+      <textarea class="q5-text" rows="5" placeholder="引用 dp3（2.16 億氣候內遷者）、dp4（排放不平等數據）等建構你的論點⋯⋯"></textarea>
+      <p class="text-xs text-slate-500 mt-1">字數：<span class="q5-count">0</span></p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">回應對方最強論點（80+ 字）：</p>
+      <textarea class="q5-rebuttal" rows="4" placeholder="承認對方立場中最有力的論點，然後說明為何你的立場仍然成立⋯⋯"></textarea>
+    </div>
+  </div>
+  <div id="feedback-5" class="mt-3 text-sm"></div>
+  <button id="btn-check-5" class="btn mt-3 bg-rose-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-5" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 →</button>
+</section>
+
+<!-- ===== Level 6: 系統思考 CLD（系統思考 ②） ===== -->
+<section id="level-6" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-purple-300">關卡 6｜系統思考：氣候-社會因果循環圖</h2>
+      <p class="text-sm text-slate-400 mt-1">將因果標籤拖曳至正確位置，辨識正/負反饋與槓桿點。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：系統分析師 ｜ 10 分 <span class="chip bg-purple-900/50 text-purple-300">系統思考 ②</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 500 320" class="loop w-full max-w-2xl mx-auto block mb-3">
+    <!-- 貧窮-脆弱度正反饋循環 -->
+    <rect x="20" y="10" width="460" height="150" rx="10" fill="rgba(239,68,68,.06)" stroke="rgba(239,68,68,.2)" stroke-width="1"/>
+    <text x="250" y="28" text-anchor="middle" fill="#fca5a5" font-size="10" font-weight="bold">正反饋：貧窮-脆弱度循環</text>
+    <rect x="30" y="55" width="100" height="40" rx="8" fill="rgba(239,68,68,.12)" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="80" y="78" text-anchor="middle" fill="#fca5a5" font-size="9">氣候衝擊</text>
+    <rect x="190" y="45" width="120" height="40" rx="8" fill="rgba(239,68,68,.12)" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="250" y="68" text-anchor="middle" fill="#fca5a5" font-size="9">經濟損失/貧窮</text>
+    <rect x="370" y="55" width="100" height="40" rx="8" fill="rgba(239,68,68,.12)" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="420" y="78" text-anchor="middle" fill="#fca5a5" font-size="9">調適能力降低</text>
+    <rect x="190" y="110" width="120" height="40" rx="8" fill="rgba(239,68,68,.12)" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="250" y="133" text-anchor="middle" fill="#fca5a5" font-size="9">脆弱度增加</text>
+    <path d="M130,72 L185,62" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+    <path d="M310,65 L365,72" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+    <path d="M420,95 L310,120" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+    <path d="M190,130 L95,95" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+    <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>
+    <rect class="loop-slot" x="150" y="85" width="60" height="22" rx="4" fill="rgba(71,85,105,.3)" stroke="#64748b" data-accept="positive"/>
+    <text x="180" y="100" text-anchor="middle" fill="#94a3b8" font-size="8">反饋類型?</text>
+
+    <!-- 負反饋：意識提高 -->
+    <rect x="20" y="175" width="220" height="130" rx="10" fill="rgba(52,211,153,.05)" stroke="rgba(52,211,153,.2)" stroke-width="1"/>
+    <text x="130" y="192" text-anchor="middle" fill="#6ee7b7" font-size="10" font-weight="bold">負反饋：意識-行動</text>
+    <rect x="30" y="210" width="90" height="35" rx="6" fill="rgba(52,211,153,.1)" stroke="#34d399" stroke-width="1"/>
+    <text x="75" y="231" text-anchor="middle" fill="#6ee7b7" font-size="8">氣候災害</text>
+    <rect x="140" y="210" width="90" height="35" rx="6" fill="rgba(52,211,153,.1)" stroke="#34d399" stroke-width="1"/>
+    <text x="185" y="231" text-anchor="middle" fill="#6ee7b7" font-size="8">公眾意識提高</text>
+    <rect x="80" y="260" width="90" height="35" rx="6" fill="rgba(52,211,153,.1)" stroke="#34d399" stroke-width="1"/>
+    <text x="125" y="281" text-anchor="middle" fill="#6ee7b7" font-size="8">政策加速減排</text>
+    <path d="M120,230 L140,225" fill="none" stroke="#94a3b8" stroke-width="1" marker-end="url(#arr)"/>
+    <path d="M185,245 L140,265" fill="none" stroke="#94a3b8" stroke-width="1" marker-end="url(#arr)"/>
+    <path d="M80,270 L55,245" fill="none" stroke="#94a3b8" stroke-width="1" marker-end="url(#arr)"/>
+
+    <!-- 槓桿點 drop zone -->
+    <rect x="280" y="200" width="190" height="100" rx="10" fill="rgba(234,179,8,.05)" stroke="rgba(234,179,8,.2)" stroke-width="1"/>
+    <text x="375" y="218" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="bold">槓桿點辨識</text>
+    <rect class="loop-slot" x="295" y="240" width="160" height="40" rx="6" fill="rgba(71,85,105,.3)" stroke="#64748b" data-accept="leverage"/>
+    <text x="375" y="265" text-anchor="middle" fill="#94a3b8" font-size="8">拖入最有效介入點</text>
+  </svg>
+
+  <div class="flex flex-wrap gap-2 mb-3" id="drag-box-6">
+    <div class="drag-item bg-red-900/40 border border-red-500/50 rounded-lg px-3 py-1.5 text-sm font-bold text-red-300" draggable="true" data-match="positive">+ 正反饋</div>
+    <div class="drag-item bg-emerald-900/40 border border-emerald-500/50 rounded-lg px-3 py-1.5 text-sm font-bold text-emerald-300" draggable="true" data-match="negative">- 負反饋</div>
+    <div class="drag-item bg-amber-900/40 border border-amber-500/50 rounded-lg px-3 py-1.5 text-sm font-bold text-amber-300" draggable="true" data-match="leverage">社會安全網 + 調適投資（打破貧窮循環）</div>
+  </div>
+
+  <div class="bg-slate-800/50 rounded-lg p-3 mt-3">
+    <p class="text-sm mb-2">延伸思考：除了上圖的兩個循環，請再舉一個「氣候-社會」的正反饋例子並說明（50+ 字）：</p>
+    <textarea class="q6-ext" rows="3" placeholder="例如：氣候衝擊→糧價上漲→政治不穩→治理能力下降→調適失敗→更大衝擊⋯⋯"></textarea>
+  </div>
+  <div id="feedback-6" class="mt-3 text-sm"></div>
+  <button id="btn-check-6" class="btn mt-3 bg-purple-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-6" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 →</button>
+</section>
+
+<!-- ===== Level 7: 政策比較矩陣 ===== -->
+<section id="level-7" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">📋</div>
+    <div>
+      <h2 class="text-xl font-bold text-blue-300">關卡 7｜政策介入比較矩陣</h2>
+      <p class="text-sm text-slate-400 mt-1">從效能、公平性、可行性三軸評估五種政策工具。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：政策顧問 ｜ 10 分 <span class="ref-tag">dp7</span></p>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto mb-3">
+    <table class="w-full text-xs">
+      <tr class="border-b border-slate-700">
+        <th class="text-left py-2 text-slate-400 w-28">政策工具</th>
+        <th class="text-center py-2 text-slate-400">效能（高/中/低）</th>
+        <th class="text-center py-2 text-slate-400">公平性（高/中/低）</th>
+        <th class="text-center py-2 text-slate-400">可行性（高/中/低）</th>
+      </tr>
+      <tr class="border-b border-slate-700/50"><td class="py-2">碳定價</td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+      </tr>
+      <tr class="border-b border-slate-700/50"><td class="py-2">再生能源補貼</td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+      </tr>
+      <tr class="border-b border-slate-700/50"><td class="py-2">氣候調適基金</td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+      </tr>
+      <tr class="border-b border-slate-700/50"><td class="py-2">公正轉型方案</td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+      </tr>
+      <tr><td class="py-2">社區韌性計畫</td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td class="text-center"><select class="q7-sel"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+      </tr>
+    </table>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-3">
+    <p class="text-sm mb-2">為臺灣推薦優先序前三名，並說明理由（80+ 字）：</p>
+    <textarea class="q7-text" rows="4" placeholder="考量臺灣的產業結構、社會脈絡、財政能力，排列優先序⋯⋯"></textarea>
+  </div>
+  <div id="feedback-7" class="mt-3 text-sm"></div>
+  <button id="btn-check-7" class="btn mt-3 bg-blue-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-7" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 →</button>
+</section>
+
+<!-- ===== Level 8: CER 論證（CER ④） ===== -->
+<section id="level-8" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🏛️</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-300">關卡 8｜CER 論證：共效益與減碳加速</h2>
+      <p class="text-sm text-slate-400 mt-1">題目：「氣候行動的健康共效益是否足以成為加速減碳的理由？」</p>
+      <p class="text-xs text-slate-600 mt-1">角色：政策論證者 ｜ 10 分 <span class="chip bg-amber-900/50 text-amber-300">CER 論證 ④</span> <span class="ref-tag">dp1, dp7</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300 mb-1">Claim（主張）</p>
+      <textarea class="q8-claim" rows="2" placeholder="明確陳述你的主張⋯⋯"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-teal-300 mb-1">Evidence（證據）— 引用至少 2 筆數據</p>
+      <textarea class="q8-evidence" rows="3" placeholder="引用 dp1（WHO 25 萬人/年）、dp7（400 萬空污早死可避免）等⋯⋯"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-blue-300 mb-1">Reasoning（推理）</p>
+      <textarea class="q8-reasoning" rows="3" placeholder="從證據推導出主張成立的因果邏輯⋯⋯"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-rose-300 mb-1">Rebuttal（反駁）— 承認對方最強論點再反駁</p>
+      <textarea class="q8-rebuttal" rows="3" placeholder="有人認為「共效益的時間尺度與氣候效果不同步」——然而⋯⋯"></textarea>
+    </div>
+  </div>
+  <div id="feedback-8" class="mt-3 text-sm"></div>
+  <button id="btn-check-8" class="btn mt-3 bg-amber-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-8" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 →</button>
+</section>
+
+<!-- ===== Level 9: 政策倡議（模擬聽證 ⑦） ===== -->
+<section id="level-9" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">📢</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-300">關卡 9｜模擬聽證：極端高溫調適措施</h2>
+      <p class="text-sm text-slate-400 mt-1">完成利害關係人分析表與公民陳情書。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：公民政策倡議者 ｜ 10 分 <span class="chip bg-emerald-900/50 text-emerald-300">政策倡議 ⑦</span> <span class="ref-tag">dp1, dp6</span></p>
+    </div>
+  </div>
+
+  <p class="text-sm mb-3 text-slate-300">議題：「面對極端高溫事件增加，本區域應優先投資哪項調適措施？」</p>
+  <div class="overflow-x-auto mb-3">
+    <table class="w-full text-xs">
+      <tr class="border-b border-slate-700">
+        <th class="text-left py-1 text-slate-400">利害關係人</th>
+        <th class="text-center py-1 text-slate-400">立場</th>
+        <th class="text-center py-1 text-slate-400">權力大小</th>
+        <th class="text-center py-1 text-slate-400">受影響程度</th>
+      </tr>
+      <tr class="border-b border-slate-700/50"><td class="py-1">衛生局</td>
+        <td><input class="q9-input w-full text-xs" placeholder="立場..."></td>
+        <td><select class="q9-sel text-xs"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td><select class="q9-sel text-xs"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+      </tr>
+      <tr class="border-b border-slate-700/50"><td class="py-1">社區長者</td>
+        <td><input class="q9-input w-full text-xs" placeholder="立場..."></td>
+        <td><select class="q9-sel text-xs"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td><select class="q9-sel text-xs"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+      </tr>
+      <tr class="border-b border-slate-700/50"><td class="py-1">農會代表</td>
+        <td><input class="q9-input w-full text-xs" placeholder="立場..."></td>
+        <td><select class="q9-sel text-xs"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td><select class="q9-sel text-xs"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+      </tr>
+      <tr class="border-b border-slate-700/50"><td class="py-1">環保團體</td>
+        <td><input class="q9-input w-full text-xs" placeholder="立場..."></td>
+        <td><select class="q9-sel text-xs"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td><select class="q9-sel text-xs"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+      </tr>
+      <tr><td class="py-1">青年學生</td>
+        <td><input class="q9-input w-full text-xs" placeholder="立場..."></td>
+        <td><select class="q9-sel text-xs"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+        <td><select class="q9-sel text-xs"><option value="">-</option><option>高</option><option>中</option><option>低</option></select></td>
+      </tr>
+    </table>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-3">
+    <p class="text-sm mb-2">撰寫公民陳情書（150+ 字，選擇一個角色立場，含數據引用）：</p>
+    <textarea class="q9-petition" rows="6" placeholder="以你選擇的利害關係人角色撰寫陳情書⋯⋯"></textarea>
+    <p class="text-xs text-slate-500 mt-1">字數：<span class="q9-count">0</span></p>
+  </div>
+  <div id="feedback-9" class="mt-3 text-sm"></div>
+  <button id="btn-check-9" class="btn mt-3 bg-emerald-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-9" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 →</button>
+</section>
+
+<!-- ===== Level 10: 跨域整合短論文（⑨） ===== -->
+<section id="level-10" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🌐</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 10｜跨域整合短論文</h2>
+      <p class="text-sm text-slate-400 mt-1">題目：「從差異衝擊到共效益：氣候社會正義的多維路徑」</p>
+      <p class="text-xs text-slate-600 mt-1">角色：跨域研究者 ｜ 10 分 <span class="chip bg-indigo-900/50 text-indigo-300">跨域整合 ⑨</span> <span class="ref-tag">dp4, dp7, dp8</span></p>
+    </div>
+  </div>
+
+  <div class="bg-slate-800/50 rounded-lg p-3 mb-3 text-xs space-y-1 text-slate-400">
+    <p><strong>結構建議（五段）：</strong></p>
+    <p>1. 引言：問題意識——氣候變遷如何成為社會正義議題？</p>
+    <p>2. 衝擊分析：排放不平等（dp4）如何導致差異衝擊</p>
+    <p>3. 公平審視：不同群體的差異脆弱度（dp8）與氣候正義</p>
+    <p>4. 解方探索：共效益（dp7）如何同時回應健康與公平訴求</p>
+    <p>5. 結論與行動建議</p>
+    <p class="mt-2"><strong>引用格式（APA 簡式）：</strong> (IPCC, 2022)、(WHO, 2023)、(World Bank, 2021)</p>
+  </div>
+
+  <textarea class="q10-essay" rows="14" placeholder="撰寫 500+ 字跨域整合短論文⋯⋯"></textarea>
+  <p class="text-xs text-slate-500 mt-1">字數：<span class="q10-count">0</span> / 500+</p>
+  <div id="feedback-10" class="mt-3 text-sm"></div>
+  <button id="btn-check-10" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-10" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 →</button>
+</section>
+
+<!-- ===== Level 11: 後設認知（⑥） ===== -->
+<section id="level-11" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🧠</div>
+    <div>
+      <h2 class="text-xl font-bold text-violet-300">關卡 11｜後設認知：認知框架轉變</h2>
+      <p class="text-sm text-slate-400 mt-1">反思四節課前後你對「氣候變遷是誰的問題？」的理解轉變。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：自我觀察者 ｜ 10 分 <span class="chip bg-violet-900/50 text-violet-300">後設認知 ⑥</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">學習前：我原本認為氣候變遷是⋯⋯</p>
+      <textarea class="q11-before" rows="3" placeholder="例如：我原本認為氣候變遷主要是環境問題⋯⋯"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">學習後：現在我理解到⋯⋯</p>
+      <textarea class="q11-after" rows="3" placeholder="例如：現在我理解到氣候變遷同時是社會正義問題⋯⋯"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">轉折點：哪個數據或概念最顛覆你的想法？</p>
+      <textarea class="q11-turning" rows="3" placeholder="例如：15 倍死亡率差距這個數字讓我意識到⋯⋯"></textarea>
+    </div>
+  </div>
+  <p class="text-xs text-slate-500 mt-2">總字數：<span class="q11-count">0</span> / 100+</p>
+  <div id="feedback-11" class="mt-3 text-sm"></div>
+  <button id="btn-check-11" class="btn mt-3 bg-violet-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-11" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 →</button>
+</section>
+
+<!-- ===== Level 12: 開放式反思 + WSA ===== -->
+<section id="level-12" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">💡</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-300">關卡 12｜開放式反思與 WSA 行動承諾</h2>
+      <p class="text-sm text-slate-400 mt-1">自由反思 + Whole School Approach 四面向行動選擇</p>
+      <p class="text-xs text-slate-600 mt-1">角色：行動者 ｜ 10 分 <span class="chip bg-emerald-900/50 text-emerald-300">開放式反思</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">開放式反思 #1：如果你有 1,000 萬元預算用於社區氣候調適，你會怎麼分配？為什麼？（100+ 字）</p>
+      <textarea class="q12-r1" rows="4" placeholder="說明你的預算分配邏輯⋯⋯"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">開放式反思 #2：「每個人都是氣候變遷的受害者，也是氣候行動的推動者」——你同意嗎？為什麼？（100+ 字）</p>
+      <textarea class="q12-r2" rows="4" placeholder="從你的生活經驗出發⋯⋯"></textarea>
+    </div>
+  </div>
+
+  <div class="bg-slate-800/50 rounded-lg p-4 mt-4">
+    <p class="text-sm font-bold text-emerald-300 mb-2">WSA 行動承諾（每面向勾選至少 1 項）：</p>
+    <div class="grid md:grid-cols-2 gap-3 text-xs">
+      <div>
+        <p class="font-bold text-slate-300 mb-1">治理 Governance</p>
+        <label class="flex items-center gap-2 mb-1"><input type="checkbox" class="wsa-cb"> 參與學生議會氣候正義小組</label>
+        <label class="flex items-center gap-2"><input type="checkbox" class="wsa-cb"> 推動校園脆弱度評估</label>
+      </div>
+      <div>
+        <p class="font-bold text-slate-300 mb-1">課程 Curriculum</p>
+        <label class="flex items-center gap-2 mb-1"><input type="checkbox" class="wsa-cb"> 在其他科目報告融入氣候正義視角</label>
+        <label class="flex items-center gap-2"><input type="checkbox" class="wsa-cb"> 參加跨校氣候論壇</label>
+      </div>
+      <div>
+        <p class="font-bold text-slate-300 mb-1">營運 Operations</p>
+        <label class="flex items-center gap-2 mb-1"><input type="checkbox" class="wsa-cb"> 參與校園熱點地圖繪製</label>
+        <label class="flex items-center gap-2"><input type="checkbox" class="wsa-cb"> 午餐剩食減量追蹤</label>
+      </div>
+      <div>
+        <p class="font-bold text-slate-300 mb-1">社群 Community</p>
+        <label class="flex items-center gap-2 mb-1"><input type="checkbox" class="wsa-cb"> 協助社區熱浪關懷行動</label>
+        <label class="flex items-center gap-2"><input type="checkbox" class="wsa-cb"> 參與社區脆弱度地圖繪製</label>
+      </div>
+    </div>
+  </div>
+  <div id="feedback-12" class="mt-3 text-sm"></div>
+  <button id="btn-check-12" class="btn mt-3 bg-emerald-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+</section>
+
+<!-- Final -->
+<section id="final-card" class="card p-8 hidden-screen fade-in mb-4 text-center">
+  <div class="text-5xl mb-4">🎓</div>
+  <h2 class="text-2xl font-bold text-emerald-300">恭喜完成！氣候社會衝擊分析師認證</h2>
+  <p class="text-slate-400 mt-2">你的積分：<span class="text-emerald-400 font-bold text-xl" id="final-score">0</span> / 120</p>
+  <p class="text-sm text-slate-500 mt-4">你已完成 12 個關卡、9 種高層次任務。<br>從數據到正義，從分析到行動——這就是 Level V 氣候公民的素養。</p>
+</section>
+
+</div>
+
+<script>
+let totalScore = 0;
+const completed = new Set();
+
+function wordCount(s){ return s ? s.replace(/\s/g,'').length : 0; }
+function addScore(n){ totalScore += n; document.getElementById('score').textContent = totalScore; }
+function markDot(n){ const d=document.getElementById('dot-'+n); if(d){d.classList.remove('active');d.classList.add('done');} const nx=document.getElementById('dot-'+(n+1)); if(nx) nx.classList.add('active'); }
+function unlockBadge(n){ const b=document.getElementById('badge-'+n); if(b){b.classList.remove('badge-lock');b.classList.add('pop');} }
+function showNext(n){
+  const btn=document.getElementById('btn-next-'+n);
+  if(btn){ btn.classList.remove('hidden'); btn.addEventListener('click',()=>{ document.getElementById('level-'+n).classList.add('hidden-screen'); const nxt=document.getElementById('level-'+(n+1)); if(nxt){nxt.classList.remove('hidden-screen');} }); }
+}
+function confetti(){ const colors=['#818cf8','#34d399','#f59e0b','#ef4444','#ec4899']; for(let i=0;i<30;i++){ const c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.animationDelay=Math.random()*1+'s';c.style.borderRadius=Math.random()>.5?'50%':'0';document.body.appendChild(c);setTimeout(()=>c.remove(),3000);} }
+
+// ===== Level 1 =====
+document.getElementById('btn-check-1').addEventListener('click', function(){
+  let correct = 0;
+  document.querySelectorAll('.q1-input').forEach(inp => {
+    const val = parseFloat(inp.value);
+    const ans = parseFloat(inp.dataset.answer);
+    if(Math.abs(val - ans) / ans < 0.1){ inp.style.borderColor='#34d399'; correct++; }
+    else { inp.style.borderColor='#ef4444'; }
+  });
+  const txt = document.querySelector('.q1-text');
+  const tw = wordCount(txt.value);
+  const textOk = tw >= 60;
+  const pts = Math.round((correct/3*6) + (textOk ? 4 : 2));
+  addScore(pts);
+  document.getElementById('feedback-1').innerHTML = (correct === 3 && textOk)
+    ? '<span class="text-emerald-400 pop">健康數據正確，因果網絡完整！</span>'
+    : `<span class="text-amber-400">數值 ${correct}/3 正確。` + (textOk ? '' : ' 因果路徑需 4 條以上，每條含原因→中介→結果。') + '</span>';
+  unlockBadge(1); markDot(1); showNext(1); completed.add(1);
+  if(correct === 3 && textOk) confetti();
+  this.disabled = true;
+});
+
+// ===== Level 2 =====
+document.getElementById('btn-check-2').addEventListener('click', function(){
+  let correct = 0;
+  document.querySelectorAll('.q2-input').forEach(inp => {
+    const val = parseFloat(inp.value);
+    const ans = parseFloat(inp.dataset.answer);
+    if(Math.abs(val - ans) / ans < 0.15){ inp.style.borderColor='#34d399'; correct++; }
+    else { inp.style.borderColor='#ef4444'; }
+  });
+  const txt = document.querySelector('.q2-text');
+  const tw = wordCount(txt.value);
+  const textOk = tw >= 30;
+  const pts = Math.round((correct/2*6) + (textOk ? 4 : 2));
+  addScore(pts);
+  document.getElementById('feedback-2').innerHTML = (correct === 2 && textOk)
+    ? '<span class="text-emerald-400 pop">糧食安全壓力測試計算正確，局限性分析到位！</span>'
+    : `<span class="text-amber-400">數值 ${correct}/2 正確。` + (textOk ? '' : ' 局限性分析需 30+ 字×2 點。') + '</span>';
+  unlockBadge(2); markDot(2); showNext(2); completed.add(2);
+  if(correct === 2 && textOk) confetti();
+  this.disabled = true;
+});
+
+// ===== Level 3 =====
+document.getElementById('btn-check-3').addEventListener('click', function(){
+  let pts = 0;
+  const cbs = document.querySelectorAll('.q3-cb');
+  let cbOk = true;
+  cbs.forEach(cb => { if(cb.checked !== (cb.dataset.correct === 'true')) cbOk = false; });
+  if(cbOk) pts += 3;
+  const dims = document.querySelectorAll('.q3-dim');
+  let dimOk = 0;
+  dims.forEach(d => { if(wordCount(d.value) >= 20) dimOk++; });
+  pts += Math.min(dimOk, 4) * 1.75;
+  pts = Math.min(Math.round(pts), 10);
+  addScore(pts);
+  document.getElementById('feedback-3').innerHTML = pts >= 8
+    ? '<span class="text-emerald-400 pop">差異衝擊四維度分析完整，資料詮釋精準！</span>'
+    : '<span class="text-amber-400">複選題注意：脆弱度主因是社會結構而非天氣強度差異。四維度各需 30+ 字。</span>';
+  unlockBadge(3); markDot(3); showNext(3); completed.add(3);
+  if(pts >= 8) confetti();
+  this.disabled = true;
+});
+
+// ===== Level 4 =====
+document.getElementById('btn-check-4').addEventListener('click', function(){
+  let pts = 0;
+  const sel = document.querySelector('.q4-sel');
+  if(sel.value === 'sahara'){ sel.style.borderColor='#34d399'; pts += 3; }
+  else { sel.style.borderColor='#ef4444'; }
+  if(wordCount(document.querySelector('.q4-text').value) >= 40) pts += 3; else pts += 1;
+  if(wordCount(document.querySelector('.q4-text2').value) >= 60) pts += 4; else if(wordCount(document.querySelector('.q4-text2').value) >= 30) pts += 2;
+  addScore(Math.min(pts, 10));
+  document.getElementById('feedback-4').innerHTML = pts >= 8
+    ? '<span class="text-emerald-400 pop">遷移熱點三層次分析完整！</span>'
+    : '<span class="text-amber-400">撒哈拉以南非洲占約 40%。推論層需引用 80% 可減數據。</span>';
+  unlockBadge(4); markDot(4); showNext(4); completed.add(4);
+  if(pts >= 8) confetti();
+  this.disabled = true;
+});
+
+// ===== Level 5 =====
+const q5txt = document.querySelector('.q5-text');
+if(q5txt) q5txt.addEventListener('input', function(){ document.querySelector('.q5-count').textContent = wordCount(this.value); });
+
+document.getElementById('btn-check-5').addEventListener('click', function(){
+  let pts = 0;
+  if(document.querySelector('.q5-select').value) pts += 2;
+  const wc = wordCount(document.querySelector('.q5-text').value);
+  if(wc >= 100) pts += 4; else if(wc >= 50) pts += 2;
+  const reb = wordCount(document.querySelector('.q5-rebuttal').value);
+  if(reb >= 80) pts += 4; else if(reb >= 40) pts += 2;
+  addScore(Math.min(pts, 10));
+  document.getElementById('feedback-5').innerHTML = pts >= 8
+    ? '<span class="text-emerald-400 pop">倫理兩難分析深入——立場明確、數據引用、承認對方觀點！</span>'
+    : '<span class="text-amber-400">需確保：100+ 字闡述含數據引用 + 80+ 字反駁對方最強論點。</span>';
+  unlockBadge(3); markDot(5); showNext(5); completed.add(5);
+  if(pts >= 8) confetti();
+  this.disabled = true;
+});
+
+// ===== Level 6: CLD Drag =====
+const dragItems6 = document.querySelectorAll('#drag-box-6 .drag-item');
+const slots6 = document.querySelectorAll('svg.loop .loop-slot');
+let draggedItem6 = null;
+dragItems6.forEach(item => {
+  item.addEventListener('dragstart', e => { draggedItem6 = item; item.classList.add('dragging'); e.dataTransfer.setData('text/plain',''); });
+  item.addEventListener('dragend', () => { item.classList.remove('dragging'); });
+});
+slots6.forEach(slot => {
+  slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('over'); });
+  slot.addEventListener('dragleave', () => slot.classList.remove('over'));
+  slot.addEventListener('drop', e => {
+    e.preventDefault(); slot.classList.remove('over');
+    if(draggedItem6 && draggedItem6.dataset.match === slot.dataset.accept){
+      slot.setAttribute('fill','rgba(52,211,153,.2)');
+      slot.setAttribute('stroke','#34d399');
+      const txt = slot.nextElementSibling;
+      if(txt && txt.tagName === 'text') txt.textContent = draggedItem6.textContent;
+      draggedItem6.style.opacity = '0.3'; draggedItem6.draggable = false;
+      slot.dataset.filled = 'true';
+    } else {
+      slot.classList.add('shake'); setTimeout(()=>slot.classList.remove('shake'),500);
+    }
+  });
+});
+
+document.getElementById('btn-check-6').addEventListener('click', function(){
+  let pts = 0;
+  let filled = 0;
+  slots6.forEach(s => { if(s.dataset.filled === 'true') filled++; });
+  pts += filled * 3;
+  if(wordCount(document.querySelector('.q6-ext').value) >= 50) pts += 4; else if(wordCount(document.querySelector('.q6-ext').value) >= 20) pts += 2;
+  addScore(Math.min(pts, 10));
+  document.getElementById('feedback-6').innerHTML = pts >= 8
+    ? '<span class="text-emerald-400 pop">系統思考能力展現：正確辨識反饋類型與槓桿點！</span>'
+    : '<span class="text-amber-400">上方是正反饋（貧窮放大脆弱度），槓桿點是社會安全網。延伸例子需 50+ 字。</span>';
+  unlockBadge(5); markDot(6); showNext(6); completed.add(6);
+  if(pts >= 8) confetti();
+  this.disabled = true;
+});
+
+// ===== Level 7 =====
+document.getElementById('btn-check-7').addEventListener('click', function(){
+  let pts = 0;
+  const sels = document.querySelectorAll('.q7-sel');
+  let filled = 0;
+  sels.forEach(s => { if(s.value && s.value !== '-' && s.value !== '') filled++; });
+  if(filled >= 12) pts += 4; else if(filled >= 8) pts += 2;
+  if(wordCount(document.querySelector('.q7-text').value) >= 60) pts += 6; else if(wordCount(document.querySelector('.q7-text').value) >= 30) pts += 3;
+  addScore(Math.min(pts, 10));
+  document.getElementById('feedback-7').innerHTML = pts >= 8
+    ? '<span class="text-emerald-400 pop">政策矩陣完整，優先序分析有理有據！</span>'
+    : '<span class="text-amber-400">矩陣需全部填完（15 格）；優先序說明需 80+ 字。</span>';
+  markDot(7); showNext(7); completed.add(7);
+  if(pts >= 8) confetti();
+  this.disabled = true;
+});
+
+// ===== Level 8: CER =====
+document.getElementById('btn-check-8').addEventListener('click', function(){
+  let pts = 0;
+  if(wordCount(document.querySelector('.q8-claim').value) >= 15) pts += 2;
+  if(wordCount(document.querySelector('.q8-evidence').value) >= 30) pts += 3; else if(wordCount(document.querySelector('.q8-evidence').value) >= 15) pts += 1;
+  if(wordCount(document.querySelector('.q8-reasoning').value) >= 30) pts += 2; else if(wordCount(document.querySelector('.q8-reasoning').value) >= 15) pts += 1;
+  if(wordCount(document.querySelector('.q8-rebuttal').value) >= 30) pts += 3; else if(wordCount(document.querySelector('.q8-rebuttal').value) >= 15) pts += 1;
+  addScore(Math.min(pts, 10));
+  document.getElementById('feedback-8').innerHTML = pts >= 8
+    ? '<span class="text-emerald-400 pop">CER 論證完整，含反駁段——學術論證能力優秀！</span>'
+    : '<span class="text-amber-400">各段需充分展開：Claim 明確 + Evidence ≥2 筆數據 + Reasoning 因果推論 + Rebuttal 先承認再反駁。</span>';
+  unlockBadge(6); markDot(8); showNext(8); completed.add(8);
+  if(pts >= 8) confetti();
+  this.disabled = true;
+});
+
+// ===== Level 9 =====
+const q9pet = document.querySelector('.q9-petition');
+if(q9pet) q9pet.addEventListener('input', function(){ document.querySelector('.q9-count').textContent = wordCount(this.value); });
+
+document.getElementById('btn-check-9').addEventListener('click', function(){
+  let pts = 0;
+  const sels = document.querySelectorAll('.q9-sel');
+  let filled = 0;
+  sels.forEach(s => { if(s.value && s.value !== '-' && s.value !== '') filled++; });
+  const inps = document.querySelectorAll('.q9-input');
+  let inpFilled = 0;
+  inps.forEach(i => { if(i.value.trim().length > 2) inpFilled++; });
+  if(filled >= 8) pts += 3; else if(filled >= 5) pts += 2;
+  if(inpFilled >= 4) pts += 3; else if(inpFilled >= 2) pts += 1;
+  const pet = wordCount(document.querySelector('.q9-petition').value);
+  if(pet >= 150) pts += 4; else if(pet >= 80) pts += 2;
+  addScore(Math.min(pts, 10));
+  document.getElementById('feedback-9').innerHTML = pts >= 8
+    ? '<span class="text-emerald-400 pop">利害關係人分析完整，陳情書格式與內容兼具！</span>'
+    : '<span class="text-amber-400">5 位利害關係人需全部填完；陳情書需 150+ 字含數據引用。</span>';
+  unlockBadge(7); markDot(9); showNext(9); completed.add(9);
+  if(pts >= 8) confetti();
+  this.disabled = true;
+});
+
+// ===== Level 10 =====
+const q10e = document.querySelector('.q10-essay');
+if(q10e) q10e.addEventListener('input', function(){ document.querySelector('.q10-count').textContent = wordCount(this.value); });
+
+document.getElementById('btn-check-10').addEventListener('click', function(){
+  const wc = wordCount(document.querySelector('.q10-essay').value);
+  let pts = 0;
+  if(wc >= 500) pts = 10; else if(wc >= 350) pts = 7; else if(wc >= 200) pts = 4; else pts = 2;
+  addScore(pts);
+  document.getElementById('feedback-10').innerHTML = wc >= 500
+    ? '<span class="text-emerald-400 pop">跨域整合短論文完成！衝擊×公平×解方三維度整合。</span>'
+    : `<span class="text-amber-400">目前 ${wc} 字，需達 500+ 字。確保涵蓋衝擊、公平、解方三維度。</span>`;
+  unlockBadge(8); markDot(10); showNext(10); completed.add(10);
+  if(wc >= 500) confetti();
+  this.disabled = true;
+});
+
+// ===== Level 11 =====
+function updateQ11Count(){
+  const a = wordCount(document.querySelector('.q11-before').value);
+  const b = wordCount(document.querySelector('.q11-after').value);
+  const c = wordCount(document.querySelector('.q11-turning').value);
+  document.querySelector('.q11-count').textContent = a+b+c;
+}
+document.querySelectorAll('.q11-before,.q11-after,.q11-turning').forEach(t => t.addEventListener('input', updateQ11Count));
+
+document.getElementById('btn-check-11').addEventListener('click', function(){
+  const a = wordCount(document.querySelector('.q11-before').value);
+  const b = wordCount(document.querySelector('.q11-after').value);
+  const c = wordCount(document.querySelector('.q11-turning').value);
+  const total = a+b+c;
+  let pts = 0;
+  if(total >= 100) pts = 10; else if(total >= 60) pts = 6; else pts = 3;
+  addScore(pts);
+  document.getElementById('feedback-11').innerHTML = total >= 100
+    ? '<span class="text-emerald-400 pop">後設認知反思深入——認知轉變清晰可見！</span>'
+    : `<span class="text-amber-400">目前 ${total} 字，需達 100+ 字。三段皆需有內容。</span>`;
+  unlockBadge(9); markDot(11); showNext(11); completed.add(11);
+  if(total >= 100) confetti();
+  this.disabled = true;
+});
+
+// ===== Level 12 =====
+document.getElementById('btn-check-12').addEventListener('click', function(){
+  let pts = 0;
+  const r1 = wordCount(document.querySelector('.q12-r1').value);
+  const r2 = wordCount(document.querySelector('.q12-r2').value);
+  if(r1 >= 100) pts += 4; else if(r1 >= 50) pts += 2;
+  if(r2 >= 100) pts += 4; else if(r2 >= 50) pts += 2;
+  const wsaCbs = document.querySelectorAll('.wsa-cb');
+  let wsaChecked = 0;
+  wsaCbs.forEach(cb => { if(cb.checked) wsaChecked++; });
+  if(wsaChecked >= 4) pts += 2; else if(wsaChecked >= 2) pts += 1;
+  addScore(Math.min(pts, 10));
+  document.getElementById('feedback-12').innerHTML = pts >= 8
+    ? '<span class="text-emerald-400 pop">反思深入，WSA 行動承諾完成——你已成為氣候社會衝擊分析師！</span>'
+    : '<span class="text-amber-400">反思各需 100+ 字；WSA 四面向各勾選至少 1 項。</span>';
+  markDot(12); completed.add(12);
+  if(pts >= 8) confetti();
+  this.disabled = true;
+  // Show final
+  setTimeout(()=>{
+    document.getElementById('final-card').classList.remove('hidden-screen');
+    document.getElementById('final-score').textContent = totalScore;
+    confetti();
+  }, 800);
+});
+</script>
+</body>
+</html>

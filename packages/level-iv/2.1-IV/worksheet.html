@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自然環境：生態系與生物多樣性 互動學習單｜2.1-IV</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif; }
+  .confetti { position: fixed; width: 10px; height: 10px; opacity: 0.9; pointer-events: none; z-index: 100; animation: fall 2.5s linear forwards; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .badge-pop { animation: pop 0.6s cubic-bezier(.2,1.4,.5,1); }
+  @keyframes pop { 0% {transform:scale(0);} 60% {transform:scale(1.25);} 100% {transform:scale(1);} }
+  .node { cursor: grab; }
+  .node:active { cursor: grabbing; }
+  .dropzone { transition: all 0.2s; }
+  .dropzone.over { background: #fef3c7; border-color: #f59e0b; }
+  details summary { cursor: pointer; list-style: none; }
+  details summary::-webkit-details-marker { display: none; }
+</style>
+</head>
+<body class="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 min-h-screen">
+
+<div class="max-w-5xl mx-auto p-4 md:p-8">
+
+  <!-- Header -->
+  <header class="bg-white rounded-2xl shadow-lg p-6 mb-6 border-t-8 border-emerald-500">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <div class="text-sm text-emerald-700 font-semibold">UNESCO ESD｜2.1-IV｜13-15 歲</div>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mt-1">你，以及你身上的一兆個夥伴</h1>
+        <p class="text-gray-600 mt-2">自然環境：生態系與生物多樣性 互動學習單</p>
+      </div>
+      <div class="text-right">
+        <div class="text-sm text-gray-500">任務進度</div>
+        <div id="progressLabel" class="text-2xl font-bold text-emerald-600">0 / 8</div>
+      </div>
+    </div>
+    <!-- Progress bar -->
+    <div class="mt-4 bg-gray-200 rounded-full h-3 overflow-hidden">
+      <div id="progressBar" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 w-0 transition-all duration-500"></div>
+    </div>
+    <div class="mt-4 flex flex-wrap gap-2 text-sm">
+      <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full">🏅 得分 <span id="scoreLabel">0</span></span>
+      <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">徽章 <span id="badgeCount">0</span></span>
+      <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">角色：你是一位校園生態偵探 🔍</span>
+    </div>
+  </header>
+
+  <!-- §1 韌性與多樣性 (拖拉配對) -->
+  <section id="s1" class="bg-white rounded-2xl shadow p-6 mb-6">
+    <h2 class="text-xl font-bold text-emerald-700 mb-3">§1 韌性實驗：多樣性越高，系統越穩？<span class="text-sm text-gray-500 ml-2">｜拖拉配對</span></h2>
+    <p class="text-gray-700 mb-4">將下列四種擾動事件（左）拖到最可能『先崩潰』的生態系（右）。提示：物種冗餘越高、通常越穩。</p>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="space-y-2">
+        <div class="node bg-orange-100 p-3 rounded-lg border border-orange-300" draggable="true" data-key="A">🌀 颱風強風</div>
+        <div class="node bg-orange-100 p-3 rounded-lg border border-orange-300" draggable="true" data-key="B">🦠 特定樹種病害</div>
+        <div class="node bg-orange-100 p-3 rounded-lg border border-orange-300" draggable="true" data-key="C">🔥 野火</div>
+        <div class="node bg-orange-100 p-3 rounded-lg border border-orange-300" draggable="true" data-key="D">🐝 授粉者大量消失</div>
+      </div>
+      <div class="space-y-2">
+        <div class="dropzone bg-gray-50 border-2 border-dashed border-gray-300 p-3 rounded-lg min-h-[50px]" data-accept="B">單一柳杉人工林</div>
+        <div class="dropzone bg-gray-50 border-2 border-dashed border-gray-300 p-3 rounded-lg min-h-[50px]" data-accept="D">依賴風與動物授粉的果園</div>
+        <div class="dropzone bg-gray-50 border-2 border-dashed border-gray-300 p-3 rounded-lg min-h-[50px]" data-accept="A">年輕次生林（樹根未深）</div>
+        <div class="dropzone bg-gray-50 border-2 border-dashed border-gray-300 p-3 rounded-lg min-h-[50px]" data-accept="C">乾旱草原（缺水期）</div>
+      </div>
+    </div>
+    <div id="s1feedback" class="mt-3 text-sm"></div>
+    <button onclick="checkS1()" class="mt-3 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg">送出 §1</button>
+  </section>
+
+  <!-- §2 人體微生物熱點 (點擊選擇) -->
+  <section id="s2" class="bg-white rounded-2xl shadow p-6 mb-6">
+    <h2 class="text-xl font-bold text-emerald-700 mb-3">§2 人體微生物熱點<span class="text-sm text-gray-500 ml-2">｜資料詮釋題（真實數據）</span></h2>
+    <div class="bg-blue-50 border-l-4 border-blue-400 p-3 mb-3 text-sm">
+      📊 <strong>真實數據</strong>：NIH 人類微生物體計畫估計，人體細菌細胞數約 3.8×10¹³，與人體自身細胞數相當；腸道菌基因總數約為人類自身基因的 <strong>100 倍以上</strong>。（Sender et al., 2016 PLOS Biology）
+    </div>
+    <p class="text-gray-700 mb-3">請勾選 3 個微生物熱點，並為每個寫出 1 個功能：</p>
+    <div class="grid md:grid-cols-3 gap-3">
+      <label class="border p-3 rounded-lg cursor-pointer hover:bg-emerald-50">
+        <input type="checkbox" class="s2opt" value="skin"> <strong>皮膚</strong>
+        <input type="text" class="s2func mt-2 w-full border rounded px-2 py-1 text-sm" placeholder="寫出 1 個功能（例如防禦病原入侵）">
+      </label>
+      <label class="border p-3 rounded-lg cursor-pointer hover:bg-emerald-50">
+        <input type="checkbox" class="s2opt" value="mouth"> <strong>口腔</strong>
+        <input type="text" class="s2func mt-2 w-full border rounded px-2 py-1 text-sm" placeholder="寫出 1 個功能">
+      </label>
+      <label class="border p-3 rounded-lg cursor-pointer hover:bg-emerald-50">
+        <input type="checkbox" class="s2opt" value="gut"> <strong>腸道</strong>
+        <input type="text" class="s2func mt-2 w-full border rounded px-2 py-1 text-sm" placeholder="寫出 1 個功能">
+      </label>
+      <label class="border p-3 rounded-lg cursor-pointer hover:bg-emerald-50">
+        <input type="checkbox" class="s2opt" value="muscle"> <strong>肌肉內部</strong>
+        <span class="block text-xs text-gray-500 mt-1">（陷阱選項）</span>
+      </label>
+      <label class="border p-3 rounded-lg cursor-pointer hover:bg-emerald-50">
+        <input type="checkbox" class="s2opt" value="nose"> <strong>鼻腔</strong>
+        <input type="text" class="s2func mt-2 w-full border rounded px-2 py-1 text-sm" placeholder="寫出 1 個功能">
+      </label>
+      <label class="border p-3 rounded-lg cursor-pointer hover:bg-emerald-50">
+        <input type="checkbox" class="s2opt" value="blood"> <strong>血液（健康狀態下）</strong>
+        <span class="block text-xs text-gray-500 mt-1">（陷阱選項）</span>
+      </label>
+    </div>
+    <div id="s2feedback" class="mt-3 text-sm"></div>
+    <button onclick="checkS2()" class="mt-3 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg">送出 §2</button>
+  </section>
+
+  <!-- §3 微觀工具配對 -->
+  <section id="s3" class="bg-white rounded-2xl shadow p-6 mb-6">
+    <h2 class="text-xl font-bold text-emerald-700 mb-3">§3 微觀工具大比拼<span class="text-sm text-gray-500 ml-2">｜配對題</span></h2>
+    <p class="text-gray-700 mb-3">每一題選出最適合的工具：</p>
+    <div class="space-y-3">
+      <div class="border p-3 rounded-lg">
+        <p class="mb-2">Q1. 調查某溪流是否有瀕危保育類魚種出沒，但不想驚擾或傷害任何生物。</p>
+        <select class="s3q w-full border rounded px-2 py-1" data-correct="edna">
+          <option value="">請選擇</option>
+          <option value="optical">光學顯微鏡</option>
+          <option value="em">電子顯微鏡</option>
+          <option value="net">浮游生物濾網</option>
+          <option value="edna">環境 DNA (eDNA)</option>
+        </select>
+      </div>
+      <div class="border p-3 rounded-lg">
+        <p class="mb-2">Q2. 想看到新冠病毒、SARS 病毒等的具體構造。</p>
+        <select class="s3q w-full border rounded px-2 py-1" data-correct="em">
+          <option value="">請選擇</option>
+          <option value="optical">光學顯微鏡</option>
+          <option value="em">電子顯微鏡</option>
+          <option value="net">浮游生物濾網</option>
+          <option value="edna">環境 DNA (eDNA)</option>
+        </select>
+      </div>
+      <div class="border p-3 rounded-lg">
+        <p class="mb-2">Q3. 在海邊採集水樣，想觀察一般常見矽藻、橈足類等浮游生物。</p>
+        <select class="s3q w-full border rounded px-2 py-1" data-correct="net">
+          <option value="">請選擇</option>
+          <option value="optical">光學顯微鏡</option>
+          <option value="em">電子顯微鏡</option>
+          <option value="net">浮游生物濾網</option>
+          <option value="edna">環境 DNA (eDNA)</option>
+        </select>
+      </div>
+      <div class="border p-3 rounded-lg">
+        <p class="mb-2">Q4. 觀察口腔刮片中的細菌形態。</p>
+        <select class="s3q w-full border rounded px-2 py-1" data-correct="optical">
+          <option value="">請選擇</option>
+          <option value="optical">光學顯微鏡</option>
+          <option value="em">電子顯微鏡</option>
+          <option value="net">浮游生物濾網</option>
+          <option value="edna">環境 DNA (eDNA)</option>
+        </select>
+      </div>
+    </div>
+    <div id="s3feedback" class="mt-3 text-sm"></div>
+    <button onclick="checkS3()" class="mt-3 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg">送出 §3</button>
+  </section>
+
+  <!-- §4 CER 論證寫作 -->
+  <section id="s4" class="bg-white rounded-2xl shadow p-6 mb-6">
+    <h2 class="text-xl font-bold text-emerald-700 mb-3">§4 CER 論證寫作<span class="text-sm text-gray-500 ml-2">｜科學論證</span></h2>
+    <div class="bg-amber-50 border-l-4 border-amber-400 p-3 mb-3 text-sm">
+      <strong>CER 結構範例</strong>：<br>
+      <strong>Claim（主張）</strong>：單一物種人工林的生態韌性低於天然林。<br>
+      <strong>Evidence（證據）</strong>：IPBES 2019 指出全球 100 萬物種面臨滅絕；臺灣林業署資料顯示原始天然林物種數遠高於柳杉造林地。<br>
+      <strong>Reasoning（理由）</strong>：因為物種冗餘越高，單一病害或擾動不會讓整個系統崩潰，所以多樣性支撐韌性。
+    </div>
+    <p class="text-gray-700 mb-2"><strong>題目</strong>：「為什麼海洋生物學家不只使用單一種顯微鏡，而要同時使用光學顯微鏡、電子顯微鏡、浮游生物濾網與 eDNA？」請用 CER 結構回答（總字數 ≥ 80 字）。</p>
+    <textarea id="s4input" rows="5" class="w-full border rounded-lg p-3" placeholder="Claim：...&#10;Evidence：...&#10;Reasoning：..."></textarea>
+    <div id="s4feedback" class="mt-3 text-sm"></div>
+    <button onclick="checkS4()" class="mt-3 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg">送出 §4</button>
+  </section>
+
+  <!-- §5 臺灣熱點資料詮釋 (資料詮釋題 #2) -->
+  <section id="s5" class="bg-white rounded-2xl shadow p-6 mb-6">
+    <h2 class="text-xl font-bold text-emerald-700 mb-3">§5 臺灣熱點資料解讀<span class="text-sm text-gray-500 ml-2">｜資料詮釋題</span></h2>
+    <div class="bg-blue-50 border-l-4 border-blue-400 p-3 mb-3 text-sm">
+      📊 <strong>真實數據</strong>：<br>
+      • TaiBIF：臺灣已紀錄物種 ~60,000 種、特有種比例 ~25%、單位面積物種數是全球平均 100 倍以上<br>
+      • 林業署：臺灣森林覆蓋率 60.7%（2015 第四次國家森林資源調查）
+    </div>
+    <p class="text-gray-700 mb-2">下列敘述何者<strong>正確</strong>？（可複選）</p>
+    <div class="space-y-2">
+      <label class="block border p-2 rounded"><input type="checkbox" class="s5opt" value="1" data-correct="true"> 若一個臺灣特有種在臺灣滅絕，意味著該物種在全球滅絕</label>
+      <label class="block border p-2 rounded"><input type="checkbox" class="s5opt" value="2" data-correct="false"> 森林覆蓋率 60.7% 代表臺灣的生態系全面健康</label>
+      <label class="block border p-2 rounded"><input type="checkbox" class="s5opt" value="3" data-correct="true"> 臺灣物種密度高，是因為海拔落差和黑潮親潮交會等自然條件</label>
+      <label class="block border p-2 rounded"><input type="checkbox" class="s5opt" value="4" data-correct="false"> 既然物種這麼多，臺灣沒有生物多樣性危機</label>
+      <label class="block border p-2 rounded"><input type="checkbox" class="s5opt" value="5" data-correct="true"> 即使覆蓋率很高，單一樹種人工林的物種豐富度可能低於天然林</label>
+    </div>
+    <div id="s5feedback" class="mt-3 text-sm"></div>
+    <button onclick="checkS5()" class="mt-3 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg">送出 §5</button>
+  </section>
+
+  <!-- §6 系統思考：因果鏈 + 倫理兩難 -->
+  <section id="s6" class="bg-white rounded-2xl shadow p-6 mb-6">
+    <h2 class="text-xl font-bold text-emerald-700 mb-3">§6 系統思考 & 倫理兩難<span class="text-sm text-gray-500 ml-2">｜系統思考 + 倫理兩難</span></h2>
+
+    <!-- 6A 系統思考 -->
+    <div class="mb-5">
+      <h3 class="font-semibold mb-2">6A. 系統思考：授粉者減少的連鎖效應（請依正確順序排列）</h3>
+      <p class="text-sm text-gray-600 mb-2">將下方節點拖到正確位置（從授粉者減少 → 最終回饋）：</p>
+      <div id="s6aBank" class="flex flex-wrap gap-2 mb-3">
+        <div class="node bg-purple-100 px-3 py-2 rounded" draggable="true" data-key="3">鳥類食物減少</div>
+        <div class="node bg-purple-100 px-3 py-2 rounded" draggable="true" data-key="1">野花結果率下降</div>
+        <div class="node bg-purple-100 px-3 py-2 rounded" draggable="true" data-key="5">森林碳匯能力降低</div>
+        <div class="node bg-purple-100 px-3 py-2 rounded" draggable="true" data-key="2">果實與種子減少</div>
+        <div class="node bg-purple-100 px-3 py-2 rounded" draggable="true" data-key="4">森林更新變慢</div>
+        <div class="node bg-purple-100 px-3 py-2 rounded" draggable="true" data-key="6">氣候變遷加劇（回饋放大）</div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-6 gap-2">
+        <div class="bg-gray-100 p-2 rounded text-center text-sm">起點：授粉者↓</div>
+        <div class="dropzone s6a border-2 border-dashed border-gray-300 p-2 rounded text-center min-h-[50px]" data-pos="1"></div>
+        <div class="dropzone s6a border-2 border-dashed border-gray-300 p-2 rounded text-center min-h-[50px]" data-pos="2"></div>
+        <div class="dropzone s6a border-2 border-dashed border-gray-300 p-2 rounded text-center min-h-[50px]" data-pos="3"></div>
+        <div class="dropzone s6a border-2 border-dashed border-gray-300 p-2 rounded text-center min-h-[50px]" data-pos="4"></div>
+        <div class="dropzone s6a border-2 border-dashed border-gray-300 p-2 rounded text-center min-h-[50px]" data-pos="5"></div>
+      </div>
+      <p class="text-xs text-gray-500 mt-1">（還剩 1 個節點請拖到下方回饋區）</p>
+      <div class="dropzone s6a mt-2 border-2 border-dashed border-red-300 p-2 rounded text-center min-h-[50px] bg-red-50" data-pos="6">回饋放大區（正回饋迴路）</div>
+      <div id="s6aFeedback" class="mt-2 text-sm"></div>
+    </div>
+
+    <!-- 6B 倫理兩難 -->
+    <div class="border-t pt-4">
+      <h3 class="font-semibold mb-2">6B. 倫理兩難：減碳 vs 保育（無標準答案）</h3>
+      <div class="bg-amber-50 border-l-4 border-amber-400 p-3 mb-3 text-sm">
+        <strong>情境</strong>：某山區計畫興建太陽能板，預估每年可減少 2 萬噸碳排放，幫助達成淨零目標。但工程會砍除 50 公頃原始林，直接影響 3 種臺灣特有種的棲地（包括一種瀕危鳥類）。
+      </div>
+      <p class="mb-2">你的立場：</p>
+      <div class="flex gap-3 mb-3">
+        <label><input type="radio" name="s6b" value="pro"> 支持興建</label>
+        <label><input type="radio" name="s6b" value="con"> 反對興建</label>
+        <label><input type="radio" name="s6b" value="alt"> 提出替代方案</label>
+      </div>
+      <textarea id="s6bReason" rows="4" class="w-full border rounded-lg p-3" placeholder="請論述你的理由（≥80 字）。建議用『誰受益、誰受害、短期/長期、可替代性』四個角度思考。"></textarea>
+    </div>
+    <button onclick="checkS6()" class="mt-3 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg">送出 §6</button>
+    <div id="s6feedback" class="mt-3 text-sm"></div>
+  </section>
+
+  <!-- §7 專題任務：校園生物多樣性提案 + WSA 4-checkbox -->
+  <section id="s7" class="bg-white rounded-2xl shadow p-6 mb-6">
+    <h2 class="text-xl font-bold text-emerald-700 mb-3">§7 專題任務：校園生物多樣性提案書<span class="text-sm text-gray-500 ml-2">｜開放反思 + WSA 挑戰</span></h2>
+    <p class="text-gray-700 mb-3">和組員設計一份完整提案。請依下方欄位填寫：</p>
+
+    <div class="space-y-3">
+      <div>
+        <label class="block text-sm font-semibold">1. 提案主題（例如：校園蜜源植物區）</label>
+        <input id="s7topic" type="text" class="w-full border rounded px-2 py-1">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold">2. 現況盤點（校園內觀察到的物種/問題 ≥ 30 字）</label>
+        <textarea id="s7status" rows="2" class="w-full border rounded p-2"></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold">3. CER 論證（主張 + 證據 + 理由，≥ 80 字）</label>
+        <textarea id="s7cer" rows="4" class="w-full border rounded p-2" placeholder="Claim / Evidence（引用 data_card 至少 1 筆）/ Reasoning"></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold">4. WSA 四面向挑戰（至少 3 個打勾）</label>
+        <div class="grid md:grid-cols-2 gap-2 mt-1">
+          <label class="border p-2 rounded"><input type="checkbox" class="wsa" value="gov"> 🏛️ 治理：設立學生生物多樣性小組並提案送校務會議</label>
+          <label class="border p-2 rounded"><input type="checkbox" class="wsa" value="cur"> 📘 課程：跨科整合（自然/地理/美術）做校園物種專題</label>
+          <label class="border p-2 rounded"><input type="checkbox" class="wsa" value="ops"> 🏫 校園營運：設蜜源區／堆肥／減光害／原生樹替換</label>
+          <label class="border p-2 rounded"><input type="checkbox" class="wsa" value="com"> 🤝 社群：與里辦/NGO/家長會辦公民科學日（iNaturalist）</label>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold">5. 成效指標（1 學期後如何檢驗？ ≥ 30 字）</label>
+        <textarea id="s7metric" rows="2" class="w-full border rounded p-2" placeholder="例如：校園 iNaturalist 紀錄物種數 +20%"></textarea>
+      </div>
+    </div>
+    <button onclick="checkS7()" class="mt-3 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg">送出 §7</button>
+    <div id="s7feedback" class="mt-3 text-sm"></div>
+  </section>
+
+  <!-- §8 後設認知反思（開放反思 #2） -->
+  <section id="s8" class="bg-white rounded-2xl shadow p-6 mb-6">
+    <h2 class="text-xl font-bold text-emerald-700 mb-3">§8 後設認知反思<span class="text-sm text-gray-500 ml-2">｜後設認知 + 開放反思</span></h2>
+    <div class="space-y-4">
+      <div>
+        <label class="block font-semibold mb-1">8A. 上完這四節課之前，你對『生物多樣性』最直覺的理解是什麼？</label>
+        <textarea id="s8before" rows="3" class="w-full border rounded p-2" placeholder="上課前的想法..."></textarea>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">8B. 現在你的想法有改變嗎？如果有，是哪個資料或活動讓你改變？如果沒有，為什麼？（≥ 50 字）</label>
+        <textarea id="s8after" rows="4" class="w-full border rounded p-2" placeholder="上課後的想法與原因..."></textarea>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">8C. 開放反思：你希望你的孫子孫女在 50 年後還能在臺灣看到什麼？（≥ 50 字）</label>
+        <textarea id="s8future" rows="3" class="w-full border rounded p-2"></textarea>
+      </div>
+    </div>
+    <button onclick="checkS8()" class="mt-3 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg">送出 §8</button>
+    <div id="s8feedback" class="mt-3 text-sm"></div>
+  </section>
+
+  <!-- 成果總結 -->
+  <section id="summary" class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-2xl shadow-xl p-6 mb-6 hidden">
+    <h2 class="text-2xl font-bold mb-3">🎉 任務完成！你的生態偵探報告</h2>
+    <div id="summaryBadges" class="flex flex-wrap gap-2 mb-4"></div>
+    <p id="summaryText" class="mb-3"></p>
+    <details class="bg-white/20 rounded p-3">
+      <summary class="font-semibold cursor-pointer">📖 3 延伸思考（課後）</summary>
+      <ol class="list-decimal list-inside mt-2 space-y-1 text-sm">
+        <li>如果你是校長，50 萬預算、100 平方公尺，怎麼最大化校園生物多樣性教育效益？（CER 結構）</li>
+        <li>臺灣有很多外來入侵種（福壽螺、小花蔓澤蘭、綠鬣蜥）。你認為『大規模移除』vs『與之共存』哪個比較合理？</li>
+        <li>用 iNaturalist 或愛台灣 App 連續 7 天在住家附近做物種觀察，紀錄你看見的 20 種生物。</li>
+      </ol>
+    </details>
+  </section>
+
+  <footer class="text-center text-gray-500 text-sm py-6">
+    資料來源：IPBES 2019 / WWF LPR 2024 / FAO / NIH HMP / TaiBIF / 農業部林業署 ｜ verified 2026-04-16
+  </footer>
+</div>
+
+<script>
+/* ================= State ================= */
+const state = { score: 0, badges: [], done: new Set() };
+const TOTAL = 8;
+
+function toast(msg, ok=true) {
+  const n = document.createElement('div');
+  n.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-white ${ok?'bg-emerald-500':'bg-amber-500'}`;
+  n.textContent = msg;
+  document.body.appendChild(n);
+  setTimeout(()=>n.remove(), 2800);
+}
+
+function confetti() {
+  const colors = ['#10b981','#f59e0b','#3b82f6','#ec4899','#8b5cf6'];
+  for (let i=0;i<30;i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.background = colors[i%colors.length];
+    c.style.animationDelay = (Math.random()*0.5) + 's';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 3000);
+  }
+}
+
+function award(id, pts, badge) {
+  if (state.done.has(id)) return;
+  state.done.add(id);
+  state.score += pts;
+  if (badge) state.badges.push(badge);
+  document.getElementById('scoreLabel').textContent = state.score;
+  document.getElementById('badgeCount').textContent = state.badges.length;
+  document.getElementById('progressLabel').textContent = state.done.size + ' / ' + TOTAL;
+  document.getElementById('progressBar').style.width = (state.done.size/TOTAL*100) + '%';
+  confetti();
+  if (state.done.size === TOTAL) showSummary();
+}
+
+function showSummary() {
+  const s = document.getElementById('summary');
+  s.classList.remove('hidden');
+  document.getElementById('summaryBadges').innerHTML = state.badges.map(b=>`<span class="bg-white/30 px-3 py-1 rounded-full text-sm badge-pop">${b}</span>`).join('');
+  document.getElementById('summaryText').textContent = `你完成了 ${TOTAL} 個任務、得到 ${state.score} 分與 ${state.badges.length} 個徽章。你已經是一位合格的校園生態偵探！繼續將你的提案帶去學生議會吧。`;
+  s.scrollIntoView({behavior:'smooth'});
+}
+
+/* ================= Drag & Drop helpers ================= */
+function wireDnD(scope) {
+  const nodes = scope.querySelectorAll('.node');
+  const zones = scope.querySelectorAll('.dropzone');
+  nodes.forEach(n => {
+    n.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', n.dataset.key); e.dataTransfer.setData('node-id', n.outerHTML); n._ref=n; });
+  });
+  zones.forEach(z => {
+    z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('over'); });
+    z.addEventListener('dragleave', () => z.classList.remove('over'));
+    z.addEventListener('drop', e => {
+      e.preventDefault(); z.classList.remove('over');
+      const key = e.dataTransfer.getData('text/plain');
+      const srcNode = [...scope.querySelectorAll('.node')].find(x=>x.dataset.key===key);
+      if (srcNode) {
+        z.textContent = ''; z.appendChild(srcNode); srcNode.draggable = false;
+        z.dataset.dropped = key;
+      }
+    });
+  });
+}
+wireDnD(document.getElementById('s1'));
+wireDnD(document.getElementById('s6'));
+
+/* ================= Checks ================= */
+function checkS1() {
+  const zones = document.querySelectorAll('#s1 .dropzone');
+  let correct = 0;
+  zones.forEach(z => { if (z.dataset.dropped === z.dataset.accept) correct++; });
+  const fb = document.getElementById('s1feedback');
+  if (correct === zones.length) {
+    fb.innerHTML = '<span class="text-emerald-600 font-semibold">✅ 全部正確！你掌握了物種冗餘與韌性的概念。</span>';
+    award('s1', 10, '🌳 韌性大師');
+    toast('§1 完成！+10 分');
+  } else {
+    fb.innerHTML = `<span class="text-amber-600">👀 目前 ${correct}/${zones.length} 正確。提示：單一柳杉林最怕『特定樹種病害』；果園最怕『授粉者消失』。再試試看！</span>`;
+  }
+}
+
+function checkS2() {
+  const picked = [...document.querySelectorAll('.s2opt:checked')].map(e=>e.value);
+  const funcs = [...document.querySelectorAll('.s2func')].map(e=>e.value.trim()).filter(Boolean);
+  const good = ['skin','mouth','gut','nose'];
+  const bad = ['muscle','blood'];
+  const correct = picked.filter(p=>good.includes(p)).length;
+  const wrong = picked.filter(p=>bad.includes(p)).length;
+  const fb = document.getElementById('s2feedback');
+  if (correct >= 3 && wrong === 0 && funcs.length >= 3) {
+    fb.innerHTML = '<span class="text-emerald-600 font-semibold">✅ 3 個熱點全對，功能描述齊全！</span>';
+    award('s2', 10, '🦠 人體生態系偵探');
+  } else if (wrong > 0) {
+    fb.innerHTML = '<span class="text-amber-600">👀 健康的肌肉內部與血液『不是』微生物主要棲地。重新檢視一下？</span>';
+  } else {
+    fb.innerHTML = '<span class="text-amber-600">👀 請至少勾選 3 個微生物熱點，並為每個寫出 1 個功能。</span>';
+  }
+}
+
+function checkS3() {
+  const qs = document.querySelectorAll('.s3q');
+  let correct = 0;
+  qs.forEach(q => { if (q.value === q.dataset.correct) correct++; });
+  const fb = document.getElementById('s3feedback');
+  if (correct === qs.length) {
+    fb.innerHTML = '<span class="text-emerald-600 font-semibold">✅ 4 題全對！你已理解不同工具的解析度與適用情境。</span>';
+    award('s3', 10, '🔬 工具達人');
+  } else {
+    fb.innerHTML = `<span class="text-amber-600">👀 目前 ${correct}/4 正確。提示：eDNA 的優勢是『不打擾生物』；電子顯微鏡可以看到奈米級。再檢查看看。</span>`;
+  }
+}
+
+function checkS4() {
+  const t = document.getElementById('s4input').value.trim();
+  const fb = document.getElementById('s4feedback');
+  const hasC = /claim|主張|我認為|我主張/i.test(t);
+  const hasE = /evidence|證據|根據|資料|ipbes|wwf|fao|nih|taibif|林業|%|倍/i.test(t);
+  const hasR = /reasoning|理由|因為|所以/i.test(t);
+  if (t.length >= 80 && hasC && hasE && hasR) {
+    fb.innerHTML = '<span class="text-emerald-600 font-semibold">✅ CER 三要素完整！論證寫作過關。</span>';
+    award('s4', 12, '✍️ 科學論證家');
+  } else {
+    const miss = [];
+    if (t.length < 80) miss.push('總字數 ≥80');
+    if (!hasC) miss.push('Claim 主張');
+    if (!hasE) miss.push('Evidence 具體證據/資料');
+    if (!hasR) miss.push('Reasoning 理由');
+    fb.innerHTML = `<span class="text-amber-600">👀 還缺：${miss.join('、')}。提示：用『我認為...（C）根據...（E）因為...（R）』句型。</span>`;
+  }
+}
+
+function checkS5() {
+  const opts = document.querySelectorAll('.s5opt');
+  let ok = true;
+  opts.forEach(o => {
+    const should = o.dataset.correct === 'true';
+    const checked = o.checked;
+    if (should !== checked) ok = false;
+  });
+  const fb = document.getElementById('s5feedback');
+  if (ok) {
+    fb.innerHTML = '<span class="text-emerald-600 font-semibold">✅ 資料解讀全對！你懂得看穿覆蓋率數字的盲點。</span>';
+    award('s5', 10, '📊 資料偵探');
+  } else {
+    fb.innerHTML = '<span class="text-amber-600">👀 提示：覆蓋率只看『有沒有樹』；特有種若在臺灣滅絕＝全球滅絕。再想想。</span>';
+  }
+}
+
+function checkS6() {
+  // 6A causal chain
+  const zones = document.querySelectorAll('.dropzone.s6a');
+  let chainOk = 0;
+  zones.forEach(z => { if (z.dataset.dropped === z.dataset.pos) chainOk++; });
+  // 6B open reasoning
+  const pickedRadio = document.querySelector('input[name="s6b"]:checked');
+  const reason = document.getElementById('s6bReason').value.trim();
+  const fb = document.getElementById('s6feedback');
+  const chainPass = chainOk >= 5;
+  const ethicsPass = pickedRadio && reason.length >= 80;
+  if (chainPass && ethicsPass) {
+    fb.innerHTML = '<span class="text-emerald-600 font-semibold">✅ 因果鏈 & 倫理論述都完成！你能看見系統與兩難。</span>';
+    award('s6', 15, '🧠 系統思考者');
+  } else {
+    const msgs = [];
+    if (!chainPass) msgs.push(`因果鏈正確 ${chainOk}/6（至少需 5）`);
+    if (!pickedRadio) msgs.push('請選擇立場');
+    if (reason.length < 80) msgs.push('論述 ≥80 字');
+    fb.innerHTML = `<span class="text-amber-600">👀 還需：${msgs.join('、')}。提示：順序從授粉者↓→野花→果實→鳥類→森林→碳匯→氣候。</span>`;
+  }
+}
+
+function checkS7() {
+  const topic = document.getElementById('s7topic').value.trim();
+  const status = document.getElementById('s7status').value.trim();
+  const cer = document.getElementById('s7cer').value.trim();
+  const metric = document.getElementById('s7metric').value.trim();
+  const wsaChecked = document.querySelectorAll('.wsa:checked').length;
+  const fb = document.getElementById('s7feedback');
+  const allIn = topic && status.length >= 30 && cer.length >= 80 && metric.length >= 30;
+  if (allIn && wsaChecked >= 3) {
+    let badge = '🏫 校園行動家';
+    if (wsaChecked === 4) badge = '🏆 全校英雄（WSA 四面向全達成）';
+    fb.innerHTML = `<span class="text-emerald-600 font-semibold">✅ 提案書完整！WSA ${wsaChecked}/4 面向。${wsaChecked===4?'解鎖全校英雄徽章！':''}</span>`;
+    award('s7', 18, badge);
+  } else {
+    const miss = [];
+    if (!topic) miss.push('主題');
+    if (status.length < 30) miss.push('現況 ≥30 字');
+    if (cer.length < 80) miss.push('CER ≥80 字');
+    if (metric.length < 30) miss.push('成效指標 ≥30 字');
+    if (wsaChecked < 3) miss.push(`WSA 至少 3 面向（目前 ${wsaChecked}）`);
+    fb.innerHTML = `<span class="text-amber-600">👀 還缺：${miss.join('、')}。</span>`;
+  }
+}
+
+function checkS8() {
+  const before = document.getElementById('s8before').value.trim();
+  const after = document.getElementById('s8after').value.trim();
+  const future = document.getElementById('s8future').value.trim();
+  const fb = document.getElementById('s8feedback');
+  if (before.length >= 10 && after.length >= 50 && future.length >= 50) {
+    fb.innerHTML = '<span class="text-emerald-600 font-semibold">✅ 反思完整！你能看見自己學習歷程的改變。</span>';
+    award('s8', 15, '🪞 後設認知高手');
+  } else {
+    const miss = [];
+    if (before.length < 10) miss.push('上課前想法');
+    if (after.length < 50) miss.push('上課後反思 ≥50 字');
+    if (future.length < 50) miss.push('未來想像 ≥50 字');
+    fb.innerHTML = `<span class="text-amber-600">👀 還缺：${miss.join('、')}。這題沒有對錯，寫出你真實的想法即可。</span>`;
+  }
+}
+</script>
+</body>
+</html>

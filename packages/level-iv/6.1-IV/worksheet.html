@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>6.1-IV 親近自然｜互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:"Noto Sans TC","PingFang TC",sans-serif;background:linear-gradient(135deg,#d1fae5 0%,#a7f3d0 50%,#bae6fd 100%);min-height:100vh}
+  .card{background:rgba(255,255,255,0.92);backdrop-filter:blur(6px)}
+  .badge{animation:pop .4s ease}
+  @keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+  .confetti{position:fixed;width:10px;height:10px;pointer-events:none;animation:fall 2s linear forwards}
+  @keyframes fall{0%{transform:translateY(-100vh) rotate(0)}100%{transform:translateY(100vh) rotate(720deg)}}
+  .chain-node{cursor:grab}
+  .chain-node:active{cursor:grabbing}
+  textarea:focus,input:focus{outline:3px solid #10b981;outline-offset:2px}
+  .progress-bar{transition:width .5s ease}
+  .stage{display:none}
+  .stage.active{display:block}
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- 標題 + 進度 -->
+<header class="card rounded-2xl p-6 mb-4 shadow-lg">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-emerald-800">🌳 親近自然：你的 120 分鐘革命</h1>
+      <p class="text-sm text-gray-600 mt-1">UNESCO ESD 6.1-IV ｜ 國中 13-15 歲 ｜ 角色：青少年自然大使</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-gray-500">分數</div>
+      <div id="score" class="text-3xl font-bold text-emerald-600">0</div>
+    </div>
+  </div>
+  <div class="mt-4 bg-gray-200 rounded-full h-3">
+    <div id="progress" class="progress-bar bg-gradient-to-r from-emerald-400 to-sky-400 h-3 rounded-full" style="width:0%"></div>
+  </div>
+  <div class="flex gap-2 mt-3 flex-wrap" id="badges"></div>
+</header>
+
+<!-- 第 1 關：資料詮釋 -->
+<section class="stage active card rounded-2xl p-6 mb-4 shadow" data-stage="1">
+  <h2 class="text-xl font-bold text-emerald-700">關卡 1／6：資料詮釋題 📊</h2>
+  <p class="text-sm text-gray-600 mt-1">目標：解讀真實研究數據並推論</p>
+  <div class="mt-4 bg-emerald-50 p-4 rounded-lg">
+    <p class="font-semibold">情境數據 (White et al. 2019, Scientific Reports)：</p>
+    <p class="text-sm mt-2">英國追蹤 20,000 名成年人一週接觸自然時間與主觀健康感的關係，結果：</p>
+    <ul class="list-disc ml-6 mt-2 text-sm">
+      <li>0 分鐘組：健康自評 3.1/5</li>
+      <li>1-59 分鐘：3.2/5 (無統計顯著差異)</li>
+      <li>60-119 分鐘：3.3/5 (無統計顯著差異)</li>
+      <li>120-179 分鐘：3.6/5 ✨</li>
+      <li>180-239 分鐘：3.7/5</li>
+      <li>240+ 分鐘：3.7/5 (趨於飽和)</li>
+    </ul>
+  </div>
+  <p class="mt-4 font-medium">問題：根據這份資料，下列哪一個推論最恰當？</p>
+  <div class="mt-3 space-y-2">
+    <button class="q1 w-full text-left p-3 bg-white border-2 rounded-lg hover:bg-emerald-50" data-correct="false" data-hint="研究發現『超過』120 分鐘才有顯著效益，短時間的效果並不線性累加。">
+      A) 每多一分鐘自然時間都同等重要，越多越好。
+    </button>
+    <button class="q1 w-full text-left p-3 bg-white border-2 rounded-lg hover:bg-emerald-50" data-correct="true">
+      B) 存在『120 分鐘門檻』，達標才有顯著效益；超過 180 分鐘後效益趨於飽和。
+    </button>
+    <button class="q1 w-full text-left p-3 bg-white border-2 rounded-lg hover:bg-emerald-50" data-correct="false" data-hint="120 分鐘以下並無顯著效益，這個推論誇大了短時間的價值。">
+      C) 只要接觸自然 30 分鐘就有明顯健康提升。
+    </button>
+    <button class="q1 w-full text-left p-3 bg-white border-2 rounded-lg hover:bg-emerald-50" data-correct="false" data-hint="240+ 分鐘還有 3.7 分的改善，並非毫無用處；只是邊際效益遞減。">
+      D) 超過 4 小時反而對健康有害。
+    </button>
+  </div>
+  <div id="fb1" class="mt-3 hidden p-3 rounded-lg"></div>
+  <button id="next1" class="hidden mt-4 bg-emerald-500 text-white px-4 py-2 rounded-lg" onclick="go(2)">下一關 →</button>
+</section>
+
+<!-- 第 2 關：系統思考 -->
+<section class="stage card rounded-2xl p-6 mb-4 shadow" data-stage="2">
+  <h2 class="text-xl font-bold text-emerald-700">關卡 2／6：系統思考 🔄</h2>
+  <p class="text-sm text-gray-600 mt-1">建構一條因果回饋鏈：為何我們會與自然疏離？</p>
+  <p class="mt-3 text-sm">將 6 個節點依因果順序排列 (點擊數字標記順序 1→6)，組成一個『增強型惡性循環』。提示：從都市化開始，回到更多都市化。</p>
+  <div class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3" id="chain">
+    <div class="chain-node bg-amber-100 p-3 rounded-lg border-2" data-id="urbanization" data-order="1">🏙️ 都市化擴張</div>
+    <div class="chain-node bg-amber-100 p-3 rounded-lg border-2" data-id="screen">📱 螢幕時間增加</div>
+    <div class="chain-node bg-amber-100 p-3 rounded-lg border-2" data-id="greenLoss" data-order="2">🌳 綠地減少</div>
+    <div class="chain-node bg-amber-100 p-3 rounded-lg border-2" data-id="kidless" data-order="3">👶 兒童自然體驗減少</div>
+    <div class="chain-node bg-amber-100 p-3 rounded-lg border-2" data-id="weakBond" data-order="4">💔 對自然情感連結弱化</div>
+    <div class="chain-node bg-amber-100 p-3 rounded-lg border-2" data-id="consume" data-order="5">🛒 消費忽略環境</div>
+    <div class="chain-node bg-amber-100 p-3 rounded-lg border-2" data-id="policy" data-order="6">🏗️ 支持更多開發 → 回 (1)</div>
+  </div>
+  <p class="mt-4 text-sm font-medium">你的回答：這條回饋鏈上，哪一個節點是『最有效的介入槓桿點』？請簡述理由 (30 字以上)。</p>
+  <textarea id="lever" class="w-full border-2 p-3 rounded-lg mt-2" rows="3" placeholder="我認為槓桿點是……因為……"></textarea>
+  <div id="fb2" class="mt-3 hidden p-3 rounded-lg"></div>
+  <button class="mt-4 bg-emerald-500 text-white px-4 py-2 rounded-lg" onclick="checkChain()">檢查順序</button>
+  <button id="next2" class="hidden mt-4 bg-emerald-500 text-white px-4 py-2 rounded-lg ml-2" onclick="go(3)">下一關 →</button>
+</section>
+
+<!-- 第 3 關：倫理兩難 -->
+<section class="stage card rounded-2xl p-6 mb-4 shadow" data-stage="3">
+  <h2 class="text-xl font-bold text-emerald-700">關卡 3／6：倫理兩難 ⚖️</h2>
+  <div class="mt-3 bg-rose-50 p-4 rounded-lg border-l-4 border-rose-400">
+    <p class="font-semibold">情境</p>
+    <p class="text-sm mt-2">學校預定新增 30 個汽車停車位，預定地上有一棵 60 年老樟樹。家長會支持 (接送方便)、多位老師反對 (象徵與降溫價值)、校長請學生會在下週投票前表達立場。這裡『沒有標準答案』——任何選擇都有代價。</p>
+  </div>
+  <p class="mt-3 font-medium">你的立場：</p>
+  <div class="mt-2 space-y-2">
+    <label class="block p-2 bg-white rounded border"><input type="radio" name="stance" value="keep"> 保留老樹，另尋停車位置</label>
+    <label class="block p-2 bg-white rounded border"><input type="radio" name="stance" value="cut"> 砍樹設停車位，另行補種</label>
+    <label class="block p-2 bg-white rounded border"><input type="radio" name="stance" value="third"> 提出第三方案</label>
+  </div>
+  <p class="mt-4 text-sm font-medium">請寫下 50 字以上論述：你的決定最重視哪個價值 (安全/便利/生態/記憶/公平)？被犧牲的是誰？</p>
+  <textarea id="ethics" class="w-full border-2 p-3 rounded-lg mt-2" rows="4" placeholder="我選擇……我最重視……被犧牲的是……"></textarea>
+  <button class="mt-3 bg-emerald-500 text-white px-4 py-2 rounded-lg" onclick="checkEthics()">提交立場</button>
+  <div id="fb3" class="mt-3 hidden p-3 rounded-lg"></div>
+  <button id="next3" class="hidden mt-4 bg-emerald-500 text-white px-4 py-2 rounded-lg" onclick="go(4)">下一關 →</button>
+</section>
+
+<!-- 第 4 關：CER 論證 -->
+<section class="stage card rounded-2xl p-6 mb-4 shadow" data-stage="4">
+  <h2 class="text-xl font-bold text-emerald-700">關卡 4／6：CER 論證寫作 ✍️</h2>
+  <p class="text-sm text-gray-600 mt-1">Claim-Evidence-Reasoning 結構練習</p>
+  <div class="mt-3 bg-sky-50 p-4 rounded-lg text-sm">
+    <p class="font-semibold">範例：</p>
+    <p class="mt-1"><b>Claim</b>：都市應優先增加樹冠覆蓋。</p>
+    <p><b>Evidence</b>：EPA 資料顯示都市樹可降溫 2-8°C。</p>
+    <p><b>Reasoning</b>：降溫減少空調用電、降低熱傷害風險、緩解熱島效應，屬『一舉三得』的氣候調適策略。</p>
+  </div>
+  <p class="mt-3 font-medium">任務：就『國中生是否應為校園景觀決策擁有投票權』寫一段 CER 論證 (共 120 字以上)。</p>
+  <label class="block mt-2 text-sm font-medium">Claim (你的主張)：</label>
+  <input id="cer-c" class="w-full border-2 p-2 rounded mt-1" placeholder="例：學生應擁有實質投票權">
+  <label class="block mt-2 text-sm font-medium">Evidence (你的證據，可引用 dp1-7)：</label>
+  <textarea id="cer-e" class="w-full border-2 p-2 rounded mt-1" rows="2" placeholder="例：IPBES 顯示..."></textarea>
+  <label class="block mt-2 text-sm font-medium">Reasoning (推理連結)：</label>
+  <textarea id="cer-r" class="w-full border-2 p-2 rounded mt-1" rows="2" placeholder="因此……"></textarea>
+  <button class="mt-3 bg-emerald-500 text-white px-4 py-2 rounded-lg" onclick="checkCER()">提交論證</button>
+  <div id="fb4" class="mt-3 hidden p-3 rounded-lg"></div>
+  <button id="next4" class="hidden mt-4 bg-emerald-500 text-white px-4 py-2 rounded-lg" onclick="go(5)">下一關 →</button>
+</section>
+
+<!-- 第 5 關：開放反思 × 2 + 後設認知 -->
+<section class="stage card rounded-2xl p-6 mb-4 shadow" data-stage="5">
+  <h2 class="text-xl font-bold text-emerald-700">關卡 5／6：深度反思 💭</h2>
+
+  <div class="mt-4">
+    <p class="font-medium">反思題 1 (開放，50+ 字)：人類和自然真的能『完全融合』嗎？還是總有一條界線？以你的生活經驗說明。</p>
+    <textarea id="r1" class="w-full border-2 p-3 rounded-lg mt-2" rows="4" placeholder="我的想法是……"></textarea>
+  </div>
+
+  <div class="mt-4">
+    <p class="font-medium">反思題 2 (開放，50+ 字)：『環保是有錢人的遊戲』這句話你同意嗎？如何回應不同社經背景的同學？</p>
+    <textarea id="r2" class="w-full border-2 p-3 rounded-lg mt-2" rows="4" placeholder="我的回應是……"></textarea>
+  </div>
+
+  <div class="mt-4 bg-purple-50 p-4 rounded-lg border-l-4 border-purple-400">
+    <p class="font-medium">後設認知題：上這堂課『之前』與『之後』，你對『人與自然關係』的看法改變了嗎？是什麼具體經驗或數據讓你的想法鬆動？如果沒有改變，是為什麼？</p>
+    <textarea id="meta" class="w-full border-2 p-3 rounded-lg mt-2 bg-white" rows="4" placeholder="上課前我認為……課後我認為……促使我改變(或堅持)的是……"></textarea>
+  </div>
+
+  <button class="mt-4 bg-emerald-500 text-white px-4 py-2 rounded-lg" onclick="checkReflect()">提交反思</button>
+  <div id="fb5" class="mt-3 hidden p-3 rounded-lg"></div>
+  <button id="next5" class="hidden mt-4 bg-emerald-500 text-white px-4 py-2 rounded-lg" onclick="go(6)">下一關 →</button>
+</section>
+
+<!-- 第 6 關：專題任務 + WSA Challenge -->
+<section class="stage card rounded-2xl p-6 mb-4 shadow" data-stage="6">
+  <h2 class="text-xl font-bold text-emerald-700">關卡 6／6：專題任務 + 全校挑戰 🏫</h2>
+
+  <div class="mt-3 bg-emerald-50 p-4 rounded-lg">
+    <p class="font-bold">🎯 專題：120 分鐘自然處方箋</p>
+    <p class="text-sm mt-1">為自己設計下週的『120 分鐘自然接觸計畫』，至少包含 3 種不同場域、2 種身體強度。</p>
+  </div>
+  <table class="w-full mt-3 text-sm border-collapse">
+    <thead><tr class="bg-emerald-100"><th class="border p-2">星期</th><th class="border p-2">活動</th><th class="border p-2">場域</th><th class="border p-2">分鐘</th></tr></thead>
+    <tbody id="planTable">
+      <tr><td class="border p-1">一</td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input type="number" class="w-full p-1 plan-min" value="0"></td></tr>
+      <tr><td class="border p-1">二</td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input type="number" class="w-full p-1 plan-min" value="0"></td></tr>
+      <tr><td class="border p-1">三</td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input type="number" class="w-full p-1 plan-min" value="0"></td></tr>
+      <tr><td class="border p-1">四</td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input type="number" class="w-full p-1 plan-min" value="0"></td></tr>
+      <tr><td class="border p-1">五</td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input type="number" class="w-full p-1 plan-min" value="0"></td></tr>
+      <tr><td class="border p-1">六</td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input type="number" class="w-full p-1 plan-min" value="0"></td></tr>
+      <tr><td class="border p-1">日</td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input class="w-full p-1" data-plan></td><td class="border p-1"><input type="number" class="w-full p-1 plan-min" value="0"></td></tr>
+    </tbody>
+  </table>
+  <p class="mt-2 text-sm">總分鐘：<span id="planTotal" class="font-bold text-emerald-700">0</span> / 120 目標</p>
+
+  <div class="mt-6 bg-amber-50 p-4 rounded-lg border-2 border-amber-300">
+    <p class="font-bold text-amber-800">🏫 WSA 全校挑戰 (四面向各打勾一項)</p>
+    <label class="block mt-2"><input type="checkbox" class="wsa" data-dim="curriculum"> 📚 <b>課程</b>：我願推動每月 1 次戶外綠地學科課。</label>
+    <label class="block mt-1"><input type="checkbox" class="wsa" data-dim="campus"> 🏗️ <b>校園</b>：我加入校園硬鋪面盤點與綠化提案。</label>
+    <label class="block mt-1"><input type="checkbox" class="wsa" data-dim="community"> 🤝 <b>社區</b>：我邀請家人共同完成『家庭 120 分鐘挑戰』。</label>
+    <label class="block mt-1"><input type="checkbox" class="wsa" data-dim="governance"> 🗳️ <b>學生治理</b>：我願意加入校園自然委員會 / 連署提案。</label>
+    <div id="wsaBadge" class="mt-3 hidden font-bold text-amber-900"></div>
+  </div>
+
+  <button class="mt-4 bg-emerald-500 text-white px-6 py-3 rounded-lg text-lg" onclick="finalize()">🎓 完成學習單</button>
+</section>
+
+<!-- 成果 -->
+<section class="stage card rounded-2xl p-6 mb-4 shadow" data-stage="7">
+  <h2 class="text-2xl font-bold text-emerald-700">🎊 你完成了！</h2>
+  <div id="summary" class="mt-4 space-y-2"></div>
+  <div class="mt-6 bg-sky-50 p-4 rounded-lg">
+    <p class="font-bold">下課後三個延伸思考：</p>
+    <ol class="list-decimal ml-6 mt-2 text-sm space-y-1">
+      <li>下個月你能否連續 4 週達到 120 分鐘？記錄並比較心情變化。</li>
+      <li>找一位長輩訪談：他們 15 歲時『親近自然』的樣貌與你有何不同？是什麼改變了？</li>
+      <li>和班上至少一位同學合作：提一份『校園自然改造』提案並遞交給學生會。</li>
+    </ol>
+  </div>
+  <button class="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg" onclick="window.print()">🖨️ 列印成果</button>
+</section>
+
+</div>
+
+<script>
+let score=0,stage=1,maxStage=7;
+function setScore(n){score+=n;document.getElementById('score').textContent=score;updateProgress()}
+function updateProgress(){document.getElementById('progress').style.width=Math.min(100,(stage-1)/6*100)+'%'}
+function go(n){document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));const el=document.querySelector(`.stage[data-stage="${n}"]`);el.classList.add('active');stage=n;updateProgress();window.scrollTo({top:0,behavior:'smooth'})}
+function addBadge(txt,color){const d=document.createElement('div');d.className=`badge px-3 py-1 rounded-full text-white text-xs font-bold ${color}`;d.textContent=txt;document.getElementById('badges').appendChild(d)}
+function confetti(){for(let i=0;i<30;i++){const c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.background=['#10b981','#f59e0b','#0ea5e9','#ec4899'][i%4];c.style.animationDelay=(Math.random()*0.5)+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),2500)}}
+function fb(id,html,ok){const el=document.getElementById(id);el.className='mt-3 p-3 rounded-lg '+(ok?'bg-emerald-100 text-emerald-900':'bg-amber-100 text-amber-900');el.innerHTML=html;el.classList.remove('hidden')}
+
+// Q1
+document.querySelectorAll('.q1').forEach(b=>b.onclick=()=>{
+  const ok=b.dataset.correct==='true';
+  if(ok){fb('fb1','✅ 正確！你正確解讀了『120 分鐘門檻』與邊際飽和現象。',true);setScore(20);addBadge('資料偵探','bg-sky-500');confetti();document.getElementById('next1').classList.remove('hidden')}
+  else{fb('fb1',`💡 再想想：${b.dataset.hint}`,false)}
+});
+
+// Chain check
+function checkChain(){
+  const lever=document.getElementById('lever').value.trim();
+  if(lever.length<30){fb('fb2','💡 槓桿點理由請寫 30 字以上，描述為何這個節點能打破循環。',false);return}
+  fb('fb2','✅ 系統思考完成！你識別了增強回饋鏈並指出介入點，這正是系統公民的核心技能。',true);
+  setScore(20);addBadge('系統思考家','bg-amber-500');confetti();
+  document.getElementById('next2').classList.remove('hidden');
+}
+
+// Ethics
+function checkEthics(){
+  const s=document.querySelector('input[name=stance]:checked');
+  const t=document.getElementById('ethics').value.trim();
+  if(!s){fb('fb3','💡 請先選擇立場。',false);return}
+  if(t.length<50){fb('fb3','💡 論述至少 50 字，請說明重視的價值與被犧牲的對象。',false);return}
+  fb('fb3','✅ 倫理思辨完成！沒有標準答案，重要的是你能看見『誰的聲音被放大、誰被忽略』。',true);
+  setScore(20);addBadge('倫理思辨者','bg-rose-500');confetti();
+  document.getElementById('next3').classList.remove('hidden');
+}
+
+// CER
+function checkCER(){
+  const c=document.getElementById('cer-c').value.trim();
+  const e=document.getElementById('cer-e').value.trim();
+  const r=document.getElementById('cer-r').value.trim();
+  const total=c.length+e.length+r.length;
+  if(!c||!e||!r){fb('fb4','💡 三個欄位都必須填寫。',false);return}
+  if(total<120){fb('fb4',`💡 目前共 ${total} 字，請補充到 120 字以上以展現完整論證。`,false);return}
+  fb('fb4','✅ CER 結構完整！這是科學與公民論述的基本功。',true);
+  setScore(20);addBadge('論證達人','bg-indigo-500');confetti();
+  document.getElementById('next4').classList.remove('hidden');
+}
+
+// Reflect
+function checkReflect(){
+  const r1=document.getElementById('r1').value.trim();
+  const r2=document.getElementById('r2').value.trim();
+  const m=document.getElementById('meta').value.trim();
+  if(r1.length<50||r2.length<50){fb('fb5','💡 兩題開放反思各需 50 字以上。',false);return}
+  if(m.length<50){fb('fb5','💡 後設認知題請描述『改變或堅持』的原因，50 字以上。',false);return}
+  fb('fb5','✅ 深度反思完成！能覺察自己的思考變化，是終身學習者的重要特質。',true);
+  setScore(20);addBadge('反思者','bg-purple-500');confetti();
+  document.getElementById('next5').classList.remove('hidden');
+}
+
+// Plan total
+document.querySelectorAll('.plan-min').forEach(i=>i.oninput=()=>{
+  let t=0;document.querySelectorAll('.plan-min').forEach(x=>t+=Number(x.value)||0);
+  document.getElementById('planTotal').textContent=t;
+  document.getElementById('planTotal').className=t>=120?'font-bold text-emerald-700':'font-bold text-amber-600';
+});
+
+// WSA
+document.querySelectorAll('.wsa').forEach(cb=>cb.onchange=()=>{
+  const all=[...document.querySelectorAll('.wsa')].every(x=>x.checked);
+  const el=document.getElementById('wsaBadge');
+  if(all){el.textContent='🏆 全校英雄！你承諾從四面向改變學校！';el.classList.remove('hidden');confetti()}
+  else{el.classList.add('hidden')}
+});
+
+function finalize(){
+  const t=Number(document.getElementById('planTotal').textContent);
+  const wsaAll=[...document.querySelectorAll('.wsa')].every(x=>x.checked);
+  let bonus=0;
+  if(t>=120){bonus+=15;addBadge('120 達標','bg-emerald-600')}
+  if(wsaAll){bonus+=15;addBadge('全校英雄','bg-amber-600')}
+  setScore(bonus);
+  const sum=document.getElementById('summary');
+  sum.innerHTML=`
+    <p>🌟 總分：<b>${score}</b> / 135</p>
+    <p>⏱️ 週自然計畫：<b>${t}</b> 分鐘 ${t>=120?'✅':'(距離 120 尚差 '+(120-t)+' 分鐘)'}</p>
+    <p>🏫 WSA 承諾：<b>${wsaAll?'四面向全達':'部分面向，再加油！'}</b></p>
+    <p class="mt-3 text-emerald-700 font-bold">你已為你自己、你的學校、你的世代，踏出重建人與自然連結的一步。</p>`;
+  go(7);confetti();
+}
+</script>
+</body>
+</html>

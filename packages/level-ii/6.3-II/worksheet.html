@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>需要和想要 — 小刺蝟阿滿的購物旅行</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: linear-gradient(180deg, #fef9c3 0%, #fce7f3 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .popin { animation: popin 0.6s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes popin { 0%{transform:scale(.3);opacity:0} 60%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
+  .bounce { animation: bounce 1s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .wiggle { animation: wiggle 0.4s ease-in-out; }
+  @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-8deg)} 75%{transform:rotate(8deg)} }
+  .shine { animation: shine 2s infinite; }
+  @keyframes shine { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.3) drop-shadow(0 0 20px #fde68a)} }
+  .confetti {
+    position: fixed;
+    width: 14px; height: 14px;
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  .dropzone-active { background: #fde68a !important; transform: scale(1.08); }
+  .big-btn {
+    font-size: 2rem;
+    padding: 1rem 2rem;
+    border-radius: 9999px;
+    font-weight: 800;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.15);
+    transition: all 0.15s;
+  }
+  .big-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,0.15); }
+  svg text { pointer-events: none; }
+  .card {
+    background: white;
+    border-radius: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+  }
+  .hide { display: none !important; }
+</style>
+</head>
+<body class="flex flex-col items-center">
+
+<!-- 主角：小刺蝟阿滿 SVG (可重用) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="manchu">
+      <!-- 身體 -->
+      <ellipse cx="50" cy="60" rx="38" ry="30" fill="#a78bfa"/>
+      <!-- 刺刺 -->
+      <g fill="#7c3aed">
+        <polygon points="18,45 14,30 24,40"/>
+        <polygon points="32,32 30,18 40,30"/>
+        <polygon points="50,28 50,14 58,28"/>
+        <polygon points="68,32 70,18 60,30"/>
+        <polygon points="82,45 86,30 76,40"/>
+      </g>
+      <!-- 臉 -->
+      <ellipse cx="50" cy="65" rx="22" ry="18" fill="#fde68a"/>
+      <!-- 眼睛 -->
+      <circle cx="42" cy="60" r="3.5" fill="black"/>
+      <circle cx="58" cy="60" r="3.5" fill="black"/>
+      <circle cx="43" cy="59" r="1" fill="white"/>
+      <circle cx="59" cy="59" r="1" fill="white"/>
+      <!-- 鼻子 -->
+      <circle cx="50" cy="68" r="2.5" fill="#1f2937"/>
+      <!-- 嘴巴 -->
+      <path d="M 44 73 Q 50 78 56 73" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- 腮紅 -->
+      <circle cx="36" cy="68" r="3" fill="#fca5a5" opacity="0.6"/>
+      <circle cx="64" cy="68" r="3" fill="#fca5a5" opacity="0.6"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- 頂部進度條 -->
+<div class="w-full max-w-3xl p-4">
+  <div class="flex items-center justify-center gap-2 text-3xl font-extrabold text-purple-700">
+    <svg width="60" height="60" viewBox="0 0 100 100"><use href="#manchu"/></svg>
+    <span>小刺蝟阿滿的購物旅行</span>
+  </div>
+  <div class="flex gap-2 mt-4 justify-center" id="progress-bar">
+    <!-- 填充 -->
+  </div>
+</div>
+
+<!-- 關卡容器 -->
+<main class="w-full max-w-3xl p-4 flex-1 flex items-center justify-center">
+
+  <!-- 開始畫面 -->
+  <section id="intro" class="card text-center popin">
+    <svg width="180" height="180" viewBox="0 0 100 100" class="mx-auto bounce"><use href="#manchu"/></svg>
+    <h1 class="text-4xl font-extrabold text-purple-600 mt-4">嗨！我是阿滿！</h1>
+    <p class="text-2xl text-gray-700 mt-4">今天要跟我一起分辨<span class="text-pink-500 font-bold">需要和想要</span>嗎？</p>
+    <p class="text-xl text-gray-500 mt-2">一起玩 3 個小關卡！</p>
+    <button onclick="startGame()" class="big-btn bg-yellow-400 hover:bg-yellow-300 text-purple-900 mt-6">開始</button>
+  </section>
+
+  <!-- 關卡 1：點一點 — 需要還是想要？ -->
+  <section id="level1" class="card w-full hide">
+    <div class="flex items-center gap-3 mb-4">
+      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#manchu"/></svg>
+      <p class="text-2xl font-bold text-purple-700">阿滿：這個是需要，還是想要？</p>
+    </div>
+    <div id="l1-target" class="text-center my-4">
+      <div id="l1-emoji" class="text-8xl popin">💧</div>
+      <div id="l1-label" class="text-2xl font-bold text-pink-600 mt-2">水</div>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mt-6">
+      <button class="big-btn bg-rose-300 hover:bg-rose-200 text-rose-900" data-ans="need" onclick="l1Pick(this)">
+        ❤️ 需要
+      </button>
+      <button class="big-btn bg-sky-300 hover:bg-sky-200 text-sky-900" data-ans="want" onclick="l1Pick(this)">
+        ⭐ 想要
+      </button>
+    </div>
+    <p id="l1-feedback" class="text-2xl text-center mt-4 font-bold hide"></p>
+    <p id="l1-count" class="text-lg text-center mt-2 text-gray-500">第 <span id="l1-num">1</span> / 4 題</p>
+  </section>
+
+  <!-- 關卡 2：拖拉 — 阿滿的背包 -->
+  <section id="level2" class="card w-full hide">
+    <div class="flex items-center gap-3 mb-4">
+      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#manchu"/></svg>
+      <p class="text-2xl font-bold text-purple-700">阿滿：幫我把東西放進對的袋子！</p>
+    </div>
+    <p class="text-lg text-center text-gray-600">（手機：先點一下物品，再點袋子）</p>
+    <div class="flex justify-around my-4 flex-wrap gap-3" id="l2-items">
+      <!-- 可拖拉物品 -->
+    </div>
+    <div class="grid grid-cols-2 gap-4 mt-6">
+      <div class="dropzone card text-center h-44 flex flex-col items-center justify-center border-4 border-dashed border-rose-300" data-type="need">
+        <div class="text-6xl">❤️</div>
+        <div class="text-2xl font-bold text-rose-600">需要袋</div>
+        <div class="text-sm text-gray-500">沒有不行</div>
+      </div>
+      <div class="dropzone card text-center h-44 flex flex-col items-center justify-center border-4 border-dashed border-sky-300" data-type="want">
+        <div class="text-6xl">⭐</div>
+        <div class="text-2xl font-bold text-sky-600">想要袋</div>
+        <div class="text-sm text-gray-500">喜歡但沒有也可以</div>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <p id="l2-feedback" class="text-2xl font-bold hide"></p>
+    </div>
+  </section>
+
+  <!-- 關卡 3：自助餐剛剛好 — 點擊選 3 個 -->
+  <section id="level3" class="card w-full hide">
+    <div class="flex items-center gap-3 mb-4">
+      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#manchu"/></svg>
+      <p class="text-2xl font-bold text-purple-700">阿滿：午餐時間！選 3 樣「剛剛好」的食物～</p>
+    </div>
+    <p class="text-xl text-center text-gray-600">（點一下選，再點取消；想一想一個人吃得完多少）</p>
+    <div class="grid grid-cols-3 gap-3 mt-4" id="l3-items">
+      <!-- 6 個項目 -->
+    </div>
+    <div class="text-center mt-4">
+      <button onclick="l3Check()" class="big-btn bg-green-400 hover:bg-green-300 text-white">完成！</button>
+      <p id="l3-feedback" class="text-2xl font-bold hide mt-3"></p>
+    </div>
+  </section>
+
+  <!-- 結尾成就畫面 -->
+  <section id="finale" class="card text-center hide">
+    <div class="shine">
+      <svg width="200" height="200" viewBox="0 0 100 100" class="mx-auto bounce"><use href="#manchu"/></svg>
+    </div>
+    <div class="text-6xl mt-4">🏆</div>
+    <h1 class="text-4xl font-extrabold text-purple-600 mt-4">你是超棒的地球守護者！</h1>
+    <p class="text-2xl text-gray-700 mt-4">阿滿送你一張 <span class="text-pink-500 font-bold">金色夠了徽章</span>！</p>
+    <div class="card mt-6 bg-yellow-100 border-4 border-yellow-300">
+      <p class="text-xl font-bold text-purple-800">小小任務（回家做）</p>
+      <p class="text-2xl mt-2">今天晚上，和爸爸媽媽一起<span class="text-pink-600 font-bold">找 3 樣家裡已經有的寶貝</span>（本來以為要買的），抱抱它們，說聲「你還在，真好！」</p>
+    </div>
+    <button onclick="restart()" class="big-btn bg-yellow-400 hover:bg-yellow-300 text-purple-900 mt-6">再玩一次</button>
+  </section>
+
+</main>
+
+<script>
+  // ============ 全域狀態 ============
+  const STATE = { level: 0, total: 3 };
+
+  // ============ 進度條 ============
+  function drawProgress() {
+    const bar = document.getElementById('progress-bar');
+    bar.innerHTML = '';
+    for (let i = 1; i <= STATE.total; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'w-10 h-10 rounded-full flex items-center justify-center text-xl font-extrabold ' +
+        (i < STATE.level ? 'bg-green-400 text-white' :
+         i === STATE.level ? 'bg-yellow-400 text-purple-900 bounce' : 'bg-gray-300 text-gray-600');
+      dot.textContent = i < STATE.level ? '★' : i;
+      bar.appendChild(dot);
+    }
+  }
+
+  // ============ 彩帶 ============
+  function confetti() {
+    const colors = ['#fbbf24','#f472b6','#34d399','#60a5fa','#a78bfa'];
+    for (let i = 0; i < 40; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = (50 + (Math.random()-0.5)*80) + 'vw';
+      c.style.top = '50vh';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.transform = 'rotate(' + Math.random()*360 + 'deg)';
+      document.body.appendChild(c);
+      const dx = (Math.random()-0.5) * 600;
+      const dy = (Math.random()-0.3) * 600;
+      c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy}px) rotate(720deg)`, opacity: 0 }
+      ], { duration: 1500, easing: 'cubic-bezier(.17,.67,.83,.67)' });
+      setTimeout(() => c.remove(), 1600);
+    }
+  }
+
+  // ============ 畫面切換 ============
+  function show(id) {
+    ['intro','level1','level2','level3','finale'].forEach(s => {
+      const el = document.getElementById(s);
+      if (!el) return;
+      if (s === id) { el.classList.remove('hide'); el.classList.add('popin'); }
+      else { el.classList.add('hide'); el.classList.remove('popin'); }
+    });
+  }
+
+  function startGame() {
+    STATE.level = 1;
+    drawProgress();
+    loadLevel1();
+    show('level1');
+  }
+
+  // ============ 關卡 1：點擊分類 ============
+  const L1_ITEMS = [
+    { emoji: '💧', label: '水',       ans: 'need', hint: '沒有水我們會渴！' },
+    { emoji: '🍦', label: '冰淇淋',   ans: 'want', hint: '好吃但沒有也可以～' },
+    { emoji: '🛏️', label: '睡覺的床', ans: 'need', hint: '我們每天都要睡覺！' },
+    { emoji: '🎮', label: '新電動',   ans: 'want', hint: '很喜歡但不是非有不可～' }
+  ];
+  let l1Idx = 0;
+
+  function loadLevel1() {
+    l1Idx = 0;
+    showL1Item();
+  }
+  function showL1Item() {
+    const it = L1_ITEMS[l1Idx];
+    document.getElementById('l1-emoji').textContent = it.emoji;
+    document.getElementById('l1-label').textContent = it.label;
+    document.getElementById('l1-num').textContent = (l1Idx + 1);
+    document.getElementById('l1-feedback').classList.add('hide');
+    document.querySelectorAll('#level1 button[data-ans]').forEach(b => { b.disabled = false; b.classList.remove('wiggle'); });
+  }
+
+  function l1Pick(btn) {
+    const fb = document.getElementById('l1-feedback');
+    const it = L1_ITEMS[l1Idx];
+    fb.classList.remove('hide');
+    if (btn.dataset.ans === it.ans) {
+      fb.textContent = '🎉 答對啦！' + it.hint;
+      fb.className = 'text-2xl text-center mt-4 font-bold text-green-500 popin';
+      confetti();
+      document.querySelectorAll('#level1 button[data-ans]').forEach(b => b.disabled = true);
+      setTimeout(() => {
+        l1Idx++;
+        if (l1Idx >= L1_ITEMS.length) {
+          STATE.level = 2;
+          drawProgress();
+          loadLevel2();
+          show('level2');
+        } else {
+          showL1Item();
+        }
+      }, 1500);
+    } else {
+      fb.textContent = '😊 想一想，再試試！' + it.hint;
+      fb.className = 'text-xl text-center mt-4 font-bold text-orange-500';
+      btn.classList.add('wiggle');
+      setTimeout(() => btn.classList.remove('wiggle'), 400);
+    }
+  }
+
+  // ============ 關卡 2：拖拉 ============
+  const L2_ITEMS = [
+    { id: 'rice',    label: '飯',       type: 'need', emoji: '🍚' },
+    { id: 'hug',     label: '家人抱抱', type: 'need', emoji: '🤗' },
+    { id: 'shoes',   label: '鞋子',     type: 'need', emoji: '👟' },
+    { id: 'stick',   label: '亮貼紙',   type: 'want', emoji: '✨' },
+    { id: 'doll',    label: '第10個娃娃', type: 'want', emoji: '🧸' },
+    { id: 'candy',   label: '糖果',     type: 'want', emoji: '🍬' }
+  ];
+  let l2Correct = 0;
+
+  function loadLevel2() {
+    l2Correct = 0;
+    const box = document.getElementById('l2-items');
+    box.innerHTML = '';
+    L2_ITEMS.slice().sort(() => Math.random()-0.5).forEach(it => {
+      const d = document.createElement('div');
+      d.className = 'card text-center cursor-grab bg-white shadow-lg text-5xl p-3';
+      d.draggable = true;
+      d.dataset.id = it.id;
+      d.dataset.type = it.type;
+      d.innerHTML = `<div>${it.emoji}</div><div class="text-base text-gray-700 mt-1 font-bold">${it.label}</div>`;
+      d.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', it.id));
+      d.addEventListener('touchstart', e => startTouchDrag(d, e), { passive: false });
+      box.appendChild(d);
+    });
+
+    document.querySelectorAll('#level2 .dropzone').forEach(z => {
+      z.ondragover = e => { e.preventDefault(); z.classList.add('dropzone-active'); };
+      z.ondragleave = () => z.classList.remove('dropzone-active');
+      z.ondrop = e => {
+        e.preventDefault();
+        z.classList.remove('dropzone-active');
+        const id = e.dataTransfer.getData('text/plain');
+        const src = document.querySelector(`#l2-items [data-id="${id}"]`);
+        if (!src) return;
+        handleL2Drop(src, z);
+      };
+    });
+    document.getElementById('l2-feedback').classList.add('hide');
+  }
+
+  function handleL2Drop(src, z) {
+    if (src.dataset.type === z.dataset.type) {
+      src.classList.add('popin');
+      z.appendChild(src);
+      src.draggable = false;
+      l2Correct++;
+      if (l2Correct === L2_ITEMS.length) {
+        const fb = document.getElementById('l2-feedback');
+        fb.classList.remove('hide');
+        fb.textContent = '🎉 太棒了！你是分類小達人！';
+        fb.className = 'text-3xl font-bold text-green-500 popin';
+        confetti();
+        setTimeout(() => {
+          STATE.level = 3;
+          drawProgress();
+          loadLevel3();
+          show('level3');
+        }, 1800);
+      } else {
+        const mini = document.createElement('div');
+        mini.textContent = '✨';
+        mini.className = 'text-4xl popin';
+        z.appendChild(mini);
+        setTimeout(() => mini.remove(), 600);
+      }
+    } else {
+      src.classList.add('wiggle');
+      const fb = document.getElementById('l2-feedback');
+      fb.classList.remove('hide');
+      fb.textContent = '😊 再試試看！想想看：沒有不行的是需要～';
+      fb.className = 'text-xl font-bold text-orange-500';
+      setTimeout(() => src.classList.remove('wiggle'), 400);
+    }
+  }
+
+  // --- touch fallback ---
+  let l2Selected = null;
+  function startTouchDrag(el, e) {
+    if (!el.draggable) return;
+    e.preventDefault();
+    if (l2Selected) l2Selected.classList.remove('ring-4','ring-pink-400');
+    l2Selected = el;
+    el.classList.add('ring-4','ring-pink-400');
+  }
+  document.addEventListener('touchend', function(e) {
+    if (!l2Selected) return;
+    const t = e.changedTouches[0];
+    const target = document.elementFromPoint(t.clientX, t.clientY);
+    const zone = target && target.closest('.dropzone');
+    if (zone) {
+      handleL2Drop(l2Selected, zone);
+    }
+    l2Selected.classList.remove('ring-4','ring-pink-400');
+    l2Selected = null;
+  });
+
+  // ============ 關卡 3：多選 ============
+  const L3_ITEMS = [
+    { id: 'rice',   label: '一碗飯',    emoji: '🍚', correct: true  },
+    { id: 'soup',   label: '一碗湯',    emoji: '🍲', correct: true  },
+    { id: 'veg',    label: '青菜',      emoji: '🥦', correct: true  },
+    { id: 'ice',    label: '5 支冰',    emoji: '🍦', correct: false },
+    { id: 'cake',   label: '3 塊蛋糕',  emoji: '🍰', correct: false },
+    { id: 'candy',  label: '一大包糖',  emoji: '🍭', correct: false }
+  ];
+  const l3Picked = new Set();
+
+  function loadLevel3() {
+    l3Picked.clear();
+    const box = document.getElementById('l3-items');
+    box.innerHTML = '';
+    L3_ITEMS.slice().sort(() => Math.random()-0.5).forEach(it => {
+      const b = document.createElement('button');
+      b.className = 'card bg-amber-100 hover:bg-amber-200 p-4 flex flex-col items-center text-2xl';
+      b.innerHTML = `<div class="text-5xl">${it.emoji}</div><div class="mt-1 text-lg font-bold">${it.label}</div>`;
+      b.onclick = () => {
+        if (l3Picked.has(it.id)) {
+          l3Picked.delete(it.id);
+          b.classList.remove('ring-4','ring-green-400','bg-green-100');
+          b.classList.add('bg-amber-100');
+        } else {
+          l3Picked.add(it.id);
+          b.classList.add('ring-4','ring-green-400','bg-green-100');
+          b.classList.remove('bg-amber-100');
+        }
+      };
+      box.appendChild(b);
+    });
+    document.getElementById('l3-feedback').classList.add('hide');
+  }
+
+  function l3Check() {
+    const correctIds = L3_ITEMS.filter(x => x.correct).map(x => x.id);
+    const allRight = correctIds.every(id => l3Picked.has(id)) && l3Picked.size === correctIds.length;
+    const fb = document.getElementById('l3-feedback');
+    fb.classList.remove('hide');
+    if (allRight) {
+      fb.textContent = '🎉 剛剛好，好吃又不浪費！';
+      fb.className = 'text-3xl font-bold text-green-500 popin mt-3';
+      confetti();
+      setTimeout(() => {
+        STATE.level = 4;
+        drawProgress();
+        show('finale');
+        setTimeout(confetti, 300);
+        setTimeout(confetti, 900);
+      }, 1800);
+    } else {
+      fb.textContent = '😊 想一想：一個人吃得完多少？選 3 樣剛剛好～';
+      fb.className = 'text-xl font-bold text-orange-500 mt-3';
+    }
+  }
+
+  function restart() {
+    STATE.level = 0;
+    show('intro');
+    drawProgress();
+  }
+
+  // init
+  drawProgress();
+</script>
+</body>
+</html>

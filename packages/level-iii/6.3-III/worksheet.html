@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>6.3-III 負責任的消費｜地球購物車大挑戰</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:"Noto Sans TC","PingFang TC",system-ui,sans-serif;background:linear-gradient(135deg,#e0f7fa 0%,#fff3e0 50%,#f3e5f5 100%);}
+  .badge-glow{animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.7)}50%{box-shadow:0 0 0 18px rgba(16,185,129,0)}}
+  .shake{animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+  .pop{animation:pop .35s}
+  @keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+  .confetti{position:fixed;width:10px;height:16px;top:-20px;opacity:.9;pointer-events:none;z-index:9999;animation:fall 2.5s linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+  .dot{width:14px;height:14px;border-radius:50%;background:#d1d5db;display:inline-block;margin:0 4px;transition:all .3s}
+  .dot.active{background:#10b981;transform:scale(1.35)}
+  .stage{display:none}.stage.active{display:block}
+  .opt{transition:all .2s}.opt:hover{transform:translateY(-3px)}
+  .correct{background:#d1fae5!important;border-color:#10b981!important}
+  .wrong{background:#fee2e2!important;border-color:#ef4444!important}
+</style>
+</head>
+<body class="min-h-screen py-8">
+<div class="max-w-5xl mx-auto px-4">
+
+<header class="bg-white/80 backdrop-blur rounded-3xl shadow-xl p-6 mb-6 border-4 border-emerald-300">
+  <div class="flex items-center justify-between flex-wrap gap-3">
+    <div>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-emerald-700">🛒 地球購物車大挑戰</h1>
+      <p class="text-gray-600 mt-1">UNESCO 6.3-III · 負責任的消費 · 9-12 歲</p>
+    </div>
+    <div class="text-right">
+      <p class="text-sm text-gray-500">任務進度</p>
+      <p class="text-lg font-bold text-emerald-600"><span id="progressText">第 0 / 6 關</span></p>
+      <div class="mt-2">
+        <span class="dot" data-s="1"></span><span class="dot" data-s="2"></span><span class="dot" data-s="3"></span>
+        <span class="dot" data-s="4"></span><span class="dot" data-s="5"></span><span class="dot" data-s="6"></span>
+      </div>
+    </div>
+  </div>
+  <div class="w-full bg-gray-200 rounded-full h-3 mt-4"><div id="bar" class="bg-gradient-to-r from-emerald-400 to-sky-500 h-3 rounded-full" style="width:0%"></div></div>
+</header>
+
+<section class="bg-gradient-to-br from-amber-100 to-orange-100 rounded-3xl p-6 mb-6 shadow-lg border-2 border-amber-300">
+  <h2 class="text-xl font-bold text-orange-700">📜 任務簡報：地球守護者你好！</h2>
+  <p class="mt-2 text-gray-700 leading-relaxed">我是<b>「剩食貓阿剩」🐱</b>，來自 2050 年的地球。由於人們過度消費，現在每年要用掉 <b class="text-red-600">1.7 個地球</b> 的資源，而我們只有 1 顆！需要你幫忙破解 6 道消費關卡，拯救我的家園。完成後可以獲得「<b class="text-emerald-600">全校英雄徽章</b>」🏆 喔！</p>
+</section>
+
+<!-- 關 1 -->
+<section id="s1" class="stage active bg-white rounded-3xl shadow-xl p-6 mb-6">
+  <h3 class="text-2xl font-bold text-sky-700">關卡 1｜需要還是想要？</h3>
+  <p class="text-gray-600 mt-1">判斷以下三項商品，阿剩的冰箱裡最該留下哪一個？</p>
+  <div class="grid md:grid-cols-3 gap-3 mt-4">
+    <button class="opt q1 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🎮 第 11 支手遊造型</button>
+    <button class="opt q1 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="yes">🍎 明天早餐要吃的蘋果</button>
+    <button class="opt q1 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">👕 湊免運第 10 件 T 恤</button>
+  </div>
+  <p id="fb1" class="mt-3 text-sm"></p>
+</section>
+
+<!-- 關 2 -->
+<section id="s2" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
+  <h3 class="text-2xl font-bold text-sky-700">關卡 2｜數字偵探</h3>
+  <p class="text-gray-600 mt-1">一件棉質 T 恤從種棉、染布到做好，大約要花多少水？</p>
+  <div class="grid md:grid-cols-3 gap-3 mt-4">
+    <button class="opt q2 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">💧 約 27 公升（洗澡一次）</button>
+    <button class="opt q2 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="yes">🌊 約 2,700 公升（喝 2.5 年）</button>
+    <button class="opt q2 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">💦 約 270,000 公升（一個泳池）</button>
+  </div>
+  <p id="fb2" class="mt-3 text-sm"></p>
+  <p class="mt-2 text-xs text-gray-500">📊 真實數據來源：UNEP 2023 / Ellen MacArthur Foundation</p>
+</section>
+
+<!-- 關 3 -->
+<section id="s3" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
+  <h3 class="text-2xl font-bold text-sky-700">關卡 3｜拖曳配對：6R 階層</h3>
+  <p class="text-gray-600 mt-1">把 6 個行動拖到正確順序（由上到下，力道最強 → 最弱）</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <div>
+      <p class="font-semibold mb-2">🎒 行動卡（可拖）</p>
+      <div id="pool" class="space-y-2">
+        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="Reuse">♻️ Reuse 重複使用</div>
+        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="Refuse">🚫 Refuse 拒絕</div>
+        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="Recycle">🗑️ Recycle 回收</div>
+        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="Reduce">📉 Reduce 減量</div>
+        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="Repair">🔧 Repair 修理</div>
+        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="Repurpose">🎨 Repurpose 改用途</div>
+      </div>
+    </div>
+    <div>
+      <p class="font-semibold mb-2">🎯 正確排序（請拖入）</p>
+      <div id="slots" class="space-y-2">
+        <div class="slot p-3 rounded-lg bg-emerald-50 border-2 border-dashed border-emerald-400 min-h-[48px]" data-k="Refuse">1. 最強</div>
+        <div class="slot p-3 rounded-lg bg-emerald-50 border-2 border-dashed border-emerald-400 min-h-[48px]" data-k="Reduce">2.</div>
+        <div class="slot p-3 rounded-lg bg-emerald-50 border-2 border-dashed border-emerald-400 min-h-[48px]" data-k="Reuse">3.</div>
+        <div class="slot p-3 rounded-lg bg-emerald-50 border-2 border-dashed border-emerald-400 min-h-[48px]" data-k="Repair">4.</div>
+        <div class="slot p-3 rounded-lg bg-emerald-50 border-2 border-dashed border-emerald-400 min-h-[48px]" data-k="Repurpose">5.</div>
+        <div class="slot p-3 rounded-lg bg-emerald-50 border-2 border-dashed border-emerald-400 min-h-[48px]" data-k="Recycle">6. 最後防線</div>
+      </div>
+      <button id="check3" class="mt-3 bg-sky-500 text-white px-4 py-2 rounded-lg font-bold">檢查排序</button>
+      <p id="fb3" class="mt-2 text-sm"></p>
+    </div>
+  </div>
+</section>
+
+<!-- 關 4 -->
+<section id="s4" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
+  <h3 class="text-2xl font-bold text-sky-700">關卡 4｜碳帳本挑戰</h3>
+  <p class="text-gray-600 mt-1">全球每年浪費的食物，占人類總溫室氣體排放多少？</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-4">
+    <button class="opt q4 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🌱 約 1%（幾乎沒影響）</button>
+    <button class="opt q4 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="yes">🔥 8–10%（世界第 3 大排放「國」）</button>
+    <button class="opt q4 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">⛄ 約 30%</button>
+    <button class="opt q4 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🌋 超過 50%</button>
+  </div>
+  <p id="fb4" class="mt-3 text-sm"></p>
+  <p class="mt-2 text-xs text-gray-500">📊 UN FAO / UNEP Food Waste Index 2024；台灣人均每日製造 1.34 kg 垃圾。</p>
+</section>
+
+<!-- 關 5 情境角色 -->
+<section id="s5" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
+  <h3 class="text-2xl font-bold text-sky-700">關卡 5｜情境抉擇：同學說「自帶杯好遜」</h3>
+  <p class="text-gray-600 mt-1">你會怎麼回？每個選項都有不同後果：</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-4">
+    <button class="opt q5 p-4 rounded-xl border-2 border-gray-200 bg-blue-50 text-left" data-a="A">A. 假裝沒聽到，下次不帶杯。</button>
+    <button class="opt q5 p-4 rounded-xl border-2 border-gray-200 bg-blue-50 text-left" data-a="B">B. 回擊「你才遜！」吵起來。</button>
+    <button class="opt q5 p-4 rounded-xl border-2 border-gray-200 bg-blue-50 text-left" data-a="C">C. 微笑說「一年可以省 180 個杯子耶，要一起嗎？」</button>
+    <button class="opt q5 p-4 rounded-xl border-2 border-gray-200 bg-blue-50 text-left" data-a="D">D. 偷偷還是帶但不敢拿出來。</button>
+  </div>
+  <p id="fb5" class="mt-3 text-sm"></p>
+</section>
+
+<!-- 關 6 WSA 4 checkbox -->
+<section id="s6" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
+  <h3 class="text-2xl font-bold text-sky-700">關卡 6｜全校英雄行動（WSA 四面向）</h3>
+  <p class="text-gray-600 mt-1">勾選你願意挑戰的行動，四個都勾才能解鎖「全校英雄」徽章！🏆</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-4">
+    <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 cursor-pointer"><input type="checkbox" class="wsa mt-1" data-k="curriculum"><div><b>📚 課程與學習</b><br><span class="text-sm">在作文 / 美術課產出一份「需要 vs 想要」創作。</span></div></label>
+    <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 cursor-pointer"><input type="checkbox" class="wsa mt-1" data-k="operations"><div><b>🏫 校園營運</b><br><span class="text-sm">加入「剩食秤重小隊」，每週中午記錄班級剩食。</span></div></label>
+    <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 cursor-pointer"><input type="checkbox" class="wsa mt-1" data-k="community"><div><b>🏘️ 社區夥伴</b><br><span class="text-sm">繪製社區「自帶杯優惠地圖」，分享給家人鄰居。</span></div></label>
+    <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 cursor-pointer"><input type="checkbox" class="wsa mt-1" data-k="agency"><div><b>🗣️ 學生治理</b><br><span class="text-sm">在家長會或班會提案「一次性餐具禁令」。</span></div></label>
+  </div>
+  <button id="finish" class="mt-5 bg-gradient-to-r from-emerald-500 to-sky-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg">解鎖全校英雄徽章 🏆</button>
+  <p id="fb6" class="mt-3 text-sm"></p>
+</section>
+
+<!-- 成果 -->
+<section id="result" class="hidden bg-gradient-to-br from-yellow-100 to-pink-100 rounded-3xl shadow-2xl p-8 mb-6 text-center border-4 border-yellow-400">
+  <div id="badge" class="inline-block badge-glow bg-gradient-to-br from-emerald-400 to-sky-500 text-white rounded-full w-40 h-40 flex items-center justify-center text-5xl shadow-2xl mx-auto">🏆</div>
+  <h2 class="text-3xl font-extrabold mt-4 text-emerald-700">恭喜！你是 6.3-III 全校英雄！</h2>
+  <p class="text-gray-700 mt-2">你記住了：一件 T 恤 = 2,700 L 水，台灣人日產 1.34 kg 垃圾，食物浪費占全球 8-10% 排放。</p>
+  <div class="mt-6 text-left max-w-2xl mx-auto bg-white/70 rounded-2xl p-5">
+    <h3 class="font-bold text-lg text-sky-700">🧠 延伸思考（請與家人討論）</h3>
+    <ol class="list-decimal ml-6 mt-2 space-y-2 text-gray-700">
+      <li>如果『想要』可以無限、『需要』有限，為何廣告總在鼓勵我們不斷買新的？</li>
+      <li>二手衣、共享玩具可以讓我們『擁有感』減少嗎？試著一週不買新東西看看。</li>
+      <li>你能說服家人或喜歡的網紅一起做負責任消費嗎？你會怎麼開口？</li>
+    </ol>
+  </div>
+  <button onclick="window.print()" class="mt-5 bg-sky-600 text-white px-5 py-2 rounded-lg">🖨️ 列印我的英雄證書</button>
+</section>
+
+<footer class="text-center text-xs text-gray-500 mt-6 pb-10">© 6.3-III UNESCO CCE · 數據 2026-04-16 驗證 · UNEP / FAO / 環境部 / Ellen MacArthur Foundation</footer>
+
+</div>
+
+<script>
+let stage=1, score=0;
+const stages=[1,2,3,4,5,6];
+
+function setStage(n){
+  document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('s'+n); if(el){el.classList.add('active'); el.scrollIntoView({behavior:'smooth'});}
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active', i<n));
+  document.getElementById('progressText').textContent='第 '+n+' / 6 關';
+  document.getElementById('bar').style.width=((n-1)/6*100)+'%';
+}
+
+function confetti(){
+  const colors=['#f59e0b','#10b981','#3b82f6','#ec4899','#8b5cf6'];
+  for(let i=0;i<40;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*0.6)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+
+// Q1
+document.querySelectorAll('.q1').forEach(b=>b.addEventListener('click',()=>{
+  const ok=b.dataset.a==='yes';
+  document.querySelectorAll('.q1').forEach(x=>x.disabled=true);
+  if(ok){ b.classList.add('correct'); document.getElementById('fb1').innerHTML='✅ 答對！蘋果是「需要」，其他是「想要」。<span class="pop inline-block">🎉</span>'; score++; setTimeout(()=>{setStage(2);},900);}
+  else{ b.classList.add('wrong','shake'); document.getElementById('fb1').innerHTML='❌ 再想想！提示：有沒有它你還能健康生活嗎？正解是「🍎 蘋果」。<br>點下一題繼續 →'; setTimeout(()=>{setStage(2);},1800);}
+}));
+
+// Q2
+document.querySelectorAll('.q2').forEach(b=>b.addEventListener('click',()=>{
+  const ok=b.dataset.a==='yes';
+  document.querySelectorAll('.q2').forEach(x=>x.disabled=true);
+  if(ok){ b.classList.add('correct'); document.getElementById('fb2').innerHTML='✅ 答對！2,700 公升約等於一個人 2.5 年飲水量 💧'; score++; confetti(); setTimeout(()=>setStage(3),900);}
+  else{ b.classList.add('wrong','shake'); document.getElementById('fb2').innerHTML='❌ 正解是 2,700 公升。一件 T 恤背後有一個小水庫！'; setTimeout(()=>setStage(3),1800);}
+}));
+
+// Q3 drag
+let dragged=null;
+document.querySelectorAll('.drag').forEach(d=>{
+  d.addEventListener('dragstart',e=>{dragged=d;e.dataTransfer.effectAllowed='move';});
+});
+document.querySelectorAll('.slot').forEach(s=>{
+  s.addEventListener('dragover',e=>e.preventDefault());
+  s.addEventListener('drop',e=>{e.preventDefault(); if(dragged){ s.appendChild(dragged); }});
+});
+document.getElementById('check3').addEventListener('click',()=>{
+  const slots=document.querySelectorAll('#slots .slot');
+  let ok=true;
+  slots.forEach(sl=>{
+    const k=sl.dataset.k; const inside=sl.querySelector('.drag');
+    if(!inside || inside.dataset.k!==k){ ok=false; sl.classList.add('wrong'); } else sl.classList.add('correct');
+  });
+  if(ok){ document.getElementById('fb3').innerHTML='✅ 完美！Refuse > Reduce > Reuse > Repair > Repurpose > Recycle'; score++; confetti(); setTimeout(()=>setStage(4),1100);}
+  else{ document.getElementById('fb3').innerHTML='❌ 有些順序不對，提示：「不買」最強、「回收」最弱。再試一次或點下一題。'; setTimeout(()=>setStage(4),2200);}
+});
+
+// Q4
+document.querySelectorAll('.q4').forEach(b=>b.addEventListener('click',()=>{
+  const ok=b.dataset.a==='yes';
+  document.querySelectorAll('.q4').forEach(x=>x.disabled=true);
+  if(ok){b.classList.add('correct'); document.getElementById('fb4').innerHTML='✅ 食物浪費占 8–10%，是全球第三大排放「國」。少倒一口飯=減碳！'; score++; setTimeout(()=>setStage(5),900);}
+  else{b.classList.add('wrong','shake'); document.getElementById('fb4').innerHTML='❌ 正解是 8–10%。你剛剛的選項 <b>太低或太高</b>。想想全球每年丟 10.5 億噸食物的規模！'; setTimeout(()=>setStage(5),1800);}
+}));
+
+// Q5
+const fb5={
+  A:{ok:false,msg:'🙁 沉默讓地球更熱。試試換一個做法。'},
+  B:{ok:false,msg:'😬 吵架無效！情緒上來，訊息傳不出去。'},
+  C:{ok:true, msg:'✅ 超棒！用數據（180 個杯子/年）＋邀請，正是 B2/B3 倡議行動！'},
+  D:{ok:false,msg:'🫥 偷偷做也很好，但『公開做』才能影響別人。'}
+};
+document.querySelectorAll('.q5').forEach(b=>b.addEventListener('click',()=>{
+  const r=fb5[b.dataset.a];
+  document.querySelectorAll('.q5').forEach(x=>x.disabled=true);
+  b.classList.add(r.ok?'correct':'wrong');
+  document.getElementById('fb5').innerHTML=r.msg;
+  if(r.ok){score++; confetti();}
+  setTimeout(()=>setStage(6),1400);
+}));
+
+// Q6 WSA
+document.getElementById('finish').addEventListener('click',()=>{
+  const checked=[...document.querySelectorAll('.wsa:checked')].map(x=>x.dataset.k);
+  const all=['curriculum','operations','community','agency'];
+  const allChecked=all.every(k=>checked.includes(k));
+  if(allChecked){
+    score++;
+    document.getElementById('fb6').innerHTML='✅ WSA 全打勾！你真的是<b>全校英雄</b>！';
+    document.getElementById('result').classList.remove('hidden');
+    document.querySelectorAll('.dot').forEach(d=>d.classList.add('active'));
+    document.getElementById('bar').style.width='100%';
+    document.getElementById('progressText').textContent='第 6 / 6 關 ✓';
+    confetti(); setTimeout(confetti,400); setTimeout(confetti,800);
+    document.getElementById('result').scrollIntoView({behavior:'smooth'});
+  } else {
+    document.getElementById('fb6').innerHTML='⚠️ 至少四個都勾才能成為「全校英雄」！因為真正的改變需要<b>課程 + 營運 + 社區 + 學生</b>全部出動。';
+  }
+});
+
+setStage(1);
+</script>
+</body>
+</html>

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>大自然的禮物 — 小鹿茸茸的森林旅行</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: linear-gradient(180deg, #d9f99d 0%, #fef3c7 60%, #fde68a 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .popin { animation: popin 0.6s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes popin { 0%{transform:scale(.3);opacity:0} 60%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
+  .bounce { animation: bounce 1s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .wiggle { animation: wiggle 0.4s ease-in-out; }
+  @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-8deg)} 75%{transform:rotate(8deg)} }
+  .shine { animation: shine 2s infinite; }
+  @keyframes shine { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.3) drop-shadow(0 0 20px #fef08a)} }
+  .sway { animation: sway 3s ease-in-out infinite; transform-origin: 50% 90%; }
+  @keyframes sway { 0%,100%{transform:rotate(-3deg)} 50%{transform:rotate(3deg)} }
+  .confetti {
+    position: fixed;
+    width: 14px; height: 14px;
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  .dropzone-active { background: #bef264 !important; transform: scale(1.08); }
+  .big-btn {
+    font-size: 2rem;
+    padding: 1rem 2rem;
+    border-radius: 9999px;
+    font-weight: 800;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.15);
+    transition: all 0.15s;
+  }
+  .big-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,0.15); }
+  svg text { pointer-events: none; }
+  svg * { pointer-events: none; }
+  button svg * { pointer-events: none; }
+  .card {
+    background: white;
+    border-radius: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+  }
+  .hide { display: none !important; }
+  .selected-item { outline: 5px solid #f59e0b; transform: scale(1.05); }
+</style>
+</head>
+<body class="flex flex-col items-center">
+
+<!-- 主角：小鹿茸茸 Lulu SVG (可重用) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="lulu">
+      <!-- 身體 -->
+      <ellipse cx="50" cy="62" rx="32" ry="28" fill="#a16207"/>
+      <!-- 臉 -->
+      <circle cx="50" cy="45" r="22" fill="#d97706"/>
+      <!-- 白色肚肚 -->
+      <ellipse cx="50" cy="70" rx="18" ry="14" fill="#fde68a"/>
+      <!-- 耳朵 -->
+      <ellipse cx="32" cy="28" rx="7" ry="11" fill="#a16207"/>
+      <ellipse cx="68" cy="28" rx="7" ry="11" fill="#a16207"/>
+      <ellipse cx="32" cy="29" rx="3" ry="6" fill="#fecaca"/>
+      <ellipse cx="68" cy="29" rx="3" ry="6" fill="#fecaca"/>
+      <!-- 鹿角（小芽） -->
+      <path d="M 40 20 Q 38 10 42 6 M 42 6 Q 46 8 44 15" stroke="#78350f" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M 60 20 Q 62 10 58 6 M 58 6 Q 54 8 56 15" stroke="#78350f" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- 眼睛 -->
+      <circle cx="42" cy="44" r="4" fill="black"/>
+      <circle cx="58" cy="44" r="4" fill="black"/>
+      <circle cx="43" cy="43" r="1.2" fill="white"/>
+      <circle cx="59" cy="43" r="1.2" fill="white"/>
+      <!-- 鼻子 -->
+      <ellipse cx="50" cy="54" rx="4" ry="3" fill="#78350f"/>
+      <!-- 嘴 -->
+      <path d="M 44 60 Q 50 66 56 60" stroke="#78350f" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- 白色斑點 -->
+      <circle cx="35" cy="65" r="2.5" fill="white"/>
+      <circle cx="65" cy="65" r="2.5" fill="white"/>
+      <circle cx="42" cy="80" r="2" fill="white"/>
+      <circle cx="58" cy="80" r="2" fill="white"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- 頂部進度條 -->
+<div class="w-full max-w-3xl p-4">
+  <div class="flex items-center justify-center gap-2 text-3xl font-extrabold text-green-800">
+    <svg width="60" height="60" viewBox="0 0 100 100"><use href="#lulu"/></svg>
+    <span>小鹿茸茸的森林旅行</span>
+  </div>
+  <div class="flex gap-2 mt-4 justify-center" id="progress-bar">
+    <!-- 填充 -->
+  </div>
+</div>
+
+<!-- 關卡容器 -->
+<main class="w-full max-w-3xl p-4 flex-1 flex items-center justify-center">
+
+  <!-- 開始畫面 -->
+  <section id="intro" class="card text-center popin">
+    <svg width="170" height="170" viewBox="0 0 100 100" class="mx-auto bounce"><use href="#lulu"/></svg>
+    <h1 class="text-4xl font-extrabold text-green-700 mt-4">嗨！我是茸茸！</h1>
+    <p class="text-2xl text-gray-700 mt-4">今天要跟我去森林<span class="text-amber-600 font-bold">找大自然禮物</span>嗎？</p>
+    <p class="text-xl text-gray-500 mt-2">一起玩 3 個小關卡！</p>
+    <button onclick="startGame()" class="big-btn bg-green-400 hover:bg-green-300 text-white mt-6">開始</button>
+  </section>
+
+  <!-- 關卡 1：大自然禮物找一找（點擊配對） -->
+  <section id="level1" class="card w-full hide">
+    <div class="flex items-center gap-3 mb-4">
+      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#lulu"/></svg>
+      <p class="text-2xl font-bold text-green-700">茸茸：哪個是大自然送的？點一點！</p>
+    </div>
+    <div id="l1-hint" class="text-center my-4">
+      <div class="text-2xl font-bold text-amber-700" id="l1-question">請找出大自然的禮物</div>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mt-6" id="l1-options">
+      <!-- JS 填充 -->
+    </div>
+    <p id="l1-feedback" class="text-2xl text-center mt-4 font-bold hide"></p>
+  </section>
+
+  <!-- 關卡 2：送禮物拖拉 -->
+  <section id="level2" class="card w-full hide">
+    <div class="flex items-center gap-3 mb-4">
+      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#lulu"/></svg>
+      <p class="text-2xl font-bold text-green-700">茸茸：把禮物拖給對的朋友！</p>
+    </div>
+    <p class="text-lg text-center text-gray-500">（也可以用手指點 → 再點目標）</p>
+    <div class="flex justify-around my-4 flex-wrap gap-3" id="l2-items">
+      <!-- 可拖拉物品 -->
+    </div>
+    <div class="grid grid-cols-2 gap-4 mt-6">
+      <div class="dropzone card text-center h-40 flex flex-col items-center justify-center border-4 border-dashed border-green-400" data-target="人">
+        <div class="text-6xl">🧒</div>
+        <div class="text-2xl font-bold text-green-600">小朋友</div>
+      </div>
+      <div class="dropzone card text-center h-40 flex flex-col items-center justify-center border-4 border-dashed border-amber-400" data-target="動物">
+        <div class="text-6xl">🦌</div>
+        <div class="text-2xl font-bold text-amber-600">茸茸</div>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <p id="l2-feedback" class="text-2xl font-bold hide"></p>
+    </div>
+  </section>
+
+  <!-- 關卡 3：我是小小幫手（多選） -->
+  <section id="level3" class="card w-full hide">
+    <div class="flex items-center gap-3 mb-4">
+      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#lulu"/></svg>
+      <p class="text-2xl font-bold text-green-700">茸茸：哪些事情幫得到大自然？選 3 個！</p>
+    </div>
+    <p class="text-xl text-center text-gray-600">（點一下就選好囉，再點一下可以取消）</p>
+    <div class="grid grid-cols-3 gap-3 mt-4" id="l3-items">
+      <!-- 6 個項目 -->
+    </div>
+    <div class="text-center mt-4">
+      <button onclick="l3Check()" class="big-btn bg-green-400 hover:bg-green-300 text-white">完成！</button>
+      <p id="l3-feedback" class="text-2xl font-bold hide mt-3"></p>
+    </div>
+  </section>
+
+  <!-- 結尾成就畫面 -->
+  <section id="finale" class="card text-center hide">
+    <div class="shine">
+      <svg width="190" height="190" viewBox="0 0 100 100" class="mx-auto bounce"><use href="#lulu"/></svg>
+    </div>
+    <div class="text-6xl mt-4">🏆</div>
+    <h1 class="text-4xl font-extrabold text-green-700 mt-4">你是超棒的森林小幫手！</h1>
+    <p class="text-2xl text-gray-700 mt-4">茸茸送你一張 <span class="text-amber-500 font-bold">綠葉金牌</span>！</p>
+    <div class="card mt-6 bg-green-100 border-4 border-green-300">
+      <p class="text-xl font-bold text-green-800">小小任務（回家做）</p>
+      <p class="text-2xl mt-2">週末和爸爸媽媽去公園散步，<br/><span class="text-amber-700 font-bold">找 3 樣大自然禮物</span>帶回家，告訴他們大自然很棒！</p>
+    </div>
+    <button onclick="restart()" class="big-btn bg-green-400 hover:bg-green-300 text-white mt-6">再玩一次</button>
+  </section>
+
+</main>
+
+<script>
+  // ============ 全域狀態 ============
+  const STATE = { level: 0, total: 3, l1Index: 0 };
+
+  // ============ 進度條 ============
+  function drawProgress() {
+    const bar = document.getElementById('progress-bar');
+    bar.innerHTML = '';
+    for (let i = 1; i <= STATE.total; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'w-10 h-10 rounded-full flex items-center justify-center text-xl font-extrabold ' +
+        (i < STATE.level ? 'bg-green-500 text-white' :
+         i === STATE.level ? 'bg-amber-400 text-white bounce' : 'bg-gray-300 text-gray-600');
+      dot.textContent = i < STATE.level ? '★' : i;
+      bar.appendChild(dot);
+    }
+  }
+
+  // ============ 彩帶 ============
+  function confetti() {
+    const colors = ['#16a34a','#f59e0b','#84cc16','#fbbf24','#4ade80'];
+    for (let i = 0; i < 40; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = (50 + (Math.random()-0.5)*80) + 'vw';
+      c.style.top = '50vh';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.transform = 'rotate(' + Math.random()*360 + 'deg)';
+      document.body.appendChild(c);
+      const dx = (Math.random()-0.5) * 600;
+      const dy = (Math.random()-0.3) * 600;
+      c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy}px) rotate(720deg)`, opacity: 0 }
+      ], { duration: 1500, easing: 'cubic-bezier(.17,.67,.83,.67)' });
+      setTimeout(() => c.remove(), 1600);
+    }
+  }
+
+  // ============ 畫面切換 ============
+  function show(id) {
+    ['intro','level1','level2','level3','finale'].forEach(s => {
+      const el = document.getElementById(s);
+      if (!el) return;
+      if (s === id) { el.classList.remove('hide'); el.classList.add('popin'); }
+      else { el.classList.add('hide'); el.classList.remove('popin'); }
+    });
+  }
+
+  function startGame() {
+    STATE.level = 1;
+    drawProgress();
+    loadLevel1();
+    show('level1');
+  }
+
+  // ============ 關卡 1：點擊配對（大自然禮物 vs 人做的） ============
+  // 每回 4 個選項：2 個是大自然送的，2 個是人做的。問「哪個是大自然送的」。
+  const L1_ROUNDS = [
+    {
+      question: '請找出「大自然送的」禮物！',
+      options: [
+        { key: 'leaf', label: '樹葉', emoji: '🍃', isNature: true },
+        { key: 'tv',   label: '電視', emoji: '📺', isNature: false },
+        { key: 'rain', label: '雨水', emoji: '💧', isNature: true },
+        { key: 'car',  label: '汽車', emoji: '🚗', isNature: false }
+      ]
+    }
+  ];
+
+  function loadLevel1() {
+    const round = L1_ROUNDS[0];
+    document.getElementById('l1-question').textContent = round.question;
+    const box = document.getElementById('l1-options');
+    box.innerHTML = '';
+    STATE.l1Found = 0;
+    STATE.l1Total = round.options.filter(o => o.isNature).length;
+
+    round.options.slice().sort(() => Math.random()-0.5).forEach(opt => {
+      const b = document.createElement('button');
+      b.className = 'big-btn bg-lime-200 hover:bg-lime-100 text-green-900 flex flex-col items-center';
+      b.dataset.nature = opt.isNature ? 'yes' : 'no';
+      b.innerHTML = `<div class="text-5xl">${opt.emoji}</div><div class="text-lg mt-1">${opt.label}</div>`;
+      b.addEventListener('click', () => l1Pick(b));
+      box.appendChild(b);
+    });
+    document.getElementById('l1-feedback').classList.add('hide');
+  }
+
+  function l1Pick(btn) {
+    const fb = document.getElementById('l1-feedback');
+    fb.classList.remove('hide');
+    if (btn.dataset.nature === 'yes') {
+      STATE.l1Found += 1;
+      btn.classList.add('bg-green-400','text-white');
+      btn.disabled = true;
+      fb.textContent = `🎉 答對啦！找到 ${STATE.l1Found}/${STATE.l1Total}`;
+      fb.className = 'text-2xl text-center mt-4 font-bold text-green-600 popin';
+      confetti();
+      if (STATE.l1Found >= STATE.l1Total) {
+        fb.textContent = '🌟 全部找到！你好棒！';
+        setTimeout(() => {
+          STATE.level = 2;
+          drawProgress();
+          loadLevel2();
+          show('level2');
+        }, 1800);
+      }
+    } else {
+      fb.textContent = '😊 想一想，這個是人做的喔～再試試！';
+      fb.className = 'text-2xl text-center mt-4 font-bold text-orange-500';
+      btn.classList.add('wiggle');
+      setTimeout(() => btn.classList.remove('wiggle'), 400);
+    }
+  }
+
+  // ============ 關卡 2：送禮物拖拉 ============
+  // 物品拖到「小朋友」或「茸茸」，都算對；主題是『大自然禮物人和動物都需要』
+  const L2_ITEMS = [
+    { id: 'apple',  label: '蘋果',   emoji: '🍎', accept: ['人','動物'] },
+    { id: 'grass',  label: '青草',   emoji: '🌿', accept: ['動物'] },
+    { id: 'water',  label: '水',     emoji: '💧', accept: ['人','動物'] },
+    { id: 'wood',   label: '木頭',   emoji: '🪵', accept: ['人'] }
+  ];
+  let l2Correct = 0;
+  let l2Total = 0;
+  let l2Picked = null; // 手機 fallback 選中的物件
+
+  function loadLevel2() {
+    l2Correct = 0;
+    l2Total = L2_ITEMS.length;
+    l2Picked = null;
+    const box = document.getElementById('l2-items');
+    box.innerHTML = '';
+    L2_ITEMS.slice().sort(() => Math.random()-0.5).forEach(it => {
+      const d = document.createElement('div');
+      d.className = 'card text-center cursor-grab bg-white shadow-lg text-5xl p-4 select-none';
+      d.draggable = true;
+      d.dataset.id = it.id;
+      d.innerHTML = `<div>${it.emoji}</div><div class="text-lg text-gray-700 mt-1">${it.label}</div>`;
+      // 桌機拖拉
+      d.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', it.id));
+      // 觸控 fallback：點一下選中，再點目標投放
+      d.addEventListener('click', () => {
+        if (l2Picked) l2Picked.classList.remove('selected-item');
+        l2Picked = d;
+        d.classList.add('selected-item');
+      });
+      box.appendChild(d);
+    });
+
+    document.querySelectorAll('#level2 .dropzone').forEach(z => {
+      z.ondragover = e => { e.preventDefault(); z.classList.add('dropzone-active'); };
+      z.ondragleave = () => z.classList.remove('dropzone-active');
+      z.ondrop = e => {
+        e.preventDefault();
+        z.classList.remove('dropzone-active');
+        const id = e.dataTransfer.getData('text/plain');
+        handleDrop(id, z);
+      };
+      // 觸控 fallback 點擊放下
+      z.addEventListener('click', () => {
+        if (!l2Picked) return;
+        handleDrop(l2Picked.dataset.id, z);
+      });
+    });
+    document.getElementById('l2-feedback').classList.add('hide');
+  }
+
+  function handleDrop(id, zone) {
+    const item = L2_ITEMS.find(i => i.id === id);
+    if (!item) return;
+    const target = zone.dataset.target;
+    const fb = document.getElementById('l2-feedback');
+    fb.classList.remove('hide');
+    if (item.accept.includes(target)) {
+      fb.textContent = '🎉 太棒了！';
+      fb.className = 'text-2xl text-center mt-3 font-bold text-green-600';
+      confetti();
+      const el = document.querySelector(`#l2-items [data-id="${id}"]`);
+      if (el) { el.remove(); }
+      if (l2Picked && l2Picked.dataset.id === id) { l2Picked = null; }
+      l2Correct += 1;
+      if (l2Correct >= l2Total) {
+        fb.textContent = '🌟 全部送完了！';
+        setTimeout(() => {
+          STATE.level = 3;
+          drawProgress();
+          loadLevel3();
+          show('level3');
+        }, 1800);
+      }
+    } else {
+      fb.textContent = '😊 換一個試試看～想想看誰比較需要？';
+      fb.className = 'text-2xl text-center mt-3 font-bold text-orange-500';
+      zone.classList.add('wiggle');
+      setTimeout(() => zone.classList.remove('wiggle'), 400);
+    }
+  }
+
+  // ============ 關卡 3：我是小小幫手（多選 3） ============
+  const L3_ITEMS = [
+    { id: 'plant',   label: '種小樹', emoji: '🌱', good: true },
+    { id: 'save',    label: '節省用水', emoji: '🚰', good: true },
+    { id: 'tell',    label: '告訴家人', emoji: '👨‍👩‍👧', good: true },
+    { id: 'litter',  label: '亂丟垃圾', emoji: '🗑️', good: false },
+    { id: 'pick',    label: '採花回家', emoji: '🌺', good: false },
+    { id: 'waste',   label: '浪費紙張', emoji: '📄', good: false }
+  ];
+  let l3Picked = new Set();
+
+  function loadLevel3() {
+    l3Picked.clear();
+    const box = document.getElementById('l3-items');
+    box.innerHTML = '';
+    L3_ITEMS.slice().sort(() => Math.random()-0.5).forEach(it => {
+      const b = document.createElement('button');
+      b.className = 'big-btn bg-yellow-100 hover:bg-yellow-50 text-gray-800 flex flex-col items-center';
+      b.dataset.id = it.id;
+      b.innerHTML = `<div class="text-5xl">${it.emoji}</div><div class="text-lg mt-1">${it.label}</div>`;
+      b.addEventListener('click', () => {
+        if (l3Picked.has(it.id)) {
+          l3Picked.delete(it.id);
+          b.classList.remove('bg-green-400','text-white');
+          b.classList.add('bg-yellow-100');
+        } else {
+          l3Picked.add(it.id);
+          b.classList.remove('bg-yellow-100');
+          b.classList.add('bg-green-400','text-white');
+        }
+      });
+      box.appendChild(b);
+    });
+    document.getElementById('l3-feedback').classList.add('hide');
+  }
+
+  function l3Check() {
+    const fb = document.getElementById('l3-feedback');
+    fb.classList.remove('hide');
+    if (l3Picked.size !== 3) {
+      fb.textContent = '😊 請選 3 個喔！';
+      fb.className = 'text-2xl text-center mt-3 font-bold text-orange-500';
+      return;
+    }
+    const goodIds = L3_ITEMS.filter(i => i.good).map(i => i.id);
+    const allGood = [...l3Picked].every(id => goodIds.includes(id));
+    if (allGood) {
+      fb.textContent = '🎉 你是森林小幫手！';
+      fb.className = 'text-2xl text-center mt-3 font-bold text-green-600 popin';
+      confetti();
+      setTimeout(() => {
+        STATE.level = 4;
+        drawProgress();
+        show('finale');
+        confetti();
+      }, 1500);
+    } else {
+      fb.textContent = '😊 有一個不太對喔～再想想！';
+      fb.className = 'text-2xl text-center mt-3 font-bold text-orange-500';
+    }
+  }
+
+  function restart() {
+    STATE.level = 0;
+    drawProgress();
+    show('intro');
+  }
+
+  // ============ 初始化 ============
+  drawProgress();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>零廢棄小戰士 — 6.7-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#ecfccb 0%,#d1fae5 50%,#fef3c7 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .feedback-pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; z-index:9999; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,.25); }
+  .drag-item { cursor: grab; user-select: none; }
+  .drag-item.dragging { opacity: .4; }
+  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
+  .badge-glow { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
+  .hidden-step { display: none; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-green-600 to-lime-500 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">♻️ 零廢棄小戰士</h1>
+    <p class="mt-2 text-lime-50">UNESCO 6.7-III ｜ 9-12 歲 ｜ 從垃圾到黑金的冒險！</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 情境角色 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl">🦸</div>
+    <div>
+      <h2 class="text-2xl font-bold text-green-700">任務簡報：學校廚餘桶滿出來了！</h2>
+      <p class="mt-2 leading-relaxed">嗨！我是<strong>環保隊長小綠</strong>。今天學校午餐後，廚餘桶又滿出來了！台灣每人每天要丟掉約 <strong class="text-red-600">1 公斤</strong> 垃圾，全球每年產生 <strong class="text-red-600">23 億公噸</strong>！你願意接下 6 個關卡任務，幫學校變成零廢棄校園，解鎖「<span class="text-yellow-600 font-bold">零廢棄全校英雄</span>」徽章嗎？</p>
+      <button onclick="startMission()" class="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 ♻️</button>
+    </div>
+  </div>
+</section>
+
+<!-- 關卡 1：垃圾的一生（連連看分解時間）-->
+<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-blue-700">⏳ 關卡 1：垃圾的一生 — 分解時間大考驗</h2>
+  <p class="mt-2 text-gray-600">點一點，猜猜看這些東西埋進土裡要多久才會分解（真實數據 dp5）：</p>
+  <div class="space-y-3 mt-4" id="decompose">
+    <div class="flex items-center gap-3">
+      <span class="text-3xl">🍎</span><span class="w-32">蘋果核</span>
+      <select class="q-dec flex-1 p-2 border-2 rounded" data-ans="2">
+        <option value="">請選擇</option>
+        <option value="2">約 2 個月</option>
+        <option value="80">80 年</option>
+        <option value="500">500 年</option>
+        <option value="1000000">100 萬年</option>
+      </select>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-3xl">🥤</span><span class="w-32">鋁罐</span>
+      <select class="q-dec flex-1 p-2 border-2 rounded" data-ans="80">
+        <option value="">請選擇</option>
+        <option value="2">約 2 個月</option>
+        <option value="80">80-200 年</option>
+        <option value="500">500 年</option>
+        <option value="1000000">100 萬年</option>
+      </select>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-3xl">🛍️</span><span class="w-32">塑膠袋</span>
+      <select class="q-dec flex-1 p-2 border-2 rounded" data-ans="500">
+        <option value="">請選擇</option>
+        <option value="2">約 2 個月</option>
+        <option value="80">80 年</option>
+        <option value="500">10-1000 年</option>
+        <option value="1000000">100 萬年</option>
+      </select>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-3xl">🍾</span><span class="w-32">玻璃瓶</span>
+      <select class="q-dec flex-1 p-2 border-2 rounded" data-ans="1000000">
+        <option value="">請選擇</option>
+        <option value="2">約 2 個月</option>
+        <option value="80">80 年</option>
+        <option value="500">500 年</option>
+        <option value="1000000">超過 100 萬年</option>
+      </select>
+    </div>
+  </div>
+  <button onclick="checkL1()" class="mt-5 bg-blue-600 text-white font-bold py-2 px-5 rounded-full">提交答案</button>
+  <div id="l1-fb" class="mt-4"></div>
+</section>
+
+<!-- 關卡 2：分類大師（拖曳）-->
+<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-teal-700">🧺 關卡 2：分類大師 — 垃圾要去哪裡？</h2>
+  <p class="mt-2 text-gray-600">台灣 4 合 1 回收率已超過 <strong>55%</strong>（dp1, dp7）！幫這些垃圾找到正確的家：</p>
+
+  <div class="flex flex-wrap gap-3 mt-4" id="trashPool">
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="recycle">🥤 寶特瓶</div>
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="compost">🍌 香蕉皮</div>
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="recycle">📰 舊報紙</div>
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="general">🚬 菸蒂</div>
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="compost">🍂 落葉</div>
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="recycle">🥫 鋁罐</div>
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="general">🧻 用過衛生紙</div>
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="compost">🍚 剩飯</div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5">
+    <div class="drop-zone min-h-28 p-3 border-4 border-dashed border-blue-400 rounded-xl bg-blue-50" data-accept="recycle">
+      <h3 class="font-bold text-blue-700">♻️ 資源回收</h3>
+      <div class="mt-2 flex flex-wrap gap-2 zone-items"></div>
+    </div>
+    <div class="drop-zone min-h-28 p-3 border-4 border-dashed border-amber-500 rounded-xl bg-amber-50" data-accept="compost">
+      <h3 class="font-bold text-amber-700">🌱 廚餘／堆肥</h3>
+      <div class="mt-2 flex flex-wrap gap-2 zone-items"></div>
+    </div>
+    <div class="drop-zone min-h-28 p-3 border-4 border-dashed border-gray-500 rounded-xl bg-gray-100" data-accept="general">
+      <h3 class="font-bold text-gray-700">🗑️ 一般垃圾</h3>
+      <div class="mt-2 flex flex-wrap gap-2 zone-items"></div>
+    </div>
+  </div>
+  <button onclick="checkL2()" class="mt-5 bg-teal-600 text-white font-bold py-2 px-5 rounded-full">檢查分類</button>
+  <div id="l2-fb" class="mt-4"></div>
+</section>
+
+<!-- 關卡 3：堆肥實驗室 -->
+<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-amber-700">🧪 關卡 3：堆肥實驗室 — 配出完美黑金！</h2>
+  <p class="mt-2 text-gray-600">堆肥需要 <strong>綠色料（濕、氮）</strong> + <strong>褐色料（乾、碳）</strong> + 空氣 + 水。最佳比例約 <strong>綠 1 : 褐 3</strong>。家庭堆肥可減少 <strong>30%</strong> 垃圾（dp4），並提升土壤保水力 <strong>20%</strong>（dp6）！</p>
+  <div class="grid grid-cols-2 gap-4 mt-4">
+    <div>
+      <label class="font-bold text-green-700">綠色料（份）</label>
+      <input type="range" id="greenAmt" min="0" max="6" value="1" class="w-full">
+      <div id="greenVal" class="text-center text-lg">1</div>
+    </div>
+    <div>
+      <label class="font-bold text-amber-700">褐色料（份）</label>
+      <input type="range" id="brownAmt" min="0" max="6" value="3" class="w-full">
+      <div id="brownVal" class="text-center text-lg">3</div>
+    </div>
+  </div>
+  <div class="mt-4 text-center">
+    <div id="compostBox" class="inline-block p-5 rounded-full bg-amber-200 text-5xl">🪣</div>
+    <div id="l3-result" class="mt-3 font-bold"></div>
+  </div>
+  <button onclick="checkL3()" class="mt-3 bg-amber-600 text-white font-bold py-2 px-5 rounded-full">啟動發酵！</button>
+  <div id="l3-fb" class="mt-4"></div>
+</section>
+
+<!-- 關卡 4：5R 英雄任務 -->
+<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-purple-700">🦸 關卡 4：5R 英雄任務</h2>
+  <p class="mt-2 text-gray-600">每個情境選出最棒的 R 行動：</p>
+  <div class="space-y-4 mt-4" id="r5">
+    <div class="p-3 bg-purple-50 rounded-xl">
+      <p class="font-semibold">① 媽媽要買飲料，老闆給你吸管。你說：</p>
+      <div class="flex flex-wrap gap-2 mt-2">
+        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="1">Refuse 拒用</button>
+        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="0">Recycle 回收</button>
+        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="0">Repair 維修</button>
+      </div>
+    </div>
+    <div class="p-3 bg-purple-50 rounded-xl">
+      <p class="font-semibold">② 哥哥的書包壞掉一條帶子。你建議：</p>
+      <div class="flex flex-wrap gap-2 mt-2">
+        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="0">直接丟掉買新的</button>
+        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="1">Repair 找裁縫修</button>
+        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="0">Refuse 拒用</button>
+      </div>
+    </div>
+    <div class="p-3 bg-purple-50 rounded-xl">
+      <p class="font-semibold">③ 午餐剩下很多菜。你建議：</p>
+      <div class="flex flex-wrap gap-2 mt-2">
+        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="0">丟一般垃圾</button>
+        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="1">Reduce＋廚餘桶做堆肥</button>
+        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="0">埋到操場</button>
+      </div>
+    </div>
+  </div>
+  <div id="l4-fb" class="mt-4"></div>
+</section>
+
+<!-- 關卡 5：全球垃圾特派員 -->
+<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-rose-700">🌍 關卡 5：全球垃圾特派員</h2>
+  <p class="mt-2 text-gray-600">全球每年浪費 <strong>10.5 億公噸</strong>食物，等於所有食物的 <strong>1/5</strong>（dp3）。許多國家的小孩甚至住在垃圾山附近撿回收物維生。你被派到肯亞的姊妹校做視訊交流，請選出最有同理心、最有幫助的一句話：</p>
+  <div class="space-y-3 mt-4" id="emp">
+    <button class="qe w-full text-left p-3 border-2 rounded-xl" data-ans="0">「你們國家好髒，趕快像我們一樣就好。」</button>
+    <button class="qe w-full text-left p-3 border-2 rounded-xl" data-ans="1">「我想聽聽你們怎麼重複使用東西，我可以分享台灣 4 合 1 回收的經驗，我們互相學習！」</button>
+    <button class="qe w-full text-left p-3 border-2 rounded-xl" data-ans="0">「這不關我的事。」</button>
+    <button class="qe w-full text-left p-3 border-2 rounded-xl" data-ans="0">「台灣很先進，我們不需要學你們。」</button>
+  </div>
+  <div id="l5-fb" class="mt-4"></div>
+</section>
+
+<!-- 關卡 6：WSA 全校行動 4-Checkbox -->
+<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-emerald-700">🏫 關卡 6：全校行動挑戰（WSA 四面向）</h2>
+  <p class="mt-2 text-gray-600">勾選你承諾要做的 4 件事，全選即可解鎖「<strong class="text-yellow-600">零廢棄全校英雄</strong>」徽章！</p>
+  <div class="space-y-3 mt-4">
+    <label class="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl cursor-pointer">
+      <input type="checkbox" class="wsa w-5 h-5 mt-1" data-dim="curriculum">
+      <span><strong>📚 課程整合</strong>：下次上課提議「做班級堆肥實驗」或「廢棄物量秤重挑戰」</span>
+    </label>
+    <label class="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl cursor-pointer">
+      <input type="checkbox" class="wsa w-5 h-5 mt-1" data-dim="campus">
+      <span><strong>🏫 校園營運</strong>：每天帶自己的餐盒 + 監督班上 4 色分類桶</span>
+    </label>
+    <label class="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl cursor-pointer">
+      <input type="checkbox" class="wsa w-5 h-5 mt-1" data-dim="community">
+      <span><strong>🤝 社區連結</strong>：本週在家教一位大人正確分類（或參加社區環保日）</span>
+    </label>
+    <label class="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl cursor-pointer">
+      <input type="checkbox" class="wsa w-5 h-5 mt-1" data-dim="agency">
+      <span><strong>🙋 學生治理</strong>：自願當班級環保小尖兵，或提案「校園零廢棄」行動</span>
+    </label>
+  </div>
+  <button onclick="checkWSA()" class="mt-5 bg-emerald-600 text-white font-bold py-2 px-5 rounded-full">完成挑戰！</button>
+  <div id="l6-fb" class="mt-4"></div>
+</section>
+
+<!-- 終極徽章 -->
+<section id="finale" class="hidden-step card bg-gradient-to-br from-yellow-200 via-amber-200 to-lime-200 rounded-2xl shadow-2xl p-8 mb-6 text-center">
+  <div class="text-8xl mb-2 badge-glow inline-block">🏅</div>
+  <h2 class="text-3xl font-extrabold text-amber-800">恭喜！你是零廢棄全校英雄！</h2>
+  <p class="mt-3 text-lg">你已完成 6 關挑戰，成為<strong>校園 × 家庭 × 社區 × 全球</strong>的零廢棄守護者！</p>
+  <p class="mt-3 text-sm text-gray-700">記得：台灣回收率 &gt;55% 已經很棒，但我們可以做更好！每個小行動，都是一噸垃圾減量的開始。</p>
+  <button onclick="celebrate()" class="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-8 rounded-full shadow-lg text-lg">🎉 再次慶祝！</button>
+</section>
+
+</main>
+
+<footer class="text-center text-xs text-gray-500 p-4">
+  資料來源：環境部資源循環署、UNEP GWMO 2024、UN SDG 12、US EPA Composting｜最後驗證 2026-04-16
+</footer>
+
+<script>
+let current = 1;
+const total = 6;
+function show(idx){
+  ['intro','level1','level2','level3','level4','level5','level6','finale'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.classList.add('hidden-step');
+  });
+  const map = {1:'level1',2:'level2',3:'level3',4:'level4',5:'level5',6:'level6',7:'finale'};
+  document.getElementById(map[idx]).classList.remove('hidden-step');
+  for(let i=1;i<=total;i++){
+    const d = document.getElementById('dot'+i);
+    d.classList.remove('active','done');
+    if(i<idx) d.classList.add('done');
+    else if(i===idx) d.classList.add('active');
+  }
+  document.getElementById('progressText').innerText = idx<=total ? ('第 '+idx+' / '+total+' 關') : '🎉 全部完成！';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function startMission(){
+  document.getElementById('intro').classList.add('hidden-step');
+  current = 1; show(1);
+}
+function next(){ current++; show(current); }
+function fb(id, ok, msg){
+  const el = document.getElementById(id);
+  el.innerHTML = '<div class="feedback-pop p-3 rounded-xl '+(ok?'bg-green-100 text-green-800':'bg-red-100 text-red-800')+'">'+msg+'</div>';
+  if(!ok) el.classList.add('shake'), setTimeout(()=>el.classList.remove('shake'),500);
+}
+// Level 1
+function checkL1(){
+  const qs = document.querySelectorAll('.q-dec');
+  let correct = 0, total=qs.length;
+  qs.forEach(q=>{ if(q.value===q.dataset.ans) correct++; });
+  if(correct===total){
+    fb('l1-fb', true, '🌟 全對！塑膠袋和玻璃瓶比你的曾曾曾孫活得還久——減量比回收更重要！');
+    setTimeout(next, 1500);
+  } else {
+    fb('l1-fb', false, '💡 再想想：蘋果核 2 個月、鋁罐 80-200 年、塑膠袋 10-1000 年、玻璃瓶 &gt;100 萬年。你答對 '+correct+'/'+total+'，再試試！');
+  }
+}
+// Level 2 drag-drop
+let dragEl = null;
+document.addEventListener('dragstart', e=>{
+  if(e.target.classList.contains('drag-item')){
+    dragEl = e.target; e.target.classList.add('dragging');
+  }
+});
+document.addEventListener('dragend', e=>{
+  if(e.target.classList.contains('drag-item')) e.target.classList.remove('dragging');
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{
+    e.preventDefault(); z.classList.remove('over');
+    if(dragEl){ z.querySelector('.zone-items').appendChild(dragEl); }
+  });
+});
+function checkL2(){
+  const items = document.querySelectorAll('#trashPool .drag-item, .zone-items .drag-item');
+  let correct=0, placed=0, total=8;
+  document.querySelectorAll('.drop-zone').forEach(z=>{
+    const accept = z.dataset.accept;
+    z.querySelectorAll('.drag-item').forEach(it=>{
+      placed++;
+      if(it.dataset.type===accept) correct++;
+    });
+  });
+  if(placed<total){
+    fb('l2-fb', false, '還有東西沒分類喔！把所有物品都拖到垃圾桶裡。');
+    return;
+  }
+  if(correct===total){
+    fb('l2-fb', true, '♻️ 你是分類大師！台灣 4 合 1 回收系統自 1998 年以來成長超過 10 倍，靠的就是像你這樣認真的人！');
+    setTimeout(next, 1500);
+  } else {
+    fb('l2-fb', false, '💡 你答對 '+correct+'/'+total+'。提示：菸蒂、用過衛生紙屬一般垃圾；果皮落葉屬廚餘/堆肥；瓶罐紙張屬資源回收。');
+  }
+}
+// Level 3 compost slider
+const g = document.getElementById('greenAmt'), b = document.getElementById('brownAmt');
+function updSlider(){ document.getElementById('greenVal').innerText = g.value; document.getElementById('brownVal').innerText = b.value; }
+g.addEventListener('input', updSlider); b.addEventListener('input', updSlider);
+function checkL3(){
+  const gv = parseInt(g.value), bv = parseInt(b.value);
+  const ratio = bv/Math.max(gv,0.1);
+  const box = document.getElementById('compostBox');
+  const result = document.getElementById('l3-result');
+  if(gv===0 || bv===0){
+    box.innerText = '🪣'; result.innerText='缺一味：綠色料和褐色料都要有！'; result.className='mt-3 font-bold text-red-600';
+    fb('l3-fb', false, '🌱 堆肥需要綠色（濕/氮）＋褐色（乾/碳）一起合作，缺一不可。');
+  } else if(ratio>=2 && ratio<=4){
+    box.innerText='🌱'; result.innerText='✅ 完美配比！黑金誕生！';
+    result.className='mt-3 font-bold text-green-700';
+    fb('l3-fb', true, '🎉 完美！約 1:3 比例加上空氣與濕度，2-3 個月就會變成富含養分的腐植質，家庭減量 30%、土壤保水力提升 20%！');
+    setTimeout(next, 1800);
+  } else if(ratio>4){
+    box.innerText='🍂'; result.innerText='太乾！分解會變慢'; result.className='mt-3 font-bold text-amber-600';
+    fb('l3-fb', false, '褐色料太多了，微生物會餓肚子。試試綠:褐 = 1:3。');
+  } else {
+    box.innerText='💧'; result.innerText='太濕會發臭！'; result.className='mt-3 font-bold text-rose-600';
+    fb('l3-fb', false, '綠色料太多會滋生異味。加一些落葉、碎紙、木屑平衡一下！');
+  }
+}
+updSlider();
+// Level 4
+document.querySelectorAll('.q5').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const parent = btn.closest('.p-3');
+    parent.querySelectorAll('.q5').forEach(b=>b.classList.remove('bg-green-200','bg-red-200','border-green-500','border-red-500'));
+    if(btn.dataset.ans==='1'){
+      btn.classList.add('bg-green-200','border-green-500');
+    } else {
+      btn.classList.add('bg-red-200','border-red-500');
+    }
+    // check all answered
+    const allQ = document.querySelectorAll('#r5 .p-3');
+    let correct=0, answered=0;
+    allQ.forEach(p=>{
+      const sel = p.querySelector('.bg-green-200, .bg-red-200');
+      if(sel) answered++;
+      if(sel && sel.classList.contains('bg-green-200')) correct++;
+    });
+    if(answered===allQ.length){
+      if(correct===allQ.length){
+        fb('l4-fb', true, '🦸 你是 5R 英雄！Reduce>Reuse>Repair>Refuse>Recycle 五招全通！');
+        setTimeout(next, 1500);
+      } else {
+        fb('l4-fb', false, '再想想：拒用吸管=Refuse；修書包=Repair；廚餘做堆肥=Reduce 送去焚化的量。再試試！');
+      }
+    }
+  });
+});
+// Level 5
+document.querySelectorAll('.qe').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    if(btn.dataset.ans==='1'){
+      btn.classList.add('bg-green-200','border-green-500');
+      fb('l5-fb', true, '🌍 好棒！真正的國際夥伴關係是「互相學習」——這就是 UN SDG 12 的精神！');
+      setTimeout(next, 1800);
+    } else {
+      btn.classList.add('bg-red-200','border-red-500');
+      fb('l5-fb', false, '同理心提示：垃圾問題不是他們的錯，全球每年浪費 10.5 億噸食物也有我們的責任。我們互相學習，不互相貶低。');
+    }
+  });
+});
+// Level 6 WSA
+function checkWSA(){
+  const boxes = document.querySelectorAll('.wsa');
+  const checked = Array.from(boxes).filter(b=>b.checked).length;
+  if(checked===4){
+    fb('l6-fb', true, '🏆 四面向全通！你正式晉升「零廢棄全校英雄」！');
+    setTimeout(()=>{ show(7); celebrate(); }, 1500);
+  } else {
+    fb('l6-fb', false, '再想想：課程／營運／社區／學生治理四個面向缺一不可——這就是 Whole School Approach。目前只勾選 '+checked+'/4。');
+  }
+}
+// confetti
+function celebrate(){
+  const colors = ['#fbbf24','#10b981','#3b82f6','#ef4444','#a855f7','#ec4899'];
+  for(let i=0;i<80;i++){
+    const c = document.createElement('div');
+    c.className='confetti';
+    c.style.left = Math.random()*100+'vw';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDelay = (Math.random()*0.6)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 3000);
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候正義大使小蓮的任務 | 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#fde68a,#bae6fd); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#f59e0b; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .cake-slice { transition: all .3s; cursor:pointer; }
+  .cake-slice:hover { transform: scale(1.05); }
+</style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-3xl mx-auto">
+
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-rose-600">⚖️ 氣候正義大使小蓮的任務</h1>
+      <p class="text-sm text-slate-600 mt-1">幫小蓮解開氣候不公平的四大謎題，成為氣候正義大使！</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> 分</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-3 text-sm text-slate-600">關卡 <span id="step">1</span>/4</span>
+  </div>
+
+  <!-- Level 1: 碳蛋糕切片 -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🎂</div>
+      <div>
+        <h2 class="text-xl font-bold text-rose-700">關卡 1：不公平的碳蛋糕</h2>
+        <p class="text-sm text-slate-700 mt-1">小蓮說：「地球每年的碳排放像一塊 100 片的大蛋糕。最有錢的 1% 人（約 8,000 萬人）預估 2030 年會吃掉 <b>16 片</b>！（資料：Oxfam）點一點蛋糕，把 16 片標成『富 1%』。」</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-10 gap-1 my-4 bg-slate-100 rounded-xl p-3" id="cake"></div>
+    <p class="text-center text-sm text-slate-700">已標記：<span id="marked" class="font-bold text-rose-600">0</span> / 16 片</p>
+
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <button id="l1-next" disabled class="btn mt-2 w-full bg-slate-300 text-white py-3 rounded-xl font-bold">標滿 16 片才能前往下一關 →</button>
+  </section>
+
+  <!-- Level 2: 誰是受害者？連連看 -->
+  <section id="level-2" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🌊</div>
+      <div>
+        <h2 class="text-xl font-bold text-rose-700">關卡 2：誰是受害者？</h2>
+        <p class="text-sm text-slate-700 mt-1">排放多的人不一定是受害者。把每個地方配對到它的主要衝擊：</p>
+      </div>
+    </div>
+
+    <div id="match-area" class="grid grid-cols-2 gap-3 my-4">
+      <!-- 左：地方 -->
+      <div class="space-y-2">
+        <div class="place-btn btn bg-sky-100 border-2 border-sky-400 rounded-xl p-3 cursor-pointer text-center font-bold" data-p="tuvalu">🏝️ 吐瓦魯（太平洋小島）</div>
+        <div class="place-btn btn bg-sky-100 border-2 border-sky-400 rounded-xl p-3 cursor-pointer text-center font-bold" data-p="taiwan">🇹🇼 臺灣西南沿海</div>
+        <div class="place-btn btn bg-sky-100 border-2 border-sky-400 rounded-xl p-3 cursor-pointer text-center font-bold" data-p="africa">🌍 非洲東部乾旱區</div>
+        <div class="place-btn btn bg-sky-100 border-2 border-sky-400 rounded-xl p-3 cursor-pointer text-center font-bold" data-p="bangladesh">🇧🇩 孟加拉</div>
+      </div>
+      <!-- 右：衝擊 -->
+      <div class="space-y-2">
+        <div class="impact-btn btn bg-amber-100 border-2 border-amber-400 rounded-xl p-3 cursor-pointer text-center font-bold" data-i="tuvalu">🌊 海水淹沒，家園消失</div>
+        <div class="impact-btn btn bg-amber-100 border-2 border-amber-400 rounded-xl p-3 cursor-pointer text-center font-bold" data-i="taiwan">⚠️ 低窪區海水倒灌、鹽化</div>
+        <div class="impact-btn btn bg-amber-100 border-2 border-amber-400 rounded-xl p-3 cursor-pointer text-center font-bold" data-i="africa">☀️ 長期乾旱、缺水缺糧</div>
+        <div class="impact-btn btn bg-amber-100 border-2 border-amber-400 rounded-xl p-3 cursor-pointer text-center font-bold" data-i="bangladesh">🌧️ 季風洪水、數百萬人流離</div>
+      </div>
+    </div>
+
+    <div class="bg-slate-50 rounded-xl p-3 text-sm text-slate-700">
+      <b>💡 提示：</b>這四個地方的共同點是——排放量都很少，但受衝擊卻很嚴重。
+    </div>
+
+    <p id="l2-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <button id="l2-next" disabled class="btn mt-2 w-full bg-slate-300 text-white py-3 rounded-xl font-bold">全部配對後前往下一關 →</button>
+  </section>
+
+  <!-- Level 3: 公平判斷 -->
+  <section id="level-3" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">⚖️</div>
+      <div>
+        <h2 class="text-xl font-bold text-rose-700">關卡 3：你是國際法官！</h2>
+        <p class="text-sm text-slate-700 mt-1">最富 1% 每人排 <b>70 噸</b> CO₂，最窮 50% 只排 <b>1 噸</b>（資料：Oxfam）。面對氣候不公平，你覺得什麼做法最合理？</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-3 my-3" id="l3-choices">
+      <button class="btn choice bg-rose-100 border-2 border-rose-400 rounded-xl p-3 text-left" data-c="a">
+        <b>A.</b> 不管啦，大家都一樣，反正地球會自己復原。
+      </button>
+      <button class="btn choice bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-left" data-c="b">
+        <b>B.</b> 富國出錢設「<b>損失與損害基金</b>」賠償受害國（2022 年 COP27 就這樣做了！）
+      </button>
+      <button class="btn choice bg-emerald-100 border-2 border-emerald-400 rounded-xl p-3 text-left" data-c="c">
+        <b>C.</b> 排放多的人減得多，排放少的人負責「<b>聲援與傳播</b>」，大家都動起來。
+      </button>
+    </div>
+    <div id="l3-story" class="bg-slate-100 rounded-xl p-4 min-h-[80px] text-sm"></div>
+    <button id="l3-next" class="hidden btn mt-3 w-full bg-amber-500 text-white py-3 rounded-xl font-bold">前往最後一關 →</button>
+  </section>
+
+  <!-- Level 4: 行動承諾 -->
+  <section id="level-4" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">💪</div>
+      <div>
+        <h2 class="text-xl font-bold text-rose-700">關卡 4：與責任相稱的行動</h2>
+        <p class="text-sm text-slate-700 mt-1">先評估你家的碳責任量尺，再寫下一個<b>與你責任相稱</b>的行動！</p>
+      </div>
+    </div>
+
+    <div class="bg-slate-50 rounded-xl p-4 my-3">
+      <p class="text-sm font-bold mb-2">📏 我家的碳責任量尺（1=很低 / 10=很高）：<span id="scale-label" class="text-rose-600">5</span></p>
+      <input id="scale" type="range" min="1" max="10" value="5" class="w-full accent-rose-500">
+      <p id="scale-hint" class="text-xs text-slate-600 mt-2">中等家庭：可以從減肉、少開車、節電開始。</p>
+    </div>
+
+    <input id="action-input" type="text" placeholder="例：每週吃一天蔬食、寫信給里長…" class="w-full border-2 border-slate-300 rounded-xl p-3 focus:border-rose-500 outline-none">
+    <button id="make-card" class="btn w-full mt-3 bg-rose-500 text-white py-3 rounded-xl font-bold">🎴 生成我的氣候正義卡</button>
+    <div id="card-result" class="hidden mt-4 bg-gradient-to-br from-rose-200 to-amber-200 rounded-2xl p-5 text-center border-4 border-white pop">
+      <div class="text-5xl">⚖️</div>
+      <div class="text-sm text-slate-600 mt-2">氣候正義大使卡</div>
+      <div id="action-text" class="text-xl font-bold my-2 text-rose-800"></div>
+      <div class="text-xs text-slate-700">— 我是小蓮的氣候正義夥伴！</div>
+    </div>
+
+    <!-- WSA -->
+    <div id="wsa-box" class="hidden mt-4 bg-white border-2 border-dashed border-sky-400 rounded-2xl p-4 fade-in">
+      <h3 class="font-bold text-sky-700 mb-1">🏫 WSA Challenge：全校氣候正義大挑戰</h3>
+      <p class="text-xs text-slate-600 mb-2">氣候正義不只在教室！從四個面向各選一件事（每項 +10 分）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="課程整合"><span class="text-sm"><b>📚 課程整合</b>：做全班「家庭人均碳排長條圖」，比較不平等</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="校園營運"><span class="text-sm"><b>💡 校園營運</b>：發起班級省電挑戰，省下的錢捐給環保團體</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="社區連結"><span class="text-sm"><b>🤝 社區連結</b>：為獨居長輩做「夏日降溫訪視」送電扇或訪問</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="學生治理"><span class="text-sm"><b>🙋 學生治理</b>：連署請校長關注氣候脆弱社區、設立公平獎學金</span>
+      </label>
+      <p id="wsa-feedback" class="text-center font-bold text-emerald-600 mt-2 min-h-[20px]"></p>
+    </div>
+
+    <button id="l4-next" class="hidden btn mt-3 w-full bg-emerald-600 text-white py-3 rounded-xl font-bold">查看我的成就 🏆</button>
+  </section>
+
+  <!-- Final -->
+  <section id="final" class="card p-6 hidden-screen text-center">
+    <div class="text-6xl pop">🏆</div>
+    <h2 class="text-2xl font-bold text-rose-600 mt-2">恭喜你成為氣候正義大使！</h2>
+    <p class="text-slate-700 mt-1">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> 分</p>
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <div class="bg-sky-50 rounded-xl p-4 text-left mt-3">
+      <h3 class="font-bold text-sky-700 mb-2">🤔 三個延伸思考</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>如果你家是『中排放家庭』，哪一件行動對你最容易先開始？為什麼？</li>
+        <li>臺灣既是氣候受害者（西南沿海），也是高排放經濟體。你覺得我們該先做什麼？</li>
+        <li>如果你長大後能立一條法律保護氣候脆弱族群，你會寫什麼？</li>
+      </ol>
+    </div>
+
+    <button onclick="location.reload()" class="btn mt-4 bg-rose-500 text-white py-3 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+  </section>
+</div>
+
+<script>
+/* NOTE: 互動 runtime 待人工 Preview 驗證（未在此環境執行瀏覽器測試） */
+let score = 0;
+const setScore = v => { score = v; document.getElementById('score').textContent = v; };
+const addScore = n => setScore(score + n);
+const badges = [];
+
+function confetti(){
+  const colors=['#f43f5e','#f59e0b','#10b981','#3b82f6','#a855f7'];
+  for(let i=0;i<30;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2500);
+  }
+}
+
+function goStep(n){
+  for(let i=1;i<=5;i++){
+    const sec = document.getElementById(i===5?'final':'level-'+i);
+    if(sec) sec.classList.add('hidden-screen');
+    const d = document.getElementById('dot-'+i);
+    if(d){ d.classList.remove('active','done'); if(i<n) d.classList.add('done'); if(i===n) d.classList.add('active'); }
+  }
+  const target = document.getElementById(n===5?'final':'level-'+n);
+  target.classList.remove('hidden-screen');
+  target.classList.add('fade-in');
+  document.getElementById('step').textContent = Math.min(n,4);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===== Level 1: cake slices ===== */
+const cake = document.getElementById('cake');
+let marked = 0;
+for(let i=0; i<100; i++){
+  const s = document.createElement('div');
+  s.className = 'cake-slice bg-amber-200 border border-amber-400 rounded aspect-square flex items-center justify-center text-[10px]';
+  s.textContent = (i+1);
+  s.addEventListener('click', ()=>{
+    const fb = document.getElementById('l1-feedback');
+    if(s.classList.contains('bg-rose-400')){
+      s.classList.remove('bg-rose-400','text-white','border-rose-600');
+      s.classList.add('bg-amber-200','border-amber-400');
+      marked--;
+    } else if(marked < 16){
+      s.classList.remove('bg-amber-200','border-amber-400');
+      s.classList.add('bg-rose-400','text-white','border-rose-600');
+      marked++;
+      addScore(1);
+    } else {
+      fb.textContent = '提示：已標滿 16 片！取消一片再標別片吧！';
+      fb.className='mt-3 text-center font-bold min-h-[24px] text-rose-500 shake';
+      setTimeout(()=>fb.classList.remove('shake'),400);
+    }
+    document.getElementById('marked').textContent = marked;
+    if(marked === 16){
+      fb.textContent = '🎉 你標出了不公平！富 1% 竟然吃掉 16 片！+16 分';
+      fb.className='mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+      if(!badges.includes('🎂 碳蛋糕偵探')) badges.push('🎂 碳蛋糕偵探');
+      confetti();
+      const btn = document.getElementById('l1-next');
+      btn.disabled = false;
+      btn.className = 'btn mt-2 w-full bg-amber-500 text-white py-3 rounded-xl font-bold';
+      btn.onclick = ()=>goStep(2);
+    }
+  });
+  cake.appendChild(s);
+}
+
+/* ===== Level 2: matching ===== */
+let selectedPlace = null;
+const correctPairs = {tuvalu:'tuvalu', taiwan:'taiwan', africa:'africa', bangladesh:'bangladesh'};
+let matched = 0;
+document.querySelectorAll('.place-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    if(btn.disabled) return;
+    document.querySelectorAll('.place-btn').forEach(b=>b.classList.remove('ring-4','ring-rose-400'));
+    btn.classList.add('ring-4','ring-rose-400');
+    selectedPlace = btn;
+  });
+});
+document.querySelectorAll('.impact-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    if(btn.disabled || !selectedPlace) return;
+    const fb = document.getElementById('l2-feedback');
+    if(selectedPlace.dataset.p === btn.dataset.i){
+      selectedPlace.classList.add('bg-green-200','border-green-500');
+      btn.classList.add('bg-green-200','border-green-500');
+      selectedPlace.disabled = true; btn.disabled = true;
+      selectedPlace.style.pointerEvents='none'; btn.style.pointerEvents='none';
+      addScore(10);
+      matched++;
+      fb.textContent = '配對成功！+10 分 👏';
+      fb.className='mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+      confetti();
+      selectedPlace = null;
+      if(matched === 4){
+        if(!badges.includes('🗺️ 受害地圖師')) badges.push('🗺️ 受害地圖師');
+        const nb = document.getElementById('l2-next');
+        nb.disabled = false;
+        nb.className='btn mt-2 w-full bg-amber-500 text-white py-3 rounded-xl font-bold';
+        nb.textContent='前往下一關 →';
+        nb.onclick=()=>goStep(3);
+      }
+    } else {
+      btn.classList.add('shake');
+      setTimeout(()=>btn.classList.remove('shake'),400);
+      fb.textContent = '再想想！提示：低窪、小島、乾旱都是脆弱族群的典型。';
+      fb.className='mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+  });
+});
+
+/* ===== Level 3: branching ===== */
+const stories3 = {
+  a: {text:'😟 結果：不公平持續擴大，小島國更憤怒，國際關係緊張，未來更難合作。（+0 分）提示：氣候變遷不會自己好，不行動等於默許不公平。', score:0, badge:null},
+  b: {text:'🙌 正確！這正是 2022 年 COP27 通過的「損失與損害基金」的概念。+15 分', score:15, badge:'⚖️ 國際正義官'},
+  c: {text:'🌟 最佳答案！這就是聯合國「共同但有差別責任」原則——也符合 UNESCO 指南說的『與責任相稱的行動』！ +20 分', score:20, badge:'🌍 公平行動家'}
+};
+document.querySelectorAll('#l3-choices .choice').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const s = stories3[btn.dataset.c];
+    document.getElementById('l3-story').textContent = s.text;
+    document.getElementById('l3-story').className='bg-yellow-50 rounded-xl p-4 text-sm fade-in';
+    if(s.score>0){ addScore(s.score); if(s.badge) badges.push(s.badge); confetti(); }
+    document.querySelectorAll('#l3-choices .choice').forEach(b=>b.disabled=true);
+    btn.classList.add('ring-4','ring-rose-500');
+    const nxt=document.getElementById('l3-next');
+    nxt.classList.remove('hidden');
+    nxt.onclick=()=>goStep(4);
+  });
+});
+
+/* ===== Level 4: scale + action ===== */
+const scale = document.getElementById('scale');
+const scaleLabel = document.getElementById('scale-label');
+const scaleHint = document.getElementById('scale-hint');
+scale.addEventListener('input', ()=>{
+  const v = +scale.value;
+  scaleLabel.textContent = v;
+  if(v<=3) scaleHint.textContent='低排放家庭：重點在「聲援與傳播」——寫信、當志工、分享資訊。';
+  else if(v<=7) scaleHint.textContent='中等排放家庭：可以從減肉、少開車、節電開始。';
+  else scaleHint.textContent='高排放家庭：責任較大，可優先考慮換節能電器、改搭大眾運輸、減少長途飛行。';
+});
+
+document.getElementById('make-card').addEventListener('click', ()=>{
+  const v = document.getElementById('action-input').value.trim();
+  if(v.length<2){
+    alert('提示：寫下一個具體的小行動，例如「寫信給里長」或「每週吃一天蔬食」！');
+    return;
+  }
+  document.getElementById('action-text').textContent='「我承諾：'+v+'（責任量尺 '+scale.value+'/10）」';
+  document.getElementById('card-result').classList.remove('hidden');
+  addScore(15);
+  badges.push('💪 行動大使');
+  confetti();
+  document.getElementById('wsa-box').classList.remove('hidden');
+  document.getElementById('l4-next').classList.remove('hidden');
+  document.getElementById('l4-next').onclick = showFinal;
+});
+
+/* ===== WSA Challenge ===== */
+const wsaChecked = new Set();
+document.querySelectorAll('.wsa-cb').forEach(cb=>{
+  cb.addEventListener('change', ()=>{
+    const key = cb.dataset.w;
+    const fb = document.getElementById('wsa-feedback');
+    if(cb.checked && !wsaChecked.has(key)){
+      wsaChecked.add(key);
+      addScore(10);
+      fb.textContent = '＋10 分！已選 '+wsaChecked.size+'/4 面向';
+      if(wsaChecked.size === 4){
+        fb.textContent = '🏆 全校氣候正義英雄！四大面向全破關！';
+        if(!badges.includes('🏫 全校氣候正義英雄')) badges.push('🏫 全校氣候正義英雄');
+        confetti();
+      }
+    } else if(!cb.checked && wsaChecked.has(key)){
+      wsaChecked.delete(key);
+      addScore(-10);
+      fb.textContent = '已取消一項，目前 '+wsaChecked.size+'/4';
+    }
+  });
+});
+
+function showFinal(){
+  goStep(5);
+  document.getElementById('final-score').textContent = score;
+  const box = document.getElementById('badges');
+  box.innerHTML='';
+  if(badges.length===0) badges.push('⚖️ 氣候正義大使');
+  badges.forEach(b=>{
+    const chip=document.createElement('span');
+    chip.className='bg-rose-100 border-2 border-rose-400 rounded-full px-3 py-1 text-sm font-bold pop';
+    chip.textContent=b;
+    box.appendChild(chip);
+  });
+  confetti();
+}
+</script>
+</body>
+</html>

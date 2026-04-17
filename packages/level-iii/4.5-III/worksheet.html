@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>校園氣候英雄 — 4.5-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#fef3c7 0%,#fecaca 50%,#c7d2fe 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .feedback-pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; z-index:50;}
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,.25); }
+  .badge { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
+  .hidden-step { display: none; }
+  .star { cursor:pointer; font-size:1.75rem; color:#d1d5db; transition:transform .15s; }
+  .star.on { color:#f59e0b; transform:scale(1.15);}
+  .countdown { font-family: "Courier New", monospace; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-amber-500 to-red-500 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">⏰ 校園氣候英雄 — 我們的學校不能再等</h1>
+    <p class="mt-2 text-amber-50">UNESCO 4.5-III ｜ 9-12 歲 ｜ 一起讓學校成為氣候行動的第一現場！</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 角色情境 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl">🦸</div>
+    <div>
+      <h2 class="text-2xl font-bold text-red-600">任務簡報：你被選為「校園氣候英雄」！</h2>
+      <p class="mt-2 leading-relaxed">嗨！我是地球小 Earth，科學家 IPCC 告訴我們：<strong class="text-red-600">全球排放必須在 2030 年前比 2019 年減少 43%</strong>。學校是 1.5 億學生每天生活的地方，也是最重要的行動現場。完成 6 個關卡，拿到「校園氣候英雄」徽章，加入 UNESCO 全球 <strong>90+ 個國家、1,000+ 個機構</strong> 的行動網絡！</p>
+      <div class="mt-3 bg-amber-50 border-l-4 border-amber-400 p-3 rounded">
+        <p class="text-sm">⏳ 距離 2030 只剩 <span id="cd" class="countdown font-bold text-red-600">計算中…</span></p>
+      </div>
+      <button onclick="startMission()" class="mt-4 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 🚀</button>
+    </div>
+  </div>
+</section>
+
+<!-- §1 校園偵探（填空/選擇）-->
+<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-blue-700">🔍 §1 關卡 1：校園偵探 — 我們學校做了什麼？</h2>
+  <p class="mt-2 text-gray-600">回到家前先訪問老師或查學校官網。把你找到的答案填上，沒查到也沒關係，寫「待查」！</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-4">
+    <label class="block"><span class="text-sm text-gray-700">1. 學校是否有氣候 / 永續 / 環境計畫？</span>
+      <input id="i1_1" class="mt-1 w-full border-2 rounded-lg p-2" placeholder="例：有，在學校官網永續專區" /></label>
+    <label class="block"><span class="text-sm text-gray-700">2. 是否宣布過「氣候緊急狀態」？</span>
+      <input id="i1_2" class="mt-1 w-full border-2 rounded-lg p-2" placeholder="有 / 沒有 / 不清楚" /></label>
+    <label class="block"><span class="text-sm text-gray-700">3. 班級冷氣通常設幾度？</span>
+      <input id="i1_3" type="number" class="mt-1 w-full border-2 rounded-lg p-2" placeholder="建議 26-28 ℃" /></label>
+    <label class="block"><span class="text-sm text-gray-700">4. 校園大約有幾棵樹？</span>
+      <input id="i1_4" class="mt-1 w-full border-2 rounded-lg p-2" placeholder="估計：" /></label>
+    <label class="block"><span class="text-sm text-gray-700">5. 是否參加「臺美生態學校夥伴計畫」？</span>
+      <input id="i1_5" class="mt-1 w-full border-2 rounded-lg p-2" placeholder="有 / 沒有 / 不清楚" /></label>
+    <label class="block"><span class="text-sm text-gray-700">6. 今年環教 4 小時如何安排？</span>
+      <input id="i1_6" class="mt-1 w-full border-2 rounded-lg p-2" placeholder="例：校外教學 + 演講" /></label>
+  </div>
+  <button onclick="submitLevel1()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full">完成調查 ➜</button>
+  <div id="q1-feedback" class="mt-4"></div>
+</section>
+
+<!-- §2 WSA 四面向檢核（互動 1：星星量表）-->
+<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-emerald-700">🌿 §2 關卡 2：Whole School Approach 四面向體檢</h2>
+  <p class="mt-2 text-gray-600">UNESCO Greening Education Partnership 有 <strong>90+ 國家 / 1,000+ 機構</strong> 採用「全校取徑」。請用 1–4 顆星，為你的學校打分。</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-4" id="wsaGrid">
+    <div class="border-2 rounded-xl p-4 bg-green-50">
+      <p class="font-bold text-green-700">① 課程（Curriculum）</p>
+      <p class="text-xs text-gray-600 mb-2">氣候/永續有沒有融入自然、社會、語文、綜合各科？</p>
+      <div class="stars" data-axis="curriculum"></div>
+    </div>
+    <div class="border-2 rounded-xl p-4 bg-blue-50">
+      <p class="font-bold text-blue-700">② 校園營運（Campus Operations）</p>
+      <p class="text-xs text-gray-600 mb-2">節能、照明、伙食、交通、綠化有系統管理嗎？</p>
+      <div class="stars" data-axis="campus"></div>
+    </div>
+    <div class="border-2 rounded-xl p-4 bg-yellow-50">
+      <p class="font-bold text-yellow-700">③ 社區連結（Community）</p>
+      <p class="text-xs text-gray-600 mb-2">有和家長、NGO、里長、其他學校合作嗎？</p>
+      <div class="stars" data-axis="community"></div>
+    </div>
+    <div class="border-2 rounded-xl p-4 bg-purple-50">
+      <p class="font-bold text-purple-700">④ 學生治理（Student Voice）</p>
+      <p class="text-xs text-gray-600 mb-2">學生有發言權、提案管道嗎？</p>
+      <div class="stars" data-axis="voice"></div>
+    </div>
+  </div>
+  <p class="mt-3 text-sm">📌 必填 4 個面向才能繼續！</p>
+  <button onclick="submitLevel2()" class="mt-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full">提交體檢 ➜</button>
+  <div id="q2-feedback" class="mt-4"></div>
+</section>
+
+<!-- §3 數據判讀（互動 2：拖曳/選擇）-->
+<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-indigo-700">📊 §3 關卡 3：關鍵數據連連看</h2>
+  <p class="mt-2 text-gray-600">把數字點擊正確的說明。做對會有動畫獎勵，做錯會有小提示！</p>
+  <div class="grid grid-cols-3 gap-3 mt-4 text-center" id="dataNumbers">
+    <button class="data-num p-3 rounded-xl bg-red-100 text-red-700 font-bold text-xl" data-ans="ipcc">43%</button>
+    <button class="data-num p-3 rounded-xl bg-amber-100 text-amber-700 font-bold text-xl" data-ans="tw2050">2050</button>
+    <button class="data-num p-3 rounded-xl bg-green-100 text-green-700 font-bold text-xl" data-ans="law">4 小時</button>
+    <button class="data-num p-3 rounded-xl bg-blue-100 text-blue-700 font-bold text-xl" data-ans="gep">1,000+</button>
+    <button class="data-num p-3 rounded-xl bg-pink-100 text-pink-700 font-bold text-xl" data-ans="tw16">1.6℃</button>
+    <button class="data-num p-3 rounded-xl bg-purple-100 text-purple-700 font-bold text-xl" data-ans="ac">6%</button>
+  </div>
+  <div class="mt-5" id="dataQuestions"></div>
+  <div id="q3-feedback" class="mt-4"></div>
+</section>
+
+<!-- §4 給校長的信（互動 3：表單填寫 + 評分）-->
+<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-orange-700">✉️ §4 關卡 4：給校長的一封信</h2>
+  <p class="mt-2 text-gray-600">用 WSA 其中 1 個面向，提出具體改進建議。四欄都要填！</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-4">
+    <label class="block"><span class="text-sm font-semibold">(1) 我們觀察到的現況：</span>
+      <textarea id="i4_1" class="mt-1 w-full border-2 rounded-lg p-2 h-20" placeholder="例：教室冷氣常設 22℃…"></textarea></label>
+    <label class="block"><span class="text-sm font-semibold">(2) 支持的數據（挑 1）：</span>
+      <select id="i4_2" class="mt-1 w-full border-2 rounded-lg p-2">
+        <option value="">-- 選擇 --</option>
+        <option>IPCC 2030 前需減 43%</option>
+        <option>臺灣 2050 淨零目標</option>
+        <option>臺灣百年升溫 1.6℃</option>
+        <option>冷氣每升 1℃ 省電 6%</option>
+        <option>環教法規定每年 4 小時</option>
+        <option>UNESCO GEP 1,000+ 機構</option>
+      </select></label>
+    <label class="block"><span class="text-sm font-semibold">(3) 具體建議：</span>
+      <textarea id="i4_3" class="mt-1 w-full border-2 rounded-lg p-2 h-20" placeholder="例：訂定冷氣統一設 26℃…"></textarea></label>
+    <label class="block"><span class="text-sm font-semibold">(4) 我們班能負責：</span>
+      <textarea id="i4_4" class="mt-1 w-full border-2 rounded-lg p-2 h-20" placeholder="例：輪值檢查員每週五回報…"></textarea></label>
+  </div>
+  <button onclick="submitLevel4()" class="mt-3 bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-6 rounded-full">送出提案 ➜</button>
+  <div id="q4-feedback" class="mt-4"></div>
+</section>
+
+<!-- §5 WSA 4-checkbox 承諾（WSA slide）-->
+<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-teal-700">🌏 §5 關卡 5：我要落實 WSA 全校取徑</h2>
+  <p class="mt-2 text-gray-600">勾選你本學期願意投入的面向（至少 2 個才能繼續）：</p>
+  <div class="space-y-2 mt-3">
+    <label class="flex items-center gap-2 p-2 border-2 rounded-lg hover:bg-green-50"><input type="checkbox" class="wsa-cb w-5 h-5" value="課程"/> <span>① 課程 — 在班會做 1 次氣候分享</span></label>
+    <label class="flex items-center gap-2 p-2 border-2 rounded-lg hover:bg-blue-50"><input type="checkbox" class="wsa-cb w-5 h-5" value="營運"/> <span>② 校園營運 — 輪值檢查冷氣 / 關燈</span></label>
+    <label class="flex items-center gap-2 p-2 border-2 rounded-lg hover:bg-yellow-50"><input type="checkbox" class="wsa-cb w-5 h-5" value="社區"/> <span>③ 社區連結 — 邀請家長共做 1 項行動</span></label>
+    <label class="flex items-center gap-2 p-2 border-2 rounded-lg hover:bg-purple-50"><input type="checkbox" class="wsa-cb w-5 h-5" value="治理"/> <span>④ 學生治理 — 向班級或校方提案</span></label>
+  </div>
+  <button onclick="submitLevel5()" class="mt-4 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full">簽下承諾 ➜</button>
+  <div id="q5-feedback" class="mt-4"></div>
+</section>
+
+<!-- §6 全校英雄徽章 + 希望牆 -->
+<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-pink-700">🏅 §6 關卡 6：授予「全校英雄」徽章 + 希望牆</h2>
+  <div class="text-center my-4">
+    <div id="hero-badge" class="badge inline-block bg-gradient-to-br from-yellow-300 to-orange-500 text-white font-extrabold py-6 px-10 rounded-full shadow-xl text-2xl">
+      🌟 校園氣候英雄 🌟<br><span class="text-sm">School Climate Hero</span>
+    </div>
+  </div>
+  <label class="block mt-6"><span class="text-sm font-semibold">寫下你對 2030 年本校的希望：</span>
+    <textarea id="i6_hope" class="mt-1 w-full border-2 rounded-lg p-3 h-24" placeholder="2030 年，我希望我們學校……"></textarea></label>
+  <button onclick="finish()" class="mt-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-6 rounded-full">完成任務並慶祝！🎉</button>
+  <div id="final-msg" class="mt-4"></div>
+</section>
+
+</main>
+
+<footer class="text-center text-xs text-gray-500 pb-6">資料來源：IPCC AR6 (2023) · UNESCO GEP · 臺灣 TCCIP / 環境部 · 國發會 2050 路徑 · 最後驗證 2026-04-16</footer>
+
+<script>
+// --- 倒數計時 2030-01-01 ---
+function updateCountdown(){
+  const t=new Date("2030-01-01T00:00:00").getTime()-Date.now();
+  if(t<=0){document.getElementById('cd').textContent='時間到！';return;}
+  const d=Math.floor(t/86400000), h=Math.floor(t/3600000)%24, m=Math.floor(t/60000)%60;
+  document.getElementById('cd').textContent=`${d} 天 ${h} 時 ${m} 分`;
+}
+setInterval(updateCountdown,60000); updateCountdown();
+
+// --- 進度 ---
+let current=1, totalLevels=6;
+function setProgress(n){
+  current=n;
+  for(let i=1;i<=totalLevels;i++){
+    const d=document.getElementById('dot'+i);
+    d.classList.remove('active','done');
+    if(i<n) d.classList.add('done');
+    else if(i===n) d.classList.add('active');
+  }
+  document.getElementById('progressText').textContent=`第 ${Math.min(n,totalLevels)} / ${totalLevels} 關`;
+}
+function show(id){document.getElementById(id).classList.remove('hidden-step');}
+function hide(id){document.getElementById(id).classList.add('hidden-step');}
+
+function startMission(){hide('intro');show('level1');setProgress(1);window.scrollTo({top:0,behavior:'smooth'});}
+
+// --- §1 ---
+function submitLevel1(){
+  const vals=[1,2,3,4,5,6].map(i=>document.getElementById('i1_'+i).value.trim());
+  const filled=vals.filter(v=>v.length>0).length;
+  const fb=document.getElementById('q1-feedback');
+  if(filled<4){fb.innerHTML='<p class="text-red-600 shake">⚠️ 至少填 4 項才算完成調查，寫「待查」也可以！</p>';return;}
+  fb.innerHTML=`<p class="text-green-700 feedback-pop">✅ 太棒了，你完成了 ${filled} 項偵探調查！</p>`;
+  setTimeout(()=>{hide('level1');show('level2');setProgress(2);initStars();window.scrollTo({top:0,behavior:'smooth'});},800);
+}
+
+// --- §2 stars ---
+const wsaScore={};
+function initStars(){
+  document.querySelectorAll('.stars').forEach(div=>{
+    if(div.children.length) return;
+    div.innerHTML='';
+    for(let i=1;i<=4;i++){
+      const s=document.createElement('span');
+      s.className='star'; s.textContent='★'; s.dataset.v=i;
+      s.onclick=()=>{
+        const axis=div.dataset.axis; wsaScore[axis]=i;
+        [...div.children].forEach((c,idx)=>c.classList.toggle('on', idx<i));
+      };
+      div.appendChild(s);
+    }
+  });
+}
+function submitLevel2(){
+  const fb=document.getElementById('q2-feedback');
+  const n=Object.keys(wsaScore).length;
+  if(n<4){fb.innerHTML='<p class="text-red-600 shake">⚠️ 請為 4 個面向都打分。</p>';return;}
+  const total=Object.values(wsaScore).reduce((a,b)=>a+b,0);
+  let judge= total>=13?'你們學校已是明星級行動者！':(total>=9?'學校有做但還有空間進步。':'缺口很大，正是提案的好時機！');
+  fb.innerHTML=`<p class="text-green-700 feedback-pop">✅ 總分 ${total} / 16 ｜ ${judge}</p>`;
+  setTimeout(()=>{hide('level2');show('level3');setProgress(3);initDataQ();window.scrollTo({top:0,behavior:'smooth'});},900);
+}
+
+// --- §3 data match ---
+const dataQset=[
+  {key:'ipcc', q:'IPCC 說全球排放必須在 2030 前，相較 2019 減少多少？'},
+  {key:'tw2050',q:'臺灣訂定的國家淨零目標年是？'},
+  {key:'law',  q:'臺灣環境教育法規定每人每年至少幾小時？'},
+  {key:'gep',  q:'UNESCO Greening Education Partnership 有多少個機構承諾？'},
+  {key:'tw16', q:'臺灣近 110 年平均升溫約多少？'},
+  {key:'ac',   q:'冷氣每調高 1℃ 約可省幾 % 的電？'},
+];
+let dqIdx=0, dqCorrect=0;
+function initDataQ(){ dqIdx=0; dqCorrect=0; renderDataQ();
+  document.querySelectorAll('.data-num').forEach(btn=>{
+    btn.onclick=()=>handleDataClick(btn);
+  });
+}
+function renderDataQ(){
+  const box=document.getElementById('dataQuestions');
+  if(dqIdx>=dataQset.length){
+    box.innerHTML=`<p class="text-green-700 font-bold feedback-pop">🎯 完成！${dqCorrect} / ${dataQset.length} 正確</p>`;
+    setTimeout(()=>{hide('level3');show('level4');setProgress(4);window.scrollTo({top:0,behavior:'smooth'});},1000);
+    return;
+  }
+  box.innerHTML=`<div class="p-4 bg-gray-100 rounded-xl"><p class="font-semibold">題目 ${dqIdx+1} / ${dataQset.length}</p><p class="mt-1">${dataQset[dqIdx].q}</p><p class="text-xs text-gray-500 mt-1">點上方數字按鈕作答</p></div>`;
+}
+function handleDataClick(btn){
+  const fb=document.getElementById('q3-feedback');
+  if(dqIdx>=dataQset.length) return;
+  if(btn.dataset.ans===dataQset[dqIdx].key){
+    dqCorrect++;
+    fb.innerHTML='<p class="text-green-700 feedback-pop">✅ 答對！下一題。</p>';
+    btn.disabled=true; btn.classList.add('opacity-50');
+    dqIdx++; setTimeout(()=>{fb.innerHTML='';renderDataQ();},500);
+  } else {
+    btn.classList.add('shake');
+    fb.innerHTML='<p class="text-orange-600">💡 再想一下：題目在找最符合的那個數字。</p>';
+    setTimeout(()=>btn.classList.remove('shake'),400);
+  }
+}
+
+// --- §4 ---
+function submitLevel4(){
+  const v1=document.getElementById('i4_1').value.trim();
+  const v2=document.getElementById('i4_2').value;
+  const v3=document.getElementById('i4_3').value.trim();
+  const v4=document.getElementById('i4_4').value.trim();
+  const fb=document.getElementById('q4-feedback');
+  if(!v1||!v2||!v3||!v4){fb.innerHTML='<p class="text-red-600 shake">⚠️ 四欄都要填才算完整提案！</p>';return;}
+  let score=0;
+  if(v1.length>=10) score++;
+  if(v2) score++;
+  if(v3.length>=10) score++;
+  if(v4.length>=5) score++;
+  fb.innerHTML=`<p class="text-green-700 feedback-pop">✅ 完整度 ${score}/4！這就是真實的公民行動。</p>`;
+  setTimeout(()=>{hide('level4');show('level5');setProgress(5);window.scrollTo({top:0,behavior:'smooth'});},900);
+}
+
+// --- §5 ---
+function submitLevel5(){
+  const cbs=[...document.querySelectorAll('.wsa-cb')].filter(c=>c.checked);
+  const fb=document.getElementById('q5-feedback');
+  if(cbs.length<2){fb.innerHTML='<p class="text-red-600 shake">⚠️ 至少勾選 2 個面向（真正的全校取徑不能只做一件事）。</p>';return;}
+  fb.innerHTML=`<p class="text-green-700 feedback-pop">✅ 你承諾了 ${cbs.length} 個面向，向 Whole School Approach 邁進！</p>`;
+  setTimeout(()=>{hide('level5');show('level6');setProgress(6);window.scrollTo({top:0,behavior:'smooth'});},900);
+}
+
+// --- §6 finish ---
+function finish(){
+  const hope=document.getElementById('i6_hope').value.trim();
+  if(hope.length<5){document.getElementById('final-msg').innerHTML='<p class="text-red-600 shake">⚠️ 至少寫一句希望吧！</p>';return;}
+  document.getElementById('final-msg').innerHTML='<p class="text-pink-700 font-bold feedback-pop text-lg">🎉 恭喜成為校園氣候英雄！你的希望已加入全球 UNESCO Greening Education 網絡。</p>';
+  confetti();
+}
+function confetti(){
+  const colors=['#fbbf24','#ef4444','#10b981','#3b82f6','#a855f7'];
+  for(let i=0;i<60;i++){
+    const c=document.createElement('div'); c.className='confetti';
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDelay=(Math.random()*0.8)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+</script>
+</body>
+</html>

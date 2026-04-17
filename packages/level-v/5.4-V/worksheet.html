@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>碳經濟分析師 | 高中能源消耗與碳排放互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#0f172a,#1e293b,#0f172a); min-height:100vh; color:#e2e8f0;}
+  .card { background:rgba(30,41,59,.92); border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.3); border:1px solid rgba(99,102,241,.2);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.15);}
+  .btn:disabled { opacity:.45; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:80px; transition: background .2s; border:2px dashed rgba(148,163,184,.4); border-radius:.75rem;}
+  .drop-zone.over { background:rgba(234,179,8,.15); border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.15);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:rgba(148,163,184,.35); transition:all .3s;}
+  .progress-dot.active { background:#818cf8; transform:scale(1.3); box-shadow:0 0 12px rgba(129,140,248,.5);}
+  .progress-dot.done { background:#34d399; box-shadow:0 0 8px rgba(52,211,153,.4);}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea { border:1px solid rgba(148,163,184,.3); border-radius:.5rem; padding:.75rem; width:100%; font-size:.95rem; background:rgba(15,23,42,.6); color:#e2e8f0; resize:vertical;}
+  textarea:focus { outline:none; border-color:#818cf8; box-shadow:0 0 0 2px rgba(129,140,248,.25);}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  .badge-lock { filter:grayscale(1); opacity:.35;}
+  svg text { pointer-events:none; }
+  input[type="number"] { background:rgba(15,23,42,.6); border:1px solid rgba(148,163,184,.3); color:#e2e8f0; border-radius:.375rem; padding:.25rem .5rem; }
+  input[type="number"]:focus { outline:none; border-color:#818cf8; }
+  .ref-tag { font-size:.65rem; background:rgba(99,102,241,.2); color:#a5b4fc; padding:.1rem .4rem; border-radius:.25rem; }
+  select { background:rgba(15,23,42,.6); border:1px solid rgba(148,163,184,.3); color:#e2e8f0; border-radius:.375rem; padding:.25rem .5rem; }
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-indigo-300">碳經濟分析師</h1>
+    <p class="text-sm text-slate-400 mt-1">你是「碳經濟分析師」：11 個關卡、9 種高層次任務。完成它們，成為 Level V 碳經濟公民。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">分析師積分</div>
+    <div class="text-2xl font-bold text-emerald-400"><span id="score">0</span> / 110</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-1.5 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs text-slate-500">排放</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs text-slate-500">數據</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs text-slate-500">資料1</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs text-slate-500">系統</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs text-slate-500">資料2</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs text-slate-500">倫理</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs text-slate-500">CER</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs text-slate-500">倡議</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-9"></div><span class="text-xs text-slate-500">跨域</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-10"></div><span class="text-xs text-slate-500">後設</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-11"></div><span class="text-xs text-slate-500">反思</span>
+</div>
+
+<!-- Badges -->
+<div class="card p-3 mb-6 flex flex-wrap gap-2 justify-center">
+  <span class="text-lg badge-lock" id="badge-1" title="排放衡量者">&#x1F4CA;</span>
+  <span class="text-lg badge-lock" id="badge-2" title="數據科學家">&#x1F9EE;</span>
+  <span class="text-lg badge-lock" id="badge-3" title="能源效率專家">&#x26A1;</span>
+  <span class="text-lg badge-lock" id="badge-4" title="系統思考者">&#x1F504;</span>
+  <span class="text-lg badge-lock" id="badge-5" title="倫理辯論家">&#x2696;&#xFE0F;</span>
+  <span class="text-lg badge-lock" id="badge-6" title="論證大師">&#x1F3DB;&#xFE0F;</span>
+  <span class="text-lg badge-lock" id="badge-7" title="政策倡議者">&#x1F4E2;</span>
+  <span class="text-lg badge-lock" id="badge-8" title="跨域整合者">&#x1F310;</span>
+  <span class="text-lg badge-lock" id="badge-9" title="後設認知者">&#x1F9E0;</span>
+</div>
+
+<!-- ===== Level 1: 排放衡量概念配對 ===== -->
+<section id="level-1" class="card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F4CA;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 1：排放衡量概念配對</h2>
+      <p class="text-sm text-slate-400">你是碳排放審計員，先搞清楚基本概念。</p>
+      <span class="ref-tag">dp1 · LO1261, LO1263</span>
+    </div>
+  </div>
+  <p class="mb-4 text-slate-300">將左側概念拖曳到正確的定義框中。</p>
+  <div class="grid md:grid-cols-2 gap-4 mb-4">
+    <div id="drag-pool-1" class="flex flex-wrap gap-2">
+      <div class="drag-item bg-indigo-900 text-indigo-200 px-3 py-1.5 rounded-lg text-sm font-medium" draggable="true" data-key="prod">生產端排放</div>
+      <div class="drag-item bg-indigo-900 text-indigo-200 px-3 py-1.5 rounded-lg text-sm font-medium" draggable="true" data-key="cons">消費端排放</div>
+      <div class="drag-item bg-indigo-900 text-indigo-200 px-3 py-1.5 rounded-lg text-sm font-medium" draggable="true" data-key="embd">隱含碳</div>
+      <div class="drag-item bg-indigo-900 text-indigo-200 px-3 py-1.5 rounded-lg text-sm font-medium" draggable="true" data-key="cbam">CBAM</div>
+    </div>
+    <div class="space-y-3">
+      <div class="drop-zone p-3 text-sm text-slate-400" data-accept="prod">以排放發生的地理位置計算，即一國境內的 CO&#x2082; 排放</div>
+      <div class="drop-zone p-3 text-sm text-slate-400" data-accept="cons">將貿易中的隱含碳重新分配至最終消費國</div>
+      <div class="drop-zone p-3 text-sm text-slate-400" data-accept="embd">國際貿易商品中嵌入的碳足跡</div>
+      <div class="drop-zone p-3 text-sm text-slate-400" data-accept="cbam">歐盟對進口高碳排產品課徵碳關稅的機制</div>
+    </div>
+  </div>
+  <div id="fb-1" class="text-sm mb-3 min-h-[1.5rem]"></div>
+  <button id="btn-1" class="btn bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium" onclick="checkLevel1()">送出答案</button>
+</section>
+
+<!-- ===== Level 2: 數據科學分析 — 隱含碳計算 ===== -->
+<section id="level-2" class="hidden-screen card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F9EE;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 2：隱含碳計算（數據科學分析）</h2>
+      <p class="text-sm text-slate-400">你是數據分析師，用數字揭開碳責任的真相。</p>
+      <span class="ref-tag">dp1 · LO1261, LO1262</span>
+    </div>
+  </div>
+  <p class="mb-2 text-slate-300">2023 年全球化石燃料 CO&#x2082; 排放為 36.8 GtCO&#x2082;。中國生產端占全球 31%，消費端占 25%。</p>
+  <div class="space-y-3 mb-4">
+    <div>
+      <label class="text-sm text-slate-400">Q1：中國因出口商品而「替其他國家排放」的比例為多少？（31% - 25% = ?%）</label>
+      <input type="number" id="q2-1" class="w-24 mt-1" step="1" min="0" max="100">
+      <span class="text-xs text-slate-500">%</span>
+    </div>
+    <div>
+      <label class="text-sm text-slate-400">Q2：若 OECD 國家消費端排放比生產端高 10%，請解釋這代表什麼意義：</label>
+      <textarea id="q2-2" rows="3" placeholder="以 100 字說明 OECD 國家的碳責任..."></textarea>
+    </div>
+    <div>
+      <label class="text-sm text-slate-400">Q3：臺灣是碳的淨出口國還是淨進口國？為什麼？（考慮臺灣的半導體出口與能源進口）</label>
+      <textarea id="q2-3" rows="3" placeholder="分析臺灣的貿易碳流向..."></textarea>
+    </div>
+  </div>
+  <div id="fb-2" class="text-sm mb-3 min-h-[1.5rem]"></div>
+  <button id="btn-2" class="btn bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium" onclick="checkLevel2()">送出答案</button>
+</section>
+
+<!-- ===== Level 3: 資料詮釋 — 能源效率數據 ===== -->
+<section id="level-3" class="hidden-screen card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x26A1;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 3：資料詮釋 — 能源效率與減碳潛力</h2>
+      <p class="text-sm text-slate-400">你是能源政策研究員，解讀關鍵數據。</p>
+      <span class="ref-tag">dp2, dp3, dp7 · LO1266, LO1267</span>
+    </div>
+  </div>
+  <div class="bg-slate-800 rounded-lg p-4 mb-4 text-sm">
+    <p><strong>數據 A</strong>：IEA 估計能源效率改善可貢獻 2050 前所需減排的約 1/3。</p>
+    <p><strong>數據 B</strong>：成熟節能技術（LED、變頻空調、建築隔熱）可降耗 30-50%，回收期 3-5 年。</p>
+    <p><strong>數據 C</strong>：臺灣能源密集度 2005-2023 下降約 28%，但仍高於日本。</p>
+  </div>
+  <div class="space-y-3 mb-4">
+    <div>
+      <label class="text-sm text-slate-400">Q1：如果能源效率貢獻 1/3 減排，其餘 2/3 需要靠哪些手段？列出至少 3 項並說明。</label>
+      <textarea id="q3-1" rows="3" placeholder="再生能源、電氣化、CCUS..."></textarea>
+    </div>
+    <div>
+      <label class="text-sm text-slate-400">Q2：臺灣能源密集度下降 28% 但仍高於日本，可能的原因是什麼？（從產業結構分析）</label>
+      <textarea id="q3-2" rows="3" placeholder="產業結構、能源結構、政策..."></textarea>
+    </div>
+  </div>
+  <div id="fb-3" class="text-sm mb-3 min-h-[1.5rem]"></div>
+  <button id="btn-3" class="btn bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium" onclick="checkLevel3()">送出答案</button>
+</section>
+
+<!-- ===== Level 4: 系統思考 — 反彈效應因果圖 ===== -->
+<section id="level-4" class="hidden-screen card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F504;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 4：系統思考 — 反彈效應因果循環圖</h2>
+      <p class="text-sm text-slate-400">你是系統動力學分析師，揭示能源效率的弔詭。</p>
+      <span class="ref-tag">dp8 · LO1268</span>
+    </div>
+  </div>
+  <p class="mb-3 text-slate-300">將概念拖入因果圖的正確位置，建構反彈效應的因果循環。</p>
+  <div class="mb-4">
+    <svg class="loop w-full" viewBox="0 0 600 320" style="max-height:320px;">
+      <defs>
+        <marker id="arrowG" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#818cf8"/></marker>
+      </defs>
+      <!-- Nodes -->
+      <rect x="30" y="20" width="160" height="44" rx="10" fill="#312e81" stroke="#818cf8"/>
+      <text x="110" y="47" text-anchor="middle" fill="#e2e8f0" font-size="13" pointer-events="none">技術效率提升</text>
+      <rect x="400" y="20" width="160" height="44" rx="10" fill="#312e81" stroke="#818cf8"/>
+      <text x="480" y="47" text-anchor="middle" fill="#e2e8f0" font-size="13" pointer-events="none">單位能源成本 &#x2193;</text>
+      <rect x="400" y="140" width="160" height="44" rx="10" fill="#312e81" stroke="#818cf8" class="loop-slot" id="slot-A" data-accept="demand"/>
+      <text x="480" y="167" text-anchor="middle" fill="#94a3b8" font-size="12" pointer-events="none" id="slotA-text">拖曳至此 A</text>
+      <rect x="30" y="140" width="160" height="44" rx="10" fill="#312e81" stroke="#818cf8" class="loop-slot" id="slot-B" data-accept="total"/>
+      <text x="110" y="167" text-anchor="middle" fill="#94a3b8" font-size="12" pointer-events="none" id="slotB-text">拖曳至此 B</text>
+      <rect x="215" y="250" width="160" height="44" rx="10" fill="#1e3a2f" stroke="#34d399" class="loop-slot" id="slot-C" data-accept="policy"/>
+      <text x="295" y="277" text-anchor="middle" fill="#94a3b8" font-size="12" pointer-events="none" id="slotC-text">拖曳至此 C（槓桿點）</text>
+      <!-- Arrows -->
+      <line x1="190" y1="42" x2="395" y2="42" stroke="#818cf8" stroke-width="2" marker-end="url(#arrowG)"/>
+      <text x="290" y="35" text-anchor="middle" fill="#a5b4fc" font-size="11" pointer-events="none">+</text>
+      <line x1="480" y1="64" x2="480" y2="135" stroke="#818cf8" stroke-width="2" marker-end="url(#arrowG)"/>
+      <text x="492" y="100" fill="#a5b4fc" font-size="11" pointer-events="none">+</text>
+      <line x1="400" y1="162" x2="195" y2="162" stroke="#818cf8" stroke-width="2" marker-end="url(#arrowG)"/>
+      <text x="290" y="155" text-anchor="middle" fill="#a5b4fc" font-size="11" pointer-events="none">+</text>
+      <line x1="110" y1="140" x2="110" y2="69" stroke="#f87171" stroke-width="2" marker-end="url(#arrowG)" stroke-dasharray="6"/>
+      <text x="95" y="105" fill="#f87171" font-size="11" pointer-events="none">R (正反饋)</text>
+      <line x1="295" y1="250" x2="200" y2="184" stroke="#34d399" stroke-width="2" marker-end="url(#arrowG)"/>
+      <text x="235" y="215" fill="#34d399" font-size="11" pointer-events="none">&#x2212; (負反饋)</text>
+    </svg>
+  </div>
+  <div id="drag-pool-4" class="flex flex-wrap gap-2 mb-4">
+    <div class="drag-item bg-indigo-900 text-indigo-200 px-3 py-1.5 rounded-lg text-sm font-medium" draggable="true" data-key="demand">能源服務需求增加</div>
+    <div class="drag-item bg-indigo-900 text-indigo-200 px-3 py-1.5 rounded-lg text-sm font-medium" draggable="true" data-key="total">總能源消耗（不降反升）</div>
+    <div class="drag-item bg-emerald-900 text-emerald-200 px-3 py-1.5 rounded-lg text-sm font-medium" draggable="true" data-key="policy">碳定價 / 總量管制</div>
+  </div>
+  <div class="mb-4">
+    <label class="text-sm text-slate-400">延伸思考（50+ 字）：為什麼傑文斯悖論在現代社會仍然可能發生？政策可以如何避免？</label>
+    <textarea id="q4-ext" rows="3" placeholder="反彈效應與政策設計..."></textarea>
+  </div>
+  <div id="fb-4" class="text-sm mb-3 min-h-[1.5rem]"></div>
+  <button id="btn-4" class="btn bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium" onclick="checkLevel4()">送出答案</button>
+</section>
+
+<!-- ===== Level 5: 資料詮釋 2 — 碳定價全球數據 ===== -->
+<section id="level-5" class="hidden-screen card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F4C8;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 5：資料詮釋 — 全球碳定價數據</h2>
+      <p class="text-sm text-slate-400">你是政策分析師，解讀碳市場的三層數據。</p>
+      <span class="ref-tag">dp4, dp5 · LO1277, LO1279</span>
+    </div>
+  </div>
+  <div class="bg-slate-800 rounded-lg p-4 mb-4 text-sm">
+    <p><strong>層次 1（現狀）</strong>：全球 75 項碳定價機制，覆蓋 23% 排放，收入 1,040 億美元。</p>
+    <p><strong>層次 2（差距）</strong>：歐盟 ETS €85/tCO&#x2082; vs 臺灣碳費 NTD 300（≈USD 10）。</p>
+    <p><strong>層次 3（目標）</strong>：OECD 建議有效碳價需 €60-120/tCO&#x2082; 才能驅動巴黎協定目標。</p>
+  </div>
+  <div class="space-y-3 mb-4">
+    <div>
+      <label class="text-sm text-slate-400">Q1：77% 的全球排放尚未被碳定價覆蓋，列出至少 2 個可能原因。</label>
+      <textarea id="q5-1" rows="3" placeholder="政治阻力、競爭力擔憂..."></textarea>
+    </div>
+    <div>
+      <label class="text-sm text-slate-400">Q2：臺灣碳費約 USD 10 vs 歐盟 €85，這個差距對臺灣出口商在 CBAM 下的影響是什麼？</label>
+      <textarea id="q5-2" rows="3" placeholder="碳洩漏、CBAM 碳關稅..."></textarea>
+    </div>
+  </div>
+  <div id="fb-5" class="text-sm mb-3 min-h-[1.5rem]"></div>
+  <button id="btn-5" class="btn bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium" onclick="checkLevel5()">送出答案</button>
+</section>
+
+<!-- ===== Level 6: 倫理兩難 — 碳稅 vs 碳交易 ===== -->
+<section id="level-6" class="hidden-screen card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x2696;&#xFE0F;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 6：倫理兩難 — 碳稅 vs 碳交易，哪個更公平？</h2>
+      <p class="text-sm text-slate-400">你是倫理辯論家，分析兩造立場。</p>
+      <span class="ref-tag">dp4, dp5 · LO1278, LO1280</span>
+    </div>
+  </div>
+  <p class="mb-3 text-slate-300">碳稅提供價格確定性但減量不確定；碳交易確保減量達標但價格波動大。兩者在「公平性」上也有不同影響。</p>
+  <div class="grid md:grid-cols-2 gap-4 mb-4">
+    <div>
+      <h3 class="text-amber-400 font-bold mb-2">立場 A：碳稅更公平</h3>
+      <textarea id="q6-a" rows="4" placeholder="100+ 字闡述立場 A 的理由（含數據引用）..."></textarea>
+    </div>
+    <div>
+      <h3 class="text-cyan-400 font-bold mb-2">立場 B：碳交易更公平</h3>
+      <textarea id="q6-b" rows="4" placeholder="100+ 字闡述立場 B 的理由（含數據引用）..."></textarea>
+    </div>
+  </div>
+  <div class="mb-4">
+    <label class="text-sm text-slate-400">反駁對方（80+ 字）：選擇你不支持的那方，寫出對其最強的反駁。</label>
+    <textarea id="q6-reb" rows="3" placeholder="反駁理由..."></textarea>
+  </div>
+  <div id="fb-6" class="text-sm mb-3 min-h-[1.5rem]"></div>
+  <button id="btn-6" class="btn bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium" onclick="checkLevel6()">送出答案</button>
+</section>
+
+<!-- ===== Level 7: CER 論證 — 碳定價辯論 ===== -->
+<section id="level-7" class="hidden-screen card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F3DB;&#xFE0F;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 7：CER 論證 — 臺灣應優先採用碳稅還是碳交易？</h2>
+      <p class="text-sm text-slate-400">你是政策論證專家，用 CER 結構建構有力論述。</p>
+      <span class="ref-tag">dp4, dp5 · LO1278, LO1281</span>
+    </div>
+  </div>
+  <div class="space-y-3 mb-4">
+    <div>
+      <label class="text-sm font-bold text-amber-300">Claim（主張）</label>
+      <textarea id="q7-c" rows="2" placeholder="明確表態：臺灣應優先採用碳稅/碳交易，因為..."></textarea>
+    </div>
+    <div>
+      <label class="text-sm font-bold text-emerald-300">Evidence（證據）</label>
+      <textarea id="q7-e" rows="3" placeholder="引用 dp4, dp5 的具體數據支持你的主張..."></textarea>
+    </div>
+    <div>
+      <label class="text-sm font-bold text-cyan-300">Reasoning（推理）</label>
+      <textarea id="q7-r" rows="3" placeholder="解釋數據如何支持你的主張..."></textarea>
+    </div>
+    <div>
+      <label class="text-sm font-bold text-rose-300">Rebuttal（反駁）</label>
+      <textarea id="q7-reb" rows="3" placeholder="預期對方的反論，並說明為何你的主張仍然成立..."></textarea>
+    </div>
+  </div>
+  <div id="fb-7" class="text-sm mb-3 min-h-[1.5rem]"></div>
+  <button id="btn-7" class="btn bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium" onclick="checkLevel7()">送出答案</button>
+</section>
+
+<!-- ===== Level 8: 政策倡議 — 漂綠偵探 + 模擬聽證 ===== -->
+<section id="level-8" class="hidden-screen card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F4E2;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 8：政策倡議 — 漂綠偵探 + 碳費聽證</h2>
+      <p class="text-sm text-slate-400">你是公民倡議者，辨識漂綠並進行政策倡議。</p>
+      <span class="ref-tag">dp4, dp5, dp6 · LO1275, LO1276, LO1281</span>
+    </div>
+  </div>
+  <h3 class="text-amber-300 font-bold mb-2">Part A：漂綠偵探</h3>
+  <div class="bg-slate-800 rounded-lg p-3 mb-3 text-sm">
+    <p>某企業宣稱：「我們是碳中和企業，100% 使用綠電。」但實際上：1) 綠電來自購買再生能源憑證（RECs）而非自發，2) 碳中和透過購買廉價碳抵換實現，3) 核心製程排放未減少。</p>
+  </div>
+  <div class="mb-4">
+    <label class="text-sm text-slate-400">分析：這家企業是否構成漂綠？請引用歐盟 Green Claims Directive 的標準評估（100+ 字）。</label>
+    <textarea id="q8-green" rows="4" placeholder="漂綠分析..."></textarea>
+  </div>
+  <h3 class="text-cyan-300 font-bold mb-2">Part B：利害關係人分析（碳費調升聽證）</h3>
+  <p class="text-sm text-slate-400 mb-2">議題：「臺灣碳費是否應從 NTD 300 調升至 NTD 1,500（≈USD 50）？」</p>
+  <div class="overflow-x-auto mb-4">
+    <table class="w-full text-sm">
+      <tr class="text-slate-400 border-b border-slate-700">
+        <th class="p-2 text-left">利害關係人</th>
+        <th class="p-2 text-left">立場</th>
+        <th class="p-2 text-left">核心利益</th>
+        <th class="p-2 text-left">主要擔憂</th>
+      </tr>
+      <tr class="border-b border-slate-800"><td class="p-2">金管會官員</td><td class="p-2"><textarea id="q8-s1a" rows="1" class="w-full text-xs"></textarea></td><td class="p-2"><textarea id="q8-s1b" rows="1" class="w-full text-xs"></textarea></td><td class="p-2"><textarea id="q8-s1c" rows="1" class="w-full text-xs"></textarea></td></tr>
+      <tr class="border-b border-slate-800"><td class="p-2">環保團體</td><td class="p-2"><textarea id="q8-s2a" rows="1" class="w-full text-xs"></textarea></td><td class="p-2"><textarea id="q8-s2b" rows="1" class="w-full text-xs"></textarea></td><td class="p-2"><textarea id="q8-s2c" rows="1" class="w-full text-xs"></textarea></td></tr>
+      <tr class="border-b border-slate-800"><td class="p-2">企業 ESG 部門</td><td class="p-2"><textarea id="q8-s3a" rows="1" class="w-full text-xs"></textarea></td><td class="p-2"><textarea id="q8-s3b" rows="1" class="w-full text-xs"></textarea></td><td class="p-2"><textarea id="q8-s3c" rows="1" class="w-full text-xs"></textarea></td></tr>
+      <tr class="border-b border-slate-800"><td class="p-2">一般投資人</td><td class="p-2"><textarea id="q8-s4a" rows="1" class="w-full text-xs"></textarea></td><td class="p-2"><textarea id="q8-s4b" rows="1" class="w-full text-xs"></textarea></td><td class="p-2"><textarea id="q8-s4c" rows="1" class="w-full text-xs"></textarea></td></tr>
+      <tr><td class="p-2">商業銀行</td><td class="p-2"><textarea id="q8-s5a" rows="1" class="w-full text-xs"></textarea></td><td class="p-2"><textarea id="q8-s5b" rows="1" class="w-full text-xs"></textarea></td><td class="p-2"><textarea id="q8-s5c" rows="1" class="w-full text-xs"></textarea></td></tr>
+    </table>
+  </div>
+  <div class="mb-4">
+    <label class="text-sm text-slate-400">公民陳情書（150+ 字）：以青年公民身分，就碳費調升向立法委員提出訴求。</label>
+    <textarea id="q8-letter" rows="5" placeholder="敬愛的立法委員：..."></textarea>
+  </div>
+  <div id="fb-8" class="text-sm mb-3 min-h-[1.5rem]"></div>
+  <button id="btn-8" class="btn bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium" onclick="checkLevel8()">送出答案</button>
+</section>
+
+<!-- ===== Level 9: 跨域整合短論文 ===== -->
+<section id="level-9" class="hidden-screen card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F310;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 9：跨域整合短論文（500+ 字）</h2>
+      <p class="text-sm text-slate-400">你是跨域研究者，整合科學、經濟與倫理。</p>
+      <span class="ref-tag">dp1, dp4, dp6 · LO1263, LO1272, LO1277</span>
+    </div>
+  </div>
+  <div class="bg-slate-800 rounded-lg p-4 mb-4 text-sm">
+    <p><strong>題目</strong>：「從排放數據到碳定價到綠色金融：科學、經濟與倫理的交叉路口」</p>
+    <p class="mt-2"><strong>建議結構</strong>：</p>
+    <ol class="list-decimal ml-5 space-y-1">
+      <li>引言：為何需要跨域整合討論</li>
+      <li>科學面：排放衡量方式如何影響責任分配（引用 dp1）</li>
+      <li>經濟面：碳定價如何驅動市場行為改變（引用 dp4）</li>
+      <li>倫理面：綠色金融中的漂綠問題與公平性（引用 dp6）</li>
+      <li>結論：你的整合觀點</li>
+    </ol>
+    <p class="mt-2 text-amber-300">引用格式範例（APA 簡式）：「全球碳定價機制已覆蓋約 23% 排放（World Bank, 2024）。」</p>
+  </div>
+  <textarea id="q9" rows="15" placeholder="在此撰寫 500+ 字短論文..."></textarea>
+  <div class="mt-2 text-xs text-slate-500">字數：<span id="q9-count">0</span> / 500</div>
+  <div id="fb-9" class="text-sm mt-3 mb-3 min-h-[1.5rem]"></div>
+  <button id="btn-9" class="btn bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium" onclick="checkLevel9()">送出答案</button>
+</section>
+
+<!-- ===== Level 10: 後設認知 ===== -->
+<section id="level-10" class="hidden-screen card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F9E0;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 10：後設認知 — 我的學習轉變</h2>
+      <p class="text-sm text-slate-400">你是反思者，回顧自己的認知變化。</p>
+      <span class="ref-tag">LO1264, LO1280</span>
+    </div>
+  </div>
+  <p class="mb-3 text-slate-300">回想四節課的學習歷程，完成以下三段反思（共 100+ 字）：</p>
+  <div class="space-y-3 mb-4">
+    <div>
+      <label class="text-sm font-bold text-amber-300">學習前：我原本以為...</label>
+      <textarea id="q10-before" rows="2" placeholder="上課前對碳排放/碳定價/綠色金融的理解..."></textarea>
+    </div>
+    <div>
+      <label class="text-sm font-bold text-emerald-300">學習後：我現在知道...</label>
+      <textarea id="q10-after" rows="2" placeholder="四節課後最重要的新理解..."></textarea>
+    </div>
+    <div>
+      <label class="text-sm font-bold text-cyan-300">轉折點：最顛覆我想法的是...</label>
+      <textarea id="q10-turn" rows="2" placeholder="哪個概念或數據最讓你驚訝？"></textarea>
+    </div>
+  </div>
+  <div class="mt-2 text-xs text-slate-500">總字數：<span id="q10-count">0</span> / 100</div>
+  <div id="fb-10" class="text-sm mb-3 min-h-[1.5rem]"></div>
+  <button id="btn-10" class="btn bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium" onclick="checkLevel10()">送出答案</button>
+</section>
+
+<!-- ===== Level 11: 開放式反思 + WSA ===== -->
+<section id="level-11" class="hidden-screen card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F31F;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 11：開放式反思 + WSA 行動承諾</h2>
+      <p class="text-sm text-slate-400">你是行動者，把知識轉化為改變。</p>
+      <span class="ref-tag">LO1265, LO1270, LO1271</span>
+    </div>
+  </div>
+  <h3 class="text-amber-300 font-bold mb-2">反思 #1（100+ 字）</h3>
+  <p class="text-sm text-slate-400 mb-2">如果你有 100 萬元投資預算，你會選擇投資綠色債券、購買碳權、還是投資節能設備？為什麼？請結合本單元數據分析。</p>
+  <textarea id="q11-r1" rows="4" placeholder="我的投資選擇與分析..."></textarea>
+  <h3 class="text-cyan-300 font-bold mt-4 mb-2">反思 #2（100+ 字）</h3>
+  <p class="text-sm text-slate-400 mb-2">有人說「碳定價只是讓有錢人繼續排放的贖罪券」。你同意嗎？請從公平性角度論述。</p>
+  <textarea id="q11-r2" rows="4" placeholder="我的觀點..."></textarea>
+  <h3 class="text-emerald-300 font-bold mt-4 mb-2">WSA Challenge — 四面向行動承諾</h3>
+  <div class="space-y-2 mb-4">
+    <label class="flex items-start gap-2"><input type="checkbox" id="wsa-gov" class="mt-1"> <span class="text-sm"><strong>治理 Governance</strong>：參與學生議會永續委員會，推動校園碳中和預算提案</span></label>
+    <label class="flex items-start gap-2"><input type="checkbox" id="wsa-cur" class="mt-1"> <span class="text-sm"><strong>課程 Curriculum</strong>：在經濟/公民課討論碳定價政策，在數學課練習碳預算計算</span></label>
+    <label class="flex items-start gap-2"><input type="checkbox" id="wsa-ops" class="mt-1"> <span class="text-sm"><strong>營運 Operations</strong>：完成校園能源審計，提出 LED/變頻空調替換提案</span></label>
+    <label class="flex items-start gap-2"><input type="checkbox" id="wsa-com" class="mt-1"> <span class="text-sm"><strong>社群 Community</strong>：與社區合辦碳足跡工作坊或綠色投資講座</span></label>
+  </div>
+  <div id="fb-11" class="text-sm mb-3 min-h-[1.5rem]"></div>
+  <button id="btn-11" class="btn bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium" onclick="checkLevel11()">完成挑戰！</button>
+</section>
+
+<!-- Final -->
+<section id="level-final" class="hidden-screen card p-8 text-center fade-in mb-4">
+  <div class="text-5xl mb-4">&#x1F3C6;</div>
+  <h2 class="text-2xl font-bold text-amber-300 mb-2">恭喜！你已成為 Level V 碳經濟分析師！</h2>
+  <p class="text-slate-400 mb-4">你掌握了排放衡量、能源效率、碳定價與綠色金融的跨域知識。</p>
+  <div class="text-3xl font-bold text-emerald-400 mb-4"><span id="final-score">110</span> / 110</div>
+  <p class="text-sm text-slate-500">「每一筆消費都是碳投票——你的選擇決定市場的方向。」</p>
+</section>
+
+</div>
+
+<script>
+let score = 0;
+const totalLevels = 11;
+
+function updateScore(pts) {
+  score += pts;
+  document.getElementById('score').textContent = score;
+}
+
+function showLevel(n) {
+  for (let i = 1; i <= totalLevels; i++) {
+    const el = document.getElementById('level-' + i);
+    if (el) el.classList.add('hidden-screen');
+  }
+  document.getElementById('level-final')?.classList.add('hidden-screen');
+  const target = n > totalLevels ? 'level-final' : 'level-' + n;
+  const t = document.getElementById(target);
+  if (t) { t.classList.remove('hidden-screen'); t.classList.add('fade-in'); }
+}
+
+function markDot(n, state) {
+  const d = document.getElementById('dot-' + n);
+  if (!d) return;
+  d.classList.remove('active', 'done');
+  if (state === 'done') d.classList.add('done');
+  else if (state === 'active') d.classList.add('active');
+}
+
+function unlockBadge(n) {
+  const b = document.getElementById('badge-' + n);
+  if (b) { b.classList.remove('badge-lock'); b.classList.add('pop'); }
+}
+
+function fireConfetti() {
+  const colors = ['#818cf8','#34d399','#f59e0b','#f87171','#a78bfa'];
+  for (let i = 0; i < 30; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDelay = Math.random() * 0.5 + 's';
+    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 2500);
+  }
+}
+
+function feedback(id, ok, msg) {
+  const el = document.getElementById(id);
+  el.innerHTML = ok
+    ? '<span class="text-emerald-400">&#x2705; ' + msg + '</span>'
+    : '<span class="text-rose-400">&#x274C; ' + msg + '</span>';
+}
+
+function advance(from) {
+  markDot(from, 'done');
+  if (from < totalLevels) markDot(from + 1, 'active');
+  fireConfetti();
+  setTimeout(() => {
+    if (from >= totalLevels) {
+      document.getElementById('final-score').textContent = score;
+      showLevel(totalLevels + 1);
+    } else {
+      showLevel(from + 1);
+    }
+  }, 600);
+}
+
+/* ===== Drag & Drop ===== */
+document.querySelectorAll('.drag-item').forEach(item => {
+  item.addEventListener('dragstart', e => {
+    e.dataTransfer.setData('text/plain', item.dataset.key);
+    item.classList.add('dragging');
+  });
+  item.addEventListener('dragend', () => item.classList.remove('dragging'));
+});
+
+document.querySelectorAll('.drop-zone, .loop-slot').forEach(zone => {
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('over');
+    const key = e.dataTransfer.getData('text/plain');
+    if (zone.dataset.accept === key) {
+      zone.dataset.filled = key;
+      if (zone.classList.contains('loop-slot')) {
+        const textEl = zone.querySelector('text') || document.getElementById(zone.id.replace('slot-', 'slot') + '-text');
+        if (textEl) {
+          const labels = { demand: '能源服務需求增加', total: '總能源消耗（不降反升）', policy: '碳定價 / 總量管制' };
+          textEl.textContent = labels[key] || key;
+          textEl.setAttribute('fill', '#e2e8f0');
+        }
+      } else {
+        const src = document.querySelector('.drag-item[data-key="'+key+'"]');
+        if (src) { zone.prepend(src.cloneNode(true)); src.style.display = 'none'; }
+      }
+      zone.style.borderColor = '#34d399';
+    } else {
+      zone.classList.add('shake');
+      setTimeout(() => zone.classList.remove('shake'), 400);
+    }
+  });
+});
+
+/* ===== Level Checks ===== */
+function checkLevel1() {
+  const zones = document.querySelectorAll('#level-1 .drop-zone');
+  let correct = 0;
+  zones.forEach(z => { if (z.dataset.filled === z.dataset.accept) correct++; });
+  if (correct === 4) {
+    updateScore(10); unlockBadge(1); feedback('fb-1', true, '完美配對！你已理解排放衡量的核心概念。+10 分');
+    document.getElementById('btn-1').disabled = true; advance(1);
+  } else {
+    feedback('fb-1', false, '有 ' + (4 - correct) + ' 項配對錯誤。提示：CBAM 是歐盟的碳邊境調整機制。');
+  }
+}
+
+function checkLevel2() {
+  const v1 = parseInt(document.getElementById('q2-1').value);
+  const v2 = document.getElementById('q2-2').value.trim();
+  const v3 = document.getElementById('q2-3').value.trim();
+  if (v1 !== 6) { feedback('fb-2', false, 'Q1：31% - 25% = 6%，請重新計算。'); return; }
+  if (v2.length < 50) { feedback('fb-2', false, 'Q2 需至少 50 字說明。'); return; }
+  if (v3.length < 50) { feedback('fb-2', false, 'Q3 需至少 50 字分析。'); return; }
+  updateScore(10); unlockBadge(2); feedback('fb-2', true, '數據分析完成！你揭開了隱含碳的面紗。+10 分');
+  document.getElementById('btn-2').disabled = true; advance(2);
+}
+
+function checkLevel3() {
+  const v1 = document.getElementById('q3-1').value.trim();
+  const v2 = document.getElementById('q3-2').value.trim();
+  if (v1.length < 50) { feedback('fb-3', false, 'Q1 需至少 50 字，列出並說明 3 項減排手段。'); return; }
+  if (v2.length < 50) { feedback('fb-3', false, 'Q2 需至少 50 字分析臺灣產業結構。'); return; }
+  updateScore(10); unlockBadge(3); feedback('fb-3', true, '資料詮釋成功！你掌握了能源效率的關鍵數據。+10 分');
+  document.getElementById('btn-3').disabled = true; advance(3);
+}
+
+function checkLevel4() {
+  const slotA = document.getElementById('slot-A').dataset.filled === 'demand';
+  const slotB = document.getElementById('slot-B').dataset.filled === 'total';
+  const slotC = document.getElementById('slot-C').dataset.filled === 'policy';
+  const ext = document.getElementById('q4-ext').value.trim();
+  if (!slotA || !slotB || !slotC) { feedback('fb-4', false, '請將三個概念拖入正確的因果圖位置。'); return; }
+  if (ext.length < 50) { feedback('fb-4', false, '延伸思考需至少 50 字。'); return; }
+  updateScore(10); unlockBadge(4); feedback('fb-4', true, '因果圖完成！你理解了反彈效應的系統動力學。+10 分');
+  document.getElementById('btn-4').disabled = true; advance(4);
+}
+
+function checkLevel5() {
+  const v1 = document.getElementById('q5-1').value.trim();
+  const v2 = document.getElementById('q5-2').value.trim();
+  if (v1.length < 50) { feedback('fb-5', false, 'Q1 需至少 50 字分析碳定價覆蓋率不足的原因。'); return; }
+  if (v2.length < 50) { feedback('fb-5', false, 'Q2 需至少 50 字分析 CBAM 對臺灣出口的影響。'); return; }
+  updateScore(10); feedback('fb-5', true, '碳定價數據解讀成功！+10 分');
+  document.getElementById('btn-5').disabled = true; advance(5);
+}
+
+function checkLevel6() {
+  const a = document.getElementById('q6-a').value.trim();
+  const b = document.getElementById('q6-b').value.trim();
+  const reb = document.getElementById('q6-reb').value.trim();
+  if (a.length < 100) { feedback('fb-6', false, '立場 A 需至少 100 字。'); return; }
+  if (b.length < 100) { feedback('fb-6', false, '立場 B 需至少 100 字。'); return; }
+  if (reb.length < 80) { feedback('fb-6', false, '反駁需至少 80 字。'); return; }
+  updateScore(10); unlockBadge(5); feedback('fb-6', true, '倫理辯論完成！兩造立場俱到。+10 分');
+  document.getElementById('btn-6').disabled = true; advance(6);
+}
+
+function checkLevel7() {
+  const c = document.getElementById('q7-c').value.trim();
+  const e = document.getElementById('q7-e').value.trim();
+  const r = document.getElementById('q7-r').value.trim();
+  const reb = document.getElementById('q7-reb').value.trim();
+  if (c.length < 20) { feedback('fb-7', false, 'Claim 需明確表態（至少 20 字）。'); return; }
+  if (e.length < 40) { feedback('fb-7', false, 'Evidence 需引用具體數據（至少 40 字）。'); return; }
+  if (r.length < 40) { feedback('fb-7', false, 'Reasoning 需解釋數據如何支持主張（至少 40 字）。'); return; }
+  if (reb.length < 40) { feedback('fb-7', false, 'Rebuttal 需回應反方論點（至少 40 字）。'); return; }
+  updateScore(10); unlockBadge(6); feedback('fb-7', true, 'CER 論證結構完整！+10 分');
+  document.getElementById('btn-7').disabled = true; advance(7);
+}
+
+function checkLevel8() {
+  const green = document.getElementById('q8-green').value.trim();
+  const letter = document.getElementById('q8-letter').value.trim();
+  let filledCells = 0;
+  for (let i = 1; i <= 5; i++) {
+    ['a','b','c'].forEach(c => {
+      if (document.getElementById('q8-s'+i+c).value.trim().length > 5) filledCells++;
+    });
+  }
+  if (green.length < 100) { feedback('fb-8', false, '漂綠分析需至少 100 字。'); return; }
+  if (filledCells < 10) { feedback('fb-8', false, '利害關係人分析表需填寫更完整（至少 10 格有內容）。'); return; }
+  if (letter.length < 150) { feedback('fb-8', false, '公民陳情書需至少 150 字。'); return; }
+  updateScore(10); unlockBadge(7); feedback('fb-8', true, '政策倡議完成！你具備漂綠辨識與公民參與能力。+10 分');
+  document.getElementById('btn-8').disabled = true; advance(8);
+}
+
+function checkLevel9() {
+  const text = document.getElementById('q9').value.trim();
+  if (text.length < 500) { feedback('fb-9', false, '論文需至少 500 字，目前 ' + text.length + ' 字。'); return; }
+  updateScore(10); unlockBadge(8); feedback('fb-9', true, '跨域整合論文完成！科學×經濟×倫理三維度到位。+10 分');
+  document.getElementById('btn-9').disabled = true; advance(9);
+}
+
+document.getElementById('q9')?.addEventListener('input', function() {
+  document.getElementById('q9-count').textContent = this.value.length;
+});
+
+function checkLevel10() {
+  const b = document.getElementById('q10-before').value.trim();
+  const a = document.getElementById('q10-after').value.trim();
+  const t = document.getElementById('q10-turn').value.trim();
+  const total = b.length + a.length + t.length;
+  if (total < 100) { feedback('fb-10', false, '三段反思共需至少 100 字，目前 ' + total + ' 字。'); return; }
+  updateScore(10); unlockBadge(9); feedback('fb-10', true, '後設認知完成！自我覺察是學習的最高境界。+10 分');
+  document.getElementById('btn-10').disabled = true; advance(10);
+}
+
+['q10-before','q10-after','q10-turn'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', function() {
+    const total = ['q10-before','q10-after','q10-turn'].reduce((s, i) => s + document.getElementById(i).value.length, 0);
+    document.getElementById('q10-count').textContent = total;
+  });
+});
+
+function checkLevel11() {
+  const r1 = document.getElementById('q11-r1').value.trim();
+  const r2 = document.getElementById('q11-r2').value.trim();
+  const wsaChecked = ['wsa-gov','wsa-cur','wsa-ops','wsa-com'].filter(id => document.getElementById(id).checked).length;
+  if (r1.length < 100) { feedback('fb-11', false, '反思 #1 需至少 100 字。'); return; }
+  if (r2.length < 100) { feedback('fb-11', false, '反思 #2 需至少 100 字。'); return; }
+  if (wsaChecked < 4) { feedback('fb-11', false, '請勾選 WSA 四面向各一項行動承諾。'); return; }
+  updateScore(10); feedback('fb-11', true, '全部完成！你是真正的碳經濟分析師！+10 分');
+  document.getElementById('btn-11').disabled = true; advance(11);
+}
+</script>
+</body>
+</html>

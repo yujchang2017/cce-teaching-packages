@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候小隊長小安的任務 | 互動學習單 4.1-III</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#fde68a,#a7f3d0,#bae6fd); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:120px; transition: background .2s; }
+  .drop-zone.over { background:#fde68a; }
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#f59e0b; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .badge { display:inline-block; padding:.2rem .7rem; border-radius:9999px; font-size:.75rem; font-weight:700; }
+</style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-3xl mx-auto">
+
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">🧭 氣候小隊長小安的任務</h1>
+      <p class="text-sm text-slate-600 mt-1">幫小安保護自己、學校與社區，成為氣候調適英雄！</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> 分</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3 flex-wrap">
+    <div class="progress-dot active" id="dot-1"></div><div class="h-1 w-6 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div><div class="h-1 w-6 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div><div class="h-1 w-6 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div><div class="h-1 w-6 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div><div class="h-1 w-6 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-6"></div>
+    <span class="ml-3 text-sm text-slate-600">關卡 <span id="step">1</span>/5</span>
+  </div>
+
+  <!-- Level 1: 暖身 閱讀數據 -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🧑‍🎓</div>
+      <div>
+        <h2 class="text-xl font-bold text-amber-700">關卡 1：小安看到的新聞數字</h2>
+        <p class="text-sm text-slate-700 mt-1">小安早上在報紙上看到幾個數字，可是忘了它們對應哪件事。請幫小安把「數字」連到正確的「事實」！</p>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-3 my-4">
+      <div class="space-y-2">
+        <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold" draggable="true" data-match="a">1.47°C</div>
+        <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold" draggable="true" data-match="b">約 25 萬人/年</div>
+        <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold" draggable="true" data-match="c">+70%</div>
+        <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold" draggable="true" data-match="d">約 1.6°C</div>
+      </div>
+      <div class="space-y-2">
+        <div class="drop-zone bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-xl p-2 text-sm" data-answer="a"><b>事實 A：</b>2024 年全球平均溫度比工業革命前高出…（NASA）</div>
+        <div class="drop-zone bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-xl p-2 text-sm" data-answer="b"><b>事實 B：</b>WHO 預估 2030-2050 氣候變遷每年額外死亡…（WHO）</div>
+        <div class="drop-zone bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-xl p-2 text-sm" data-answer="c"><b>事實 C：</b>過去 20 年，65 歲以上高溫死亡上升…（WHO）</div>
+        <div class="drop-zone bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-xl p-2 text-sm" data-answer="d"><b>事實 D：</b>臺灣過去 110 年平均氣溫上升…（TCCIP）</div>
+      </div>
+    </div>
+    <div id="fb-1" class="text-sm min-h-[1.5rem]"></div>
+    <button class="btn mt-3 bg-emerald-500 text-white font-bold py-2 px-5 rounded-xl" onclick="goNext(1)">下一關 ➡️</button>
+  </section>
+
+  <!-- Level 2: 影響四格分類 -->
+  <section id="level-2" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🩺</div>
+      <div>
+        <h2 class="text-xl font-bold text-rose-700">關卡 2：氣候變遷影響到哪裡？</h2>
+        <p class="text-sm text-slate-700 mt-1">把情境卡放進「身體 / 心理 / 經濟 / 人際」四個籃子！</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-2">
+      <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-2 text-sm text-center font-bold" draggable="true" data-cat="body">中暑送醫</div>
+      <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-2 text-sm text-center font-bold" draggable="true" data-cat="mind">看新聞很擔心</div>
+      <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-2 text-sm text-center font-bold" draggable="true" data-cat="money">颱風菜價暴漲</div>
+      <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-2 text-sm text-center font-bold" draggable="true" data-cat="social">家人為省電吵架</div>
+      <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-2 text-sm text-center font-bold" draggable="true" data-cat="body">登革熱疫情</div>
+      <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-2 text-sm text-center font-bold" draggable="true" data-cat="mind">災後睡不著（PTSD）</div>
+      <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-2 text-sm text-center font-bold" draggable="true" data-cat="money">農田歉收收入減少</div>
+      <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-2 text-sm text-center font-bold" draggable="true" data-cat="social">停課家裡沒人照顧</div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+      <div class="drop-zone bg-red-50 border-2 border-dashed border-red-300 rounded-xl p-3 text-center text-sm font-bold" data-cat="body">🫀 身體</div>
+      <div class="drop-zone bg-indigo-50 border-2 border-dashed border-indigo-300 rounded-xl p-3 text-center text-sm font-bold" data-cat="mind">🧠 心理</div>
+      <div class="drop-zone bg-yellow-50 border-2 border-dashed border-yellow-300 rounded-xl p-3 text-center text-sm font-bold" data-cat="money">💰 經濟</div>
+      <div class="drop-zone bg-green-50 border-2 border-dashed border-green-300 rounded-xl p-3 text-center text-sm font-bold" data-cat="social">👨‍👩‍👧 人際</div>
+    </div>
+    <div id="fb-2" class="text-sm min-h-[1.5rem] mt-2"></div>
+    <button class="btn mt-3 bg-emerald-500 text-white font-bold py-2 px-5 rounded-xl" onclick="goNext(2)">下一關 ➡️</button>
+  </section>
+
+  <!-- Level 3: 未來學校地圖（選擇題） -->
+  <section id="level-3" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🏫</div>
+      <div>
+        <h2 class="text-xl font-bold text-sky-700">關卡 3：2030 的學校</h2>
+        <p class="text-sm text-slate-700 mt-1">閱讀 TCCIP：臺灣百年升溫約 1.6°C，是全球兩倍。若不行動，2030 年的學校最可能出現哪些問題？（多選，至少選 2 個）</p>
+      </div>
+    </div>
+    <div class="space-y-2 my-3" id="quiz-3">
+      <label class="flex items-center gap-2 p-2 bg-sky-50 rounded-lg"><input type="checkbox" data-correct="1"> 午間操場太熱、戶外課要取消</label>
+      <label class="flex items-center gap-2 p-2 bg-sky-50 rounded-lg"><input type="checkbox" data-correct="1"> 夏天停電時教室沒有冷氣</label>
+      <label class="flex items-center gap-2 p-2 bg-sky-50 rounded-lg"><input type="checkbox" data-correct="0"> 早上會有很多恐龍出現</label>
+      <label class="flex items-center gap-2 p-2 bg-sky-50 rounded-lg"><input type="checkbox" data-correct="1"> 颱風暴雨導致停課變多</label>
+      <label class="flex items-center gap-2 p-2 bg-sky-50 rounded-lg"><input type="checkbox" data-correct="0"> 同學都變成超人</label>
+      <label class="flex items-center gap-2 p-2 bg-sky-50 rounded-lg"><input type="checkbox" data-correct="1"> 空氣差、登革熱等疾病風險上升</label>
+    </div>
+    <button class="btn bg-sky-500 text-white font-bold py-2 px-4 rounded-xl" onclick="checkLv3()">提交答案</button>
+    <div id="fb-3" class="text-sm min-h-[1.5rem] mt-2"></div>
+    <button id="next-3" class="btn mt-3 bg-emerald-500 text-white font-bold py-2 px-5 rounded-xl hidden" onclick="goNext(3)">下一關 ➡️</button>
+  </section>
+
+  <!-- Level 4: 公平角色卡 -->
+  <section id="level-4" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🤝</div>
+      <div>
+        <h2 class="text-xl font-bold text-purple-700">關卡 4：公平的選擇</h2>
+        <p class="text-sm text-slate-700 mt-1">學校拿到一筆「氣候調適小額經費」，只能先幫一組人。小安班上投票，你覺得誰最需要先幫？（沒有唯一正解，但要寫一句「為什麼」）</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-3" id="role-cards">
+      <button class="btn role bg-purple-100 border-2 border-purple-300 rounded-xl p-3 text-sm font-bold" data-role="elder">👴 常中暑的阿公</button>
+      <button class="btn role bg-purple-100 border-2 border-purple-300 rounded-xl p-3 text-sm font-bold" data-role="young">🧒 低年級午休教室</button>
+      <button class="btn role bg-purple-100 border-2 border-purple-300 rounded-xl p-3 text-sm font-bold" data-role="sped">♿ 特教生無障礙走廊</button>
+      <button class="btn role bg-purple-100 border-2 border-purple-300 rounded-xl p-3 text-sm font-bold" data-role="migrant">🌏 新住民家庭資訊包</button>
+      <button class="btn role bg-purple-100 border-2 border-purple-300 rounded-xl p-3 text-sm font-bold" data-role="farm">🌾 鄰近農家防旱水塔</button>
+      <button class="btn role bg-purple-100 border-2 border-purple-300 rounded-xl p-3 text-sm font-bold" data-role="poor">🏚️ 低收入社區防熱包</button>
+    </div>
+    <textarea id="reason-4" class="w-full border-2 border-purple-300 rounded-xl p-3 text-sm" rows="3" placeholder="我選這個因為……（寫一句）"></textarea>
+    <button class="btn mt-2 bg-purple-500 text-white font-bold py-2 px-4 rounded-xl" onclick="checkLv4()">提交</button>
+    <div id="fb-4" class="text-sm min-h-[1.5rem] mt-2"></div>
+    <button id="next-4" class="btn mt-3 bg-emerald-500 text-white font-bold py-2 px-5 rounded-xl hidden" onclick="goNext(4)">下一關 ➡️</button>
+  </section>
+
+  <!-- Level 5: WSA Challenge (4 checkbox + 全校英雄徽章) -->
+  <section id="level-5" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🏆</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 5：WSA Challenge — 全校英雄</h2>
+        <p class="text-sm text-slate-700 mt-1">Whole School Approach 把全校當一個大隊伍。請承諾下列 4 件事（全部勾選可獲得「全校英雄徽章」）：</p>
+      </div>
+    </div>
+    <div class="space-y-2 my-3" id="wsa">
+      <label class="flex items-center gap-2 p-2 bg-emerald-50 rounded-lg"><input type="checkbox" class="wsa-box"> <b>📚 課程</b>：我會把今天學的數據分享給班上至少 1 位同學</label>
+      <label class="flex items-center gap-2 p-2 bg-emerald-50 rounded-lg"><input type="checkbox" class="wsa-box"> <b>🏫 校園</b>：我會提醒自己班級用合適冷氣溫度（約 26-28°C）並關燈節電</label>
+      <label class="flex items-center gap-2 p-2 bg-emerald-50 rounded-lg"><input type="checkbox" class="wsa-box"> <b>🏘️ 社區</b>：我會和家人為社區的一位長輩做一張「夏天防熱小卡」</label>
+      <label class="flex items-center gap-2 p-2 bg-emerald-50 rounded-lg"><input type="checkbox" class="wsa-box"> <b>🗳️ 學生治理</b>：我會在班會提出 1 項校園氣候調適建議（遮蔭、種樹、雨水回收…）</label>
+    </div>
+    <button class="btn bg-emerald-500 text-white font-bold py-2 px-4 rounded-xl" onclick="checkWSA()">確認承諾</button>
+    <div id="fb-5" class="text-sm min-h-[1.5rem] mt-2"></div>
+    <div id="wsa-badge" class="hidden mt-3 p-3 bg-amber-100 border-2 border-amber-400 rounded-xl text-center">
+      <span class="badge bg-amber-500 text-white">🌟 全校英雄徽章</span>
+      <p class="text-xs text-amber-800 mt-1">你已承諾成為全校氣候行動的一份子！</p>
+    </div>
+    <button id="next-5" class="btn mt-3 bg-emerald-500 text-white font-bold py-2 px-5 rounded-xl hidden" onclick="goNext(5)">查看成果 🎉</button>
+  </section>
+
+  <!-- Level 6: 成果頁 + 3 延伸 -->
+  <section id="level-6" class="card p-6 hidden-screen text-center">
+    <div class="text-6xl mb-2">🎉</div>
+    <h2 class="text-2xl font-bold text-emerald-700 mb-2">恭喜完成小隊長任務！</h2>
+    <p class="text-sm text-slate-700">你最終分數：<span id="final-score" class="font-bold text-2xl text-amber-600">0</span> 分</p>
+    <div class="flex justify-center gap-2 mt-2 flex-wrap" id="badges"></div>
+
+    <div class="text-left mt-5">
+      <h3 class="font-bold text-slate-700 mb-2">📌 延伸思考（回家和家人聊聊）</h3>
+      <ol class="list-decimal list-inside text-sm text-slate-700 space-y-1">
+        <li>如果我是下一任校長，我會先做哪一項校園氣候調適？為什麼？</li>
+        <li>我們班可以怎麼幫社區裡最脆弱的一位鄰居？從哪裡開始？</li>
+        <li>十年後我升上高中／大學時，臺灣氣候會變怎樣？我希望它變怎樣？我現在可以做什麼？</li>
+      </ol>
+    </div>
+
+    <button class="btn mt-5 bg-emerald-500 text-white font-bold py-2 px-5 rounded-xl" onclick="restart()">🔄 再玩一次</button>
+  </section>
+
+</div>
+
+<script>
+  // ============ Shared state ============
+  let score = 0;
+  const earnedBadges = new Set();
+
+  function bump(n){
+    score += n;
+    document.getElementById('score').textContent = score;
+  }
+  function confetti(){
+    const colors = ['#f59e0b','#10b981','#3b82f6','#ef4444','#8b5cf6'];
+    for(let i=0;i<30;i++){
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random()*100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.animationDelay = (Math.random()*0.5)+'s';
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(),2500);
+    }
+  }
+  function goNext(cur){
+    document.getElementById('level-'+cur).classList.add('hidden-screen');
+    document.getElementById('level-'+(cur+1)).classList.remove('hidden-screen');
+    document.getElementById('dot-'+cur).classList.remove('active');
+    document.getElementById('dot-'+cur).classList.add('done');
+    document.getElementById('dot-'+(cur+1)).classList.add('active');
+    document.getElementById('step').textContent = Math.min(cur+1,5);
+    if(cur+1===6){
+      document.getElementById('final-score').textContent = score;
+      renderBadges();
+      confetti();
+    }
+  }
+  function restart(){ location.reload(); }
+
+  // ============ Level 1 drag-match ============
+  (function(){
+    document.querySelectorAll('#level-1 .drag-item').forEach(el=>{
+      el.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text',el.dataset.match); el.classList.add('dragging'); });
+      el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
+    });
+    document.querySelectorAll('#level-1 .drop-zone').forEach(z=>{
+      z.addEventListener('dragover', e=>{e.preventDefault(); z.classList.add('over');});
+      z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+      z.addEventListener('drop', e=>{
+        e.preventDefault(); z.classList.remove('over');
+        const m = e.dataTransfer.getData('text');
+        const fb = document.getElementById('fb-1');
+        if(m===z.dataset.answer){
+          z.classList.remove('border-dashed'); z.classList.add('bg-emerald-200','border-emerald-600');
+          z.innerHTML = '✅ ' + z.innerHTML;
+          bump(10);
+          fb.innerHTML = '<span class="text-emerald-700">很棒！這組數字真的是這個事實。</span>';
+          const dragging = document.querySelector('.drag-item.dragging'); if(dragging) dragging.style.visibility='hidden';
+          const done = [...document.querySelectorAll('#level-1 .drop-zone')].every(x=>x.classList.contains('bg-emerald-200'));
+          if(done){ earnedBadges.add('📊 數據偵探'); fb.innerHTML += ' 🏅 獲得「數據偵探」徽章'; }
+        } else {
+          z.classList.add('shake'); setTimeout(()=>z.classList.remove('shake'),400);
+          fb.innerHTML = '<span class="text-rose-700">再想想～這個數字像是要配到另一個事實。提示：看數字單位（°C / 人 / %）。</span>';
+        }
+      });
+    });
+  })();
+
+  // ============ Level 2 category drag ============
+  (function(){
+    document.querySelectorAll('#level-2 .drag-item').forEach(el=>{
+      el.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text',el.dataset.cat); el.classList.add('dragging'); e.dataTransfer.setData('id',el.textContent); });
+      el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
+    });
+    document.querySelectorAll('#level-2 .drop-zone').forEach(z=>{
+      z.addEventListener('dragover', e=>{e.preventDefault(); z.classList.add('over');});
+      z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+      z.addEventListener('drop', e=>{
+        e.preventDefault(); z.classList.remove('over');
+        const cat = e.dataTransfer.getData('text');
+        const fb = document.getElementById('fb-2');
+        const dragging = document.querySelector('#level-2 .drag-item.dragging');
+        if(cat===z.dataset.cat){
+          bump(5);
+          if(dragging){ dragging.classList.add('pop'); dragging.style.background='#d1fae5'; dragging.setAttribute('draggable','false'); }
+          fb.innerHTML = '<span class="text-emerald-700">答對！氣候變遷的影響真的是全方位的。</span>';
+          const done = [...document.querySelectorAll('#level-2 .drag-item')].every(x=>x.style.background);
+          if(done){ earnedBadges.add('🌐 全方位觀察家'); fb.innerHTML += ' 🏅 獲得「全方位觀察家」徽章'; }
+        } else {
+          if(dragging){ dragging.classList.add('shake'); setTimeout(()=>dragging.classList.remove('shake'),400);}
+          fb.innerHTML = '<span class="text-rose-700">差一點！想想這件事影響的是身體、情緒、錢還是人與人的關係？</span>';
+        }
+      });
+    });
+  })();
+
+  // ============ Level 3 multi-checkbox ============
+  function checkLv3(){
+    const boxes = document.querySelectorAll('#quiz-3 input');
+    let got=0, wrong=0, need=0;
+    boxes.forEach(b=>{
+      if(b.dataset.correct==='1') need++;
+      if(b.checked && b.dataset.correct==='1') got++;
+      if(b.checked && b.dataset.correct==='0') wrong++;
+    });
+    const fb = document.getElementById('fb-3');
+    if(got>=2 && wrong===0){
+      bump(15);
+      fb.innerHTML = '<span class="text-emerald-700">很好！你找到 '+got+'/'+need+' 個真實問題，沒有選到離題選項。TCCIP 的資料的確顯示這些風險都在上升。</span>';
+      earnedBadges.add('🏫 校園預測師');
+      document.getElementById('next-3').classList.remove('hidden');
+    } else if(wrong>0){
+      fb.innerHTML = '<span class="text-rose-700">有選到不合理的（恐龍／超人），那是想像不是數據。再看一次問題～</span>';
+    } else {
+      fb.innerHTML = '<span class="text-amber-700">至少要選 2 個真的會發生的問題喔！提示：想想夏天熱＋暴雨的影響。</span>';
+    }
+  }
+
+  // ============ Level 4 role cards ============
+  let selectedRole=null;
+  document.querySelectorAll('#role-cards .role').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('#role-cards .role').forEach(x=>x.classList.remove('bg-purple-500','text-white'));
+      b.classList.add('bg-purple-500','text-white');
+      selectedRole = b.dataset.role;
+    });
+  });
+  function checkLv4(){
+    const reason = document.getElementById('reason-4').value.trim();
+    const fb = document.getElementById('fb-4');
+    if(!selectedRole){ fb.innerHTML='<span class="text-amber-700">先選一張角色卡。</span>'; return; }
+    if(reason.length<5){ fb.innerHTML='<span class="text-amber-700">寫一句「為什麼」，至少 5 個字。</span>'; return; }
+    bump(15);
+    fb.innerHTML='<span class="text-emerald-700">很棒！沒有唯一正解，重要的是你能說出理由。公平的行動從「看見誰最脆弱」開始。</span>';
+    earnedBadges.add('⚖️ 公平守護者');
+    document.getElementById('next-4').classList.remove('hidden');
+  }
+
+  // ============ Level 5 WSA Challenge ============
+  function checkWSA(){
+    const boxes = document.querySelectorAll('.wsa-box');
+    const n = [...boxes].filter(b=>b.checked).length;
+    const fb = document.getElementById('fb-5');
+    if(n===4){
+      bump(20);
+      earnedBadges.add('🌟 全校英雄');
+      document.getElementById('wsa-badge').classList.remove('hidden');
+      fb.innerHTML='<span class="text-emerald-700">承諾達成！你已是全校氣候行動的一員。</span>';
+      document.getElementById('next-5').classList.remove('hidden');
+      confetti();
+    } else if(n>=2){
+      bump(10);
+      fb.innerHTML='<span class="text-amber-700">很棒已勾 '+n+'/4！全部勾齊可獲得「全校英雄徽章」，再試試？</span>';
+      document.getElementById('next-5').classList.remove('hidden');
+    } else {
+      fb.innerHTML='<span class="text-rose-700">至少勾 2 項承諾開始行動～你可以的！</span>';
+    }
+  }
+
+  // ============ Badges ============
+  function renderBadges(){
+    const wrap = document.getElementById('badges');
+    wrap.innerHTML='';
+    earnedBadges.forEach(b=>{
+      const sp = document.createElement('span');
+      sp.className='badge bg-emerald-500 text-white';
+      sp.textContent = b;
+      wrap.appendChild(sp);
+    });
+  }
+</script>
+</body>
+</html>

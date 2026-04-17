@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>水小偵探波波的任務 | 互動學習單 1.4-III</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#cffafe,#bae6fd,#ddd6fe); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:110px; transition: background .2s; }
+  .drop-zone.over { background:#bfdbfe; }
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#0284c7; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .water-drop { display:inline-block; width:14px; height:18px; margin:1px; border-radius:50% 50% 50% 50% / 60% 60% 40% 40%; transform:rotate(0); }
+  input[type=range]{ accent-color:#0284c7; }
+</style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-3xl mx-auto">
+
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-sky-700">💧 水小偵探波波的任務</h1>
+      <p class="text-sm text-slate-600 mt-1">幫波波解開四道水循環謎題，成為「水守護者」！</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-sky-600"><span id="score">0</span> 分</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-2 md:gap-3 flex-wrap">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-6 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-6 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-6 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-6 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-2 text-sm text-slate-600">關卡 <span id="step">1</span>/4</span>
+  </div>
+
+  <!-- Level 1: 100 滴水 + 水循環 -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🔍</div>
+      <div>
+        <h2 class="text-xl font-bold text-sky-700">關卡 1：地球的 100 滴水</h2>
+        <p class="text-sm text-slate-700 mt-1">波波說：「大人說『水用不完』，真的嗎？把 100 滴水按照地球上的實際比例分類看看！」</p>
+      </div>
+    </div>
+
+    <div id="drop-100" class="bg-sky-50 rounded-xl p-4 my-3">
+      <p class="text-sm mb-2">請把滑桿拉到你猜的比例（可用液態淡水佔地球總水量的 %）：</p>
+      <input type="range" id="pct-slider" min="0" max="50" value="20" step="0.5" class="w-full">
+      <div class="text-center text-xl font-bold text-sky-600 mt-2">你的猜測：<span id="pct-label">20</span>%</div>
+      <div id="drop-grid" class="flex flex-wrap gap-[2px] mt-3 justify-center bg-white p-2 rounded-lg"></div>
+      <button id="pct-check" class="btn mt-3 w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 rounded-xl">揭曉答案</button>
+      <div id="pct-feedback" class="mt-2 text-center font-bold min-h-[24px]"></div>
+    </div>
+
+    <button id="l1-next" class="btn mt-3 w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 rounded-xl hidden">進入下一關 →</button>
+  </section>
+
+  <!-- Level 2: 冰川 vs 海冰 + 臺灣淹沒地圖 -->
+  <section id="level-2" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🧊</div>
+      <div>
+        <h2 class="text-xl font-bold text-sky-700">關卡 2：融冰偵查</h2>
+        <p class="text-sm text-slate-700 mt-1">波波問：「哪一種冰融化才真的會讓海面升高？」</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3">
+      <button class="quiz-opt btn bg-yellow-100 hover:bg-yellow-200 border-2 border-yellow-400 rounded-xl p-4 text-left" data-ans="0">
+        <div class="text-lg font-bold">🌊 A：原本就浮在海裡的「海冰」</div>
+        <p class="text-xs text-slate-600 mt-1">像北極的浮冰</p>
+      </button>
+      <button class="quiz-opt btn bg-yellow-100 hover:bg-yellow-200 border-2 border-yellow-400 rounded-xl p-4 text-left" data-ans="1">
+        <div class="text-lg font-bold">🏔️ B：位在陸地上的「冰川／冰原」</div>
+        <p class="text-xs text-slate-600 mt-1">像格陵蘭、南極、喜馬拉雅</p>
+      </button>
+    </div>
+    <div id="l2a-feedback" class="mt-2 font-bold min-h-[24px] text-center"></div>
+
+    <div id="taiwan-map" class="bg-sky-50 rounded-xl p-4 mt-4 hidden">
+      <p class="text-sm mb-2">🗺️ 拉動滑桿看看：若海平面上升 <b id="slr">0</b> 公尺，臺灣哪些地方會被淹沒？</p>
+      <input type="range" id="slr-slider" min="0" max="6" value="0" step="1" class="w-full">
+      <div id="map-canvas" class="mt-3 h-48 rounded-lg relative overflow-hidden bg-gradient-to-b from-green-200 to-green-100 border-2 border-slate-300">
+        <div id="water-layer" class="absolute inset-x-0 bottom-0 bg-sky-400/70 transition-all duration-500" style="height:0%"></div>
+        <div class="absolute left-4 top-2 text-xs bg-white/80 rounded px-2 py-1">🏔️ 中央山脈</div>
+        <div class="absolute right-4 top-8 text-xs bg-white/80 rounded px-2 py-1">宜蘭</div>
+        <div class="absolute left-8 bottom-12 text-xs bg-white/80 rounded px-2 py-1">西部平原</div>
+        <div class="absolute left-1/2 bottom-4 text-xs bg-white/80 rounded px-2 py-1 -translate-x-1/2">臺北盆地</div>
+      </div>
+      <p id="slr-info" class="text-sm mt-2 text-slate-700"></p>
+      <button id="slr-done" class="btn mt-3 w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 rounded-xl hidden">我看完了！繼續 →</button>
+    </div>
+  </section>
+
+  <!-- Level 3: 兩個家庭 -->
+  <section id="level-3" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">👨‍👩‍👧</div>
+      <div>
+        <h2 class="text-xl font-bold text-sky-700">關卡 3：兩個家庭的水故事</h2>
+        <p class="text-sm text-slate-700 mt-1">波波帶你認識兩個家庭，他們都受氣候變遷影響——但問題不一樣。把提示卡拖到正確的家庭！</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 my-4" id="fam-items">
+      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-sm font-bold" draggable="true" data-f="nepal">🏔️ 水源來自冰川融水</div>
+      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-sm font-bold" draggable="true" data-f="tuvalu">🏝️ 水源是地下水井</div>
+      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-sm font-bold" draggable="true" data-f="nepal">⚠️ 短期土石流、長期沒水</div>
+      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-sm font-bold" draggable="true" data-f="tuvalu">🌊 海水入侵讓井水變鹹</div>
+      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-sm font-bold" draggable="true" data-f="nepal">🌳 適應：種樹、蓄水池</div>
+      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-sm font-bold" draggable="true" data-f="tuvalu">💧 適應：雨水桶、海水淡化</div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div class="drop-zone bg-indigo-50 border-2 border-dashed border-indigo-400 rounded-xl p-3" data-f="nepal">
+        <p class="font-bold text-indigo-700 text-center">🏔️ 尼泊爾山村（A 家）</p>
+        <p class="text-xs text-center text-slate-500">仰賴冰川</p>
+      </div>
+      <div class="drop-zone bg-teal-50 border-2 border-dashed border-teal-400 rounded-xl p-3" data-f="tuvalu">
+        <p class="font-bold text-teal-700 text-center">🏝️ 吐瓦魯島（B 家）</p>
+        <p class="text-xs text-center text-slate-500">仰賴地下水</p>
+      </div>
+    </div>
+    <div id="fam-feedback" class="mt-3 text-center font-bold min-h-[24px]"></div>
+
+    <div id="fam-reflect" class="mt-4 hidden bg-rose-50 rounded-xl p-4">
+      <p class="text-sm mb-2">💬 想對這兩個家庭說一句話：</p>
+      <input id="reflect-input" class="w-full border-2 border-rose-300 rounded-lg p-2" placeholder="例如：我希望你們的家可以一直有乾淨的水..." maxlength="80">
+      <button id="reflect-done" class="btn mt-2 w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 rounded-xl">送出並前往下一關 →</button>
+    </div>
+  </section>
+
+  <!-- Level 4: 水足跡 + 行動 -->
+  <section id="level-4" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🍽️</div>
+      <div>
+        <h2 class="text-xl font-bold text-sky-700">關卡 4：我的水足跡＋行動承諾</h2>
+        <p class="text-sm text-slate-700 mt-1">波波說：「全球 <b>70%</b> 淡水用在農業！你吃什麼也會影響水。選出你早餐，算算水足跡！」</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-3" id="food-box">
+      <button class="food btn bg-white border-2 border-sky-300 hover:border-sky-500 rounded-xl p-3 text-center" data-w="48">🍞 吐司<br><span class="text-xs text-slate-500">48 L</span></button>
+      <button class="food btn bg-white border-2 border-sky-300 hover:border-sky-500 rounded-xl p-3 text-center" data-w="200">🥚 雞蛋<br><span class="text-xs text-slate-500">200 L</span></button>
+      <button class="food btn bg-white border-2 border-sky-300 hover:border-sky-500 rounded-xl p-3 text-center" data-w="255">🥛 牛奶<br><span class="text-xs text-slate-500">255 L</span></button>
+      <button class="food btn bg-white border-2 border-sky-300 hover:border-sky-500 rounded-xl p-3 text-center" data-w="70">🍎 蘋果<br><span class="text-xs text-slate-500">70 L</span></button>
+      <button class="food btn bg-white border-2 border-sky-300 hover:border-sky-500 rounded-xl p-3 text-center" data-w="1500">🥩 牛肉<br><span class="text-xs text-slate-500">1500 L</span></button>
+      <button class="food btn bg-white border-2 border-sky-300 hover:border-sky-500 rounded-xl p-3 text-center" data-w="12">🥕 紅蘿蔔<br><span class="text-xs text-slate-500">12 L</span></button>
+    </div>
+    <div class="bg-sky-50 rounded-xl p-3 text-center">
+      <p class="text-sm">你選的早餐水足跡合計：</p>
+      <p class="text-2xl font-bold text-sky-700"><span id="water-sum">0</span> 公升</p>
+      <p id="food-msg" class="text-xs text-slate-600 mt-1">還沒選食物喔！</p>
+    </div>
+
+    <div class="mt-4 bg-emerald-50 rounded-xl p-4">
+      <p class="font-bold text-emerald-700 mb-2">✋ 我的水守護者承諾</p>
+      <input id="pledge" class="w-full border-2 border-emerald-300 rounded-lg p-2" placeholder="例：刷牙時關水、洗米水澆花、檢查家中水龍頭" maxlength="60">
+      <button id="pledge-btn" class="btn mt-2 w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 rounded-xl">做出承諾！</button>
+      <p id="pledge-result" class="mt-2 text-center font-bold text-emerald-600 min-h-[24px]"></p>
+    </div>
+
+    <!-- WSA Challenge -->
+    <div id="wsa-box" class="mt-5 hidden bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl p-5 border-2 border-purple-300">
+      <h3 class="text-lg font-bold text-purple-700 mb-2">🏫 全校水守護挑戰（WSA）</h3>
+      <p class="text-sm text-slate-700 mb-3">勾選你會推動的四大面向，集滿 4 項解鎖「全校水英雄」徽章！</p>
+      <label class="flex items-start gap-2 my-2 bg-white p-2 rounded-lg"><input type="checkbox" class="wsa-cb mt-1" data-w="c"><span class="text-sm"><b>📚 課程整合：</b>自然課記錄校園雨水桶水量 30 天，跟降雨量對照。</span></label>
+      <label class="flex items-start gap-2 my-2 bg-white p-2 rounded-lg"><input type="checkbox" class="wsa-cb mt-1" data-w="o"><span class="text-sm"><b>🚰 校園營運：</b>擔任「滴水檢查員」每月巡檢全校水龍頭與馬桶是否漏水。</span></label>
+      <label class="flex items-start gap-2 my-2 bg-white p-2 rounded-lg"><input type="checkbox" class="wsa-cb mt-1" data-w="e"><span class="text-sm"><b>🤝 社區連結：</b>帶「家庭水表查表單」回家，和家人一起比較週初週末用水。</span></label>
+      <label class="flex items-start gap-2 my-2 bg-white p-2 rounded-lg"><input type="checkbox" class="wsa-cb mt-1" data-w="v"><span class="text-sm"><b>🗣️ 學生治理：</b>加入班級「水大使」，每月提 1 項節水提案給校務會議。</span></label>
+      <p id="wsa-feedback" class="text-center font-bold text-purple-700 mt-3 min-h-[24px]"></p>
+    </div>
+
+    <button id="l4-next" class="btn mt-4 w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded-xl hidden">查看成果 →</button>
+  </section>
+
+  <!-- Final -->
+  <section id="level-5" class="card p-6 hidden-screen text-center">
+    <div class="text-5xl mb-2">🏆</div>
+    <h2 class="text-2xl font-bold text-sky-700 mb-2">任務達成！</h2>
+    <p class="text-lg">總分：<span id="final-score" class="font-bold text-emerald-600">0</span> 分</p>
+    <div id="badges" class="flex flex-wrap justify-center gap-2 my-4"></div>
+
+    <div class="bg-sky-50 rounded-xl p-4 mt-3 text-left">
+      <p class="font-bold text-sky-700 mb-2">🧠 3 個帶回家的延伸思考：</p>
+      <ol class="list-decimal list-inside text-sm space-y-1 text-slate-700">
+        <li>如果你家鄉的井明天變鹹了，你會先做什麼？</li>
+        <li>你願意用「吃什麼」當成節水行動嗎？多吃當季蔬果能救多少水？</li>
+        <li>你想為學校或社區設計一個「水守護者徽章」，讓更多人加入嗎？</li>
+      </ol>
+    </div>
+
+    <div class="bg-amber-50 rounded-xl p-4 mt-3 text-left text-sm">
+      <p class="font-bold text-amber-700">📚 真實數據回顧</p>
+      <ul class="list-disc list-inside space-y-1 mt-1">
+        <li>地球可用液態淡水僅 <b>0.5%</b>（UN）</li>
+        <li>全球逾 <b>20 億人</b>缺安全飲用水（UN）</li>
+        <li>若冰再融一半，臺灣可能被淹沒超過 <b>1,000 km²</b>（NCDR）</li>
+        <li>農業用掉全球 <b>70%</b> 淡水（UN）</li>
+      </ul>
+    </div>
+
+    <button onclick="location.reload()" class="btn mt-4 bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-6 rounded-xl">再玩一次 🔄</button>
+  </section>
+
+</div>
+
+<script>
+/* ===== 全域狀態 ===== */
+let score = 0;
+let step = 1;
+const badges = [];
+
+function addScore(n){
+  score += n;
+  document.getElementById('score').textContent = score;
+}
+function goStep(n){
+  for(let i=1;i<=5;i++){
+    const el = document.getElementById('level-'+i);
+    if(el) el.classList.add('hidden-screen');
+    const d = document.getElementById('dot-'+i);
+    if(d){
+      d.classList.remove('active','done');
+      if(i<n) d.classList.add('done');
+      if(i===n) d.classList.add('active');
+    }
+  }
+  const cur = document.getElementById('level-'+n);
+  if(cur){ cur.classList.remove('hidden-screen'); cur.classList.add('fade-in'); }
+  document.getElementById('step').textContent = Math.min(n,4);
+  step = n;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function confetti(){
+  const colors=['#0ea5e9','#38bdf8','#22d3ee','#fbbf24','#a78bfa','#f472b6'];
+  for(let i=0;i<40;i++){
+    const c = document.createElement('div');
+    c.className='confetti';
+    c.style.left = Math.random()*100+'vw';
+    c.style.background = colors[i%colors.length];
+    c.style.animationDelay = Math.random()*0.6+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 2500);
+  }
+}
+
+/* ===== Level 1: 100 滴水 ===== */
+const grid = document.getElementById('drop-grid');
+for(let i=0;i<100;i++){
+  const d = document.createElement('span');
+  d.className='water-drop';
+  d.dataset.idx=i;
+  d.style.background='#e2e8f0';
+  grid.appendChild(d);
+}
+const pctSlider = document.getElementById('pct-slider');
+const pctLabel = document.getElementById('pct-label');
+pctSlider.addEventListener('input', ()=>{
+  pctLabel.textContent = pctSlider.value;
+  const n = Math.round(+pctSlider.value);
+  document.querySelectorAll('.water-drop').forEach((d,i)=>{
+    d.style.background = i < n ? '#38bdf8' : '#e2e8f0';
+  });
+});
+document.getElementById('pct-check').addEventListener('click', ()=>{
+  const guess = +pctSlider.value;
+  const fb = document.getElementById('pct-feedback');
+  // paint truth: 97 海水(深藍), 2.5 冰(白), 0.5 可用淡水(金)
+  document.querySelectorAll('.water-drop').forEach((d,i)=>{
+    if(i<97) d.style.background='#1d4ed8';
+    else if(i<99) d.style.background='#f1f5f9';
+    else d.style.background='#f59e0b';
+  });
+  const diff = Math.abs(guess - 0.5);
+  if(diff <= 2){
+    fb.textContent='💯 好準！正確答案是約 0.5%（金色那半顆）！+25 分';
+    fb.className='mt-2 text-center font-bold text-emerald-600 pop';
+    addScore(25);
+    badges.push('💧 水比例大師');
+  } else {
+    fb.textContent='真實答案只有 0.5%（金色那一小滴）！能喝的淡水超級少～ +10 分（誠實參與獎）';
+    fb.className='mt-2 text-center font-bold text-sky-600';
+    addScore(10);
+  }
+  confetti();
+  document.getElementById('pct-check').disabled = true;
+  document.getElementById('l1-next').classList.remove('hidden');
+});
+document.getElementById('l1-next').addEventListener('click', ()=>goStep(2));
+
+/* ===== Level 2: 融冰＋臺灣地圖 ===== */
+document.querySelectorAll('#level-2 .quiz-opt').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const fb = document.getElementById('l2a-feedback');
+    if(btn.dataset.ans === '1'){
+      btn.classList.add('bg-emerald-200','border-emerald-500');
+      fb.textContent='🎯 答對！陸地上的冰融化後流進海裡才會讓海面升高。+20 分';
+      fb.className='mt-2 font-bold text-center text-emerald-600 pop';
+      addScore(20);
+      badges.push('🧊 融冰偵探');
+      confetti();
+      document.querySelectorAll('#level-2 .quiz-opt').forEach(b=>b.disabled=true);
+      document.getElementById('taiwan-map').classList.remove('hidden');
+    } else {
+      btn.classList.add('shake');
+      setTimeout(()=>btn.classList.remove('shake'),400);
+      fb.textContent='再想一下：海冰本來就泡在水裡了，融化會讓水位升高嗎？💡';
+      fb.className='mt-2 font-bold text-center text-rose-500';
+    }
+  });
+});
+const slrSlider = document.getElementById('slr-slider');
+const water = document.getElementById('water-layer');
+const info = document.getElementById('slr-info');
+slrSlider.addEventListener('input', ()=>{
+  const v = +slrSlider.value;
+  document.getElementById('slr').textContent = v;
+  water.style.height = (v/6*55)+'%';
+  const msgs = [
+    '🏝️ 海平面 0 公尺：現在的臺灣。',
+    '🌊 升 1 公尺：沿海漁港、低窪漁塭開始受影響。',
+    '🌊 升 2 公尺：部分西部海岸、蘭陽平原邊緣被淹。',
+    '🌊 升 3 公尺：臺北盆地邊緣、海岸都市開始淹水。',
+    '🌊 升 4 公尺：西部平原明顯受災，人口密集區告急。',
+    '🌊 升 5 公尺：臺北、宜蘭、西部平原大面積淹沒。',
+    '🚨 升 6 公尺：超過 1,000 km² 低地被淹沒，含臺北盆地、西部平原、蘭陽平原（NCDR）。'
+  ];
+  info.textContent = msgs[v];
+  if(v===6){ document.getElementById('slr-done').classList.remove('hidden'); }
+});
+document.getElementById('slr-done').addEventListener('click', ()=>{
+  addScore(15);
+  badges.push('🗺️ 家鄉守護者');
+  confetti();
+  goStep(3);
+});
+
+/* ===== Level 3: 兩個家庭 (drag) ===== */
+let dragged=null;
+document.querySelectorAll('#fam-items .drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); });
+});
+let famCorrect = 0;
+const famTotal = 6;
+document.querySelectorAll('#level-3 .drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+  z.addEventListener('drop', e=>{
+    e.preventDefault(); z.classList.remove('over');
+    if(!dragged) return;
+    const fb = document.getElementById('fam-feedback');
+    if(dragged.dataset.f === z.dataset.f){
+      z.appendChild(dragged);
+      dragged.classList.add('bg-emerald-100','border-emerald-500');
+      dragged.setAttribute('draggable','false');
+      famCorrect++;
+      addScore(10);
+      fb.textContent='✓ 配對正確！+10 分 ('+famCorrect+'/'+famTotal+')';
+      fb.className='mt-3 text-center font-bold text-emerald-600';
+      if(famCorrect === famTotal){
+        badges.push('👨‍👩‍👧 全球同理家');
+        confetti();
+        document.getElementById('fam-reflect').classList.remove('hidden');
+      }
+    } else {
+      dragged.classList.add('shake');
+      setTimeout(()=>dragged.classList.remove('shake'),400);
+      fb.textContent='再想想：冰川融水 vs 地下水井，是不同的水來源！💡';
+      fb.className='mt-3 text-center font-bold text-rose-500';
+    }
+    dragged=null;
+  });
+});
+document.getElementById('reflect-done').addEventListener('click', ()=>{
+  const v = document.getElementById('reflect-input').value.trim();
+  if(v.length < 3){
+    alert('寫下至少 3 個字的心意吧 💛');
+    return;
+  }
+  addScore(15);
+  badges.push('💖 同理心獎');
+  confetti();
+  goStep(4);
+});
+
+/* ===== Level 4: 水足跡 + 承諾 ===== */
+let waterSum = 0;
+const selected = new Set();
+document.querySelectorAll('.food').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    const w = +b.dataset.w;
+    if(selected.has(b)){
+      selected.delete(b);
+      b.classList.remove('bg-sky-200','border-sky-600');
+      waterSum -= w;
+    } else {
+      selected.add(b);
+      b.classList.add('bg-sky-200','border-sky-600');
+      waterSum += w;
+    }
+    document.getElementById('water-sum').textContent = waterSum;
+    const msg = document.getElementById('food-msg');
+    if(waterSum === 0) msg.textContent='還沒選食物喔！';
+    else if(waterSum < 300) msg.textContent='👍 低水足跡早餐！當季蔬果和穀物最省水。';
+    else if(waterSum < 800) msg.textContent='🙂 中等水足跡，有肉蛋奶會拉高用水。';
+    else msg.textContent='⚠️ 高水足跡！紅肉的水足跡特別大，可以偶爾改吃蔬食喔。';
+  });
+});
+document.getElementById('pledge-btn').addEventListener('click', ()=>{
+  const v = document.getElementById('pledge').value.trim();
+  if(v.length < 2){
+    alert('寫下一個具體小行動，例如「刷牙關水」💧');
+    return;
+  }
+  document.getElementById('pledge-result').textContent = '🌱 「我承諾：'+v+'」已登記！+20 分';
+  addScore(20);
+  badges.push('🌱 水守護者');
+  confetti();
+  document.getElementById('pledge-btn').disabled = true;
+  document.getElementById('wsa-box').classList.remove('hidden');
+  document.getElementById('l4-next').classList.remove('hidden');
+});
+
+/* ===== WSA Challenge ===== */
+const wsaChecked = new Set();
+document.querySelectorAll('.wsa-cb').forEach(cb=>{
+  cb.addEventListener('change', ()=>{
+    const key = cb.dataset.w;
+    const fb = document.getElementById('wsa-feedback');
+    if(cb.checked && !wsaChecked.has(key)){
+      wsaChecked.add(key);
+      addScore(10);
+      fb.textContent = '＋10 分！已選 '+wsaChecked.size+'/4 面向';
+      if(wsaChecked.size === 4){
+        fb.textContent = '🏆 全校水英雄！四大面向全破關！';
+        if(!badges.includes('🏫 全校水英雄')) badges.push('🏫 全校水英雄');
+        confetti();
+      }
+    } else if(!cb.checked && wsaChecked.has(key)){
+      wsaChecked.delete(key);
+      addScore(-10);
+      fb.textContent = '已取消一項，目前 '+wsaChecked.size+'/4';
+    }
+  });
+});
+
+document.getElementById('l4-next').addEventListener('click', ()=>{
+  goStep(5);
+  document.getElementById('final-score').textContent = score;
+  const box = document.getElementById('badges');
+  box.innerHTML = '';
+  if(badges.length === 0) badges.push('💧 水小偵探');
+  badges.forEach(b=>{
+    const chip = document.createElement('span');
+    chip.className = 'bg-sky-100 border-2 border-sky-400 rounded-full px-3 py-1 text-sm font-bold pop';
+    chip.textContent = b;
+    box.appendChild(chip);
+  });
+  confetti();
+});
+</script>
+</body>
+</html>

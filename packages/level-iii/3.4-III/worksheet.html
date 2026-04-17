@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>公平未來小推手 — 3.4-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#fef3c7 0%,#fecaca 40%,#c7d2fe 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0%{transform:scale(.6);opacity:0} 100%{transform:scale(1);opacity:1} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; z-index:60; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,.25); }
+  .drag-item { cursor: grab; user-select: none; }
+  .drag-item.dragging { opacity: .4; }
+  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
+  .badge { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
+  .hidden-step { display: none; }
+  .bar-fill { transition: width 1.2s ease-out; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-rose-500 via-amber-500 to-indigo-500 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">⚖️ 公平未來小推手</h1>
+    <p class="mt-2 text-white/90">UNESCO 3.4-III ｜ 9-12 歲 ｜ 一起打造公平、綠色、眾人有份的未來！</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 情境故事 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl">🧒</div>
+    <div>
+      <h2 class="text-2xl font-bold text-rose-700">任務簡報：你是「公平未來小推手」！</h2>
+      <p class="mt-2 leading-relaxed">嗨！我是小馬（來自吉里巴斯，一個可能被海淹沒的小島國），還有好多像我這樣的小朋友需要幫忙。全球約 <strong class="text-red-600">10 億</strong> 位和你同年紀的兒童正面對氣候風險。你的任務是通過 6 個關卡，解鎖「全校英雄」徽章，把更公平的未來帶給每個人！</p>
+      <button onclick="startMission()" class="mt-4 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 ⚖️</button>
+    </div>
+  </div>
+</section>
+
+<!-- 關卡 1：公平天秤（排放 vs 人口） -->
+<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-indigo-700">⚖️ 關卡 1：公平天秤 — 誰造成、誰受害？</h2>
+  <p class="mt-2 text-gray-600">先看看真實數據。下面是全球最富 10% 的人口 vs 其他人。請點出「排放比例」正確的選項。</p>
+
+  <div class="mt-4 grid md:grid-cols-2 gap-4">
+    <div class="p-4 border rounded-xl bg-indigo-50">
+      <p class="font-bold">最富 10% 人口佔全球排放：</p>
+      <div class="grid grid-cols-2 gap-2 mt-3">
+        <button class="q1-opt p-3 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100" data-ans="0">10%</button>
+        <button class="q1-opt p-3 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100" data-ans="0">20%</button>
+        <button class="q1-opt p-3 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100" data-ans="1">約 50%</button>
+        <button class="q1-opt p-3 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100" data-ans="0">5%</button>
+      </div>
+    </div>
+    <div class="p-4 border rounded-xl bg-amber-50">
+      <p class="font-bold">最不發達 45 國(LDC) 佔全球人口 14%，但排放只佔：</p>
+      <div class="grid grid-cols-2 gap-2 mt-3">
+        <button class="q1b-opt p-3 border-2 border-amber-200 rounded-lg hover:bg-amber-100" data-ans="0">30%</button>
+        <button class="q1b-opt p-3 border-2 border-amber-200 rounded-lg hover:bg-amber-100" data-ans="1">約 4%</button>
+        <button class="q1b-opt p-3 border-2 border-amber-200 rounded-lg hover:bg-amber-100" data-ans="0">25%</button>
+        <button class="q1b-opt p-3 border-2 border-amber-200 rounded-lg hover:bg-amber-100" data-ans="0">14%</button>
+      </div>
+    </div>
+  </div>
+  <div id="q1-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 2：10 億同齡人地圖（點擊） -->
+<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-teal-700">🌍 關卡 2：10 億同齡人地圖</h2>
+  <p class="mt-2 text-gray-600">UNICEF 指出全球約 <strong>10 億</strong> 兒童處於氣候極高風險。請點出下列 3 個受到氣候衝擊特別大的地方：</p>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4" id="mapPool">
+    <button class="map-btn p-4 border-2 rounded-xl hover:bg-sky-50" data-hot="1">🌊 吉里巴斯（海平面上升）</button>
+    <button class="map-btn p-4 border-2 rounded-xl hover:bg-sky-50" data-hot="0">🗼 日本東京</button>
+    <button class="map-btn p-4 border-2 rounded-xl hover:bg-sky-50" data-hot="1">🌾 孟加拉（洪水）</button>
+    <button class="map-btn p-4 border-2 rounded-xl hover:bg-sky-50" data-hot="0">🗽 美國紐約</button>
+    <button class="map-btn p-4 border-2 rounded-xl hover:bg-sky-50" data-hot="1">🏜️ 索馬利亞（乾旱）</button>
+    <button class="map-btn p-4 border-2 rounded-xl hover:bg-sky-50" data-hot="0">🎡 法國巴黎</button>
+    <button class="map-btn p-4 border-2 rounded-xl hover:bg-sky-50" data-hot="0">🎿 瑞士日內瓦</button>
+    <button class="map-btn p-4 border-2 rounded-xl hover:bg-sky-50" data-hot="0">🏙️ 新加坡</button>
+  </div>
+  <p class="mt-3 text-sm text-gray-500">（選擇 3 個最正確的答案）</p>
+  <div id="q2-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 3：個人 vs 集體行動分類（拖曳） -->
+<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-emerald-700">🧩 關卡 3：個人 vs 集體行動</h2>
+  <p class="mt-2 text-gray-600">把行動拖到對的籃子。個人行動＋集體行動一起，才能真的改變！</p>
+
+  <div class="flex flex-wrap gap-3 mt-4" id="actionPool">
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="個人">💡 隨手關燈</div>
+    <div class="drag-item bg-blue-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="集體">✍️ 寫信給市長</div>
+    <div class="drag-item bg-green-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="個人">🚶 走路上學</div>
+    <div class="drag-item bg-purple-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="集體">🤝 班級連署</div>
+    <div class="drag-item bg-pink-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="個人">🥤 自備水壺</div>
+    <div class="drag-item bg-indigo-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="集體">🏫 校園議會提案</div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-3 mt-6">
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-yellow-400 bg-yellow-50 rounded-xl p-3" data-type="個人">
+      <p class="font-bold text-yellow-700">👤 個人行動</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-blue-400 bg-blue-50 rounded-xl p-3" data-type="集體">
+      <p class="font-bold text-blue-700">👥 集體行動</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+  </div>
+  <button id="q3-check" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full shadow">檢查答案</button>
+  <div id="q3-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 4：雙解方案（選擇最佳 — 既解氣候又解不平等） -->
+<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-fuchsia-700">🔧 關卡 4：雙解方案挑戰</h2>
+  <p class="mt-2 text-gray-600">好的氣候方案應該「氣候 ＋ 公平」兩個都解決。下面哪個才是「雙解」？</p>
+
+  <div class="grid gap-3 mt-4">
+    <button class="q4-opt text-left p-4 border-2 border-fuchsia-200 rounded-xl hover:bg-fuchsia-50" data-ans="0">
+      A. 我家裝了很貴的太陽能板，但鄰居的低收入阿嬤還在付高額電費。
+    </button>
+    <button class="q4-opt text-left p-4 border-2 border-fuchsia-200 rounded-xl hover:bg-fuchsia-50" data-ans="1">
+      B. 校園屋頂裝光電板，收益用來幫弱勢家庭補貼冷氣與節能燈。
+    </button>
+    <button class="q4-opt text-left p-4 border-2 border-fuchsia-200 rounded-xl hover:bg-fuchsia-50" data-ans="0">
+      C. 把污染工廠搬到偏鄉，都會區空氣就乾淨了。
+    </button>
+    <button class="q4-opt text-left p-4 border-2 border-fuchsia-200 rounded-xl hover:bg-fuchsia-50" data-ans="0">
+      D. 只買最貴的有機食品，其他人吃什麼我不管。
+    </button>
+  </div>
+  <div id="q4-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 5：本土知識配對 -->
+<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-amber-700">🌱 關卡 5：本土知識配對</h2>
+  <p class="mt-2 text-gray-600">原住民族的智慧，在氣候轉型中非常寶貴！把族群/文化連到正確的生態智慧：</p>
+
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <div>
+      <p class="font-bold mb-2">族群 / 文化</p>
+      <div id="cultPool" class="flex flex-col gap-2">
+        <div class="drag-item bg-amber-100 px-3 py-2 rounded-lg shadow" draggable="true" data-c="輪耕">🌾 布農族</div>
+        <div class="drag-item bg-green-100 px-3 py-2 rounded-lg shadow" draggable="true" data-c="gaga">🌲 泰雅族</div>
+        <div class="drag-item bg-blue-100 px-3 py-2 rounded-lg shadow" draggable="true" data-c="hai">🌊 阿美族</div>
+        <div class="drag-item bg-pink-100 px-3 py-2 rounded-lg shadow" draggable="true" data-c="fair">🛒 公平貿易</div>
+      </div>
+    </div>
+    <div>
+      <p class="font-bold mb-2">對應的智慧</p>
+      <div class="flex flex-col gap-2">
+        <div class="drop-zone min-h-[52px] border-2 border-dashed border-gray-400 rounded-lg p-2" data-c="輪耕">🔁 輪耕讓土壤休息恢復地力</div>
+        <div class="drop-zone min-h-[52px] border-2 border-dashed border-gray-400 rounded-lg p-2" data-c="gaga">📜 Gaga 規範—不能濫捕、要尊重森林</div>
+        <div class="drop-zone min-h-[52px] border-2 border-dashed border-gray-400 rounded-lg p-2" data-c="hai">🙏 海祭：感謝海洋、規範捕撈季節</div>
+        <div class="drop-zone min-h-[52px] border-2 border-dashed border-gray-400 rounded-lg p-2" data-c="fair">💰 公平貿易讓小農拿合理收入</div>
+      </div>
+    </div>
+  </div>
+  <button id="q5-check" class="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded-full shadow">檢查配對</button>
+  <div id="q5-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 6：WSA 四面向 + 全校英雄徽章 -->
+<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-rose-700">🏆 關卡 6：全校行動挑戰（WSA 四面向）</h2>
+  <p class="mt-2 text-gray-600">勾選你願意在<strong>每個面向</strong>都採取一項行動，就可以解鎖「全校英雄」徽章！</p>
+
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <label class="flex items-start gap-3 p-4 border-2 border-blue-300 rounded-xl bg-blue-50 cursor-pointer">
+      <input type="checkbox" class="wsa-chk mt-1 w-5 h-5" data-wsa="curriculum">
+      <div>
+        <p class="font-bold text-blue-800">① 課程整合</p>
+        <p class="text-sm">我願意在社會/綜合課分享今天學到的氣候正義數據，讓更多同學認識 10 億兒童的故事。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-green-300 rounded-xl bg-green-50 cursor-pointer">
+      <input type="checkbox" class="wsa-chk mt-1 w-5 h-5" data-wsa="operations">
+      <div>
+        <p class="font-bold text-green-800">② 校園營運</p>
+        <p class="text-sm">我願意每週檢查一次教室用電、節電並回報班級，幫校園減碳並監督電費公平使用。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-amber-300 rounded-xl bg-amber-50 cursor-pointer">
+      <input type="checkbox" class="wsa-chk mt-1 w-5 h-5" data-wsa="community">
+      <div>
+        <p class="font-bold text-amber-800">③ 社區連結</p>
+        <p class="text-sm">我願意和家人做一次世代對話，或寫一張倡議明信片給市長、里長、家人，呼籲支持弱勢族群的氣候方案。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-purple-300 rounded-xl bg-purple-50 cursor-pointer">
+      <input type="checkbox" class="wsa-chk mt-1 w-5 h-5" data-wsa="agency">
+      <div>
+        <p class="font-bold text-purple-800">④ 學生治理</p>
+        <p class="text-sm">我願意在班會或學生議會提一項「雙解方案」，讓氣候行動也照顧到邊緣族群的聲音。</p>
+      </div>
+    </label>
+  </div>
+
+  <button id="q6-check" class="mt-4 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 px-8 rounded-full shadow-lg">解鎖徽章 🏆</button>
+  <div id="q6-feedback" class="mt-4"></div>
+</section>
+
+<!-- 結果 -->
+<section id="done" class="hidden-step card bg-gradient-to-br from-amber-100 to-rose-100 rounded-2xl shadow-2xl p-8 mb-6 text-center">
+  <div class="badge inline-block p-6 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 text-white mb-4">
+    <span class="text-7xl">🏆</span>
+  </div>
+  <h2 class="text-3xl font-bold text-rose-700">恭喜獲得「全校英雄」徽章！</h2>
+  <p class="mt-2 text-gray-700">你已經學會：誰造成(10%富人排50%)、誰受害(10億兒童)、台灣的承諾(2050淨零)，並承諾從 WSA 四面向一起行動。</p>
+  <p class="mt-4 text-sm text-gray-500">提示：打開 `data_card.json` 看更多數據，或回去和爸媽、同學分享今天的挑戰！</p>
+  <button onclick="location.reload()" class="mt-4 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-6 rounded-full">再玩一次</button>
+</section>
+
+</main>
+
+<footer class="text-center text-xs text-gray-500 p-4">
+  UNESCO 3.4-III 教學組合包 ｜ 資料驗證 2026-04-16 ｜ 主要數據：UN / UNICEF / IPCC / 台灣環境部
+</footer>
+
+<script>
+let current = 1;
+const TOTAL = 6;
+function show(id){document.getElementById(id).classList.remove('hidden-step');}
+function hide(id){document.getElementById(id).classList.add('hidden-step');}
+function updateProgress(){
+  for(let i=1;i<=TOTAL;i++){
+    const d = document.getElementById('dot'+i);
+    d.classList.remove('active','done');
+    if(i<current) d.classList.add('done');
+    else if(i===current) d.classList.add('active');
+  }
+  document.getElementById('progressText').innerText = `第 ${current} / ${TOTAL} 關`;
+}
+function nextLevel(){
+  hide('level'+current); current++;
+  if(current>TOTAL){ hide('intro'); show('done'); fireConfetti(60); return; }
+  show('level'+current); updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startMission(){ hide('intro'); show('level1'); updateProgress(); }
+
+function feedback(id,msg,ok){
+  const el = document.getElementById(id);
+  el.innerHTML = `<div class="pop p-3 rounded-lg ${ok?'bg-green-100 text-green-800':'bg-rose-100 text-rose-800'}">${msg}</div>`;
+}
+function fireConfetti(n){
+  const colors=['#f43f5e','#f59e0b','#10b981','#3b82f6','#8b5cf6'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDuration=(1.8+Math.random()*1.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3500);
+  }
+}
+
+// L1
+let q1a=false,q1b=false;
+document.querySelectorAll('.q1-opt').forEach(b=>{
+  b.addEventListener('click',()=>{
+    if(b.dataset.ans==='1'){ b.classList.add('bg-green-200'); q1a=true; }
+    else { b.classList.add('shake','bg-rose-200'); feedback('q1-feedback','再想想：富人排放遠比你想的多！提示：dp1 指出約一半！', false); return; }
+    checkL1();
+  });
+});
+document.querySelectorAll('.q1b-opt').forEach(b=>{
+  b.addEventListener('click',()=>{
+    if(b.dataset.ans==='1'){ b.classList.add('bg-green-200'); q1b=true; }
+    else { b.classList.add('shake','bg-rose-200'); feedback('q1-feedback','最不發達國家人口多卻排放少，再猜一次。', false); return; }
+    checkL1();
+  });
+});
+function checkL1(){
+  if(q1a && q1b){
+    feedback('q1-feedback','✅ 正確！最富 10% 排放約 50%；LDC 14% 人口僅排 4%。這叫「氣候不正義」。',true);
+    fireConfetti(25);
+    setTimeout(nextLevel,1800);
+  }
+}
+
+// L2
+let q2sel=new Set();
+document.querySelectorAll('.map-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    if(b.classList.contains('picked')) return;
+    b.classList.add('picked');
+    if(b.dataset.hot==='1'){
+      b.classList.add('bg-green-200','border-green-500'); q2sel.add(b);
+    } else {
+      b.classList.add('shake','bg-rose-200','border-rose-400');
+      feedback('q2-feedback','這個地方不是氣候高風險區域的典型，再試試！',false);
+      setTimeout(()=>{ b.classList.remove('picked','shake','bg-rose-200','border-rose-400'); },900);
+      return;
+    }
+    if(q2sel.size>=3){
+      feedback('q2-feedback','✅ 太棒了！吉里巴斯、孟加拉、索馬利亞都在全球 10 億兒童高風險區。',true);
+      fireConfetti(25); setTimeout(nextLevel,1800);
+    }
+  });
+});
+
+// L3 拖曳
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart',e=>{
+    e.dataTransfer.setData('text/plain',el.outerHTML);
+    el.classList.add('dragging');
+    el.dataset._removing = '1';
+  });
+  el.addEventListener('dragend',()=>el.classList.remove('dragging'));
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over');});
+  z.addEventListener('dragleave',()=>z.classList.remove('over'));
+  z.addEventListener('drop',e=>{
+    e.preventDefault();z.classList.remove('over');
+    const html = e.dataTransfer.getData('text/plain');
+    z.querySelector('.drop-content, :scope').insertAdjacentHTML('beforeend', html) ;
+    // remove original
+    document.querySelectorAll('.drag-item.dragging').forEach(el=>el.remove());
+  });
+});
+
+document.getElementById('q3-check').addEventListener('click',()=>{
+  let ok=true,total=0;
+  document.querySelectorAll('#level3 .drop-zone').forEach(z=>{
+    const t = z.dataset.type;
+    z.querySelectorAll('.drag-item').forEach(it=>{
+      total++;
+      if(it.dataset.type!==t) ok=false;
+    });
+  });
+  if(total<6){ feedback('q3-feedback','把 6 個行動都拖到籃子裡，再檢查唷！',false); return; }
+  if(ok){ feedback('q3-feedback','✅ 正確！個人行動 ＋ 集體行動 = 真正的改變。',true); fireConfetti(25); setTimeout(nextLevel,1800);}
+  else feedback('q3-feedback','有些還沒對喔！想想「關燈」是自己做的，「連署」是大家一起做。',false);
+});
+
+// L4
+document.querySelectorAll('.q4-opt').forEach(b=>{
+  b.addEventListener('click',()=>{
+    if(b.dataset.ans==='1'){
+      b.classList.add('bg-green-200','border-green-500');
+      feedback('q4-feedback','✅ 太棒！B 選項既減碳又照顧弱勢家庭，是真正的雙解方案。',true);
+      fireConfetti(25); setTimeout(nextLevel,1800);
+    } else {
+      b.classList.add('shake','bg-rose-200');
+      feedback('q4-feedback','這個方案只顧一邊，甚至把問題推給別人。試試看哪一個「既減碳又照顧弱勢」？',false);
+    }
+  });
+});
+
+// L5
+document.getElementById('q5-check').addEventListener('click',()=>{
+  let ok=true,total=0;
+  document.querySelectorAll('#level5 .drop-zone').forEach(z=>{
+    z.querySelectorAll('.drag-item').forEach(it=>{
+      total++;
+      if(it.dataset.c!==z.dataset.c) ok=false;
+    });
+  });
+  if(total<4){ feedback('q5-feedback','把 4 張卡片都配上去再檢查！',false); return; }
+  if(ok){ feedback('q5-feedback','✅ 完美配對！本土知識就是氣候解方的寶藏。',true); fireConfetti(25); setTimeout(nextLevel,1800);}
+  else feedback('q5-feedback','再想想：布農輪耕、泰雅 Gaga、阿美海祭、公平貿易各自對應什麼？',false);
+});
+
+// L6 WSA 4-checkbox
+document.getElementById('q6-check').addEventListener('click',()=>{
+  const chks = document.querySelectorAll('.wsa-chk');
+  const done = [...chks].filter(c=>c.checked).length;
+  if(done<4){
+    feedback('q6-feedback',`還差 ${4-done} 項！四個面向都要承諾，才能成為全校英雄。`,false);
+    return;
+  }
+  feedback('q6-feedback','✅ 全校英雄徽章解鎖！你承諾從課程、校園營運、社區、學生治理一起行動。',true);
+  fireConfetti(80);
+  setTimeout(nextLevel,1500);
+});
+</script>
+</body>
+</html>

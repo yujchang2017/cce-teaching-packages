@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>環境偵探波波的減污染任務 | 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#d1fae5,#bae6fd); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:100px; transition: background .2s; }
+  .drop-zone.over { background:#fde68a; }
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#10b981; transform:scale(1.3);}
+  .progress-dot.done { background:#0ea5e9;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+</style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-3xl mx-auto">
+
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-emerald-600">🕵️ 環境偵探波波的減污染任務</h1>
+      <p class="text-sm text-slate-600 mt-1">跟著海龜波波，破解四大污染謎題，成為校園環保英雄！</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> 分</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-3 text-sm text-slate-600">關卡 <span id="step">1</span>/4</span>
+  </div>
+
+  <!-- Level 1: 污染三分類 -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🐢</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 1：污染長什麼樣？</h2>
+        <p class="text-sm text-slate-700 mt-1">波波說：「污染有三種面孔——<b>空氣</b>、<b>水</b>、<b>土壤</b>。請把下面的例子拖到對的籃子裡！」</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-4" id="items-box">
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-type="air">🚗 汽機車廢氣</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-type="water">🏭 工廠廢水排河川</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-type="soil">☠️ 農藥殘留在土壤</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-type="air">🔥 露天燒垃圾冒煙</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-type="water">🥤 寶特瓶漂進海</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-type="soil">🔋 廢電池亂丟</div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="drop-zone bg-sky-50 border-4 border-dashed border-sky-400 rounded-2xl p-3" data-accept="air">
+        <div class="font-bold text-sky-700 text-center">🌫️ 空氣污染籃</div>
+        <div class="dz-items flex flex-wrap gap-2 mt-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-blue-50 border-4 border-dashed border-blue-400 rounded-2xl p-3" data-accept="water">
+        <div class="font-bold text-blue-700 text-center">🌊 水污染籃</div>
+        <div class="dz-items flex flex-wrap gap-2 mt-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-amber-50 border-4 border-dashed border-amber-500 rounded-2xl p-3" data-accept="soil">
+        <div class="font-bold text-amber-700 text-center">🌱 土壤污染籃</div>
+        <div class="dz-items flex flex-wrap gap-2 mt-2 justify-center"></div>
+      </div>
+    </div>
+
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <button id="l1-next" disabled class="btn mt-2 w-full bg-slate-300 text-white py-3 rounded-xl font-bold">完成分類即可前往下一關 →</button>
+  </section>
+
+  <!-- Level 2: 數據互動 -->
+  <section id="level-2" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">📊</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 2：看數據說故事</h2>
+        <p class="text-sm text-slate-700 mt-1">拖動滑桿，看看每一分鐘有多少塑膠被倒入海洋（資料來源：Ocean Conservancy / UNEP / WHO）。</p>
+      </div>
+    </div>
+
+    <div class="bg-slate-50 rounded-xl p-4 my-3">
+      <div class="flex justify-between text-sm font-bold mb-2">
+        <span>時間：<span id="min-label" class="text-amber-600 text-lg">1</span> 分鐘</span>
+        <span>倒入海洋塑膠：<span id="kg-label" class="text-red-500 text-lg">15</span> 公噸</span>
+      </div>
+      <input id="min-slider" type="range" min="1" max="60" value="1" class="w-full accent-emerald-500">
+      <div class="h-28 flex items-end gap-1 mt-3" id="bar-chart"></div>
+      <p class="text-xs text-slate-500 mt-2">每年約 800 萬公噸塑膠進入海洋 ≒ 每分鐘 15 公噸 ≒ 1 整車垃圾車。</p>
+    </div>
+
+    <p class="font-bold mt-4">🧠 下列哪一項數據<u>正確</u>？</p>
+    <div class="flex flex-col gap-2 mt-2" id="l2-options">
+      <button class="btn quiz-opt bg-white border-2 border-sky-300 rounded-xl p-3 text-left" data-ans="0">A. 全球只有 10% 的人呼吸到髒空氣。</button>
+      <button class="btn quiz-opt bg-white border-2 border-sky-300 rounded-xl p-3 text-left" data-ans="1">B. WHO 指出 2019 年全球 99% 人口呼吸的空氣不達標，420 萬人因此早逝。</button>
+      <button class="btn quiz-opt bg-white border-2 border-sky-300 rounded-xl p-3 text-left" data-ans="0">C. 寶特瓶丟在海裡一個月就會完全分解。</button>
+    </div>
+    <p id="l2-feedback" class="mt-3 font-bold min-h-[24px]"></p>
+  </section>
+
+  <!-- Level 3: 分支選擇 RRRR -->
+  <section id="level-3" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🥤</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 3：你是班級環保長！</h2>
+        <p class="text-sm text-slate-700 mt-1">班上明天有烤肉活動，大家想買 30 個免洗杯。RRRR 教我們：<b>Refuse 拒用 → Reuse 重複 → Repair 修 → Recycle 回收</b>。你會建議：</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-3 my-3" id="l3-choices">
+      <button class="btn choice bg-rose-100 border-2 border-rose-400 rounded-xl p-3 text-left" data-c="a">
+        <b>A.</b> 就買免洗杯吧，用完記得丟資源回收。
+      </button>
+      <button class="btn choice bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-left" data-c="b">
+        <b>B.</b> 提議<b>每人自備水壺</b>，一個都不用買（Refuse 第一！）。
+      </button>
+      <button class="btn choice bg-emerald-100 border-2 border-emerald-400 rounded-xl p-3 text-left" data-c="c">
+        <b>C.</b> 借學校廚房的<b>可重複使用</b>環保杯（Reuse）。
+      </button>
+    </div>
+    <div id="l3-story" class="bg-slate-100 rounded-xl p-4 min-h-[80px] text-sm"></div>
+    <button id="l3-next" class="hidden btn mt-3 w-full bg-amber-500 text-white py-3 rounded-xl font-bold">前往最後一關 →</button>
+  </section>
+
+  <!-- Level 4: 行動承諾 + WSA -->
+  <section id="level-4" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">💪</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 4：我的減污染行動卡</h2>
+        <p class="text-sm text-slate-700 mt-1">每年 <b>800 萬公噸</b>塑膠進海洋，波波需要你的幫忙！寫下一個<b>本週你做得到</b>的減污染行動：</p>
+      </div>
+    </div>
+    <input id="action-input" type="text" placeholder="例：帶水壺不買寶特瓶、自備購物袋、拒用吸管…" class="w-full border-2 border-slate-300 rounded-xl p-3 focus:border-emerald-500 outline-none">
+    <button id="make-card" class="btn w-full mt-3 bg-emerald-500 text-white py-3 rounded-xl font-bold">🎴 生成我的行動卡</button>
+    <div id="card-result" class="hidden mt-4 bg-gradient-to-br from-emerald-200 to-sky-200 rounded-2xl p-5 text-center border-4 border-white pop">
+      <div class="text-5xl">🌊</div>
+      <div class="text-sm text-slate-600 mt-2">環境偵探行動卡</div>
+      <div id="action-text" class="text-xl font-bold my-2 text-emerald-800"></div>
+      <div class="text-xs text-slate-700">— 我是波波的減污染夥伴！</div>
+    </div>
+
+    <!-- WSA Challenge -->
+    <div id="wsa-box" class="hidden mt-4 bg-white border-2 border-dashed border-sky-400 rounded-2xl p-4 fade-in">
+      <h3 class="font-bold text-sky-700 mb-1">🏫 WSA Challenge：全校一起減污染！</h3>
+      <p class="text-xs text-slate-600 mb-2">減污染不只在教室。四個面向各勾一件事（每項 +10 分），解鎖【全校英雄徽章】！</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="課程整合"><span class="text-sm"><b>📚 課程整合</b>：自然課測校園水質、藝術課做回收物藝術品</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="校園營運"><span class="text-sm"><b>💡 校園營運</b>：午餐自備餐具、班級設回收分類督察隊</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="社區連結"><span class="text-sm"><b>🤝 社區連結</b>：與家人參加里辦親子淨街日</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="學生治理"><span class="text-sm"><b>🙋 學生治理</b>：在班會提出校園減塑公約</span>
+      </label>
+      <p id="wsa-feedback" class="text-center font-bold text-emerald-600 mt-2 min-h-[20px]"></p>
+    </div>
+    <button id="l4-next" class="hidden btn mt-3 w-full bg-emerald-600 text-white py-3 rounded-xl font-bold">查看我的成就 🏆</button>
+  </section>
+
+  <!-- Final -->
+  <section id="final" class="card p-6 hidden-screen text-center">
+    <div class="text-6xl pop">🏆</div>
+    <h2 class="text-2xl font-bold text-emerald-600 mt-2">恭喜你破關！</h2>
+    <p class="text-slate-700 mt-1">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> 分</p>
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <div class="bg-sky-50 rounded-xl p-4 text-left mt-3">
+      <h3 class="font-bold text-sky-700 mb-2">🤔 三個延伸思考</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>如果你是市長，會先處理空氣、水、還是垃圾污染？為什麼？</li>
+        <li>為什麼「拒用」比「回收」更有力量？舉一個生活例子。</li>
+        <li>你願意邀請哪三位家人朋友一起執行你的行動承諾？怎麼邀請？</li>
+      </ol>
+    </div>
+
+    <button onclick="location.reload()" class="btn mt-4 bg-emerald-500 text-white py-3 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+  </section>
+</div>
+
+<script>
+let score = 0;
+const setScore = v => { score = v; document.getElementById('score').textContent = v; };
+const addScore = n => setScore(score + n);
+const badges = [];
+
+function confetti(){
+  const colors=['#10b981','#0ea5e9','#f59e0b','#ef4444','#a855f7'];
+  for(let i=0;i<30;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2500);
+  }
+}
+
+function goStep(n){
+  for(let i=1;i<=5;i++){
+    const sec = document.getElementById(i===5?'final':'level-'+i);
+    if(sec) sec.classList.add('hidden-screen');
+    const d = document.getElementById('dot-'+i);
+    if(d){ d.classList.remove('active','done'); if(i<n) d.classList.add('done'); if(i===n) d.classList.add('active'); }
+  }
+  const target = document.getElementById(n===5?'final':'level-'+n);
+  target.classList.remove('hidden-screen');
+  target.classList.add('fade-in');
+  document.getElementById('step').textContent = Math.min(n,4);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===== Level 1: drag-drop ===== */
+let l1Correct = 0;
+const total1 = document.querySelectorAll('#items-box .drag-item').length;
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
+  el.addEventListener('click', ()=>{
+    document.querySelectorAll('.drag-item').forEach(x=>x.classList.remove('ring-4','ring-amber-400'));
+    el.classList.add('ring-4','ring-amber-400');
+    dragged = el;
+  });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{ e.preventDefault(); z.classList.remove('over'); handleDrop(z); });
+  z.addEventListener('click', ()=>{ if(dragged) handleDrop(z); });
+});
+function handleDrop(zone){
+  if(!dragged) return;
+  const fb = document.getElementById('l1-feedback');
+  if(dragged.dataset.type === zone.dataset.accept){
+    zone.querySelector('.dz-items').appendChild(dragged);
+    dragged.setAttribute('draggable','false');
+    dragged.classList.remove('ring-4','ring-amber-400','bg-yellow-100','border-yellow-400');
+    dragged.classList.add('bg-green-100','border-green-500');
+    addScore(10);
+    l1Correct++;
+    fb.textContent='答對了！ 👏 +10 分';
+    fb.className='mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+    confetti();
+    if(l1Correct === total1){
+      badges.push('🌫️ 污染分類達人');
+      const btn=document.getElementById('l1-next');
+      btn.disabled=false;
+      btn.className='btn mt-2 w-full bg-emerald-500 text-white py-3 rounded-xl font-bold';
+      btn.onclick=()=>goStep(2);
+    }
+  } else {
+    dragged.classList.add('shake');
+    setTimeout(()=>dragged.classList.remove('shake'),400);
+    fb.textContent='再想想！提示：空氣=飄在空中、水=流動進河海、土壤=留在地上 💡';
+    fb.className='mt-3 text-center font-bold min-h-[24px] text-rose-500';
+  }
+  dragged=null;
+}
+
+/* ===== Level 2: slider + quiz ===== */
+const slider = document.getElementById('min-slider');
+const minLabel = document.getElementById('min-label');
+const kgLabel = document.getElementById('kg-label');
+const chart = document.getElementById('bar-chart');
+function kgAt(min){ return min * 15; } // ~15 tonnes/min
+for(let m=1; m<=60; m+=3){
+  const t = kgAt(m);
+  const bar = document.createElement('div');
+  bar.style.flex='1';
+  bar.style.height = Math.max(3, t/15)+'px';
+  bar.style.background = m<20?'#60a5fa':(m<40?'#fbbf24':'#ef4444');
+  bar.style.borderRadius='3px';
+  bar.title = m+' 分鐘：'+t+' 公噸';
+  chart.appendChild(bar);
+}
+slider.addEventListener('input', ()=>{
+  const m = +slider.value;
+  minLabel.textContent = m;
+  kgLabel.textContent = kgAt(m);
+});
+document.querySelectorAll('#l2-options .quiz-opt').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const fb = document.getElementById('l2-feedback');
+    if(btn.dataset.ans === '1'){
+      btn.classList.add('bg-emerald-200','border-emerald-500');
+      fb.textContent='太棒了！WHO 2019 數據就是這麼嚴重。+20 分 🎉';
+      fb.className='mt-3 font-bold min-h-[24px] text-emerald-600 pop';
+      addScore(20);
+      badges.push('📊 數據偵探');
+      confetti();
+      document.querySelectorAll('#l2-options .quiz-opt').forEach(b=>b.disabled=true);
+      setTimeout(()=>goStep(3), 1400);
+    } else {
+      btn.classList.add('shake');
+      setTimeout(()=>btn.classList.remove('shake'),400);
+      fb.textContent='再看看數據卡：99%人呼吸超標空氣；寶特瓶要 450 年才分解喔！💡';
+      fb.className='mt-3 font-bold min-h-[24px] text-rose-500';
+    }
+  });
+});
+
+/* ===== Level 3: branching ===== */
+const stories = {
+  a: {text:'嗯…免洗杯丟回收是好習慣，但製造時已經耗能耗水、很多也沒進回收系統。RRRR 提醒我們：<b>拒用</b>和<b>重複使用</b>優先！請再選一次 💡', score:0, next:false},
+  b: {text:'超棒！🌟 你選了 <b>Refuse 拒用</b>——一次就省下 30 個免洗杯！這就是 RRRR 最強的第一步。+30 分！', score:30, badge:'🥇 Refuse 拒用王', next:true},
+  c: {text:'好選擇！🌱 <b>Reuse 重複使用</b>學校環保杯，也能把垃圾降到 0。+25 分！', score:25, badge:'♻️ Reuse 重複使用高手', next:true}
+};
+document.querySelectorAll('#l3-choices .choice').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const s = stories[btn.dataset.c];
+    document.getElementById('l3-story').innerHTML = s.text;
+    if(s.next){
+      addScore(s.score);
+      if(s.badge) badges.push(s.badge);
+      document.querySelectorAll('#l3-choices .choice').forEach(b=>b.disabled=true);
+      const next = document.getElementById('l3-next');
+      next.classList.remove('hidden');
+      next.onclick = ()=> goStep(4);
+      confetti();
+    }
+  });
+});
+
+/* ===== Level 4: commitment + WSA ===== */
+document.getElementById('make-card').addEventListener('click', ()=>{
+  const v = document.getElementById('action-input').value.trim();
+  if(!v){
+    const inp = document.getElementById('action-input');
+    inp.classList.add('shake','border-rose-400');
+    setTimeout(()=>inp.classList.remove('shake','border-rose-400'),400);
+    return;
+  }
+  document.getElementById('action-text').textContent = '「' + v + '」';
+  document.getElementById('card-result').classList.remove('hidden');
+  document.getElementById('wsa-box').classList.remove('hidden');
+  addScore(20);
+  badges.push('💪 行動承諾家');
+  confetti();
+});
+
+const wsaChosen = new Set();
+document.querySelectorAll('.wsa-cb').forEach(cb=>{
+  cb.addEventListener('change', ()=>{
+    const w = cb.dataset.w;
+    if(cb.checked && !wsaChosen.has(w)){
+      wsaChosen.add(w);
+      addScore(10);
+      const fb = document.getElementById('wsa-feedback');
+      fb.textContent = '已啟動 ' + wsaChosen.size + '/4 面向 +10 分！';
+      if(wsaChosen.size === 4){
+        fb.textContent = '🏆 WSA 全部解鎖！獲得【全校減污染英雄】徽章！';
+        badges.push('🏫 全校減污染英雄');
+        confetti();
+      }
+      const next = document.getElementById('l4-next');
+      next.classList.remove('hidden');
+      next.onclick = ()=>{
+        document.getElementById('final-score').textContent = score;
+        const box = document.getElementById('badges');
+        box.innerHTML = '';
+        badges.forEach(b=>{
+          const d = document.createElement('div');
+          d.className = 'bg-white border-2 border-emerald-400 rounded-full px-3 py-1 text-sm font-bold text-emerald-700 pop';
+          d.textContent = b;
+          box.appendChild(d);
+        });
+        goStep(5);
+      };
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>能源小偵探莉莉的任務 | 5.4-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#fef9c3,#bae6fd); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:120px; transition: background .2s; }
+  .drop-zone.over { background:#fde68a; }
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#f59e0b; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+</style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-3xl mx-auto">
+
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-amber-600">⚡ 能源小偵探莉莉的任務</h1>
+      <p class="text-sm text-slate-600 mt-1">幫莉莉調查能源、破解碳排腳印、設計校園減碳行動！</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> 分</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-3 text-sm text-slate-600">關卡 <span id="step">1</span>/4</span>
+  </div>
+
+  <!-- Level 1: 能源分類 -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🕵️‍♀️</div>
+      <div>
+        <h2 class="text-xl font-bold text-sky-700">關卡 1：能源家族分類</h2>
+        <p class="text-sm text-slate-700 mt-1">莉莉說：「把下面的能源拖到對的籃子。<b>非再生</b>會用完，<b>再生</b>用不完！」</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3 my-4" id="items-box">
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="nonrenew">🖤 煤炭</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="renew">☀️ 太陽能</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="nonrenew">🛢️ 石油</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="renew">💨 風力</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="nonrenew">🔥 天然氣</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="renew">💧 水力</div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div class="drop-zone bg-rose-50 border-4 border-dashed border-rose-400 rounded-2xl p-3" data-accept="nonrenew">
+        <div class="font-bold text-rose-700 text-center">🪨 非再生能源</div>
+        <div class="dz-items flex flex-wrap gap-2 mt-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-emerald-50 border-4 border-dashed border-emerald-400 rounded-2xl p-3" data-accept="renew">
+        <div class="font-bold text-emerald-700 text-center">🌱 再生能源</div>
+        <div class="dz-items flex flex-wrap gap-2 mt-2 justify-center"></div>
+      </div>
+    </div>
+
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <button id="l1-next" disabled class="btn mt-2 w-full bg-slate-300 text-white py-3 rounded-xl font-bold">完成分類即可前往下一關 →</button>
+  </section>
+
+  <!-- Level 2: 碳排滑桿 -->
+  <section id="level-2" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🦶</div>
+      <div>
+        <h2 class="text-xl font-bold text-sky-700">關卡 2：碳排腳印滑桿</h2>
+        <p class="text-sm text-slate-700 mt-1">拖動滑桿選能源，看每發 1 度電排多少克 CO2（資料：IPCC AR6 2022）。</p>
+      </div>
+    </div>
+
+    <div class="bg-slate-50 rounded-xl p-4 my-3">
+      <div class="flex justify-between text-sm font-bold mb-2">
+        <span>能源：<span id="src-label" class="text-amber-600 text-lg">燃煤</span></span>
+        <span>每度 CO2：<span id="co2-label" class="text-red-500 text-lg">820</span> g</span>
+      </div>
+      <input id="src-slider" type="range" min="0" max="4" value="0" step="1" class="w-full accent-amber-500">
+      <div class="flex justify-between text-xs text-slate-500 mt-1">
+        <span>煤</span><span>油</span><span>氣</span><span>太陽</span><span>風</span>
+      </div>
+      <div class="h-28 flex items-end gap-2 mt-3" id="bar-chart"></div>
+    </div>
+
+    <p class="font-bold mt-4">🧠 根據數據，哪句話<u>最正確</u>？</p>
+    <div class="flex flex-col gap-2 mt-2" id="l2-options">
+      <button class="btn quiz-opt bg-white border-2 border-sky-300 rounded-xl p-3 text-left" data-ans="0">A. 五種能源碳排差不多。</button>
+      <button class="btn quiz-opt bg-white border-2 border-sky-300 rounded-xl p-3 text-left" data-ans="1">B. 燃煤每度 820g，是風電 11g 的約 75 倍。</button>
+      <button class="btn quiz-opt bg-white border-2 border-sky-300 rounded-xl p-3 text-left" data-ans="0">C. 風電碳排比燃煤高。</button>
+    </div>
+    <p id="l2-feedback" class="mt-3 font-bold min-h-[24px]"></p>
+  </section>
+
+  <!-- Level 3: 能源部長決策 -->
+  <section id="level-3" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🏛️</div>
+      <div>
+        <h2 class="text-xl font-bold text-sky-700">關卡 3：能源部長，你會選哪個？</h2>
+        <p class="text-sm text-slate-700 mt-1">臺灣發電 2023：煤 <b>42%</b>、氣 <b>40%</b>、核 <b>6%</b>、綠電 <b>約 10%</b>。能源進口 <b>98%</b>（來源：經濟部能源署）。部長，請選下一步：</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-3 my-3" id="l3-choices">
+      <button class="btn choice bg-rose-100 border-2 border-rose-400 rounded-xl p-3 text-left" data-c="a">
+        <b>A.</b> 維持現狀，反正電便宜就好。
+      </button>
+      <button class="btn choice bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-left" data-c="b">
+        <b>B.</b> 加速<b>展綠、減煤、增氣</b>：蓋更多太陽能與風機。
+      </button>
+      <button class="btn choice bg-emerald-100 border-2 border-emerald-400 rounded-xl p-3 text-left" data-c="c">
+        <b>C.</b> <b>綠電＋節能＋公民電廠</b>：科技 + 行為一起改。
+      </button>
+    </div>
+    <div id="l3-story" class="bg-slate-100 rounded-xl p-4 min-h-[80px] text-sm"></div>
+    <button id="l3-next" class="hidden btn mt-3 w-full bg-amber-500 text-white py-3 rounded-xl font-bold">前往最後一關 →</button>
+  </section>
+
+  <!-- Level 4: 行動承諾 + 太陽能換算 -->
+  <section id="level-4" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🌞</div>
+      <div>
+        <h2 class="text-xl font-bold text-sky-700">關卡 4：節能承諾 + 屋頂森林</h2>
+        <p class="text-sm text-slate-700 mt-1">台灣每省 <b>1 度電＝少 0.5 公斤 CO2</b>。寫下一個你做得到的節能行動：</p>
+      </div>
+    </div>
+    <input id="action-input" type="text" placeholder="例：冷氣 27℃、走樓梯、隨手拔插頭…" class="w-full border-2 border-slate-300 rounded-xl p-3 focus:border-amber-500 outline-none">
+    <button id="make-card" class="btn w-full mt-3 bg-amber-500 text-white py-3 rounded-xl font-bold">🎴 生成我的能源承諾卡</button>
+    <div id="card-result" class="hidden mt-4 bg-gradient-to-br from-emerald-200 to-sky-200 rounded-2xl p-5 text-center border-4 border-white pop">
+      <div class="text-5xl">🌳</div>
+      <div class="text-sm text-slate-600 mt-2">能源小管家承諾卡</div>
+      <div id="action-text" class="text-xl font-bold my-2 text-emerald-800"></div>
+      <div class="text-xs text-slate-700">— 我是莉莉的能源夥伴！</div>
+    </div>
+
+    <!-- 太陽能互動 -->
+    <div id="solar-box" class="hidden mt-4 bg-yellow-50 border-2 border-dashed border-amber-400 rounded-2xl p-4 fade-in">
+      <h3 class="font-bold text-amber-700 mb-1">☀️ 小遊戲：屋頂變森林</h3>
+      <p class="text-xs text-slate-600 mb-2">1 kW 太陽能板一年在台灣發電約 1,250 度 ≈ 減 625 kg CO2 ≈ 30 棵樹。<br>你家屋頂想裝幾 kW？</p>
+      <input id="kw-slider" type="range" min="1" max="10" value="3" step="1" class="w-full accent-amber-500">
+      <div class="text-center font-bold mt-2">裝 <span id="kw-val" class="text-amber-600">3</span> kW
+        → 年發電 <span id="kwh-val" class="text-emerald-700">3,750</span> 度
+        ≈ 減 <span id="co2-val" class="text-rose-600">1,875</span> kg CO2
+        ≈ 種 <span id="tree-val" class="text-emerald-800 text-lg">90</span> 棵樹 🌳</div>
+    </div>
+
+    <div id="wsa-box" class="hidden mt-4 bg-white border-2 border-dashed border-sky-400 rounded-2xl p-4 fade-in">
+      <h3 class="font-bold text-sky-700 mb-1">🏫 WSA Challenge：全校一起做</h3>
+      <p class="text-xs text-slate-600 mb-2">能源行動不只在教室！四個面向各選一件事（每項 +10 分）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="課程整合"><span class="text-sm"><b>📚 課程整合</b>：數學課算家庭碳足跡、語文寫「給 2050 的信」</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="校園營運"><span class="text-sm"><b>💡 校園營運</b>：教室燈改 LED、冷氣統一 27℃、屋頂太陽能連署</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="社區連結"><span class="text-sm"><b>🤝 社區連結</b>：回家做家庭用電大搜查、社區節能博覽會擺攤</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-sky-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="學生治理"><span class="text-sm"><b>🙋 學生治理</b>：輪值能源小管家、班會提減碳公約</span>
+      </label>
+      <p id="wsa-feedback" class="text-center font-bold text-emerald-600 mt-2 min-h-[20px]"></p>
+    </div>
+    <button id="l4-next" class="hidden btn mt-3 w-full bg-emerald-600 text-white py-3 rounded-xl font-bold">查看我的成就 🏆</button>
+  </section>
+
+  <!-- Final -->
+  <section id="final" class="card p-6 hidden-screen text-center">
+    <div class="text-6xl pop">🏆</div>
+    <h2 class="text-2xl font-bold text-amber-600 mt-2">恭喜破關！</h2>
+    <p class="text-slate-700 mt-1">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> 分</p>
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <div class="bg-sky-50 rounded-xl p-4 text-left mt-3">
+      <h3 class="font-bold text-sky-700 mb-2">🤔 三個延伸思考</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>台灣 2050 要淨零，綠電要到幾 %？你覺得最需要先做哪一項？</li>
+        <li>家裡每月幾度電？換算是多少棵樹？怎麼和家人一起減？</li>
+        <li>如果是你，先花錢裝 LED、屋頂太陽能、還是電表監控？為什麼？</li>
+      </ol>
+    </div>
+
+    <button onclick="location.reload()" class="btn mt-4 bg-amber-500 text-white py-3 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+  </section>
+</div>
+
+<script>
+let score = 0;
+const setScore = v => { score = v; document.getElementById('score').textContent = v; };
+const addScore = n => setScore(score + n);
+const badges = [];
+
+function confetti(){
+  const colors=['#f59e0b','#10b981','#3b82f6','#ef4444','#a855f7'];
+  for(let i=0;i<30;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2500);
+  }
+}
+
+function goStep(n){
+  for(let i=1;i<=5;i++){
+    const sec = document.getElementById(i===5?'final':'level-'+i);
+    if(sec) sec.classList.add('hidden-screen');
+    const d = document.getElementById('dot-'+i);
+    if(d){ d.classList.remove('active','done'); if(i<n) d.classList.add('done'); if(i===n) d.classList.add('active'); }
+  }
+  const target = document.getElementById(n===5?'final':'level-'+n);
+  target.classList.remove('hidden-screen');
+  target.classList.add('fade-in');
+  document.getElementById('step').textContent = Math.min(n,4);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* Level 1 */
+let l1Correct = 0;
+const total1 = document.querySelectorAll('#items-box .drag-item').length;
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
+  el.addEventListener('click', ()=>{
+    document.querySelectorAll('.drag-item').forEach(x=>x.classList.remove('ring-4','ring-amber-400'));
+    el.classList.add('ring-4','ring-amber-400');
+    dragged = el;
+  });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{ e.preventDefault(); z.classList.remove('over'); handleDrop(z); });
+  z.addEventListener('click', ()=>{ if(dragged) handleDrop(z); });
+});
+function handleDrop(zone){
+  if(!dragged) return;
+  const fb = document.getElementById('l1-feedback');
+  if(dragged.dataset.type === zone.dataset.accept){
+    zone.querySelector('.dz-items').appendChild(dragged);
+    dragged.setAttribute('draggable','false');
+    dragged.classList.remove('ring-4','ring-amber-400','bg-yellow-100','border-yellow-400');
+    dragged.classList.add('bg-green-100','border-green-500');
+    addScore(10);
+    l1Correct++;
+    fb.textContent='答對了！ 👏 +10 分';
+    fb.className='mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+    confetti();
+    if(l1Correct === total1){
+      badges.push('⚡ 能源分類王');
+      const btn=document.getElementById('l1-next');
+      btn.disabled=false;
+      btn.className='btn mt-2 w-full bg-amber-500 text-white py-3 rounded-xl font-bold';
+      btn.onclick=()=>goStep(2);
+    }
+  } else {
+    dragged.classList.add('shake');
+    setTimeout(()=>dragged.classList.remove('shake'),400);
+    fb.textContent='再想想！提示：化石燃料（煤/油/氣）會用完，陽光、風、水用不完 💡';
+    fb.className='mt-3 text-center font-bold min-h-[24px] text-rose-500';
+  }
+  dragged=null;
+}
+
+/* Level 2: CO2 by source (IPCC AR6) */
+const sources = [
+  {name:'燃煤', co2:820, color:'#1f2937'},
+  {name:'石油', co2:650, color:'#78350f'},
+  {name:'燃氣', co2:490, color:'#9ca3af'},
+  {name:'太陽光電', co2:48, color:'#f59e0b'},
+  {name:'風力', co2:11, color:'#10b981'}
+];
+const slider = document.getElementById('src-slider');
+const srcLabel = document.getElementById('src-label');
+const co2Label = document.getElementById('co2-label');
+const chart = document.getElementById('bar-chart');
+// render all bars
+sources.forEach((s,i)=>{
+  const bar = document.createElement('div');
+  bar.style.flex='1';
+  bar.style.height = Math.max(5, s.co2/820*90)+'px';
+  bar.style.background = s.color;
+  bar.style.borderRadius='5px';
+  bar.title = s.name+': '+s.co2+' gCO2/kWh';
+  chart.appendChild(bar);
+});
+function updSrc(){
+  const i = +slider.value;
+  srcLabel.textContent = sources[i].name;
+  co2Label.textContent = sources[i].co2;
+}
+slider.addEventListener('input', updSrc);
+updSrc();
+document.querySelectorAll('#l2-options .quiz-opt').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const fb = document.getElementById('l2-feedback');
+    if(btn.dataset.ans === '1'){
+      btn.classList.add('bg-emerald-200','border-emerald-500');
+      fb.textContent='太棒了！燃煤 820g vs 風電 11g，相差 75 倍！（IPCC AR6）+20 分 🎉';
+      fb.className='mt-3 font-bold min-h-[24px] text-emerald-600 pop';
+      addScore(20);
+      badges.push('🦶 碳腳印偵探');
+      confetti();
+      document.querySelectorAll('#l2-options .quiz-opt').forEach(b=>b.disabled=true);
+      setTimeout(()=>goStep(3), 1400);
+    } else {
+      btn.classList.add('shake');
+      setTimeout(()=>btn.classList.remove('shake'),400);
+      fb.textContent='提示：把滑桿滑到「燃煤」和「風力」比較一下數字！';
+      fb.className='mt-3 font-bold min-h-[24px] text-rose-500';
+    }
+  });
+});
+
+/* Level 3: branching */
+const stories = {
+  a: {text:'😟 五年後：國際煤價大漲，電費翻倍，空氣品質變差，同學氣喘發作變多。（+0 分）', score:0, badge:null},
+  b: {text:'🌞 十年後：綠電占比達到 30%，台灣空氣乾淨，開始出口離岸風機技術！+15 分', score:15, badge:'🏛️ 能源部長'},
+  c: {text:'🏆 十五年後：淨零轉型達標，學校屋頂變公民電廠，孩子們用的電，自己發！+25 分', score:25, badge:'🌟 永續決策家'}
+};
+document.querySelectorAll('#l3-choices .choice').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const s = stories[btn.dataset.c];
+    document.getElementById('l3-story').textContent = s.text;
+    document.getElementById('l3-story').className='bg-yellow-50 rounded-xl p-4 text-sm fade-in';
+    if(s.score>0){ addScore(s.score); if(s.badge) badges.push(s.badge); confetti(); }
+    document.querySelectorAll('#l3-choices .choice').forEach(b=>b.disabled=true);
+    btn.classList.add('ring-4','ring-sky-500');
+    const nxt=document.getElementById('l3-next');
+    nxt.classList.remove('hidden');
+    nxt.onclick=()=>goStep(4);
+  });
+});
+
+/* Level 4 */
+document.getElementById('make-card').addEventListener('click', ()=>{
+  const v = document.getElementById('action-input').value.trim();
+  if(v.length<2){
+    alert('提示：寫下一個具體的小行動，例如「冷氣 27℃」或「隨手拔插頭」喔！');
+    return;
+  }
+  document.getElementById('action-text').textContent='「我承諾：'+v+'」';
+  document.getElementById('card-result').classList.remove('hidden');
+  addScore(15);
+  badges.push('🌳 能源小管家');
+  confetti();
+  document.getElementById('solar-box').classList.remove('hidden');
+  document.getElementById('wsa-box').classList.remove('hidden');
+  document.getElementById('l4-next').classList.remove('hidden');
+  document.getElementById('l4-next').onclick = showFinal;
+});
+
+/* Solar slider */
+const kwSlider = document.getElementById('kw-slider');
+function updSolar(){
+  const kw = +kwSlider.value;
+  const kwh = kw * 1250;
+  const co2 = kw * 625;
+  const trees = kw * 30;
+  document.getElementById('kw-val').textContent = kw;
+  document.getElementById('kwh-val').textContent = kwh.toLocaleString();
+  document.getElementById('co2-val').textContent = co2.toLocaleString();
+  document.getElementById('tree-val').textContent = trees;
+}
+kwSlider.addEventListener('input', updSolar);
+
+/* WSA Challenge */
+const wsaChecked = new Set();
+document.querySelectorAll('.wsa-cb').forEach(cb=>{
+  cb.addEventListener('change', ()=>{
+    const key = cb.dataset.w;
+    const fb = document.getElementById('wsa-feedback');
+    if(cb.checked && !wsaChecked.has(key)){
+      wsaChecked.add(key);
+      addScore(10);
+      fb.textContent = '＋10 分！已選 '+wsaChecked.size+'/4 面向';
+      if(wsaChecked.size === 4){
+        fb.textContent = '🏆 全校能源英雄！四大面向全破關！';
+        if(!badges.includes('🏫 全校能源英雄')) badges.push('🏫 全校能源英雄');
+        confetti();
+      }
+    } else if(!cb.checked && wsaChecked.has(key)){
+      wsaChecked.delete(key);
+      addScore(-10);
+      fb.textContent = '已取消一項，目前 '+wsaChecked.size+'/4';
+    }
+  });
+});
+
+function showFinal(){
+  goStep(5);
+  document.getElementById('final-score').textContent = score;
+  const box = document.getElementById('badges');
+  box.innerHTML = '';
+  badges.forEach(b=>{
+    const el = document.createElement('div');
+    el.className = 'bg-amber-100 border-2 border-amber-400 rounded-full px-3 py-1 text-sm font-bold text-amber-800 pop';
+    el.textContent = b;
+    box.appendChild(el);
+  });
+  confetti();
+}
+</script>
+</body>
+</html>

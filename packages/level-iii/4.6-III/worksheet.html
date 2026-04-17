@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>真相偵探社 — 4.6-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#ede9fe 0%,#dbeafe 50%,#fef3c7 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .feedback-pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; z-index:9999; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #6366f1; box-shadow: 0 0 0 4px rgba(99,102,241,.25); }
+  .drag-item { cursor: grab; user-select: none; }
+  .drag-item.dragging { opacity: .4; }
+  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
+  .badge { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #a78bfa; } to { box-shadow: 0 0 30px #7c3aed; } }
+  .hidden-step { display: none; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">🕵️ 真相偵探社</h1>
+    <p class="mt-2 text-indigo-100">UNESCO 4.6-III｜9-12 歲｜應對氣候錯誤／虛假訊息</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 角色＋情境 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl">🕵️‍♀️</div>
+    <div>
+      <h2 class="text-2xl font-bold text-indigo-700">任務簡報：歡迎加入真相偵探社！</h2>
+      <p class="mt-2 leading-relaxed">我是探員凱雅。全球 <strong class="text-red-600">97%+</strong> 的氣候科學家都同意地球正在暖化（資料：NASA 2024），可是網路上還是有很多氣候假訊息在亂跑。你的任務：通過 6 個關卡，學會「真相偵探 5 步驟」，解鎖『<strong>全校英雄徽章</strong>』！</p>
+      <button onclick="startMission()" class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 🔍</button>
+    </div>
+  </div>
+</section>
+
+<!-- 關卡 1：錯 vs 假（單選） -->
+<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-indigo-700">📚 關卡 1：錯誤訊息 vs 虛假訊息</h2>
+  <p class="mt-2 text-gray-600">小華轉傳了一則：『冬天還這麼冷，全球根本沒在暖化！』 他自己也相信，沒有要騙人。這屬於哪一種？</p>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+    <button class="q1-opt p-4 border-2 border-indigo-200 rounded-xl hover:bg-indigo-50" data-ans="1">錯誤訊息（misinformation）</button>
+    <button class="q1-opt p-4 border-2 border-indigo-200 rounded-xl hover:bg-indigo-50" data-ans="0">虛假訊息（disinformation）</button>
+    <button class="q1-opt p-4 border-2 border-indigo-200 rounded-xl hover:bg-indigo-50" data-ans="0">科學事實</button>
+  </div>
+  <div id="q1-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 2：5 步驟排序（拖曳） -->
+<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-purple-700">🧩 關卡 2：真相偵探 5 步驟排序</h2>
+  <p class="mt-2 text-gray-600">UNESCO 建議 9-12 歲要練習的 5 步驟。請把下方卡片拖到正確位置（口訣：源、雙、容、理、問）：</p>
+  <div class="flex flex-wrap gap-3 mt-4" id="stepPool">
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-step="1">🔍 查來源</div>
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-step="2">✌️ 雙重查證</div>
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-step="3">📄 看內容</div>
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-step="4">🤔 問合理性</div>
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-step="5">🙋 問大人</div>
+  </div>
+  <div class="grid grid-cols-5 gap-2 mt-4">
+    <div class="drop-zone border-2 border-dashed border-gray-300 rounded-lg p-4 text-center min-h-16" data-step="1">①</div>
+    <div class="drop-zone border-2 border-dashed border-gray-300 rounded-lg p-4 text-center min-h-16" data-step="2">②</div>
+    <div class="drop-zone border-2 border-dashed border-gray-300 rounded-lg p-4 text-center min-h-16" data-step="3">③</div>
+    <div class="drop-zone border-2 border-dashed border-gray-300 rounded-lg p-4 text-center min-h-16" data-step="4">④</div>
+    <div class="drop-zone border-2 border-dashed border-gray-300 rounded-lg p-4 text-center min-h-16" data-step="5">⑤</div>
+  </div>
+  <button onclick="checkSteps()" class="mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full">檢查答案</button>
+  <div id="q2-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 3：情境查核（真數據） -->
+<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-blue-700">🔎 關卡 3：我是小查核員（真實數據）</h2>
+  <p class="mt-2 text-gray-600">網路流傳：『<em>台灣根本沒在暖化，冬天還會冷</em>』。請幫這則訊息查核：</p>
+
+  <div class="bg-blue-50 p-4 rounded-lg mt-4">
+    <p class="font-semibold">提示：TCCIP（臺灣氣候變遷推估平台）官方資料顯示，過去約 110 年，台灣平均氣溫上升約 <strong>1.6°C</strong>，約是全球平均（約 1.1–1.5°C，NASA 2024）的 <strong>2 倍</strong>。</p>
+  </div>
+
+  <p class="mt-4 font-semibold">這則訊息應該判定為：</p>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2">
+    <button class="q3-opt p-3 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">✅ 真</button>
+    <button class="q3-opt p-3 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="1">❌ 錯誤／虛假</button>
+    <button class="q3-opt p-3 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">無法判斷</button>
+  </div>
+  <div id="q3-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 4：情緒＋同理對話（填空） -->
+<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-rose-700">💗 關卡 4：同理對話工作坊</h2>
+  <p class="mt-2 text-gray-600">阿嬤在家族群組轉傳『夏天變熱是太陽活動變強，不是人類造成』。你想溫柔地說明，但不想傷她的心。請完成對話：</p>
+
+  <div class="bg-rose-50 p-4 rounded-lg mt-4 space-y-3">
+    <p>阿嬤：「我 LINE 群組看到的，一定沒錯啦。」</p>
+    <p>你（先同理）：<input id="empathyInput" class="border-b-2 border-rose-300 bg-transparent w-full md:w-2/3 px-2 py-1 focus:outline-none focus:border-rose-500" placeholder="例如：我懂阿嬤覺得..."></p>
+    <p>你（再給事實）：<input id="factInput" class="border-b-2 border-rose-300 bg-transparent w-full md:w-2/3 px-2 py-1 focus:outline-none focus:border-rose-500" placeholder="不過我查 NASA 說..."></p>
+  </div>
+  <button onclick="checkEmpathy()" class="mt-4 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-6 rounded-full">送出對話</button>
+  <div id="q4-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 5：可信來源配對（多選） -->
+<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-emerald-700">🏛️ 關卡 5：誰是可信來源？</h2>
+  <p class="mt-2 text-gray-600">請勾選『查氣候事實時可信』的來源（可複選，答對 ≥3 個過關）：</p>
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
+    <label class="flex items-center gap-2 p-3 border-2 border-emerald-200 rounded-lg"><input type="checkbox" class="src-chk" data-good="1"> NASA Climate</label>
+    <label class="flex items-center gap-2 p-3 border-2 border-emerald-200 rounded-lg"><input type="checkbox" class="src-chk" data-good="1"> IPCC（聯合國氣候報告）</label>
+    <label class="flex items-center gap-2 p-3 border-2 border-emerald-200 rounded-lg"><input type="checkbox" class="src-chk" data-good="1"> TCCIP（台灣）</label>
+    <label class="flex items-center gap-2 p-3 border-2 border-emerald-200 rounded-lg"><input type="checkbox" class="src-chk" data-good="1"> 台灣事實查核中心 TFC</label>
+    <label class="flex items-center gap-2 p-3 border-2 border-emerald-200 rounded-lg"><input type="checkbox" class="src-chk" data-good="0"> 匿名 LINE 群組轉傳</label>
+    <label class="flex items-center gap-2 p-3 border-2 border-emerald-200 rounded-lg"><input type="checkbox" class="src-chk" data-good="0"> 誇張標題「震驚！」部落格</label>
+  </div>
+  <button onclick="checkSources()" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full">提交</button>
+  <div id="q5-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 6：全校行動挑戰（WSA 四面向 4-checkbox） -->
+<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-amber-700">🏫 關卡 6：全校行動挑戰（Whole School Approach）</h2>
+  <p class="mt-2 text-gray-700">應對氣候假訊息，不能只靠自己！請勾選你『本學期會嘗試』的 WSA 四面向行動，四項全勾，解鎖『全校英雄徽章』：</p>
+
+  <div class="space-y-3 mt-4">
+    <label class="flex items-start gap-3 p-4 border-2 border-amber-200 rounded-lg">
+      <input type="checkbox" class="wsa-chk mt-1" data-aspect="curriculum">
+      <div><strong>📚 課程與學習</strong>：在自然、資訊或綜合課中，主動提出『我們能不能查一下這則訊息？』的請求。</div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-amber-200 rounded-lg">
+      <input type="checkbox" class="wsa-chk mt-1" data-aspect="campus">
+      <div><strong>🏫 校園與營運</strong>：幫圖書館／班級布告欄做一張『真相偵探 5 步驟』海報。</div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-amber-200 rounded-lg">
+      <input type="checkbox" class="wsa-chk mt-1" data-aspect="community">
+      <div><strong>🤝 社區夥伴</strong>：邀請家人一起用 TFC 或 MyGoPen 查一則氣候訊息。</div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-amber-200 rounded-lg">
+      <input type="checkbox" class="wsa-chk mt-1" data-aspect="student">
+      <div><strong>🙋 學生治理</strong>：加入／成立班級『真相偵探小隊』，每週分享 1 則查核結果。</div>
+    </label>
+  </div>
+  <button onclick="checkWSA()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full shadow-lg">提交挑戰 🏆</button>
+  <div id="q6-feedback" class="mt-4"></div>
+</section>
+
+<!-- 授徽 -->
+<section id="finalBadge" class="hidden-step card bg-gradient-to-br from-yellow-100 to-amber-200 rounded-2xl shadow-2xl p-8 text-center">
+  <div class="badge inline-block bg-white rounded-full p-8 mb-4 text-7xl">🏅</div>
+  <h2 class="text-3xl font-extrabold text-amber-800">全校英雄 徽章解鎖！</h2>
+  <p class="mt-3 text-amber-900">你已完成真相偵探社的訓練。記得口訣：<strong>源、雙、容、理、問</strong>！回家教一位家人吧～</p>
+  <button onclick="location.reload()" class="mt-6 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded-full">再玩一次</button>
+</section>
+
+</main>
+
+<script>
+const TOTAL = 6;
+let current = 1;
+function updateProgress(n){
+  for(let i=1;i<=TOTAL;i++){
+    const d = document.getElementById('dot'+i);
+    d.classList.remove('active','done');
+    if(i<n) d.classList.add('done');
+    else if(i===n) d.classList.add('active');
+  }
+  document.getElementById('progressText').innerText = `第 ${Math.min(n,TOTAL)} / ${TOTAL} 關`;
+}
+function show(id){ document.getElementById(id).classList.remove('hidden-step'); }
+function hide(id){ document.getElementById(id).classList.add('hidden-step'); }
+function startMission(){ hide('intro'); show('level1'); updateProgress(1); }
+
+function confetti(){
+  for(let i=0;i<80;i++){
+    const c = document.createElement('div');
+    c.className='confetti';
+    c.style.left = Math.random()*100+'vw';
+    c.style.top = '-10px';
+    c.style.background = ['#f87171','#fbbf24','#34d399','#60a5fa','#a78bfa'][Math.floor(Math.random()*5)];
+    c.style.animationDelay = (Math.random()*.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+function pop(el, ok, msg){
+  el.innerHTML = `<div class="feedback-pop ${ok?'bg-green-100 border-green-500':'bg-orange-100 border-orange-500'} border-l-4 p-3 rounded">${msg}</div>`;
+}
+
+// Level 1
+document.querySelectorAll('.q1-opt').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const ok = b.dataset.ans==='1';
+    const fb = document.getElementById('q1-feedback');
+    if(ok){
+      pop(fb,true,'✅ 答對！小華自己也相信，並非故意欺騙，所以是「錯誤訊息（misinformation）」。虛假訊息要有「故意」的成分。');
+      setTimeout(()=>{ hide('level1'); show('level2'); updateProgress(2); window.scrollTo({top:0,behavior:'smooth'}); },1400);
+    } else {
+      b.classList.add('shake');
+      pop(fb,false,'🔍 再想想：小華「自己也相信、沒有要騙人」——這是關鍵差異。提示：misinformation = 不小心的錯；disinformation = 故意的假。');
+      setTimeout(()=>b.classList.remove('shake'),500);
+    }
+  });
+});
+
+// Level 2 drag
+let dragging=null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart',e=>{ dragging=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend',e=>{ el.classList.remove('dragging'); });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover',e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave',()=>z.classList.remove('over'));
+  z.addEventListener('drop',e=>{
+    e.preventDefault(); z.classList.remove('over');
+    if(dragging){ z.innerHTML = ''; z.appendChild(dragging); }
+  });
+});
+function checkSteps(){
+  const zones = document.querySelectorAll('.drop-zone');
+  let ok = true;
+  zones.forEach(z=>{
+    const child = z.querySelector('.drag-item');
+    if(!child || child.dataset.step!==z.dataset.step) ok=false;
+  });
+  const fb=document.getElementById('q2-feedback');
+  if(ok){
+    pop(fb,true,'✅ 順序正確！口訣：源、雙、容、理、問。');
+    setTimeout(()=>{ hide('level2'); show('level3'); updateProgress(3); window.scrollTo({top:0,behavior:'smooth'}); },1400);
+  } else {
+    pop(fb,false,'🔍 提示：先確認「是誰寫的」（查來源），再去別處對照（雙重查證）——想想看口訣「源、雙、容、理、問」的順序。');
+  }
+}
+
+// Level 3
+document.querySelectorAll('.q3-opt').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const ok = b.dataset.ans==='1';
+    const fb = document.getElementById('q3-feedback');
+    if(ok){
+      pop(fb,true,'✅ 正確！TCCIP 資料顯示台灣約 110 年升溫 1.6°C，是全球 2 倍。「沒在暖化」明顯與官方數據衝突，屬於錯誤／虛假訊息。這就是步驟②「雙重查證」的力量。');
+      setTimeout(()=>{ hide('level3'); show('level4'); updateProgress(4); window.scrollTo({top:0,behavior:'smooth'}); },1700);
+    } else {
+      b.classList.add('shake');
+      pop(fb,false,'🔍 再查一次：TCCIP 說台灣升溫 1.6°C（全球 2 倍）。和「台灣沒在暖化」是不是衝突？');
+      setTimeout(()=>b.classList.remove('shake'),500);
+    }
+  });
+});
+
+// Level 4 empathy check
+function checkEmpathy(){
+  const e = document.getElementById('empathyInput').value.trim();
+  const f = document.getElementById('factInput').value.trim();
+  const fb = document.getElementById('q4-feedback');
+  if(e.length<5 || f.length<5){
+    pop(fb,false,'🔍 兩格都請寫 5 字以上。提示：同理可以用「我懂阿嬤擔心…」開頭；事實可以用「我查 NASA／TCCIP 說…」開頭。');
+    return;
+  }
+  const factOk = /NASA|IPCC|TCCIP|氣象|查核|科學|1\.6|97/i.test(f);
+  if(!factOk){
+    pop(fb,false,'🔍 很棒的同理！再加一個具體來源（像 NASA、TCCIP、事實查核中心）或數據（如 1.6°C、97%），會更有說服力～');
+    return;
+  }
+  pop(fb,true,'✅ 太棒了！先同理、再給可信來源，這是成熟偵探的溝通術。');
+  setTimeout(()=>{ hide('level4'); show('level5'); updateProgress(5); window.scrollTo({top:0,behavior:'smooth'}); },1400);
+}
+
+// Level 5
+function checkSources(){
+  const chks = document.querySelectorAll('.src-chk');
+  let good=0, bad=0;
+  chks.forEach(c=>{
+    if(c.checked){
+      if(c.dataset.good==='1') good++;
+      else bad++;
+    }
+  });
+  const fb = document.getElementById('q5-feedback');
+  if(good>=3 && bad===0){
+    pop(fb,true,`✅ 你選了 ${good} 個可信來源，0 個不可信！NASA、IPCC、TCCIP、TFC 都是公開資料、可複查的好來源。`);
+    setTimeout(()=>{ hide('level5'); show('level6'); updateProgress(6); window.scrollTo({top:0,behavior:'smooth'}); },1500);
+  } else if(bad>0){
+    pop(fb,false,'🔍 有勾到不可信來源喔！「匿名群組」「誇張標題部落格」都不符合「有機構、有公開資料、能複查」的條件，再看一次～');
+  } else {
+    pop(fb,false,'🔍 至少要找出 3 個可信來源才算過關。再想想：官方機構 vs 匿名轉傳的差別？');
+  }
+}
+
+// Level 6 — WSA 4-checkbox
+function checkWSA(){
+  const chks = document.querySelectorAll('.wsa-chk');
+  let cnt=0; chks.forEach(c=>{ if(c.checked) cnt++; });
+  const fb = document.getElementById('q6-feedback');
+  if(cnt===4){
+    pop(fb,true,'🏅 四面向全勾選！你就是我們班的「全校英雄」！');
+    setTimeout(()=>{ hide('level6'); show('finalBadge'); updateProgress(6); document.getElementById('dot6').classList.add('done'); confetti(); window.scrollTo({top:0,behavior:'smooth'}); },1200);
+  } else {
+    fb.innerHTML = `<div class="feedback-pop bg-amber-100 border-l-4 border-amber-500 p-3 rounded">你選了 ${cnt}/4 個面向。全校英雄需要「課程、校園、社區、學生」四面向一起行動，每個都很重要！再想想你可以怎麼參與剩下的面向？</div>`;
+  }
+}
+</script>
+</body>
+</html>

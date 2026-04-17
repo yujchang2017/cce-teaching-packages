@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>看不見的代價 | 高中污染與資源循環互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#f0fdf4,#ecfeff,#ede9fe); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:60px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#d1fae5; border-color:#10b981;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; transition:all .3s;}
+  .progress-dot.active { background:#6366f1; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem; resize:vertical;}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  .badge-lock { filter:grayscale(1); opacity:.35;}
+  .depth-tag { font-size:.65rem; padding:2px 6px; border-radius:4px; font-weight:700; margin-left:4px; vertical-align:middle;}
+  svg text { pointer-events:none; }
+  .tab-btn { padding:.4rem 1rem; border-radius:.5rem .5rem 0 0; font-weight:600; cursor:pointer; border:1px solid #e2e8f0; border-bottom:none; background:#f8fafc;}
+  .tab-btn.active { background:white; border-bottom:2px solid white; margin-bottom:-1px; z-index:1;}
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">看不見的代價</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『永續政策研究員』：完成 15 個任務，成為 Level 5 污染與資源循環專家。</p>
+    <p class="text-xs text-slate-400 mt-1">key_id: 1.5-V ｜ 16-18 歲 ｜ 高中 Level V</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">研究員積分</div>
+    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 150</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-1 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">分類</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">數據</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">資料詮釋</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">資料詮釋2</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">系統</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs">倫理</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs">CER</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs">反思1</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-9"></div><span class="text-xs">反思2</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-10"></div><span class="text-xs">政策</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-11"></div><span class="text-xs">數據科學</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-12"></div><span class="text-xs">後設</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-13"></div><span class="text-xs">後設2</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-14"></div><span class="text-xs">跨域</span>
+  <div class="h-px w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-15"></div><span class="text-xs">完成</span>
+</div>
+
+<!-- ===== Task 1: 三類污染物分類拖拉（基礎 — 分類配對） ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🏭</div>
+    <div>
+      <h2 class="text-xl font-bold text-sky-700">任務 1｜三張面孔：污染物分類</h2>
+      <p class="text-sm text-slate-700 mt-1">將下方 6 種污染物拖入正確的類別框。提示：同一物質可能同時屬於多類，但這裡以「主要機制」分類。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：環境科學分析師 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="flex flex-wrap gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="ghg">CO₂</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="ozone">CFC-12</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="health">PM2.5</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="ghg">CH₄</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="health">SO₂</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="ozone">HCFC</div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <div class="drop-zone p-3" data-accept="ghg"><div class="font-bold text-sm text-red-700">🌡️ 溫室氣體（增溫）</div></div>
+    <div class="drop-zone p-3" data-accept="ozone"><div class="font-bold text-sm text-purple-700">🛡️ 臭氧層破壞物</div></div>
+    <div class="drop-zone p-3" data-accept="health"><div class="font-bold text-sm text-amber-700">💀 健康危害物</div></div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <button id="btn-next-1" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Task 2: 數據選擇題（基礎 — 資料回憶） ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">📊</div>
+    <div>
+      <h2 class="text-xl font-bold text-violet-700">任務 2｜關鍵數字快測</h2>
+      <p class="text-sm text-slate-700 mt-1">根據課堂數據，判斷以下陳述正確或錯誤。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：數據查核員 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="space-y-3" id="q2-box">
+    <div class="quiz-item border rounded-lg p-3" data-correct="T">
+      <p class="font-semibold text-sm">① WHO 估計全球每年約 700 萬人死於空氣污染相關疾病。</p>
+      <div class="flex gap-2 mt-2">
+        <button class="btn btn-ans bg-emerald-500 text-white px-4 py-1 rounded text-sm" data-ans="T">正確</button>
+        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded text-sm" data-ans="F">錯誤</button>
+      </div>
+      <p class="hint text-xs text-slate-500 mt-2 hidden"></p>
+    </div>
+    <div class="quiz-item border rounded-lg p-3" data-correct="F">
+      <p class="font-semibold text-sm">② 全球塑膠回收率約為 35%。</p>
+      <div class="flex gap-2 mt-2">
+        <button class="btn btn-ans bg-emerald-500 text-white px-4 py-1 rounded text-sm" data-ans="T">正確</button>
+        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded text-sm" data-ans="F">錯誤</button>
+      </div>
+      <p class="hint text-xs text-slate-500 mt-2 hidden"></p>
+    </div>
+    <div class="quiz-item border rounded-lg p-3" data-correct="T">
+      <p class="font-semibold text-sm">③ 蒙特婁議定書已削減 99% 以上的臭氧層破壞物質。</p>
+      <div class="flex gap-2 mt-2">
+        <button class="btn btn-ans bg-emerald-500 text-white px-4 py-1 rounded text-sm" data-ans="T">正確</button>
+        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded text-sm" data-ans="F">錯誤</button>
+      </div>
+      <p class="hint text-xs text-slate-500 mt-2 hidden"></p>
+    </div>
+    <div class="quiz-item border rounded-lg p-3" data-correct="F">
+      <p class="font-semibold text-sm">④ CO₂ 是破壞臭氧層的主要物質。</p>
+      <div class="flex gap-2 mt-2">
+        <button class="btn btn-ans bg-emerald-500 text-white px-4 py-1 rounded text-sm" data-ans="T">正確</button>
+        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded text-sm" data-ans="F">錯誤</button>
+      </div>
+      <p class="hint text-xs text-slate-500 mt-2 hidden"></p>
+    </div>
+  </div>
+  <button id="btn-next-2" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Task 3: 資料詮釋 ① — 塑膠生命週期碳排分析 ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🔬</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 3｜資料詮釋：塑膠生命週期<span class="depth-tag bg-teal-100 text-teal-800">資料詮釋</span></h2>
+      <p class="text-sm text-slate-700 mt-1">閱讀以下數據，回答分析問題。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：LCA 分析師 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="bg-teal-50 border border-teal-200 rounded-lg p-4 mb-4 text-sm">
+    <p class="font-bold mb-2">數據卡</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>全球年產塑膠：約 4.6 億噸（2023, OECD）</li>
+      <li>回收率：9%；焚化：12%；掩埋/洩漏：79%</li>
+      <li>塑膠全生命週期佔全球碳排：3.4%</li>
+      <li>回收鋁比原生鋁省 95% 能源；回收紙省 60-70%</li>
+      <li>美國 2018 年回收+堆肥減少 1.93 億 MTCO₂e</li>
+    </ul>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <label class="font-semibold text-sm block mb-1">3-1. 如果全球塑膠回收率從 9% 提升到 30%，理論上可以減少多少碳排？請說明你的推理過程和假設。</label>
+      <textarea id="t3-1" rows="4" placeholder="請根據數據進行推理，說明假設與計算邏輯…"></textarea>
+    </div>
+    <div>
+      <label class="font-semibold text-sm block mb-1">3-2. 為什麼塑膠的回收節能比例（30-50%）遠低於鋁（95%）？試從材料特性角度分析。</label>
+      <textarea id="t3-2" rows="3" placeholder="考慮塑膠種類多樣性、降級回收等因素…"></textarea>
+    </div>
+  </div>
+  <button id="btn-next-3" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkTextareas(3,['t3-1','t3-2'],30)">提交並繼續 →</button>
+</section>
+
+<!-- ===== Task 4: 資料詮釋 ② — 區域空品與環境正義 ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🗺️</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-700">任務 4｜資料詮釋：區域空品與環境正義<span class="depth-tag bg-orange-100 text-orange-800">資料詮釋</span></h2>
+      <p class="text-sm text-slate-700 mt-1">分析臺灣空品區數據，討論環境正義議題。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：環境正義研究員 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4 text-sm">
+    <p class="font-bold mb-2">情境數據</p>
+    <p>臺灣高屏空品區 PM2.5 年均濃度長期高於北部空品區。該區石化產業密集，且秋冬因盆地地形與東北季風，污染物不易擴散。住在工業區周邊的居民多為社經地位較低的群體。</p>
+    <p class="mt-2">WHO 資料顯示全球 90% 人口呼吸超標空氣，低收入國家承受的空污負擔不成比例地高。</p>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <label class="font-semibold text-sm block mb-1">4-1. 為什麼高屏空品區的 PM2.5 濃度較高？請從至少三個因素（自然、人為、結構性）進行分析。</label>
+      <textarea id="t4-1" rows="4" placeholder="分析自然地形、產業分布、社經結構等因素…"></textarea>
+    </div>
+    <div>
+      <label class="font-semibold text-sm block mb-1">4-2. 「污染對弱勢群體造成更嚴重的衝擊」——請舉一個具體例子並說明因果機制。</label>
+      <textarea id="t4-2" rows="3" placeholder="考慮居住環境、資訊取得、醫療可近性等面向…"></textarea>
+    </div>
+  </div>
+  <button id="btn-next-4" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkTextareas(4,['t4-1','t4-2'],30)">提交並繼續 →</button>
+</section>
+
+<!-- ===== Task 5: 系統思考 — CFC→HFC 的系統連鎖 ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-700">任務 5｜系統思考：CFC 替代的連鎖效應<span class="depth-tag bg-indigo-100 text-indigo-800">系統思考</span></h2>
+      <p class="text-sm text-slate-700 mt-1">繪製「CFC 淘汰→HFC 替代→溫室效應加劇→基加利修正案」的因果迴路圖，並分析系統回饋。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統動力學分析師 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-4 text-sm">
+    <p class="font-bold mb-2">背景</p>
+    <p>蒙特婁議定書成功淘汰 CFC，但替代品 HFC 的全球暖化潛勢（GWP）是 CO₂ 的數百至上千倍。2016 年《基加利修正案》開始限制 HFC。這是環境問題「解方衍生新問題」的經典案例。</p>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <label class="font-semibold text-sm block mb-1">5-1. 畫出或用文字描述因果迴路：CFC 禁用 → HFC 替代 → 溫室效應 → 政策回應 → …。標示每個箭頭是正向（+）或負向（-）回饋。</label>
+      <textarea id="t5-1" rows="6" placeholder="例如：CFC 禁用 →(+) HFC 使用量增加 →(+) 溫室效應加劇 →(+) 國際壓力 →(+) 基加利修正案 →(-) HFC 使用量 →…&#10;&#10;請完整描述迴路並標示回饋方向…"></textarea>
+    </div>
+    <div>
+      <label class="font-semibold text-sm block mb-1">5-2. 這個案例給我們什麼啟示？在設計環境政策時，如何避免「解方製造新問題」？</label>
+      <textarea id="t5-2" rows="3" placeholder="思考系統性預評估、替代方案篩選、長期監測等…"></textarea>
+    </div>
+  </div>
+  <button id="btn-next-5" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkTextareas(5,['t5-1','t5-2'],40)">提交並繼續 →</button>
+</section>
+
+<!-- ===== Task 6: 倫理兩難 — 全球塑膠公約辯論 ===== -->
+<section id="level-6" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">⚖️</div>
+    <div>
+      <h2 class="text-xl font-bold text-rose-700">任務 6｜倫理兩難：全球塑膠公約<span class="depth-tag bg-rose-100 text-rose-800">倫理兩難</span></h2>
+      <p class="text-sm text-slate-700 mt-1">聯合國正在談判《全球塑膠公約》。兩大陣營：A 派主張從源頭限制原生塑膠產量；B 派主張聚焦末端回收管理。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：外交談判代表 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="bg-rose-50 border border-rose-200 rounded-lg p-4 mb-4 text-sm">
+    <p><strong>A 派（限制生產）</strong>：全球塑膠回收率僅 9%，末端管理已證實失敗。限制生產才是根本解方。</p>
+    <p class="mt-2"><strong>B 派（聚焦回收）</strong>：限制生產會衝擊數百萬人就業和經濟發展。開發中國家需要時間建設回收基礎設施。</p>
+    <p class="mt-2 text-xs text-slate-500">背景：先進國家曾大量出口廢塑膠到東南亞，被批評為「廢棄物殖民主義」。</p>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <label class="font-semibold text-sm block mb-1">6-1. 選擇你支持的立場（A 或 B），用至少兩項數據佐證你的論點，並預設對方可能的反駁。</label>
+      <textarea id="t6-1" rows="5" placeholder="我支持 __ 派。理由：(1)… (2)… 對方可能反駁：… 我的回應：…"></textarea>
+    </div>
+    <div>
+      <label class="font-semibold text-sm block mb-1">6-2. 有沒有第三種方案能兼顧雙方關切？如果有，請描述其核心機制。</label>
+      <textarea id="t6-2" rows="4" placeholder="例如差異化責任、技術移轉、過渡期安排等…"></textarea>
+    </div>
+  </div>
+  <button id="btn-next-6" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkTextareas(6,['t6-1','t6-2'],40)">提交並繼續 →</button>
+</section>
+
+<!-- ===== Task 7: CER + 反駁 ===== -->
+<section id="level-7" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🧪</div>
+    <div>
+      <h2 class="text-xl font-bold text-cyan-700">任務 7｜CER 論證 + 反駁<span class="depth-tag bg-cyan-100 text-cyan-800">CER+反駁</span></h2>
+      <p class="text-sm text-slate-700 mt-1">用 CER（Claim-Evidence-Reasoning）架構回答以下問題，並提供一個反駁與回應。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：科學論證專家 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="bg-cyan-50 border border-cyan-200 rounded-lg p-4 mb-4 text-sm">
+    <p class="font-bold">問題：蒙特婁議定書的成功模式能否複製到解決全球塑膠污染問題？</p>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <label class="font-semibold text-sm block mb-1">Claim（主張）：</label>
+      <textarea id="t7-c" rows="2" placeholder="明確表達你的立場…"></textarea>
+    </div>
+    <div>
+      <label class="font-semibold text-sm block mb-1">Evidence（證據）：至少引用 2 項數據</label>
+      <textarea id="t7-e" rows="3" placeholder="列出具體數據和出處…"></textarea>
+    </div>
+    <div>
+      <label class="font-semibold text-sm block mb-1">Reasoning（推理）：連結證據與主張</label>
+      <textarea id="t7-r" rows="3" placeholder="解釋證據如何支持你的主張…"></textarea>
+    </div>
+    <div>
+      <label class="font-semibold text-sm block mb-1">Rebuttal（反駁）：預設對立觀點，並回應</label>
+      <textarea id="t7-rb" rows="4" placeholder="有人可能會反駁說：… 但我認為：…"></textarea>
+    </div>
+  </div>
+  <button id="btn-next-7" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkTextareas(7,['t7-c','t7-e','t7-r','t7-rb'],20)">提交並繼續 →</button>
+</section>
+
+<!-- ===== Task 8: 開放反思 ① ===== -->
+<section id="level-8" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">💭</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 8｜開放反思：誰的責任？<span class="depth-tag bg-amber-100 text-amber-800">開放反思 100+字</span></h2>
+      <p class="text-sm text-slate-700 mt-1">深度反思污染責任的歸屬問題。需至少 100 字。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：環境倫理學者 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <label class="font-semibold text-sm block mb-1">「一個消費者買了一瓶飲料、一個工廠生產了這瓶飲料、一個政府允許了這種生產方式——當這瓶空瓶最終流入海洋，誰的責任最大？為什麼？」請用至少 100 字回答。</label>
+      <textarea id="t8-1" rows="6" placeholder="思考 EPR、消費者選擇、政府管制三方的責任分配…（至少 100 字）"></textarea>
+      <p id="t8-1-count" class="text-xs text-slate-400 mt-1">已輸入 0 字</p>
+    </div>
+  </div>
+  <button id="btn-next-8" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLongText(8,'t8-1',100)">提交並繼續 →</button>
+</section>
+
+<!-- ===== Task 9: 開放反思 ② ===== -->
+<section id="level-9" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🌱</div>
+    <div>
+      <h2 class="text-xl font-bold text-lime-700">任務 9｜開放反思：傳統與現代<span class="depth-tag bg-lime-100 text-lime-800">開放反思 100+字</span></h2>
+      <p class="text-sm text-slate-700 mt-1">反思原住民傳統智慧對現代資源管理的啟示。需至少 100 字。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：文化生態學研究員 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <label class="font-semibold text-sm block mb-1">「原住民社會的零廢棄生活方式（如泰雅族輪獵、達悟族拼板舟修復）能為現代循環經濟提供什麼具體的設計原則？這些原則在現代都市社會中可行嗎？」請用至少 100 字回答。</label>
+      <textarea id="t9-1" rows="6" placeholder="從材料選擇、使用壽命、維修文化、在地化等面向思考…（至少 100 字）"></textarea>
+      <p id="t9-1-count" class="text-xs text-slate-400 mt-1">已輸入 0 字</p>
+    </div>
+  </div>
+  <button id="btn-next-9" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLongText(9,'t9-1',100)">提交並繼續 →</button>
+</section>
+
+<!-- ===== Task 10: 政策倡議 — 校園一次性餐具禁令提案 ===== -->
+<section id="level-10" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">📋</div>
+    <div>
+      <h2 class="text-xl font-bold text-blue-700">任務 10｜政策倡議：校園減塑提案<span class="depth-tag bg-blue-100 text-blue-800">政策倡議</span></h2>
+      <p class="text-sm text-slate-700 mt-1">撰寫一份可提交學生議會的校園一次性餐具減量政策提案。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生議會提案人 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <label class="font-semibold text-sm block mb-1">10-1. 問題描述：校園目前一次性餐具使用的現狀與問題（含數據估算）</label>
+      <textarea id="t10-1" rows="3" placeholder="估算全校每日使用量、年度垃圾量、碳排當量…"></textarea>
+    </div>
+    <div>
+      <label class="font-semibold text-sm block mb-1">10-2. 政策目標與具體措施（至少 3 項，標示對應 WSA 面向）</label>
+      <textarea id="t10-2" rows="4" placeholder="措施 1（治理）：… 措施 2（設施）：… 措施 3（社區）：…"></textarea>
+    </div>
+    <div>
+      <label class="font-semibold text-sm block mb-1">10-3. 利害關係人分析與預期阻力</label>
+      <textarea id="t10-3" rows="3" placeholder="校長室擔心：… 家長會擔心：… 學生反應：… 解決方案：…"></textarea>
+    </div>
+    <div>
+      <label class="font-semibold text-sm block mb-1">10-4. 預期成效與評估指標</label>
+      <textarea id="t10-4" rows="2" placeholder="一年後一次性餐具使用量降低 ___%，以 ___ 方式量測…"></textarea>
+    </div>
+  </div>
+  <button id="btn-next-10" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkTextareas(10,['t10-1','t10-2','t10-3','t10-4'],20)">提交並繼續 →</button>
+</section>
+
+<!-- ===== Task 11: 數據科學 — 回收率指標批判 ===== -->
+<section id="level-11" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">📈</div>
+    <div>
+      <h2 class="text-xl font-bold text-fuchsia-700">任務 11｜數據科學：回收率的迷思<span class="depth-tag bg-fuchsia-100 text-fuchsia-800">數據科學</span></h2>
+      <p class="text-sm text-slate-700 mt-1">批判性分析「回收率」作為環境績效指標的局限性。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：環境數據科學家 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="bg-fuchsia-50 border border-fuchsia-200 rounded-lg p-4 mb-4 text-sm">
+    <p class="font-bold mb-2">數據</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>臺灣生活廢棄物回收率：約 55%</li>
+      <li>美國 MSW 回收+堆肥率：32.1%</li>
+      <li>全球塑膠回收率：約 9%</li>
+      <li>臺灣 2024 年從《廢棄物清理法》轉向《資源循環促進法》</li>
+    </ul>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <label class="font-semibold text-sm block mb-1">11-1. 「回收率 55%」這個數字可能隱藏了哪些問題？請列出至少 3 個潛在的數據偏誤或測量問題。</label>
+      <textarea id="t11-1" rows="4" placeholder="考慮：計算分母的定義、降級回收、出口到其他國家、事業廢棄物不計入…"></textarea>
+    </div>
+    <div>
+      <label class="font-semibold text-sm block mb-1">11-2. 如果你是環境部的數據分析師，你會建議用什麼替代指標或補充指標來更完整地衡量資源循環成效？</label>
+      <textarea id="t11-2" rows="3" placeholder="例如：循環利用率、物質流分析、碳減量貢獻…"></textarea>
+    </div>
+  </div>
+  <button id="btn-next-11" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkTextareas(11,['t11-1','t11-2'],30)">提交並繼續 →</button>
+</section>
+
+<!-- ===== Task 12: 後設認知 ① ===== -->
+<section id="level-12" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🧠</div>
+    <div>
+      <h2 class="text-xl font-bold text-purple-700">任務 12｜後設認知：我的思考如何改變？<span class="depth-tag bg-purple-100 text-purple-800">後設認知 100+字</span></h2>
+      <p class="text-sm text-slate-700 mt-1">反思你在學習過程中的認知變化。需至少 100 字。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學習者自我觀察員 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <label class="font-semibold text-sm block mb-1">12-1. 在學習這個單元之前，你對「污染」和「回收」的認知是什麼？學習之後，哪些認知被顛覆了？這些改變是如何發生的？（至少 100 字）</label>
+      <textarea id="t12-1" rows="6" placeholder="描述你的前概念（prior knowledge）、哪些被挑戰、新理解如何形成…（至少 100 字）"></textarea>
+      <p id="t12-1-count" class="text-xs text-slate-400 mt-1">已輸入 0 字</p>
+    </div>
+  </div>
+  <button id="btn-next-12" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLongText(12,'t12-1',100)">提交並繼續 →</button>
+</section>
+
+<!-- ===== Task 13: 後設認知 ② — 學習策略反思 ===== -->
+<section id="level-13" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">🔍</div>
+    <div>
+      <h2 class="text-xl font-bold text-violet-700">任務 13｜後設認知：學習策略自評<span class="depth-tag bg-violet-100 text-violet-800">後設認知</span></h2>
+      <p class="text-sm text-slate-700 mt-1">評估你在這份學習單中使用了哪些思考策略。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：認知策略分析師 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <label class="font-semibold text-sm block mb-1">13-1. 回顧你完成前 12 個任務的過程，你最常使用哪種思考策略？（例如：類比推理、因果分析、立場切換、數據驗證…）請舉一個具體例子說明。</label>
+      <textarea id="t13-1" rows="4" placeholder="我最常用的策略是 ___，例如在任務 __ 中…"></textarea>
+    </div>
+    <div>
+      <label class="font-semibold text-sm block mb-1">13-2. 哪個任務最困難？你認為困難的原因是什麼？如果重來一次，你會用什麼不同的方法？</label>
+      <textarea id="t13-2" rows="3" placeholder="最困難的是任務 __，因為… 如果重來我會…"></textarea>
+    </div>
+  </div>
+  <button id="btn-next-13" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkTextareas(13,['t13-1','t13-2'],30)">提交並繼續 →</button>
+</section>
+
+<!-- ===== Task 14: 跨域短論文（500+字） ===== -->
+<section id="level-14" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">📝</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-700">任務 14｜跨域短論文：從垃圾到治理<span class="depth-tag bg-emerald-100 text-emerald-800">跨域短論文 500+字</span></h2>
+      <p class="text-sm text-slate-700 mt-1">整合化學、經濟、政治與倫理面向，撰寫一篇跨領域短論文。需至少 500 字。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：跨領域政策研究員 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-4 text-sm">
+    <p class="font-bold mb-2">論文題目（擇一）</p>
+    <p>A.「延伸生產者責任能否成為解決塑膠污染的核心機制？從化學、經濟與政治角度分析其潛力與限制。」</p>
+    <p class="mt-2">B.「比較蒙特婁議定書與全球塑膠公約談判，分析國際環境合作成功的條件。」</p>
+    <p class="mt-3 text-xs text-slate-500">要求：至少引用 3 項課堂數據（dp1-dp7）；涵蓋至少 2 個學科領域；包含正反論證；提出你的綜合判斷。</p>
+  </div>
+  <div>
+    <label class="font-semibold text-sm block mb-1">請在下方撰寫你的跨域短論文（至少 500 字）：</label>
+    <textarea id="t14-1" rows="16" placeholder="標題：___&#10;&#10;引言：…&#10;&#10;第一段（化學/科學面向）：…&#10;&#10;第二段（經濟面向）：…&#10;&#10;第三段（政治/倫理面向）：…&#10;&#10;結論與你的綜合判斷：…&#10;&#10;參考數據：dp_, dp_, dp_"></textarea>
+    <p id="t14-1-count" class="text-xs text-slate-400 mt-1">已輸入 0 字</p>
+  </div>
+  <button id="btn-next-14" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLongText(14,'t14-1',500)">提交並完成 →</button>
+</section>
+
+<!-- ===== Task 15: 完成頁 ===== -->
+<section id="level-15" class="card p-6 hidden-screen fade-in text-center">
+  <div class="text-6xl mb-4">🏆</div>
+  <h2 class="text-2xl font-bold text-emerald-700 mb-2">恭喜你完成所有任務！</h2>
+  <p class="text-slate-600 mb-4">你已成為 Level 5 永續政策研究員。</p>
+  <div class="text-3xl font-bold text-emerald-600 mb-4">最終積分：<span id="final-score">0</span> / 150</div>
+  <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-sm text-left max-w-md mx-auto">
+    <p class="font-bold mb-2">你在這份學習單中展現了：</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>資料詮釋能力（任務 3, 4）</li>
+      <li>系統思考能力（任務 5）</li>
+      <li>倫理判斷能力（任務 6）</li>
+      <li>科學論證與反駁能力（任務 7）</li>
+      <li>開放反思能力（任務 8, 9）</li>
+      <li>政策倡議能力（任務 10）</li>
+      <li>數據科學素養（任務 11）</li>
+      <li>後設認知能力（任務 12, 13）</li>
+      <li>跨域整合寫作能力（任務 14）</li>
+    </ul>
+  </div>
+</section>
+
+</div><!-- max-w-4xl -->
+
+<script>
+// ===== Score & Navigation =====
+let score = 0;
+const totalLevels = 15;
+
+function addScore(pts) {
+  score += pts;
+  document.getElementById('score').textContent = score;
+}
+
+function goNext(current) {
+  const cur = document.getElementById('level-' + current);
+  const nxt = document.getElementById('level-' + (current + 1));
+  if (cur) cur.classList.add('hidden-screen');
+  if (nxt) nxt.classList.remove('hidden-screen');
+  const dotCur = document.getElementById('dot-' + current);
+  const dotNxt = document.getElementById('dot-' + (current + 1));
+  if (dotCur) { dotCur.classList.remove('active'); dotCur.classList.add('done'); }
+  if (dotNxt) { dotNxt.classList.add('active'); }
+  if (current + 1 === totalLevels) {
+    document.getElementById('final-score').textContent = score;
+    fireConfetti();
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== Drag & Drop (Task 1) =====
+(function() {
+  let completed1 = 0;
+  const total1 = 6;
+  document.querySelectorAll('#level-1 .drag-item').forEach(item => {
+    item.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', e.target.dataset.match); e.target.classList.add('dragging'); });
+    item.addEventListener('dragend', e => e.target.classList.remove('dragging'));
+  });
+  document.querySelectorAll('#level-1 .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); zone.classList.remove('over');
+      const match = e.dataTransfer.getData('text/plain');
+      const dragging = document.querySelector('#level-1 .drag-item.dragging') || document.querySelector(`#level-1 .drag-item[data-match="${match}"]`);
+      if (!dragging) return;
+      if (zone.dataset.accept === match) {
+        zone.appendChild(dragging);
+        dragging.draggable = false;
+        dragging.classList.add('pop','bg-emerald-200','border-emerald-500');
+        completed1++;
+        if (completed1 >= total1) {
+          addScore(10);
+          document.getElementById('feedback-1').innerHTML = '<span class="text-emerald-600 font-bold">全部正確！你已成功區分三類污染物。</span>';
+          document.getElementById('btn-next-1').disabled = false;
+        }
+      } else {
+        dragging.classList.add('shake');
+        setTimeout(() => dragging.classList.remove('shake'), 400);
+      }
+    });
+  });
+  document.getElementById('btn-next-1').addEventListener('click', () => goNext(1));
+})();
+
+// ===== Quiz (Task 2) =====
+(function() {
+  let answered2 = 0;
+  const total2 = 4;
+  const hints2 = [
+    'WHO 確實估計每年約 700 萬人死於空污。',
+    '全球塑膠回收率僅約 9%，而非 35%。',
+    '蒙特婁議定書已削減超過 99% 的 ODS。',
+    'CO₂ 是溫室氣體，破壞臭氧層的是 CFC 等含鹵化合物。'
+  ];
+  document.querySelectorAll('#q2-box .quiz-item').forEach((item, idx) => {
+    const btns = item.querySelectorAll('.btn-ans');
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (item.dataset.done) return;
+        item.dataset.done = '1';
+        const correct = item.dataset.correct;
+        const chosen = btn.dataset.ans;
+        btns.forEach(b => b.disabled = true);
+        const hint = item.querySelector('.hint');
+        if (chosen === correct) {
+          btn.classList.add('ring-4','ring-emerald-300');
+          hint.textContent = '✅ ' + hints2[idx];
+          addScore(2);
+        } else {
+          btn.classList.add('ring-4','ring-rose-300');
+          hint.textContent = '❌ ' + hints2[idx];
+        }
+        hint.classList.remove('hidden');
+        answered2++;
+        if (answered2 >= total2) document.getElementById('btn-next-2').disabled = false;
+      });
+    });
+  });
+  document.getElementById('btn-next-2').addEventListener('click', () => goNext(2));
+})();
+
+// ===== Text checking helpers =====
+function checkTextareas(level, ids, minLen) {
+  let allOk = true;
+  ids.forEach(id => {
+    const ta = document.getElementById(id);
+    if (!ta || ta.value.trim().length < minLen) {
+      allOk = false;
+      ta.classList.add('border-rose-400');
+      ta.placeholder = `請至少輸入 ${minLen} 字…`;
+    } else {
+      ta.classList.remove('border-rose-400');
+      ta.classList.add('border-emerald-400');
+      ta.readOnly = true;
+    }
+  });
+  if (allOk) { addScore(10); goNext(level); }
+}
+
+function checkLongText(level, id, minChars) {
+  const ta = document.getElementById(id);
+  const text = ta.value.trim();
+  if (text.length < minChars) {
+    ta.classList.add('border-rose-400');
+    const counter = document.getElementById(id + '-count');
+    if (counter) counter.textContent = `已輸入 ${text.length} 字（需要至少 ${minChars} 字）`;
+    return;
+  }
+  ta.classList.remove('border-rose-400');
+  ta.classList.add('border-emerald-400');
+  ta.readOnly = true;
+  addScore(10);
+  goNext(level);
+}
+
+// Word counters for long text fields
+['t8-1','t9-1','t12-1','t14-1'].forEach(id => {
+  const ta = document.getElementById(id);
+  const counter = document.getElementById(id + '-count');
+  if (ta && counter) {
+    ta.addEventListener('input', () => {
+      counter.textContent = `已輸入 ${ta.value.trim().length} 字`;
+    });
+  }
+});
+
+// ===== Confetti =====
+function fireConfetti() {
+  const colors = ['#10b981','#6366f1','#f59e0b','#ef4444','#3b82f6'];
+  for (let i = 0; i < 60; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDelay = Math.random() * 1.5 + 's';
+    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3700);
+  }
+}
+</script>
+</body>
+</html>

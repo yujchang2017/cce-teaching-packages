@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>從警報到韌性 | 國中氣候調適與防災互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#fee2e2,#fef3c7,#dbeafe); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:80px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#dc2626; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea.cer, input.cer { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem;}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  svg.loop text { pointer-events:none;}
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-rose-700">🚨 從警報到韌性</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『學校韌性指揮官』：8 個任務，走完你就是 Level 4 國中防災公民。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">韌性點數</div>
+    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">風險</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">校園</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">資料</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">減緩調適</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs">倫理</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs">專題</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs">後設</span>
+</div>
+
+<!-- ===== Level 1: 風險三因子分類 ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🎯</div>
+    <div>
+      <h2 class="text-xl font-bold text-rose-700">任務 1｜風險三因子拆解</h2>
+      <p class="text-sm text-slate-700 mt-1">IPCC 公式：<strong>風險 = 危害 × 暴露 × 脆弱度</strong>。把卡片拖到正確欄位。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：氣候風險分析師 ｜ 10 分</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="hazard">🌀 17 級強颱</div>
+    <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="exposure">🏘️ 沿海低地 5 萬戶</div>
+    <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="vulnerability">👵 獨居長者比例高</div>
+    <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="vulnerability">📱 沒手機警報系統</div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <div class="drop-zone p-3" data-accept="hazard"><div class="font-bold text-slate-700 text-sm">⚡ 危害（自然事件強度）</div></div>
+    <div class="drop-zone p-3" data-accept="exposure"><div class="font-bold text-slate-700 text-sm">🗺️ 暴露（誰/什麼在衝擊範圍）</div></div>
+    <div class="drop-zone p-3" data-accept="vulnerability"><div class="font-bold text-slate-700 text-sm">🛡️ 脆弱度（敏感度/應變力）</div></div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <button id="btn-next-1" class="btn mt-4 bg-rose-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 2: 校園盲點檢核 ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏫</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 2｜校園安全盲點勾選</h2>
+      <p class="text-sm text-slate-700 mt-1">圈出 <strong>你學校目前『沒有』或『不確定』</strong> 的項目。至少勾 3 項並寫出改善建議。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：校園安全稽核員 ｜ 10 分</p>
+    </div>
+  </div>
+
+  <div class="space-y-2" id="l2-checks">
+    <label class="block text-sm"><input type="checkbox" class="l2chk"> ① 每間教室張貼避難路線圖</label>
+    <label class="block text-sm"><input type="checkbox" class="l2chk"> ② 全校師生清楚『豪雨』/『地震』/『高溫』應變差異</label>
+    <label class="block text-sm"><input type="checkbox" class="l2chk"> ③ AED 位置清楚標示、3 位以上同學會操作</label>
+    <label class="block text-sm"><input type="checkbox" class="l2chk"> ④ 教室有 4 種角色分工（通報/引導/點名/聯絡）</label>
+    <label class="block text-sm"><input type="checkbox" class="l2chk"> ⑤ 每學期至少 1 次情境式演練（非走過場）</label>
+    <label class="block text-sm"><input type="checkbox" class="l2chk"> ⑥ 行動不便同學有指定同儕協助人</label>
+    <label class="block text-sm"><input type="checkbox" class="l2chk"> ⑦ 備有 72 小時飲用水、急救包、手電筒、收音機</label>
+  </div>
+  <label class="block text-sm font-semibold mt-3 mb-1">針對你勾的 3+ 項，寫具體改善建議（50 字以上）：</label>
+  <textarea class="cer" id="q2-text" rows="3" placeholder="例：① 避難路線圖有些教室沒張貼，建議由衛生委員檢查，缺漏班級由總務處補印…"></textarea>
+  <p id="q2-fb" class="text-xs mt-1 text-slate-500"></p>
+  <button id="btn-next-2" class="btn mt-4 bg-amber-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 3: 資料詮釋（TCCIP 豪雨 / 預防投資比）===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📈</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 3｜資料詮釋：豪雨 × 預防投資</h2>
+      <p class="text-sm text-slate-700 mt-1">下圖：TCCIP 推估臺灣單日豪雨事件頻率變化；以及 UNDRR『預防投資報酬比』。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：政策分析師 ｜ 10 分 ｜ <span class="chip bg-amber-100 text-amber-800">資料詮釋題</span></p>
+    </div>
+  </div>
+  <svg viewBox="0 0 400 180" class="w-full max-w-xl mx-auto block bg-slate-50 rounded">
+    <line x1="40" y1="150" x2="390" y2="150" stroke="#334155" stroke-width="1"/>
+    <line x1="40" y1="20" x2="40" y2="150" stroke="#334155" stroke-width="1"/>
+    <text x="5" y="25" font-size="10">次/年</text>
+    <text x="45" y="170" font-size="10">2000</text>
+    <text x="180" y="170" font-size="10">2050</text>
+    <text x="330" y="170" font-size="10">2100</text>
+    <rect x="55" y="115" width="20" height="35" fill="#0ea5e9"/>
+    <rect x="175" y="90" width="20" height="60" fill="#f59e0b"/>
+    <rect x="320" y="40" width="20" height="110" fill="#dc2626"/>
+    <text x="60" y="105" font-size="9">1.0x</text>
+    <text x="175" y="85" font-size="9">1.5x</text>
+    <text x="315" y="35" font-size="9">~2.0x</text>
+    <text x="200" y="30" font-size="10" fill="#dc2626">↗ 豪雨頻率 +30%~100%</text>
+  </svg>
+
+  <div class="mt-4 space-y-3">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q3-1｜2100 年豪雨事件頻率約為 2000 年的幾倍？（3 分）</label>
+      <div class="space-y-1" id="q31">
+        <label class="block text-sm"><input type="radio" name="q31" value="A"> A. 減少一半</label>
+        <label class="block text-sm"><input type="radio" name="q31" value="B"> B. 差不多持平</label>
+        <label class="block text-sm"><input type="radio" name="q31" value="C"> C. 約增加 30%–100%（1.3–2.0 倍）</label>
+      </div>
+      <p class="text-xs mt-1 text-slate-500 q31-fb"></p>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q3-2｜UNDRR：預防投資 1 元可省救助 4-7 元。若某縣每年災害損失 100 億，<strong>投入多少預防最合算？</strong> 請寫出計算與推論（至少 40 字）。（7 分）</label>
+      <textarea class="cer" id="q32" rows="3" placeholder="計算：… ／ 推論：如果投入 X 億預防，可節省 Y 億救助，淨效益 Z 億…"></textarea>
+    </div>
+  </div>
+  <button id="btn-next-3" class="btn mt-4 bg-teal-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+</section>
+
+<!-- ===== Level 4: 系統思考（堤防悖論）===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-700">任務 4｜系統思考：堤防悖論</h2>
+      <p class="text-sm text-slate-700 mt-1">『蓋更高的堤防反而放大災害？』完成這個反直覺的循環——把 4 張卡片拖到正確位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統分析師 ｜ 10 分 ｜ <span class="chip bg-rose-100 text-rose-800">系統思考題</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 500 260" class="loop w-full bg-slate-50 rounded">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L0,10 L10,5 z" fill="#64748b"/></marker>
+    </defs>
+    <rect x="10" y="10" width="160" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="1"/>
+    <text x="90" y="40" text-anchor="middle" fill="#92400e" id="slot-1-text" font-size="12">（拖這裡 1）</text>
+
+    <rect x="330" y="10" width="160" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="2"/>
+    <text x="410" y="40" text-anchor="middle" fill="#92400e" id="slot-2-text" font-size="12">（拖這裡 2）</text>
+
+    <rect x="330" y="200" width="160" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="3"/>
+    <text x="410" y="230" text-anchor="middle" fill="#92400e" id="slot-3-text" font-size="12">（拖這裡 3）</text>
+
+    <rect x="10" y="200" width="160" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="4"/>
+    <text x="90" y="230" text-anchor="middle" fill="#92400e" id="slot-4-text" font-size="12">（拖這裡 4）</text>
+
+    <line x1="170" y1="35" x2="330" y2="35" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="410" y1="60" x2="410" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="330" y1="225" x2="170" y2="225" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="90" y1="200" x2="90" y2="60" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="250" y="130" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="bold">工程調適的陷阱</text>
+  </svg>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3" id="loop-items">
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">① 蓋更高堤防</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">② 居民更安心</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">③ 低窪地開發更密集</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">④ 超大洪水來時損失加倍</div>
+  </div>
+  <p id="loop-fb" class="mt-3 text-sm"></p>
+  <label class="block text-sm font-semibold mt-3 mb-1">Q4-補充｜根據這個循環，提出 1 項『非工程性調適』建議（30 字以上）：</label>
+  <textarea class="cer" id="q4-text" rows="2" placeholder="例：搭配土地使用管制、強制洪水保險、恢復紅樹林…"></textarea>
+  <button id="btn-next-4" class="btn mt-4 bg-orange-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 5: 減緩 vs 調適 分類 ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">⚖️</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-700">任務 5｜減緩 vs 調適 快速判斷</h2>
+      <p class="text-sm text-slate-700 mt-1">每個策略選擇：它主要是『減緩』（治因）還是『調適』（治症）？</p>
+      <p class="text-xs text-slate-500 mt-1">角色：政策歸類員 ｜ 10 分</p>
+    </div>
+  </div>
+
+  <div class="space-y-3" id="q5-box">
+    <div class="quiz-item border rounded-lg p-3" data-correct="M">
+      <p class="font-semibold">① 學校屋頂裝太陽能板</p>
+      <div class="flex gap-2 mt-2">
+        <button class="btn btn-ans bg-sky-500 text-white px-4 py-1 rounded" data-ans="M">減緩</button>
+        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded" data-ans="A">調適</button>
+      </div>
+      <p class="hint text-xs text-slate-500 mt-2 hidden"></p>
+    </div>
+    <div class="quiz-item border rounded-lg p-3" data-correct="A">
+      <p class="font-semibold">② 教室加裝遮陽板 + 風扇因應極端高溫</p>
+      <div class="flex gap-2 mt-2">
+        <button class="btn btn-ans bg-sky-500 text-white px-4 py-1 rounded" data-ans="M">減緩</button>
+        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded" data-ans="A">調適</button>
+      </div>
+      <p class="hint text-xs text-slate-500 mt-2 hidden"></p>
+    </div>
+    <div class="quiz-item border rounded-lg p-3" data-correct="A">
+      <p class="font-semibold">③ 社區改種耐旱作物、建蓄水池</p>
+      <div class="flex gap-2 mt-2">
+        <button class="btn btn-ans bg-sky-500 text-white px-4 py-1 rounded" data-ans="M">減緩</button>
+        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded" data-ans="A">調適</button>
+      </div>
+      <p class="hint text-xs text-slate-500 mt-2 hidden"></p>
+    </div>
+    <div class="quiz-item border rounded-lg p-3" data-correct="M">
+      <p class="font-semibold">④ 推動班級『週一蔬食日』</p>
+      <div class="flex gap-2 mt-2">
+        <button class="btn btn-ans bg-sky-500 text-white px-4 py-1 rounded" data-ans="M">減緩</button>
+        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded" data-ans="A">調適</button>
+      </div>
+      <p class="hint text-xs text-slate-500 mt-2 hidden"></p>
+    </div>
+    <div class="quiz-item border rounded-lg p-3" data-correct="A">
+      <p class="font-semibold">⑤ 校園增設細胞廣播告警螢幕、演練 4 次/年</p>
+      <div class="flex gap-2 mt-2">
+        <button class="btn btn-ans bg-sky-500 text-white px-4 py-1 rounded" data-ans="M">減緩</button>
+        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded" data-ans="A">調適</button>
+      </div>
+      <p class="hint text-xs text-slate-500 mt-2 hidden"></p>
+    </div>
+  </div>
+  <button id="btn-next-5" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 6: 倫理兩難（氣候正義 + CER 論證結合）===== -->
+<section id="level-6" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🌍</div>
+    <div>
+      <h2 class="text-xl font-bold text-pink-700">任務 6｜倫理兩難：氣候正義 + CER 論證</h2>
+      <p class="text-sm text-slate-700 mt-1">情境：COP28 通過『損失與損害基金』，目前富國承諾約 7 億美元，但窮國每年氣候損失估計達數千億美元。富國應該付多少才算公平？</p>
+      <p class="text-xs text-slate-500 mt-1">角色：青年氣候外交官 ｜ 15 分 ｜ <span class="chip bg-pink-100 text-pink-800">倫理兩難</span> <span class="chip bg-emerald-100 text-emerald-800">CER 論證</span> <span class="chip bg-violet-100 text-violet-800">開放反思</span></p>
+    </div>
+  </div>
+
+  <div class="bg-slate-50 p-3 rounded text-xs mb-3">
+    <strong>CER 範例</strong>：<strong>C</strong>（主張）：富國應按『歷史累積排放比例』出資。<strong>E</strong>（證據）：IPCC AR6 指出 G7 國家歷史排放佔全球約 50%，WHO 估計氣候健康死亡 2030 年每年額外 25 萬人多集中在低收入國家。<strong>R</strong>（理由）：排放者與受害者不對等，CBDR（共同但差異責任）原則要求歷史責任方優先承擔，且 UNDRR 顯示預防 1:4–7 的投資比例，援助窮國做調適也是對富國自己的全球穩定投資。
+  </div>
+
+  <div class="space-y-2">
+    <label class="block text-sm font-semibold">你的主張 Claim（10-30 字）</label>
+    <textarea class="cer" id="cer-c" rows="2" placeholder="我認為富國應該…"></textarea>
+    <label class="block text-sm font-semibold">你的證據 Evidence（至少引用 1 項本單元資料並含數字）</label>
+    <textarea class="cer" id="cer-e" rows="3" placeholder="依據 IPCC AR6 WG2 / UNDRR / WHO / TCCIP 資料…（例如：WHO 估 2030-2050 每年額外 25 萬死亡…）"></textarea>
+    <label class="block text-sm font-semibold">你的理由 Reasoning（說明證據如何支持主張，含 1 個倫理原則）</label>
+    <textarea class="cer" id="cer-r" rows="3" placeholder="這表示…因此…（關鍵詞：CBDR 共同但差異責任 / 氣候正義 / 代際公平）"></textarea>
+    <p class="text-xs text-slate-500">提示：沒有標準答案，但你的論點必須（1）有明確立場、（2）引用 1 項具體數字、（3）說明 1 個倫理原則。</p>
+  </div>
+  <p id="cer-fb" class="mt-2 text-xs"></p>
+  <button id="btn-next-6" class="btn mt-4 bg-pink-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 7: 專題任務（校園/社區韌性提案 + WSA）===== -->
+<section id="level-7" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏗️</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 7｜專題：校園/社區韌性提案書</h2>
+      <p class="text-sm text-slate-700 mt-1">為你的學校或社區設計一份韌性提案，送交『學生氣候韌性委員會』。請完成結構模板 + WSA 四面向檢核。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：提案人 ｜ 20 分 ｜ <span class="chip bg-amber-100 text-amber-800">專題式學習</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-2 mb-4">
+    <label class="block text-sm font-semibold">① 提案標題（動詞+對象，例：推動教室『熱浪降溫雙機制』）</label>
+    <input id="p-title" class="cer" placeholder="例：成立校園『熱浪敲門小隊』關懷獨居長者">
+    <label class="block text-sm font-semibold">② 問題現況（含資料，50 字以上）</label>
+    <textarea class="cer" id="p-problem" rows="2" placeholder="例：臺灣豪雨事件頻率 2050 年預估增 50%，但我校 B 棟 1 樓歷史淹水 2 次…"></textarea>
+    <label class="block text-sm font-semibold">③ 主張 Claim + 證據 Evidence + 理由 Reasoning（100 字以上，須引用 1 個數字）</label>
+    <textarea class="cer" id="p-cer" rows="4"></textarea>
+    <label class="block text-sm font-semibold">④ 具體行動步驟（至少 3 步）</label>
+    <textarea class="cer" id="p-steps" rows="3" placeholder="1. …&#10;2. …&#10;3. …"></textarea>
+    <label class="block text-sm font-semibold">⑤ 預期成效指標 KPI（可量化）</label>
+    <input id="p-kpi" class="cer" placeholder="例：1 年內完成 B 棟抬高 30 公分，淹水頻率由 2 次/年降至 0">
+  </div>
+
+  <div class="bg-indigo-50 p-3 rounded mb-3">
+    <p class="font-bold text-indigo-800 text-sm">🎯 WSA Challenge 四面向檢核（全勾才能解鎖）</p>
+    <label class="block mt-1 text-sm"><input type="checkbox" class="wsa"> <strong>治理</strong>：我的提案會送學生議會/校務會議/里辦</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>課程</strong>：我的提案可跨科（自然/社會/健康/綜合/數學）連結</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>校園營運</strong>：我的提案改變硬體/流程/演練制度</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>社群</strong>：我的提案擴散到家庭/里民/消防分隊/NGO</label>
+  </div>
+  <p id="p-fb" class="text-xs"></p>
+  <button id="btn-next-7" class="btn mt-4 bg-amber-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 8: 後設認知 ===== -->
+<section id="level-8" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🧠</div>
+    <div>
+      <h2 class="text-xl font-bold text-fuchsia-700">任務 8｜後設認知反思</h2>
+      <p class="text-sm text-slate-700 mt-1">最後一站。你的心態改變了嗎？</p>
+      <p class="text-xs text-slate-500 mt-1">角色：自我觀察員 ｜ 5 分 ｜ <span class="chip bg-fuchsia-100 text-fuchsia-800">後設認知</span> <span class="chip bg-violet-100 text-violet-800">開放反思</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-2">
+    <label class="block text-sm font-semibold">Q8-1｜上這四節課前，你對氣候災害的想法/感受是什麼？（50 字以上）</label>
+    <textarea class="cer" id="m-before" rows="3" placeholder="例：以前覺得就是運氣不好被颱風淹到…"></textarea>
+    <label class="block text-sm font-semibold">Q8-2｜現在你的想法是什麼？有沒有改變？為什麼？（50 字以上）</label>
+    <textarea class="cer" id="m-after" rows="3" placeholder="例：現在覺得『損失』是可以被選擇的——選擇準備、選擇演練…"></textarea>
+    <label class="block text-sm font-semibold">Q8-3｜家庭 24h 整備挑戰（勾選 3 項你今晚就會做的）</label>
+    <div>
+      <label class="block text-sm"><input type="checkbox" class="fam"> 檢查家中緊急包（水、手電筒、藥、重要文件影本）</label>
+      <label class="block text-sm"><input type="checkbox" class="fam"> 和家人約定失聯時的集合點</label>
+      <label class="block text-sm"><input type="checkbox" class="fam"> 教阿公/阿嬤/弟妹認手機警報聲</label>
+      <label class="block text-sm"><input type="checkbox" class="fam"> 找出家中『最熱』『最易淹』『最易震損』的 3 個位置</label>
+      <label class="block text-sm"><input type="checkbox" class="fam"> 下載氣象署/消防署 App</label>
+    </div>
+    <label class="block text-sm font-semibold">Q8-4｜哪個資料、討論或任務對你影響最大？</label>
+    <input id="m-key" class="cer" placeholder="例：看到預防 1 元可省 4-7 元的比率">
+  </div>
+  <p id="m-fb" class="mt-2 text-xs"></p>
+  <button id="btn-finish" class="btn mt-4 bg-emerald-600 text-white px-8 py-2 rounded-lg font-bold" disabled>完成任務 🎉</button>
+</section>
+
+<!-- ===== Final Summary ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in text-center">
+  <h2 class="text-3xl font-bold text-rose-700 mb-2">🏆 你完成了！</h2>
+  <p class="text-slate-700 mb-4">你已經完成 8 個任務，從風險三因子、校園盲點、資料詮釋、堤防悖論、減緩/調適、氣候正義、韌性提案到後設反思。</p>
+  <div class="grid grid-cols-3 md:grid-cols-4 gap-2 max-w-2xl mx-auto my-4">
+    <div class="p-2"><div class="text-3xl">🎯</div><div class="text-xs mt-1">風險分析師</div></div>
+    <div class="p-2"><div class="text-3xl">🏫</div><div class="text-xs mt-1">校園稽核員</div></div>
+    <div class="p-2"><div class="text-3xl">📈</div><div class="text-xs mt-1">資料詮釋家</div></div>
+    <div class="p-2"><div class="text-3xl">🔄</div><div class="text-xs mt-1">系統思考者</div></div>
+    <div class="p-2"><div class="text-3xl">⚖️</div><div class="text-xs mt-1">政策歸類員</div></div>
+    <div class="p-2"><div class="text-3xl">🌍</div><div class="text-xs mt-1">氣候外交官</div></div>
+    <div class="p-2"><div class="text-3xl">🏗️</div><div class="text-xs mt-1">韌性提案人</div></div>
+    <div class="p-2"><div class="text-3xl">🧠</div><div class="text-xs mt-1">後設學習者</div></div>
+  </div>
+  <div class="bg-amber-50 rounded-xl p-4 max-w-2xl mx-auto text-left">
+    <p class="font-bold text-amber-800 mb-2">🎯 三個沒有標準答案的問題（帶回家繼續想）</p>
+    <ol class="list-decimal list-inside text-sm space-y-1 text-slate-700">
+      <li>『損失與損害基金』富國要付多少才算公平？你的理由是？</li>
+      <li>你的優先順序：『家人準備』『學校改硬體』『向政府倡議』？</li>
+      <li>未來是繼續『蓋更高堤防』還是『有計畫撤退 managed retreat』？</li>
+    </ol>
+  </div>
+  <div class="mt-6 text-lg font-bold text-emerald-600">最終韌性點數：<span id="final-score">0</span> / 80</div>
+  <button onclick="location.reload()" class="btn mt-4 bg-rose-600 text-white px-6 py-2 rounded-lg font-bold">再玩一次</button>
+</section>
+
+</div>
+
+<script>
+(() => {
+  const S = { score:0, current:1 };
+  const setScore = (n)=>{ S.score += n; document.getElementById('score').textContent = S.score; };
+  const goto = (n)=>{
+    document.getElementById('level-'+S.current).classList.add('hidden-screen');
+    S.current = n;
+    const next = document.getElementById('level-'+n) || document.getElementById('level-final');
+    next.classList.remove('hidden-screen');
+    for(let i=1;i<=8;i++){
+      const d = document.getElementById('dot-'+i);
+      if(!d) continue;
+      d.classList.remove('active','done');
+      if(i < n) d.classList.add('done');
+      else if(i === n) d.classList.add('active');
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  const confetti = ()=>{
+    const colors=['#f59e0b','#10b981','#dc2626','#ec4899','#0ea5e9'];
+    for(let i=0;i<40;i++){
+      const el=document.createElement('div');
+      el.className='confetti';
+      el.style.left=Math.random()*100+'vw';
+      el.style.background=colors[i%colors.length];
+      el.style.animationDelay=(Math.random()*0.6)+'s';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),2500);
+    }
+  };
+
+  // ===== Level 1: Drag categorize (multi-accept) =====
+  const setupDrag1 = () => {
+    const items = document.querySelectorAll('#items-box-1 .drag-item');
+    const zones = document.querySelectorAll('#level-1 .drop-zone');
+    let dragged = null;
+    let done = 0, err = 0;
+    items.forEach(it=>{
+      it.addEventListener('dragstart', ()=>{dragged=it; it.classList.add('dragging');});
+      it.addEventListener('dragend', ()=>{if(dragged) dragged.classList.remove('dragging'); dragged=null;});
+    });
+    zones.forEach(z=>{
+      z.addEventListener('dragover', e=>{e.preventDefault(); z.classList.add('over');});
+      z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+      z.addEventListener('drop', e=>{
+        e.preventDefault(); z.classList.remove('over');
+        if(!dragged) return;
+        if(z.dataset.accept === dragged.dataset.match){
+          dragged.classList.add('pop');
+          z.appendChild(dragged);
+          dragged.setAttribute('draggable','false');
+          dragged.style.cursor='default';
+          done++;
+          if(done===4){
+            setScore(10-Math.min(err,5));
+            document.getElementById('btn-next-1').disabled=false;
+            document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 完成！風險 = 危害 × 暴露 × 脆弱度。</span>';
+            confetti();
+          }
+        } else {
+          z.classList.add('shake'); setTimeout(()=>z.classList.remove('shake'),400);
+          err++;
+          document.getElementById('feedback-1').innerHTML='<span class="text-rose-600">❌ 再想想：『強颱』是自然，『長者』『沒手機警報』是應變能力不足。</span>';
+        }
+      });
+    });
+  };
+  setupDrag1();
+  document.getElementById('btn-next-1').onclick = ()=>goto(2);
+
+  // ===== Level 2 =====
+  const checkL2 = ()=>{
+    const checked = document.querySelectorAll('.l2chk:checked').length;
+    const textLen = document.getElementById('q2-text').value.trim().length;
+    const ok = checked>=3 && textLen>=50;
+    document.getElementById('q2-fb').textContent = ok ? '✅ 可提交' : `已勾 ${checked}/3 項｜文字 ${textLen}/50`;
+    document.getElementById('btn-next-2').disabled = !ok;
+  };
+  document.querySelectorAll('.l2chk').forEach(c=>c.onchange=checkL2);
+  document.getElementById('q2-text').oninput = checkL2;
+  document.getElementById('btn-next-2').onclick = ()=>{ setScore(10); confetti(); goto(3);};
+
+  // ===== Level 3 =====
+  const btn3 = document.getElementById('btn-next-3');
+  const checkL3 = ()=>{
+    const q31 = document.querySelector('input[name=q31]:checked');
+    const q32 = document.getElementById('q32').value.trim();
+    btn3.disabled = !(q31 && q32.length>=40);
+  };
+  document.querySelectorAll('input[name=q31]').forEach(r=>r.onchange=checkL3);
+  document.getElementById('q32').oninput = checkL3;
+  btn3.onclick = ()=>{
+    const q31 = document.querySelector('input[name=q31]:checked').value;
+    const fb = document.querySelector('.q31-fb');
+    let p = 0;
+    if(q31==='C'){ fb.textContent='✅ 正解 C：TCCIP 推估約 1.3-2.0 倍（+30%~100%）。'; fb.className='text-xs mt-1 text-emerald-700 q31-fb'; p+=3;}
+    else { fb.textContent='❌ 正解 C。A/B 錯是因為 TCCIP 推估豪雨頻率會大幅增加。'; fb.className='text-xs mt-1 text-rose-600 q31-fb';}
+    if(document.getElementById('q32').value.length>=40) p+=7;
+    setScore(p);
+    confetti();
+    goto(4);
+  };
+
+  // ===== Level 4: Feedback loop =====
+  const slots = document.querySelectorAll('.loop-slot');
+  const loopItems = document.querySelectorAll('#loop-items .drag-item');
+  let loopCorrect = 0, loopErr = 0;
+  let dragged2 = null;
+  loopItems.forEach(it=>{
+    it.addEventListener('dragstart', ()=>{dragged2=it; it.classList.add('dragging');});
+    it.addEventListener('dragend', ()=>{if(dragged2) dragged2.classList.remove('dragging'); dragged2=null;});
+  });
+  slots.forEach(s=>{
+    s.addEventListener('dragover', e=>e.preventDefault());
+    s.addEventListener('drop', e=>{
+      e.preventDefault();
+      if(!dragged2) return;
+      if(s.dataset.slot === dragged2.dataset.loop){
+        const t = document.getElementById('slot-'+s.dataset.slot+'-text');
+        t.textContent = dragged2.textContent;
+        dragged2.style.visibility='hidden';
+        loopCorrect++;
+        checkL4();
+      } else {
+        s.classList.add('shake'); setTimeout(()=>s.classList.remove('shake'),400);
+        loopErr++;
+        document.getElementById('loop-fb').innerHTML='<span class="text-rose-600">❌ 順序錯了。提示：從『蓋更高堤防』開始。</span>';
+      }
+    });
+  });
+  const checkL4 = ()=>{
+    const txtLen = document.getElementById('q4-text').value.trim().length;
+    const ok = loopCorrect===4 && txtLen>=30;
+    if(loopCorrect===4){
+      document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 完成堤防悖論。工程越高→安心→開發密→崩塌時損失放大。</span>';
+    }
+    document.getElementById('btn-next-4').disabled = !ok;
+  };
+  document.getElementById('q4-text').oninput = checkL4;
+  document.getElementById('btn-next-4').onclick = ()=>{ setScore(10-Math.min(loopErr,5)); confetti(); goto(5);};
+
+  // ===== Level 5: M/A quiz =====
+  const hints5 = {
+    0:'太陽能減少化石燃料排放 → 減緩（治因）。',
+    1:'遮陽板因應『已發生』的高溫 → 調適（治症）。',
+    2:'耐旱作物/蓄水池因應乾旱衝擊 → 調適。',
+    3:'蔬食減少畜牧排放 → 減緩。',
+    4:'警報/演練是應變已發生衝擊 → 調適。'
+  };
+  let q5done = 0;
+  document.querySelectorAll('#q5-box .quiz-item').forEach((item, idx)=>{
+    item.querySelectorAll('.btn-ans').forEach(b=>{
+      b.onclick = ()=>{
+        if(item.dataset.locked) return;
+        const ok = b.dataset.ans === item.dataset.correct;
+        const hint = item.querySelector('.hint');
+        hint.classList.remove('hidden');
+        if(ok){
+          b.classList.add('pop');
+          hint.textContent = '✅ '+hints5[idx];
+          hint.className='hint text-xs mt-2 text-emerald-700';
+          item.dataset.locked='1';
+          setScore(2);
+          q5done++;
+          if(q5done===5){ document.getElementById('btn-next-5').disabled=false; confetti();}
+        } else {
+          item.classList.add('shake'); setTimeout(()=>item.classList.remove('shake'),400);
+          hint.textContent = '❌ 再想想：'+hints5[idx];
+          hint.className='hint text-xs mt-2 text-rose-600';
+        }
+      };
+    });
+  });
+  document.getElementById('btn-next-5').onclick = ()=>goto(6);
+
+  // ===== Level 6: CER =====
+  const btn6 = document.getElementById('btn-next-6');
+  const checkCER = ()=>{
+    const c = document.getElementById('cer-c').value.trim();
+    const e = document.getElementById('cer-e').value.trim();
+    const r = document.getElementById('cer-r').value.trim();
+    const hasNum = /\d/.test(e);
+    const ok = c.length>=10 && e.length>=30 && r.length>=30 && hasNum;
+    document.getElementById('cer-fb').innerHTML = ok ? '<span class="text-emerald-700">✅ CER 結構完整且證據含數字。</span>' : `<span class="text-slate-500">Claim ${c.length}/10｜Evidence ${e.length}/30（需含數字）｜Reasoning ${r.length}/30</span>`;
+    btn6.disabled = !ok;
+  };
+  ['cer-c','cer-e','cer-r'].forEach(id=>document.getElementById(id).oninput=checkCER);
+  btn6.onclick = ()=>{ setScore(15); confetti(); goto(7);};
+
+  // ===== Level 7: Project + WSA =====
+  const btn7 = document.getElementById('btn-next-7');
+  const checkP = ()=>{
+    const pcer = document.getElementById('p-cer').value.trim();
+    const hasNum = /\d/.test(pcer);
+    const ok =
+      document.getElementById('p-title').value.trim().length>=5 &&
+      document.getElementById('p-problem').value.trim().length>=50 &&
+      pcer.length>=100 && hasNum &&
+      document.getElementById('p-steps').value.trim().length>=20 &&
+      document.getElementById('p-kpi').value.trim().length>=5 &&
+      document.querySelectorAll('.wsa:checked').length === 4;
+    document.getElementById('p-fb').innerHTML = ok ? '<span class="text-emerald-700">✅ 提案完整且含數字、WSA 四面向全覆蓋！</span>' : '<span class="text-slate-500">請完成五個欄位（CER 需含數字）+ WSA 四項全勾</span>';
+    btn7.disabled = !ok;
+  };
+  ['p-title','p-problem','p-cer','p-steps','p-kpi'].forEach(id=>document.getElementById(id).oninput=checkP);
+  document.querySelectorAll('.wsa').forEach(c=>c.onchange=checkP);
+  btn7.onclick = ()=>{ setScore(20); confetti(); goto(8);};
+
+  // ===== Level 8 =====
+  const btnF = document.getElementById('btn-finish');
+  const checkM = ()=>{
+    const famCount = document.querySelectorAll('.fam:checked').length;
+    const ok =
+      document.getElementById('m-before').value.trim().length>=50 &&
+      document.getElementById('m-after').value.trim().length>=50 &&
+      famCount>=3 &&
+      document.getElementById('m-key').value.trim().length>=3;
+    document.getElementById('m-fb').textContent = ok ? '✅ 可以完成任務。' : `前後各 50 字｜家庭整備勾 ${famCount}/3`;
+    btnF.disabled = !ok;
+  };
+  ['m-before','m-after','m-key'].forEach(id=>document.getElementById(id).oninput=checkM);
+  document.querySelectorAll('.fam').forEach(c=>c.onchange=checkM);
+  btnF.onclick = ()=>{
+    setScore(5);
+    document.getElementById('final-score').textContent = S.score;
+    document.getElementById('level-8').classList.add('hidden-screen');
+    document.getElementById('level-final').classList.remove('hidden-screen');
+    for(let i=1;i<=8;i++){ const d=document.getElementById('dot-'+i); if(d){d.classList.remove('active');d.classList.add('done');}}
+    confetti(); setTimeout(confetti,500); setTimeout(confetti,1000);
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+})();
+</script>
+</body>
+</html>

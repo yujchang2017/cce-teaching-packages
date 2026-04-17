@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>消失中的鄰居救援隊 — 2.5-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#fee2e2 0%,#fef3c7 50%,#dcfce7 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .feedback-pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; z-index:9999; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #ef4444; box-shadow: 0 0 0 4px rgba(239,68,68,.25); }
+  .drag-item { cursor: grab; user-select: none; }
+  .drag-item.dragging { opacity: .4; }
+  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
+  .badge { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
+  .hidden-step { display: none; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-rose-600 to-orange-500 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">🚨 消失中的鄰居救援隊</h1>
+    <p class="mt-2 text-rose-50">UNESCO 2.5-III ｜ 9-12 歲 ｜ 找出 5 大威脅，守護 100 萬個瀕危物種！</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關｜目前分數：<span id="scoreNum">0</span> 分</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 角色與情境故事 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl">🐆</div>
+    <div>
+      <h2 class="text-2xl font-bold text-rose-700">任務簡報：野外只剩 500 隻，我是石虎阿花</h2>
+      <p class="mt-2 leading-relaxed">全球有 <strong class="text-red-600">約 100 萬種</strong> 動植物面臨絕種危機，我和朋友黑面琵鷺、櫻花鉤吻鮭、海龜都在求救。你是我們的「校園救援隊」隊長，請通過 6 關，辨識五大威脅，解鎖「全校英雄」徽章！</p>
+      <button onclick="startMission()" class="mt-4 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 🔍</button>
+    </div>
+  </div>
+</section>
+
+<!-- 關卡 1：污染的五種臉（選擇）-->
+<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-blue-700">💨 關卡 1：污染的五種臉</h2>
+  <p class="mt-2 text-gray-600">WHO 說 2019 年全球約 <strong class="text-red-600">420 萬人</strong> 死於室外空氣污染、<strong>99%</strong> 人口生活在空氣超標區。污染有 5 種，下列哪一項<strong>不是</strong>常見的污染類型？</p>
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">空氣污染</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">水污染</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">光害</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">噪音污染</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="1">彩虹污染</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">土壤污染</button>
+  </div>
+  <div id="q1-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 2：五大威脅配對（拖曳）-->
+<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-teal-700">🧩 關卡 2：IPBES 五大威脅配對</h2>
+  <p class="mt-2 text-gray-600">把下面的情境拖到對的威脅分類，全部答對才能進下一關！</p>
+
+  <div class="flex flex-wrap gap-3 mt-4" id="casePool">
+    <div class="drag-item bg-yellow-100 px-3 py-2 rounded-full shadow text-sm" draggable="true" data-cat="pollution">🏭 工廠廢水流入溪流</div>
+    <div class="drag-item bg-pink-100 px-3 py-2 rounded-full shadow text-sm" draggable="true" data-cat="invasive">🐍 棄養綠鬣蜥大繁殖</div>
+    <div class="drag-item bg-red-100 px-3 py-2 rounded-full shadow text-sm" draggable="true" data-cat="climate">🔥 海水升溫珊瑚白化</div>
+    <div class="drag-item bg-orange-100 px-3 py-2 rounded-full shadow text-sm" draggable="true" data-cat="exploit">🎣 過度捕撈黑鮪魚</div>
+    <div class="drag-item bg-gray-200 px-3 py-2 rounded-full shadow text-sm" draggable="true" data-cat="landuse">🏗️ 濕地填土蓋園區</div>
+    <div class="drag-item bg-yellow-100 px-3 py-2 rounded-full shadow text-sm" draggable="true" data-cat="pollution">💡 夜間大樓燈火害候鳥</div>
+    <div class="drag-item bg-pink-100 px-3 py-2 rounded-full shadow text-sm" draggable="true" data-cat="invasive">🌿 小花蔓澤蘭覆蓋原生樹</div>
+    <div class="drag-item bg-red-100 px-3 py-2 rounded-full shadow text-sm" draggable="true" data-cat="climate">🏔️ 高山魚類無冷溪可躲</div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mt-6">
+    <div class="drop-zone min-h-[110px] border-2 border-dashed border-gray-400 bg-gray-50 rounded-xl p-2" data-cat="landuse">
+      <p class="font-bold text-gray-700 text-sm">🏗️ 土地利用改變</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-1"></div>
+    </div>
+    <div class="drop-zone min-h-[110px] border-2 border-dashed border-orange-400 bg-orange-50 rounded-xl p-2" data-cat="exploit">
+      <p class="font-bold text-orange-700 text-sm">🎣 過度開發</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-1"></div>
+    </div>
+    <div class="drop-zone min-h-[110px] border-2 border-dashed border-red-400 bg-red-50 rounded-xl p-2" data-cat="climate">
+      <p class="font-bold text-red-700 text-sm">🔥 氣候變遷</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-1"></div>
+    </div>
+    <div class="drop-zone min-h-[110px] border-2 border-dashed border-yellow-500 bg-yellow-50 rounded-xl p-2" data-cat="pollution">
+      <p class="font-bold text-yellow-700 text-sm">💨 污染</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-1"></div>
+    </div>
+    <div class="drop-zone min-h-[110px] border-2 border-dashed border-pink-400 bg-pink-50 rounded-xl p-2" data-cat="invasive">
+      <p class="font-bold text-pink-700 text-sm">🐍 外來入侵種</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-1"></div>
+    </div>
+  </div>
+  <div id="q2-feedback" class="mt-4"></div>
+  <button id="q2-check" onclick="checkLevel2()" class="mt-3 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full">檢查答案</button>
+</section>
+
+<!-- 關卡 3：石虎路口抉擇（情境選擇）-->
+<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-amber-700">🛣️ 關卡 3：石虎路口抉擇</h2>
+  <p class="mt-2 text-gray-600">台灣石虎野外剩約 <strong class="text-red-600">500 隻</strong>，<strong>2023 年有約 40 隻死於路殺</strong>。你是苗栗農村的里長，要選一個「對石虎最友善」的措施：</p>
+  <div class="space-y-3 mt-4">
+    <button class="q3-choice w-full text-left p-4 border-2 rounded-xl hover:bg-amber-50" data-c="A">A. 裝更多明亮路燈嚇走石虎</button>
+    <button class="q3-choice w-full text-left p-4 border-2 rounded-xl hover:bg-amber-50" data-c="B">B. 設置「動物通道」＋ 減速標誌 ＋ 友善石虎農產品標章</button>
+    <button class="q3-choice w-full text-left p-4 border-2 rounded-xl hover:bg-amber-50" data-c="C">C. 把石虎抓起來關到動物園</button>
+    <button class="q3-choice w-full text-left p-4 border-2 rounded-xl hover:bg-amber-50" data-c="D">D. 不做任何事，自然選擇</button>
+  </div>
+  <div id="q3-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 4：海龜與塑膠海（是非題）-->
+<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-cyan-700">🌊 關卡 4：海龜與塑膠海</h2>
+  <p class="mt-2 text-gray-600">全球每年約 <strong class="text-red-600">1,100 萬公噸</strong>塑膠流進海洋，<strong>900 多種</strong>海洋生物體內已檢出塑膠微粒。判斷下面說法是否正確：</p>
+  <div id="mythQs" class="space-y-4 mt-4">
+    <div class="q4 border rounded-xl p-3" data-ans="true" data-hint="正確！海龜常把漂浮的透明塑膠袋當成水母，吞下後會堵住腸道。自備購物袋是最直接有效的行動。">
+      <p class="font-semibold">Q1：海龜會把塑膠袋誤當成水母吞下，可能致命。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="錯！塑膠在海裡會碎成『塑膠微粒』，甚至小到看不見，進入魚蝦體內，最後回到我們的餐桌。回收加減塑才是關鍵。">
+      <p class="font-semibold">Q2：塑膠丟進海裡，最後會自然消失不會有影響。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="錯！淨灘是重要行動，但更根本是『源頭減塑』：自備水壺、不用一次性吸管、選少包裝食品。不然淨到海枯石爛也撿不完。">
+      <p class="font-semibold">Q3：只要常常淨灘，就能解決海洋塑膠問題。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+  </div>
+  <div id="q4-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 5：復育的希望（填空/選擇）-->
+<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-emerald-700">🐟 關卡 5：復育的希望 — 櫻花鉤吻鮭的故事</h2>
+  <p class="mt-2 text-gray-600">雪霸國家公園花了 40 年復育台灣特有種櫻花鉤吻鮭。1984 年只剩 <strong>約 200 尾</strong>，2024 年已回升到 <strong class="text-emerald-600">超過 15,000 尾</strong>。請選出最有效的復育方式組合：</p>
+  <div class="space-y-3 mt-4">
+    <button class="q5-choice w-full text-left p-4 border-2 rounded-xl hover:bg-emerald-50" data-c="0">A. 大量投餵飼料</button>
+    <button class="q5-choice w-full text-left p-4 border-2 rounded-xl hover:bg-emerald-50" data-c="1">B. 種樹遮蔭降水溫 ＋ 清除魚梯障礙 ＋ 人工繁殖野放</button>
+    <button class="q5-choice w-full text-left p-4 border-2 rounded-xl hover:bg-emerald-50" data-c="0">C. 禁止任何人接近溪流</button>
+    <button class="q5-choice w-full text-left p-4 border-2 rounded-xl hover:bg-emerald-50" data-c="0">D. 把牠們全部移到海邊</button>
+  </div>
+  <div id="q5-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 6：全校行動挑戰（WSA 四面向）-->
+<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6 border-4 border-amber-400">
+  <h2 class="text-xl font-bold text-amber-700">🏫 關卡 6：全校行動挑戰（Whole School Approach）</h2>
+  <p class="mt-2 text-gray-700">四個面向一起動，才有機會守護生物多樣性。請勾選你「本學期會嘗試」的行動，四項全勾解鎖「全校英雄」徽章！</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <label class="flex items-start gap-3 p-4 border-2 border-blue-200 rounded-xl cursor-pointer hover:bg-blue-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="curriculum" />
+      <div>
+        <p class="font-bold text-blue-700">📚 課程整合</p>
+        <p class="text-sm">每天查校園 AQI 指數並記錄一週 + 語文課寫一篇「給被污染的 ___」 的一封信。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-green-200 rounded-xl cursor-pointer hover:bg-green-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="operations" />
+      <div>
+        <p class="font-bold text-green-700">🌳 校園營運</p>
+        <p class="text-sm">推動自備水壺減塑 + 夜間非必要區域 10 點熄燈 + 一場校園入侵種（小花蔓澤蘭）除移日。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-orange-200 rounded-xl cursor-pointer hover:bg-orange-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="community" />
+      <div>
+        <p class="font-bold text-orange-700">🤝 社區連結</p>
+        <p class="text-sm">與里辦公室、海湧工作室或荒野保護協會合辦一次淨灘／淨溪活動。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-purple-200 rounded-xl cursor-pointer hover:bg-purple-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="agency" />
+      <div>
+        <p class="font-bold text-purple-700">🙋 學生治理</p>
+        <p class="text-sm">選出「環境小記者」，製作校刊專題，並向校務會議提出 1 個生物多樣性救援提案。</p>
+      </div>
+    </label>
+  </div>
+  <button onclick="checkWSA()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full shadow-lg">提交挑戰 🏆</button>
+  <div id="wsa-feedback" class="mt-4"></div>
+</section>
+
+<!-- 徽章與成果 -->
+<section id="result" class="hidden-step card bg-gradient-to-br from-yellow-100 to-amber-200 rounded-2xl shadow-2xl p-8 mb-6 text-center">
+  <div class="text-7xl mb-3 badge inline-block rounded-full bg-white p-6">🏆</div>
+  <h2 class="text-3xl font-extrabold text-amber-800">全校英雄 徽章解鎖！</h2>
+  <p class="mt-3 text-lg">最終分數：<strong class="text-rose-600 text-2xl"><span id="finalScore">0</span></strong> / 100 分</p>
+  <p class="mt-3 text-md">你已辨識 IPBES 五大威脅、為 <strong>約 500 隻</strong>石虎設計友善道路、為 <strong>1,100 萬公噸</strong>海洋塑膠提出減量方案，並見證櫻花鉤吻鮭從 <strong>200 尾</strong> 回到 <strong>超過 15,000 尾</strong>的希望！</p>
+
+  <div class="bg-white rounded-xl p-5 mt-5 text-left">
+    <h3 class="font-bold text-emerald-700 text-xl mb-2">🌱 三個延伸思考（帶回家想想）</h3>
+    <ol class="list-decimal ml-6 space-y-2">
+      <li>你看過哪些食物，包裝大於食物本身？挑一天挑戰「整餐無塑」，記錄你遇到的困難與替代方案。</li>
+      <li>如果你是縣長，有一筆 100 萬預算要解決五大威脅中的一個，你會選哪一個？寫下具體做法與預期成果。</li>
+      <li>十年後你想做什麼職業？想想那份工作可以怎麼保護生物多樣性（例如：農夫友善耕作、工程師設計動物通道、YouTuber 做科普）。</li>
+    </ol>
+  </div>
+
+  <button onclick="window.print()" class="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full">🖨️ 列印成果頁</button>
+  <button onclick="location.reload()" class="mt-5 ml-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full">🔄 重新挑戰</button>
+</section>
+
+<footer class="text-center text-xs text-gray-500 pb-6">
+  資料來源：IPBES 2019 Global Assessment、WHO Ambient Air Quality 2019、UNEP 塑膠污染、農業部生物多樣性研究所、雪霸國家公園。教學套件 UNESCO 2.5-III ｜ 驗證日 2026-04-16
+</footer>
+
+</main>
+
+<script>
+let currentStep = 0;
+let score = 0;
+const steps = ['intro','level1','level2','level3','level4','level5','level6','result'];
+
+function updateScore(delta){
+  score += delta;
+  if(score < 0) score = 0;
+  const el = document.getElementById('scoreNum');
+  if(el) el.textContent = score;
+}
+
+function showStep(i){
+  steps.forEach((s,idx)=>{
+    const el = document.getElementById(s);
+    if(!el) return;
+    if(idx===i) el.classList.remove('hidden-step');
+    else el.classList.add('hidden-step');
+  });
+  for(let k=1;k<=6;k++){
+    const d=document.getElementById('dot'+k);
+    d.classList.remove('done','active');
+    if(k < i) d.classList.add('done');
+    else if(k === i) d.classList.add('active');
+  }
+  const pt = document.getElementById('progressText');
+  if(i>=1 && i<=6) pt.innerHTML = `第 ${i} / 6 關｜目前分數：<span id="scoreNum">${score}</span> 分`;
+  else if(i===7){ pt.innerHTML = '完成！'; const fs = document.getElementById('finalScore'); if(fs) fs.textContent = score; }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startMission(){ currentStep=1; showStep(1); }
+
+// Level 1
+document.querySelectorAll('.q1-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(btn.disabled) return;
+    const fb = document.getElementById('q1-feedback');
+    if(btn.dataset.ans==='1'){
+      btn.classList.add('bg-green-400','text-white');
+      fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 答對了！「彩虹污染」不是真的！UNESCO 列的污染類型是空氣、水、土壤、光、噪音。空氣污染每年造成全球 420 萬人早逝，也傷害昆蟲、鳥類與植物。</div>';
+      updateScore(15); confetti();
+      setTimeout(()=>{currentStep=2;showStep(2);},1600);
+      document.querySelectorAll('.q1-opt').forEach(b=>b.disabled=true);
+    } else {
+      btn.classList.add('shake','bg-red-200');
+      fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再想想！提示：這個選項是真的污染類型——UNESCO 列了 5 種，其中一個答案是聽起來很美卻不存在的。</div>';
+    }
+  });
+});
+
+// Level 2 — drag & drop
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{
+    e.preventDefault(); z.classList.remove('over');
+    if(dragged){ z.querySelector('.drop-content').appendChild(dragged); }
+  });
+});
+function checkLevel2(){
+  const zones = document.querySelectorAll('.drop-zone');
+  let correct=0, total=8;
+  zones.forEach(z=>{
+    const cat = z.dataset.cat;
+    z.querySelectorAll('.drop-content .drag-item').forEach(it=>{
+      if(it.dataset.cat===cat) correct++;
+    });
+  });
+  const fb = document.getElementById('q2-feedback');
+  if(correct===total){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌟 全部配對正確！這就是 IPBES 五大威脅，排名：土地利用 &gt; 過度開發 &gt; 氣候變遷 &gt; 污染 &gt; 外來入侵種。</div>';
+    updateScore(20); confetti();
+    setTimeout(()=>{currentStep=3;showStep(3);},1800);
+  } else {
+    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 你答對 ${correct}/${total}。提示：廢水/光害算『污染』、綠鬣蜥/小花蔓澤蘭是『入侵種』、海水升溫/高山魚類無家是『氣候變遷』。再試一次！</div>`;
+  }
+}
+
+// Level 3
+const q3Feedback = {
+  A: { tone:'warn', text:'⚠️ 更多燈光不會嚇走石虎，反而造成光害傷害夜行動物。', score: -5 },
+  B: { tone:'best', text:'🌟 最佳答案！動物通道減少路殺、減速讓車禍少、友善農產品標章讓農民收入增加，三管齊下。苗栗已有多處示範。', score: 20 },
+  C: { tone:'warn', text:'❌ 把野生動物抓到動物園不是保育，反而讓野外族群消失。正確方式是保護棲地。', score: -5 },
+  D: { tone:'warn', text:'😢 不做事，路殺只會繼續。石虎從 500 隻消失只需要幾年。', score: 0 }
+};
+document.querySelectorAll('.q3-choice').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(document.getElementById('level3').dataset.answered) return;
+    document.getElementById('level3').dataset.answered='1';
+    const c = q3Feedback[btn.dataset.c];
+    const color = c.tone==='best'?'green':'yellow';
+    btn.classList.add('bg-'+color+'-100','border-'+color+'-500');
+    document.getElementById('q3-feedback').innerHTML =
+      `<div class="feedback-pop bg-${color}-100 border-l-4 border-${color}-500 p-3 rounded">${c.text}</div>`;
+    updateScore(c.score);
+    if(c.tone==='best') confetti();
+    setTimeout(()=>{currentStep=4;showStep(4);},2200);
+  });
+});
+
+// Level 4
+let q4Done=0, q4Correct=0;
+document.querySelectorAll('.q4-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q4');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    const hint = parent.dataset.hint;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-green-700 text-sm">✅ 正確！${hint}</p>`);
+      q4Correct++; updateScore(7);
+    } else {
+      btn.classList.add('bg-red-300','shake');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-rose-700 text-sm">💡 再想想：${hint}</p>`);
+    }
+    parent.dataset.answered='1';
+    q4Done++;
+    if(q4Done===3){
+      document.getElementById('q4-feedback').innerHTML=`<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎯 你答對 ${q4Correct}/3！減塑從源頭開始最有效。</div>`;
+      confetti();
+      setTimeout(()=>{currentStep=5;showStep(5);},1600);
+    }
+  });
+});
+
+// Level 5
+document.querySelectorAll('.q5-choice').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(document.getElementById('level5').dataset.answered) return;
+    const fb = document.getElementById('q5-feedback');
+    if(btn.dataset.c==='1'){
+      document.getElementById('level5').dataset.answered='1';
+      btn.classList.add('bg-green-300');
+      fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌟 答對！雪霸國家公園就是用這三招，讓族群從 1984 年 200 尾回到 2024 年超過 15,000 尾。人類造成的傷害，人類也能修復。</div>';
+      updateScore(15); confetti();
+      setTimeout(()=>{currentStep=6;showStep(6);},2000);
+    } else {
+      btn.classList.add('shake','bg-red-200');
+      fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再想想。櫻花鉤吻鮭需要低於 17°C 的冷溪流，關鍵是「降溫、暢通、補群」三件事。</div>';
+    }
+  });
+});
+
+// Level 6 — WSA
+function checkWSA(){
+  const boxes = document.querySelectorAll('.wsa');
+  const all = Array.from(boxes).every(b=>b.checked);
+  const fb = document.getElementById('wsa-feedback');
+  if(all){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-4 rounded text-lg">🏅 四面向全勾選！你就是我們班的全校英雄！</div>';
+    updateScore(15); confetti(60);
+    setTimeout(()=>{currentStep=7;showStep(7);},1800);
+  } else {
+    const cnt = Array.from(boxes).filter(b=>b.checked).length;
+    fb.innerHTML = `<div class="feedback-pop bg-amber-100 border-l-4 border-amber-500 p-3 rounded">你選了 ${cnt}/4 個面向。全校英雄需要「課程、校園、社區、學生」四面向一起行動，缺一不可。再想想剩下的面向你可以怎麼參與？</div>`;
+  }
+}
+
+// Confetti
+function confetti(n=30){
+  const colors=['#f87171','#fbbf24','#34d399','#60a5fa','#a78bfa'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.top='-20px';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*0.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+</script>
+</body>
+</html>

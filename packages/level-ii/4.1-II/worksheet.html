@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>天氣寶寶關心我 — 心心兔的關心小任務</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: linear-gradient(180deg, #fff7ed 0%, #ffe4e6 60%, #dbeafe 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .popin { animation: popin 0.6s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes popin { 0%{transform:scale(.3);opacity:0} 60%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
+  .bounce { animation: bounce 1s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  .wiggle { animation: wiggle 0.4s ease-in-out; }
+  @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-8deg)} 75%{transform:rotate(8deg)} }
+  .shine { animation: shine 2s infinite; }
+  @keyframes shine { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.3) drop-shadow(0 0 20px #fecaca)} }
+  .float { animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .confetti {
+    position: fixed;
+    width: 14px; height: 14px;
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  .dropzone-active { background: #fecdd3 !important; transform: scale(1.08); }
+  .big-btn {
+    font-size: 2rem;
+    padding: 1rem 2rem;
+    border-radius: 9999px;
+    font-weight: 800;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.15);
+    transition: all 0.15s;
+  }
+  .big-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,0.15); }
+  /* 早幼重點：SVG 文字不攔截點擊（避免干擾拖拉與點擊） */
+  svg text { pointer-events: none; }
+  svg * { pointer-events: none; }
+  .card {
+    background: white;
+    border-radius: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+  }
+  .hide { display: none !important; }
+  .badge {
+    background: radial-gradient(circle, #fde68a 0%, #f59e0b 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 30px #fde68a;
+  }
+</style>
+</head>
+<body class="flex flex-col items-center">
+
+<!-- 主角：心心兔 SVG (可重用) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="bunny">
+      <ellipse cx="50" cy="62" rx="32" ry="28" fill="#fecaca"/>
+      <ellipse cx="35" cy="22" rx="8" ry="18" fill="#fecaca"/>
+      <ellipse cx="65" cy="22" rx="8" ry="18" fill="#fecaca"/>
+      <ellipse cx="35" cy="22" rx="4" ry="12" fill="#f472b6"/>
+      <ellipse cx="65" cy="22" rx="4" ry="12" fill="#f472b6"/>
+      <circle cx="40" cy="58" r="3.5" fill="#1f2937"/>
+      <circle cx="60" cy="58" r="3.5" fill="#1f2937"/>
+      <ellipse cx="50" cy="68" rx="4" ry="3" fill="#f472b6"/>
+      <path d="M 44 73 Q 50 80 56 73" stroke="#1f2937" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- 愛心胸章 -->
+      <path d="M 50 88 C 40 78, 30 82, 38 90 L 50 100 L 62 90 C 70 82, 60 78, 50 88 Z" fill="#ef4444" opacity="0.9"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- 頂部進度條 -->
+<div class="w-full max-w-3xl p-4">
+  <div class="flex items-center justify-center gap-2 text-3xl font-extrabold text-pink-700">
+    <svg width="60" height="60" viewBox="0 0 100 100"><use href="#bunny"/></svg>
+    <span>心心兔的關心小任務</span>
+  </div>
+  <div class="flex gap-2 mt-4 justify-center" id="progress-bar"></div>
+</div>
+
+<!-- 關卡容器 -->
+<main class="w-full max-w-3xl p-4 flex-1 flex items-center justify-center">
+
+  <!-- 開始畫面 -->
+  <section id="intro" class="card text-center popin">
+    <svg width="160" height="160" viewBox="0 0 100 100" class="mx-auto bounce"><use href="#bunny"/></svg>
+    <h1 class="text-4xl font-extrabold text-pink-600 mt-4">嗨！我是心心！</h1>
+    <p class="text-2xl text-gray-700 mt-4">今天要跟我一起當<span class="text-orange-500 font-bold">天氣小關心員</span>嗎？</p>
+    <p class="text-xl text-gray-500 mt-2">3 個小關卡，一起出發！</p>
+    <button onclick="startGame()" class="big-btn bg-pink-400 hover:bg-pink-300 text-white mt-6">開始</button>
+  </section>
+
+  <!-- 關卡 1：熱天安全 — 點擊配對 -->
+  <section id="level1" class="card w-full hide">
+    <div class="flex items-center gap-3 mb-4">
+      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#bunny"/></svg>
+      <p class="text-2xl font-bold text-pink-700">心心：好熱！我要怎麼做比較安全？</p>
+    </div>
+
+    <div id="l1-scene" class="text-center my-4">
+      <svg width="220" height="180" viewBox="0 0 200 160" class="mx-auto">
+        <!-- 大太陽 -->
+        <circle cx="150" cy="40" r="26" fill="#fbbf24"/>
+        <g stroke="#f59e0b" stroke-width="4">
+          <line x1="150" y1="5" x2="150" y2="15"/>
+          <line x1="150" y1="65" x2="150" y2="75"/>
+          <line x1="115" y1="40" x2="125" y2="40"/>
+          <line x1="175" y1="40" x2="185" y2="40"/>
+        </g>
+        <!-- 流汗小孩 -->
+        <circle cx="60" cy="80" r="20" fill="#fecaca"/>
+        <circle cx="53" cy="75" r="2.5" fill="#1f2937"/>
+        <circle cx="67" cy="75" r="2.5" fill="#1f2937"/>
+        <path d="M 52 88 Q 60 84 68 88" stroke="#1f2937" stroke-width="2" fill="none"/>
+        <line x1="78" y1="70" x2="85" y2="65" stroke="#60a5fa" stroke-width="3" stroke-linecap="round"/>
+        <line x1="80" y1="78" x2="88" y2="78" stroke="#60a5fa" stroke-width="3" stroke-linecap="round"/>
+        <text x="100" y="140" text-anchor="middle" font-size="14" fill="#ef4444" font-weight="bold">好熱！流汗了！</text>
+      </svg>
+    </div>
+
+    <p class="text-center text-xl text-gray-600 mb-3">選兩個最安全的動作！</p>
+
+    <div class="grid grid-cols-2 gap-4 mt-2">
+      <button class="big-btn bg-sky-200 hover:bg-sky-100 flex flex-col items-center" data-ans="water" onclick="l1Pick(this)">
+        <span class="text-6xl">💧</span>
+        <span class="text-lg mt-1 text-sky-800">喝水</span>
+      </button>
+      <button class="big-btn bg-green-200 hover:bg-green-100 flex flex-col items-center" data-ans="shade" onclick="l1Pick(this)">
+        <span class="text-6xl">🌳</span>
+        <span class="text-lg mt-1 text-green-800">躲陰涼</span>
+      </button>
+      <button class="big-btn bg-red-200 hover:bg-red-100 flex flex-col items-center" data-ans="run" onclick="l1Pick(this)">
+        <span class="text-6xl">🏃</span>
+        <span class="text-lg mt-1 text-red-800">跑操場</span>
+      </button>
+      <button class="big-btn bg-yellow-200 hover:bg-yellow-100 flex flex-col items-center" data-ans="ice" onclick="l1Pick(this)">
+        <span class="text-6xl">🍦</span>
+        <span class="text-lg mt-1 text-yellow-800">只吃冰</span>
+      </button>
+    </div>
+    <p id="l1-feedback" class="text-2xl text-center mt-4 font-bold hide"></p>
+  </section>
+
+  <!-- 關卡 2：颱風背包 — 拖拉 -->
+  <section id="level2" class="card w-full hide">
+    <div class="flex items-center gap-3 mb-4">
+      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#bunny"/></svg>
+      <p class="text-2xl font-bold text-pink-700">心心：颱風來了！幫我把東西拖進背包！</p>
+    </div>
+    <p class="text-center text-lg text-gray-600 mb-2">把「要帶的」拖到背包裡，「不用帶的」拖到盒子裡。</p>
+
+    <div class="flex justify-around my-4 flex-wrap gap-3" id="l2-items"></div>
+
+    <div class="grid grid-cols-2 gap-4 mt-6">
+      <div class="dropzone card text-center h-44 flex flex-col items-center justify-center border-4 border-dashed border-orange-400 bg-orange-50" data-zone="need">
+        <div class="text-6xl float">🎒</div>
+        <div class="text-2xl font-bold text-orange-600 mt-1">颱風小背包</div>
+        <div class="text-sm text-gray-500">（要帶的）</div>
+      </div>
+      <div class="dropzone card text-center h-44 flex flex-col items-center justify-center border-4 border-dashed border-gray-400 bg-gray-50" data-zone="skip">
+        <div class="text-6xl">📦</div>
+        <div class="text-2xl font-bold text-gray-600 mt-1">留在家裡</div>
+        <div class="text-sm text-gray-500">（不用帶的）</div>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <p id="l2-feedback" class="text-2xl font-bold hide"></p>
+    </div>
+  </section>
+
+  <!-- 關卡 3：同理心 — 配對表情與幫忙行動 -->
+  <section id="level3" class="card w-full hide">
+    <div class="flex items-center gap-3 mb-4">
+      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#bunny"/></svg>
+      <p class="text-2xl font-bold text-pink-700">心心：有朋友家下大雨了，我們怎麼關心他？</p>
+    </div>
+
+    <div class="text-center my-4">
+      <svg width="260" height="160" viewBox="0 0 260 160" class="mx-auto">
+        <!-- 雨雲 -->
+        <ellipse cx="80" cy="40" rx="40" ry="18" fill="#9ca3af"/>
+        <line x1="60" y1="60" x2="55" y2="80" stroke="#3b82f6" stroke-width="3"/>
+        <line x1="80" y1="60" x2="75" y2="80" stroke="#3b82f6" stroke-width="3"/>
+        <line x1="100" y1="60" x2="95" y2="80" stroke="#3b82f6" stroke-width="3"/>
+        <!-- 小孩難過 -->
+        <circle cx="80" cy="120" r="20" fill="#fecaca"/>
+        <circle cx="73" cy="115" r="2.5" fill="#1f2937"/>
+        <circle cx="87" cy="115" r="2.5" fill="#1f2937"/>
+        <path d="M 72 130 Q 80 125 88 130" stroke="#1f2937" stroke-width="2" fill="none"/>
+        <circle cx="73" cy="120" r="1.5" fill="#60a5fa"/>
+        <!-- 愛心橋樑 -->
+        <path d="M 180 80 C 170 70, 160 74, 168 82 L 180 92 L 192 82 C 200 74, 190 70, 180 80 Z" fill="#ef4444"/>
+        <text x="130" y="155" text-anchor="middle" font-size="14" fill="#ef4444" font-weight="bold">你會怎麼幫？選 2 個！</text>
+      </svg>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3" id="l3-items"></div>
+
+    <div class="text-center mt-4">
+      <button onclick="l3Check()" class="big-btn bg-pink-400 hover:bg-pink-300 text-white">完成！</button>
+      <p id="l3-feedback" class="text-2xl font-bold hide mt-3"></p>
+    </div>
+  </section>
+
+  <!-- 結尾成就畫面 -->
+  <section id="finale" class="card text-center hide">
+    <div class="shine">
+      <svg width="180" height="180" viewBox="0 0 100 100" class="mx-auto bounce"><use href="#bunny"/></svg>
+    </div>
+    <div class="text-6xl mt-4 badge inline-block w-28 h-28 leading-[7rem]">❤️</div>
+    <h1 class="text-4xl font-extrabold text-pink-600 mt-4">你是最暖心的小關心員！</h1>
+    <p class="text-2xl text-gray-700 mt-4">心心送你一張 <span class="text-orange-500 font-bold">愛心小關心員徽章</span>！</p>
+
+    <div class="card mt-6 bg-orange-100 border-4 border-orange-300">
+      <p class="text-xl font-bold text-orange-800">親子小任務（回家做）</p>
+      <p class="text-2xl mt-2">今天晚上，和爸爸媽媽一起<br/><span class="text-pink-600 font-bold">畫一張暖心小卡</span>，<br/>送給任何一個你想關心的人！</p>
+    </div>
+
+    <button onclick="restart()" class="big-btn bg-pink-400 hover:bg-pink-300 text-white mt-6">再玩一次</button>
+  </section>
+
+</main>
+
+<script>
+  // ============ 全域狀態 ============
+  const STATE = { level: 0, total: 3 };
+
+  // ============ 進度條 ============
+  function drawProgress() {
+    const bar = document.getElementById('progress-bar');
+    bar.innerHTML = '';
+    for (let i = 1; i <= STATE.total; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'w-10 h-10 rounded-full flex items-center justify-center text-xl font-extrabold ' +
+        (i < STATE.level ? 'bg-pink-400 text-white' :
+         i === STATE.level ? 'bg-orange-400 text-white bounce' : 'bg-gray-300 text-gray-600');
+      dot.textContent = i < STATE.level ? '❤' : i;
+      bar.appendChild(dot);
+    }
+  }
+
+  // ============ 彩帶 ============
+  function confetti() {
+    const colors = ['#fecaca','#f472b6','#fbbf24','#60a5fa','#fdba74','#ef4444'];
+    for (let i = 0; i < 45; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = (50 + (Math.random()-0.5)*80) + 'vw';
+      c.style.top = '50vh';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.transform = 'rotate(' + Math.random()*360 + 'deg)';
+      document.body.appendChild(c);
+      const dx = (Math.random()-0.5) * 600;
+      const dy = (Math.random()-0.3) * 600;
+      c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy}px) rotate(720deg)`, opacity: 0 }
+      ], { duration: 1500, easing: 'cubic-bezier(.17,.67,.83,.67)' });
+      setTimeout(() => c.remove(), 1600);
+    }
+  }
+
+  // ============ 畫面切換 ============
+  function show(id) {
+    ['intro','level1','level2','level3','finale'].forEach(s => {
+      const el = document.getElementById(s);
+      if (!el) return;
+      if (s === id) { el.classList.remove('hide'); el.classList.add('popin'); }
+      else { el.classList.add('hide'); el.classList.remove('popin'); }
+    });
+  }
+
+  function startGame() {
+    STATE.level = 1;
+    drawProgress();
+    loadLevel1();
+    show('level1');
+  }
+
+  // ============ 關卡 1：熱天安全 — 需選 2 個正確 ============
+  const L1_CORRECT = new Set(['water','shade']);
+  const l1Picked = new Set();
+
+  function loadLevel1() {
+    l1Picked.clear();
+    document.getElementById('l1-feedback').classList.add('hide');
+    document.querySelectorAll('#level1 button[data-ans]').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('ring-4','ring-pink-400','bg-green-300','bg-yellow-300','opacity-50','wiggle');
+    });
+  }
+
+  function l1Pick(btn) {
+    const fb = document.getElementById('l1-feedback');
+    const ans = btn.dataset.ans;
+    if (L1_CORRECT.has(ans)) {
+      if (l1Picked.has(ans)) return;
+      l1Picked.add(ans);
+      btn.classList.add('ring-4','ring-pink-400');
+      btn.classList.add('popin');
+      if (l1Picked.size === L1_CORRECT.size) {
+        fb.classList.remove('hide');
+        fb.textContent = '🎉 好棒！你會保護自己！';
+        fb.className = 'text-3xl text-center mt-4 font-bold text-pink-500 popin';
+        confetti();
+        document.querySelectorAll('#level1 button[data-ans]').forEach(b => b.disabled = true);
+        setTimeout(() => {
+          STATE.level = 2;
+          drawProgress();
+          loadLevel2();
+          show('level2');
+        }, 1800);
+      } else {
+        fb.classList.remove('hide');
+        fb.textContent = '✨ 還有一個！';
+        fb.className = 'text-2xl text-center mt-4 font-bold text-orange-500';
+      }
+    } else {
+      fb.classList.remove('hide');
+      fb.textContent = '😊 想一想，什麼讓身體涼涼的、休息一下？';
+      fb.className = 'text-xl text-center mt-4 font-bold text-orange-500';
+      btn.classList.add('wiggle');
+      setTimeout(() => btn.classList.remove('wiggle'), 400);
+    }
+  }
+
+  // ============ 關卡 2：颱風背包 — 拖拉分類 ============
+  const L2_ITEMS = [
+    { id: 'water',    emoji: '💧', label: '水',     zone: 'need' },
+    { id: 'flash',    emoji: '🔦', label: '手電筒', zone: 'need' },
+    { id: 'cookie',   emoji: '🍪', label: '餅乾',   zone: 'need' },
+    { id: 'ice',      emoji: '🍦', label: '冰淇淋', zone: 'skip' },
+    { id: 'ball',     emoji: '⚽', label: '足球',   zone: 'skip' },
+    { id: 'teddy',    emoji: '🧸', label: '玩具熊', zone: 'skip' }
+  ];
+  let l2Correct = 0;
+
+  function loadLevel2() {
+    l2Correct = 0;
+    const box = document.getElementById('l2-items');
+    box.innerHTML = '';
+    L2_ITEMS.slice().sort(() => Math.random()-0.5).forEach(it => {
+      const d = document.createElement('div');
+      d.className = 'card text-center cursor-grab bg-white shadow-lg p-3';
+      d.draggable = true;
+      d.dataset.id = it.id;
+      d.dataset.zone = it.zone;
+      d.innerHTML = `<div class="text-5xl">${it.emoji}</div><div class="text-lg text-gray-700 mt-1 font-bold">${it.label}</div>`;
+      d.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', it.id));
+      d.addEventListener('touchstart', e => startTouchDrag(d, e), { passive: false });
+      box.appendChild(d);
+    });
+
+    document.querySelectorAll('#level2 .dropzone').forEach(z => {
+      z.ondragover = e => { e.preventDefault(); z.classList.add('dropzone-active'); };
+      z.ondragleave = () => z.classList.remove('dropzone-active');
+      z.ondrop = e => {
+        e.preventDefault();
+        z.classList.remove('dropzone-active');
+        const id = e.dataTransfer.getData('text/plain');
+        const src = document.querySelector(`#l2-items [data-id="${id}"]`);
+        if (!src) return;
+        handleL2Drop(src, z);
+      };
+    });
+    document.getElementById('l2-feedback').classList.add('hide');
+  }
+
+  function handleL2Drop(src, z) {
+    if (src.dataset.zone === z.dataset.zone) {
+      src.classList.add('popin');
+      z.appendChild(src);
+      src.draggable = false;
+      l2Correct++;
+      if (l2Correct === L2_ITEMS.length) {
+        const fb = document.getElementById('l2-feedback');
+        fb.classList.remove('hide');
+        fb.textContent = '🎉 超棒！你準備好防颱啦！';
+        fb.className = 'text-3xl font-bold text-pink-500 popin';
+        confetti();
+        setTimeout(() => {
+          STATE.level = 3;
+          drawProgress();
+          loadLevel3();
+          show('level3');
+        }, 1800);
+      } else {
+        const mini = document.createElement('div');
+        mini.textContent = '✨';
+        mini.className = 'text-4xl popin';
+        z.appendChild(mini);
+        setTimeout(() => mini.remove(), 600);
+      }
+    } else {
+      src.classList.add('wiggle');
+      const fb = document.getElementById('l2-feedback');
+      fb.classList.remove('hide');
+      fb.textContent = '😊 再想一想～颱風天什麼最重要？';
+      fb.className = 'text-xl font-bold text-orange-500';
+      setTimeout(() => src.classList.remove('wiggle'), 400);
+    }
+  }
+
+  // --- touch fallback ---
+  let l2Selected = null;
+  function startTouchDrag(el, e) {
+    if (!el.draggable) return;
+    e.preventDefault();
+    if (l2Selected) l2Selected.classList.remove('ring-4','ring-pink-400');
+    l2Selected = el;
+    el.classList.add('ring-4','ring-pink-400');
+  }
+  document.addEventListener('touchend', function(e) {
+    if (!l2Selected) return;
+    const t = e.changedTouches[0];
+    const target = document.elementFromPoint(t.clientX, t.clientY);
+    const zone = target && target.closest('.dropzone');
+    if (zone) {
+      handleL2Drop(l2Selected, zone);
+    }
+    if (l2Selected) l2Selected.classList.remove('ring-4','ring-pink-400');
+    l2Selected = null;
+  });
+
+  // ============ 關卡 3：同理心 — 選關心朋友的 2 個行動 ============
+  const L3_ITEMS = [
+    { id: 'card',    label: '送暖心卡', emoji: '💌', correct: true  },
+    { id: 'hug',     label: '抱抱他',   emoji: '🤗', correct: true  },
+    { id: 'share',   label: '分他吃餅乾', emoji: '🍪', correct: true  },
+    { id: 'laugh',   label: '笑他',     emoji: '😅', correct: false },
+    { id: 'ignore',  label: '不理他',   emoji: '🙈', correct: false },
+    { id: 'scold',   label: '罵他',     emoji: '😠', correct: false }
+  ];
+  const l3Picked = new Set();
+
+  function loadLevel3() {
+    l3Picked.clear();
+    const box = document.getElementById('l3-items');
+    box.innerHTML = '';
+    L3_ITEMS.slice().sort(() => Math.random()-0.5).forEach(it => {
+      const b = document.createElement('button');
+      b.className = 'card bg-rose-50 hover:bg-rose-100 p-3 flex flex-col items-center text-xl';
+      b.innerHTML = `<div class="text-5xl">${it.emoji}</div><div class="mt-1 text-base font-bold">${it.label}</div>`;
+      b.onclick = () => {
+        if (l3Picked.has(it.id)) {
+          l3Picked.delete(it.id);
+          b.classList.remove('ring-4','ring-pink-400','bg-pink-100');
+          b.classList.add('bg-rose-50');
+        } else {
+          l3Picked.add(it.id);
+          b.classList.add('ring-4','ring-pink-400','bg-pink-100');
+          b.classList.remove('bg-rose-50');
+        }
+      };
+      box.appendChild(b);
+    });
+    document.getElementById('l3-feedback').classList.add('hide');
+  }
+
+  function l3Check() {
+    // 要求：選到的至少 2 個都是 correct=true，並且沒選任何 correct=false
+    const picked = [...l3Picked].map(id => L3_ITEMS.find(x => x.id === id));
+    const hasWrong = picked.some(p => !p.correct);
+    const okCount = picked.filter(p => p.correct).length;
+    const fb = document.getElementById('l3-feedback');
+    fb.classList.remove('hide');
+    if (!hasWrong && okCount >= 2) {
+      fb.textContent = '🎉 你是最暖心的朋友！';
+      fb.className = 'text-3xl font-bold text-pink-500 popin mt-3';
+      confetti();
+      setTimeout(() => {
+        STATE.level = 4;
+        drawProgress();
+        show('finale');
+        setTimeout(confetti, 300);
+        setTimeout(confetti, 900);
+      }, 1800);
+    } else if (hasWrong) {
+      fb.textContent = '😊 想一想：朋友難過時，我們會怎麼對他？';
+      fb.className = 'text-xl font-bold text-orange-500 mt-3';
+    } else {
+      fb.textContent = '✨ 再選 1 個關心的行動！';
+      fb.className = 'text-xl font-bold text-orange-500 mt-3';
+    }
+  }
+
+  function restart() {
+    STATE.level = 0;
+    show('intro');
+    drawProgress();
+  }
+
+  // init
+  drawProgress();
+</script>
+</body>
+</html>

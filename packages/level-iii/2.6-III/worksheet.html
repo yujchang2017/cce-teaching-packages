@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>瀕危守護者 — 2.6-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#fef3c7 0%,#dcfce7 50%,#e0e7ff 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .feedback-pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,.25); }
+  .drag-item { cursor: grab; user-select: none; }
+  .drag-item.dragging { opacity: .4; }
+  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
+  .badge { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
+  .hidden-step { display: none; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-amber-600 via-emerald-600 to-indigo-600 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">🐻 瀕危守護者 — 祖靈山林的約定</h1>
+    <p class="mt-2 text-amber-50">UNESCO 2.6-III ｜ 9-12 歲 ｜ 與自然重新連結、成為瀕危物種的守護者</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 角色與情境故事 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl">🐻</div>
+    <div>
+      <h2 class="text-2xl font-bold text-amber-700">任務簡報：祖靈呼喚你成為「瀕危守護者」！</h2>
+      <p class="mt-2 leading-relaxed">你好，年輕的守護者。我是台灣黑熊阿烏瑪，布農族說我胸前的白色 V 是祖靈留下的記號。現在全台灣只剩下 <strong class="text-red-600">200 到 600 隻</strong> 像我一樣的夥伴。我邀請你通過 6 個關卡，認識神聖自然、聽懂動物語言、解讀 IUCN 紅皮書，成為台灣瀕危物種的守護者，最後解鎖「全校英雄」徽章！</p>
+      <button onclick="startMission()" class="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 🏔️</button>
+    </div>
+  </div>
+</section>
+
+<!-- 關卡 1：神聖自然文化配對 -->
+<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-amber-700">🕊️ 關卡 1：神聖的連結 — 每個文化都有自己的山</h2>
+  <p class="mt-2 text-gray-600">世界各地的文化都有神聖的自然對象。你能為下列文化配對出正確的「神聖物」嗎？</p>
+  <div class="space-y-4 mt-4">
+    <div class="q1 p-4 bg-amber-50 rounded-xl" data-ans="B">
+      <p class="font-bold">①【台灣布農族】視哪一種動物為祖靈使者，傳統上嚴禁獵殺？</p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+        <button class="q1-opt p-3 border-2 border-amber-200 rounded-lg hover:bg-amber-100" data-v="A">梅花鹿</button>
+        <button class="q1-opt p-3 border-2 border-amber-200 rounded-lg hover:bg-amber-100" data-v="B">台灣黑熊</button>
+        <button class="q1-opt p-3 border-2 border-amber-200 rounded-lg hover:bg-amber-100" data-v="C">石虎</button>
+        <button class="q1-opt p-3 border-2 border-amber-200 rounded-lg hover:bg-amber-100" data-v="D">藍鵲</button>
+      </div>
+    </div>
+    <div class="q1 p-4 bg-green-50 rounded-xl" data-ans="C">
+      <p class="font-bold">②【達悟族】每年有固定祭典、規範捕撈時期的海洋生物是？</p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+        <button class="q1-opt p-3 border-2 border-green-200 rounded-lg hover:bg-green-100" data-v="A">鯊魚</button>
+        <button class="q1-opt p-3 border-2 border-green-200 rounded-lg hover:bg-green-100" data-v="B">海龜</button>
+        <button class="q1-opt p-3 border-2 border-green-200 rounded-lg hover:bg-green-100" data-v="C">飛魚</button>
+        <button class="q1-opt p-3 border-2 border-green-200 rounded-lg hover:bg-green-100" data-v="D">鯨魚</button>
+      </div>
+    </div>
+    <div class="q1 p-4 bg-indigo-50 rounded-xl" data-ans="A">
+      <p class="font-bold">③【日本神社】周圍世代禁伐、保護自然的森林叫做？</p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+        <button class="q1-opt p-3 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100" data-v="A">鎮守の森</button>
+        <button class="q1-opt p-3 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100" data-v="B">都市公園</button>
+        <button class="q1-opt p-3 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100" data-v="C">果樹園</button>
+        <button class="q1-opt p-3 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100" data-v="D">盆景園</button>
+      </div>
+    </div>
+  </div>
+  <div id="q1-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 2：動物溝通聽聲辨位（拖曳） -->
+<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-teal-700">🎵 關卡 2：動物的語言 — 把溝通方式拖到正確的動物</h2>
+  <p class="mt-2 text-gray-600">每一種動物都有自己的「語言」。把 6 張溝通卡拖到正確的動物家：</p>
+
+  <div class="flex flex-wrap gap-3 mt-4" id="animalPool">
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="bird">🎶 唱上百首歌曲求偶</div>
+    <div class="drag-item bg-blue-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="whale">🌊 用低頻歌聲跨越數千公里</div>
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="bird">📣 鳴叫宣告領域範圍</div>
+    <div class="drag-item bg-orange-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="bee">💃 跳 8 字舞告知花源方向</div>
+    <div class="drag-item bg-red-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="ant">👃 用費洛蒙氣味指引路線</div>
+    <div class="drag-item bg-blue-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="whale">🐋 媽媽用聲音呼喚迷路寶寶</div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5">
+    <div class="drop-zone border-4 border-dashed border-yellow-400 rounded-xl p-4 min-h-[140px] bg-yellow-50" data-hab="bird">
+      <p class="font-bold text-yellow-700">🐦 鳥類</p>
+      <div class="drop-content flex flex-wrap gap-2 mt-2"></div>
+    </div>
+    <div class="drop-zone border-4 border-dashed border-blue-400 rounded-xl p-4 min-h-[140px] bg-blue-50" data-hab="whale">
+      <p class="font-bold text-blue-700">🐋 鯨豚</p>
+      <div class="drop-content flex flex-wrap gap-2 mt-2"></div>
+    </div>
+    <div class="drop-zone border-4 border-dashed border-orange-400 rounded-xl p-4 min-h-[140px] bg-orange-50" data-hab="bee">
+      <p class="font-bold text-orange-700">🐝 蜜蜂</p>
+      <div class="drop-content flex flex-wrap gap-2 mt-2"></div>
+    </div>
+    <div class="drop-zone border-4 border-dashed border-red-400 rounded-xl p-4 min-h-[140px] bg-red-50" data-hab="ant">
+      <p class="font-bold text-red-700">🐜 螞蟻</p>
+      <div class="drop-content flex flex-wrap gap-2 mt-2"></div>
+    </div>
+  </div>
+  <button onclick="checkLevel2()" class="mt-4 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full shadow">提交配對 🔍</button>
+  <div id="q2-feedback" class="mt-4"></div>
+
+  <div class="mt-5 p-4 bg-indigo-50 rounded-xl">
+    <p class="text-sm"><strong>延伸思考：</strong>NOAA 研究指出，過去 <strong>50 年海洋低頻噪音增加 10-100 倍</strong>。鯨豚的「長途電話」正被商船、聲納淹沒。這跟我們有什麼關係？</p>
+  </div>
+</section>
+
+<!-- 關卡 3：IUCN 紅皮書分級 -->
+<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-rose-700">📕 關卡 3：紅皮書偵探 — 誰需要幫忙？</h2>
+  <p class="mt-2 text-gray-600">IUCN 紅皮書 2024 年評估了 16 萬種生物，<strong>約 46,000 種面臨絕種威脅（28%）</strong>。你能判斷每個描述對應的等級嗎？</p>
+  <div class="space-y-3 mt-4">
+    <div class="q3 p-4 bg-rose-50 rounded-xl" data-ans="CR">
+      <p class="font-bold">① 極危（CR）：族群極度稀少、若不行動即將絕種。符合的是？</p>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+        <button class="q3-opt p-3 border-2 border-rose-200 rounded-lg hover:bg-rose-100" data-v="LC">台灣麻雀</button>
+        <button class="q3-opt p-3 border-2 border-rose-200 rounded-lg hover:bg-rose-100" data-v="CR">櫻花鉤吻鮭（野外曾剩 200 尾）</button>
+        <button class="q3-opt p-3 border-2 border-rose-200 rounded-lg hover:bg-rose-100" data-v="NT">都市家燕</button>
+      </div>
+    </div>
+    <div class="q3 p-4 bg-orange-50 rounded-xl" data-ans="EN">
+      <p class="font-bold">② 瀕危（EN）：若威脅持續很可能絕種。台灣僅剩約 500 隻的是？</p>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+        <button class="q3-opt p-3 border-2 border-orange-200 rounded-lg hover:bg-orange-100" data-v="EN">石虎</button>
+        <button class="q3-opt p-3 border-2 border-orange-200 rounded-lg hover:bg-orange-100" data-v="LC">野鴿</button>
+        <button class="q3-opt p-3 border-2 border-orange-200 rounded-lg hover:bg-orange-100" data-v="VU">台灣彌猴</button>
+      </div>
+    </div>
+    <div class="q3 p-4 bg-yellow-50 rounded-xl" data-ans="EX">
+      <p class="font-bold">③ 絕滅（EX）：已經從地球上消失。19 世紀被獵殺殆盡的是？</p>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+        <button class="q3-opt p-3 border-2 border-yellow-200 rounded-lg hover:bg-yellow-100" data-v="EX">渡渡鳥（Dodo）</button>
+        <button class="q3-opt p-3 border-2 border-yellow-200 rounded-lg hover:bg-yellow-100" data-v="VU">台灣黑熊</button>
+        <button class="q3-opt p-3 border-2 border-yellow-200 rounded-lg hover:bg-yellow-100" data-v="EN">黑面琵鷺</button>
+      </div>
+    </div>
+  </div>
+  <div id="q3-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 4：石虎路殺情境選擇題（引導錯答） -->
+<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-emerald-700">🐆 關卡 4：石虎阿花的回家路 — 情境選擇</h2>
+  <p class="mt-2 text-gray-600">你是石虎阿花，要從森林 A 走到森林 B 覓食，中間隔著一條高速公路。2024 年台灣已通報<strong>約 90 起</strong>石虎路殺。你會怎麼做？</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-4">
+    <button class="choice p-4 border-2 border-emerald-200 rounded-xl hover:bg-emerald-50 text-left" data-c="A">
+      <p class="font-bold">A. 直接衝過馬路，最快！</p>
+      <p class="text-sm text-gray-600">反正我速度很快吧？</p>
+    </button>
+    <button class="choice p-4 border-2 border-emerald-200 rounded-xl hover:bg-emerald-50 text-left" data-c="B">
+      <p class="font-bold">B. 等天黑再衝</p>
+      <p class="text-sm text-gray-600">夜深人靜車子比較少。</p>
+    </button>
+    <button class="choice p-4 border-2 border-emerald-200 rounded-xl hover:bg-emerald-50 text-left" data-c="C">
+      <p class="font-bold">C. 繞路找「動物生態通道」</p>
+      <p class="text-sm text-gray-600">苗栗、台中已建超過 10 座石虎專用橋下涵洞。</p>
+    </button>
+    <button class="choice p-4 border-2 border-emerald-200 rounded-xl hover:bg-emerald-50 text-left" data-c="D">
+      <p class="font-bold">D. 放棄覓食、待在原地</p>
+      <p class="text-sm text-gray-600">不去就不會死啊。</p>
+    </button>
+  </div>
+  <div id="q4-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 5：復育三部曲排序 -->
+<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-sky-700">🐟 關卡 5：櫻花鉤吻鮭復育奇蹟 — 三部曲正確順序</h2>
+  <p class="mt-2 text-gray-600">台灣櫻花鉤吻鮭從 <strong>1984 年 200 多尾</strong>，40 年後 <strong>2023 年突破 15,000 尾</strong>！科學家依照「復育三部曲」救回牠們。請把下列三步驟拖到正確順序：</p>
+  <div class="flex flex-wrap gap-3 mt-4" id="stepPool">
+    <div class="drag-item bg-sky-100 px-4 py-3 rounded-xl shadow" draggable="true" data-order="2">🧬 圈養繁殖並記錄基因</div>
+    <div class="drag-item bg-sky-100 px-4 py-3 rounded-xl shadow" draggable="true" data-order="1">🏞️ 整理溪流棲地、降低污染</div>
+    <div class="drag-item bg-sky-100 px-4 py-3 rounded-xl shadow" draggable="true" data-order="3">🌊 野放並持續追蹤族群</div>
+  </div>
+  <div class="grid grid-cols-3 gap-3 mt-5">
+    <div class="drop-zone border-4 border-dashed border-sky-400 rounded-xl p-4 min-h-[110px] bg-sky-50" data-order="1">
+      <p class="font-bold text-sky-700">第 1 步</p>
+      <div class="drop-content flex flex-wrap gap-2 mt-2"></div>
+    </div>
+    <div class="drop-zone border-4 border-dashed border-sky-400 rounded-xl p-4 min-h-[110px] bg-sky-50" data-order="2">
+      <p class="font-bold text-sky-700">第 2 步</p>
+      <div class="drop-content flex flex-wrap gap-2 mt-2"></div>
+    </div>
+    <div class="drop-zone border-4 border-dashed border-sky-400 rounded-xl p-4 min-h-[110px] bg-sky-50" data-order="3">
+      <p class="font-bold text-sky-700">第 3 步</p>
+      <div class="drop-content flex flex-wrap gap-2 mt-2"></div>
+    </div>
+  </div>
+  <button onclick="checkLevel5()" class="mt-4 bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-6 rounded-full shadow">提交順序 🧬</button>
+  <div id="q5-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 6：WSA 全校四面向 -->
+<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-amber-700">🏫 關卡 6：全校英雄挑戰 — 勾選你願意行動的四個面向</h2>
+  <p class="mt-2 text-gray-600">讓學校變成瀕危物種的庇護所，需要「課程 × 校園 × 社區 × 學生」四個面向同時行動。勾選你願意投入的行動（全部勾選才能解鎖徽章）：</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-4">
+    <label class="flex items-start gap-3 p-4 border-2 border-blue-200 rounded-xl cursor-pointer hover:bg-blue-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="curriculum" />
+      <div>
+        <p class="font-bold text-blue-700">📚 課程整合</p>
+        <p class="text-sm">選 1 種台灣瀕危物種（石虎、黑熊、黑面琵鷺、櫻花鉤吻鮭），用自然課查 IUCN、社會課寫報告、美術課畫海報。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-green-200 rounded-xl cursor-pointer hover:bg-green-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="campus" />
+      <div>
+        <p class="font-bold text-green-700">🌳 校園營運</p>
+        <p class="text-sm">提議校園種原生蜜源植物、耳機音量低於 60%、拒絕放生入侵種、夜間減光保護夜行動物。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-orange-200 rounded-xl cursor-pointer hover:bg-orange-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="community" />
+      <div>
+        <p class="font-bold text-orange-700">🤝 社區連結</p>
+        <p class="text-sm">訪問 1 位耆老或原住民長輩神聖禁地故事；與家長一起使用「路殺社」App 通報動物遺體。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-purple-200 rounded-xl cursor-pointer hover:bg-purple-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="agency" />
+      <div>
+        <p class="font-bold text-purple-700">🙋 學生治理</p>
+        <p class="text-sm">選出「瀕危物種大使」，每週廣播 1 則保育小知識，並向校務會議提出 1 個救援提案。</p>
+      </div>
+    </label>
+  </div>
+  <button onclick="checkWSA()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full shadow-lg">提交挑戰 🏆</button>
+  <div id="wsa-feedback" class="mt-4"></div>
+</section>
+
+<!-- 徽章與成果 -->
+<section id="result" class="hidden-step card bg-gradient-to-br from-yellow-100 to-amber-200 rounded-2xl shadow-2xl p-8 mb-6 text-center">
+  <div class="text-7xl mb-3 badge inline-block rounded-full bg-white p-6">🏆</div>
+  <h2 class="text-3xl font-extrabold text-amber-800">全校英雄 徽章解鎖！</h2>
+  <p class="mt-3 text-lg">你理解了 <strong>46,000 種</strong> 全球受脅物種、為 <strong>約 500 隻</strong> 石虎、<strong>200-600 隻</strong> 黑熊、<strong>4,135 隻</strong> 黑面琵鷺、<strong>15,000+ 尾</strong> 櫻花鉤吻鮭許下守護承諾！</p>
+
+  <div class="bg-white rounded-xl p-5 mt-5 text-left">
+    <h3 class="font-bold text-emerald-700 text-xl mb-2">🌱 三個延伸思考（帶回家想想）</h3>
+    <ol class="list-decimal ml-6 space-y-2">
+      <li>訪問一位 60 歲以上的長輩或原住民耆老：「您小時候村裡有哪些禁地、禁獵的動物？」記下 3 則故事，帶來班上分享。</li>
+      <li>如果你有一個同學想把養膩的巴西龜「放生」到校園生態池，你會怎麼勸他？請寫下 3 個理由和 1 個替代方案。</li>
+      <li>十年後你想從事什麼職業？那份工作可以怎麼幫助瀕危物種？（提示：獸醫、工程師、影片創作者、農夫、老師…每一種都可以！）</li>
+    </ol>
+  </div>
+
+  <button onclick="window.print()" class="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full">🖨️ 列印成果頁</button>
+  <button onclick="location.reload()" class="mt-5 ml-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full">🔄 重新挑戰</button>
+</section>
+
+<footer class="text-center text-xs text-gray-500 pb-6">
+  資料來源：IUCN Red List 2024、IPBES 2019、NOAA Ocean Noise、農業部生物多樣性研究所、林業及自然保育署、HKBWS 2024、雪霸國家公園。教學套件 UNESCO 2.6-III ｜ 驗證日 2026-04-16
+</footer>
+
+</main>
+
+<script>
+let currentStep = 0;
+const steps = ['intro','level1','level2','level3','level4','level5','level6','result'];
+
+function showStep(i){
+  steps.forEach((s,idx)=>{
+    const el = document.getElementById(s);
+    if(!el) return;
+    if(idx===i) el.classList.remove('hidden-step');
+    else el.classList.add('hidden-step');
+  });
+  for(let k=1;k<=6;k++){
+    const d=document.getElementById('dot'+k);
+    d.classList.remove('done','active');
+    if(k < i) d.classList.add('done');
+    else if(k === i) d.classList.add('active');
+  }
+  const pt = document.getElementById('progressText');
+  if(i>=1 && i<=6) pt.textContent = `第 ${i} / 6 關`;
+  else if(i===7) pt.textContent = '完成！';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startMission(){ currentStep=1; showStep(1); }
+
+// Level 1 — 3 multiple choice questions
+let q1Correct=0, q1Total=3;
+document.querySelectorAll('.q1-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q1');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      q1Correct++;
+    } else {
+      btn.classList.add('bg-red-300','text-white','shake');
+      const correctBtn = parent.querySelector(`.q1-opt[data-v="${ans}"]`);
+      if(correctBtn) correctBtn.classList.add('bg-green-400','text-white');
+    }
+    parent.dataset.answered='1';
+    checkQ1Done();
+  });
+});
+function checkQ1Done(){
+  const answered = document.querySelectorAll('.q1[data-answered="1"]').length;
+  if(answered===q1Total){
+    const fb = document.getElementById('q1-feedback');
+    fb.innerHTML = `<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🕊️ 你答對 ${q1Correct}/${q1Total}！原住民的禁忌是最古老的保育法律 — 布農族禁獵黑熊、達悟族飛魚祭、日本神社鎮守の森，全世界的神聖自然都在保護生物多樣性。</div>`;
+    confetti();
+    setTimeout(()=>{currentStep=2;showStep(2);},1800);
+  }
+}
+
+// Level 2 — drag & drop
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{
+    e.preventDefault(); z.classList.remove('over');
+    if(dragged){ z.querySelector('.drop-content').appendChild(dragged); }
+  });
+});
+function checkLevel2(){
+  const zones = document.querySelectorAll('#level2 .drop-zone');
+  let correct=0, total=6;
+  zones.forEach(z=>{
+    const hab = z.dataset.hab;
+    z.querySelectorAll('.drop-content .drag-item').forEach(it=>{
+      if(it.dataset.hab===hab) correct++;
+    });
+  });
+  const fb = document.getElementById('q2-feedback');
+  if(correct===total){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎵 全部配對正確！動物都有自己的語言。但別忘了：海洋噪音 50 年增 10-100 倍，我們降低耳機音量、不在自然區大聲喧嘩，就是在保護牠們的通話。</div>';
+    confetti();
+    setTimeout(()=>{currentStep=3;showStep(3);},1600);
+  } else {
+    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 你答對 ${correct}/${total}。提示：鳥用歌聲求偶、鯨豚用低頻聲橫越大洋、蜜蜂跳 8 字舞、螞蟻靠氣味（費洛蒙）。</div>`;
+  }
+}
+
+// Level 3 — 3 red-list questions
+let q3Correct=0, q3Total=3;
+document.querySelectorAll('.q3-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q3');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      q3Correct++;
+    } else {
+      btn.classList.add('bg-red-300','text-white','shake');
+      const correctBtn = parent.querySelector(`.q3-opt[data-v="${ans}"]`);
+      if(correctBtn) correctBtn.classList.add('bg-green-400','text-white');
+    }
+    parent.dataset.answered='1';
+    checkQ3Done();
+  });
+});
+function checkQ3Done(){
+  const answered = document.querySelectorAll('.q3[data-answered="1"]').length;
+  if(answered===q3Total){
+    document.getElementById('q3-feedback').innerHTML =
+      `<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">📕 你答對 ${q3Correct}/${q3Total}！IUCN 紅皮書像地球生物的健康檢查：LC 無危→NT 近危→VU 易危→EN 瀕危→CR 極危→EW 野外絕滅→EX 絕滅。</div>`;
+    confetti();
+    setTimeout(()=>{currentStep=4;showStep(4);},1600);
+  }
+}
+
+// Level 4 — scenario choice
+const choiceFeedback = {
+  A: { tone:'warn', text:'⚠️ 直衝非常危險！台灣每年通報約 90 起石虎路殺，直接衝馬路是石虎族群最大的威脅之一。' },
+  B: { tone:'ok', text:'🌙 夜深車少比較安全一點，但夜行車輛速度往往更快，還是可能發生路殺。更好的做法是走「動物通道」。' },
+  C: { tone:'best', text:'🌟 最佳答案！生態廊道（動物通道）是政府專為石虎等野生動物設計的過路結構，苗栗、台中已有超過 10 座。這才是根本解決之道。' },
+  D: { tone:'warn', text:'😢 不去覓食會餓死，棲地切割才是問題根源。答案不是犧牲石虎，而是建設安全通道、保護棲地連結。' }
+};
+document.querySelectorAll('.choice').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(document.getElementById('level4').dataset.answered) return;
+    document.getElementById('level4').dataset.answered='1';
+    const c = choiceFeedback[btn.dataset.c];
+    const color = c.tone==='best'?'green':(c.tone==='ok'?'blue':'yellow');
+    btn.classList.add('bg-'+color+'-100','border-'+color+'-500');
+    document.getElementById('q4-feedback').innerHTML =
+      `<div class="feedback-pop bg-${color}-100 border-l-4 border-${color}-500 p-3 rounded">${c.text}</div>`;
+    if(c.tone==='best') confetti();
+    setTimeout(()=>{currentStep=5;showStep(5);},2200);
+  });
+});
+
+// Level 5 — ordering drag-drop
+function checkLevel5(){
+  const zones = document.querySelectorAll('#level5 .drop-zone');
+  let correct=0;
+  zones.forEach(z=>{
+    const want = z.dataset.order;
+    const item = z.querySelector('.drop-content .drag-item');
+    if(item && item.dataset.order===want) correct++;
+  });
+  const fb = document.getElementById('q5-feedback');
+  if(correct===3){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🐟 順序正確！「棲地準備 → 圈養繁殖 → 野放追蹤」這三部曲讓櫻花鉤吻鮭從 200 尾復育到 15,000+ 尾。只要人類願意，瀕危真的能變回希望。</div>';
+    confetti();
+    setTimeout(()=>{currentStep=6;showStep(6);},1800);
+  } else {
+    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 答對 ${correct}/3 步。提示：如果棲地還有污染或路殺風險，直接把動物放回去是害牠們。一定要先「整理房間」再「迎接回家」。</div>`;
+  }
+}
+
+// Level 6 — WSA
+function checkWSA(){
+  const boxes = document.querySelectorAll('.wsa');
+  const all = Array.from(boxes).every(b=>b.checked);
+  const fb = document.getElementById('wsa-feedback');
+  if(all){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-4 rounded text-lg">🏅 四面向全勾選！你就是祖靈託付的全校英雄！</div>';
+    confetti(60);
+    setTimeout(()=>{currentStep=7;showStep(7);},1800);
+  } else {
+    const cnt = Array.from(boxes).filter(b=>b.checked).length;
+    fb.innerHTML = `<div class="feedback-pop bg-amber-100 border-l-4 border-amber-500 p-3 rounded">你選了 ${cnt}/4 個面向。全校英雄需要「課程、校園、社區、學生」四面向一起行動，每個都很重要！再想想你可以怎麼參與剩下的面向？</div>`;
+  }
+}
+
+// Confetti
+function confetti(n=30){
+  const colors=['#f87171','#fbbf24','#34d399','#60a5fa','#a78bfa'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.top='-20px';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*0.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+</script>
+</body>
+</html>

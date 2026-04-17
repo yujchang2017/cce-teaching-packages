@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第六次大滅絕？ | 國中生物多樣性互動學習單 2.2-IV</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif; background:linear-gradient(135deg,#d1fae5,#fef3c7,#fce7f3); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform:translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor:grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:70px; transition:background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation:fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform:translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#059669; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation:fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea.cer { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem;}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  svg.loop text { pointer-events:none;}
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">🌿 第六次大滅絕？</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『生物多樣性青年研究員』：8 個任務，走完你就是 Level 4 國中生態公民。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">研究員積分</div>
+    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">演化</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">五大滅絕</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">資料詮釋</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">倫理</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs">論證 CER</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs">專題</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs">後設</span>
+</div>
+
+<!-- ===== Level 1: 達爾文時間軸 + 天擇模擬 ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🧭</div>
+    <div>
+      <h2 class="text-xl font-bold text-sky-700">任務 1｜演化的舞台</h2>
+      <p class="text-sm text-slate-700 mt-1">將達爾文生平 5 事件依時間順序排列。拖拉卡片至正確年代槽。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：自然史實習生 ｜ 10 分</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="1831">登上小獵犬號</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="1835">加拉巴哥雀鳥觀察</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="1858">華萊士來信</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="1859">《物種起源》出版</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="1882">達爾文逝世</div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-5 gap-2">
+    <div class="drop-zone p-2 text-center" data-accept="1831"><div class="font-bold text-slate-600 text-xs">1831</div></div>
+    <div class="drop-zone p-2 text-center" data-accept="1835"><div class="font-bold text-slate-600 text-xs">1835</div></div>
+    <div class="drop-zone p-2 text-center" data-accept="1858"><div class="font-bold text-slate-600 text-xs">1858</div></div>
+    <div class="drop-zone p-2 text-center" data-accept="1859"><div class="font-bold text-slate-600 text-xs">1859</div></div>
+    <div class="drop-zone p-2 text-center" data-accept="1882"><div class="font-bold text-slate-600 text-xs">1882</div></div>
+  </div>
+
+  <div class="mt-4 bg-emerald-50 rounded-lg p-3">
+    <p class="text-sm font-semibold text-emerald-800">🫘 天擇模擬記錄（課堂豆子遊戲後填寫）</p>
+    <p class="text-xs text-slate-600 mt-1">在綠色布上同時放 20 粒綠豆／20 粒紅豆／20 粒黑豆，1 分鐘用筷子夾『獵物』。</p>
+    <textarea class="cer mt-2" id="q1-sim" rows="2" placeholder="我們組捕到最多的是哪個顏色？為什麼？哪個顏色『生存』到最後？（天擇四要件：變異、遺傳、過度繁殖、差異存活率——你在遊戲中看到哪幾個？）"></textarea>
+  </div>
+
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <button id="btn-next-1" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 2: 五次大滅絕配對 ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🦖</div>
+    <div>
+      <h2 class="text-xl font-bold text-violet-700">任務 2｜五次大滅絕配對</h2>
+      <p class="text-sm text-slate-700 mt-1">判斷以下關於大滅絕與人類世的陳述是否正確。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：古生物記者 ｜ 10 分</p>
+    </div>
+  </div>
+
+  <div class="space-y-3" id="q2-box">
+    <div class="quiz-item border rounded-lg p-3" data-correct="F">
+      <p class="font-semibold">① 五次大滅絕都是隕石撞擊造成的。</p>
+      <div class="flex gap-2 mt-2">
+        <button class="btn btn-ans bg-emerald-500 text-white px-4 py-1 rounded" data-ans="T">正確</button>
+        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded" data-ans="F">錯誤</button>
+      </div>
+      <p class="hint text-xs text-slate-500 mt-2 hidden">只有 K-Pg（恐龍滅絕）主因為 Chicxulub 隕石；二疊紀末主因為西伯利亞暗色岩超級火山。</p>
+    </div>
+    <div class="quiz-item border rounded-lg p-3" data-correct="T">
+      <p class="font-semibold">② 二疊紀-三疊紀滅絕事件讓約 95% 海洋物種消失，是五次中最慘烈的。</p>
+      <div class="flex gap-2 mt-2">
+        <button class="btn btn-ans bg-emerald-500 text-white px-4 py-1 rounded" data-ans="T">正確</button>
+        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded" data-ans="F">錯誤</button>
+      </div>
+      <p class="hint text-xs text-slate-500 mt-2 hidden">正確！P-T 事件是『大死亡』，生命幾乎重來。</p>
+    </div>
+    <div class="quiz-item border rounded-lg p-3" data-correct="F">
+      <p class="font-semibold">③ 『人類世』（Anthropocene）於 2024 年已被國際地層委員會（ICS）正式列為地質年代單位。</p>
+      <div class="flex gap-2 mt-2">
+        <button class="btn btn-ans bg-emerald-500 text-white px-4 py-1 rounded" data-ans="T">正確</button>
+        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded" data-ans="F">錯誤</button>
+      </div>
+      <p class="hint text-xs text-slate-500 mt-2 hidden">2024 年 3 月 ICS 投票『否決』正式化。但人類世仍廣泛使用為描述性概念。</p>
+    </div>
+    <div class="quiz-item border rounded-lg p-3" data-correct="T">
+      <p class="font-semibold">④ IPBES 2019 指出：目前物種滅絕速率比過去千萬年平均高出數十至數百倍。</p>
+      <div class="flex gap-2 mt-2">
+        <button class="btn btn-ans bg-emerald-500 text-white px-4 py-1 rounded" data-ans="T">正確</button>
+        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded" data-ans="F">錯誤</button>
+      </div>
+      <p class="hint text-xs text-slate-500 mt-2 hidden">正確！且仍在加速。</p>
+    </div>
+  </div>
+  <button id="btn-next-2" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 3: 資料詮釋（IPBES 75%） ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📈</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 3｜資料詮釋：人類改變地球的尺度</h2>
+      <p class="text-sm text-slate-700 mt-1">下圖是 IPBES 2019 的整合圖示。請解讀並回答。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：資料科學家 ｜ 10 分 ｜ <span class="chip bg-amber-100 text-amber-800">資料詮釋題</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 400 200" class="w-full max-w-xl mx-auto block bg-slate-50 rounded">
+    <text x="200" y="20" text-anchor="middle" font-size="13" font-weight="bold" fill="#334155">IPBES 2019：人類對地球的改變</text>
+    <!-- bar 1: 陸地 75% -->
+    <text x="10" y="60" font-size="11" fill="#334155">陸地環境改變</text>
+    <rect x="110" y="48" width="218" height="18" fill="#e2e8f0"/>
+    <rect x="110" y="48" width="163" height="18" fill="#dc2626"/>
+    <text x="330" y="62" font-size="11" fill="#dc2626" font-weight="bold">75%</text>
+    <!-- bar 2: 海洋 66% -->
+    <text x="10" y="95" font-size="11" fill="#334155">海洋環境衝擊</text>
+    <rect x="110" y="83" width="218" height="18" fill="#e2e8f0"/>
+    <rect x="110" y="83" width="144" height="18" fill="#0ea5e9"/>
+    <text x="330" y="97" font-size="11" fill="#0ea5e9" font-weight="bold">66%</text>
+    <!-- bar 3: 100 萬物種 -->
+    <text x="10" y="130" font-size="11" fill="#334155">物種受威脅</text>
+    <rect x="110" y="118" width="218" height="18" fill="#e2e8f0"/>
+    <rect x="110" y="118" width="150" height="18" fill="#f59e0b"/>
+    <text x="268" y="132" font-size="11" fill="#92400e" font-weight="bold">100 萬 / 800 萬</text>
+    <!-- bar 4: 滅絕速率 -->
+    <text x="10" y="165" font-size="11" fill="#334155">當前滅絕速率</text>
+    <rect x="110" y="153" width="218" height="18" fill="#e2e8f0"/>
+    <rect x="110" y="153" width="200" height="18" fill="#7c3aed"/>
+    <text x="315" y="167" font-size="10" fill="#5b21b6" font-weight="bold">數十-數百倍</text>
+    <text x="200" y="195" text-anchor="middle" font-size="9" fill="#64748b">資料來源：IPBES Global Assessment (2019)</text>
+  </svg>
+
+  <div class="mt-4 space-y-3">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q3-1｜以下哪個陳述最符合圖中資料？（4 分）</label>
+      <div class="space-y-1" id="q31">
+        <label class="block text-sm"><input type="radio" name="q31" value="A"> A. 陸地改變比海洋衝擊嚴重，物種受威脅比例約 1/8</label>
+        <label class="block text-sm"><input type="radio" name="q31" value="B"> B. 海洋已改變 75%，陸地只改變 66%</label>
+        <label class="block text-sm"><input type="radio" name="q31" value="C"> C. 物種全部面臨滅絕，且滅絕速率穩定不變</label>
+      </div>
+      <p class="text-xs mt-1 text-slate-500 q31-fb"></p>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q3-2｜請<strong>推論</strong>：為什麼 IPBES 用『比背景速率高數十至數百倍』這種『範圍』描述而不是給一個精確數字？寫出 ≥ 2 個理由（各 50 字內）：（6 分）</label>
+      <textarea class="cer" id="q32" rows="3" placeholder="理由 1（例：背景速率本身是估算，來自化石記錄，有不確定性…）&#10;理由 2（例：不同類群（昆蟲、植物、哺乳類）的滅絕速率不同…）"></textarea>
+    </div>
+  </div>
+  <button id="btn-next-3" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+</section>
+
+<!-- ===== Level 4: 系統思考 營養級聯 ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-700">任務 4｜系統思考：營養級聯</h2>
+      <p class="text-sm text-slate-700 mt-1">完成『北太平洋海獺滅絕』的連鎖反應圖：把 4 張卡片拖到正確的因果位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統分析師 ｜ 10 分 ｜ <span class="chip bg-rose-100 text-rose-800">系統思考題</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 520 280" class="loop w-full bg-slate-50 rounded">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L0,10 L10,5 z" fill="#64748b"/></marker>
+    </defs>
+    <rect x="10" y="10" width="150" height="50" rx="8" fill="#fee2e2" stroke="#dc2626"/>
+    <text x="85" y="40" text-anchor="middle" fill="#991b1b" font-size="12" font-weight="bold">海獺被獵殺</text>
+    <rect x="190" y="10" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="1"/>
+    <text x="265" y="30" text-anchor="middle" fill="#92400e" font-size="11" id="slot-1-text">（拖 1 到這裡）</text>
+    <rect x="370" y="10" width="140" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="2"/>
+    <text x="440" y="30" text-anchor="middle" fill="#92400e" font-size="11" id="slot-2-text">（拖 2 到這裡）</text>
+    <rect x="370" y="110" width="140" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="3"/>
+    <text x="440" y="130" text-anchor="middle" fill="#92400e" font-size="11" id="slot-3-text">（拖 3 到這裡）</text>
+    <rect x="190" y="110" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="4"/>
+    <text x="265" y="130" text-anchor="middle" fill="#92400e" font-size="11" id="slot-4-text">（拖 4 到這裡）</text>
+    <rect x="10" y="110" width="150" height="50" rx="8" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="85" y="140" text-anchor="middle" fill="#1e40af" font-size="12" font-weight="bold">漁業衰退＋碳儲量減少</text>
+    <!-- arrows -->
+    <line x1="160" y1="35" x2="188" y2="35" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="340" y1="35" x2="368" y2="35" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="440" y1="60" x2="440" y2="108" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="368" y1="135" x2="340" y2="135" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="188" y1="135" x2="160" y2="135" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  </svg>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-4">
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="1">海膽族群暴增</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="2">海藻林被啃光</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="3">魚群失去棲地</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="4">海藻碳儲存功能下降</div>
+  </div>
+
+  <div class="mt-4">
+    <label class="block text-sm font-semibold mb-1">Q4｜用一句話說明這張圖為什麼叫『營養級聯』（trophic cascade）？（4 分）</label>
+    <textarea class="cer" id="q4-explain" rows="2" placeholder="提示：一個物種的改變如何『層層往下』影響其他物種、甚至整個生態系功能？"></textarea>
+  </div>
+
+  <div id="feedback-4" class="mt-3 text-sm"></div>
+  <button id="btn-next-4" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 5: 倫理兩難 綠鬣蜥 ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">⚖️</div>
+    <div>
+      <h2 class="text-xl font-bold text-rose-700">任務 5｜倫理兩難：綠鬣蜥要全面撲殺嗎？</h2>
+      <p class="text-sm text-slate-700 mt-1 leading-relaxed">綠鬣蜥原產於中南美洲，在臺灣屏東、高雄因寵物棄養大量繁殖，影響原生動物棲地。農委會已啟動獎金撲殺（每隻補助）政策。
+      支持方：『生態保全優先，必須處理。』反對方：『動物也有生命權，不該為人類的錯負責。』第三方：『能否商業回收作為寵物貿易？』</p>
+      <p class="text-xs text-slate-500 mt-1">角色：生態倫理評議員 ｜ 10 分 ｜ <span class="chip bg-rose-100 text-rose-800">倫理兩難題</span>｜<strong>此題沒有標準答案</strong></p>
+    </div>
+  </div>
+
+  <div class="space-y-3 mt-3">
+    <div>
+      <label class="block text-sm font-semibold">Q5-1｜你的主張是什麼？（請選一個立場並簡述）（3 分）</label>
+      <div class="space-y-1 mt-1">
+        <label class="block text-sm"><input type="radio" name="q5stance" value="A"> A. 支持全面撲殺</label>
+        <label class="block text-sm"><input type="radio" name="q5stance" value="B"> B. 反對撲殺、改用其他方式（TNR、商業回收、原棲地送返）</label>
+        <label class="block text-sm"><input type="radio" name="q5stance" value="C"> C. 其他方案（請於下方說明）</label>
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q5-2｜請用『至少 80 字』寫下你的理由，必須包含：(1) 一個 HIPPO 驅動力分析、(2) 一個倫理觀點、(3) 一個可行性考量（7 分）</label>
+      <textarea class="cer" id="q5-argue" rows="4" placeholder="範例結構：&#10;(1) HIPPO 分析：綠鬣蜥屬於 I（Invasive species）入侵種，威脅原生…&#10;(2) 倫理觀點：動物福利 vs 生態系完整性…&#10;(3) 可行性：撲殺執行成本、民眾參與度、長期效果…"></textarea>
+    </div>
+  </div>
+
+  <div id="feedback-5" class="mt-3 text-sm"></div>
+  <button id="btn-next-5" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+</section>
+
+<!-- ===== Level 6: CER 論證 ===== -->
+<section id="level-6" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📝</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-700">任務 6｜CER 論證：人類世該怎麼算？</h2>
+      <p class="text-sm text-slate-700 mt-1">2024 年 ICS 否決人類世正式化，但許多學者仍繼續使用。若未來再次送審並通過，<strong>人類世的『起算點』該訂在哪一年？</strong>用 CER 結構寫下你的主張。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：跨學科研究員 ｜ 15 分 ｜ <span class="chip bg-indigo-100 text-indigo-800">論證寫作 CER</span></p>
+    </div>
+  </div>
+
+  <div class="bg-slate-50 rounded-lg p-3 text-xs text-slate-700 space-y-1">
+    <p>📌 <strong>候選起算點：</strong></p>
+    <p>① 約 1610：美洲原住民族群崩潰後森林回春致 CO₂ 降低（『人類首次全球級改變大氣』）</p>
+    <p>② 1800 前後：工業革命 —— 化石燃料燃燒起飛</p>
+    <p>③ 1950：『大加速』（Great Acceleration）—— 核試爆鈽同位素、塑膠微粒、人口暴增</p>
+  </div>
+
+  <div class="mt-3 space-y-2">
+    <div>
+      <label class="block text-sm font-semibold">Claim（主張，20 字內）：（3 分）</label>
+      <textarea class="cer" id="q6-c" rows="1" placeholder="例：人類世起算點應訂為 1950 年..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold">Evidence（證據，須包含 ≥ 1 個具體數字或年份）：（6 分）</label>
+      <textarea class="cer" id="q6-e" rows="2" placeholder="引用 data_card 或其他資料，例：1950 後塑膠年產量從 200 萬噸暴增到 4 億噸（2020）；核試鈽同位素層全球可辨識..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold">Reasoning（理由，說明證據如何支持主張）：（6 分）</label>
+      <textarea class="cer" id="q6-r" rows="3" placeholder="說明為什麼『這個證據』能支持『這個起算點』勝過其他候選..."></textarea>
+    </div>
+  </div>
+
+  <div id="feedback-6" class="mt-3 text-sm"></div>
+  <button id="btn-next-6" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+</section>
+
+<!-- ===== Level 7: 專題 校園生物多樣性行動書 ===== -->
+<section id="level-7" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🌱</div>
+    <div>
+      <h2 class="text-xl font-bold text-lime-700">任務 7｜專題：校園生物多樣性行動書</h2>
+      <p class="text-sm text-slate-700 mt-1">分組設計一份針對『校園/社區生物多樣性』的行動提案，要能真的送到校務會議或里辦。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生生物多樣性委員 ｜ 15 分 ｜ <span class="chip bg-lime-100 text-lime-800">專題式學習</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-2 mt-3">
+    <div>
+      <label class="block text-sm font-semibold">①【現況】你觀察到校園/社區什麼生物多樣性問題？（≥ 30 字）</label>
+      <textarea class="cer" id="q7-status" rows="2" placeholder="例：校園多為外來黑板樹，缺乏原生昆蟲食草；校門口常有流浪貓捕食鳥類..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold">②【Claim】你主張學校/社區做什麼？</label>
+      <textarea class="cer" id="q7-claim" rows="1" placeholder="例：在校園新植 30 株原生樹種（茄冬、臺灣欒樹）並記錄訪花昆蟲..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold">③【Evidence】你的證據（含 data_card 資料 ≥ 1 項）</label>
+      <textarea class="cer" id="q7-evid" rows="2" placeholder="例：IPBES 2019 指出棲地喪失（H）為 #1 驅動力；原生樹訪花昆蟲比外來樹多 3 倍..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold">④【Reasoning】為什麼證據能支持主張？</label>
+      <textarea class="cer" id="q7-reason" rows="2" placeholder="原生樹種提供適切食草，同時支援授粉者..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold">⑤【Action Steps & Indicators】可行動步驟＋成效指標</label>
+      <textarea class="cer" id="q7-action" rows="2" placeholder="步驟：1. 盤點現有樹種 2. 家長會募款 3. 植樹節植樹 4. 每月昆蟲觀察；指標：半年內觀察到蝶種 ≥ 10 種..."></textarea>
+    </div>
+  </div>
+
+  <div class="mt-4 bg-emerald-50 rounded-lg p-3">
+    <p class="text-sm font-semibold text-emerald-800">🏫 WSA 四面向自檢</p>
+    <label class="block text-sm mt-1"><input type="checkbox" class="wsa"> 治理 Governance：有送學生委員會／校務會議？</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> 課程 Curriculum：跨哪幾科整合？（自然／社會／英文／美術／綜合）</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> 營運 Operations：改變了什麼設備／採購？</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> 社群 Community：有與家長會／里辦／NGO 合作？</label>
+  </div>
+
+  <div class="mt-3 bg-amber-50 rounded-lg p-3">
+    <p class="text-sm font-semibold text-amber-800">🔍 HIPPO 自檢（你的提案處理哪幾項？）</p>
+    <label class="block text-sm mt-1"><input type="checkbox" class="hippo"> H 棲地喪失</label>
+    <label class="block text-sm"><input type="checkbox" class="hippo"> I 外來入侵種</label>
+    <label class="block text-sm"><input type="checkbox" class="hippo"> P 污染</label>
+    <label class="block text-sm"><input type="checkbox" class="hippo"> P 人口壓力</label>
+    <label class="block text-sm"><input type="checkbox" class="hippo"> O 過度採捕</label>
+  </div>
+
+  <div id="feedback-7" class="mt-3 text-sm"></div>
+  <button id="btn-next-7" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+</section>
+
+<!-- ===== Level 8: 後設認知 ===== -->
+<section id="level-8" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🧠</div>
+    <div>
+      <h2 class="text-xl font-bold text-fuchsia-700">任務 8｜後設認知反思</h2>
+      <p class="text-sm text-slate-700 mt-1">最後一關：不是測你『會什麼』，而是測你『知道自己會什麼』。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學習觀察者 ｜ 10 分 ｜ <span class="chip bg-fuchsia-100 text-fuchsia-800">後設認知題</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-3 mt-3">
+    <div>
+      <label class="block text-sm font-semibold">Q8-1｜四節課前，你對『物種滅絕』／『達爾文演化』的想法是？（≥ 30 字）（3 分）</label>
+      <textarea class="cer" id="q8-before" rows="2" placeholder="例：我以前以為滅絕都是恐龍、遙遠的事..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold">Q8-2｜現在的想法是？最關鍵讓你改變的是哪一個資料／討論／人物？（≥ 50 字）（4 分）</label>
+      <textarea class="cer" id="q8-after" rows="3" placeholder="具體指出：『IPBES 100 萬物種』、『P-T 大滅絕 95%』、『綠鬣蜥兩難』..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold">Q8-3｜你還有什麼想繼續追問的問題？（3 分）</label>
+      <textarea class="cer" id="q8-next" rows="2" placeholder="例：DNA 復活技術該不該用在復育臺灣雲豹？"></textarea>
+    </div>
+  </div>
+
+  <div id="feedback-8" class="mt-3 text-sm"></div>
+  <button id="btn-final" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>完成學習單 🎉</button>
+</section>
+
+<!-- ===== Finale ===== -->
+<section id="finale" class="card p-6 hidden-screen fade-in text-center">
+  <div class="text-6xl mb-3">🏆</div>
+  <h2 class="text-2xl font-bold text-emerald-700 mb-3">你是國中生物多樣性公民！</h2>
+  <p class="text-sm text-slate-700 mb-3">你已完成 8 個任務。你的行動書若送到學生委員會，可能就是改變校園的起點。</p>
+  <p class="text-sm text-slate-600">最終分數：<span class="text-3xl font-bold text-emerald-600" id="final-score">0</span> / 80</p>
+  <div class="mt-4 bg-amber-50 rounded-lg p-3 text-left text-sm">
+    <p class="font-semibold text-amber-800">📚 延伸資源</p>
+    <ul class="list-disc list-inside text-slate-700 text-xs mt-1 space-y-1">
+      <li>IPBES 全球評估 — https://www.ipbes.net/global-assessment</li>
+      <li>CBD 昆蒙框架 30x30 — https://www.cbd.int/gbf/</li>
+      <li>TaiBIF 臺灣生物多樣性資訊網 — https://www.taibif.tw/zh</li>
+      <li>林業及自然保育署紅皮書 — 臺灣受威脅物種名錄</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<script>
+let score = 0;
+const scoreEl = document.getElementById('score');
+function addScore(n){ score += n; scoreEl.textContent = score; }
+function showNext(current, next){
+  document.getElementById('level-'+current).classList.add('hidden-screen');
+  document.getElementById('level-'+next).classList.remove('hidden-screen');
+  document.getElementById('dot-'+current).classList.remove('active');
+  document.getElementById('dot-'+current).classList.add('done');
+  if(next<=8) document.getElementById('dot-'+next).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function confetti(){
+  for(let i=0;i<30;i++){
+    const c = document.createElement('div');
+    c.className='confetti';
+    c.style.left = Math.random()*100+'vw';
+    c.style.background = ['#f59e0b','#10b981','#6366f1','#ec4899'][Math.floor(Math.random()*4)];
+    c.style.animationDelay = Math.random()*.6+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2500);
+  }
+}
+
+/* ---- Drag and Drop (generic for tasks 1 & 4) ---- */
+function setupDragDrop(boxId, zoneSel, onAllCorrect){
+  const items = document.querySelectorAll('#'+boxId+' .drag-item');
+  const zones = document.querySelectorAll(zoneSel);
+  let correctCount = 0;
+  const total = items.length;
+  items.forEach(it=>{
+    it.addEventListener('dragstart', e=>{
+      e.dataTransfer.setData('text/plain', it.dataset.match);
+      e.dataTransfer.setData('src', it.textContent);
+      it.classList.add('dragging');
+      window._dragEl = it;
+    });
+    it.addEventListener('dragend', ()=>it.classList.remove('dragging'));
+  });
+  zones.forEach(z=>{
+    z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+    z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+    z.addEventListener('drop', e=>{
+      e.preventDefault(); z.classList.remove('over');
+      const match = e.dataTransfer.getData('text/plain');
+      if(z.dataset.accept === match){
+        z.innerHTML += ' <span class="text-emerald-600 font-bold text-xs">✓ '+ window._dragEl.textContent +'</span>';
+        window._dragEl.remove();
+        correctCount++;
+        z.classList.add('pop');
+        if(correctCount===total) onAllCorrect();
+      } else {
+        z.classList.add('shake');
+        setTimeout(()=>z.classList.remove('shake'),400);
+      }
+    });
+  });
+}
+
+/* Level 1 */
+setupDragDrop('items-box-1','#level-1 .drop-zone', ()=>{
+  document.getElementById('feedback-1').innerHTML = '<p class="text-emerald-600 font-bold">✓ 達爾文時間軸完成！</p>';
+  document.getElementById('btn-next-1').disabled = false;
+  addScore(8);
+});
+document.getElementById('btn-next-1').onclick = ()=>{
+  const sim = document.getElementById('q1-sim').value.trim();
+  if(sim.length>=10) addScore(2);
+  showNext(1,2);
+};
+
+/* Level 2 */
+const q2Items = document.querySelectorAll('#q2-box .quiz-item');
+let q2Done = 0;
+q2Items.forEach(qi=>{
+  qi.querySelectorAll('.btn-ans').forEach(b=>{
+    b.onclick = ()=>{
+      const correct = qi.dataset.correct;
+      const hint = qi.querySelector('.hint');
+      if(b.dataset.ans === correct){
+        b.classList.add('ring-4','ring-emerald-300');
+        hint.classList.remove('hidden'); hint.classList.add('text-emerald-700');
+        addScore(2.5);
+      } else {
+        b.classList.add('ring-4','ring-rose-300');
+        hint.classList.remove('hidden'); hint.classList.add('text-rose-700');
+      }
+      qi.querySelectorAll('.btn-ans').forEach(x=>x.disabled=true);
+      q2Done++;
+      if(q2Done===q2Items.length) document.getElementById('btn-next-2').disabled=false;
+    };
+  });
+});
+document.getElementById('btn-next-2').onclick = ()=>showNext(2,3);
+
+/* Level 3 */
+document.querySelectorAll('#q31 input').forEach(r=>{
+  r.onchange = ()=>{
+    const fb = document.querySelector('.q31-fb');
+    if(r.value==='A'){
+      fb.textContent = '✓ 正確！陸地 75% > 海洋 66%；100 萬/800 萬約 1/8。';
+      fb.className='text-xs mt-1 text-emerald-700 q31-fb';
+      addScore(4);
+    } else {
+      fb.textContent='再看看：比例寫在每條長條最右邊。';
+      fb.className='text-xs mt-1 text-rose-600 q31-fb';
+    }
+    document.getElementById('btn-next-3').disabled=false;
+  };
+});
+document.getElementById('btn-next-3').onclick = ()=>{
+  const ans = document.getElementById('q32').value.trim();
+  if(ans.length>=30) addScore(6);
+  else if(ans.length>=10) addScore(3);
+  showNext(3,4);
+};
+
+/* Level 4 */
+setupDragDrop('items-box-4','#level-4 .loop-slot', ()=>{
+  document.getElementById('feedback-4').innerHTML = '<p class="text-emerald-600 font-bold">✓ 連鎖反應正確！</p>';
+  document.getElementById('btn-next-4').disabled=false;
+  addScore(6);
+});
+document.getElementById('btn-next-4').onclick = ()=>{
+  const ex = document.getElementById('q4-explain').value.trim();
+  if(ex.length>=20) addScore(4);
+  showNext(4,5);
+};
+
+/* Level 5 */
+document.querySelectorAll('input[name="q5stance"]').forEach(r=>{
+  r.onchange = ()=>{
+    addScore(3);
+    document.getElementById('btn-next-5').disabled=false;
+  };
+});
+document.getElementById('btn-next-5').onclick = ()=>{
+  const txt = document.getElementById('q5-argue').value.trim();
+  let pts = 0;
+  if(txt.length>=80) pts += 4;
+  if(/HIPPO|H\u3001|I\u3001|P\u3001|O\u3001|棲地|入侵|污染|人口|採捕/.test(txt)) pts += 2;
+  if(/倫理|權利|福利|公平|責任/.test(txt)) pts += 1;
+  addScore(pts);
+  const fb = document.getElementById('feedback-5');
+  fb.innerHTML = pts>=5 ? '<p class="text-emerald-600 text-sm">✓ 論述完整，有 HIPPO + 倫理分析！</p>' :
+    '<p class="text-amber-600 text-sm">建議再補充 HIPPO 分析或倫理觀點。</p>';
+  showNext(5,6);
+};
+
+/* Level 6 CER */
+document.getElementById('btn-next-6').onclick = ()=>{
+  const c = document.getElementById('q6-c').value.trim();
+  const e = document.getElementById('q6-e').value.trim();
+  const r = document.getElementById('q6-r').value.trim();
+  let pts = 0;
+  if(c.length>=5) pts+=3;
+  if(e.length>=20){
+    pts+=3;
+    if(/\d/.test(e)) pts+=3;  // 含數字加分
+  }
+  if(r.length>=30) pts+=6;
+  addScore(pts);
+  const fb = document.getElementById('feedback-6');
+  const hasNum = /\d/.test(e);
+  fb.innerHTML = hasNum ? '<p class="text-emerald-600 text-sm">✓ 證據有含數字，論證紮實！</p>' :
+    '<p class="text-amber-600 text-sm">建議 Evidence 要有具體數字（年份／百分比／數量）。</p>';
+  document.getElementById('btn-next-6').disabled=true;
+  showNext(6,7);
+};
+['q6-c','q6-e','q6-r'].forEach(id=>{
+  document.getElementById(id).oninput = ()=>{
+    const allFilled = ['q6-c','q6-e','q6-r'].every(x=>document.getElementById(x).value.trim().length>=5);
+    if(allFilled) document.getElementById('btn-next-6').disabled=false;
+  };
+});
+
+/* Level 7 Project */
+document.getElementById('btn-next-7').onclick = ()=>{
+  const fields = ['q7-status','q7-claim','q7-evid','q7-reason','q7-action'];
+  let pts = 0;
+  fields.forEach(f=>{
+    const t = document.getElementById(f).value.trim();
+    if(t.length>=20) pts+=2;
+  });
+  const wsa = document.querySelectorAll('.wsa:checked').length;
+  const hippo = document.querySelectorAll('.hippo:checked').length;
+  if(wsa>=3) pts+=3;  // 完整 WSA 覆蓋加分
+  if(hippo>=1) pts+=2;
+  addScore(pts);
+  document.getElementById('feedback-7').innerHTML =
+    '<p class="text-emerald-600 text-sm">✓ 行動書已提交！WSA 覆蓋 '+wsa+'/4，HIPPO 處理 '+hippo+' 項。</p>';
+  showNext(7,8);
+};
+['q7-status','q7-claim','q7-evid','q7-reason','q7-action'].forEach(id=>{
+  document.getElementById(id).oninput = ()=>{
+    const allFilled = ['q7-status','q7-claim','q7-evid','q7-reason','q7-action']
+      .every(x=>document.getElementById(x).value.trim().length>=15);
+    if(allFilled) document.getElementById('btn-next-7').disabled=false;
+  };
+});
+
+/* Level 8 Meta */
+['q8-before','q8-after','q8-next'].forEach(id=>{
+  document.getElementById(id).oninput = ()=>{
+    const b = document.getElementById('q8-before').value.trim().length>=30;
+    const a = document.getElementById('q8-after').value.trim().length>=50;
+    const n = document.getElementById('q8-next').value.trim().length>=10;
+    if(b&&a&&n) document.getElementById('btn-final').disabled=false;
+  };
+});
+document.getElementById('btn-final').onclick = ()=>{
+  const b = document.getElementById('q8-before').value.trim().length>=30;
+  const a = document.getElementById('q8-after').value.trim().length>=50;
+  const n = document.getElementById('q8-next').value.trim().length>=10;
+  if(b) addScore(3);
+  if(a) addScore(4);
+  if(n) addScore(3);
+  document.getElementById('level-8').classList.add('hidden-screen');
+  document.getElementById('finale').classList.remove('hidden-screen');
+  document.getElementById('dot-8').classList.add('done');
+  document.getElementById('final-score').textContent = score;
+  confetti();
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+</script>
+</body>
+</html>

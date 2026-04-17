@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候偵探小米的颱風日記 | 5.3-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif;
+         background: linear-gradient(135deg,#dbeafe,#fde68a,#fecaca); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.12);}
+  .btn { transition:all .2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:80px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; }
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; transition:all .3s;}
+  .progress-dot.active { background:#f59e0b; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .progress-bar { height:10px; background:#e2e8f0; border-radius:5px; overflow:hidden;}
+  .progress-bar > div { height:100%; background: linear-gradient(90deg,#f59e0b,#ef4444); transition:width .5s;}
+  .badge { display:inline-block; padding:.25rem .75rem; border-radius:999px; font-weight:700;}
+</style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-4xl mx-auto">
+
+  <!-- Header -->
+  <div class="card p-6 mb-4 text-center">
+    <h1 class="text-3xl md:text-4xl font-bold text-red-700">氣候偵探小米的颱風日記</h1>
+    <p class="text-gray-600 mt-2">UNESCO 5.3-III｜氣候變遷與我們的經濟｜9-12 歲</p>
+    <div class="flex justify-center gap-2 mt-4" id="progressDots"></div>
+    <div class="progress-bar mt-3"><div id="progressBar" style="width:0%"></div></div>
+    <p class="text-sm text-gray-500 mt-2" id="progressText">關卡 0 / 5</p>
+  </div>
+
+  <!-- Role intro -->
+  <div class="card p-6 mb-4 bg-gradient-to-r from-yellow-100 to-orange-100" id="intro">
+    <h2 class="text-2xl font-bold text-orange-700">角色：氣候偵探小米</h2>
+    <p class="mt-3 text-gray-700 leading-relaxed">
+      嗨！我是 <b>小米</b>，剛升五年級。上次凱米颱風讓我們家停電了 18 小時，冰箱的冰淇淋都融化了，阿嬤因為太熱還頭暈送醫。
+      我想搞懂：<b>為什麼天氣會讓整個城市停擺？</b> 你願意跟我一起當偵探嗎？
+    </p>
+    <button class="btn bg-orange-500 text-white px-6 py-3 rounded-full mt-4 font-bold" onclick="showScreen(1)">開始任務 →</button>
+  </div>
+
+  <!-- Screen 1: Memory Wall 極端天氣記憶牆 -->
+  <div class="card p-6 mb-4 hidden-screen" id="screen1">
+    <h2 class="text-2xl font-bold text-blue-700">關卡 1：我的極端天氣記憶</h2>
+    <p class="mt-2 text-gray-600">寫下你經歷過的一次颱風、豪雨、熱浪或停電的感覺。真實、簡短就好。</p>
+    <textarea id="memoryInput" rows="3" class="w-full mt-3 p-3 border rounded-lg focus:ring-2 focus:ring-blue-400" placeholder="例如：凱米颱風那天我們家停電，阿嬤很熱..."></textarea>
+    <div class="mt-3 flex gap-2">
+      <button class="btn bg-blue-500 text-white px-5 py-2 rounded-full font-bold" onclick="saveMemory()">貼上記憶牆</button>
+    </div>
+    <div id="memoryWall" class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4"></div>
+    <button class="btn bg-green-500 text-white px-6 py-2 rounded-full mt-4 font-bold hidden" id="mem-next" onclick="showScreen(2)">下一關 →</button>
+  </div>
+
+  <!-- Screen 2: 災害帳單配對 (drag drop) -->
+  <div class="card p-6 mb-4 hidden-screen" id="screen2">
+    <h2 class="text-2xl font-bold text-red-700">關卡 2：災害帳單配對</h2>
+    <p class="mt-2 text-gray-600">把下面的「數字」拖到對應的「災害事件」上。真實資料，別被嚇到！</p>
+    <div class="flex flex-wrap gap-2 mt-4" id="numBox">
+      <div class="drag-item bg-red-200 px-4 py-2 rounded-full font-bold" draggable="true" data-ans="morakot">2,884 mm / 681 人 / 1,947 億</div>
+      <div class="drag-item bg-yellow-200 px-4 py-2 rounded-full font-bold" draggable="true" data-ans="kaemi">50 萬戶停電 / 10 人 / 47 億</div>
+      <div class="drag-item bg-purple-200 px-4 py-2 rounded-full font-bold" draggable="true" data-ans="who">每年 48.9 萬人死亡</div>
+      <div class="drag-item bg-blue-200 px-4 py-2 rounded-full font-bold" draggable="true" data-ans="noaa">27 件 / 1,827 億美元</div>
+      <div class="drag-item bg-green-200 px-4 py-2 rounded-full font-bold" draggable="true" data-ans="undrr">7,348 起 / 2.97 兆美元</div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5">
+      <div class="drop-zone p-3" data-accept="morakot"><b>① 莫拉克颱風（2009 台灣阿里山）</b></div>
+      <div class="drop-zone p-3" data-accept="kaemi"><b>② 凱米颱風（2024 台灣）</b></div>
+      <div class="drop-zone p-3" data-accept="who"><b>③ 全球熱浪死亡（WHO 估計）</b></div>
+      <div class="drop-zone p-3" data-accept="noaa"><b>④ 美國 2024 年十億美元災害（NOAA）</b></div>
+      <div class="drop-zone p-3" data-accept="undrr"><b>⑤ 2000-2019 全球重大災害（UNDRR）</b></div>
+    </div>
+    <p id="s2-feedback" class="mt-3 font-bold"></p>
+    <button class="btn bg-green-500 text-white px-6 py-2 rounded-full mt-3 font-bold hidden" id="s2-next" onclick="showScreen(3)">下一關 →</button>
+  </div>
+
+  <!-- Screen 3: Domino 骨牌 -->
+  <div class="card p-6 mb-4 hidden-screen" id="screen3">
+    <h2 class="text-2xl font-bold text-amber-700">關卡 3：公共服務骨牌</h2>
+    <p class="mt-2 text-gray-600">把骨牌依因果順序排好，看看颱風怎麼讓城市停擺。</p>
+    <div id="dominoPool" class="flex flex-wrap gap-2 mt-4"></div>
+    <h3 class="mt-4 font-bold text-gray-700">正確順序：</h3>
+    <div id="dominoDrop" class="grid grid-cols-1 gap-2 mt-2"></div>
+    <button class="btn bg-amber-500 text-white px-5 py-2 rounded-full mt-3 font-bold" onclick="checkDomino()">檢查順序</button>
+    <p id="s3-feedback" class="mt-3 font-bold"></p>
+    <button class="btn bg-green-500 text-white px-6 py-2 rounded-full mt-3 font-bold hidden" id="s3-next" onclick="showScreen(4)">下一關 →</button>
+  </div>
+
+  <!-- Screen 4: Heatwave 情境選擇 -->
+  <div class="card p-6 mb-4 hidden-screen" id="screen4">
+    <h2 class="text-2xl font-bold text-rose-700">關卡 4：熱浪關懷任務</h2>
+    <p class="mt-2 text-gray-600">38°C 的午後，你家附近有位獨居的阿嬤。你會怎麼做？</p>
+    <div class="mt-4 space-y-2" id="q4"></div>
+    <p id="s4-feedback" class="mt-3 font-bold"></p>
+    <button class="btn bg-green-500 text-white px-6 py-2 rounded-full mt-3 font-bold hidden" id="s4-next" onclick="showScreen(5)">下一關 →</button>
+  </div>
+
+  <!-- Screen 5: WSA 全校英雄 4-checkbox -->
+  <div class="card p-6 mb-4 hidden-screen" id="screen5">
+    <h2 class="text-2xl font-bold text-purple-700">關卡 5：全校英雄挑戰（WSA 四面向）</h2>
+    <p class="mt-2 text-gray-600">完成這 4 個承諾，就能解鎖「全校英雄」徽章！</p>
+    <div class="mt-4 space-y-3">
+      <label class="flex items-start gap-3 p-3 bg-blue-50 rounded-lg cursor-pointer">
+        <input type="checkbox" class="wsa mt-1" data-k="curriculum">
+        <span><b>① 課程</b>：這週在社會/自然/綜合課中，至少和同學討論一次極端天氣事件。</span>
+      </label>
+      <label class="flex items-start gap-3 p-3 bg-green-50 rounded-lg cursor-pointer">
+        <input type="checkbox" class="wsa mt-1" data-k="ops">
+        <span><b>② 校園營運</b>：幫班級檢查教室手電筒/急救包/避難動線，回報老師。</span>
+      </label>
+      <label class="flex items-start gap-3 p-3 bg-yellow-50 rounded-lg cursor-pointer">
+        <input type="checkbox" class="wsa mt-1" data-k="community">
+        <span><b>③ 社區連結</b>：打電話或親訪一位獨居長者，詢問「熱浪/颱風時家裡需要什麼？」或寄一張感謝卡給清潔隊/消防員。</span>
+      </label>
+      <label class="flex items-start gap-3 p-3 bg-pink-50 rounded-lg cursor-pointer">
+        <input type="checkbox" class="wsa mt-1" data-k="agency">
+        <span><b>④ 學生治理</b>：向班會提出一項「校園韌性改善」提案（例如增設遮陽、購買備用風扇）。</span>
+      </label>
+    </div>
+    <button class="btn bg-purple-600 text-white px-6 py-2 rounded-full mt-4 font-bold" onclick="checkWSA()">我承諾完成！</button>
+    <div id="heroBadge" class="hidden mt-5 text-center fade-in">
+      <div class="badge bg-gradient-to-r from-yellow-400 to-red-500 text-white text-xl px-6 py-3">全校英雄 徽章 解鎖</div>
+      <p class="mt-3 text-gray-700">小米：「謝謝你！我們的校園和社區會因為你變得更有韌性。」</p>
+      <button class="btn bg-red-500 text-white px-6 py-3 rounded-full mt-4 font-bold" onclick="finalCelebration()">放煙火慶祝</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="card p-4 mb-4 text-center text-xs text-gray-500">
+    資料來源：WHO、IPCC AR6 WG2、NOAA NCEI、UNDRR、中央氣象署 CWA、中央災害應變中心 EMIC、農業部、TCCIP｜校對 2026-04-16
+  </div>
+</div>
+
+<script>
+const totalScreens = 5;
+let currentScreen = 0;
+const dots = document.getElementById('progressDots');
+for (let i=0;i<totalScreens;i++){
+  const d=document.createElement('div'); d.className='progress-dot'; dots.appendChild(d);
+}
+function updateProgress(){
+  document.querySelectorAll('.progress-dot').forEach((d,i)=>{
+    d.classList.remove('active','done');
+    if(i<currentScreen) d.classList.add('done');
+    else if(i===currentScreen-1) d.classList.add('active');
+  });
+  const pct = Math.min(100,(currentScreen/totalScreens)*100);
+  document.getElementById('progressBar').style.width = pct+'%';
+  document.getElementById('progressText').textContent = `關卡 ${Math.min(currentScreen,totalScreens)} / ${totalScreens}`;
+}
+function showScreen(n){
+  document.getElementById('intro').classList.add('hidden-screen');
+  for(let i=1;i<=totalScreens;i++) document.getElementById('screen'+i).classList.add('hidden-screen');
+  const el = document.getElementById('screen'+n);
+  if(el){ el.classList.remove('hidden-screen'); el.classList.add('fade-in'); }
+  currentScreen = n;
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Screen 1: memory wall
+function saveMemory(){
+  const v = document.getElementById('memoryInput').value.trim();
+  if(v.length<5){ alert('再寫具體一點吧～至少 5 個字'); return; }
+  const wall = document.getElementById('memoryWall');
+  const note = document.createElement('div');
+  note.className='bg-yellow-100 p-3 rounded-lg pop';
+  note.innerHTML = '<b>📌 我的記憶：</b>'+v;
+  wall.appendChild(note);
+  document.getElementById('memoryInput').value='';
+  document.getElementById('mem-next').classList.remove('hidden');
+}
+
+// Screen 2: drag-drop numbers
+document.querySelectorAll('.drag-item').forEach(item=>{
+  item.addEventListener('dragstart',e=>{
+    e.dataTransfer.setData('text/plain', item.dataset.ans);
+    item.classList.add('dragging');
+  });
+  item.addEventListener('dragend',()=> item.classList.remove('dragging'));
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover',e=>{ e.preventDefault(); z.classList.add('over');});
+  z.addEventListener('dragleave',()=> z.classList.remove('over'));
+  z.addEventListener('drop',e=>{
+    e.preventDefault(); z.classList.remove('over');
+    const ans = e.dataTransfer.getData('text/plain');
+    if(ans === z.dataset.accept){
+      const orig = [...document.querySelectorAll('.drag-item')].find(i=>i.dataset.ans===ans);
+      if(orig){ z.appendChild(orig); orig.classList.add('pop'); orig.draggable=false; orig.style.cursor='default';}
+      checkS2();
+    } else {
+      z.classList.add('shake');
+      setTimeout(()=> z.classList.remove('shake'),400);
+      document.getElementById('s2-feedback').innerHTML = '<span class="text-red-600">❌ 對應不上喔，再想想：這組數字屬於哪個事件？小提示：看「台灣」「美國」「全球」三個尺度。</span>';
+    }
+  });
+});
+function checkS2(){
+  const placed = document.querySelectorAll('.drop-zone .drag-item').length;
+  if(placed===5){
+    document.getElementById('s2-feedback').innerHTML = '<span class="text-green-600">🎉 全部配對正確！你已經是災害數字小達人！</span>';
+    document.getElementById('s2-next').classList.remove('hidden');
+    confetti();
+  }
+}
+
+// Screen 3: domino
+const dominoItems = [
+  {id:'a', t:'① 氣候變遷 → 海面溫度上升'},
+  {id:'b', t:'② 颱風強度增加、降雨更集中'},
+  {id:'c', t:'③ 城市多處淹水、土石流'},
+  {id:'d', t:'④ 電線桿倒、變電所泡水 → 停電'},
+  {id:'e', t:'⑤ 捷運、台鐵、公車停駛'},
+  {id:'f', t:'⑥ 爸媽無法上班、店家無法營業'},
+];
+const correctOrder = ['a','b','c','d','e','f'];
+let dominoState = [];
+function renderDomino(){
+  const pool = document.getElementById('dominoPool'); pool.innerHTML='';
+  const shuffled = [...dominoItems].sort(()=>Math.random()-.5);
+  shuffled.forEach(it=>{
+    if(dominoState.includes(it.id)) return;
+    const b = document.createElement('button');
+    b.className='btn bg-amber-200 px-3 py-2 rounded-lg';
+    b.textContent = it.t;
+    b.onclick = ()=>{ dominoState.push(it.id); renderDomino(); };
+    pool.appendChild(b);
+  });
+  const drop = document.getElementById('dominoDrop'); drop.innerHTML='';
+  dominoState.forEach((id,idx)=>{
+    const it = dominoItems.find(x=>x.id===id);
+    const row = document.createElement('div');
+    row.className='bg-amber-100 p-2 rounded-lg flex justify-between items-center';
+    row.innerHTML = `<span>${idx+1}. ${it.t}</span>`;
+    const rm = document.createElement('button');
+    rm.textContent='移除'; rm.className='text-red-500 text-sm ml-2';
+    rm.onclick=()=>{ dominoState = dominoState.filter(x=>x!==id); renderDomino();};
+    row.appendChild(rm);
+    drop.appendChild(row);
+  });
+}
+renderDomino();
+function checkDomino(){
+  if(dominoState.length<6){
+    document.getElementById('s3-feedback').innerHTML='<span class="text-orange-600">⚠ 還沒排完，總共 6 張骨牌喔。</span>';
+    return;
+  }
+  if(JSON.stringify(dominoState)===JSON.stringify(correctOrder)){
+    document.getElementById('s3-feedback').innerHTML='<span class="text-green-600">🎉 順序完全正確！你已經看懂氣候骨牌效應。</span>';
+    document.getElementById('s3-next').classList.remove('hidden');
+    confetti();
+  } else {
+    document.getElementById('s3-feedback').innerHTML='<span class="text-red-600">❌ 順序還不對。小提示：從最大的原因（氣候變遷）開始，往下到最貼近生活的影響（爸媽、店家）。</span>';
+  }
+}
+
+// Screen 4: heatwave scenario
+const q4 = [
+  {t:'A. 把冷氣開強一點，不管阿嬤。', ok:false, fb:'少了同理。阿嬤可能一個人沒冷氣，我們要主動關心。'},
+  {t:'B. 和爸媽一起打電話問阿嬤家裡有沒有開電風扇、有沒有喝水、要不要過去陪她。', ok:true, fb:'🎉 這就是「社區韌性」。WHO 提醒：主動關懷是救命關鍵。'},
+  {t:'C. 把 WHO 每年 48.9 萬人死於熱浪的新聞轉給家人群組，提醒大家注意長輩。', ok:true, fb:'🎉 很棒！把科學資訊變成家庭對話是行動的第一步。'},
+  {t:'D. 心想：反正政府會處理。', ok:false, fb:'政府能做的有限。你的一通電話可能就是阿嬤最需要的那一通。'}
+];
+const q4box = document.getElementById('q4');
+let q4done=false;
+q4.forEach((opt,i)=>{
+  const b = document.createElement('button');
+  b.className='btn block w-full text-left p-3 bg-rose-100 hover:bg-rose-200 rounded-lg';
+  b.textContent=opt.t;
+  b.onclick=()=>{
+    document.getElementById('s4-feedback').innerHTML = opt.ok
+      ? `<span class="text-green-600">${opt.fb}</span>`
+      : `<span class="text-red-600">再想想：${opt.fb}</span>`;
+    if(opt.ok && !q4done){
+      q4done=true;
+      document.getElementById('s4-next').classList.remove('hidden');
+      confetti();
+    }
+  };
+  q4box.appendChild(b);
+});
+
+// Screen 5: WSA
+function checkWSA(){
+  const all = [...document.querySelectorAll('.wsa')];
+  const done = all.filter(c=>c.checked).length;
+  if(done<4){
+    alert(`還差 ${4-done} 個承諾，才能解鎖全校英雄徽章 💪`);
+    return;
+  }
+  document.getElementById('heroBadge').classList.remove('hidden');
+  confetti(60);
+}
+
+// confetti
+function confetti(n=30){
+  const colors = ['#f59e0b','#ef4444','#10b981','#3b82f6','#8b5cf6','#ec4899'];
+  for(let i=0;i<n;i++){
+    const c = document.createElement('div');
+    c.className='confetti';
+    c.style.left = Math.random()*100+'vw';
+    c.style.background = colors[i%colors.length];
+    c.style.animationDuration = (1.5+Math.random()*1.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2500);
+  }
+}
+function finalCelebration(){ confetti(120); alert('🎆 恭喜解鎖全校英雄！把你的承諾告訴家人和老師吧！');}
+
+updateProgress();
+</script>
+</body>
+</html>

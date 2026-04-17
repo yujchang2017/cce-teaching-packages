@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>5.3-IV 氣候經濟特派員｜互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Noto Sans TC", system-ui, sans-serif; }
+  .fade-in { animation: fade .5s ease-out; }
+  @keyframes fade { from { opacity:0; transform: translateY(8px);} to {opacity:1; transform:none;} }
+  .badge-pop { animation: pop .6s cubic-bezier(.3,1.5,.6,1); }
+  @keyframes pop { 0%{transform:scale(.3);opacity:0} 100%{transform:scale(1);opacity:1} }
+  .confetti {position:fixed;width:8px;height:8px;top:-10px;animation: fall 2s linear forwards;z-index:50;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg);} }
+  .hint-glow { box-shadow: 0 0 0 3px rgba(251,191,36,.5);}
+  textarea { resize: vertical; }
+</style>
+</head>
+<body class="bg-gradient-to-br from-sky-50 via-white to-emerald-50 min-h-screen">
+<div class="max-w-4xl mx-auto p-4 sm:p-8">
+
+  <header class="text-center mb-6">
+    <h1 class="text-3xl sm:text-4xl font-bold text-sky-800">氣候經濟特派員 5.3-IV</h1>
+    <p class="text-slate-600 mt-2">角色：你是《新青年報》實習記者，要用 6 個深度任務揭露氣候如何改寫我們的經濟。</p>
+    <div class="mt-4 flex justify-center gap-2 flex-wrap text-sm">
+      <span class="px-3 py-1 rounded-full bg-sky-100 text-sky-700">📊 分數：<span id="score">0</span></span>
+      <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-700">🏅 徽章：<span id="badges">0</span>/7</span>
+      <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">進度：<span id="progress">0</span>/7</span>
+    </div>
+  </header>
+
+  <!-- 關卡 1：資料詮釋（NOAA 折線） -->
+  <section class="bg-white rounded-2xl p-5 shadow mb-5 fade-in">
+    <h2 class="text-xl font-bold text-sky-700">關卡 1｜資料詮釋：NOAA 十億災害曲線</h2>
+    <p class="text-sm text-slate-600 mt-1">依 NOAA 資料繪圖，1980-2024 年美國單次損失 ≥ 10 億美元的氣候災害累計 <b>403 件</b>，累計損失逾 <b>2.9 兆美元</b>。</p>
+    <div class="mt-3">
+      <svg viewBox="0 0 320 140" class="w-full h-40 border rounded bg-slate-50">
+        <polyline fill="none" stroke="#0369a1" stroke-width="2"
+          points="10,115 40,110 70,108 100,95 130,92 160,78 190,70 220,55 250,40 280,30 310,18" />
+        <line x1="10" y1="130" x2="310" y2="130" stroke="#94a3b8"/>
+        <text x="10" y="138" font-size="8" fill="#64748b">1980</text>
+        <text x="270" y="138" font-size="8" fill="#64748b">2024</text>
+        <text x="8" y="20" font-size="8" fill="#64748b">事件數</text>
+      </svg>
+    </div>
+    <p class="mt-3 font-medium">Q1. 這條曲線說明什麼趨勢？請選擇並寫下 1 句推論：</p>
+    <div class="space-y-1 mt-2" id="q1">
+      <label class="block"><input type="radio" name="q1" value="A"/> A. 事件數減少，氣候變遷被解決</label>
+      <label class="block"><input type="radio" name="q1" value="B"/> B. 事件數與總成本都顯著上升，顯示災害更頻繁且更貴</label>
+      <label class="block"><input type="radio" name="q1" value="C"/> C. 只是統計方法改變，和氣候無關</label>
+    </div>
+    <textarea id="q1ex" class="w-full mt-2 border rounded p-2 text-sm" rows="2" placeholder="寫下 1 句你的推論..."></textarea>
+    <button onclick="check1()" class="mt-2 px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700">送出</button>
+    <p id="fb1" class="text-sm mt-2"></p>
+  </section>
+
+  <!-- 關卡 2：作物舒適區（拖拉匹配） -->
+  <section class="bg-white rounded-2xl p-5 shadow mb-5 fade-in">
+    <h2 class="text-xl font-bold text-sky-700">關卡 2｜為什麼農業這麼脆弱？</h2>
+    <p class="text-sm text-slate-600 mt-1">IPCC 指出升溫 2°C，全球玉米產量將減 1.6-5.6%，低緯水稻可能減 10%。將下列作物配對到它的最脆弱因子：</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3" id="q2">
+      <div class="border p-2 rounded">茶（春茶芽期高溫）<select class="ml-2 border rounded p-1"><option value="">選擇</option><option>溫度升高</option><option>海平面上升</option><option>酸化</option></select></div>
+      <div class="border p-2 rounded">虱目魚（寒流）<select class="ml-2 border rounded p-1"><option value="">選擇</option><option>溫度驟降</option><option>乾旱</option><option>強風</option></select></div>
+      <div class="border p-2 rounded">水稻（降雨不穩）<select class="ml-2 border rounded p-1"><option value="">選擇</option><option>降雨變異</option><option>海水倒灌</option><option>霧霾</option></select></div>
+      <div class="border p-2 rounded">柳杉（森林病蟲害）<select class="ml-2 border rounded p-1"><option value="">選擇</option><option>病蟲害擴散</option><option>潮汐</option><option>地震</option></select></div>
+    </div>
+    <button onclick="check2()" class="mt-2 px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700">送出</button>
+    <p id="fb2" class="text-sm mt-2"></p>
+  </section>
+
+  <!-- 關卡 3：開放反思 1 (小農同理) -->
+  <section class="bg-white rounded-2xl p-5 shadow mb-5 fade-in">
+    <h2 class="text-xl font-bold text-sky-700">關卡 3｜開放反思：小農的聲音</h2>
+    <p class="text-sm text-slate-600 mt-1">FAO 指出 1991-2021 年全球農損累計 3.8 兆美元；農業部統計台灣 2016 霸王寒流單次農損逾 42 億。</p>
+    <p class="mt-2 font-medium">Q3. 若你家鄉一位世代務農的阿伯連續 3 年嚴重受災，請你以 <b>50 字以上</b>寫下：你想對他說什麼？又能具體幫上什麼忙？</p>
+    <textarea id="q3" class="w-full mt-2 border rounded p-2 text-sm" rows="4" placeholder="至少 50 字..."></textarea>
+    <button onclick="check3()" class="mt-2 px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700">送出</button>
+    <p id="fb3" class="text-sm mt-2"></p>
+  </section>
+
+  <!-- 關卡 4：倫理兩難 -->
+  <section class="bg-white rounded-2xl p-5 shadow mb-5 fade-in">
+    <h2 class="text-xl font-bold text-sky-700">關卡 4｜倫理兩難：漁港的抉擇</h2>
+    <p class="text-sm text-slate-600 mt-1">情境：某漁港若持續擴大箱網養殖，短期可增收 30%；但專家警告 10 年內漁場可能崩潰，連帶破壞藍色經濟（全球 2.5 兆美元 / 3 億工作）。村民分成擴大派與永續派。</p>
+    <p class="mt-2 font-medium">Q4. 你會建議哪一方？為什麼？請寫下你的立場與 <b>至少 2 個理由</b>（無標準答案，重在論述）：</p>
+    <textarea id="q4" class="w-full mt-2 border rounded p-2 text-sm" rows="4" placeholder="我的立場是... 因為..."></textarea>
+    <button onclick="check4()" class="mt-2 px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700">送出</button>
+    <p id="fb4" class="text-sm mt-2"></p>
+  </section>
+
+  <!-- 關卡 5：CER 論證 -->
+  <section class="bg-white rounded-2xl p-5 shadow mb-5 fade-in">
+    <h2 class="text-xl font-bold text-sky-700">關卡 5｜CER 論證：政府該補貼小農氣候保險嗎？</h2>
+    <p class="text-sm text-slate-600 mt-1">Swiss Re 2023 全球天然災害保險損失達 1,080 億美元連續 4 年破千億；TCCIP 指出延遲調適每公尺海堤多 30% 成本。</p>
+    <div class="mt-2 text-sm bg-amber-50 border border-amber-200 p-2 rounded">
+      <b>範例結構</b>：<br>
+      <b>C（主張）</b>：政府應／不應補貼小農氣候保險。<br>
+      <b>E（證據）</b>：引用本單元至少 <b>2 個數據</b>。<br>
+      <b>R（推理）</b>：證據如何支持主張？並回應 1 個反對意見。
+    </div>
+    <textarea id="q5" class="w-full mt-2 border rounded p-2 text-sm" rows="6" placeholder="C: ...&#10;E: (1) ... (2) ...&#10;R: ...&#10;反方回應: ..."></textarea>
+    <button onclick="check5()" class="mt-2 px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700">送出</button>
+    <p id="fb5" class="text-sm mt-2"></p>
+  </section>
+
+  <!-- 關卡 6：系統思考因果鏈 -->
+  <section class="bg-white rounded-2xl p-5 shadow mb-5 fade-in">
+    <h2 class="text-xl font-bold text-sky-700">關卡 6｜系統思考：因果鏈建構</h2>
+    <p class="text-sm text-slate-600 mt-1">依序連接節點，建立「氣候 → 經濟」因果鏈。每格選 1 個最合適選項：</p>
+    <div class="grid grid-cols-1 gap-2 mt-3" id="q6">
+      <div>① 起點：<select class="border rounded p-1"><option value="">選</option><option>極端天氣頻率上升</option><option>物價下降</option></select></div>
+      <div>② →：<select class="border rounded p-1"><option value="">選</option><option>農漁林產量下降</option><option>農業 GDP 上升</option></select></div>
+      <div>③ →：<select class="border rounded p-1"><option value="">選</option><option>小型家庭企業倒閉</option><option>大企業開心</option></select></div>
+      <div>④ →：<select class="border rounded p-1"><option value="">選</option><option>糧價上漲、保費上漲</option><option>物價穩定</option></select></div>
+      <div>⑤ →：<select class="border rounded p-1"><option value="">選</option><option>低收入家庭受創、公共支出增加</option><option>所有人受益</option></select></div>
+    </div>
+    <p class="mt-3 font-medium">Q6b. 請在下方寫出至少 1 個『回饋循環』（例如：保費上漲 → 小農退保 → 風險更集中 → 保費又漲…）</p>
+    <textarea id="q6b" class="w-full mt-2 border rounded p-2 text-sm" rows="3" placeholder="回饋循環：..."></textarea>
+    <button onclick="check6()" class="mt-2 px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700">送出</button>
+    <p id="fb6" class="text-sm mt-2"></p>
+  </section>
+
+  <!-- 關卡 7：後設認知 + 專題任務 -->
+  <section class="bg-white rounded-2xl p-5 shadow mb-5 fade-in">
+    <h2 class="text-xl font-bold text-sky-700">關卡 7｜後設認知 + 專題任務</h2>
+    <p class="text-sm text-slate-600 mt-1">回到開始的你，上完這 6 關後：</p>
+    <p class="mt-2 font-medium">Q7a. 你對『經濟』和『氣候』的關係，想法改變了嗎？為什麼？（至少 3 句）</p>
+    <textarea id="q7a" class="w-full mt-2 border rounded p-2 text-sm" rows="3" placeholder="上這單元之前我以為... 現在我覺得... 因為..."></textarea>
+    <p class="mt-3 font-medium">Q7b. <b>專題任務</b>：請你在下週前完成下列任一項並於課堂分享（寫下你選的 + 第一步）：</p>
+    <div class="space-y-1 mt-2 text-sm">
+      <label class="block"><input type="checkbox" class="t7"/> A. 踏查校園周邊 1 項調適基建（滯洪池/綠屋頂），拍照並寫 200 字報導</label>
+      <label class="block"><input type="checkbox" class="t7"/> B. 訪談 1 位在地小農或小漁業者，記錄他們面對氣候的困境</label>
+      <label class="block"><input type="checkbox" class="t7"/> C. 設計『支持在地農產』校園市集企劃書 1 頁</label>
+      <label class="block"><input type="checkbox" class="t7"/> D. 用 NOAA 或 TCCIP 公開資料做 1 張圖表並解讀</label>
+    </div>
+    <textarea id="q7b" class="w-full mt-2 border rounded p-2 text-sm" rows="2" placeholder="我選的是 ___，第一步我會..."></textarea>
+    <button onclick="check7()" class="mt-2 px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700">送出</button>
+    <p id="fb7" class="text-sm mt-2"></p>
+  </section>
+
+  <!-- WSA Challenge -->
+  <section class="bg-gradient-to-r from-emerald-100 to-sky-100 rounded-2xl p-5 shadow mb-5 fade-in">
+    <h2 class="text-xl font-bold text-emerald-800">🌍 全校挑戰 WSA Challenge</h2>
+    <p class="text-sm text-slate-700 mt-1">勾選你願意推動的四面向行動（全選解鎖『全校英雄』徽章）：</p>
+    <div class="space-y-2 mt-2 text-sm">
+      <label class="block"><input type="checkbox" class="wsa"/> 🎓 <b>課程整合</b>：建議老師把『氣候經濟』融入公民或數學課作業</label>
+      <label class="block"><input type="checkbox" class="wsa"/> 🏫 <b>校園營運</b>：提案校園加裝雨撲滿、採購在地小農食材午餐</label>
+      <label class="block"><input type="checkbox" class="wsa"/> 🤝 <b>社區連結</b>：與里辦或小農合辦校園市集、農損互助基金</label>
+      <label class="block"><input type="checkbox" class="wsa"/> 🗳️ <b>學生治理</b>：成立氣候經濟議會、學生監察員發布校園報告</label>
+    </div>
+    <button onclick="checkWSA()" class="mt-3 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700">挑戰 WSA</button>
+    <p id="fbwsa" class="mt-2 text-sm"></p>
+  </section>
+
+  <!-- 成果 -->
+  <section id="summary" class="bg-white rounded-2xl p-6 shadow mb-10 hidden text-center">
+    <h2 class="text-2xl font-bold text-sky-800">🎓 結業報告</h2>
+    <p class="mt-2 text-slate-700">你完成了 <span id="doneCount">0</span> 關，獲得 <span id="doneBadges">0</span> 枚徽章。</p>
+    <div id="badgeList" class="flex flex-wrap justify-center gap-2 mt-3"></div>
+    <div class="mt-4 text-left text-sm bg-slate-50 p-3 rounded">
+      <b>3 項延伸思考（帶回家）</b>：<br>
+      1. 若全台農業保險費下週起漲 50%，你會如何與家人、農民、政策面建議？<br>
+      2. 藍色經濟 2.5 兆美元中你看見的商機與陷阱分別是什麼？<br>
+      3. 20 年後的你，會希望今天的自己做哪一件氣候行動？
+    </div>
+  </section>
+
+</div>
+
+<script>
+let score=0, badges=0, done=0;
+const badgeList=[];
+function addScore(n,name){ score+=n; done++; badges++; badgeList.push(name); update(); confetti(); }
+function update(){ document.getElementById('score').textContent=score; document.getElementById('badges').textContent=badges; document.getElementById('progress').textContent=done; if(done>=7){ showSummary(); } }
+function confetti(){ for(let i=0;i<24;i++){ const c=document.createElement('div'); c.className='confetti'; c.style.left=Math.random()*100+'vw'; c.style.background=['#f59e0b','#10b981','#0284c7','#ec4899'][i%4]; c.style.animationDelay=(Math.random()*0.5)+'s'; document.body.appendChild(c); setTimeout(()=>c.remove(),2200);} }
+function hint(id,msg){ const el=document.getElementById(id); el.innerHTML='💡 '+msg; el.className='text-sm mt-2 text-amber-700'; }
+function ok(id,msg){ const el=document.getElementById(id); el.innerHTML='✅ '+msg; el.className='text-sm mt-2 text-emerald-700 font-semibold'; }
+
+function check1(){
+  const v=document.querySelector('input[name="q1"]:checked');
+  const ex=document.getElementById('q1ex').value.trim();
+  if(!v||!ex){ hint('fb1','提示：先選一個選項，再補一句推論。'); return;}
+  if(v.value!=='B'){ hint('fb1','再想想：曲線上升代表什麼？線索是事件數變多。'); return;}
+  if(ex.length<5){ hint('fb1','推論太短了，試著多寫一點為什麼。'); return;}
+  ok('fb1','判讀到位！資料告訴我們頻率與成本都在上升。+15');
+  addScore(15,'📊 資料解讀員');
+}
+function check2(){
+  const s=document.querySelectorAll('#q2 select');
+  const want=['溫度升高','溫度驟降','降雨變異','病蟲害擴散'];
+  let c=0; s.forEach((e,i)=>{ if(e.value===want[i]) c++; });
+  if(c<3){ hint('fb2','再想想：作物的『舒適區』是溫度與降雨的特定範圍。'); return;}
+  ok('fb2',`答對 ${c}/4！作物脆弱＝舒適區被打破。+12`);
+  addScore(12,'🌾 脆弱偵探');
+}
+function check3(){
+  const t=document.getElementById('q3').value.trim();
+  if(t.length<50){ hint('fb3','請至少 50 字，多寫一點同理與具體幫忙（如市集、轉介資源）。'); return;}
+  ok('fb3','感謝你的同理心，這正是 UNESCO 情意目標。+15');
+  addScore(15,'❤️ 同理特派員');
+}
+function check4(){
+  const t=document.getElementById('q4').value.trim();
+  const hasReason=(t.match(/因為|理由|所以|原因/g)||[]).length>=1;
+  if(t.length<60||!hasReason){ hint('fb4','請寫下立場＋至少 2 個理由，使用「因為/理由」等詞連接。'); return;}
+  ok('fb4','倫理論述呈現了你的價值判斷，沒有標準答案！+18');
+  addScore(18,'⚖️ 倫理思辨家');
+}
+function check5(){
+  const t=document.getElementById('q5').value.trim();
+  const hasData=(t.match(/3\.8|1,?080|110|2\.5|1\.6|42|403/g)||[]).length>=2;
+  const hasCER=/C[:：]/i.test(t)&&/E[:：]/i.test(t)&&/R[:：]/i.test(t);
+  if(t.length<80||!hasData||!hasCER){ hint('fb5','請使用 C/E/R 結構，並至少引用 2 個本單元數據（如 3.8 兆、1,080 億）。'); return;}
+  ok('fb5','完整 CER！論證具數據基礎，好極了。+20');
+  addScore(20,'📝 CER 論證王');
+}
+function check6(){
+  const s=document.querySelectorAll('#q6 select');
+  const want=['極端天氣頻率上升','農漁林產量下降','小型家庭企業倒閉','糧價上漲、保費上漲','低收入家庭受創、公共支出增加'];
+  let c=0; s.forEach((e,i)=>{ if(e.value===want[i]) c++; });
+  const loop=document.getElementById('q6b').value.trim();
+  if(c<4||loop.length<20){ hint('fb6','因果鏈至少 4 個正確＋寫出 1 條回饋循環（例：保費漲→退保→風險集中→再漲）。'); return;}
+  ok('fb6','系統思考到位！回饋循環是高階技能。+18');
+  addScore(18,'🔄 系統思考者');
+}
+function check7(){
+  const a=document.getElementById('q7a').value.trim();
+  const b=document.getElementById('q7b').value.trim();
+  const picked=document.querySelectorAll('.t7:checked').length;
+  if(a.length<30||b.length<10||picked<1){ hint('fb7','後設反思至少 3 句；勾選 1 項專題＋寫下第一步。'); return;}
+  ok('fb7','後設認知＋行動承諾，課程在你身上內化了！+22');
+  addScore(22,'🧠 後設反思者');
+}
+function checkWSA(){
+  const all=document.querySelectorAll('.wsa:checked').length;
+  if(all<4){ hint('fbwsa','四面向都勾才能成為全校英雄喔！'); return;}
+  const el=document.getElementById('fbwsa');
+  el.innerHTML='🏆 <b>全校英雄徽章解鎖</b>！你看見系統改變需要全校一起動。+25';
+  el.className='mt-2 text-sm text-emerald-800 badge-pop font-semibold';
+  if(!badgeList.includes('🏆 全校英雄')){ addScore(25,'🏆 全校英雄'); }
+}
+function showSummary(){
+  document.getElementById('summary').classList.remove('hidden');
+  document.getElementById('doneCount').textContent=done;
+  document.getElementById('doneBadges').textContent=badges;
+  const bl=document.getElementById('badgeList');
+  bl.innerHTML='';
+  badgeList.forEach(b=>{ const s=document.createElement('span'); s.textContent=b; s.className='px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm badge-pop'; bl.appendChild(s);});
+  document.getElementById('summary').scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>

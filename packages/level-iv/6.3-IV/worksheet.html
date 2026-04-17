@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.3-IV 負責任消費 互動學習單｜青少年傳播官養成</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif}
+  .fade-in{animation:fadeIn .5s ease-in}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .badge{background:linear-gradient(135deg,#10b981,#059669);color:white;border-radius:9999px;padding:.25rem .75rem;font-size:.8rem;display:inline-flex;align-items:center;gap:.25rem}
+  .confetti{position:fixed;top:-10px;width:8px;height:16px;z-index:50;animation:fall 2.5s linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+  textarea{resize:vertical}
+  .flow-node{background:#ecfdf5;border:2px solid #10b981;border-radius:12px;padding:.5rem .75rem;cursor:move;user-select:none}
+  .arrow{color:#059669;font-size:1.5rem}
+</style>
+</head>
+<body class="bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 min-h-screen">
+<div class="max-w-4xl mx-auto p-4 md:p-8">
+
+  <!-- 標題 -->
+  <header class="text-center mb-6">
+    <h1 class="text-3xl md:text-4xl font-extrabold text-emerald-800">青少年傳播官養成計畫</h1>
+    <p class="text-lg text-emerald-700 mt-2">UNESCO ESD 6.3-IV｜負責任消費：管道 × 計劃性報廢 × 你的行動</p>
+    <div id="progressBar" class="h-3 bg-emerald-100 rounded-full mt-4 overflow-hidden">
+      <div id="progressFill" class="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500" style="width:0%"></div>
+    </div>
+    <p class="text-sm text-emerald-600 mt-1"><span id="progressText">0</span> / 8 關卡完成｜分數：<span id="score" class="font-bold">0</span></p>
+    <div id="badges" class="flex flex-wrap gap-2 justify-center mt-2"></div>
+  </header>
+
+  <!-- 情境 -->
+  <section class="bg-white rounded-2xl shadow-md p-6 mb-6 fade-in">
+    <h2 class="text-xl font-bold text-teal-700 mb-2">情境</h2>
+    <p class="text-gray-700 leading-relaxed">你是 14 歲的<strong>「小嶼」</strong>──國中二年級學生，剛被選為班上的「永續傳播官」。校長要求你在四週內，用你能掌握的各種管道，推動同學「負責任消費」。但你發現：手機每 2.5 年就要換、冰箱裡半袋菜正要腐爛、同學都在搶購新球鞋……。你要如何辨識影響、拆解陷阱、設計行動？本學習單會帶你走 8 關卡任務。</p>
+  </section>
+
+  <!-- 關卡 1：資料詮釋 -->
+  <section id="q1" class="bg-white rounded-2xl shadow-md p-6 mb-6 fade-in">
+    <h2 class="text-xl font-bold text-teal-700 mb-2">關卡 1｜資料詮釋：全球食物浪費來源</h2>
+    <p class="text-gray-700 mb-3">請看下方 UNEP《Food Waste Index Report 2024》資料：</p>
+    <div class="bg-emerald-50 rounded-xl p-4 mb-3">
+      <div class="space-y-2 text-sm">
+        <div class="flex items-center"><div class="w-24">家戶</div><div class="h-5 bg-emerald-600 rounded" style="width:60%"></div><span class="ml-2 font-bold">60%</span></div>
+        <div class="flex items-center"><div class="w-24">餐飲業</div><div class="h-5 bg-emerald-500 rounded" style="width:28%"></div><span class="ml-2 font-bold">28%</span></div>
+        <div class="flex items-center"><div class="w-24">零售端</div><div class="h-5 bg-emerald-400 rounded" style="width:12%"></div><span class="ml-2 font-bold">12%</span></div>
+      </div>
+      <p class="text-xs text-gray-500 mt-2">全球 2022 年總量 10.5 億公噸；人均每年浪費約 79 kg。</p>
+    </div>
+    <p class="mb-2 text-gray-700">看完資料，選擇<strong>最正確</strong>的詮釋：</p>
+    <div class="space-y-2" id="q1-options">
+      <button class="q1opt w-full text-left p-3 bg-gray-50 hover:bg-emerald-50 rounded-lg border" data-c="0">A. 全球食物浪費主要問題在餐廳，因為他們丟的比家戶多。</button>
+      <button class="q1opt w-full text-left p-3 bg-gray-50 hover:bg-emerald-50 rounded-lg border" data-c="1">B. 家戶是最大來源，但三個管道都需介入；光靠家戶減量無法達 SDG 12.3 的減半目標。</button>
+      <button class="q1opt w-full text-left p-3 bg-gray-50 hover:bg-emerald-50 rounded-lg border" data-c="0">C. 零售只占 12%，幾乎可以忽略。</button>
+      <button class="q1opt w-full text-left p-3 bg-gray-50 hover:bg-emerald-50 rounded-lg border" data-c="0">D. 此圖顯示臺灣家戶問題最嚴重。</button>
+    </div>
+    <div id="q1-fb" class="mt-3 text-sm"></div>
+  </section>
+
+  <!-- 關卡 2：管道配對 -->
+  <section id="q2" class="bg-white rounded-2xl shadow-md p-6 mb-6 fade-in">
+    <h2 class="text-xl font-bold text-teal-700 mb-2">關卡 2｜管道配對</h2>
+    <p class="text-gray-700 mb-3">把「對象」和「最適合的管道」連起來（點選配對）：</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="space-y-2">
+        <p class="font-semibold text-emerald-700">對象</p>
+        <button class="target w-full p-3 rounded-lg border bg-gray-50" data-id="g1">① 70 歲阿公不太用手機</button>
+        <button class="target w-full p-3 rounded-lg border bg-gray-50" data-id="g2">② 班上追 KOL 的同學</button>
+        <button class="target w-full p-3 rounded-lg border bg-gray-50" data-id="g3">③ 家長會的各班家長代表</button>
+        <button class="target w-full p-3 rounded-lg border bg-gray-50" data-id="g4">④ 剛認識永續議題的小學生</button>
+      </div>
+      <div class="space-y-2">
+        <p class="font-semibold text-emerald-700">管道</p>
+        <button class="channel w-full p-3 rounded-lg border bg-gray-50" data-id="c1">A. 家庭晚餐對話</button>
+        <button class="channel w-full p-3 rounded-lg border bg-gray-50" data-id="c2">B. TikTok 短影片</button>
+        <button class="channel w-full p-3 rounded-lg border bg-gray-50" data-id="c3">C. 家長會說明會簡報</button>
+        <button class="channel w-full p-3 rounded-lg border bg-gray-50" data-id="c4">D. 互動繪本或桌遊</button>
+      </div>
+    </div>
+    <p id="q2-fb" class="mt-3 text-sm"></p>
+  </section>
+
+  <!-- 關卡 3：計劃性報廢類型 -->
+  <section id="q3" class="bg-white rounded-2xl shadow-md p-6 mb-6 fade-in">
+    <h2 class="text-xl font-bold text-teal-700 mb-2">關卡 3｜計劃性報廢偵探</h2>
+    <p class="text-gray-700 mb-3">把下列案例歸類到<strong>功能性／心理性／技術性</strong>計劃性報廢（點選）：</p>
+    <div class="space-y-3" id="q3-cases">
+      <div class="case-row flex flex-wrap gap-2 items-center" data-correct="f"><span class="flex-1">①電動牙刷刷頭使用 60 天後自動變紅，無法復位</span>
+        <button class="cbtn" data-v="f">功能性</button><button class="cbtn" data-v="p">心理性</button><button class="cbtn" data-v="t">技術性</button></div>
+      <div class="case-row flex flex-wrap gap-2 items-center" data-correct="p"><span class="flex-1">②快時尚品牌每 2 週推出新款，舊款看起來立刻「過季」</span>
+        <button class="cbtn" data-v="f">功能性</button><button class="cbtn" data-v="p">心理性</button><button class="cbtn" data-v="t">技術性</button></div>
+      <div class="case-row flex flex-wrap gap-2 items-center" data-correct="t"><span class="flex-1">③4 年前的手機系統更新後變得很慢，App 也開始不支援</span>
+        <button class="cbtn" data-v="f">功能性</button><button class="cbtn" data-v="p">心理性</button><button class="cbtn" data-v="t">技術性</button></div>
+      <div class="case-row flex flex-wrap gap-2 items-center" data-correct="f"><span class="flex-1">④印表機晶片說墨水用完，實際還有，且拒認第三方墨水</span>
+        <button class="cbtn" data-v="f">功能性</button><button class="cbtn" data-v="p">心理性</button><button class="cbtn" data-v="t">技術性</button></div>
+    </div>
+    <p id="q3-fb" class="mt-3 text-sm"></p>
+  </section>
+
+  <!-- 關卡 4：系統思考 -->
+  <section id="q4" class="bg-white rounded-2xl shadow-md p-6 mb-6 fade-in">
+    <h2 class="text-xl font-bold text-teal-700 mb-2">關卡 4｜系統思考：消費回饋迴圈</h2>
+    <p class="text-gray-700 mb-3">下列是消費社會中的六個節點。請按因果把它們連成一個「成癮性成長」迴圈（填寫順序 1-6）：</p>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-3">
+      <div class="flow-node text-center">A. 廣告投放增加</div>
+      <div class="flow-node text-center">B. 消費者需求上升</div>
+      <div class="flow-node text-center">C. 企業擴產並壓低成本</div>
+      <div class="flow-node text-center">D. 資源耗竭成本上升</div>
+      <div class="flow-node text-center">E. 企業需更多營收</div>
+      <div class="flow-node text-center">F. 產品壽命再被縮短</div>
+    </div>
+    <p class="text-sm text-gray-600 mb-2">正確順序應為 A→B→C→D→E→F→（回到 A）。請在下方輸入你的答案順序（只填字母，如 ABCDEF）：</p>
+    <input id="q4-input" type="text" maxlength="6" class="border-2 border-emerald-300 rounded-lg px-3 py-2 uppercase" placeholder="ABCDEF">
+    <button id="q4-submit" class="ml-2 px-4 py-2 bg-emerald-600 text-white rounded-lg">檢查</button>
+    <p id="q4-fb" class="mt-3 text-sm"></p>
+    <div class="mt-3">
+      <label class="font-semibold text-emerald-700">延伸：在這個迴圈中，你認為<strong>最關鍵的介入點</strong>是哪一個節點？為什麼？（30 字以上）</label>
+      <textarea id="q4-ref" rows="3" class="w-full border rounded-lg p-2 mt-1" placeholder="我認為節點____最關鍵，因為..."></textarea>
+    </div>
+  </section>
+
+  <!-- 關卡 5：倫理兩難 -->
+  <section id="q5" class="bg-white rounded-2xl shadow-md p-6 mb-6 fade-in">
+    <h2 class="text-xl font-bold text-teal-700 mb-2">關卡 5｜倫理兩難：永續 vs 公平</h2>
+    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded mb-3">
+      <p class="text-sm text-gray-800">快時尚一件 T-shirt 只要 150 元。對經濟困難的家庭來說，這是他們少數能常買新衣的選項。若我們大力倡議只買永續品牌（一件動輒 800-1500 元），會不會造成「只有中產階級才能做環保」？你如何看待這個倫理兩難？</p>
+    </div>
+    <label class="font-semibold text-emerald-700 block mb-1">你的立場論述（至少 80 字）：</label>
+    <textarea id="q5-ref" rows="5" class="w-full border-2 border-amber-300 rounded-lg p-2" placeholder="我的立場是... 我考量的價值有... 我不支持的是..."></textarea>
+    <p class="text-xs text-gray-500 mt-1">此題無標準答案，評分依據為：立場清楚、考量多方、承認限制。</p>
+  </section>
+
+  <!-- 關卡 6：CER 論證 -->
+  <section id="q6" class="bg-white rounded-2xl shadow-md p-6 mb-6 fade-in">
+    <h2 class="text-xl font-bold text-teal-700 mb-2">關卡 6｜CER 論證寫作</h2>
+    <p class="text-gray-700 mb-2">請用 CER 結構，回答：<strong>「國中校園是否應設置『維修站』（repair café），由學生輪值協助修理文具／電子小物？」</strong></p>
+    <div class="bg-gray-50 rounded-lg p-3 text-xs text-gray-600 mb-3">
+      <strong>範例引導</strong>：Claim（主張）：校園應設置維修站。 Evidence（證據）：全球人均每年丟 7.8 kg 電子垃圾（dp1）；歐盟 2024 維修權指令已將維修視為消費者權利（dp4）。 Reasoning（推理）：校園是最接近青少年的行為場域，若能把「修」變成一種日常動作與身分認同，可從源頭降低計劃性報廢造成的資源壓力。
+    </div>
+    <label class="font-semibold text-emerald-700">你的 Claim：</label>
+    <textarea id="q6-c" rows="2" class="w-full border rounded-lg p-2 mb-2" placeholder="一句話清楚立場..."></textarea>
+    <label class="font-semibold text-emerald-700">你的 Evidence（至少兩項，可引用本學習單數據）：</label>
+    <textarea id="q6-e" rows="3" class="w-full border rounded-lg p-2 mb-2" placeholder="證據 1... 證據 2..."></textarea>
+    <label class="font-semibold text-emerald-700">你的 Reasoning：</label>
+    <textarea id="q6-r" rows="3" class="w-full border rounded-lg p-2" placeholder="把證據連回主張的邏輯..."></textarea>
+  </section>
+
+  <!-- 關卡 7：漂綠偵測 -->
+  <section id="q7" class="bg-white rounded-2xl shadow-md p-6 mb-6 fade-in">
+    <h2 class="text-xl font-bold text-teal-700 mb-2">關卡 7｜漂綠偵測</h2>
+    <p class="text-gray-700 mb-3">以下產品文案哪些<strong>疑似漂綠</strong>？勾選你認為有問題的（多選）：</p>
+    <div class="space-y-2">
+      <label class="flex items-start gap-2 p-2 border rounded hover:bg-emerald-50"><input type="checkbox" class="gw mt-1" data-g="1"> <span>「天然礦物成分，愛地球！」──沒註明是哪項成分、比例、對照基準。</span></label>
+      <label class="flex items-start gap-2 p-2 border rounded hover:bg-emerald-50"><input type="checkbox" class="gw mt-1" data-g="0"> <span>「取得臺灣環保標章第 XXXX 號認證，每年由環境部稽核。」</span></label>
+      <label class="flex items-start gap-2 p-2 border rounded hover:bg-emerald-50"><input type="checkbox" class="gw mt-1" data-g="1"> <span>「每賣出 1 件，我們就捐 1 元給熱帶雨林。」──沒說捐給誰、做什麼、比例。</span></label>
+      <label class="flex items-start gap-2 p-2 border rounded hover:bg-emerald-50"><input type="checkbox" class="gw mt-1" data-g="1"> <span>「使用綠色包裝」──未說明綠色指什麼（可回收？生質？減量？）。</span></label>
+      <label class="flex items-start gap-2 p-2 border rounded hover:bg-emerald-50"><input type="checkbox" class="gw mt-1" data-g="0"> <span>「比前一代產品減少 32% 碳足跡，經 SGS 第三方驗證。」</span></label>
+    </div>
+    <button id="q7-submit" class="mt-3 px-4 py-2 bg-emerald-600 text-white rounded-lg">檢查</button>
+    <p id="q7-fb" class="mt-3 text-sm"></p>
+  </section>
+
+  <!-- 關卡 8：開放式反思 × 2 + 後設認知 -->
+  <section id="q8" class="bg-white rounded-2xl shadow-md p-6 mb-6 fade-in">
+    <h2 class="text-xl font-bold text-teal-700 mb-2">關卡 8｜反思與後設認知</h2>
+    <label class="font-semibold text-emerald-700">① 開放反思：如果你發現自己常被社群網路「新品開箱」帶動購買欲，你會如何重新設計自己與社群的關係？（50 字以上）</label>
+    <textarea id="q8-a" rows="3" class="w-full border rounded-lg p-2 mb-3" placeholder="我注意到... 我想改變的是... 我的方法..."></textarea>
+
+    <label class="font-semibold text-emerald-700">② 開放反思：回想你家裡最近丟棄的一樣東西。它是「真的壞了不能修」，還是「被設計成很難修」？你可以有什麼不同做法？（50 字以上）</label>
+    <textarea id="q8-b" rows="3" class="w-full border rounded-lg p-2 mb-3" placeholder="那件東西是... 我觀察到... 下一次我會..."></textarea>
+
+    <label class="font-semibold text-emerald-700">③ 後設認知：學習本單元<strong>之前</strong>，你對『我能影響別人消費』的信心是幾分（1-10）？<strong>現在</strong>呢？你的想法改變了嗎？為什麼？</label>
+    <div class="flex gap-4 my-2">
+      <label>之前：<input id="meta-before" type="number" min="1" max="10" class="border rounded px-2 py-1 w-20"></label>
+      <label>現在：<input id="meta-after" type="number" min="1" max="10" class="border rounded px-2 py-1 w-20"></label>
+    </div>
+    <textarea id="q8-meta" rows="3" class="w-full border rounded-lg p-2" placeholder="我的想法改變了/沒改變，因為..."></textarea>
+  </section>
+
+  <!-- 專題任務 -->
+  <section class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl shadow-lg p-6 mb-6 fade-in">
+    <h2 class="text-2xl font-bold mb-3">專題任務｜七日永續傳播官</h2>
+    <ol class="list-decimal list-inside space-y-2 text-sm">
+      <li>選擇 1 個管道（家庭／IG／班會／社區）。</li>
+      <li>選擇 1 個訴求：反漂綠 / 維修替代丟棄 / 家戶剩食減量 / 快時尚拒買。</li>
+      <li>製作 1 個成品（短片 30 秒 / 海報 A3 / 對話腳本 / 陳情書 300 字）。</li>
+      <li>記錄：接觸多少人？有多少人回應？你觀察到什麼行為改變？</li>
+      <li>第 7 天寫一份 200 字「行動日誌」帶回班級分享。</li>
+    </ol>
+  </section>
+
+  <!-- WSA Challenge -->
+  <section class="bg-white border-2 border-emerald-300 rounded-2xl shadow-md p-6 mb-6 fade-in">
+    <h2 class="text-xl font-bold text-emerald-700 mb-2">Whole School Approach 四面向挑戰</h2>
+    <p class="text-gray-700 mb-3 text-sm">完成 4 個面向任意一項即可打勾；全部完成解鎖「全校英雄」徽章。</p>
+    <div class="space-y-2">
+      <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1"><span><strong>課程整合</strong>：在另一門課（國文／社會／科技）中引用本單元至少 1 個數據。</span></label>
+      <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1"><span><strong>校園營運</strong>：向合作社或總務處提出 1 項『優先採環保標章』建議。</span></label>
+      <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1"><span><strong>社區連結</strong>：訪問 1 位社區維修師傅／二手店老闆／里長，記錄其觀察。</span></label>
+      <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1"><span><strong>學生治理</strong>：向班聯會或班會提出 1 項『永續消費』正式提案。</span></label>
+    </div>
+    <div id="wsa-reward" class="hidden mt-3 p-3 bg-emerald-50 rounded-lg text-center font-bold text-emerald-700 text-lg">全校英雄徽章解鎖！你已啟動改變的四個齒輪。</div>
+  </section>
+
+  <!-- 送出 + 總結 -->
+  <section class="text-center mb-6">
+    <button id="finishBtn" class="px-8 py-3 bg-emerald-700 hover:bg-emerald-800 text-white text-lg font-bold rounded-full shadow-lg">送出並查看我的傳播官報告</button>
+  </section>
+
+  <section id="summary" class="hidden bg-white rounded-2xl shadow-md p-6 mb-6 fade-in">
+    <h2 class="text-2xl font-bold text-emerald-700 mb-3">成果總結</h2>
+    <p id="sumText" class="text-gray-700 mb-3"></p>
+    <h3 class="font-bold text-teal-700 mt-3 mb-2">三項延伸思考（帶回班級）</h3>
+    <ol class="list-decimal list-inside text-sm text-gray-700 space-y-1">
+      <li>如果 AI 推薦系統本身是計劃性報廢的一環——讓你永遠覺得「下一個更好」——你會如何因應？</li>
+      <li>有人說「反消費主義本身也是一種消費文化」（買瑜珈墊、買環保杯），你同意嗎？</li>
+      <li>假設校長宣布「全面禁止新文具進入校園」，這個政策解決了什麼問題？製造了哪些新問題？</li>
+    </ol>
+  </section>
+
+  <footer class="text-center text-xs text-gray-500 py-4">UNESCO ESD 6.3-IV｜Verified 2026-04-16｜資料來源：UNEP, UNITAR/ITU, UN SDG, EU Right-to-Repair, 中華民國環境部</footer>
+</div>
+
+<script>
+let score=0, completed=new Set();
+const badges=[];
+const update=()=>{
+  document.getElementById('score').textContent=score;
+  document.getElementById('progressText').textContent=completed.size;
+  document.getElementById('progressFill').style.width=(completed.size/8*100)+'%';
+  const bx=document.getElementById('badges');
+  bx.innerHTML=badges.map(b=>`<span class="badge">🏅 ${b}</span>`).join('');
+};
+const confetti=()=>{
+  for(let i=0;i<30;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=['#10b981','#fbbf24','#f472b6','#60a5fa','#a78bfa'][i%5];
+    c.style.animationDelay=(Math.random()*.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+};
+const complete=(id,pts,badge)=>{
+  if(completed.has(id))return;
+  completed.add(id); score+=pts;
+  if(badge){badges.push(badge); confetti();}
+  update();
+};
+
+// Q1
+document.querySelectorAll('.q1opt').forEach(b=>b.addEventListener('click',e=>{
+  const correct=e.currentTarget.dataset.c==='1';
+  const fb=document.getElementById('q1-fb');
+  if(correct){
+    fb.innerHTML='<span class="text-emerald-600 font-bold">✓ 答對！</span> 家戶雖為最大來源，但需三管齊下，且 SDG 12.3 是零售+消費端共同減半。';
+    complete('q1',10,'資料偵探');
+  } else fb.innerHTML='<span class="text-rose-600">再想想：注意各管道的比例與 SDG 12.3 的完整定義。</span>';
+}));
+
+// Q2 matching
+let sel=null, q2map={g1:'a',g2:'b',g3:'c',g4:'d'}, q2pairs=0, q2done=false;
+document.querySelectorAll('.target,.channel').forEach(b=>b.addEventListener('click',e=>{
+  const el=e.currentTarget;
+  if(el.classList.contains('done'))return;
+  if(!sel){sel=el; el.classList.add('bg-emerald-200'); return;}
+  if(sel.classList.contains('target')&&el.classList.contains('channel') ||
+     sel.classList.contains('channel')&&el.classList.contains('target')){
+    const t=sel.classList.contains('target')?sel:el;
+    const c=sel.classList.contains('channel')?sel:el;
+    const expect={g1:'c1',g2:'c2',g3:'c3',g4:'c4'}[t.dataset.id];
+    if(c.dataset.id===expect){
+      t.classList.add('done','bg-emerald-100','line-through');
+      c.classList.add('done','bg-emerald-100','line-through');
+      q2pairs++;
+      if(q2pairs===4 && !q2done){q2done=true; complete('q2',10,'管道大師'); document.getElementById('q2-fb').innerHTML='<span class="text-emerald-600 font-bold">✓ 四組全配對正確！</span>';}
+    } else {
+      document.getElementById('q2-fb').innerHTML='<span class="text-amber-600">提示：想想每個對象最常接觸的資訊形式。</span>';
+      t.classList.remove('bg-emerald-200'); c.classList.remove('bg-emerald-200');
+    }
+    sel.classList.remove('bg-emerald-200'); sel=null;
+  } else {sel.classList.remove('bg-emerald-200'); sel=el; el.classList.add('bg-emerald-200');}
+}));
+
+// Q3 classify
+let q3correct=0, q3total=4;
+document.querySelectorAll('.case-row').forEach(row=>{
+  row.querySelectorAll('.cbtn').forEach(btn=>{
+    btn.className='cbtn px-3 py-1 rounded border bg-white hover:bg-emerald-50 text-sm';
+    btn.addEventListener('click',e=>{
+      if(row.dataset.done)return;
+      const want=row.dataset.correct, got=e.target.dataset.v;
+      if(got===want){
+        row.dataset.done='1';
+        row.classList.add('bg-emerald-50');
+        e.target.classList.add('bg-emerald-500','text-white');
+        q3correct++;
+        if(q3correct===q3total){complete('q3',15,'報廢偵探'); document.getElementById('q3-fb').innerHTML='<span class="text-emerald-600 font-bold">✓ 四案全對！</span>';}
+      } else {
+        document.getElementById('q3-fb').innerHTML='<span class="text-amber-600">提示：功能性=壞掉；心理性=過時；技術性=軟體。</span>';
+      }
+    });
+  });
+});
+
+// Q4 flow
+document.getElementById('q4-submit').addEventListener('click',()=>{
+  const v=document.getElementById('q4-input').value.toUpperCase();
+  const ref=document.getElementById('q4-ref').value;
+  const fb=document.getElementById('q4-fb');
+  if(v==='ABCDEF' && ref.length>=30){
+    fb.innerHTML='<span class="text-emerald-600 font-bold">✓ 迴圈正確 + 反思充足！</span>';
+    complete('q4',15,'系統思考家');
+  } else if(v==='ABCDEF'){fb.innerHTML='<span class="text-amber-600">順序對了，但反思需 30 字以上。</span>';}
+  else fb.innerHTML='<span class="text-amber-600">順序提示：廣告 → 需求 → 擴產 → 耗竭 → 營收壓力 → 縮短壽命。</span>';
+});
+
+// Q5 ethical
+document.getElementById('q5-ref').addEventListener('blur',e=>{
+  if(e.target.value.length>=80) complete('q5',15,'倫理思辨家');
+});
+
+// Q6 CER
+const cerCheck=()=>{
+  const c=document.getElementById('q6-c').value;
+  const ev=document.getElementById('q6-e').value;
+  const r=document.getElementById('q6-r').value;
+  if(c.length>=10 && ev.length>=30 && r.length>=30) complete('q6',15,'論證高手');
+};
+['q6-c','q6-e','q6-r'].forEach(id=>document.getElementById(id).addEventListener('blur',cerCheck));
+
+// Q7 greenwash
+document.getElementById('q7-submit').addEventListener('click',()=>{
+  const boxes=document.querySelectorAll('.gw');
+  let ok=true;
+  boxes.forEach(b=>{
+    const should=b.dataset.g==='1';
+    if(b.checked!==should) ok=false;
+  });
+  const fb=document.getElementById('q7-fb');
+  if(ok){fb.innerHTML='<span class="text-emerald-600 font-bold">✓ 完美！你已掌握漂綠檢核三問：第三方？數據？基準？</span>'; complete('q7',10,'漂綠偵查員');}
+  else fb.innerHTML='<span class="text-amber-600">提示：真正永續文案會給出第三方認證、具體百分比與比較基準年。</span>';
+});
+
+// Q8 metacognition
+const metaCheck=()=>{
+  const a=document.getElementById('q8-a').value.length>=50;
+  const b=document.getElementById('q8-b').value.length>=50;
+  const m=document.getElementById('q8-meta').value.length>=20;
+  const before=document.getElementById('meta-before').value;
+  const after=document.getElementById('meta-after').value;
+  if(a && b && m && before && after) complete('q8',20,'後設認知者');
+};
+['q8-a','q8-b','q8-meta','meta-before','meta-after'].forEach(id=>document.getElementById(id).addEventListener('blur',metaCheck));
+
+// WSA
+const wsaBoxes=document.querySelectorAll('.wsa');
+wsaBoxes.forEach(b=>b.addEventListener('change',()=>{
+  const all=[...wsaBoxes].every(x=>x.checked);
+  if(all){
+    document.getElementById('wsa-reward').classList.remove('hidden');
+    if(!badges.includes('全校英雄')){badges.push('全校英雄'); confetti(); update();}
+  }
+}));
+
+// Finish
+document.getElementById('finishBtn').addEventListener('click',()=>{
+  const sum=document.getElementById('summary');
+  sum.classList.remove('hidden');
+  const txt=`你完成了 ${completed.size}/8 關卡，累積 ${score} 分，獲得 ${badges.length} 個徽章：${badges.join('、')||'（尚無）'}。`+
+    `${completed.size===8?'你已具備青少年傳播官的核心素養！':'還有關卡未完成，加油！'}`;
+  document.getElementById('sumText').textContent=txt;
+  sum.scrollIntoView({behavior:'smooth'});
+  if(completed.size===8) confetti();
+});
+</script>
+</body>
+</html>

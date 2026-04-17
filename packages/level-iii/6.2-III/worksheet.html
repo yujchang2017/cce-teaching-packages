@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>6.2-III 再生能源行動家 — 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+  body{font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;background:linear-gradient(135deg,#FEF9C3 0%,#DBEAFE 50%,#DCFCE7 100%);min-height:100vh}
+  .card{background:rgba(255,255,255,.9);border-radius:1rem;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+  .badge{display:inline-block;padding:.25rem .75rem;border-radius:9999px;font-weight:700;font-size:.75rem}
+  .dragging{opacity:.5}
+  .drop-hover{outline:3px dashed #10B981}
+  .hero-badge{animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  input[type=checkbox]{width:1.25rem;height:1.25rem}
+  .progress-bar{transition:width .5s ease}
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-5xl mx-auto">
+
+  <!-- 標題 + 角色 + 進度 -->
+  <header class="card p-6 mb-6">
+    <div class="flex items-center justify-between flex-wrap gap-3">
+      <div>
+        <h1 class="text-3xl md:text-4xl font-black text-emerald-700">🌞 再生能源行動家 🌬️</h1>
+        <p class="text-gray-600 mt-1">UNESCO 6.2-III · 9-12 歲 · 世界各地使用不同的能源</p>
+      </div>
+      <div class="text-right">
+        <div class="text-sm text-gray-600">你的身份</div>
+        <div class="font-bold text-lg text-amber-600">小島台灣能源特派員 🏝️</div>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="flex justify-between text-sm mb-1"><span>探險進度</span><span id="progText">0 / 6 關</span></div>
+      <div class="w-full bg-gray-200 rounded-full h-3">
+        <div id="progBar" class="progress-bar bg-gradient-to-r from-emerald-400 to-sky-500 h-3 rounded-full" style="width:0%"></div>
+      </div>
+    </div>
+    <div id="badges" class="mt-4 flex flex-wrap gap-2"></div>
+  </header>
+
+  <!-- 關卡 1 · 世界能源大地圖 -->
+  <section id="lv1" class="card p-6 mb-6">
+    <h2 class="text-2xl font-bold text-sky-700">🗺️ 關卡 1：世界能源大地圖</h2>
+    <p class="text-gray-700 mt-2">把每個國家拖到它<strong>最主要的能源</strong>籃子裡！(dp5 · 真實數據)</p>
+    <div class="mt-4 flex flex-wrap gap-2" id="countries">
+      <div draggable="true" data-ans="hydro" class="px-3 py-2 bg-blue-100 rounded-lg cursor-grab">🇳🇴 挪威（99%）</div>
+      <div draggable="true" data-ans="geo" class="px-3 py-2 bg-orange-100 rounded-lg cursor-grab">🇮🇸 冰島（98%）</div>
+      <div draggable="true" data-ans="hydro" class="px-3 py-2 bg-blue-100 rounded-lg cursor-grab">🇵🇾 巴拉圭（100%）</div>
+      <div draggable="true" data-ans="wind" class="px-3 py-2 bg-cyan-100 rounded-lg cursor-grab">🇩🇰 丹麥（風力大國）</div>
+      <div draggable="true" data-ans="fossil" class="px-3 py-2 bg-gray-200 rounded-lg cursor-grab">🇹🇼 台灣（仍以化石為主，綠電 11.6%）</div>
+      <div draggable="true" data-ans="biomass" class="px-3 py-2 bg-lime-100 rounded-lg cursor-grab">🌍 非洲農村（薪柴）</div>
+    </div>
+    <div class="mt-4 grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div class="drop-zone p-4 border-2 border-blue-400 rounded-lg min-h-[80px]" data-ans="hydro"><b>💧 水力</b></div>
+      <div class="drop-zone p-4 border-2 border-orange-400 rounded-lg min-h-[80px]" data-ans="geo"><b>♨️ 地熱</b></div>
+      <div class="drop-zone p-4 border-2 border-cyan-400 rounded-lg min-h-[80px]" data-ans="wind"><b>🌬️ 風力</b></div>
+      <div class="drop-zone p-4 border-2 border-lime-400 rounded-lg min-h-[80px]" data-ans="biomass"><b>🪵 生質</b></div>
+      <div class="drop-zone p-4 border-2 border-gray-400 rounded-lg min-h-[80px]" data-ans="fossil"><b>⚫ 化石</b></div>
+    </div>
+    <button onclick="checkLv1()" class="mt-4 bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg">檢查答案</button>
+    <div id="msg1" class="mt-2 text-sm"></div>
+  </section>
+
+  <!-- 關卡 2 · 綠電分類器 -->
+  <section id="lv2" class="card p-6 mb-6">
+    <h2 class="text-2xl font-bold text-emerald-700">♻️ 關卡 2：再生 vs 非再生</h2>
+    <p class="text-gray-700 mt-2">點選卡片判斷。共 6 題。(dp1)</p>
+    <div id="quiz2" class="mt-4 space-y-3"></div>
+    <div id="msg2" class="mt-2 text-sm"></div>
+  </section>
+
+  <!-- 關卡 3 · 1度電碳排計算 -->
+  <section id="lv3" class="card p-6 mb-6">
+    <h2 class="text-2xl font-bold text-rose-700">🔢 關卡 3：1 度電的碳祕密</h2>
+    <p class="text-gray-700 mt-2">台灣電力排碳係數 <b>0.495 kg CO2 / 度</b>（dp3，經濟部能源署 2023）</p>
+    <div class="mt-3 space-y-2">
+      <label class="block">每天冷氣開幾小時？<input id="hrs" type="number" value="8" min="0" max="24" class="ml-2 border rounded px-2 py-1 w-24"></label>
+      <label class="block">開幾天？<input id="days" type="number" value="30" min="1" max="365" class="ml-2 border rounded px-2 py-1 w-24"></label>
+      <button onclick="calcCO2()" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-lg">計算碳排放</button>
+    </div>
+    <div id="co2out" class="mt-3 text-lg font-semibold"></div>
+  </section>
+
+  <!-- 關卡 4 · 能源貧窮情境劇（角色） -->
+  <section id="lv4" class="card p-6 mb-6">
+    <h2 class="text-2xl font-bold text-purple-700">💛 關卡 4：能源故事情境劇</h2>
+    <p class="text-gray-700 mt-2">你是小島台灣能源特派員，遇見這些朋友，選出最合適的協助方案。(dp4)</p>
+    <div id="stories" class="mt-4 space-y-4"></div>
+    <div id="msg4" class="mt-2 text-sm"></div>
+  </section>
+
+  <!-- 關卡 5 · WSA 全校四挑戰 -->
+  <section id="lv5" class="card p-6 mb-6 border-4 border-amber-400">
+    <h2 class="text-2xl font-bold text-amber-700">🏫 關卡 5：全校能源英雄挑戰（WSA）</h2>
+    <p class="text-gray-700 mt-2">勾選 4 項全校面向的行動，全部完成才能解鎖「全校能源英雄」徽章！</p>
+    <div class="mt-4 space-y-3">
+      <label class="flex items-start gap-3"><input type="checkbox" class="wsa" id="wsa1"><span><b>課程整合：</b>我已在自然/社會/藝術課至少 1 次結合「再生能源」主題（例：風車 DIY、冰島地熱簡報）</span></label>
+      <label class="flex items-start gap-3"><input type="checkbox" class="wsa" id="wsa2"><span><b>校園營運：</b>我協助檢查教室冷氣 28°C、下課關燈，並為班級記錄每日用電</span></label>
+      <label class="flex items-start gap-3"><input type="checkbox" class="wsa" id="wsa3"><span><b>社區連結：</b>我和家人/里長分享屋頂光電資訊，或參訪過附近光電、風力、水力電廠</span></label>
+      <label class="flex items-start gap-3"><input type="checkbox" class="wsa" id="wsa4"><span><b>學生治理：</b>我擔任能源小隊長或提出一個「校園綠能提案」</span></label>
+    </div>
+    <button onclick="checkWSA()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg">解鎖全校英雄徽章</button>
+    <div id="msg5" class="mt-2 text-sm"></div>
+  </section>
+
+  <!-- 關卡 6 · 我的承諾 + 社群海報 -->
+  <section id="lv6" class="card p-6 mb-6">
+    <h2 class="text-2xl font-bold text-indigo-700">📣 關卡 6：承諾 × 社群行動</h2>
+    <p class="text-gray-700 mt-2">寫下 3 件你要做的事 + 1 張 IG 風格宣傳語（LO-B2、LO-B3）</p>
+    <textarea id="promise" rows="4" class="mt-3 w-full border rounded-lg p-2" placeholder="例：我會每天冷氣28°C搭配電扇；我會告訴弟弟關插頭；我會畫一張海報說『綠電是我們的明天』…"></textarea>
+    <input id="slogan" class="mt-3 w-full border rounded-lg p-2" placeholder="我的宣傳口號：例如『綠電點亮未來』">
+    <button onclick="submitPromise()" class="mt-3 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">送出承諾</button>
+    <div id="msg6" class="mt-2 text-sm"></div>
+  </section>
+
+  <footer class="text-center text-xs text-gray-500 py-6">
+    6.2-III Renewable Energy Use · 資料來源：IEA、WHO、IPCC、經濟部能源署、Our World in Data · verified 2026-04-16
+  </footer>
+</div>
+
+<script>
+const state={lv1:false,lv2:false,lv3:false,lv4:false,lv5:false,lv6:false};
+const badges=[];
+function updateProgress(){
+  const done=Object.values(state).filter(v=>v).length;
+  document.getElementById('progText').textContent=done+' / 6 關';
+  document.getElementById('progBar').style.width=(done/6*100)+'%';
+  const bd=document.getElementById('badges');bd.innerHTML='';
+  badges.forEach(b=>{const s=document.createElement('span');s.className='badge '+b.c;s.textContent=b.t;bd.appendChild(s);});
+  if(done===6){fire();}
+}
+function fire(){confetti({particleCount:200,spread:90,origin:{y:.6}});}
+function award(t,c='bg-emerald-200 text-emerald-800'){if(!badges.find(b=>b.t===t)){badges.push({t,c});fire();}updateProgress();}
+
+// Lv1 drag
+document.querySelectorAll('#countries [draggable]').forEach(el=>{
+  el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text',el.dataset.ans);e.dataTransfer.setData('html',el.outerHTML);el.classList.add('dragging');el._ref=el;});
+  el.addEventListener('dragend',e=>el.classList.remove('dragging'));
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('drop-hover');});
+  z.addEventListener('dragleave',e=>z.classList.remove('drop-hover'));
+  z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('drop-hover');
+    const ans=e.dataTransfer.getData('text');const html=e.dataTransfer.getData('html');
+    const div=document.createElement('div');div.innerHTML=html;const node=div.firstChild;node.draggable=false;node.classList.add('mt-1','text-xs');z.appendChild(node);
+    // remove original
+    const src=document.querySelector('#countries [draggable]._src');
+    document.querySelectorAll('#countries [draggable]').forEach(x=>{if(x.classList.contains('dragging'))x.remove();});
+  });
+});
+function checkLv1(){
+  let ok=0,tot=0;
+  document.querySelectorAll('.drop-zone').forEach(z=>{
+    z.querySelectorAll('[data-ans]').forEach(n=>{tot++;if(n.dataset.ans===z.dataset.ans)ok++;});
+  });
+  const m=document.getElementById('msg1');
+  if(tot<6){m.innerHTML='<span class="text-orange-600">💡 提示：6 張國家卡片都要拖到籃子裡喔！</span>';return;}
+  if(ok===tot){m.innerHTML='<span class="text-emerald-600 font-bold">✅ 全對！地理學家徽章 GET！</span>';state.lv1=true;award('🗺️ 地理學家');}
+  else{m.innerHTML=`<span class="text-rose-600">再想想：對 ${ok}/${tot}。提示：挪威&巴拉圭多山多河用水力；冰島位於火山帶用地熱；丹麥風超大。</span>`;}
+}
+
+// Lv2 quiz
+const q2=[
+  {q:'太陽能',a:true},{q:'煤炭',a:false},{q:'風能',a:true},{q:'天然氣',a:false},
+  {q:'撿枯枝燒飯（永續生質）',a:true},{q:'石油',a:false}
+];
+const qc=document.getElementById('quiz2');
+q2.forEach((x,i)=>{
+  const row=document.createElement('div');row.className='flex items-center gap-3 bg-gray-50 p-3 rounded';
+  row.innerHTML=`<span class="flex-1 font-semibold">${i+1}. ${x.q}</span>
+    <button class="px-3 py-1 bg-emerald-200 rounded" onclick="ans2(${i},true,this)">再生 ♻️</button>
+    <button class="px-3 py-1 bg-gray-300 rounded" onclick="ans2(${i},false,this)">非再生 ⚫</button>
+    <span class="fb w-6"></span>`;
+  qc.appendChild(row);
+});
+const done2=new Set();
+function ans2(i,pick,btn){
+  const fb=btn.parentElement.querySelector('.fb');
+  if(pick===q2[i].a){fb.textContent='✓';fb.className='fb w-6 text-emerald-600 font-bold';done2.add(i);}
+  else{fb.textContent='✗';fb.className='fb w-6 text-rose-600 font-bold';btn.parentElement.querySelector('.fb').nextSibling;
+    document.getElementById('msg2').innerHTML='<span class="text-amber-600">💡 想一下：再生能源是用不完或可以補充的；煤、石油、天然氣都是地底下的化石燃料喔！</span>';}
+  if(done2.size===q2.length&&!state.lv2){state.lv2=true;award('♻️ 能源辨識王');document.getElementById('msg2').innerHTML='<span class="text-emerald-600 font-bold">✅ 全數辨識完成！</span>';}
+}
+
+// Lv3
+function calcCO2(){
+  const h=+document.getElementById('hrs').value||0;
+  const d=+document.getElementById('days').value||0;
+  const co2=(h*d*0.495).toFixed(1);
+  const trees=(co2/21).toFixed(1); // 1 tree ~ 21 kg/yr
+  document.getElementById('co2out').innerHTML=`🌿 你的冷氣每月排放 <b>${co2} kg CO2</b>；大約需要 <b>${trees} 棵樹</b>一年吸收！<br><small class="text-gray-600">若改用太陽能發電，這數字可接近 0。</small>`;
+  if(!state.lv3){state.lv3=true;award('🔢 碳排偵探');}
+}
+
+// Lv4
+const stories=[
+  {who:'🌍 肯亞小女孩阿瑪', sit:'她家用三石灶煮飯，煙讓妹妹咳嗽不停。', opts:[
+    {t:'送她一台小型太陽灶＋太陽燈',ok:true,fb:'正解！乾淨烹飪能避免室內空污（WHO 2024：每年 320 萬人死於此）。'},
+    {t:'送她一桶柴油',ok:false,fb:'柴油仍是化石燃料，空污更嚴重。'},
+    {t:'告訴她忍耐就好',ok:false,fb:'我們要有同理心與行動，不是忽視。'}
+  ]},
+  {who:'🏝️ 蘭嶼部落的阿公', sit:'部落希望減少柴油發電機的噪音與空污。', opts:[
+    {t:'裝微型風力＋太陽能混合系統',ok:true,fb:'正解！小型再生能源最適合離島微電網。'},
+    {t:'改用燃煤發電',ok:false,fb:'煤更髒，還要從台灣本島運來。'},
+    {t:'完全不用電',ok:false,fb:'不符合現代生活需求，不是真正的永續方案。'}
+  ]},
+  {who:'🏠 台灣同學小明', sit:'他家屋頂很大又西曬，夏天冷氣費超高。', opts:[
+    {t:'申請屋頂太陽能板＋加隔熱層',ok:true,fb:'正解！可降冷氣用電 15-25%（dp6）。'},
+    {t:'白天整天開窗就好',ok:false,fb:'西曬時開窗反而更熱。'},
+    {t:'拆掉屋頂',ok:false,fb:'這是搞笑選項～不可以啦！'}
+  ]}
+];
+const sc=document.getElementById('stories');
+stories.forEach((s,i)=>{
+  const d=document.createElement('div');d.className='bg-purple-50 p-4 rounded-lg';
+  d.innerHTML=`<b>${s.who}</b><br><span class="text-sm">${s.sit}</span><div class="mt-2 space-y-1">`+
+    s.opts.map((o,j)=>`<button class="block w-full text-left px-3 py-2 bg-white hover:bg-purple-100 rounded border" onclick="pick4(${i},${j},this)">${o.t}</button>`).join('')+'</div><div class="fb4 mt-2 text-sm"></div>';
+  sc.appendChild(d);
+});
+const done4=new Set();
+function pick4(i,j,btn){
+  const o=stories[i].opts[j];
+  const fb=btn.parentElement.parentElement.querySelector('.fb4');
+  if(o.ok){fb.innerHTML='<span class="text-emerald-700">✅ '+o.fb+'</span>';done4.add(i);btn.classList.add('bg-emerald-200');}
+  else{fb.innerHTML='<span class="text-rose-600">💭 '+o.fb+'（再試一次）</span>';}
+  if(done4.size===stories.length&&!state.lv4){state.lv4=true;award('💛 同理心特派員');}
+}
+
+// Lv5 WSA
+function checkWSA(){
+  const all=[...document.querySelectorAll('.wsa')].every(c=>c.checked);
+  const m=document.getElementById('msg5');
+  if(all){m.innerHTML='<span class="text-amber-700 font-bold text-lg">🎖️ 全校能源英雄徽章 GET！你完成了 WSA 四面向挑戰！</span>';if(!state.lv5){state.lv5=true;award('🏫 全校能源英雄','bg-amber-200 text-amber-900 hero-badge');}}
+  else{m.innerHTML='<span class="text-orange-600">💡 還要再完成幾項。提示：四個面向都勾才算完整的全校行動！</span>';}
+}
+
+// Lv6
+function submitPromise(){
+  const p=document.getElementById('promise').value.trim();
+  const s=document.getElementById('slogan').value.trim();
+  const m=document.getElementById('msg6');
+  if(p.length<15||!s){m.innerHTML='<span class="text-orange-600">💡 請至少寫 15 字的承諾，並填一句口號！</span>';return;}
+  m.innerHTML='<span class="text-indigo-700 font-bold">📣 承諾送出！請拍照交給老師，並張貼在班級牆面。</span>';
+  if(!state.lv6){state.lv6=true;award('📣 社群大使');}
+}
+
+updateProgress();
+</script>
+</body>
+</html>

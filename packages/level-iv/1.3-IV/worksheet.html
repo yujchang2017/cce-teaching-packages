@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>碳去哪了？| 國中碳循環互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#d1fae5,#fef9c3,#dbeafe); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:80px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#10b981; transform:scale(1.3);}
+  .progress-dot.done { background:#0ea5e9;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea.cer { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem;}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  .badge-lock { filter:grayscale(1); opacity:.35;}
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">🌍 碳去哪了？</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『碳循環偵探』：8 個任務，追蹤碳的旅程，成為 Level 4 國中氣候公民。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">偵探積分</div>
+    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">碳庫</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">停留</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">化石燃料</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">碳預算</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">酸化</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs">珊瑚 CER</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs">專題</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs">後設</span>
+</div>
+
+<!-- ===== Level 1: 碳庫配對（系統思考） ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🌳</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-700">任務 1｜碳的四個家</h2>
+      <p class="text-sm text-slate-700 mt-1">拖曳下方『碳的形式』到正確的『碳庫』區。自然碳循環在四大儲存庫間流動。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：碳循環偵探 ｜ 10 分 ｜ 對應 LO: C1, C2</p>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+    <div class="drop-zone p-3" data-accept="atm"><div class="text-center text-sm font-bold text-sky-700">🌫️ 大氣</div></div>
+    <div class="drop-zone p-3" data-accept="bio"><div class="text-center text-sm font-bold text-green-700">🌿 生物圈</div></div>
+    <div class="drop-zone p-3" data-accept="ocn"><div class="text-center text-sm font-bold text-blue-700">🌊 海洋</div></div>
+    <div class="drop-zone p-3" data-accept="geo"><div class="text-center text-sm font-bold text-amber-700">⛰️ 岩石圈土壤</div></div>
+  </div>
+  <div class="flex flex-wrap gap-2 bg-slate-50 p-3 rounded-lg">
+    <div class="drag-item bg-sky-100 px-3 py-2 rounded-lg text-sm" draggable="true" data-match="atm">CO₂ 氣體</div>
+    <div class="drag-item bg-green-100 px-3 py-2 rounded-lg text-sm" draggable="true" data-match="bio">樹木中的木質素</div>
+    <div class="drag-item bg-blue-100 px-3 py-2 rounded-lg text-sm" draggable="true" data-match="ocn">溶解的 HCO₃⁻</div>
+    <div class="drag-item bg-amber-100 px-3 py-2 rounded-lg text-sm" draggable="true" data-match="geo">煤層與石灰岩</div>
+    <div class="drag-item bg-green-100 px-3 py-2 rounded-lg text-sm" draggable="true" data-match="bio">你身體的 18% 碳</div>
+    <div class="drag-item bg-blue-100 px-3 py-2 rounded-lg text-sm" draggable="true" data-match="ocn">貝殼碳酸鈣</div>
+  </div>
+  <div id="feedback-1" class="text-sm mt-3 min-h-[1.5rem]"></div>
+  <button id="btn-next-1" class="btn bg-emerald-600 text-white px-5 py-2 rounded-lg mt-3 font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 2: 停留時間排序（系統思考） ===== -->
+<section id="level-2" class="card p-6 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">⏳</div>
+    <div>
+      <h2 class="text-xl font-bold text-sky-700">任務 2｜碳的停留時間</h2>
+      <p class="text-sm text-slate-700 mt-1">將四個碳庫按『碳平均停留時間』由短到長排序。</p>
+      <p class="text-xs text-slate-500 mt-1">10 分 ｜ 對應 LO: C2</p>
+    </div>
+  </div>
+  <div class="grid grid-cols-4 gap-2 mb-3" id="time-slots">
+    <div class="drop-zone p-3 text-center text-xs" data-slot="1"><div class="font-bold text-slate-500">① 最短</div><div id="slot-1-text" class="mt-2 text-slate-400">—</div></div>
+    <div class="drop-zone p-3 text-center text-xs" data-slot="2"><div class="font-bold text-slate-500">②</div><div id="slot-2-text" class="mt-2 text-slate-400">—</div></div>
+    <div class="drop-zone p-3 text-center text-xs" data-slot="3"><div class="font-bold text-slate-500">③</div><div id="slot-3-text" class="mt-2 text-slate-400">—</div></div>
+    <div class="drop-zone p-3 text-center text-xs" data-slot="4"><div class="font-bold text-slate-500">④ 最長</div><div id="slot-4-text" class="mt-2 text-slate-400">—</div></div>
+  </div>
+  <div id="time-items" class="flex flex-wrap gap-2 bg-slate-50 p-3 rounded-lg">
+    <div class="drag-item bg-indigo-100 px-3 py-2 rounded-lg text-sm" draggable="true" data-ord="2">土壤（數十年）</div>
+    <div class="drag-item bg-indigo-100 px-3 py-2 rounded-lg text-sm" draggable="true" data-ord="4">沉積岩（百萬年）</div>
+    <div class="drag-item bg-indigo-100 px-3 py-2 rounded-lg text-sm" draggable="true" data-ord="1">大氣（約 5 年）</div>
+    <div class="drag-item bg-indigo-100 px-3 py-2 rounded-lg text-sm" draggable="true" data-ord="3">深海（數百年）</div>
+  </div>
+  <div id="feedback-2" class="text-sm mt-3 min-h-[1.5rem]"></div>
+  <button id="btn-next-2" class="btn bg-sky-600 text-white px-5 py-2 rounded-lg mt-3 font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 3: 化石燃料是非題（TF quiz） ===== -->
+<section id="level-3" class="card p-6 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🛢️</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 3｜化石燃料真相</h2>
+      <p class="text-sm text-slate-700 mt-1">判斷下列敘述對/錯。每題都附『為什麼』提示。</p>
+      <p class="text-xs text-slate-500 mt-1">9 分 ｜ 對應 LO: C3</p>
+    </div>
+  </div>
+  <div id="q3-box" class="space-y-3">
+    <div class="quiz-item bg-amber-50 p-3 rounded-lg" data-correct="F">
+      <p class="font-semibold text-sm">① 石油是恐龍屍體變成的。</p>
+      <div class="mt-2 flex gap-2">
+        <button class="btn-ans btn bg-emerald-500 text-white px-3 py-1 rounded text-sm" data-ans="T">對</button>
+        <button class="btn-ans btn bg-rose-500 text-white px-3 py-1 rounded text-sm" data-ans="F">錯</button>
+      </div>
+      <div class="hint text-xs mt-2 hidden"></div>
+    </div>
+    <div class="quiz-item bg-amber-50 p-3 rounded-lg" data-correct="T">
+      <p class="font-semibold text-sm">② 燃燒化石燃料會把地底長期封存的碳，一次釋放到大氣。</p>
+      <div class="mt-2 flex gap-2">
+        <button class="btn-ans btn bg-emerald-500 text-white px-3 py-1 rounded text-sm" data-ans="T">對</button>
+        <button class="btn-ans btn bg-rose-500 text-white px-3 py-1 rounded text-sm" data-ans="F">錯</button>
+      </div>
+      <div class="hint text-xs mt-2 hidden"></div>
+    </div>
+    <div class="quiz-item bg-amber-50 p-3 rounded-lg" data-correct="F">
+      <p class="font-semibold text-sm">③ 只要種樹抵銷，繼續燒化石燃料不會有問題。</p>
+      <div class="mt-2 flex gap-2">
+        <button class="btn-ans btn bg-emerald-500 text-white px-3 py-1 rounded text-sm" data-ans="T">對</button>
+        <button class="btn-ans btn bg-rose-500 text-white px-3 py-1 rounded text-sm" data-ans="F">錯</button>
+      </div>
+      <div class="hint text-xs mt-2 hidden"></div>
+    </div>
+  </div>
+  <button id="btn-next-3" class="btn bg-amber-600 text-white px-5 py-2 rounded-lg mt-3 font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 4: 資料詮釋：碳預算（Data interpretation） ===== -->
+<section id="level-4" class="card p-6 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📊</div>
+    <div>
+      <h2 class="text-xl font-bold text-blue-700">任務 4｜全球碳預算資料詮釋</h2>
+      <p class="text-sm text-slate-700 mt-1">IPCC AR6 WG1 指出：人類每排 100 單位 CO₂，<b>46% 留大氣、29% 陸地吸、26% 海洋吸</b>。</p>
+      <p class="text-xs text-slate-500 mt-1">10 分 ｜ 對應 LO: C2 ｜ 資料詮釋</p>
+    </div>
+  </div>
+  <div class="bg-blue-50 p-3 rounded-lg mb-3">
+    <div class="flex h-8 rounded overflow-hidden">
+      <div style="width:46%" class="bg-rose-400 flex items-center justify-center text-white text-xs font-bold">大氣 46%</div>
+      <div style="width:29%" class="bg-green-500 flex items-center justify-center text-white text-xs font-bold">陸地 29%</div>
+      <div style="width:25%" class="bg-blue-500 flex items-center justify-center text-white text-xs font-bold">海洋 26%</div>
+    </div>
+  </div>
+  <div class="space-y-3 text-sm">
+    <div>
+      <p class="font-semibold">Q1：假設全球年排 370 億噸 CO₂，約有多少億噸累積在大氣？（單選）</p>
+      <label class="block"><input type="radio" name="q41" value="A"> A. 約 96 億噸</label>
+      <label class="block"><input type="radio" name="q41" value="B"> B. 約 170 億噸</label>
+      <label class="block"><input type="radio" name="q41" value="C"> C. 約 370 億噸</label>
+      <div class="q41-fb text-xs mt-1"></div>
+    </div>
+    <div>
+      <p class="font-semibold">Q2（開放反思，≥40 字）：若『海洋』這個天然碳匯因暖化而減弱，對我們的影響是什麼？至少提一個具體後果。</p>
+      <textarea id="q42" class="cer" rows="3" placeholder="例如：若海洋吸碳能力下降 10%...（40 字以上）"></textarea>
+      <div id="q42-len" class="text-xs text-slate-500 mt-1">0 / 40 字</div>
+    </div>
+  </div>
+  <button id="btn-next-4" class="btn bg-blue-600 text-white px-5 py-2 rounded-lg mt-3 font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 5: 海洋酸化箭頭 + 對數尺度計算 ===== -->
+<section id="level-5" class="card p-6 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🧪</div>
+    <div>
+      <h2 class="text-xl font-bold text-cyan-700">任務 5｜海洋酸化的化學</h2>
+      <p class="text-sm text-slate-700 mt-1">把反應片段拖到正確位置，並完成對數尺度計算。</p>
+      <p class="text-xs text-slate-500 mt-1">10 分 ｜ 對應 LO: C4, C5</p>
+    </div>
+  </div>
+  <div class="bg-cyan-50 p-4 rounded-lg mb-3">
+    <div class="flex items-center justify-center gap-2 flex-wrap text-sm font-bold">
+      <span>CO₂ +</span>
+      <div class="drop-zone p-2 w-20 text-center" data-accept="h2o"><span id="slot-h2o-text" class="text-slate-400">?</span></div>
+      <span>⇌</span>
+      <div class="drop-zone p-2 w-20 text-center" data-accept="h2co3"><span id="slot-h2co3-text" class="text-slate-400">?</span></div>
+      <span>⇌</span>
+      <div class="drop-zone p-2 w-20 text-center" data-accept="hp"><span id="slot-hp-text" class="text-slate-400">?</span></div>
+      <span>+ HCO₃⁻</span>
+    </div>
+  </div>
+  <div class="flex gap-2 mb-3" id="acid-items">
+    <div class="drag-item bg-cyan-100 px-3 py-2 rounded-lg text-sm" draggable="true" data-acid="h2co3">H₂CO₃</div>
+    <div class="drag-item bg-cyan-100 px-3 py-2 rounded-lg text-sm" draggable="true" data-acid="h2o">H₂O</div>
+    <div class="drag-item bg-cyan-100 px-3 py-2 rounded-lg text-sm" draggable="true" data-acid="hp">H⁺</div>
+  </div>
+  <div class="bg-yellow-50 p-3 rounded-lg">
+    <p class="text-sm font-semibold">對數尺度題：pH 下降 0.1，H⁺ 濃度增加幾 %？（提示：10^0.1 ≈ ?）</p>
+    <label class="block text-sm"><input type="radio" name="q5log" value="A"> A. 約 1%</label>
+    <label class="block text-sm"><input type="radio" name="q5log" value="B"> B. 約 10%</label>
+    <label class="block text-sm"><input type="radio" name="q5log" value="C"> C. 約 26-30%</label>
+    <label class="block text-sm"><input type="radio" name="q5log" value="D"> D. 約 100%</label>
+    <div class="q5log-fb text-xs mt-1"></div>
+  </div>
+  <div id="feedback-5" class="text-sm mt-3 min-h-[1.5rem]"></div>
+  <button id="btn-next-5" class="btn bg-cyan-600 text-white px-5 py-2 rounded-lg mt-3 font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 6: 珊瑚 CER + 倫理兩難（CER + 倫理） ===== -->
+<section id="level-6" class="card p-6 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🐠</div>
+    <div>
+      <h2 class="text-xl font-bold text-pink-700">任務 6｜珊瑚 CER 論證 + 倫理兩難</h2>
+      <p class="text-sm text-slate-700 mt-1">用 CER 結構說明氣候變遷如何威脅珊瑚礁，並回答倫理問題。</p>
+      <p class="text-xs text-slate-500 mt-1">15 分 ｜ 對應 LO: C5, C6, S4 ｜ CER + 倫理兩難</p>
+    </div>
+  </div>
+  <div class="bg-pink-50 p-3 rounded-lg mb-3 text-sm">
+    <p><b>資料卡：</b>珊瑚最適溫度 18-30°C；海水升溫 1-2°C 持續數週即可白化；海洋 pH 自工業前下降約 0.1（H⁺ 增加約 30%）；珊瑚礁雖佔海洋 &lt;1%，卻是約 25% 海洋物種的家。</p>
+  </div>
+  <div class="space-y-2">
+    <div><label class="text-sm font-bold">Claim（主張，≥10 字）</label>
+      <textarea id="cer-c" class="cer" rows="2" placeholder="例如：氣候變遷透過雙重機制威脅珊瑚生存。"></textarea></div>
+    <div><label class="text-sm font-bold">Evidence（證據，≥30 字，<b>需含數字</b>）</label>
+      <textarea id="cer-e" class="cer" rows="3" placeholder="引用具體數字：溫度、pH、物種比例..."></textarea></div>
+    <div><label class="text-sm font-bold">Reasoning（理由，≥30 字）</label>
+      <textarea id="cer-r" class="cer" rows="3" placeholder="說明為什麼證據能支持主張..."></textarea></div>
+  </div>
+  <div class="bg-orange-50 p-3 rounded-lg mt-3">
+    <p class="text-sm font-bold">倫理兩難（≥60 字）：</p>
+    <p class="text-xs text-slate-600 mb-2">澳洲大堡礁觀光年收 60 億澳幣、養活 6 萬人。政府若為保護珊瑚全面禁止漁業與遊船，漁民失業；若全開放，珊瑚加速消失。你支持哪種政策？全面禁漁？分區管理？碳稅補貼轉型？請寫下立場、理由、並說明你如何處理『受影響者』。</p>
+    <textarea id="q6-ethics" class="cer" rows="4" placeholder="我支持...，因為...，對於受影響漁民，我會..."></textarea>
+    <div id="q6-len" class="text-xs text-slate-500 mt-1">0 / 60 字</div>
+  </div>
+  <div id="cer-fb" class="text-sm mt-2"></div>
+  <button id="btn-next-6" class="btn bg-pink-600 text-white px-5 py-2 rounded-lg mt-3 font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 7: 專題式學習 + WSA 四面向 ===== -->
+<section id="level-7" class="card p-6 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏫</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-700">任務 7｜學校碳循環提案書（WSA Challenge）</h2>
+      <p class="text-sm text-slate-700 mt-1">為你的學校設計一份碳循環行動提案，<b>必須覆蓋 WSA 四面向</b>。</p>
+      <p class="text-xs text-slate-500 mt-1">15 分 ｜ 對應 LO: B1, B2, S2, S3 ｜ 專題式學習（PBL）</p>
+    </div>
+  </div>
+  <div class="space-y-2">
+    <div><label class="text-sm font-bold">① 提案標題（≥5 字）</label>
+      <input id="p-title" class="cer" placeholder="例：校園原生樹碳匯倍增計畫"></div>
+    <div><label class="text-sm font-bold">② 校園碳盤查 + 問題定義（≥40 字）</label>
+      <textarea id="p-problem" class="cer" rows="3" placeholder="盤點：餐廳、交通、冷氣、紙張、樹木... 鎖定最可行切入點"></textarea></div>
+    <div><label class="text-sm font-bold">③ CER 論證（含數字，≥80 字）</label>
+      <textarea id="p-cer" class="cer" rows="4" placeholder="主張：... 證據（含數字）：... 理由：..."></textarea></div>
+    <div><label class="text-sm font-bold">④ 具體行動步驟（≥20 字）</label>
+      <textarea id="p-steps" class="cer" rows="2" placeholder="誰、做什麼、何時"></textarea></div>
+    <div><label class="text-sm font-bold">⑤ 成效指標 KPI（≥5 字）</label>
+      <input id="p-kpi" class="cer" placeholder="例：一年內校園原生樹覆蓋率 +10%"></div>
+  </div>
+  <div class="bg-indigo-50 p-3 rounded-lg mt-3">
+    <p class="font-bold text-sm text-indigo-800">WSA 四面向自檢（全部勾選才可送交）</p>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> 🏛️ <b>治理</b>：提案有送入學生氣候委員會/班聯會/校務會議的路徑</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> 📚 <b>課程</b>：與 ≥2 學科（如理化、生物、地理、公民）連結</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> 🏫 <b>校園營運</b>：改變校園物理空間/消費/能源/廢棄物</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> 🤝 <b>社群</b>：與家長/社區/在地 NGO 合作或對外推廣</label>
+  </div>
+  <div id="p-fb" class="text-sm mt-2"></div>
+  <button id="btn-next-7" class="btn bg-indigo-600 text-white px-5 py-2 rounded-lg mt-3 font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 8: 後設認知（Metacognition）+ 開放反思 ===== -->
+<section id="level-8" class="card p-6 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🧠</div>
+    <div>
+      <h2 class="text-xl font-bold text-violet-700">任務 8｜回望自己：後設認知</h2>
+      <p class="text-sm text-slate-700 mt-1">三個問題沒有標準答案，但會改變你如何看未來。</p>
+      <p class="text-xs text-slate-500 mt-1">5 分 ｜ 對應 LO: S2 ｜ 後設認知 + 開放反思</p>
+    </div>
+  </div>
+  <div class="space-y-3">
+    <div><label class="text-sm font-bold">① 上這四節課『之前』，你對碳循環的想法是什麼？（≥50 字）</label>
+      <textarea id="m-before" class="cer" rows="3" placeholder="誠實寫下你原本的理解或誤解..."></textarea></div>
+    <div><label class="text-sm font-bold">② 『之後』你有哪些具體改變？（≥50 字，開放反思）</label>
+      <textarea id="m-after" class="cer" rows="3" placeholder="包括：哪個誤解被修正？哪個數據讓你震撼？對自己生活的 ≥1 個改變..."></textarea></div>
+    <div><label class="text-sm font-bold">③ 最讓你印象深刻的一個數據或概念（≥3 字）</label>
+      <input id="m-key" class="cer" placeholder="例如：46% 留大氣 / pH 下降 0.1 = 酸度 +30%"></div>
+  </div>
+  <div id="m-fb" class="text-sm mt-2 text-slate-500">請完成三題</div>
+  <button id="btn-finish" class="btn bg-violet-600 text-white px-5 py-2 rounded-lg mt-3 font-bold" disabled>完成任務 🎉</button>
+</section>
+
+<!-- ===== Final ===== -->
+<section id="level-final" class="card p-8 hidden-screen text-center">
+  <div class="text-6xl mb-3">🏆</div>
+  <h2 class="text-3xl font-bold text-emerald-700 mb-2">恭喜！你是 Level 4 碳循環偵探！</h2>
+  <p class="text-lg">最終積分：<span id="final-score" class="font-bold text-emerald-600">0</span> / 80</p>
+  <div class="mt-4 flex justify-center gap-3 flex-wrap">
+    <div class="chip bg-emerald-100 text-emerald-700">🌳 碳庫達人</div>
+    <div class="chip bg-sky-100 text-sky-700">⏳ 時間尺度</div>
+    <div class="chip bg-amber-100 text-amber-700">🛢️ 化石偵探</div>
+    <div class="chip bg-blue-100 text-blue-700">📊 資料詮釋</div>
+    <div class="chip bg-cyan-100 text-cyan-700">🧪 酸化化學</div>
+    <div class="chip bg-pink-100 text-pink-700">🐠 珊瑚守護</div>
+    <div class="chip bg-indigo-100 text-indigo-700">🏫 WSA 實踐</div>
+    <div class="chip bg-violet-100 text-violet-700">🧠 後設思維</div>
+  </div>
+  <p class="text-sm text-slate-600 mt-6">下節課，請帶上 Slide 23 的三個開放問題答案回校分享。</p>
+</section>
+
+</div>
+
+<script>
+(function(){
+  const S = { score: 0 };
+  const scoreEl = document.getElementById('score');
+  const setScore = (n)=>{ S.score += n; scoreEl.textContent = S.score; };
+  const confetti = ()=>{
+    const colors = ['#10b981','#f59e0b','#3b82f6','#ec4899','#8b5cf6'];
+    for(let i=0;i<30;i++){
+      const c=document.createElement('div');
+      c.className='confetti';
+      c.style.left=(Math.random()*100)+'vw';
+      c.style.background=colors[Math.floor(Math.random()*colors.length)];
+      c.style.animationDelay=(Math.random()*.5)+'s';
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(),2500);
+    }
+  };
+  const goto = (n)=>{
+    for(let i=1;i<=8;i++){
+      const sec=document.getElementById('level-'+i);
+      if(sec) sec.classList.add('hidden-screen');
+      const d=document.getElementById('dot-'+i);
+      if(d){d.classList.remove('active'); if(i<n) d.classList.add('done');}
+    }
+    const sec=document.getElementById('level-'+n);
+    if(sec){ sec.classList.remove('hidden-screen'); sec.classList.add('fade-in'); }
+    const d=document.getElementById('dot-'+n); if(d) d.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+
+  // Generic DnD
+  let dragged = null;
+  const wireDrag = (scope)=>{
+    scope.querySelectorAll('.drag-item').forEach(it=>{
+      it.addEventListener('dragstart', ()=>{ dragged=it; it.classList.add('dragging'); });
+      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null; });
+    });
+  };
+
+  // ===== Level 1 =====
+  const box1 = document.getElementById('level-1');
+  wireDrag(box1);
+  const zones1 = box1.querySelectorAll('.drop-zone');
+  let done1 = 0, err1 = 0;
+  zones1.forEach(z=>{
+    z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+    z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+    z.addEventListener('drop', e=>{
+      e.preventDefault(); z.classList.remove('over');
+      if(!dragged) return;
+      if(z.dataset.accept === dragged.dataset.match){
+        dragged.classList.add('pop');
+        z.appendChild(dragged);
+        dragged.setAttribute('draggable','false');
+        dragged.style.cursor='default';
+        done1++;
+        if(done1===6){
+          setScore(Math.max(10-err1,5));
+          document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 全部配對成功！碳在四大庫間流動。</span>';
+          document.getElementById('btn-next-1').disabled=false;
+          confetti();
+        }
+      } else {
+        z.classList.add('shake'); setTimeout(()=>z.classList.remove('shake'),400);
+        err1++;
+        document.getElementById('feedback-1').innerHTML='<span class="text-rose-600">❌ 想想這個碳的形式最可能存在哪裡？</span>';
+      }
+    });
+  });
+  document.getElementById('btn-next-1').onclick = ()=>goto(2);
+
+  // ===== Level 2 (time ordering) =====
+  const box2 = document.getElementById('level-2');
+  const tSlots = box2.querySelectorAll('.drop-zone');
+  let tDone=0, tErr=0;
+  setTimeout(()=>wireDrag(box2), 0);
+  // re-wire on first entry
+  const origGoto = goto;
+  tSlots.forEach(s=>{
+    s.addEventListener('dragover', e=>{e.preventDefault(); s.classList.add('over');});
+    s.addEventListener('dragleave', ()=>s.classList.remove('over'));
+    s.addEventListener('drop', e=>{
+      e.preventDefault(); s.classList.remove('over');
+      if(!dragged) return;
+      if(s.dataset.slot === dragged.dataset.ord){
+        document.getElementById('slot-'+s.dataset.slot+'-text').textContent = dragged.textContent;
+        dragged.style.visibility='hidden';
+        tDone++;
+        if(tDone===4){
+          setScore(Math.max(10-tErr,5));
+          document.getElementById('feedback-2').innerHTML='<span class="text-emerald-700 font-bold">✅ 停留時間：大氣最短，沉積岩百萬年！</span>';
+          document.getElementById('btn-next-2').disabled=false;
+          confetti();
+        }
+      } else {
+        s.classList.add('shake'); setTimeout(()=>s.classList.remove('shake'),400);
+        tErr++;
+        document.getElementById('feedback-2').innerHTML='<span class="text-rose-600">❌ 再想想。提示：沉積岩要上億年才形成。</span>';
+      }
+    });
+  });
+  document.getElementById('btn-next-2').onclick=()=>goto(3);
+
+  // ===== Level 3 TF =====
+  const hints3 = {
+    0:'石油主要來自遠古海洋浮游生物；煤主要來自沼澤植物——不是恐龍。',
+    1:'正確。化石燃料把地質時間尺度封存的碳，用人類時間尺度一次釋放。',
+    2:'種樹是短期碳庫，化石燃料是長期碳庫。只靠抵換無法處理根本失衡。'
+  };
+  let q3done = 0;
+  document.querySelectorAll('#q3-box .quiz-item').forEach((item,idx)=>{
+    item.querySelectorAll('.btn-ans').forEach(b=>{
+      b.onclick = ()=>{
+        if(item.dataset.locked) return;
+        const ok = b.dataset.ans === item.dataset.correct;
+        const hint = item.querySelector('.hint');
+        hint.classList.remove('hidden');
+        if(ok){
+          b.classList.add('pop');
+          hint.textContent = '✅ '+hints3[idx];
+          hint.className='hint text-xs mt-2 text-emerald-700';
+          item.dataset.locked='1';
+          setScore(3);
+          q3done++;
+          if(q3done===3){ document.getElementById('btn-next-3').disabled=false; confetti();}
+        } else {
+          item.classList.add('shake'); setTimeout(()=>item.classList.remove('shake'),400);
+          hint.textContent = '❌ 再想想：'+hints3[idx];
+          hint.className='hint text-xs mt-2 text-rose-600';
+        }
+      };
+    });
+  });
+  document.getElementById('btn-next-3').onclick=()=>goto(4);
+
+  // ===== Level 4 data interpretation =====
+  const btn4 = document.getElementById('btn-next-4');
+  const check4 = ()=>{
+    const r = document.querySelector('input[name=q41]:checked');
+    const t = document.getElementById('q42').value.trim();
+    btn4.disabled = !(r && t.length>=40);
+  };
+  document.querySelectorAll('input[name=q41]').forEach(r=>r.onchange=check4);
+  document.getElementById('q42').oninput = (e)=>{
+    document.getElementById('q42-len').textContent = `${e.target.value.trim().length} / 40 字`;
+    check4();
+  };
+  btn4.onclick = ()=>{
+    const r = document.querySelector('input[name=q41]:checked').value;
+    const fb = document.querySelector('.q41-fb');
+    let p=0;
+    if(r==='B'){ fb.textContent='✅ 正解 B：370×46% ≈ 170 億噸 留在大氣。'; fb.className='text-xs mt-1 text-emerald-700 q41-fb'; p+=4; }
+    else { fb.textContent='❌ 正解 B。370 × 46% ≈ 170。A 是海洋吸的量、C 是總排放。'; fb.className='text-xs mt-1 text-rose-600 q41-fb'; }
+    if(document.getElementById('q42').value.length>=40) p+=6;
+    setScore(p); confetti(); goto(5);
+  };
+
+  // ===== Level 5: chemistry + log =====
+  const box5 = document.getElementById('level-5');
+  wireDrag(box5);
+  const z5 = box5.querySelectorAll('.drop-zone');
+  let a5=0;
+  z5.forEach(z=>{
+    z.addEventListener('dragover', e=>{e.preventDefault(); z.classList.add('over');});
+    z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+    z.addEventListener('drop', e=>{
+      e.preventDefault(); z.classList.remove('over');
+      if(!dragged) return;
+      if(z.dataset.accept === dragged.dataset.acid){
+        document.getElementById('slot-'+z.dataset.accept+'-text').textContent = dragged.textContent;
+        dragged.style.visibility='hidden';
+        a5++;
+        if(a5===3){
+          document.getElementById('feedback-5').innerHTML='<span class="text-emerald-700 font-bold">✅ 海洋酸化化學反應鏈完成！</span>';
+          setScore(5); confetti(); check5();
+        }
+      } else {
+        z.classList.add('shake'); setTimeout(()=>z.classList.remove('shake'),400);
+      }
+    });
+  });
+  const check5 = ()=>{
+    const r = document.querySelector('input[name=q5log]:checked');
+    document.getElementById('btn-next-5').disabled = !(a5===3 && r);
+  };
+  document.querySelectorAll('input[name=q5log]').forEach(r=>r.onchange=()=>{
+    const fb = document.querySelector('.q5log-fb');
+    if(r.value==='C'){ fb.textContent='✅ 正解 C：10^0.1 ≈ 1.26，約 26-30% 增加。'; fb.className='text-xs mt-1 text-emerald-700 q5log-fb'; setScore(5);}
+    else { fb.textContent='❌ 正解 C。pH 是對數尺度：10^0.1 ≈ 1.26。'; fb.className='text-xs mt-1 text-rose-600 q5log-fb'; }
+    check5();
+  });
+  document.getElementById('btn-next-5').onclick=()=>goto(6);
+
+  // ===== Level 6 CER + ethics =====
+  const btn6 = document.getElementById('btn-next-6');
+  const check6 = ()=>{
+    const c = document.getElementById('cer-c').value.trim();
+    const e = document.getElementById('cer-e').value.trim();
+    const r = document.getElementById('cer-r').value.trim();
+    const eth = document.getElementById('q6-ethics').value.trim();
+    const hasNum = /\d/.test(e);
+    const ok = c.length>=10 && e.length>=30 && r.length>=30 && hasNum && eth.length>=60;
+    document.getElementById('cer-fb').innerHTML = ok ? '<span class="text-emerald-700">✅ CER 結構完整 + 倫理反思足夠。</span>' : `<span class="text-slate-500">Claim ${c.length}/10 ｜ Evidence ${e.length}/30（需含數字） ｜ Reasoning ${r.length}/30 ｜ 倫理 ${eth.length}/60</span>`;
+    btn6.disabled = !ok;
+  };
+  ['cer-c','cer-e','cer-r','q6-ethics'].forEach(id=>document.getElementById(id).oninput=check6);
+  document.getElementById('q6-ethics').addEventListener('input', e=>{
+    document.getElementById('q6-len').textContent = `${e.target.value.trim().length} / 60 字`;
+  });
+  btn6.onclick = ()=>{ setScore(15); confetti(); goto(7); };
+
+  // ===== Level 7 Project + WSA =====
+  const btn7 = document.getElementById('btn-next-7');
+  const check7 = ()=>{
+    const ok =
+      document.getElementById('p-title').value.trim().length>=5 &&
+      document.getElementById('p-problem').value.trim().length>=40 &&
+      document.getElementById('p-cer').value.trim().length>=80 &&
+      document.getElementById('p-steps').value.trim().length>=20 &&
+      document.getElementById('p-kpi').value.trim().length>=5 &&
+      document.querySelectorAll('.wsa:checked').length === 4;
+    document.getElementById('p-fb').innerHTML = ok
+      ? '<span class="text-emerald-700">✅ 提案完整、WSA 四面向全覆蓋！</span>'
+      : '<span class="text-slate-500">請完成五欄位 + WSA 四項全勾選</span>';
+    btn7.disabled = !ok;
+  };
+  ['p-title','p-problem','p-cer','p-steps','p-kpi'].forEach(id=>document.getElementById(id).oninput=check7);
+  document.querySelectorAll('.wsa').forEach(c=>c.onchange=check7);
+  btn7.onclick = ()=>{ setScore(15); confetti(); goto(8); };
+
+  // ===== Level 8 Meta =====
+  const btnF = document.getElementById('btn-finish');
+  const check8 = ()=>{
+    const ok =
+      document.getElementById('m-before').value.trim().length>=50 &&
+      document.getElementById('m-after').value.trim().length>=50 &&
+      document.getElementById('m-key').value.trim().length>=3;
+    document.getElementById('m-fb').textContent = ok ? '✅ 可以完成任務。' : '請完成三題（前後皆 50 字以上）';
+    btnF.disabled = !ok;
+  };
+  ['m-before','m-after','m-key'].forEach(id=>document.getElementById(id).oninput=check8);
+  btnF.onclick = ()=>{
+    setScore(5);
+    document.getElementById('final-score').textContent = S.score;
+    document.getElementById('level-8').classList.add('hidden-screen');
+    document.getElementById('level-final').classList.remove('hidden-screen');
+    for(let i=1;i<=8;i++){ const d=document.getElementById('dot-'+i); if(d){ d.classList.remove('active'); d.classList.add('done'); } }
+    confetti(); setTimeout(confetti,500); setTimeout(confetti,1000);
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>演化與滅絕 | 高中生物多樣性互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#d1fae5,#dbeafe,#fef3c7); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:56px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#6366f1; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea { border:1px solid #cbd5e1; border-radius:.5rem; padding:.75rem; width:100%; font-size:.95rem; resize:vertical;}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  .badge-lock { filter:grayscale(1); opacity:.35;}
+  svg text { pointer-events:none; }
+  svg .loop-slot { cursor: pointer; }
+  svg .loop-slot.over { fill:#fde68a; stroke-width:3; }
+  .depth-tag { font-size:.65rem; padding:2px 6px; border-radius:4px; font-weight:700; }
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">🌿 演化與滅絕的交響曲</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『生物多樣性研究員』：9 個任務，走完你就是 Level V 演化思考者。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">研究積分</div>
+    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 100</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">突變</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">時間軸</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">板塊</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">IUCN</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs">倫理</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs">專題</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs">論證</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-9"></div><span class="text-xs">後設</span>
+</div>
+
+<!-- ===== Level 1: 突變類型比較（基礎層） ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🧬</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-700">任務 1｜突變類型比較表</h2>
+      <p class="text-sm text-slate-700 mt-1">拖曳下方特徵描述到正確的突變類型欄位中。突變是演化的原始材料。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：遺傳學研究助理 ｜ 10 分 <span class="depth-tag bg-blue-100 text-blue-700">基礎配對</span></p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="point">取代、插入、缺失</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="chromo">倒位、轉位、重複</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="genome">多倍體、非整倍體</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="point">改變單一核苷酸</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="chromo">可提供基因重複副本</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="genome">小麥六倍體 AABBDD</div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <div class="drop-zone p-3" data-accept="point"><div class="font-bold text-slate-700 text-sm">🔬 點突變</div></div>
+    <div class="drop-zone p-3" data-accept="chromo"><div class="font-bold text-slate-700 text-sm">🧩 染色體突變</div></div>
+    <div class="drop-zone p-3" data-accept="genome"><div class="font-bold text-slate-700 text-sm">📦 基因體突變</div></div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <button id="btn-next-1" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 2: 演化時間軸排序（基礎層） ===== -->
+<section id="level-2" class="card p-6 fade-in hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🦕</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 2｜演化時間軸排序</h2>
+      <p class="text-sm text-slate-700 mt-1">將六種史前生物按照出現時間從古到今排列。拖曳到下方時間軸。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：古生物策展人 ｜ 10 分 <span class="depth-tag bg-blue-100 text-blue-700">基礎排序</span></p>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap gap-2 my-3" id="items-box-2">
+    <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-order="1">三葉蟲（5.2億年前）</div>
+    <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-order="2">腔棘魚（4億年前）</div>
+    <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-order="3">菊石（2.4億年前）</div>
+    <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-order="4">暴龍（6800萬年前）</div>
+    <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-order="5">翼手龍（1.5億年前）</div>
+    <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-order="6">猛瑪象（500萬年前）</div>
+  </div>
+
+  <div class="flex flex-col gap-2" id="timeline-slots">
+    <div class="drop-zone p-2 flex items-center gap-2" data-slot="1"><span class="text-xs font-bold text-slate-500">1（最古）</span></div>
+    <div class="drop-zone p-2 flex items-center gap-2" data-slot="2"><span class="text-xs font-bold text-slate-500">2</span></div>
+    <div class="drop-zone p-2 flex items-center gap-2" data-slot="3"><span class="text-xs font-bold text-slate-500">3</span></div>
+    <div class="drop-zone p-2 flex items-center gap-2" data-slot="4"><span class="text-xs font-bold text-slate-500">4</span></div>
+    <div class="drop-zone p-2 flex items-center gap-2" data-slot="5"><span class="text-xs font-bold text-slate-500">5</span></div>
+    <div class="drop-zone p-2 flex items-center gap-2" data-slot="6"><span class="text-xs font-bold text-slate-500">6（最新）</span></div>
+  </div>
+  <div id="feedback-2" class="mt-3 text-sm"></div>
+  <button id="btn-next-2" class="btn mt-4 bg-amber-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 3: 華萊士線與板塊構造（資料詮釋 #1） ===== -->
+<section id="level-3" class="card p-6 fade-in hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🗺️</div>
+    <div>
+      <h2 class="text-xl font-bold text-sky-700">任務 3｜華萊士線與生物地理</h2>
+      <p class="text-sm text-slate-700 mt-1">觀察 SVG 地圖上的華萊士線，回答資料詮釋題。板塊構造如何塑造物種分布？</p>
+      <p class="text-xs text-slate-500 mt-1">角色：生物地理學家 ｜ 12 分 <span class="depth-tag bg-purple-100 text-purple-700">資料詮釋</span></p>
+    </div>
+  </div>
+
+  <div class="bg-sky-50 rounded-xl p-4 mb-4">
+    <svg viewBox="0 0 600 300" class="w-full" style="max-height:280px">
+      <!-- Simplified SE Asia map -->
+      <rect x="0" y="0" width="600" height="300" fill="#e0f2fe" rx="12"/>
+      <!-- Mainland Asia -->
+      <path d="M50,50 L200,40 L220,80 L250,120 L240,180 L200,200 L150,180 L80,150 L50,100 Z" fill="#86efac" stroke="#166534" stroke-width="1.5"/>
+      <text x="130" y="110" fill="#166534" font-size="11" font-weight="bold">亞洲大陸</text>
+      <!-- Borneo -->
+      <path d="M260,130 L310,110 L330,140 L320,180 L280,190 L260,160 Z" fill="#86efac" stroke="#166534" stroke-width="1.5"/>
+      <text x="275" y="155" fill="#166534" font-size="9">婆羅洲</text>
+      <!-- Sumatra -->
+      <path d="M180,200 L220,180 L240,220 L210,260 L180,240 Z" fill="#86efac" stroke="#166534" stroke-width="1.5"/>
+      <text x="195" y="225" fill="#166534" font-size="9">蘇門答臘</text>
+      <!-- Java -->
+      <path d="M250,250 L350,240 L360,260 L260,270 Z" fill="#86efac" stroke="#166534" stroke-width="1.5"/>
+      <text x="290" y="258" fill="#166534" font-size="9">爪哇</text>
+      <!-- Sulawesi -->
+      <path d="M370,130 L390,100 L410,120 L400,160 L380,170 L370,150 Z" fill="#bbf7d0" stroke="#166534" stroke-width="1.5"/>
+      <text x="375" y="145" fill="#166534" font-size="8">蘇拉威西</text>
+      <!-- New Guinea -->
+      <path d="M440,100 L550,80 L570,120 L530,160 L460,150 L440,130 Z" fill="#fde68a" stroke="#92400e" stroke-width="1.5"/>
+      <text x="480" y="125" fill="#92400e" font-size="10" font-weight="bold">新幾內亞</text>
+      <!-- Australia -->
+      <path d="M400,200 L540,190 L570,240 L550,280 L430,290 L390,260 L400,230 Z" fill="#fde68a" stroke="#92400e" stroke-width="1.5"/>
+      <text x="460" y="250" fill="#92400e" font-size="11" font-weight="bold">澳洲</text>
+      <!-- Wallace Line -->
+      <line x1="340" y1="30" x2="340" y2="100" stroke="#dc2626" stroke-width="3" stroke-dasharray="8,4"/>
+      <line x1="340" y1="100" x2="360" y2="200" stroke="#dc2626" stroke-width="3" stroke-dasharray="8,4"/>
+      <line x1="360" y1="200" x2="370" y2="280" stroke="#dc2626" stroke-width="3" stroke-dasharray="8,4"/>
+      <text x="345" y="25" fill="#dc2626" font-size="12" font-weight="bold">華萊士線</text>
+      <!-- Animals -->
+      <text x="100" y="170" fill="#166534" font-size="18">🐅</text>
+      <text x="160" y="140" fill="#166534" font-size="12">老虎</text>
+      <text x="270" y="110" fill="#166534" font-size="18">🦏</text>
+      <text x="480" y="210" fill="#92400e" font-size="18">🦘</text>
+      <text x="510" y="210" fill="#92400e" font-size="12">袋鼠</text>
+      <text x="500" y="100" fill="#92400e" font-size="18">🦜</text>
+      <text x="530" y="100" fill="#92400e" font-size="12">極樂鳥</text>
+    </svg>
+  </div>
+
+  <div class="space-y-3">
+    <div>
+      <label class="block text-sm font-bold text-slate-700 mb-1">3-1. 華萊士線西側（亞洲區系）和東側（澳洲區系）的哺乳類有什麼根本差異？為什麼？</label>
+      <textarea id="q3-1" rows="3" placeholder="提示：胎盤類 vs 有袋類；板塊分離時間..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-bold text-slate-700 mb-1">3-2. 板塊年移動速率約 1-10 cm/年。假設兩塊板塊以 5 cm/年的速率分離，經過 1 億年後兩塊大陸之間的距離是多少公里？這個距離足以造成生殖隔離嗎？</label>
+      <textarea id="q3-2" rows="3" placeholder="計算並解釋..."></textarea>
+    </div>
+  </div>
+  <div id="feedback-3" class="mt-3 text-sm"></div>
+  <button id="btn-check-3" class="btn mt-4 bg-sky-600 text-white px-6 py-2 rounded-lg font-bold">提交分析</button>
+  <button id="btn-next-3" class="btn mt-4 bg-sky-600 text-white px-6 py-2 rounded-lg font-bold hidden-screen">下一關 →</button>
+</section>
+
+<!-- ===== Level 4: IUCN 資料詮釋（資料詮釋 #2） ===== -->
+<section id="level-4" class="card p-6 fade-in hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📊</div>
+    <div>
+      <h2 class="text-xl font-bold text-rose-700">任務 4｜IUCN 紅色名錄數據分析</h2>
+      <p class="text-sm text-slate-700 mt-1">分析 IUCN 數據圖表，詮釋各類群受威脅比例的差異與原因。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：保育數據分析師 ｜ 12 分 <span class="depth-tag bg-purple-100 text-purple-700">資料詮釋</span></p>
+    </div>
+  </div>
+
+  <div class="bg-rose-50 rounded-xl p-4 mb-4">
+    <svg viewBox="0 0 500 250" class="w-full" style="max-height:240px">
+      <rect x="0" y="0" width="500" height="250" fill="#fff1f2" rx="12"/>
+      <text x="250" y="22" text-anchor="middle" fill="#9f1239" font-size="13" font-weight="bold">IUCN 各類群受威脅物種比例（2023）</text>
+      <!-- Y axis -->
+      <line x1="80" y1="35" x2="80" y2="210" stroke="#94a3b8" stroke-width="1"/>
+      <text x="75" y="45" text-anchor="end" fill="#64748b" font-size="9">50%</text>
+      <text x="75" y="90" text-anchor="end" fill="#64748b" font-size="9">35%</text>
+      <text x="75" y="128" text-anchor="end" fill="#64748b" font-size="9">25%</text>
+      <text x="75" y="175" text-anchor="end" fill="#64748b" font-size="9">10%</text>
+      <text x="75" y="210" text-anchor="end" fill="#64748b" font-size="9">0%</text>
+      <!-- Bars -->
+      <rect x="100" y="67" width="55" height="143" fill="#ef4444" rx="4"/>
+      <text x="127" y="62" text-anchor="middle" fill="#dc2626" font-size="11" font-weight="bold">41%</text>
+      <text x="127" y="228" text-anchor="middle" fill="#64748b" font-size="10">兩棲類</text>
+      <!-- Coral -->
+      <rect x="175" y="95" width="55" height="115" fill="#f97316" rx="4"/>
+      <text x="202" y="90" text-anchor="middle" fill="#ea580c" font-size="11" font-weight="bold">33%</text>
+      <text x="202" y="228" text-anchor="middle" fill="#64748b" font-size="10">珊瑚</text>
+      <!-- Conifers -->
+      <rect x="250" y="105" width="55" height="105" fill="#eab308" rx="4"/>
+      <text x="277" y="100" text-anchor="middle" fill="#ca8a04" font-size="11" font-weight="bold">30%</text>
+      <text x="277" y="228" text-anchor="middle" fill="#64748b" font-size="10">針葉樹</text>
+      <!-- Mammals -->
+      <rect x="325" y="123" width="55" height="87" fill="#22c55e" rx="4"/>
+      <text x="352" y="118" text-anchor="middle" fill="#16a34a" font-size="11" font-weight="bold">25%</text>
+      <text x="352" y="228" text-anchor="middle" fill="#64748b" font-size="10">哺乳類</text>
+      <!-- Birds -->
+      <rect x="400" y="164" width="55" height="46" fill="#3b82f6" rx="4"/>
+      <text x="427" y="159" text-anchor="middle" fill="#2563eb" font-size="11" font-weight="bold">13%</text>
+      <text x="427" y="228" text-anchor="middle" fill="#64748b" font-size="10">鳥類</text>
+    </svg>
+  </div>
+
+  <div class="space-y-3">
+    <div>
+      <label class="block text-sm font-bold text-slate-700 mb-1">4-1. 兩棲類受威脅比例最高（41%）。請列出至少三個可能原因，並指出哪些屬於 IPBES 五大驅動力。</label>
+      <textarea id="q4-1" rows="3" placeholder="原因 + IPBES 五大驅動力對應..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-bold text-slate-700 mb-1">4-2. 臺灣歐亞水獺在 IUCN 全球評為 NT（近危），但臺灣紅皮書評為 NCR（國家極危）。請解釋為什麼同一物種在不同尺度下評級差異如此大，這對保育政策有什麼啟示？</label>
+      <textarea id="q4-2" rows="3" placeholder="全球 vs 在地族群、尺度、政策意涵..."></textarea>
+    </div>
+  </div>
+  <div id="feedback-4" class="mt-3 text-sm"></div>
+  <button id="btn-check-4" class="btn mt-4 bg-rose-600 text-white px-6 py-2 rounded-lg font-bold">提交分析</button>
+  <button id="btn-next-4" class="btn mt-4 bg-rose-600 text-white px-6 py-2 rounded-lg font-bold hidden-screen">下一關 →</button>
+</section>
+
+<!-- ===== Level 5: 系統思考——蜜蜂 CCD 因果循環 ===== -->
+<section id="level-5" class="card p-6 fade-in hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🐝</div>
+    <div>
+      <h2 class="text-xl font-bold text-yellow-700">任務 5｜蜜蜂危機系統思考</h2>
+      <p class="text-sm text-slate-700 mt-1">拖曳因素卡片到 SVG 系統圖的正確位置，建構蜂群衰竭的多因素因果網絡。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統生態學家 ｜ 12 分 <span class="depth-tag bg-orange-100 text-orange-700">系統思考</span></p>
+    </div>
+  </div>
+
+  <div class="bg-yellow-50 rounded-xl p-4 mb-4">
+    <svg viewBox="0 0 560 320" class="w-full loop" style="max-height:300px">
+      <rect x="0" y="0" width="560" height="320" fill="#fefce8" rx="12"/>
+      <!-- Central node -->
+      <rect x="200" y="130" width="160" height="50" rx="10" fill="#fbbf24" stroke="#92400e" stroke-width="2"/>
+      <text x="280" y="160" text-anchor="middle" fill="#92400e" font-size="12" font-weight="bold">蜂群衰竭 (CCD)</text>
+      <!-- Slots for causes -->
+      <rect class="loop-slot" id="slot-a" x="30" y="40" width="140" height="45" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2" data-answer="pesticide"/>
+      <text x="100" y="67" text-anchor="middle" fill="#9a3412" font-size="10">驅動因素 A</text>
+      <line x1="170" y1="63" x2="200" y2="140" stroke="#f97316" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+      <rect class="loop-slot" id="slot-b" x="30" y="140" width="140" height="45" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2" data-answer="habitat"/>
+      <text x="100" y="167" text-anchor="middle" fill="#9a3412" font-size="10">驅動因素 B</text>
+      <line x1="170" y1="163" x2="200" y2="155" stroke="#f97316" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+      <rect class="loop-slot" id="slot-c" x="30" y="240" width="140" height="45" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2" data-answer="climate"/>
+      <text x="100" y="267" text-anchor="middle" fill="#9a3412" font-size="10">驅動因素 C</text>
+      <line x1="170" y1="263" x2="220" y2="180" stroke="#f97316" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+      <rect class="loop-slot" id="slot-d" x="390" y="40" width="140" height="45" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2" data-answer="parasite"/>
+      <text x="460" y="67" text-anchor="middle" fill="#9a3412" font-size="10">驅動因素 D</text>
+      <line x1="390" y1="63" x2="360" y2="140" stroke="#f97316" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+      <!-- Consequence -->
+      <rect x="390" y="200" width="140" height="45" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="460" y="220" text-anchor="middle" fill="#dc2626" font-size="10" font-weight="bold">授粉服務崩潰</text>
+      <text x="460" y="235" text-anchor="middle" fill="#dc2626" font-size="9">75%作物/2350億USD</text>
+      <line x1="320" y1="180" x2="390" y2="210" stroke="#dc2626" stroke-width="2" marker-end="url(#arrowRed)"/>
+
+      <!-- Feedback loop -->
+      <path d="M460,245 Q460,290 280,290 Q100,290 100,285" fill="none" stroke="#7c3aed" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrowPurple)"/>
+      <text x="280" y="305" text-anchor="middle" fill="#7c3aed" font-size="9" font-weight="bold">正回饋：作物減少→蜜源減少→蜂群更脆弱</text>
+
+      <defs>
+        <marker id="arrowOrange" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#f97316"/></marker>
+        <marker id="arrowRed" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#dc2626"/></marker>
+        <marker id="arrowPurple" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#7c3aed"/></marker>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-5">
+    <div class="drag-item bg-yellow-100 border-2 border-yellow-500 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-factor="pesticide">🧪 新菸鹼類殺蟲劑<br>(神經毒性致迷路)</div>
+    <div class="drag-item bg-yellow-100 border-2 border-yellow-500 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-factor="habitat">🌾 棲地喪失<br>(蜜源植物減少)</div>
+    <div class="drag-item bg-yellow-100 border-2 border-yellow-500 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-factor="climate">🌡️ 氣候變遷<br>(花期與蜂活動不同步)</div>
+    <div class="drag-item bg-yellow-100 border-2 border-yellow-500 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-factor="parasite">🦠 蜂蟹蟎+病毒<br>(Varroa destructor)</div>
+  </div>
+  <div id="feedback-5" class="mt-3 text-sm"></div>
+  <button id="btn-next-5" class="btn mt-4 bg-yellow-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 6: 倫理兩難 ===== -->
+<section id="level-6" class="card p-6 fade-in hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">⚖️</div>
+    <div>
+      <h2 class="text-xl font-bold text-violet-700">任務 6｜保育 vs 人權倫理兩難</h2>
+      <p class="text-sm text-slate-700 mt-1">為了保護瀕危物種的棲地，是否應該強制遷移當地居民？沒有標準答案，但需要嚴謹的論證。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：環境倫理委員 ｜ 12 分 <span class="depth-tag bg-red-100 text-red-700">倫理兩難</span></p>
+    </div>
+  </div>
+
+  <div class="bg-violet-50 rounded-xl p-4 mb-3">
+    <p class="text-sm text-slate-700"><strong>情境：</strong>某東南亞國家計畫擴大國家公園範圍以保護極危的蘇門答臘犀牛（全球僅剩約 80 隻）。但園區內住著 3000 位原住民，他們在這片森林中生活了數百年，擁有豐富的傳統生態知識。政府提出遷移補償方案，但居民表示「我們就是這片森林的一部分」。</p>
+  </div>
+
+  <div class="space-y-3">
+    <div>
+      <label class="block text-sm font-bold text-slate-700 mb-1">6-1. 你的立場是什麼？請用 100 字以上的論述說明，必須包含至少一個數據佐證。</label>
+      <textarea id="q6-1" rows="5" placeholder="我的立場是... 因為... 數據顯示..."></textarea>
+      <div class="text-xs text-slate-400 mt-1">字數：<span id="wc6-1">0</span>/100+</div>
+    </div>
+    <div>
+      <label class="block text-sm font-bold text-slate-700 mb-1">6-2. 寫出一個對你立場最強的反駁，然後回應這個反駁。</label>
+      <textarea id="q6-2" rows="4" placeholder="反駁：... 我的回應：..."></textarea>
+    </div>
+  </div>
+  <div id="feedback-6" class="mt-3 text-sm"></div>
+  <button id="btn-check-6" class="btn mt-4 bg-violet-600 text-white px-6 py-2 rounded-lg font-bold">提交論述</button>
+  <button id="btn-next-6" class="btn mt-4 bg-violet-600 text-white px-6 py-2 rounded-lg font-bold hidden-screen">下一關 →</button>
+</section>
+
+<!-- ===== Level 7: CER + 反駁（論證） ===== -->
+<section id="level-7" class="card p-6 fade-in hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📝</div>
+    <div>
+      <h2 class="text-xl font-bold text-blue-700">任務 7｜CER 論證 + 反駁</h2>
+      <p class="text-sm text-slate-700 mt-1">保育策略應優先拯救「旗艦物種」還是「基石物種」？用 CER 結構論證，並自行提出反駁與回應。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：保育政策分析師 ｜ 12 分 <span class="depth-tag bg-indigo-100 text-indigo-700">CER+反駁</span></p>
+    </div>
+  </div>
+
+  <div class="bg-blue-50 rounded-xl p-4 mb-3">
+    <p class="text-sm text-slate-700"><strong>背景：</strong>「旗艦物種」如熊貓、老虎能吸引公眾關注與捐款，但「基石物種」如蜜蜂、浮游植物對生態系功能影響更大。IPBES 指出蜜蜂授粉服務年價值 2350 億 USD (dp6)；IUCN 已評估的 150,388 種中 42,108 種受威脅 (dp2)。</p>
+  </div>
+
+  <div class="space-y-3">
+    <div>
+      <label class="block text-sm font-bold text-emerald-700 mb-1">C — 主張（Claim）</label>
+      <textarea id="q7-c" rows="2" placeholder="我主張保育應優先..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-bold text-amber-700 mb-1">E — 證據（Evidence）<span class="text-xs text-slate-400">（需包含至少一個數據）</span></label>
+      <textarea id="q7-e" rows="3" placeholder="根據 IPBES/IUCN 的數據..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-bold text-sky-700 mb-1">R — 理由（Reasoning）</label>
+      <textarea id="q7-r" rows="3" placeholder="這些證據支持我的主張，因為..."></textarea>
+    </div>
+    <div class="border-t-2 border-dashed border-slate-300 pt-3 mt-3">
+      <label class="block text-sm font-bold text-rose-700 mb-1">反駁（Rebuttal）：寫出對你主張最強的反對意見，然後回應。</label>
+      <textarea id="q7-rb" rows="4" placeholder="有人可能反駁說... 但我回應..."></textarea>
+    </div>
+  </div>
+  <div id="feedback-7" class="mt-3 text-sm"></div>
+  <button id="btn-check-7" class="btn mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg font-bold">提交論證</button>
+  <button id="btn-next-7" class="btn mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hidden-screen">下一關 →</button>
+</section>
+
+<!-- ===== Level 8: 政策倡議 + 數據科學 + 跨域短論文 ===== -->
+<section id="level-8" class="card p-6 fade-in hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏛️</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 8｜政策倡議 × 數據科學 × 跨域短論文</h2>
+      <p class="text-sm text-slate-700 mt-1">三合一深度任務：政策建議、數據科學研究設計、跨域短論文（500+字）。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：跨領域研究員 ｜ 15 分 <span class="depth-tag bg-teal-100 text-teal-700">政策倡議</span> <span class="depth-tag bg-cyan-100 text-cyan-700">數據科學</span> <span class="depth-tag bg-pink-100 text-pink-700">跨域短論文</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    <!-- 政策倡議 -->
+    <div class="bg-teal-50 rounded-xl p-4">
+      <h3 class="font-bold text-teal-800 text-sm mb-2">8-A 政策倡議：臺灣環境部長的決策</h3>
+      <p class="text-xs text-slate-600 mb-2">如果你是臺灣環境部長，有限的保育預算應優先投入「物種保護」（如繁殖復育計畫）還是「棲地保護」（如擴大保護區）？請用至少兩個 data_card 的數據支持你的論點。</p>
+      <textarea id="q8-a" rows="5" placeholder="身為環境部長，我建議... 根據 dp__ 的數據..."></textarea>
+      <div class="text-xs text-slate-400 mt-1">字數：<span id="wc8-a">0</span>/100+</div>
+    </div>
+
+    <!-- 數據科學 -->
+    <div class="bg-cyan-50 rounded-xl p-4">
+      <h3 class="font-bold text-cyan-800 text-sm mb-2">8-B 數據科學研究設計</h3>
+      <p class="text-xs text-slate-600 mb-2">iNaturalist 已累積超過 2 億筆觀察紀錄。如果你能用機器學習分析這些數據，你會設計什麼研究問題？請說明：研究問題、可用數據欄位、可能的分析方法。</p>
+      <textarea id="q8-b" rows="5" placeholder="研究問題：... 數據欄位：... 分析方法：..."></textarea>
+    </div>
+
+    <!-- 跨域短論文 -->
+    <div class="bg-pink-50 rounded-xl p-4">
+      <h3 class="font-bold text-pink-800 text-sm mb-2">8-C 跨域短論文（500+字）：演化生物學 × 你選擇的另一學科</h3>
+      <p class="text-xs text-slate-600 mb-2">選擇一個學科（地球科學、經濟學、倫理學、資料科學、公共衛生...）與演化生物學交叉，寫一篇 500 字以上的短論文。需包含：問題意識、至少兩個 data_card 數據引用、論證邏輯、結論與建議。</p>
+      <textarea id="q8-c" rows="12" placeholder="題目：...&#10;&#10;一、問題意識&#10;...&#10;&#10;二、論證與數據&#10;...&#10;&#10;三、結論與建議&#10;..."></textarea>
+      <div class="text-xs text-slate-400 mt-1">字數：<span id="wc8-c">0</span>/500+</div>
+    </div>
+  </div>
+  <div id="feedback-8" class="mt-3 text-sm"></div>
+  <button id="btn-check-8" class="btn mt-4 bg-teal-600 text-white px-6 py-2 rounded-lg font-bold">提交所有答案</button>
+  <button id="btn-next-8" class="btn mt-4 bg-teal-600 text-white px-6 py-2 rounded-lg font-bold hidden-screen">最後一關 →</button>
+</section>
+
+<!-- ===== Level 9: 後設認知 ===== -->
+<section id="level-9" class="card p-6 fade-in hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🪞</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-700">任務 9｜後設認知反思</h2>
+      <p class="text-sm text-slate-700 mt-1">思考你的思考——四節課後，你對演化與滅絕的理解有什麼改變？</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學習者自身 ｜ 15 分 <span class="depth-tag bg-indigo-100 text-indigo-700">後設認知</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    <div>
+      <label class="block text-sm font-bold text-slate-700 mb-1">9-1. 四節課前，你對「演化」和「物種滅絕」的理解是什麼？現在呢？（100+字）</label>
+      <textarea id="q9-1" rows="5" placeholder="之前我以為... 但現在我理解到..."></textarea>
+      <div class="text-xs text-slate-400 mt-1">字數：<span id="wc9-1">0</span>/100+</div>
+    </div>
+    <div>
+      <label class="block text-sm font-bold text-slate-700 mb-1">9-2. 最關鍵讓你改變想法的是哪個資料、哪個活動、或哪次討論？為什麼？</label>
+      <textarea id="q9-2" rows="3" placeholder="最關鍵的轉變來自..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-bold text-slate-700 mb-1">9-3. 如果你能選一個問題繼續研究一年，你會選什麼？為什麼？</label>
+      <textarea id="q9-3" rows="3" placeholder="我想深入研究... 因為..."></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-bold text-slate-700 mb-1">9-4. 你在這四節課中最常使用的思考策略是什麼（例如：比較、推論、質疑、連結、反思）？你想改進什麼？</label>
+      <textarea id="q9-4" rows="3" placeholder="我最常用的策略是... 我想改進..."></textarea>
+    </div>
+  </div>
+  <div id="feedback-9" class="mt-3 text-sm"></div>
+  <button id="btn-check-9" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold">提交反思</button>
+  <div id="final-badge" class="hidden-screen mt-6 text-center">
+    <div class="text-6xl pop">🏆</div>
+    <p class="text-xl font-bold text-emerald-700 mt-2">恭喜！你已完成所有 9 個任務！</p>
+    <p class="text-sm text-slate-600">你是 Level V 演化思考者。帶著這些工具走出教室吧。</p>
+  </div>
+</section>
+
+</div><!-- max-w-4xl -->
+
+<script>
+/* ===== Global State ===== */
+let score = 0;
+const totalLevels = 9;
+
+function addScore(pts) {
+  score += pts;
+  document.getElementById('score').textContent = score;
+}
+function markDot(n, state) {
+  const d = document.getElementById('dot-' + n);
+  d.classList.remove('active','done');
+  d.classList.add(state);
+}
+function showLevel(n) {
+  document.getElementById('level-' + n).classList.remove('hidden-screen');
+  document.getElementById('level-' + n).scrollIntoView({behavior:'smooth',block:'start'});
+  markDot(n, 'active');
+}
+function confetti() {
+  const colors = ['#10b981','#f59e0b','#6366f1','#ef4444','#3b82f6'];
+  for(let i=0;i<18;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=Math.random()*0.6+'s';
+    c.style.borderRadius=Math.random()>0.5?'50%':'0';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2500);
+  }
+}
+
+/* ===== Word counter helper ===== */
+function countChinese(text) {
+  const cleaned = text.replace(/\s/g,'');
+  return cleaned.length;
+}
+function bindWordCount(inputId, wcId) {
+  const el = document.getElementById(inputId);
+  const wc = document.getElementById(wcId);
+  if(!el||!wc) return;
+  el.addEventListener('input', () => { wc.textContent = countChinese(el.value); });
+}
+bindWordCount('q6-1','wc6-1');
+bindWordCount('q8-a','wc8-a');
+bindWordCount('q8-c','wc8-c');
+bindWordCount('q9-1','wc9-1');
+
+/* ===== Drag & Drop Engine ===== */
+function initDragDrop(levelNum, matchKey, onComplete) {
+  const section = document.getElementById('level-' + levelNum);
+  const items = section.querySelectorAll('.drag-item');
+  const zones = section.querySelectorAll('.drop-zone');
+  let placed = 0;
+  const needed = items.length;
+
+  items.forEach(item => {
+    item.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', item.dataset[matchKey]);
+      e.dataTransfer.setData('text/html', item.outerHTML);
+      item.classList.add('dragging');
+      // Store reference
+      window._dragSource = item;
+    });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    // Touch support
+    item.addEventListener('touchstart', e => {
+      window._touchItem = item;
+      window._touchData = item.dataset[matchKey];
+    }, {passive:true});
+  });
+
+  zones.forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('over');
+      const val = e.dataTransfer.getData('text/plain');
+      const accept = zone.dataset.accept || zone.dataset.slot;
+      const src = window._dragSource;
+      if(!src) return;
+
+      if(matchKey === 'match' && val === accept) {
+        zone.appendChild(src);
+        src.draggable = false;
+        src.classList.remove('dragging');
+        src.classList.add('pop','bg-emerald-200','border-emerald-600');
+        placed++;
+        if(placed >= needed) onComplete();
+      } else if(matchKey === 'order') {
+        zone.appendChild(src);
+        src.draggable = false;
+        src.classList.remove('dragging');
+        placed++;
+        if(placed >= needed) onComplete();
+      } else if(matchKey === 'factor') {
+        if(val === zone.dataset.answer) {
+          // Replace slot text
+          const txt = zone.querySelector('text');
+          if(txt) txt.textContent = src.textContent.replace(/\n/g,' ');
+          zone.setAttribute('fill','#bbf7d0');
+          zone.setAttribute('stroke','#16a34a');
+          src.remove();
+          placed++;
+          if(placed >= 4) onComplete();
+        } else {
+          src.classList.add('shake');
+          setTimeout(()=>src.classList.remove('shake'),400);
+        }
+      } else {
+        src.classList.add('shake');
+        setTimeout(()=>src.classList.remove('shake'),400);
+      }
+    });
+  });
+}
+
+/* ===== Level 1: Mutation matching ===== */
+initDragDrop(1, 'match', () => {
+  addScore(10);
+  confetti();
+  markDot(1,'done');
+  document.getElementById('feedback-1').innerHTML = '<span class="text-emerald-600 font-bold pop">全部正確！+10 分</span>';
+  document.getElementById('btn-next-1').disabled = false;
+});
+document.getElementById('btn-next-1').addEventListener('click', () => showLevel(2));
+
+/* ===== Level 2: Timeline ordering ===== */
+initDragDrop(2, 'order', () => {
+  // Verify order
+  const slots = document.querySelectorAll('#level-2 .drop-zone');
+  let correct = 0;
+  // Correct order: 三葉蟲(1), 腔棘魚(2), 菊石(3), 翼手龍(5→should be slot4?), 暴龍(4→slot5?), 猛瑪象(6)
+  // Actually correct temporal: 三葉蟲 5.2億 > 腔棘魚 4億 > 菊石 2.4億 > 翼手龍 1.5億 > 暴龍 6800萬 > 猛瑪象 500萬
+  // So order: 1=三葉蟲, 2=腔棘魚, 3=菊石, 4=翼手龍(1.5億), 5=暴龍(6800萬), 6=猛瑪象
+  const correctOrder = ['1','2','3','5','4','6'];
+  slots.forEach((slot, i) => {
+    const child = slot.querySelector('.drag-item');
+    if(child && child.dataset.order === correctOrder[i]) correct++;
+  });
+  if(correct >= 5) {
+    addScore(10);
+    confetti();
+    markDot(2,'done');
+    document.getElementById('feedback-2').innerHTML = '<span class="text-emerald-600 font-bold pop">' + correct + '/6 正確！+10 分</span>';
+  } else {
+    document.getElementById('feedback-2').innerHTML = '<span class="text-amber-600 font-bold">' + correct + '/6 正確。提示：注意翼手龍（1.5億年前）比暴龍（6800萬年前）更古老。</span>';
+  }
+  document.getElementById('btn-next-2').disabled = false;
+});
+document.getElementById('btn-next-2').addEventListener('click', () => showLevel(3));
+
+/* ===== Level 3: Wallace line data interpretation ===== */
+document.getElementById('btn-check-3').addEventListener('click', () => {
+  const a1 = document.getElementById('q3-1').value.trim();
+  const a2 = document.getElementById('q3-2').value.trim();
+  if(a1.length < 20 || a2.length < 20) {
+    document.getElementById('feedback-3').innerHTML = '<span class="text-red-500">每題至少需要 20 字以上的分析。</span>';
+    return;
+  }
+  // Check if q3-2 contains a number (calculation)
+  if(!/\d/.test(a2)) {
+    document.getElementById('feedback-3').innerHTML = '<span class="text-amber-500">第二題需要包含計算結果（數字）。提示：5cm × 10^8 年 = ?</span>';
+    return;
+  }
+  addScore(12);
+  confetti();
+  markDot(3,'done');
+  document.getElementById('feedback-3').innerHTML = '<span class="text-emerald-600 font-bold pop">分析通過！+12 分。參考答案：5cm/年 × 1億年 = 5000 km，這個距離遠超任何陸生動物的擴散能力，足以造成完全的生殖隔離。</span>';
+  document.getElementById('btn-check-3').classList.add('hidden-screen');
+  document.getElementById('btn-next-3').classList.remove('hidden-screen');
+});
+document.getElementById('btn-next-3').addEventListener('click', () => showLevel(4));
+
+/* ===== Level 4: IUCN data interpretation ===== */
+document.getElementById('btn-check-4').addEventListener('click', () => {
+  const a1 = document.getElementById('q4-1').value.trim();
+  const a2 = document.getElementById('q4-2').value.trim();
+  if(a1.length < 30 || a2.length < 30) {
+    document.getElementById('feedback-4').innerHTML = '<span class="text-red-500">每題至少需要 30 字以上的分析。</span>';
+    return;
+  }
+  addScore(12);
+  confetti();
+  markDot(4,'done');
+  document.getElementById('feedback-4').innerHTML = '<span class="text-emerald-600 font-bold pop">分析通過！+12 分。兩棲類脆弱原因：皮膚呼吸對污染敏感（污染）、水陸兩棲棲地易受破壞（土地利用變化）、蛙壺菌全球蔓延（外來病原體）、氣候變遷改變水文（氣候變遷）。</span>';
+  document.getElementById('btn-check-4').classList.add('hidden-screen');
+  document.getElementById('btn-next-4').classList.remove('hidden-screen');
+});
+document.getElementById('btn-next-4').addEventListener('click', () => showLevel(5));
+
+/* ===== Level 5: System thinking — bee CCD ===== */
+(function(){
+  const svg = document.querySelector('#level-5 svg');
+  const slots = svg.querySelectorAll('.loop-slot');
+  const items = document.querySelectorAll('#items-box-5 .drag-item');
+  let placed = 0;
+
+  items.forEach(item => {
+    item.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', item.dataset.factor);
+      window._dragSource = item;
+      item.classList.add('dragging');
+    });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+  });
+
+  slots.forEach(slot => {
+    // Use overlay rect for better drop target
+    slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('over'); });
+    slot.addEventListener('dragleave', () => slot.classList.remove('over'));
+    slot.addEventListener('drop', e => {
+      e.preventDefault();
+      slot.classList.remove('over');
+      const val = e.dataTransfer.getData('text/plain');
+      const src = window._dragSource;
+      if(!src) return;
+      if(val === slot.dataset.answer) {
+        // Update SVG text
+        const textEl = slot.nextElementSibling;
+        if(textEl && textEl.tagName === 'text') {
+          textEl.textContent = src.innerText.replace(/\n/g,' ').substring(0,20);
+        }
+        slot.setAttribute('fill','#bbf7d0');
+        slot.setAttribute('stroke','#16a34a');
+        src.style.display='none';
+        placed++;
+        if(placed >= 4) {
+          addScore(12);
+          confetti();
+          markDot(5,'done');
+          document.getElementById('feedback-5').innerHTML = '<span class="text-emerald-600 font-bold pop">系統圖完成！+12 分。注意底部的正回饋迴路：授粉服務崩潰→作物減少→蜜源減少→蜂群更脆弱。</span>';
+          document.getElementById('btn-next-5').disabled = false;
+        }
+      } else {
+        src.classList.add('shake');
+        setTimeout(()=>src.classList.remove('shake'),400);
+      }
+    });
+  });
+})();
+document.getElementById('btn-next-5').addEventListener('click', () => showLevel(6));
+
+/* ===== Level 6: Ethics dilemma ===== */
+document.getElementById('btn-check-6').addEventListener('click', () => {
+  const a1 = document.getElementById('q6-1').value.trim();
+  const a2 = document.getElementById('q6-2').value.trim();
+  const wc = countChinese(a1);
+  if(wc < 100) {
+    document.getElementById('feedback-6').innerHTML = '<span class="text-red-500">第一題需要 100 字以上（目前 ' + wc + ' 字）。</span>';
+    return;
+  }
+  if(!/\d/.test(a1)) {
+    document.getElementById('feedback-6').innerHTML = '<span class="text-amber-500">需包含至少一個數據佐證（數字）。例如：IUCN 的 42,108 種受威脅、蘇門答臘犀牛僅剩 80 隻等。</span>';
+    return;
+  }
+  if(a2.length < 30) {
+    document.getElementById('feedback-6').innerHTML = '<span class="text-red-500">第二題（反駁+回應）至少需要 30 字。</span>';
+    return;
+  }
+  addScore(12);
+  confetti();
+  markDot(6,'done');
+  document.getElementById('feedback-6').innerHTML = '<span class="text-emerald-600 font-bold pop">論述通過！+12 分。這是一個沒有標準答案的倫理議題——重要的是你使用了數據、考慮了反駁，展現了批判性思考。</span>';
+  document.getElementById('btn-check-6').classList.add('hidden-screen');
+  document.getElementById('btn-next-6').classList.remove('hidden-screen');
+});
+document.getElementById('btn-next-6').addEventListener('click', () => showLevel(7));
+
+/* ===== Level 7: CER + Rebuttal ===== */
+document.getElementById('btn-check-7').addEventListener('click', () => {
+  const c = document.getElementById('q7-c').value.trim();
+  const e = document.getElementById('q7-e').value.trim();
+  const r = document.getElementById('q7-r').value.trim();
+  const rb = document.getElementById('q7-rb').value.trim();
+  if(c.length < 10) { document.getElementById('feedback-7').innerHTML = '<span class="text-red-500">主張至少 10 字。</span>'; return; }
+  if(e.length < 20) { document.getElementById('feedback-7').innerHTML = '<span class="text-red-500">證據至少 20 字。</span>'; return; }
+  if(!/\d/.test(e)) { document.getElementById('feedback-7').innerHTML = '<span class="text-amber-500">證據需包含數據（數字），例如 dp2 或 dp6 的數據。</span>'; return; }
+  if(r.length < 20) { document.getElementById('feedback-7').innerHTML = '<span class="text-red-500">理由至少 20 字。</span>'; return; }
+  if(rb.length < 30) { document.getElementById('feedback-7').innerHTML = '<span class="text-red-500">反駁+回應至少 30 字。</span>'; return; }
+  addScore(12);
+  confetti();
+  markDot(7,'done');
+  document.getElementById('feedback-7').innerHTML = '<span class="text-emerald-600 font-bold pop">CER 論證完成！+12 分。你展現了完整的 C-E-R 結構加反駁能力。</span>';
+  document.getElementById('btn-check-7').classList.add('hidden-screen');
+  document.getElementById('btn-next-7').classList.remove('hidden-screen');
+});
+document.getElementById('btn-next-7').addEventListener('click', () => showLevel(8));
+
+/* ===== Level 8: Policy + Data Science + Essay ===== */
+document.getElementById('btn-check-8').addEventListener('click', () => {
+  const a = document.getElementById('q8-a').value.trim();
+  const b = document.getElementById('q8-b').value.trim();
+  const c = document.getElementById('q8-c').value.trim();
+  const wcA = countChinese(a);
+  const wcC = countChinese(c);
+
+  if(wcA < 100) { document.getElementById('feedback-8').innerHTML = '<span class="text-red-500">8-A 政策倡議需 100 字以上（目前 ' + wcA + ' 字）。</span>'; return; }
+  // Check for dp references
+  const dpCount = (a.match(/dp\d|data_card|IPBES|IUCN|100\s*萬|42,?108|150,?388|2350|蜜蜂|兩棲/gi)||[]).length;
+  if(dpCount < 2) { document.getElementById('feedback-8').innerHTML = '<span class="text-amber-500">8-A 需引用至少兩個 data_card 數據。</span>'; return; }
+  if(b.length < 50) { document.getElementById('feedback-8').innerHTML = '<span class="text-red-500">8-B 數據科學研究設計需至少 50 字。</span>'; return; }
+  if(wcC < 500) { document.getElementById('feedback-8').innerHTML = '<span class="text-red-500">8-C 跨域短論文需 500 字以上（目前 ' + wcC + ' 字）。</span>'; return; }
+
+  addScore(15);
+  confetti();
+  markDot(8,'done');
+  document.getElementById('feedback-8').innerHTML = '<span class="text-emerald-600 font-bold pop">三合一深度任務完成！+15 分。你的政策思維、數據科學素養與跨域論述能力令人印象深刻。</span>';
+  document.getElementById('btn-check-8').classList.add('hidden-screen');
+  document.getElementById('btn-next-8').classList.remove('hidden-screen');
+});
+document.getElementById('btn-next-8').addEventListener('click', () => showLevel(9));
+
+/* ===== Level 9: Metacognition ===== */
+document.getElementById('btn-check-9').addEventListener('click', () => {
+  const a1 = document.getElementById('q9-1').value.trim();
+  const a2 = document.getElementById('q9-2').value.trim();
+  const a3 = document.getElementById('q9-3').value.trim();
+  const a4 = document.getElementById('q9-4').value.trim();
+  const wc1 = countChinese(a1);
+
+  if(wc1 < 100) { document.getElementById('feedback-9').innerHTML = '<span class="text-red-500">第一題需 100 字以上（目前 ' + wc1 + ' 字）。</span>'; return; }
+  if(a2.length < 20) { document.getElementById('feedback-9').innerHTML = '<span class="text-red-500">第二題至少 20 字。</span>'; return; }
+  if(a3.length < 20) { document.getElementById('feedback-9').innerHTML = '<span class="text-red-500">第三題至少 20 字。</span>'; return; }
+  if(a4.length < 20) { document.getElementById('feedback-9').innerHTML = '<span class="text-red-500">第四題至少 20 字。</span>'; return; }
+
+  addScore(5);
+  markDot(9,'done');
+  document.getElementById('feedback-9').innerHTML = '<span class="text-emerald-600 font-bold pop">後設認知反思完成！+5 分</span>';
+  document.getElementById('btn-check-9').classList.add('hidden-screen');
+  document.getElementById('final-badge').classList.remove('hidden-screen');
+  confetti();
+  setTimeout(confetti, 800);
+});
+</script>
+</body>
+</html>

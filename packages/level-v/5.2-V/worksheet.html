@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>從搖籃到搖籃 | 高中循環經濟互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#0f172a,#1e293b,#0f172a); min-height:100vh; color:#e2e8f0;}
+  .card { background:rgba(30,41,59,.92); border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.3); border:1px solid rgba(99,102,241,.2);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.15);}
+  .btn:disabled { opacity:.45; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:80px; transition: background .2s; border:2px dashed rgba(148,163,184,.4); border-radius:.75rem;}
+  .drop-zone.over { background:rgba(234,179,8,.15); border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.15);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:rgba(148,163,184,.35); transition:all .3s;}
+  .progress-dot.active { background:#818cf8; transform:scale(1.3); box-shadow:0 0 12px rgba(129,140,248,.5);}
+  .progress-dot.done { background:#34d399; box-shadow:0 0 8px rgba(52,211,153,.4);}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea { border:1px solid rgba(148,163,184,.3); border-radius:.5rem; padding:.75rem; width:100%; font-size:.95rem; background:rgba(15,23,42,.6); color:#e2e8f0; resize:vertical;}
+  textarea:focus { outline:none; border-color:#818cf8; box-shadow:0 0 0 2px rgba(129,140,248,.25);}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  .badge-lock { filter:grayscale(1); opacity:.35;}
+  svg text { pointer-events:none; }
+  svg .loop-slot { cursor: pointer; }
+  svg .loop-slot.over { fill:rgba(234,179,8,.25); stroke-width:3; }
+  input[type="number"] { background:rgba(15,23,42,.6); border:1px solid rgba(148,163,184,.3); color:#e2e8f0; border-radius:.375rem; padding:.25rem .5rem; }
+  input[type="number"]:focus { outline:none; border-color:#818cf8; }
+  .ref-tag { font-size:.65rem; background:rgba(99,102,241,.2); color:#a5b4fc; padding:.1rem .4rem; border-radius:.25rem; }
+  select { background:rgba(15,23,42,.6); border:1px solid rgba(148,163,184,.3); color:#e2e8f0; border-radius:.375rem; padding:.25rem .5rem; }
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-indigo-300">從搖籃到搖籃</h1>
+    <p class="text-sm text-slate-400 mt-1">你是「循環經濟策略師」：11 個關卡、9 種高層次任務。完成它們，成為 Level V 循環公民。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">策略師積分</div>
+    <div class="text-2xl font-bold text-emerald-400"><span id="score">0</span> / 110</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-1.5 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs text-slate-500">3R</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs text-slate-500">碳足跡</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs text-slate-500">數據</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs text-slate-500">系統</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs text-slate-500">倫理</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs text-slate-500">CER</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs text-slate-500">國際</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs text-slate-500">倡議</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-9"></div><span class="text-xs text-slate-500">跨域</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-10"></div><span class="text-xs text-slate-500">後設</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-11"></div><span class="text-xs text-slate-500">反思</span>
+</div>
+
+<!-- Badges -->
+<div class="card p-3 mb-6 flex flex-wrap gap-2 justify-center">
+  <span class="text-lg badge-lock" id="badge-1" title="3R 設計師">&#9851;</span>
+  <span class="text-lg badge-lock" id="badge-2" title="碳足跡分析師">&#128200;</span>
+  <span class="text-lg badge-lock" id="badge-3" title="數據科學家">&#128202;</span>
+  <span class="text-lg badge-lock" id="badge-4" title="系統思考者">&#128260;</span>
+  <span class="text-lg badge-lock" id="badge-5" title="倫理辯論家">&#9878;</span>
+  <span class="text-lg badge-lock" id="badge-6" title="論證大師">&#127963;</span>
+  <span class="text-lg badge-lock" id="badge-7" title="國際策略家">&#127760;</span>
+  <span class="text-lg badge-lock" id="badge-8" title="政策倡議者">&#128227;</span>
+  <span class="text-lg badge-lock" id="badge-9" title="後設認知者">&#129504;</span>
+</div>
+
+<!-- ===== Level 1: 線性 vs 循環填空 ===== -->
+<section id="level-1" class="card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#9851;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 1｜線性 vs 循環：3R 與生態設計</h2>
+      <p class="text-sm text-slate-400 mt-1">根據循環差距報告與歐盟數據，填入正確數字與概念。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：循環經濟分析師 ｜ 10 分 <span class="ref-tag">dp1, dp2, dp3</span></p>
+    </div>
+  </div>
+  <div class="space-y-3" id="q1-box">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">① 2024 循環差距報告：全球循環利用率僅 <input type="number" step="0.1" min="0" max="20" class="w-20 text-center q1-input" data-answer="7.2"> %</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">② 歐盟研究：產品在設計階段即決定高達 <input type="number" step="1" min="0" max="100" class="w-20 text-center q1-input" data-answer="80"> % 的環境衝擊</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">③ 3R 優先序（最優先→最後）：<select class="q1-select" data-answer="RRR"><option value="">-- 選擇 --</option><option value="RRR">Reduce > Reuse > Recycle</option><option value="RcRuRd">Recycle > Reuse > Reduce</option><option value="RuRdRc">Reuse > Reduce > Recycle</option></select></p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">④ 歐盟循環利用率目標：2030 年從 12% 提升至 <input type="number" step="1" min="0" max="100" class="w-20 text-center q1-input" data-answer="24"> %</p>
+    </div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <button id="btn-check-1" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-1" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#8594;</button>
+</section>
+
+<!-- ===== Level 2: 碳足跡 LCA 分析（資料詮釋 ⑤-1） ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#128200;</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-300">關卡 2｜產品碳足跡：智慧型手機 LCA</h2>
+      <p class="text-sm text-slate-400 mt-1">分析智慧型手機各生命階段碳足跡分配，理解設計端介入的重要性。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：LCA 分析師 ｜ 10 分 <span class="chip bg-amber-900/50 text-amber-300">資料詮釋 ⑤-1</span> <span class="ref-tag">dp7</span></p>
+    </div>
+  </div>
+  <svg viewBox="0 0 460 220" class="w-full max-w-xl mx-auto block bg-slate-900/50 rounded-lg mb-3 p-2">
+    <text x="230" y="16" text-anchor="middle" fill="#94a3b8" font-size="10">智慧型手機碳足跡各階段占比（kgCO2e）</text>
+    <!-- Bar chart -->
+    <rect x="60" y="40" width="280" height="24" rx="4" fill="rgba(239,68,68,.3)" stroke="#ef4444" stroke-width="1"/>
+    <text x="200" y="56" text-anchor="middle" fill="#fca5a5" font-size="9">製造 80-85%</text>
+    <rect x="60" y="72" width="35" height="24" rx="4" fill="rgba(234,179,8,.3)" stroke="#f59e0b" stroke-width="1"/>
+    <text x="110" y="88" fill="#fcd34d" font-size="9">使用 10-15%</text>
+    <rect x="60" y="104" width="17" height="24" rx="4" fill="rgba(52,211,153,.3)" stroke="#34d399" stroke-width="1"/>
+    <text x="90" y="120" fill="#6ee7b7" font-size="9">運輸 2-5%</text>
+    <rect x="60" y="136" width="17" height="24" rx="4" fill="rgba(129,140,248,.3)" stroke="#818cf8" stroke-width="1"/>
+    <text x="90" y="152" fill="#a5b4fc" font-size="9">末端 2-5%</text>
+    <text x="230" y="185" text-anchor="middle" fill="#64748b" font-size="8">一支手機總碳足跡 ≈ 70-80 kgCO2e</text>
+    <text x="230" y="200" text-anchor="middle" fill="#64748b" font-size="7">資料來源：Apple Environmental Progress Report 2024; UNITAR</text>
+  </svg>
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">① 從圖中判斷：延長手機使用壽命主要減少哪個階段的碳排？</p>
+      <select class="q2-select" data-answer="manufacturing">
+        <option value="">-- 選擇 --</option>
+        <option value="manufacturing">製造階段</option>
+        <option value="usage">使用階段</option>
+        <option value="transport">運輸階段</option>
+        <option value="endoflife">末端處理</option>
+      </select>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">② 全球每年電子廢棄物約 <input type="number" step="100" min="0" max="100000" class="w-24 q2-input" data-answer="6200" placeholder="?"> 萬噸（2022 年 UNITAR 數據）</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">③ 為什麼「回收手機」的環境效益遠不如「延長使用壽命」？請用數據說明（50+ 字）：</p>
+      <textarea class="q2-text" rows="3" placeholder="提示：製造階段占碳足跡的 80-85%，因此即使 100% 回收也只能影響末端的 2-5%⋯⋯"></textarea>
+    </div>
+  </div>
+  <div id="feedback-2" class="mt-3 text-sm"></div>
+  <button id="btn-check-2" class="btn mt-3 bg-amber-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-2" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#8594;</button>
+</section>
+
+<!-- ===== Level 3: 數據科學分析（⑧） ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#128202;</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-300">關卡 3｜數據科學：延長手機壽命的減碳潛力</h2>
+      <p class="text-sm text-slate-400 mt-1">以 LCA 數據進行碳減量估算，分析假設的不確定性。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：數據科學家 ｜ 10 分 <span class="chip bg-teal-900/50 text-teal-300">數據科學分析 ⑧</span> <span class="ref-tag">dp7</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm space-y-2">
+    <p><strong>已知條件：</strong></p>
+    <ul class="list-disc list-inside space-y-1 text-slate-300">
+      <li>全球每年生產約 14 億支智慧型手機</li>
+      <li>每支碳足跡約 70 kgCO2e</li>
+      <li>目前平均使用壽命約 2.5 年</li>
+      <li>若延長至 4 年，所需年產量比例 = 2.5/4 = 0.625</li>
+    </ul>
+  </div>
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">① 若使用壽命延長至 4 年，年產量可減少多少 %？</p>
+      <input type="number" class="w-24 q3-input" data-answer="37.5" placeholder="?" step="0.1"> %
+      <p class="text-xs text-slate-600 mt-1">（提示：1 - 0.625 = ?）</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">② 年碳排減量約為多少萬噸 CO2e？</p>
+      <input type="number" class="w-24 q3-input" data-answer="3675" placeholder="?" step="100"> 萬噸
+      <p class="text-xs text-slate-600 mt-1">（提示：14 億 x 37.5% x 70 kg ÷ 10000 = ?）</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">③ 這個計算有哪些重要的不確定性？至少列出 2 點（每點 30+ 字）：</p>
+      <textarea class="q3-text" rows="4" placeholder="例如：(1) 電池壽命可能無法支撐 4 年使用，需要更換電池的額外碳排⋯⋯ (2) 軟體支援終止可能迫使用戶提前換機⋯⋯"></textarea>
+    </div>
+  </div>
+  <div id="feedback-3" class="mt-3 text-sm"></div>
+  <button id="btn-check-3" class="btn mt-3 bg-teal-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-3" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#8594;</button>
+</section>
+
+<!-- ===== Level 4: 系統思考 CLD（②） ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#128260;</div>
+    <div>
+      <h2 class="text-xl font-bold text-purple-300">關卡 4｜系統思考：循環經濟因果循環圖</h2>
+      <p class="text-sm text-slate-400 mt-1">辨識循環經濟系統中的正/負反饋迴路與槓桿點。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：系統分析師 ｜ 10 分 <span class="chip bg-purple-900/50 text-purple-300">系統思考 ②</span> <span class="ref-tag">dp2, dp3</span></p>
+    </div>
+  </div>
+  <svg viewBox="0 0 500 280" class="w-full max-w-2xl mx-auto block mb-3">
+    <!-- 正反饋循環：生態設計 -->
+    <rect x="20" y="10" width="460" height="120" rx="10" fill="rgba(52,211,153,.08)" stroke="rgba(52,211,153,.2)" stroke-width="1"/>
+    <text x="250" y="28" text-anchor="middle" fill="#6ee7b7" font-size="10" font-weight="bold">正反饋 R1：生態設計良性循環</text>
+    <rect x="30" y="50" width="110" height="36" rx="8" fill="rgba(52,211,153,.15)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="85" y="72" text-anchor="middle" fill="#6ee7b7" font-size="9">生態設計法規</text>
+    <path d="M140,68 L190,58" stroke="#34d399" stroke-width="1.5" fill="none" marker-end="url(#arrowG)"/>
+    <rect x="190" y="40" width="120" height="36" rx="8" fill="rgba(52,211,153,.15)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="250" y="62" text-anchor="middle" fill="#6ee7b7" font-size="9">產品壽命延長</text>
+    <path d="M310,58 L360,68" stroke="#34d399" stroke-width="1.5" fill="none" marker-end="url(#arrowG)"/>
+    <rect x="360" y="50" width="110" height="36" rx="8" fill="rgba(52,211,153,.15)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="415" y="72" text-anchor="middle" fill="#6ee7b7" font-size="9">材料價值保存</text>
+    <path d="M415,86 L415,100 L85,100 L85,86" stroke="#34d399" stroke-width="1.5" fill="none" marker-end="url(#arrowG)"/>
+    <text x="250" y="115" text-anchor="middle" fill="#6ee7b7" font-size="8">更多企業投入 &#8594; 強化法規需求</text>
+    <!-- 負反饋（抵抗力量） -->
+    <rect x="20" y="145" width="460" height="120" rx="10" fill="rgba(239,68,68,.08)" stroke="rgba(239,68,68,.2)" stroke-width="1"/>
+    <text x="250" y="163" text-anchor="middle" fill="#fca5a5" font-size="10" font-weight="bold">負反饋 B1：市場抵抗力量</text>
+    <rect x="30" y="185" width="110" height="36" rx="8" fill="rgba(239,68,68,.15)" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="85" y="207" text-anchor="middle" fill="#fca5a5" font-size="9">產品壽命延長</text>
+    <path d="M140,203 L190,193" stroke="#ef4444" stroke-width="1.5" fill="none" marker-end="url(#arrowR)"/>
+    <rect x="190" y="175" width="120" height="36" rx="8" fill="rgba(239,68,68,.15)" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="250" y="197" text-anchor="middle" fill="#fca5a5" font-size="9">銷量下降</text>
+    <path d="M310,193 L360,203" stroke="#ef4444" stroke-width="1.5" fill="none" marker-end="url(#arrowR)"/>
+    <rect x="360" y="185" width="110" height="36" rx="8" fill="rgba(239,68,68,.15)" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="415" y="207" text-anchor="middle" fill="#fca5a5" font-size="9">計畫性淘汰</text>
+    <path d="M415,221 L415,240 L85,240 L85,221" stroke="#ef4444" stroke-width="1.5" fill="none" marker-end="url(#arrowR)"/>
+    <text x="250" y="255" text-anchor="middle" fill="#fca5a5" font-size="8">縮短壽命 &#8594; 回到線性經濟</text>
+    <defs>
+      <marker id="arrowG" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#34d399"/></marker>
+      <marker id="arrowR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#ef4444"/></marker>
+    </defs>
+  </svg>
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">① 圖中 R1（正反饋）的核心機制是什麼？用一句話描述：</p>
+      <textarea class="q4-text" rows="2" placeholder="例如：法規推動生態設計 &#8594; 壽命延長 &#8594; 材料循環更多 &#8594; 更多企業投入⋯⋯"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">② 圖中 B1（負反饋）代表什麼結構性阻力？</p>
+      <textarea class="q4-text" rows="2" placeholder="例如：壽命延長 &#8594; 銷量下降 &#8594; 廠商回到計畫性淘汰⋯⋯"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">③ 你認為這個系統中最有效的「槓桿點」是什麼？為什麼？（50+ 字）</p>
+      <textarea class="q4-text" rows="3" placeholder="例如：法規是最有效的槓桿點，因為歐盟 ESPR 強制所有廠商遵循生態設計標準，消除了先行者劣勢⋯⋯"></textarea>
+    </div>
+  </div>
+  <div id="feedback-4" class="mt-3 text-sm"></div>
+  <button id="btn-check-4" class="btn mt-3 bg-purple-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-4" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#8594;</button>
+</section>
+
+<!-- ===== Level 5: 倫理兩難（③） ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#9878;</div>
+    <div>
+      <h2 class="text-xl font-bold text-rose-300">關卡 5｜倫理兩難：共享經濟真的環保嗎？</h2>
+      <p class="text-sm text-slate-400 mt-1">分析 Airbnb 等共享平台的環境效益爭議，呈現兩造立場。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：倫理分析師 ｜ 10 分 <span class="chip bg-rose-900/50 text-rose-300">倫理兩難 ③</span> <span class="ref-tag">dp5</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm">
+    <p><strong>情境：</strong>Airbnb 宣稱讓閒置房屋被利用、減少新建酒店需求是「永續旅遊」。但批評者指出，Airbnb 讓住宿變便宜，誘發了原本不會發生的旅行（反彈效應），且職業房東推高房價。</p>
+  </div>
+  <div class="grid md:grid-cols-2 gap-3">
+    <div class="bg-emerald-900/20 border border-emerald-700/30 rounded-lg p-3">
+      <p class="text-sm font-bold text-emerald-400 mb-2">立場 A：共享經濟有利環境</p>
+      <textarea class="q5-text" rows="4" placeholder="請闡述此立場的論點（100+ 字），引用至少一筆資料⋯⋯" data-side="A"></textarea>
+    </div>
+    <div class="bg-red-900/20 border border-red-700/30 rounded-lg p-3">
+      <p class="text-sm font-bold text-red-400 mb-2">立場 B：共享經濟環境效益被高估</p>
+      <textarea class="q5-text" rows="4" placeholder="請闡述此立場的論點（100+ 字），引用至少一筆資料⋯⋯" data-side="B"></textarea>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-3 mt-3">
+    <p class="text-sm mb-2">反駁對方立場最弱的一點（80+ 字）：</p>
+    <textarea class="q5-text" rows="3" placeholder="針對你不支持的那方立場，指出其論證中最大的漏洞⋯⋯" data-side="rebuttal"></textarea>
+  </div>
+  <div id="feedback-5" class="mt-3 text-sm"></div>
+  <button id="btn-check-5" class="btn mt-3 bg-rose-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-5" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#8594;</button>
+</section>
+
+<!-- ===== Level 6: CER 論證（④） ===== -->
+<section id="level-6" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#127963;</div>
+    <div>
+      <h2 class="text-xl font-bold text-cyan-300">關卡 6｜CER 論證：計畫性淘汰應否立法禁止</h2>
+      <p class="text-sm text-slate-400 mt-1">運用 Claim-Evidence-Reasoning-Rebuttal 架構完成學術論證。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：政策分析師 ｜ 10 分 <span class="chip bg-cyan-900/50 text-cyan-300">CER 論證 ④</span> <span class="ref-tag">dp2, dp3</span></p>
+    </div>
+  </div>
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-cyan-400 mb-1">Claim（主張）</p>
+      <textarea class="q6-text" rows="2" placeholder="明確表態：計畫性淘汰應該/不應該被法律禁止" data-part="claim"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-cyan-400 mb-1">Evidence（證據）— 引用至少 2 筆資料</p>
+      <textarea class="q6-text" rows="3" placeholder="例如：根據 dp2，歐盟 ESPR 2024 年要求產品必須滿足可維修性標準；dp3 顯示維修權指令要求保固期外仍須提供維修服務⋯⋯" data-part="evidence"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-cyan-400 mb-1">Reasoning（推理）— 解釋證據如何支持主張</p>
+      <textarea class="q6-text" rows="3" placeholder="說明法規如何從設計端介入轉化為環境效益⋯⋯" data-part="reasoning"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-cyan-400 mb-1">Rebuttal（反駁）— 承認對方合理性並回應</p>
+      <textarea class="q6-text" rows="3" placeholder="例如：批評者可能認為禁止計畫性淘汰會抑制創新⋯⋯但⋯⋯" data-part="rebuttal"></textarea>
+    </div>
+  </div>
+  <div id="feedback-6" class="mt-3 text-sm"></div>
+  <button id="btn-check-6" class="btn mt-3 bg-cyan-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-6" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#8594;</button>
+</section>
+
+<!-- ===== Level 7: 資料詮釋 #2 — 國際比較（⑤-2） ===== -->
+<section id="level-7" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#127760;</div>
+    <div>
+      <h2 class="text-xl font-bold text-blue-300">關卡 7｜資料詮釋：各國循環經濟路徑比較</h2>
+      <p class="text-sm text-slate-400 mt-1">比較荷蘭、日本、中國與臺灣的循環經濟策略差異及影響因素。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：國際策略分析師 ｜ 10 分 <span class="chip bg-blue-900/50 text-blue-300">資料詮釋 ⑤-2</span> <span class="ref-tag">dp6, dp8</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm">
+    <table class="w-full text-xs">
+      <thead><tr class="text-slate-400"><th class="text-left p-1">國家</th><th class="text-left p-1">核心策略</th><th class="text-left p-1">特色</th></tr></thead>
+      <tbody class="text-slate-300">
+        <tr><td class="p-1">荷蘭</td><td class="p-1">2050 全面循環</td><td class="p-1">建築循環 + 生物基材料</td></tr>
+        <tr><td class="p-1">日本</td><td class="p-1">循環型社會基本法</td><td class="p-1">3R 層級管理 + 數位追溯</td></tr>
+        <tr><td class="p-1">中國</td><td class="p-1">循環經濟五年規劃</td><td class="p-1">產業共生 + 城市礦產</td></tr>
+        <tr><td class="p-1">臺灣</td><td class="p-1">資源循環促進法草案</td><td class="p-1">回收率 55% + 循環產值 1 兆+</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">① 哪個國家的循環經濟目標最激進？為什麼？</p>
+      <textarea class="q7-text" rows="2" placeholder="選擇一個國家並說明理由⋯⋯"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">② 各國策略差異反映了哪些結構性因素？至少列出 2 個（每個 30+ 字）</p>
+      <textarea class="q7-text" rows="3" placeholder="例如：經濟結構差異（製造業 vs 服務業為主）、文化價值觀（消費主義程度）⋯⋯"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">③ 國際合作的三個必要因素是什麼？</p>
+      <textarea class="q7-text" rows="3" placeholder="例如：(1) 跨國數據共享平台⋯⋯ (2) 統一材料標準⋯⋯ (3) 防止廢棄物傾銷法規⋯⋯"></textarea>
+    </div>
+  </div>
+  <div id="feedback-7" class="mt-3 text-sm"></div>
+  <button id="btn-check-7" class="btn mt-3 bg-blue-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-7" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#8594;</button>
+</section>
+
+<!-- ===== Level 8: 政策倡議（⑦） ===== -->
+<section id="level-8" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#128227;</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-300">關卡 8｜模擬議會：延伸生產者責任（EPR）聽證</h2>
+      <p class="text-sm text-slate-400 mt-1">扮演利害關係人，就「是否應強制實施 EPR」進行模擬聽證。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：議會代表 ｜ 10 分 <span class="chip bg-orange-900/50 text-orange-300">真實政策倡議 ⑦</span> <span class="ref-tag">dp4, dp6</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm">
+    <p><strong>議題：</strong>「是否應強制實施延伸生產者責任（EPR），要求製造商對產品的回收與處置承擔全部責任？」</p>
+  </div>
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-orange-400 mb-2">利害關係人分析表</p>
+      <div class="grid grid-cols-3 gap-1 text-xs mb-2">
+        <div class="font-bold text-slate-400">角色</div><div class="font-bold text-slate-400">立場傾向</div><div class="font-bold text-slate-400">核心關切</div>
+      </div>
+      <div class="space-y-2">
+        <div class="grid grid-cols-3 gap-1 text-xs"><div>政府環保局</div><div><input type="text" class="w-full q8-mini" placeholder="支持/反對/中立"></div><div><input type="text" class="w-full q8-mini" placeholder="核心關切"></div></div>
+        <div class="grid grid-cols-3 gap-1 text-xs"><div>電子製造商</div><div><input type="text" class="w-full q8-mini" placeholder="支持/反對/中立"></div><div><input type="text" class="w-full q8-mini" placeholder="核心關切"></div></div>
+        <div class="grid grid-cols-3 gap-1 text-xs"><div>消費者團體</div><div><input type="text" class="w-full q8-mini" placeholder="支持/反對/中立"></div><div><input type="text" class="w-full q8-mini" placeholder="核心關切"></div></div>
+        <div class="grid grid-cols-3 gap-1 text-xs"><div>回收業者</div><div><input type="text" class="w-full q8-mini" placeholder="支持/反對/中立"></div><div><input type="text" class="w-full q8-mini" placeholder="核心關切"></div></div>
+        <div class="grid grid-cols-3 gap-1 text-xs"><div>國際組織代表</div><div><input type="text" class="w-full q8-mini" placeholder="支持/反對/中立"></div><div><input type="text" class="w-full q8-mini" placeholder="核心關切"></div></div>
+      </div>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">以你選擇的角色身份，撰寫 150+ 字的陳述稿：</p>
+      <textarea class="q8-text" rows="5" placeholder="包含：你代表的角色是誰、你的立場、支持立場的數據證據（引用 dp4 或 dp6）、對反對意見的回應⋯⋯"></textarea>
+    </div>
+  </div>
+  <div id="feedback-8" class="mt-3 text-sm"></div>
+  <button id="btn-check-8" class="btn mt-3 bg-orange-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-8" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#8594;</button>
+</section>
+
+<!-- ===== Level 9: 跨域整合短論文（⑨） ===== -->
+<section id="level-9" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#127760;</div>
+    <div>
+      <h2 class="text-xl font-bold text-violet-300">關卡 9｜跨域整合短論文</h2>
+      <p class="text-sm text-slate-400 mt-1">整合科學、經濟與倫理三維度，撰寫 500+ 字學術短論文。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：跨域研究員 ｜ 10 分 <span class="chip bg-violet-900/50 text-violet-300">跨域整合短論文 ⑨</span> <span class="ref-tag">dp1, dp2, dp8</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm">
+    <p><strong>題目：</strong>「從生態設計到國際治理：循環經濟的科學基礎、經濟邏輯與倫理張力」</p>
+    <p class="text-slate-400 mt-2">五段結構引導：</p>
+    <ol class="list-decimal list-inside text-slate-400 space-y-1 mt-1">
+      <li>引言：循環經濟的定義與當前差距（引用 dp1）</li>
+      <li>科學維度：生態設計與 LCA 的量化基礎（引用 dp2, dp7）</li>
+      <li>經濟維度：商業模式轉型的挑戰與機會（引用 dp5, dp6）</li>
+      <li>倫理維度：國際合作、文化差異與公平性（引用 dp8）</li>
+      <li>結論：個人行動與制度變革的交互作用</li>
+    </ol>
+    <p class="text-slate-500 mt-2 text-xs">引用格式（APA 簡式）：(Circle Economy, 2024) 或 (European Commission, 2024)</p>
+  </div>
+  <textarea class="q9-text" rows="14" placeholder="在此撰寫 500+ 字短論文⋯⋯&#10;&#10;第一段（引言）：&#10;循環經濟是⋯⋯然而根據 Circle Economy (2024) 循環差距報告⋯⋯"></textarea>
+  <div class="flex justify-between items-center mt-2">
+    <span class="text-xs text-slate-500">字數：<span id="wc9" class="text-amber-400">0</span> / 500+</span>
+  </div>
+  <div id="feedback-9" class="mt-3 text-sm"></div>
+  <button id="btn-check-9" class="btn mt-3 bg-violet-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-9" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#8594;</button>
+</section>
+
+<!-- ===== Level 10: 後設認知（⑥） ===== -->
+<section id="level-10" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#129504;</div>
+    <div>
+      <h2 class="text-xl font-bold text-pink-300">關卡 10｜後設認知：我的學習轉變</h2>
+      <p class="text-sm text-slate-400 mt-1">反思四節課學習歷程中認知框架的改變。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：反思者 ｜ 5 分 <span class="chip bg-pink-900/50 text-pink-300">後設認知 ⑥</span></p>
+    </div>
+  </div>
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-1 font-bold text-pink-400">學習前：我原本以為循環經濟是⋯⋯</p>
+      <textarea class="q10-text" rows="2" placeholder="30+ 字" data-part="before"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-1 font-bold text-pink-400">學習後：我現在理解循環經濟是⋯⋯</p>
+      <textarea class="q10-text" rows="2" placeholder="30+ 字" data-part="after"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-1 font-bold text-pink-400">轉折點：最顛覆我的概念是⋯⋯</p>
+      <textarea class="q10-text" rows="2" placeholder="30+ 字，說明具體是哪個概念或數據改變了你的想法" data-part="turning"></textarea>
+    </div>
+  </div>
+  <div class="flex justify-between items-center mt-2">
+    <span class="text-xs text-slate-500">總字數：<span id="wc10" class="text-amber-400">0</span> / 100+</span>
+  </div>
+  <div id="feedback-10" class="mt-3 text-sm"></div>
+  <button id="btn-check-10" class="btn mt-3 bg-pink-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-10" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#8594;</button>
+</section>
+
+<!-- ===== Level 11: 開放式反思 + WSA（①） ===== -->
+<section id="level-11" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#128161;</div>
+    <div>
+      <h2 class="text-xl font-bold text-lime-300">關卡 11｜開放式反思 + WSA 行動承諾</h2>
+      <p class="text-sm text-slate-400 mt-1">兩題開放反思 + WSA 四面向自評。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：循環公民 ｜ 5 分 <span class="chip bg-lime-900/50 text-lime-300">開放式反思 ①</span></p>
+    </div>
+  </div>
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2 font-bold text-lime-400">反思 #1：如果你有 100 萬元預算改造學校使其更「循環」，你會如何分配？為什麼？（100+ 字）</p>
+      <textarea class="q11-text" rows="4" placeholder="列出優先序、預算分配比例與預期效益⋯⋯" data-part="reflect1"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2 font-bold text-lime-400">反思 #2：共享經濟的「零工經濟」模式（如 Uber 駕駛無勞健保）是否與循環經濟的「永續」理念矛盾？為什麼？（100+ 字）</p>
+      <textarea class="q11-text" rows="4" placeholder="分析環境永續與社會永續之間的關係⋯⋯" data-part="reflect2"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-4">
+      <p class="text-sm font-bold text-lime-400 mb-3">WSA 四面向自評與行動承諾：</p>
+      <label class="flex items-start gap-2 text-sm mb-2"><input type="checkbox" class="mt-1 wsa-cb"> <span><strong>治理</strong>：我承諾在學生議會提出一項循環經濟相關提案（如校園零廢棄方案）</span></label>
+      <label class="flex items-start gap-2 text-sm mb-2"><input type="checkbox" class="mt-1 wsa-cb"> <span><strong>課程</strong>：我會在其他科目中主動連結循環經濟概念（如數學課做 LCA 計算）</span></label>
+      <label class="flex items-start gap-2 text-sm mb-2"><input type="checkbox" class="mt-1 wsa-cb"> <span><strong>營運</strong>：我會參與或發起校園 Repair Cafe 或二手交換活動</span></label>
+      <label class="flex items-start gap-2 text-sm"><input type="checkbox" class="mt-1 wsa-cb"> <span><strong>社群</strong>：我會向家人介紹生態設計特徵，購物時考量可維修性與耐用性</span></label>
+    </div>
+  </div>
+  <div class="flex justify-between items-center mt-2">
+    <span class="text-xs text-slate-500">反思字數：<span id="wc11" class="text-amber-400">0</span> / 200+</span>
+  </div>
+  <div id="feedback-11" class="mt-3 text-sm"></div>
+  <button id="btn-check-11" class="btn mt-3 bg-lime-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+</section>
+
+<!-- Completion -->
+<section id="level-done" class="card p-8 hidden-screen fade-in mb-4 text-center">
+  <div class="text-5xl mb-4">&#127942;</div>
+  <h2 class="text-2xl font-bold text-emerald-300 mb-2">Level V 循環公民 — 全部完成！</h2>
+  <p class="text-slate-400 mb-4">你已完成 11 個關卡、9 種高層次任務。你的循環經濟素養已提升至專業水準。</p>
+  <div class="text-3xl font-bold text-emerald-400 mb-4"><span id="final-score">0</span> / 110</div>
+  <p class="text-sm text-slate-500">記住：你的每一次消費決策，都在塑造經濟系統的走向。</p>
+</section>
+
+</div>
+
+<script>
+(function(){
+  const TOTAL_LEVELS = 11;
+  let score = 0;
+  let currentLevel = 1;
+
+  function $(s,p){return (p||document).querySelector(s);}
+  function $$(s,p){return [...(p||document).querySelectorAll(s)];}
+
+  function updateScore(pts){
+    score += pts;
+    $('#score').textContent = score;
+  }
+
+  function showLevel(n){
+    for(let i=1;i<=TOTAL_LEVELS;i++){
+      const el = $(`#level-${i}`);
+      if(el) el.classList.toggle('hidden-screen', i!==n);
+    }
+    $(`#level-done`).classList.add('hidden-screen');
+    for(let i=1;i<=TOTAL_LEVELS;i++){
+      const dot = $(`#dot-${i}`);
+      if(i<n) { dot.classList.remove('active'); dot.classList.add('done'); }
+      else if(i===n) { dot.classList.add('active'); dot.classList.remove('done'); }
+      else { dot.classList.remove('active','done'); }
+    }
+    currentLevel = n;
+  }
+
+  function unlockBadge(n){
+    const b = $(`#badge-${n}`);
+    if(b){ b.classList.remove('badge-lock'); b.classList.add('pop'); }
+  }
+
+  function confetti(){
+    const colors = ['#818cf8','#34d399','#f59e0b','#ef4444','#ec4899','#06b6d4'];
+    for(let i=0;i<30;i++){
+      const c = document.createElement('div');
+      c.className='confetti';
+      c.style.left=Math.random()*100+'vw';
+      c.style.background=colors[Math.floor(Math.random()*colors.length)];
+      c.style.animationDelay=Math.random()*0.5+'s';
+      c.style.borderRadius=Math.random()>0.5?'50%':'0';
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(),2500);
+    }
+  }
+
+  function shake(el){ el.classList.add('shake'); setTimeout(()=>el.classList.remove('shake'),500); }
+
+  function showFeedback(n, ok, msg){
+    const fb = $(`#feedback-${n}`);
+    fb.innerHTML = `<span class="${ok?'text-emerald-400':'text-red-400'}">${msg}</span>`;
+  }
+
+  function passLevel(n, pts, badgeN){
+    updateScore(pts);
+    if(badgeN) unlockBadge(badgeN);
+    confetti();
+    $(`#btn-check-${n}`).disabled = true;
+    if(n < TOTAL_LEVELS){
+      $(`#btn-next-${n}`).classList.remove('hidden');
+    } else {
+      setTimeout(()=>{
+        for(let i=1;i<=TOTAL_LEVELS;i++) $(`#level-${i}`).classList.add('hidden-screen');
+        $(`#dot-${TOTAL_LEVELS}`).classList.remove('active'); $(`#dot-${TOTAL_LEVELS}`).classList.add('done');
+        $(`#level-done`).classList.remove('hidden-screen');
+        $(`#final-score`).textContent = score;
+      },800);
+    }
+  }
+
+  // Level 1: Fill-in
+  $('#btn-check-1').addEventListener('click',function(){
+    const inputs = $$('.q1-input');
+    const sel = $('.q1-select');
+    let correct = 0;
+    inputs.forEach(inp => {
+      const ans = parseFloat(inp.dataset.answer);
+      const val = parseFloat(inp.value);
+      if(Math.abs(val - ans) < 0.5) correct++;
+      else shake(inp);
+    });
+    if(sel && sel.value === sel.dataset.answer) correct++;
+    else if(sel) shake(sel);
+    const total = inputs.length + 1;
+    if(correct >= total){
+      showFeedback(1,true,'全部正確！你已掌握循環經濟的基礎數據。');
+      passLevel(1,10,1);
+    } else {
+      showFeedback(1,false,`${correct}/${total} 正確。請檢查紅框標示的項目後重試。`);
+    }
+  });
+
+  // Level 2: LCA analysis
+  $('#btn-check-2').addEventListener('click',function(){
+    const sel = $('.q2-select');
+    const inp = $('.q2-input');
+    const txt = $('.q2-text');
+    let ok = true;
+    if(sel.value !== sel.dataset.answer){ shake(sel); ok=false; }
+    const ans = parseFloat(inp.dataset.answer);
+    if(Math.abs(parseFloat(inp.value)-ans)>200){ shake(inp); ok=false; }
+    if(txt.value.trim().length < 50){ shake(txt); ok=false; }
+    if(ok){
+      showFeedback(2,true,'優秀！你正確理解了 LCA 各階段的碳足跡分配。');
+      passLevel(2,10,2);
+    } else {
+      showFeedback(2,false,'請確認：選擇正確答案、數字正確、文字說明 50+ 字。');
+    }
+  });
+
+  // Level 3: Data science
+  $('#btn-check-3').addEventListener('click',function(){
+    const inputs = $$('.q3-input');
+    const txt = $('.q3-text');
+    let numOk = 0;
+    inputs.forEach(inp => {
+      const ans = parseFloat(inp.dataset.answer);
+      const val = parseFloat(inp.value);
+      if(Math.abs(val-ans)/ans < 0.1) numOk++;
+      else shake(inp);
+    });
+    const textOk = txt.value.trim().length >= 60;
+    if(!textOk) shake(txt);
+    if(numOk >= 2 && textOk){
+      showFeedback(3,true,'計算正確且不確定性分析完整。數據科學任務通過！');
+      passLevel(3,10,3);
+    } else {
+      showFeedback(3,false,`計算 ${numOk}/2 正確，文字 ${textOk?'OK':'不足 60 字'}。`);
+    }
+  });
+
+  // Level 4: Systems thinking
+  $('#btn-check-4').addEventListener('click',function(){
+    const texts = $$('.q4-text');
+    let ok = true;
+    let totalLen = 0;
+    texts.forEach(t => {
+      totalLen += t.value.trim().length;
+      if(t.value.trim().length < 20){ shake(t); ok=false; }
+    });
+    if(totalLen < 100) ok = false;
+    if(ok){
+      showFeedback(4,true,'系統思考分析完成！你已辨識正/負反饋與槓桿點。');
+      passLevel(4,10,4);
+    } else {
+      showFeedback(4,false,'每題至少 20 字，總計至少 100 字。請補充分析。');
+    }
+  });
+
+  // Level 5: Ethical dilemma
+  $('#btn-check-5').addEventListener('click',function(){
+    const texts = $$('.q5-text');
+    let ok = true;
+    const sideA = texts.find(t=>t.dataset.side==='A');
+    const sideB = texts.find(t=>t.dataset.side==='B');
+    const reb = texts.find(t=>t.dataset.side==='rebuttal');
+    if(sideA.value.trim().length < 100){ shake(sideA); ok=false; }
+    if(sideB.value.trim().length < 100){ shake(sideB); ok=false; }
+    if(reb.value.trim().length < 80){ shake(reb); ok=false; }
+    if(ok){
+      showFeedback(5,true,'兩造立場均衡呈現且反駁有力。倫理兩難任務通過！');
+      passLevel(5,10,5);
+    } else {
+      showFeedback(5,false,'立場 A/B 各需 100+ 字，反駁 80+ 字。');
+    }
+  });
+
+  // Level 6: CER
+  $('#btn-check-6').addEventListener('click',function(){
+    const texts = $$('.q6-text');
+    let ok = true;
+    let totalLen = 0;
+    texts.forEach(t => {
+      totalLen += t.value.trim().length;
+      if(t.value.trim().length < 20){ shake(t); ok=false; }
+    });
+    if(totalLen < 200) ok = false;
+    if(ok){
+      showFeedback(6,true,'CER 論證結構完整！主張、證據、推理與反駁均到位。');
+      passLevel(6,10,6);
+    } else {
+      showFeedback(6,false,'每段至少 20 字，四段合計至少 200 字。');
+    }
+  });
+
+  // Level 7: Data interpretation
+  $('#btn-check-7').addEventListener('click',function(){
+    const texts = $$('.q7-text');
+    let ok = true;
+    let totalLen = 0;
+    texts.forEach(t => {
+      totalLen += t.value.trim().length;
+      if(t.value.trim().length < 20){ shake(t); ok=false; }
+    });
+    if(totalLen < 120) ok = false;
+    if(ok){
+      showFeedback(7,true,'國際比較分析完成！你已掌握各國循環經濟策略差異。');
+      passLevel(7,10,7);
+    } else {
+      showFeedback(7,false,'每題至少 20 字，總計至少 120 字。');
+    }
+  });
+
+  // Level 8: Policy advocacy
+  $('#btn-check-8').addEventListener('click',function(){
+    const minis = $$('.q8-mini');
+    const txt = $('.q8-text');
+    let filledMinis = 0;
+    minis.forEach(m => { if(m.value.trim().length > 0) filledMinis++; });
+    let ok = filledMinis >= 8 && txt.value.trim().length >= 150;
+    if(filledMinis < 8) minis.forEach(m => { if(!m.value.trim()) shake(m); });
+    if(txt.value.trim().length < 150) shake(txt);
+    if(ok){
+      showFeedback(8,true,'模擬聽證完成！利害關係人分析完整、陳述稿有力。');
+      passLevel(8,10,8);
+    } else {
+      showFeedback(8,false,`利害關係人表格 ${filledMinis}/10 欄已填，陳述稿需 150+ 字。`);
+    }
+  });
+
+  // Level 9: Cross-domain essay
+  const q9 = $('.q9-text');
+  if(q9){
+    q9.addEventListener('input',function(){
+      const len = this.value.replace(/\s/g,'').length;
+      $('#wc9').textContent = len;
+    });
+  }
+  $('#btn-check-9').addEventListener('click',function(){
+    const txt = q9;
+    const len = txt.value.replace(/\s/g,'').length;
+    if(len >= 500){
+      showFeedback(9,true,'跨域整合短論文完成！科學 x 經濟 x 倫理三維度整合。');
+      passLevel(9,10,null);
+    } else {
+      shake(txt);
+      showFeedback(9,false,`目前 ${len} 字，需達 500 字以上。`);
+    }
+  });
+
+  // Level 10: Metacognition
+  $('#btn-check-10').addEventListener('click',function(){
+    const texts = $$('.q10-text');
+    let total = 0;
+    texts.forEach(t => total += t.value.trim().length);
+    $('#wc10').textContent = total;
+    if(total >= 100){
+      showFeedback(10,true,'後設認知反思完成！你的學習轉變記錄有深度。');
+      passLevel(10,5,9);
+    } else {
+      texts.forEach(t => { if(t.value.trim().length < 20) shake(t); });
+      showFeedback(10,false,`目前 ${total} 字，三段合計需達 100 字。`);
+    }
+  });
+
+  // Level 11: Open reflection + WSA
+  $('#btn-check-11').addEventListener('click',function(){
+    const texts = $$('.q11-text');
+    let total = 0;
+    texts.forEach(t => total += t.value.trim().length);
+    const wsaCbs = $$('.wsa-cb');
+    const wsaChecked = wsaCbs.filter(c => c.checked).length;
+    const r1 = texts.find(t=>t.dataset.part==='reflect1');
+    const r2 = texts.find(t=>t.dataset.part==='reflect2');
+    let ok = true;
+    if(r1.value.trim().length < 100){ shake(r1); ok=false; }
+    if(r2.value.trim().length < 100){ shake(r2); ok=false; }
+    if(wsaChecked < 1) ok = false;
+    $('#wc11').textContent = total;
+    if(ok){
+      showFeedback(11,true,'全部完成！你是 Level V 循環公民！');
+      passLevel(11,5,null);
+    } else {
+      showFeedback(11,false,`每題反思需 100+ 字，WSA 至少勾選 1 項。`);
+    }
+  });
+
+  // Next buttons
+  for(let i=1;i<TOTAL_LEVELS;i++){
+    const btn = $(`#btn-next-${i}`);
+    if(btn) btn.addEventListener('click', ()=> showLevel(i+1));
+  }
+
+  // Word count for Level 10
+  $$('.q10-text').forEach(t => {
+    t.addEventListener('input',()=>{
+      let total = 0;
+      $$('.q10-text').forEach(x => total += x.value.trim().length);
+      $('#wc10').textContent = total;
+    });
+  });
+
+  // Word count for Level 11
+  $$('.q11-text').forEach(t => {
+    t.addEventListener('input',()=>{
+      let total = 0;
+      $$('.q11-text').forEach(x => total += x.value.trim().length);
+      $('#wc11').textContent = total;
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

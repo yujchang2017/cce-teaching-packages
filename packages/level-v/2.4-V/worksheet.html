@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>農業科技的兩面刃 | 高中永續農業互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#ecfdf5,#fef3c7,#e0e7ff); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:60px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#6366f1; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea.cer { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem; resize:vertical;}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  svg text { pointer-events:none; }
+  svg .loop-slot { cursor: pointer; }
+  svg .loop-slot.over { fill:#fde68a; stroke-width:3; }
+  .word-count { font-size:.7rem; color:#94a3b8; text-align:right; }
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">農業科技的兩面刃</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『永續糧食政策研究員』：10 個任務，涵蓋基礎知識到跨域論文。Level V 高中深度。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">研究積分</div>
+    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 120</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-1 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">比較</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">反思</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">碳排</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">詮釋</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs">倫理</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs">論證</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs">論文</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-9"></div><span class="text-xs">倡議</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-10"></div><span class="text-xs">後設</span>
+</div>
+
+<!-- ===== Section 1: 農業科技三比較（基礎） ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🧬</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-700">任務 1｜農業科技三比較</h2>
+      <p class="text-sm text-slate-700 mt-1">將下方技術特徵卡片拖放到正確的技術類別中。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：農業科技研究員 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="as">選最甜番茄交配繁殖</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="gmo">導入 Bt 殺蟲蛋白基因</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="clone">體細胞核轉移</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="as">數十到數百年累積</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="gmo">跨物種基因轉移</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="clone">基因完全相同個體</div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <div class="drop-zone p-3" data-accept="as"><div class="font-bold text-slate-700 text-sm">🌾 人工選種</div></div>
+    <div class="drop-zone p-3" data-accept="gmo"><div class="font-bold text-slate-700 text-sm">🔬 基因改造 GMO</div></div>
+    <div class="drop-zone p-3" data-accept="clone"><div class="font-bold text-slate-700 text-sm">🐑 複製 Cloning</div></div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <button id="btn-next-1" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Section 2: 開放式反思 ①（IPBES 衝擊）≥100字 ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">💥</div>
+    <div>
+      <h2 class="text-xl font-bold text-red-700">任務 2｜開放式反思：IPBES 數據衝擊</h2>
+      <p class="text-sm text-slate-700 mt-1">IPBES（2019）報告指出：75% 陸地已被顯著改變，100 萬物種面臨滅絕，農業擴張為首因。畜牧動物生物量佔非人哺乳類的 94%，野生哺乳類僅 4%。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：生態政策分析師 ｜ 12 分 ｜ <span class="chip bg-violet-100 text-violet-800">開放式反思</span></p>
+    </div>
+  </div>
+  <div class="space-y-3">
+    <label class="block text-sm font-semibold">Q2-1｜這組數據對你最大的衝擊是什麼？請寫出你的感受與分析（100 字以上）：</label>
+    <textarea class="cer" id="q2-reflect" rows="5" placeholder="看到 94% 的哺乳類是畜牧動物這個數字，我感到……因為……這讓我重新思考……"></textarea>
+    <div class="word-count" id="q2-wc">0 字</div>
+    <label class="block text-sm font-semibold">Q2-2｜寫出一個你想追問的問題：</label>
+    <textarea class="cer" id="q2-question" rows="2" placeholder="例如：如果繼續這個趨勢，50 年後野生哺乳類會完全消失嗎？"></textarea>
+  </div>
+  <p id="q2-fb" class="mt-2 text-xs"></p>
+  <button id="btn-next-2" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Section 3: 碳排來源流程圖（基礎） ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏭</div>
+    <div>
+      <h2 class="text-xl font-bold text-gray-700">任務 3｜工業化農業碳排流程圖</h2>
+      <p class="text-sm text-slate-700 mt-1">食物系統佔全球排放 26%。將碳排來源拖放到正確的類別。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：碳足跡審計員 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-3">
+    <div class="drag-item bg-gray-100 border-2 border-gray-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="livestock">牛甲烷排放</div>
+    <div class="drag-item bg-gray-100 border-2 border-gray-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="crop">合成肥料 N₂O</div>
+    <div class="drag-item bg-gray-100 border-2 border-gray-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="land">砍林種大豆釋碳</div>
+    <div class="drag-item bg-gray-100 border-2 border-gray-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-match="supply">冷鏈運輸能耗</div>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="drop-zone p-3" data-accept="livestock"><div class="font-bold text-slate-700 text-xs">🐄 畜牧 30%</div></div>
+    <div class="drop-zone p-3" data-accept="crop"><div class="font-bold text-slate-700 text-xs">🌾 作物 27%</div></div>
+    <div class="drop-zone p-3" data-accept="land"><div class="font-bold text-slate-700 text-xs">🌲 土地變遷 24%</div></div>
+    <div class="drop-zone p-3" data-accept="supply"><div class="font-bold text-slate-700 text-xs">🚛 供應鏈 18%</div></div>
+  </div>
+  <div id="feedback-3" class="mt-3 text-sm"></div>
+  <button id="btn-next-3" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Section 4: 資料詮釋 ①（土地效率計算）===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📊</div>
+    <div>
+      <h2 class="text-xl font-bold text-blue-700">任務 4｜資料詮釋：畜牧土地效率</h2>
+      <p class="text-sm text-slate-700 mt-1">畜牧用地佔農地 75%（約 37.5 億公頃），但僅產全球 18% 熱量。作物用地佔 25%（約 12.5 億公頃），產 82% 熱量。請計算並解讀。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：資料科學家 ｜ 12 分 ｜ <span class="chip bg-blue-100 text-blue-800">資料詮釋題</span></p>
+    </div>
+  </div>
+  <div class="space-y-3">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q4-1｜每億公頃的熱量產出比較：畜牧 vs 作物，哪個效率高？高多少倍？（4 分）</label>
+      <textarea class="cer" id="q41" rows="3" placeholder="畜牧：18% / 37.5 = …&#10;作物：82% / 12.5 = …&#10;作物效率約為畜牧的 ___倍"></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q4-2｜這個效率差距代表什麼政策意涵？為什麼不能簡單地「取消畜牧業」？（至少寫 2 個理由）（8 分）</label>
+      <textarea class="cer" id="q42" rows="4" placeholder="理由 1：……&#10;理由 2：……"></textarea>
+    </div>
+  </div>
+  <button id="btn-next-4" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+</section>
+
+<!-- ===== Section 5: 系統思考（因果鏈）===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-700">任務 5｜系統思考：飲食-農業-氣候因果鏈</h2>
+      <p class="text-sm text-slate-700 mt-1">將 5 張節點卡片拖到因果循環圖的正確位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統分析師 ｜ 12 分 ｜ <span class="chip bg-orange-100 text-orange-800">系統思考題</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 500 300" class="w-full bg-slate-50 rounded">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L0,10 L10,5 z" fill="#64748b"/></marker>
+    </defs>
+    <rect x="170" y="10" width="160" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="1"/>
+    <text x="250" y="38" text-anchor="middle" fill="#92400e" font-size="12" id="slot-1-text">（1）</text>
+
+    <rect x="370" y="100" width="120" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="2"/>
+    <text x="430" y="128" text-anchor="middle" fill="#92400e" font-size="12" id="slot-2-text">（2）</text>
+
+    <rect x="310" y="230" width="140" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="3"/>
+    <text x="380" y="258" text-anchor="middle" fill="#92400e" font-size="12" id="slot-3-text">（3）</text>
+
+    <rect x="60" y="230" width="140" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="4"/>
+    <text x="130" y="258" text-anchor="middle" fill="#92400e" font-size="12" id="slot-4-text">（4）</text>
+
+    <rect x="10" y="100" width="130" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="5"/>
+    <text x="75" y="128" text-anchor="middle" fill="#92400e" font-size="12" id="slot-5-text">（5）</text>
+
+    <line x1="330" y1="45" x2="380" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="430" y1="145" x2="400" y2="230" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="310" y1="252" x2="200" y2="252" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="100" y1="230" x2="80" y2="145" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="140" y1="115" x2="170" y2="45" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="250" y="160" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="bold">正反饋循環</text>
+  </svg>
+
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-2 mt-3" id="loop-items">
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">① 高肉食需求</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">② 擴大畜牧用地</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">③ 碳排增加暖化</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">④ 極端氣候衝擊農業</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="5">⑤ 糧價上漲依賴進口</div>
+  </div>
+  <p id="loop-fb" class="mt-3 text-sm"></p>
+  <button id="btn-next-5" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Section 6: 倫理兩難（GMO 種子專利）===== -->
+<section id="level-6" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">⚖️</div>
+    <div>
+      <h2 class="text-xl font-bold text-pink-700">任務 6｜倫理兩難：GMO 種子專利</h2>
+      <p class="text-sm text-slate-700 mt-1">情境：一家跨國公司開發了耐旱基改小麥，可讓非洲產量增加 30%。但種子受專利保護，農民每年必須購買，不能自行留種。傳統品種可能因此被取代，降低遺傳多樣性。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：國際發展倫理委員 ｜ 12 分 ｜ <span class="chip bg-pink-100 text-pink-800">倫理兩難題</span></p>
+    </div>
+  </div>
+  <div class="space-y-3">
+    <label class="block text-sm font-semibold">你的立場與論證（請用 CER 結構，100 字以上；需同時考慮效率、公平與生態）：</label>
+    <textarea class="cer" id="q6-ethics" rows="6" placeholder="主張（Claim）：我認為……&#10;證據（Evidence）：因為 IPBES 報告指出……／牛津研究顯示……&#10;理由（Reasoning）：所以……&#10;反駁考量：然而也有人認為……但我認為……"></textarea>
+    <div class="word-count" id="q6-wc">0 字</div>
+    <p class="text-xs text-slate-500">提示：效率（增產30%救命）、公平（種子壟斷小農失自主）、生態（遺傳多樣性降低）、折衷（開放授權？公益專利？）</p>
+  </div>
+  <p id="q6-fb" class="mt-2 text-xs"></p>
+  <button id="btn-next-6" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Section 7: CER+反駁（肉品碳稅）===== -->
+<section id="level-7" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">✍️</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-700">任務 7｜CER + 反駁：肉品碳稅是好政策嗎？</h2>
+      <p class="text-sm text-slate-700 mt-1">牛津研究：多肉 10.24 vs 純素 2.47 kg CO₂/日。有人主張對肉品課碳稅以減少消費。但低收入家庭蛋白質高度依賴肉品。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：公共政策分析師 ｜ 15 分 ｜ <span class="chip bg-indigo-100 text-indigo-800">CER+反駁題</span></p>
+    </div>
+  </div>
+  <div class="space-y-2">
+    <label class="block text-sm font-semibold">主張 Claim（20-40 字）</label>
+    <textarea class="cer" id="cer7-c" rows="2" placeholder="我認為肉品碳稅……"></textarea>
+    <label class="block text-sm font-semibold">證據 Evidence（至少引用 1 項數據）</label>
+    <textarea class="cer" id="cer7-e" rows="3" placeholder="依據牛津研究 / IPBES / FAO 數據……"></textarea>
+    <label class="block text-sm font-semibold">理由 Reasoning</label>
+    <textarea class="cer" id="cer7-r" rows="3" placeholder="因此可以推論……"></textarea>
+    <label class="block text-sm font-semibold">反駁 Rebuttal（預期反對意見 + 你的回應）</label>
+    <textarea class="cer" id="cer7-rb" rows="3" placeholder="然而有人會反駁……我的回應是……"></textarea>
+  </div>
+  <p id="cer7-fb" class="mt-2 text-xs"></p>
+  <button id="btn-next-7" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Section 8: 跨域短論文（500+字）===== -->
+<section id="level-8" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📝</div>
+    <div>
+      <h2 class="text-xl font-bold text-purple-700">任務 8｜跨域短論文</h2>
+      <p class="text-sm text-slate-700 mt-1">題目：「農業科技的兩面刃：以一項技術（GMO / 精準農業 / 工業化畜牧）為例，論證其對永續發展的機會與風險」</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學術政策研究員 ｜ 20 分 ｜ <span class="chip bg-purple-100 text-purple-800">跨域短論文</span>（500 字以上）</p>
+    </div>
+  </div>
+  <div class="bg-slate-50 p-3 rounded text-xs mb-3">
+    <strong>要求</strong>：(1) 500 字以上 (2) CER 結構 + 反駁 (3) 引用 ≥2 項 data_card 數據 (4) 跨 ≥2 領域（科學 + 經濟/倫理/政治）(5) 有結論與條件限定
+  </div>
+  <textarea class="cer" id="essay" rows="16" placeholder="【第一段：主張】&#10;我認為……是當前推動永續農業最關鍵的科技方向，但其成功需要滿足……條件。&#10;&#10;【第二段：科學證據】&#10;根據 Poore & Nemecek（2018）的研究，全球食物系統佔溫室氣體排放 26%……&#10;&#10;【第三段：經濟/倫理分析】&#10;從經濟角度看……從倫理角度看……&#10;&#10;【第四段：反駁與回應】&#10;批評者可能指出……但……&#10;&#10;【第五段：結論】&#10;綜合以上分析，在……條件下，……是合理的策略選擇。"></textarea>
+  <div class="word-count" id="essay-wc">0 字</div>
+  <p id="essay-fb" class="mt-2 text-xs"></p>
+  <button id="btn-next-8" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Section 9: 政策倡議（學生議會提案 + WSA + 數據科學）===== -->
+<section id="level-9" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏛️</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 9｜政策倡議：學生議會永續飲食提案</h2>
+      <p class="text-sm text-slate-700 mt-1">為你的學校設計一個永續飲食政策提案，包含數據估算與 WSA 四面向。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生議會提案人 ｜ 15 分 ｜ <span class="chip bg-amber-100 text-amber-800">政策倡議題</span> <span class="chip bg-blue-100 text-blue-800">數據科學題</span></p>
+    </div>
+  </div>
+  <div class="space-y-2 mb-4">
+    <label class="block text-sm font-semibold">① 提案標題</label>
+    <input id="p-title" class="cer" placeholder="例：推動每週一天無肉午餐">
+    <label class="block text-sm font-semibold">② 問題陳述（用數據描述現況）</label>
+    <textarea class="cer" id="p-problem" rows="2" placeholder="目前學校午餐每人每日肉食約 ___g，碳排約 ___kg……"></textarea>
+    <label class="block text-sm font-semibold">③ 數據科學估算：如果實施你的方案，一年可減少多少碳排？（列出假設與計算過程）</label>
+    <textarea class="cer" id="p-data" rows="4" placeholder="假設：2000 名師生 × 每餐減少 ___kg CO₂ × 40 週 = ___公噸/年&#10;計算過程：……"></textarea>
+    <label class="block text-sm font-semibold">④ 行動步驟（至少 3 步）</label>
+    <textarea class="cer" id="p-steps" rows="3" placeholder="1. ……&#10;2. ……&#10;3. ……"></textarea>
+    <label class="block text-sm font-semibold">⑤ 預期成效指標（可量化）</label>
+    <input id="p-kpi" class="cer" placeholder="例：一年減碳 ___公噸，師生參與率達 ___%">
+  </div>
+  <div class="bg-indigo-50 p-3 rounded mb-3">
+    <p class="font-bold text-indigo-800 text-sm">WSA 四面向檢核（全勾才能解鎖下一關）</p>
+    <label class="block mt-1 text-sm"><input type="checkbox" class="wsa"> <strong>治理</strong>：提案送學生議會/校務會議</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>課程</strong>：跨科連結（至少 2 科）</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>營運</strong>：改變午餐供應/採購/設施</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>社群</strong>：擴散到家庭或社區</label>
+  </div>
+  <p id="p-fb" class="text-xs"></p>
+  <button id="btn-next-9" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Section 10: 後設認知反思（100+字）===== -->
+<section id="level-10" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🧠</div>
+    <div>
+      <h2 class="text-xl font-bold text-fuchsia-700">任務 10｜後設認知反思</h2>
+      <p class="text-sm text-slate-700 mt-1">最後一站：觀察你自己怎麼想、怎麼學。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：自我觀察者 ｜ 10 分 ｜ <span class="chip bg-fuchsia-100 text-fuchsia-800">後設認知題</span></p>
+    </div>
+  </div>
+  <div class="space-y-3">
+    <label class="block text-sm font-semibold">Q10-1｜四節課前，你對「吃什麼」這件事有多少思考？現在有什麼改變？哪個數據或討論最讓你震驚？（100 字以上）</label>
+    <textarea class="cer" id="m-reflect" rows="6" placeholder="以前我覺得吃飯就是吃飯，沒想過背後的系統……但看到……數據之後，我開始意識到……我的思考方式改變的地方是……"></textarea>
+    <div class="word-count" id="m-wc">0 字</div>
+    <label class="block text-sm font-semibold">Q10-2｜你覺得自己的「思考方式」（不只是知識）有什麼改變？</label>
+    <textarea class="cer" id="m-meta" rows="3" placeholder="例如：我學會了用系統思考看問題、用數據支持論點、考慮多方利害關係人……"></textarea>
+  </div>
+  <p id="m-fb" class="mt-2 text-xs"></p>
+  <button id="btn-finish" class="btn mt-4 bg-emerald-600 text-white px-8 py-2 rounded-lg font-bold" disabled>完成全部任務</button>
+</section>
+
+<!-- ===== Final Summary ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in text-center">
+  <h2 class="text-3xl font-bold text-emerald-700 mb-2">你完成了全部 10 個任務！</h2>
+  <p class="text-slate-700 mb-4">從農業科技比較、IPBES 衝擊反思、碳排分析、資料詮釋、系統思考、倫理兩難、CER+反駁、跨域論文、政策倡議到後設認知——你已經完整走過 Level V 高中深度。</p>
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-2 max-w-3xl mx-auto my-4">
+    <div class="p-2"><div class="text-2xl">🧬</div><div class="text-xs mt-1">科技比較</div></div>
+    <div class="p-2"><div class="text-2xl">💥</div><div class="text-xs mt-1">開放反思</div></div>
+    <div class="p-2"><div class="text-2xl">🏭</div><div class="text-xs mt-1">碳排審計</div></div>
+    <div class="p-2"><div class="text-2xl">📊</div><div class="text-xs mt-1">資料詮釋</div></div>
+    <div class="p-2"><div class="text-2xl">🔄</div><div class="text-xs mt-1">系統思考</div></div>
+    <div class="p-2"><div class="text-2xl">⚖️</div><div class="text-xs mt-1">倫理思辨</div></div>
+    <div class="p-2"><div class="text-2xl">✍️</div><div class="text-xs mt-1">CER+反駁</div></div>
+    <div class="p-2"><div class="text-2xl">📝</div><div class="text-xs mt-1">跨域論文</div></div>
+    <div class="p-2"><div class="text-2xl">🏛️</div><div class="text-xs mt-1">政策倡議</div></div>
+    <div class="p-2"><div class="text-2xl">🧠</div><div class="text-xs mt-1">後設認知</div></div>
+  </div>
+  <div class="mt-6 text-lg font-bold text-emerald-600">最終研究積分：<span id="final-score">0</span> / 120</div>
+  <button onclick="location.reload()" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold">再挑戰一次</button>
+</section>
+
+</div>
+
+<script>
+(() => {
+  const S = { score:0, current:1 };
+  const setScore = (n)=>{ S.score += n; document.getElementById('score').textContent = S.score; };
+  const goto = (n)=>{
+    document.getElementById('level-'+S.current).classList.add('hidden-screen');
+    S.current = n;
+    const next = document.getElementById('level-'+n) || document.getElementById('level-final');
+    next.classList.remove('hidden-screen');
+    for(let i=1;i<=10;i++){
+      const d = document.getElementById('dot-'+i);
+      if(!d) continue;
+      d.classList.remove('active','done');
+      if(i < n) d.classList.add('done');
+      else if(i === n) d.classList.add('active');
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  const confetti = ()=>{
+    const colors=['#f59e0b','#10b981','#6366f1','#ec4899','#0ea5e9'];
+    for(let i=0;i<40;i++){
+      const el=document.createElement('div');
+      el.className='confetti';
+      el.style.left=Math.random()*100+'vw';
+      el.style.background=colors[i%colors.length];
+      el.style.animationDelay=(Math.random()*0.6)+'s';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),2500);
+    }
+  };
+  const wordCount = (text)=> text.replace(/\s/g,'').length;
+  const updateWC = (id, textareaId)=>{
+    const ta = document.getElementById(textareaId);
+    const wc = document.getElementById(id);
+    if(ta && wc) ta.addEventListener('input', ()=>{ wc.textContent = wordCount(ta.value)+' 字'; });
+  };
+  updateWC('q2-wc','q2-reflect');
+  updateWC('q6-wc','q6-ethics');
+  updateWC('essay-wc','essay');
+  updateWC('m-wc','m-reflect');
+
+  // ===== Drag helper =====
+  const setupDrag = (container, zones, onComplete) => {
+    let dragged = null;
+    container.querySelectorAll('.drag-item').forEach(it=>{
+      it.addEventListener('dragstart', e=>{ dragged=it; it.classList.add('dragging'); });
+      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null;});
+    });
+    zones.forEach(z=>{
+      z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over');});
+      z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+      z.addEventListener('drop', e=>{
+        e.preventDefault(); z.classList.remove('over');
+        if(!dragged) return;
+        const want = z.dataset.accept || z.dataset.slot;
+        const got = dragged.dataset.match || dragged.dataset.loop;
+        if(String(want)===String(got)){
+          dragged.classList.add('pop');
+          z.appendChild(dragged);
+          dragged.setAttribute('draggable','false');
+          dragged.style.cursor='default';
+          onComplete && onComplete(true);
+        } else {
+          z.classList.add('shake');
+          setTimeout(()=>z.classList.remove('shake'),400);
+          onComplete && onComplete(false);
+        }
+      });
+    });
+  };
+
+  // ===== Level 1: Tech comparison drag =====
+  const box1 = document.getElementById('level-1');
+  const zones1 = box1.querySelectorAll('.drop-zone');
+  let done1 = 0, err1 = 0;
+  setupDrag(box1, zones1, ok=>{
+    if(ok){ done1++; if(done1===6){ setScore(10-Math.min(err1,5)); document.getElementById('btn-next-1').disabled=false; document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">全部配對正確！三種技術各有機制與風險。</span>'; confetti(); } }
+    else { err1++; document.getElementById('feedback-1').innerHTML='<span class="text-rose-600">再試試！注意區分物種內 vs 跨物種 vs 完全複製。</span>'; }
+  });
+  document.getElementById('btn-next-1').onclick = ()=>goto(2);
+
+  // ===== Level 2: Open reflection 100+ chars =====
+  const checkL2 = ()=>{
+    const r = wordCount(document.getElementById('q2-reflect').value);
+    const q = document.getElementById('q2-question').value.trim().length;
+    if(r >= 100 && q > 5){
+      document.getElementById('btn-next-2').disabled = false;
+      document.getElementById('q2-fb').innerHTML = '<span class="text-emerald-700">字數達標，追問已填寫。</span>';
+    }
+  };
+  document.getElementById('q2-reflect').addEventListener('input', checkL2);
+  document.getElementById('q2-question').addEventListener('input', checkL2);
+  document.getElementById('btn-next-2').onclick = ()=>{ setScore(12); goto(3); };
+
+  // ===== Level 3: Carbon source drag =====
+  const box3 = document.getElementById('level-3');
+  const zones3 = box3.querySelectorAll('.drop-zone');
+  let done3 = 0, err3 = 0;
+  setupDrag(box3, zones3, ok=>{
+    if(ok){ done3++; if(done3===4){ setScore(10-Math.min(err3,5)); document.getElementById('btn-next-3').disabled=false; document.getElementById('feedback-3').innerHTML='<span class="text-emerald-700 font-bold">碳排來源分類正確！食物系統排放佔全球 26%。</span>'; confetti(); } }
+    else { err3++; document.getElementById('feedback-3').innerHTML='<span class="text-rose-600">提示：甲烷主要來自牛的消化，N₂O 來自化肥，砍林是土地變遷。</span>'; }
+  });
+  document.getElementById('btn-next-3').onclick = ()=>goto(4);
+
+  // ===== Level 4: Data interpretation =====
+  const checkL4 = ()=>{
+    const a1 = document.getElementById('q41').value.trim().length;
+    const a2 = document.getElementById('q42').value.trim().length;
+    if(a1 > 20 && a2 > 30) document.getElementById('btn-next-4').disabled = false;
+  };
+  document.getElementById('q41').addEventListener('input', checkL4);
+  document.getElementById('q42').addEventListener('input', checkL4);
+  document.getElementById('btn-next-4').onclick = ()=>{ setScore(12); goto(5); };
+
+  // ===== Level 5: System thinking loop drag =====
+  const box5 = document.getElementById('level-5');
+  const slots5 = box5.querySelectorAll('.loop-slot');
+  let done5 = 0, err5 = 0;
+  setupDrag(box5, slots5, ok=>{
+    if(ok){ done5++; if(done5===5){ setScore(12-Math.min(err5,6)); document.getElementById('btn-next-5').disabled=false; document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">因果循環完成！飲食→畜牧→碳排→暖化→糧價→回到飲食。</span>'; confetti(); } }
+    else { err5++; document.getElementById('loop-fb').innerHTML='<span class="text-rose-600">想一想因果順序：高肉食需求 → 擴大畜牧 → 碳排 → 氣候衝擊 → 糧價。</span>'; }
+  });
+  document.getElementById('btn-next-5').onclick = ()=>goto(6);
+
+  // ===== Level 6: Ethics 100+ chars =====
+  const checkL6 = ()=>{
+    const w = wordCount(document.getElementById('q6-ethics').value);
+    if(w >= 100){
+      document.getElementById('btn-next-6').disabled = false;
+      document.getElementById('q6-fb').innerHTML = '<span class="text-emerald-700">字數達標。</span>';
+    }
+  };
+  document.getElementById('q6-ethics').addEventListener('input', checkL6);
+  document.getElementById('btn-next-6').onclick = ()=>{ setScore(12); goto(7); };
+
+  // ===== Level 7: CER+Rebuttal =====
+  const checkL7 = ()=>{
+    const c = document.getElementById('cer7-c').value.trim().length;
+    const e = document.getElementById('cer7-e').value.trim().length;
+    const r = document.getElementById('cer7-r').value.trim().length;
+    const rb = document.getElementById('cer7-rb').value.trim().length;
+    if(c>10 && e>20 && r>20 && rb>20){
+      document.getElementById('btn-next-7').disabled = false;
+      document.getElementById('cer7-fb').innerHTML = '<span class="text-emerald-700">CER+反駁結構完整。</span>';
+    }
+  };
+  ['cer7-c','cer7-e','cer7-r','cer7-rb'].forEach(id=>document.getElementById(id).addEventListener('input', checkL7));
+  document.getElementById('btn-next-7').onclick = ()=>{ setScore(15); goto(8); };
+
+  // ===== Level 8: Cross-domain essay 500+ chars =====
+  const checkL8 = ()=>{
+    const w = wordCount(document.getElementById('essay').value);
+    if(w >= 500){
+      document.getElementById('btn-next-8').disabled = false;
+      document.getElementById('essay-fb').innerHTML = '<span class="text-emerald-700">字數達標（'+w+' 字）。</span>';
+    } else {
+      document.getElementById('essay-fb').innerHTML = '<span class="text-slate-500">目前 '+w+' 字，需 500 字以上。</span>';
+    }
+  };
+  document.getElementById('essay').addEventListener('input', checkL8);
+  document.getElementById('btn-next-8').onclick = ()=>{ setScore(20); goto(9); };
+
+  // ===== Level 9: Policy advocacy + WSA + data science =====
+  const checkL9 = ()=>{
+    const title = document.getElementById('p-title').value.trim().length;
+    const prob = document.getElementById('p-problem').value.trim().length;
+    const data = document.getElementById('p-data').value.trim().length;
+    const steps = document.getElementById('p-steps').value.trim().length;
+    const kpi = document.getElementById('p-kpi').value.trim().length;
+    const wsaAll = [...document.querySelectorAll('.wsa')].every(c=>c.checked);
+    if(title>3 && prob>10 && data>20 && steps>10 && kpi>5 && wsaAll){
+      document.getElementById('btn-next-9').disabled = false;
+      document.getElementById('p-fb').innerHTML = '<span class="text-emerald-700">提案完整、WSA 四面向全勾、數據估算完成！</span>';
+    }
+  };
+  ['p-title','p-problem','p-data','p-steps','p-kpi'].forEach(id=>document.getElementById(id).addEventListener('input', checkL9));
+  document.querySelectorAll('.wsa').forEach(c=>c.addEventListener('change', checkL9));
+  document.getElementById('btn-next-9').onclick = ()=>{ setScore(15); goto(10); };
+
+  // ===== Level 10: Metacognition 100+ chars =====
+  const checkL10 = ()=>{
+    const w = wordCount(document.getElementById('m-reflect').value);
+    const m = document.getElementById('m-meta').value.trim().length;
+    if(w >= 100 && m > 10){
+      document.getElementById('btn-finish').disabled = false;
+      document.getElementById('m-fb').innerHTML = '<span class="text-emerald-700">反思字數達標。</span>';
+    }
+  };
+  document.getElementById('m-reflect').addEventListener('input', checkL10);
+  document.getElementById('m-meta').addEventListener('input', checkL10);
+  document.getElementById('btn-finish').onclick = ()=>{
+    setScore(10);
+    document.getElementById('level-10').classList.add('hidden-screen');
+    const fin = document.getElementById('level-final');
+    fin.classList.remove('hidden-screen');
+    document.getElementById('final-score').textContent = S.score;
+    confetti();
+  };
+})();
+</script>
+</body>
+</html>

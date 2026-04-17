@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>永續移動力 | 高中互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#0f172a,#1e293b,#0f172a); min-height:100vh; color:#e2e8f0;}
+  .card { background:rgba(30,41,59,.92); border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.3); border:1px solid rgba(99,102,241,.2);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.15);}
+  .btn:disabled { opacity:.45; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:80px; transition: background .2s; border:2px dashed rgba(148,163,184,.4); border-radius:.75rem;}
+  .drop-zone.over { background:rgba(234,179,8,.15); border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.15);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:rgba(148,163,184,.35); transition:all .3s;}
+  .progress-dot.active { background:#818cf8; transform:scale(1.3); box-shadow:0 0 12px rgba(129,140,248,.5);}
+  .progress-dot.done { background:#34d399; box-shadow:0 0 8px rgba(52,211,153,.4);}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea { border:1px solid rgba(148,163,184,.3); border-radius:.5rem; padding:.75rem; width:100%; font-size:.95rem; background:rgba(15,23,42,.6); color:#e2e8f0; resize:vertical;}
+  textarea:focus { outline:none; border-color:#818cf8; box-shadow:0 0 0 2px rgba(129,140,248,.25);}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  .badge-lock { filter:grayscale(1); opacity:.35;}
+  svg.loop text { font-size:11px; pointer-events:none;}
+  svg.loop .loop-slot { cursor: pointer; }
+  svg.loop .loop-slot.over { fill:rgba(234,179,8,.25); stroke-width:3; }
+  input[type="number"] { background:rgba(15,23,42,.6); border:1px solid rgba(148,163,184,.3); color:#e2e8f0; border-radius:.375rem; padding:.25rem .5rem; }
+  input[type="number"]:focus { outline:none; border-color:#818cf8; }
+  .ref-tag { font-size:.65rem; background:rgba(99,102,241,.2); color:#a5b4fc; padding:.1rem .4rem; border-radius:.25rem; }
+  select { background:rgba(15,23,42,.6); border:1px solid rgba(148,163,184,.3); color:#e2e8f0; border-radius:.375rem; padding:.25rem .5rem; }
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-indigo-300">永續移動力</h1>
+    <p class="text-sm text-slate-400 mt-1">你是「永續交通規劃師」：11 個關卡、9 種高層次任務。完成它們，成為 Level V 永續移動公民。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">規劃師積分</div>
+    <div class="text-2xl font-bold text-emerald-400"><span id="score">0</span> / 110</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-1.5 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs text-slate-500">排放</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs text-slate-500">政策</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs text-slate-500">航空</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs text-slate-500">情境</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs text-slate-500">系統</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs text-slate-500">倫理</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs text-slate-500">倡議</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs text-slate-500">跨域</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-9"></div><span class="text-xs text-slate-500">後設</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-10"></div><span class="text-xs text-slate-500">反思1</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-11"></div><span class="text-xs text-slate-500">反思2</span>
+</div>
+
+<!-- Badges -->
+<div class="card p-3 mb-6 flex flex-wrap gap-2 justify-center">
+  <span class="text-lg badge-lock" id="badge-1" title="排放分析師">&#x1F4CA;</span>
+  <span class="text-lg badge-lock" id="badge-2" title="政策比較專家">&#x1F310;</span>
+  <span class="text-lg badge-lock" id="badge-3" title="數據詮釋者">&#x2708;</span>
+  <span class="text-lg badge-lock" id="badge-4" title="系統思考者">&#x1F504;</span>
+  <span class="text-lg badge-lock" id="badge-5" title="倫理辯論家">&#x2696;</span>
+  <span class="text-lg badge-lock" id="badge-6" title="政策倡議者">&#x1F4E2;</span>
+  <span class="text-lg badge-lock" id="badge-7" title="跨域整合者">&#x1F30D;</span>
+  <span class="text-lg badge-lock" id="badge-8" title="後設認知者">&#x1F9E0;</span>
+  <span class="text-lg badge-lock" id="badge-9" title="永續行動者">&#x1F331;</span>
+</div>
+
+<!-- ===== Level 1: 交通排放結構填空 ===== -->
+<section id="level-1" class="card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F4CA;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 1｜全球交通碳排結構</h2>
+      <p class="text-sm text-slate-400 mt-1">根據 IEA 資料，填入全球交通排放的關鍵數字。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：排放分析師 ｜ 10 分 <span class="ref-tag">dp1</span></p>
+    </div>
+  </div>
+  <div class="space-y-3" id="q1-box">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">&#9312; 全球交通運輸部門占能源相關 CO&#x2082; 排放約 <input type="number" step="1" min="0" max="50" class="w-20 text-center q1-input" data-answer="23"> %</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">&#9313; 公路運輸占交通排放約 <input type="number" step="1" min="0" max="100" class="w-20 text-center q1-input" data-answer="75"> %</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">&#9314; 航空占交通排放約 <input type="number" step="1" min="0" max="50" class="w-20 text-center q1-input" data-answer="12"> %</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">&#9315; 自 1990 年到 2022 年，交通碳排增長了約 <input type="number" step="1" min="0" max="200" class="w-20 text-center q1-input" data-answer="70"> %</p>
+    </div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <button id="btn-check-1" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-1" class="btn mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#x2192;</button>
+</section>
+
+<!-- ===== Level 2: 政策比較（數據科學分析 ⑧） ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F310;</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-300">關卡 2｜永續移動政策比較與數據分析</h2>
+      <p class="text-sm text-slate-400 mt-1">比較國際永續移動政策，並計算碳排數據。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：政策分析師 ｜ 10 分 <span class="chip bg-amber-900/50 text-amber-300">數據科學分析 &#x2468;</span> <span class="ref-tag">dp4, dp5</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm space-y-2">
+    <p><strong>已知條件：</strong></p>
+    <ul class="list-disc list-inside space-y-1 text-slate-300">
+      <li>臺灣機動車輛約 2,240 萬輛，運輸占 GHG 14%（約 3,700 萬噸 CO&#x2082;e）</li>
+      <li>電動機車累計約 64 萬輛，占機車總數約 4.4%</li>
+      <li>TPASS 月票推出後大眾運輸使用量增加約 10%</li>
+    </ul>
+  </div>
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">&#9312; 若電動機車占比從 4.4% 提升至 30%，約新增多少萬輛電動機車？（機車總數 1,440 萬）</p>
+      <input type="number" class="w-24 q2-input" data-answer="368" placeholder="?" step="10"> 萬輛
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">&#9313; 若大眾運輸使用量再增加 20%（假設每增加 10% 使用量可減少運輸碳排 2%），可減少約多少萬噸 CO&#x2082;e？（運輸總排放 3,700 萬噸）</p>
+      <input type="number" class="w-24 q2-input" data-answer="148" placeholder="?" step="10"> 萬噸
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">&#9314; 以上兩種策略（電動化 vs 模態轉移），哪一種在短期內對臺灣的減碳效益可能更大？請在下方說明你的推論（50+ 字）。</p>
+      <textarea rows="3" class="q2-text" placeholder="比較電動化與模態轉移的短期效益..."></textarea>
+    </div>
+  </div>
+  <div id="feedback-2" class="mt-3 text-sm"></div>
+  <button id="btn-check-2" class="btn mt-3 bg-amber-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-2" class="btn mt-3 bg-amber-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#x2192;</button>
+</section>
+
+<!-- ===== Level 3: 航空碳排數據詮釋（資料詮釋 ⑤-1） ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x2708;</div>
+    <div>
+      <h2 class="text-xl font-bold text-sky-300">關卡 3｜航空碳排數據詮釋</h2>
+      <p class="text-sm text-slate-400 mt-1">解讀航空碳排數據，理解非 CO&#x2082; 效應。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：航空碳排分析員 ｜ 10 分 <span class="chip bg-sky-900/50 text-sky-300">資料詮釋 &#x2464;</span> <span class="ref-tag">dp3, dp7</span></p>
+    </div>
+  </div>
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">&#9312; 航空業占全球 CO&#x2082; 排放約 2.5%，但對全球暖化的實際貢獻約 4%。請解釋為什麼兩個數字不同（50+ 字）。</p>
+      <textarea rows="3" class="q3-text" placeholder="解釋 CO2 排放占比與暖化貢獻差異的原因..."></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">&#9313; 全球觀光碳足跡占 GHG 約 8%，其中交通占 49%。若全球 14 億國際旅客中，有 30% 改搭火車（碳排約為飛機的 1/10），可減少多少百分點的全球 GHG？請列出計算過程。</p>
+      <textarea rows="4" class="q3-text" placeholder="列出計算步驟與結果..."></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">&#9314; 全球只有約 11% 的人口曾搭過飛機。這個數據對「航空碳排的公平性」有何啟示？（50+ 字）</p>
+      <textarea rows="3" class="q3-text" placeholder="分析航空碳排不平等的問題..."></textarea>
+    </div>
+  </div>
+  <div id="feedback-3" class="mt-3 text-sm"></div>
+  <button id="btn-check-3" class="btn mt-3 bg-sky-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-3" class="btn mt-3 bg-sky-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#x2192;</button>
+</section>
+
+<!-- ===== Level 4: 雙情境曲線（資料詮釋 ⑤-2 + 數據科學） ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F4C8;</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-300">關卡 4｜未來情境曲線繪製</h2>
+      <p class="text-sm text-slate-400 mt-1">根據 ITF 推估，繪製並分析兩種交通碳排情境。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：情境分析師 ｜ 10 分 <span class="chip bg-emerald-900/50 text-emerald-300">資料詮釋 &#x2464;</span> <span class="ref-tag">dp6</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm">
+    <p><strong>ITF 推估數據：</strong></p>
+    <ul class="list-disc list-inside text-slate-300 mt-1 space-y-1">
+      <li>2019 年全球交通 CO&#x2082;：約 7.7 GtCO&#x2082;</li>
+      <li>現行政策情境：2050 年較 2019 年 +16%（約 8.9 Gt）</li>
+      <li>野心路徑情境：2050 年較 2019 年 -80%（約 1.5 Gt）</li>
+    </ul>
+  </div>
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">&#9312; 兩條曲線在 2019-2050 年間的差距約為 <input type="number" class="w-20 q4-input" data-answer="7.4" step="0.1"> GtCO&#x2082;（2050 年時）</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">&#9313; 「現行政策」情境假設了什麼不變？「野心路徑」需要哪些前提條件？（80+ 字）</p>
+      <textarea rows="4" class="q4-text" placeholder="分析兩種情境的關鍵假設差異..."></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">&#9314; 共享移動+電氣化可再減都市交通排放 20-30%。請解釋為什麼這兩者「結合」比「單獨」效果更好（50+ 字）。</p>
+      <textarea rows="3" class="q4-text" placeholder="分析共享+電氣化的協同效應..."></textarea>
+    </div>
+  </div>
+  <div id="feedback-4" class="mt-3 text-sm"></div>
+  <button id="btn-check-4" class="btn mt-3 bg-emerald-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-4" class="btn mt-3 bg-emerald-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#x2192;</button>
+</section>
+
+<!-- ===== Level 5: 系統思考 CLD（系統思考 ②） ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F504;</div>
+    <div>
+      <h2 class="text-xl font-bold text-violet-300">關卡 5｜永續移動因果循環圖</h2>
+      <p class="text-sm text-slate-400 mt-1">辨識永續移動系統中的正反饋、負反饋與槓桿點。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：系統思考者 ｜ 10 分 <span class="chip bg-violet-900/50 text-violet-300">系統思考 &#x2461;</span> <span class="ref-tag">dp2, dp6, dp8</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm">
+    <p><strong>拖曳下方標籤到 CLD 對應的空格中：</strong></p>
+  </div>
+  <div class="flex flex-wrap gap-2 mb-4" id="drag-pool-5">
+    <div class="drag-item bg-indigo-700/60 text-white px-3 py-1 rounded-full text-sm" draggable="true" data-val="EV成本下降">EV成本下降</div>
+    <div class="drag-item bg-indigo-700/60 text-white px-3 py-1 rounded-full text-sm" draggable="true" data-val="銷量增加">銷量增加</div>
+    <div class="drag-item bg-indigo-700/60 text-white px-3 py-1 rounded-full text-sm" draggable="true" data-val="規模經濟">規模經濟</div>
+    <div class="drag-item bg-rose-700/60 text-white px-3 py-1 rounded-full text-sm" draggable="true" data-val="壅塞加劇">壅塞加劇</div>
+    <div class="drag-item bg-rose-700/60 text-white px-3 py-1 rounded-full text-sm" draggable="true" data-val="遷居郊區">遷居郊區</div>
+    <div class="drag-item bg-emerald-700/60 text-white px-3 py-1 rounded-full text-sm" draggable="true" data-val="公共運輸投資增加">公共運輸投資增加</div>
+  </div>
+  <svg class="loop w-full" viewBox="0 0 700 320" style="max-height:320px;">
+    <text x="350" y="20" text-anchor="middle" fill="#a5b4fc" font-weight="bold" style="pointer-events:none;">正反饋 R1：EV 擴張迴路</text>
+    <rect class="loop-slot" id="slot-r1a" x="50" y="40" width="140" height="36" rx="8" fill="rgba(99,102,241,.15)" stroke="#818cf8" stroke-width="2" data-expect="EV成本下降"/>
+    <text x="120" y="62" text-anchor="middle" fill="#94a3b8" style="pointer-events:none;">?</text>
+    <line x1="195" y1="58" x2="255" y2="58" stroke="#818cf8" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect class="loop-slot" id="slot-r1b" x="260" y="40" width="140" height="36" rx="8" fill="rgba(99,102,241,.15)" stroke="#818cf8" stroke-width="2" data-expect="銷量增加"/>
+    <text x="330" y="62" text-anchor="middle" fill="#94a3b8" style="pointer-events:none;">?</text>
+    <line x1="405" y1="58" x2="465" y2="58" stroke="#818cf8" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect class="loop-slot" id="slot-r1c" x="470" y="40" width="140" height="36" rx="8" fill="rgba(99,102,241,.15)" stroke="#818cf8" stroke-width="2" data-expect="規模經濟"/>
+    <text x="540" y="62" text-anchor="middle" fill="#94a3b8" style="pointer-events:none;">?</text>
+    <path d="M540,80 C540,110 120,110 120,80" stroke="#818cf8" stroke-width="2" fill="none" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+    <text x="350" y="130" text-anchor="middle" fill="#f87171" font-weight="bold" style="pointer-events:none;">正反饋 R2：壅塞惡化迴路</text>
+    <rect class="loop-slot" id="slot-r2a" x="100" y="145" width="140" height="36" rx="8" fill="rgba(244,63,94,.15)" stroke="#f87171" stroke-width="2" data-expect="壅塞加劇"/>
+    <text x="170" y="167" text-anchor="middle" fill="#94a3b8" style="pointer-events:none;">?</text>
+    <line x1="245" y1="163" x2="355" y2="163" stroke="#f87171" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect class="loop-slot" id="slot-r2b" x="360" y="145" width="140" height="36" rx="8" fill="rgba(244,63,94,.15)" stroke="#f87171" stroke-width="2" data-expect="遷居郊區"/>
+    <text x="430" y="167" text-anchor="middle" fill="#94a3b8" style="pointer-events:none;">?</text>
+    <path d="M430,185 C430,210 170,210 170,185" stroke="#f87171" stroke-width="2" fill="none" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+    <text x="350" y="240" text-anchor="middle" fill="#34d399" font-weight="bold" style="pointer-events:none;">負反饋 B1：自我修正迴路</text>
+    <text x="170" y="268" text-anchor="middle" fill="#94a3b8" font-size="12" style="pointer-events:none;">壅塞嚴重</text>
+    <line x1="240" y1="262" x2="310" y2="262" stroke="#34d399" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect class="loop-slot" id="slot-b1" x="315" y="248" width="180" height="36" rx="8" fill="rgba(52,211,153,.15)" stroke="#34d399" stroke-width="2" data-expect="公共運輸投資增加"/>
+    <text x="405" y="270" text-anchor="middle" fill="#94a3b8" style="pointer-events:none;">?</text>
+    <line x1="500" y1="266" x2="560" y2="266" stroke="#34d399" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="620" y="270" text-anchor="middle" fill="#94a3b8" font-size="12" style="pointer-events:none;">壅塞減少</text>
+    <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>
+  </svg>
+  <div class="bg-slate-800/50 rounded-lg p-3 mt-3">
+    <p class="text-sm mb-2">完成 CLD 後，請說明：你認為哪一個是最有效的「槓桿點」？為什麼？（50+ 字）</p>
+    <textarea rows="3" id="q5-extend" placeholder="分析槓桿點及其原因..."></textarea>
+  </div>
+  <div id="feedback-5" class="mt-3 text-sm"></div>
+  <button id="btn-check-5" class="btn mt-3 bg-violet-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-5" class="btn mt-3 bg-violet-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#x2192;</button>
+</section>
+
+<!-- ===== Level 6: 倫理兩難（倫理兩難 ③） ===== -->
+<section id="level-6" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x2696;</div>
+    <div>
+      <h2 class="text-xl font-bold text-rose-300">關卡 6｜倫理兩難：減碳 vs 移動權</h2>
+      <p class="text-sm text-slate-400 mt-1">探討永續移動與交通公平之間的張力。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：倫理辯論家 ｜ 10 分 <span class="chip bg-rose-900/50 text-rose-300">倫理兩難 &#x2462;</span> <span class="ref-tag">dp5</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm">
+    <p><strong>議題：</strong>「為了減碳，政府應提高燃油稅並限制機車進入市中心」vs「在公共運輸不足的地區，限制機車等於剝奪弱勢者的移動權」</p>
+  </div>
+  <div class="grid md:grid-cols-2 gap-4">
+    <div>
+      <p class="text-sm font-bold text-emerald-400 mb-2">立場 A：支持限制（減碳優先）</p>
+      <textarea rows="5" id="q6-a" placeholder="用 100+ 字闡述支持限制的論證，引用至少 1 筆數據..."></textarea>
+    </div>
+    <div>
+      <p class="text-sm font-bold text-amber-400 mb-2">立場 B：反對限制（移動權優先）</p>
+      <textarea rows="5" id="q6-b" placeholder="用 100+ 字闡述反對限制的論證..."></textarea>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-3 mt-3">
+    <p class="text-sm mb-2">選擇你不同意的立場，用 80+ 字反駁對方：</p>
+    <textarea rows="3" id="q6-rebuttal" placeholder="針對你不同意的立場進行反駁..."></textarea>
+  </div>
+  <div id="feedback-6" class="mt-3 text-sm"></div>
+  <button id="btn-check-6" class="btn mt-3 bg-rose-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-6" class="btn mt-3 bg-rose-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#x2192;</button>
+</section>
+
+<!-- ===== Level 7: 政策倡議（模擬議會 ⑦ + CER ④） ===== -->
+<section id="level-7" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F4E2;</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-300">關卡 7｜模擬議會：校園永續交通聽證</h2>
+      <p class="text-sm text-slate-400 mt-1">完成利害關係人分析 + CER 論證撰寫。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：政策倡議者 ｜ 10 分 <span class="chip bg-orange-900/50 text-orange-300">政策倡議 &#x2466; + CER &#x2463;</span> <span class="ref-tag">dp5, dp8</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm">
+    <p><strong>議題：</strong>「校園周邊是否應實施機車限行區並增設公共自行車站？」</p>
+    <p class="mt-1 text-slate-400">完成下方利害關係人分析表，再撰寫你選擇角色的 CER 論證。</p>
+  </div>
+  <div class="overflow-x-auto mb-3">
+    <table class="w-full text-sm">
+      <thead><tr class="text-slate-400 border-b border-slate-700">
+        <th class="p-2 text-left">利害關係人</th>
+        <th class="p-2 text-left">立場傾向</th>
+        <th class="p-2 text-left">核心利益</th>
+        <th class="p-2 text-left">主要擔憂</th>
+      </tr></thead>
+      <tbody>
+        <tr class="border-b border-slate-800"><td class="p-2">交通局</td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="支持/反對/中立"></td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="核心利益"></td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="主要擔憂"></td></tr>
+        <tr class="border-b border-slate-800"><td class="p-2">學校行政</td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="支持/反對/中立"></td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="核心利益"></td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="主要擔憂"></td></tr>
+        <tr class="border-b border-slate-800"><td class="p-2">家長會</td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="支持/反對/中立"></td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="核心利益"></td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="主要擔憂"></td></tr>
+        <tr class="border-b border-slate-800"><td class="p-2">共享運具業者</td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="支持/反對/中立"></td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="核心利益"></td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="主要擔憂"></td></tr>
+        <tr class="border-b border-slate-800"><td class="p-2">環保團體</td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="支持/反對/中立"></td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="核心利益"></td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="主要擔憂"></td></tr>
+        <tr><td class="p-2">學生代表</td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="支持/反對/中立"></td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="核心利益"></td><td class="p-2"><input type="text" class="w-full bg-transparent border-b border-slate-600 text-sm q7-table" placeholder="主要擔憂"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-3">
+    <p class="text-sm mb-2"><strong>CER 論證</strong>（選擇一個角色，撰寫 Claim + Evidence + Reasoning + Rebuttal）：</p>
+    <textarea rows="6" id="q7-cer" placeholder="C: 我的主張是...&#10;E: 根據數據...&#10;R: 因為...&#10;Rebuttal: 反對者可能說...但我認為..."></textarea>
+  </div>
+  <div id="feedback-7" class="mt-3 text-sm"></div>
+  <button id="btn-check-7" class="btn mt-3 bg-orange-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-7" class="btn mt-3 bg-orange-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#x2192;</button>
+</section>
+
+<!-- ===== Level 8: 跨域整合短論文（跨域整合 ⑨） ===== -->
+<section id="level-8" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F30D;</div>
+    <div>
+      <h2 class="text-xl font-bold text-cyan-300">關卡 8｜跨域整合短論文</h2>
+      <p class="text-sm text-slate-400 mt-1">撰寫 500+ 字跨域論文，整合科技、經濟與公平三維度。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：跨域研究員 ｜ 10 分 <span class="chip bg-cyan-900/50 text-cyan-300">跨域整合 &#x2468;</span> <span class="ref-tag">dp1, dp5, dp8</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-3 text-sm">
+    <p><strong>題目：</strong>「從碳足跡到 MaaS：永續移動的科技、經濟與公平三維分析」</p>
+    <p class="mt-2 text-slate-400">五段結構建議：</p>
+    <ol class="list-decimal list-inside text-slate-400 mt-1 space-y-1">
+      <li>導論：為何永續移動需要跨領域整合</li>
+      <li>科技維度：交通排放結構（dp1）+ ITS/AI 減排效果（dp8）</li>
+      <li>經濟維度：EV 市場成長（dp2）+ 兩種情境的成本效益（dp6）</li>
+      <li>公平維度：臺灣機車密度與交通不平等（dp5）</li>
+      <li>結論：整合三維度的政策建議</li>
+    </ol>
+    <p class="mt-2 text-slate-400">引用格式：APA 簡式，例如（IEA, 2023）</p>
+  </div>
+  <textarea rows="14" id="q8-essay" placeholder="請在此撰寫 500+ 字的跨域整合短論文..."></textarea>
+  <div class="flex justify-between mt-2">
+    <span class="text-xs text-slate-500">字數：<span id="q8-count">0</span> / 500+</span>
+  </div>
+  <div id="feedback-8" class="mt-3 text-sm"></div>
+  <button id="btn-check-8" class="btn mt-3 bg-cyan-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-8" class="btn mt-3 bg-cyan-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#x2192;</button>
+</section>
+
+<!-- ===== Level 9: 後設認知（後設認知 ⑥） ===== -->
+<section id="level-9" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F9E0;</div>
+    <div>
+      <h2 class="text-xl font-bold text-pink-300">關卡 9｜後設認知反思</h2>
+      <p class="text-sm text-slate-400 mt-1">回顧學習歷程，比較前後認知變化。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：後設認知者 ｜ 10 分 <span class="chip bg-pink-900/50 text-pink-300">後設認知 &#x2465;</span></p>
+    </div>
+  </div>
+  <div class="space-y-3">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-pink-300 mb-2">學習前：我原本以為...</p>
+      <textarea rows="2" class="q9-text" placeholder="描述你在學習前對永續移動的看法..."></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-pink-300 mb-2">學習後：現在我理解...</p>
+      <textarea rows="2" class="q9-text" placeholder="描述你現在對永續移動的新理解..."></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-pink-300 mb-2">轉折點：改變我想法的關鍵是...</p>
+      <textarea rows="2" class="q9-text" placeholder="描述改變你認知的關鍵時刻或數據..."></textarea>
+    </div>
+  </div>
+  <div class="flex justify-between mt-2">
+    <span class="text-xs text-slate-500">三段合計字數：<span id="q9-count">0</span> / 100+</span>
+  </div>
+  <div id="feedback-9" class="mt-3 text-sm"></div>
+  <button id="btn-check-9" class="btn mt-3 bg-pink-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-9" class="btn mt-3 bg-pink-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#x2192;</button>
+</section>
+
+<!-- ===== Level 10: 開放式反思 #1（開放式反思 ① -A） ===== -->
+<section id="level-10" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F331;</div>
+    <div>
+      <h2 class="text-xl font-bold text-lime-300">關卡 10｜開放式反思：未來交通願景</h2>
+      <p class="text-sm text-slate-400 mt-1">如果你有 1 億元預算改善所在城市的交通，你會怎麼分配？</p>
+      <p class="text-xs text-slate-600 mt-1">角色：永續交通規劃師 ｜ 10 分 <span class="chip bg-lime-900/50 text-lime-300">開放式反思 &#x2460;</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-3 mb-3 text-sm">
+    <p>請分配 1 億元預算到以下類別（總和需等於 100%），並在下方說明理由（100+ 字）：</p>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-3">
+      <div>公共運輸擴建：<input type="number" class="w-16 q10-pct" min="0" max="100" placeholder="%"> %</div>
+      <div>自行車道建設：<input type="number" class="w-16 q10-pct" min="0" max="100" placeholder="%"> %</div>
+      <div>EV 充電站：<input type="number" class="w-16 q10-pct" min="0" max="100" placeholder="%"> %</div>
+      <div>共享運具補助：<input type="number" class="w-16 q10-pct" min="0" max="100" placeholder="%"> %</div>
+      <div>智慧交通系統：<input type="number" class="w-16 q10-pct" min="0" max="100" placeholder="%"> %</div>
+      <div>交通公平措施：<input type="number" class="w-16 q10-pct" min="0" max="100" placeholder="%"> %</div>
+    </div>
+  </div>
+  <textarea rows="5" id="q10-reason" placeholder="說明你的預算分配理由（100+ 字）...引用至少 1 筆數據支持你的決定。"></textarea>
+  <div id="feedback-10" class="mt-3 text-sm"></div>
+  <button id="btn-check-10" class="btn mt-3 bg-lime-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+  <button id="btn-next-10" class="btn mt-3 bg-lime-600 text-white px-5 py-2 rounded-lg font-bold text-sm hidden">下一關 &#x2192;</button>
+</section>
+
+<!-- ===== Level 11: 開放式反思 #2 + WSA（開放式反思 ① -B + WSA） ===== -->
+<section id="level-11" class="card p-6 hidden-screen fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F3C6;</div>
+    <div>
+      <h2 class="text-xl font-bold text-yellow-300">關卡 11｜開放式反思 + WSA 行動承諾</h2>
+      <p class="text-sm text-slate-400 mt-1">最後的反思與行動承諾。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：永續行動者 ｜ 10 分 <span class="chip bg-yellow-900/50 text-yellow-300">開放式反思 &#x2460; + WSA</span></p>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-3 mb-3">
+    <p class="text-sm mb-2"><strong>開放式反思 #2：</strong>如果自動駕駛技術在 2035 年全面普及，會讓交通更永續還是更不永續？請論述（100+ 字）。</p>
+    <textarea rows="5" id="q11-reflect" placeholder="分析自駕車全面普及對永續移動的正反影響..."></textarea>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-4">
+    <p class="text-sm font-bold text-yellow-300 mb-3">WSA 行動承諾——勾選你願意在未來一個月內實踐的行動：</p>
+    <div class="space-y-2">
+      <label class="flex items-start gap-2 text-sm"><input type="checkbox" class="mt-1 wsa-cb"> <span><strong>治理</strong>：參與或成立學生議會永續交通委員會，提出校園交通改善提案</span></label>
+      <label class="flex items-start gap-2 text-sm"><input type="checkbox" class="mt-1 wsa-cb"> <span><strong>課程</strong>：在其他學科（地理/公民/經濟/資訊）中主動連結交通與碳排議題</span></label>
+      <label class="flex items-start gap-2 text-sm"><input type="checkbox" class="mt-1 wsa-cb"> <span><strong>營運</strong>：志願參與校園通勤碳盤查的數據收集或分析</span></label>
+      <label class="flex items-start gap-2 text-sm"><input type="checkbox" class="mt-1 wsa-cb"> <span><strong>社群</strong>：本週起至少找一位同學嘗試共乘，或挑戰一週三天搭乘大眾運輸</span></label>
+    </div>
+  </div>
+  <div id="feedback-11" class="mt-3 text-sm"></div>
+  <button id="btn-check-11" class="btn mt-3 bg-yellow-600 text-white px-5 py-2 rounded-lg font-bold text-sm">送出答案</button>
+</section>
+
+<!-- Final -->
+<section id="final-screen" class="card p-8 hidden-screen fade-in mb-4 text-center">
+  <div class="text-5xl mb-4">&#x1F3C6;</div>
+  <h2 class="text-3xl font-bold text-yellow-300 mb-2">恭喜完成所有關卡！</h2>
+  <p class="text-slate-300 mb-4">你的最終積分：<span class="text-emerald-400 text-2xl font-bold" id="final-score">0</span> / 110</p>
+  <p class="text-sm text-slate-400">每一次出行選擇，都是一張氣候選票。<br>你今天，選擇投給什麼樣的未來？</p>
+</section>
+
+</div>
+
+<script>
+(function(){
+  let score = 0;
+  const totalLevels = 11;
+
+  function updateScore(pts){
+    score += pts;
+    document.getElementById('score').textContent = score;
+  }
+  function showConfetti(){
+    const colors = ['#818cf8','#34d399','#f59e0b','#f87171','#a78bfa'];
+    for(let i=0;i<30;i++){
+      const c = document.createElement('div');
+      c.className='confetti';
+      c.style.left = Math.random()*100+'vw';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.animationDelay = Math.random()*0.5+'s';
+      c.style.borderRadius = Math.random()>.5?'50%':'0';
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(),2500);
+    }
+  }
+  function unlockBadge(n){
+    const b = document.getElementById('badge-'+n);
+    if(b){b.classList.remove('badge-lock');b.classList.add('pop');}
+  }
+  function markDot(n,state){
+    const d = document.getElementById('dot-'+n);
+    if(!d) return;
+    d.classList.remove('active','done');
+    d.classList.add(state);
+  }
+  function showLevel(n){
+    for(let i=1;i<=totalLevels;i++){
+      const s=document.getElementById('level-'+i);
+      if(s){s.classList.toggle('hidden-screen',i!==n);if(i===n)s.classList.add('fade-in');}
+    }
+    if(n>totalLevels){
+      document.getElementById('final-screen').classList.remove('hidden-screen');
+      document.getElementById('final-score').textContent=score;
+      showConfetti();
+    }
+  }
+
+  /* Level 1 */
+  document.getElementById('btn-check-1').addEventListener('click',function(){
+    const inputs = document.querySelectorAll('.q1-input');
+    let correct=0;
+    inputs.forEach(inp=>{
+      const ans = inp.dataset.answer;
+      const val = inp.value.trim();
+      if(val===ans){correct++;inp.style.borderColor='#34d399';}
+      else{inp.style.borderColor='#f87171';inp.parentElement.parentElement.classList.add('shake');setTimeout(()=>inp.parentElement.parentElement.classList.remove('shake'),400);}
+    });
+    const fb=document.getElementById('feedback-1');
+    if(correct===4){
+      fb.innerHTML='<span class="text-emerald-400">&#x2705; 全部正確！交通排放結構是政策分析的基礎。</span>';
+      updateScore(10);unlockBadge(1);markDot(1,'done');markDot(2,'active');
+      this.classList.add('hidden');document.getElementById('btn-next-1').classList.remove('hidden');showConfetti();
+    } else {
+      fb.innerHTML='<span class="text-rose-400">&#x274C; '+correct+'/4 正確。請參考 dp1 數據重新檢查。提示：公路占比最大。</span>';
+    }
+  });
+  document.getElementById('btn-next-1').addEventListener('click',()=>showLevel(2));
+
+  /* Level 2 */
+  document.getElementById('btn-check-2').addEventListener('click',function(){
+    const inputs = document.querySelectorAll('.q2-input');
+    const textArea = document.querySelector('.q2-text');
+    let numCorrect=0;
+    inputs.forEach(inp=>{
+      const ans=parseFloat(inp.dataset.answer);
+      const val=parseFloat(inp.value);
+      if(Math.abs(val-ans)/ans<0.15){numCorrect++;inp.style.borderColor='#34d399';}
+      else{inp.style.borderColor='#f87171';inp.parentElement.classList.add('shake');setTimeout(()=>inp.parentElement.classList.remove('shake'),400);}
+    });
+    const textOk = textArea && textArea.value.trim().length>=50;
+    const fb=document.getElementById('feedback-2');
+    if(numCorrect>=2 && textOk){
+      fb.innerHTML='<span class="text-emerald-400">&#x2705; 出色的政策分析！數據計算和推論都很到位。</span>';
+      updateScore(10);unlockBadge(2);markDot(2,'done');markDot(3,'active');
+      this.classList.add('hidden');document.getElementById('btn-next-2').classList.remove('hidden');showConfetti();
+    } else {
+      let hint='';
+      if(numCorrect<2) hint+='計算題需至少 2 題正確（允許 15% 誤差）。';
+      if(!textOk) hint+='推論需至少 50 字。';
+      fb.innerHTML='<span class="text-rose-400">&#x274C; '+hint+'</span>';
+    }
+  });
+  document.getElementById('btn-next-2').addEventListener('click',()=>showLevel(3));
+
+  /* Level 3 */
+  document.getElementById('btn-check-3').addEventListener('click',function(){
+    const texts = document.querySelectorAll('.q3-text');
+    let allOk=true;
+    texts.forEach(t=>{if(t.value.trim().length<50){allOk=false;t.style.borderColor='#f87171';}else{t.style.borderColor='#34d399';}});
+    const fb=document.getElementById('feedback-3');
+    if(allOk){
+      fb.innerHTML='<span class="text-emerald-400">&#x2705; 優秀的數據詮釋！你已掌握航空碳排的多重面向。</span>';
+      updateScore(10);unlockBadge(3);markDot(3,'done');markDot(4,'active');
+      this.classList.add('hidden');document.getElementById('btn-next-3').classList.remove('hidden');showConfetti();
+    } else {
+      fb.innerHTML='<span class="text-rose-400">&#x274C; 每題至少需要 50 字的分析。請深入說明你的推論。</span>';
+    }
+  });
+  document.getElementById('btn-next-3').addEventListener('click',()=>showLevel(4));
+
+  /* Level 4 */
+  document.getElementById('btn-check-4').addEventListener('click',function(){
+    const numInput = document.querySelector('.q4-input');
+    const texts = document.querySelectorAll('.q4-text');
+    let ok=true;
+    const val=parseFloat(numInput.value);
+    if(Math.abs(val-7.4)<0.5){numInput.style.borderColor='#34d399';}else{numInput.style.borderColor='#f87171';ok=false;}
+    texts.forEach(t=>{
+      const minLen = t.placeholder.includes('80')? 80:50;
+      if(t.value.trim().length<minLen){t.style.borderColor='#f87171';ok=false;}else{t.style.borderColor='#34d399';}
+    });
+    const fb=document.getElementById('feedback-4');
+    if(ok){
+      fb.innerHTML='<span class="text-emerald-400">&#x2705; 情境分析完成！你已理解政策選擇如何決定排放命運。</span>';
+      updateScore(10);markDot(4,'done');markDot(5,'active');
+      this.classList.add('hidden');document.getElementById('btn-next-4').classList.remove('hidden');showConfetti();
+    } else {
+      fb.innerHTML='<span class="text-rose-400">&#x274C; 請檢查計算（8.9-1.5=?）並確保文字分析達到字數要求。</span>';
+    }
+  });
+  document.getElementById('btn-next-4').addEventListener('click',()=>showLevel(5));
+
+  /* Level 5 - CLD drag */
+  const dragItems = document.querySelectorAll('.drag-item');
+  const slots = document.querySelectorAll('.loop-slot');
+  let draggedEl = null;
+  dragItems.forEach(item=>{
+    item.addEventListener('dragstart',e=>{draggedEl=item;item.classList.add('dragging');e.dataTransfer.setData('text/plain',item.dataset.val);});
+    item.addEventListener('dragend',()=>{item.classList.remove('dragging');draggedEl=null;});
+  });
+  slots.forEach(slot=>{
+    slot.addEventListener('dragover',e=>{e.preventDefault();slot.classList.add('over');});
+    slot.addEventListener('dragleave',()=>slot.classList.remove('over'));
+    slot.addEventListener('drop',e=>{
+      e.preventDefault();slot.classList.remove('over');
+      const val=e.dataTransfer.getData('text/plain');
+      const txt=slot.querySelector('text');
+      if(txt)txt.textContent=val;
+      slot.dataset.filled=val;
+      if(draggedEl)draggedEl.style.opacity='0.3';
+    });
+  });
+  document.getElementById('btn-check-5').addEventListener('click',function(){
+    let correct=0;
+    slots.forEach(s=>{
+      if(s.dataset.filled===s.dataset.expect){correct++;s.setAttribute('stroke','#34d399');}
+      else{s.setAttribute('stroke','#f87171');}
+    });
+    const ext=document.getElementById('q5-extend').value.trim().length>=50;
+    const fb=document.getElementById('feedback-5');
+    if(correct===6 && ext){
+      fb.innerHTML='<span class="text-emerald-400">&#x2705; CLD 完美！系統思考讓你看見隱藏的反饋結構。</span>';
+      updateScore(10);unlockBadge(4);markDot(5,'done');markDot(6,'active');
+      this.classList.add('hidden');document.getElementById('btn-next-5').classList.remove('hidden');showConfetti();
+    } else {
+      let hint='';
+      if(correct<6)hint+=correct+'/6 個標籤正確。';
+      if(!ext)hint+='槓桿點分析至少 50 字。';
+      fb.innerHTML='<span class="text-rose-400">&#x274C; '+hint+'</span>';
+    }
+  });
+  document.getElementById('btn-next-5').addEventListener('click',()=>showLevel(6));
+
+  /* Level 6 */
+  document.getElementById('btn-check-6').addEventListener('click',function(){
+    const a=document.getElementById('q6-a').value.trim();
+    const b=document.getElementById('q6-b').value.trim();
+    const r=document.getElementById('q6-rebuttal').value.trim();
+    const fb=document.getElementById('feedback-6');
+    if(a.length>=100 && b.length>=100 && r.length>=80){
+      fb.innerHTML='<span class="text-emerald-400">&#x2705; 深刻的倫理辯論！你展現了多元觀點的思辨能力。</span>';
+      updateScore(10);unlockBadge(5);markDot(6,'done');markDot(7,'active');
+      this.classList.add('hidden');document.getElementById('btn-next-6').classList.remove('hidden');showConfetti();
+    } else {
+      let hint='';
+      if(a.length<100)hint+='立場 A 需 100+ 字（目前'+a.length+'字）。';
+      if(b.length<100)hint+='立場 B 需 100+ 字（目前'+b.length+'字）。';
+      if(r.length<80)hint+='反駁需 80+ 字（目前'+r.length+'字）。';
+      fb.innerHTML='<span class="text-rose-400">&#x274C; '+hint+'</span>';
+    }
+  });
+  document.getElementById('btn-next-6').addEventListener('click',()=>showLevel(7));
+
+  /* Level 7 */
+  document.getElementById('btn-check-7').addEventListener('click',function(){
+    const tables=document.querySelectorAll('.q7-table');
+    let filled=0;
+    tables.forEach(t=>{if(t.value.trim().length>0)filled++;});
+    const cer=document.getElementById('q7-cer').value.trim();
+    const fb=document.getElementById('feedback-7');
+    if(filled>=12 && cer.length>=150){
+      fb.innerHTML='<span class="text-emerald-400">&#x2705; 完整的利害關係人分析與 CER 論證！你是出色的政策倡議者。</span>';
+      updateScore(10);unlockBadge(6);markDot(7,'done');markDot(8,'active');
+      this.classList.add('hidden');document.getElementById('btn-next-7').classList.remove('hidden');showConfetti();
+    } else {
+      let hint='';
+      if(filled<12)hint+='利害關係人表格需填滿（目前'+filled+'/18 格）。';
+      if(cer.length<150)hint+='CER 論證需 150+ 字（目前'+cer.length+'字）。';
+      fb.innerHTML='<span class="text-rose-400">&#x274C; '+hint+'</span>';
+    }
+  });
+  document.getElementById('btn-next-7').addEventListener('click',()=>showLevel(8));
+
+  /* Level 8 */
+  const essayArea = document.getElementById('q8-essay');
+  const essayCount = document.getElementById('q8-count');
+  essayArea.addEventListener('input',()=>{essayCount.textContent=essayArea.value.trim().length;});
+  document.getElementById('btn-check-8').addEventListener('click',function(){
+    const len=essayArea.value.trim().length;
+    const fb=document.getElementById('feedback-8');
+    if(len>=500){
+      fb.innerHTML='<span class="text-emerald-400">&#x2705; 優秀的跨域整合論文！科技、經濟與公平三維度完整呈現。</span>';
+      updateScore(10);unlockBadge(7);markDot(8,'done');markDot(9,'active');
+      this.classList.add('hidden');document.getElementById('btn-next-8').classList.remove('hidden');showConfetti();
+    } else {
+      fb.innerHTML='<span class="text-rose-400">&#x274C; 論文需 500+ 字（目前 '+len+' 字）。請擴充分析。</span>';
+    }
+  });
+  document.getElementById('btn-next-8').addEventListener('click',()=>showLevel(9));
+
+  /* Level 9 */
+  const q9Texts = document.querySelectorAll('.q9-text');
+  const q9Count = document.getElementById('q9-count');
+  q9Texts.forEach(t=>t.addEventListener('input',()=>{
+    let total=0;q9Texts.forEach(x=>total+=x.value.trim().length);q9Count.textContent=total;
+  }));
+  document.getElementById('btn-check-9').addEventListener('click',function(){
+    let total=0;q9Texts.forEach(x=>total+=x.value.trim().length);
+    const fb=document.getElementById('feedback-9');
+    if(total>=100){
+      fb.innerHTML='<span class="text-emerald-400">&#x2705; 深度的後設認知反思！你已學會「思考你如何思考」。</span>';
+      updateScore(10);unlockBadge(8);markDot(9,'done');markDot(10,'active');
+      this.classList.add('hidden');document.getElementById('btn-next-9').classList.remove('hidden');showConfetti();
+    } else {
+      fb.innerHTML='<span class="text-rose-400">&#x274C; 三段合計需 100+ 字（目前 '+total+' 字）。</span>';
+    }
+  });
+  document.getElementById('btn-next-9').addEventListener('click',()=>showLevel(10));
+
+  /* Level 10 */
+  document.getElementById('btn-check-10').addEventListener('click',function(){
+    const pcts=document.querySelectorAll('.q10-pct');
+    let sum=0;pcts.forEach(p=>sum+=parseFloat(p.value)||0);
+    const reason=document.getElementById('q10-reason').value.trim();
+    const fb=document.getElementById('feedback-10');
+    if(Math.abs(sum-100)<1 && reason.length>=100){
+      fb.innerHTML='<span class="text-emerald-400">&#x2705; 精彩的預算分配方案！你的理由分析很有說服力。</span>';
+      updateScore(10);markDot(10,'done');markDot(11,'active');
+      this.classList.add('hidden');document.getElementById('btn-next-10').classList.remove('hidden');showConfetti();
+    } else {
+      let hint='';
+      if(Math.abs(sum-100)>=1)hint+='百分比總和需等於 100%（目前 '+sum+'%）。';
+      if(reason.length<100)hint+='理由需 100+ 字（目前 '+reason.length+' 字）。';
+      fb.innerHTML='<span class="text-rose-400">&#x274C; '+hint+'</span>';
+    }
+  });
+  document.getElementById('btn-next-10').addEventListener('click',()=>showLevel(11));
+
+  /* Level 11 */
+  document.getElementById('btn-check-11').addEventListener('click',function(){
+    const reflect=document.getElementById('q11-reflect').value.trim();
+    const cbs=document.querySelectorAll('.wsa-cb:checked');
+    const fb=document.getElementById('feedback-11');
+    if(reflect.length>=100 && cbs.length>=1){
+      fb.innerHTML='<span class="text-emerald-400">&#x2705; 你已完成所有關卡！永續移動，從你開始。</span>';
+      updateScore(10);unlockBadge(9);markDot(11,'done');
+      this.classList.add('hidden');
+      setTimeout(()=>{
+        document.getElementById('level-11').classList.add('hidden-screen');
+        document.getElementById('final-screen').classList.remove('hidden-screen');
+        document.getElementById('final-score').textContent=score;
+        showConfetti();
+      },800);
+    } else {
+      let hint='';
+      if(reflect.length<100)hint+='反思需 100+ 字（目前 '+reflect.length+' 字）。';
+      if(cbs.length<1)hint+='至少勾選 1 項 WSA 行動承諾。';
+      fb.innerHTML='<span class="text-rose-400">&#x274C; '+hint+'</span>';
+    }
+  });
+})();
+</script>
+</body>
+</html>

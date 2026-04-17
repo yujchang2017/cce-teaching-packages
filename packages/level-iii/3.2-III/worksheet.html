@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>氣候正義小英雄 — 3.2-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#fee2e2 0%,#fef3c7 40%,#dbeafe 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .feedback-pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,.25); }
+  .drag-item { cursor: grab; user-select: none; }
+  .drag-item.dragging { opacity: .4; }
+  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
+  .badge { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
+  .hidden-step { display: none; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-rose-500 via-amber-500 to-sky-600 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">⚖️ 氣候正義小英雄</h1>
+    <p class="mt-2 text-rose-50">UNESCO 3.2-III ｜ 9-12 歲 ｜ 看見被忽略的人，讓每個聲音都重要！</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 情境 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl">🦸</div>
+    <div>
+      <h2 class="text-2xl font-bold text-rose-700">任務簡報：成為『氣候正義小英雄』！</h2>
+      <p class="mt-2 leading-relaxed">哈囉！我是小記者「小正」，班上有同學家裡颱風時常淹水、也有同學家裡夏天開不起冷氣。全球還有 <strong class="text-rose-600">10 億</strong> 像你我一樣的小朋友住在氣候高風險國家，其中很多人一點碳都沒排，卻要承受最大的傷害。你的任務是通過 6 個關卡，解鎖「全校英雄」徽章，讓我們班成為最關心公平的班級！</p>
+      <button onclick="startMission()" class="mt-4 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 ⚖️</button>
+    </div>
+  </div>
+</section>
+
+<!-- 關卡 1：雙情境大偵察（選擇）-->
+<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-blue-700">🔍 關卡 1：同一場暴雨，不同的世界</h2>
+  <p class="mt-2 text-gray-600">阿明住市區公寓高樓層，阿卡住山區部落的鐵皮屋。今天颱風來了，你猜他們最不一樣的三件事是什麼？</p>
+  <div class="bg-sky-50 rounded p-3 mt-3 text-sm">💡 小知識：台灣原住民族約 <strong>59.5 萬人</strong>，占總人口 <strong>2.5%</strong>，多數居住山區與沿海，颱風豪雨最容易斷路斷電。</div>
+
+  <div class="grid md:grid-cols-2 gap-3 mt-4">
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50 text-left" data-ans="1">🚧 阿卡家聯外道路可能中斷，叫救護車要等很久</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50 text-left" data-ans="0">🎮 阿明家的 Wi-Fi 一定會壞掉</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50 text-left" data-ans="1">🏚️ 阿卡家的鐵皮屋可能被強風掀掉，阿明家鋼筋水泥比較穩</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50 text-left" data-ans="0">☕ 阿明家咖啡機用不了是最大困擾</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50 text-left" data-ans="1">💧 阿卡家停水、停電時間可能長達好幾天甚至更久</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50 text-left" data-ans="0">😴 阿明只是停課睡飽很開心</button>
+  </div>
+  <p class="text-xs text-gray-500 mt-3">（請選出 3 個有顯示脆弱性差異的選項）</p>
+  <div id="q1-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 2：排放翹翹板（拖曳）-->
+<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-amber-700">⚖️ 關卡 2：排放翹翹板 — 誰排最多？誰受最害？</h2>
+  <p class="mt-2 text-gray-600">Oxfam 2023 年報告：全球最富有的 <strong>1%</strong> 的碳排放，相當於最貧窮的 <strong>66%</strong>（約 50 億人）加總。把這些「人／行為」拖到他們「主要產生」還是「主要承受」的欄位：</p>
+
+  <div class="flex flex-wrap gap-3 mt-4" id="emitPool">
+    <div class="drag-item bg-rose-100 px-4 py-2 rounded-full shadow" draggable="true" data-side="emit">✈️ 常搭私人飛機的富豪</div>
+    <div class="drag-item bg-rose-100 px-4 py-2 rounded-full shadow" draggable="true" data-side="emit">🏭 大型石化與燃煤工廠</div>
+    <div class="drag-item bg-rose-100 px-4 py-2 rounded-full shadow" draggable="true" data-side="emit">🚙 愛開大型休旅車的高所得族群</div>
+    <div class="drag-item bg-sky-100 px-4 py-2 rounded-full shadow" draggable="true" data-side="suffer">👧 走 2 小時取水的非洲女童</div>
+    <div class="drag-item bg-sky-100 px-4 py-2 rounded-full shadow" draggable="true" data-side="suffer">👵 開不起冷氣的獨居長者</div>
+    <div class="drag-item bg-sky-100 px-4 py-2 rounded-full shadow" draggable="true" data-side="suffer">🏝️ 吐瓦魯小島的居民</div>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-4 mt-5">
+    <div class="drop-zone border-2 border-dashed border-rose-300 rounded-xl p-4 min-h-[120px] bg-rose-50" data-side="emit">
+      <h3 class="font-bold text-rose-700">🔥 主要「產生」排放的人</h3>
+      <div class="drop-content mt-2 flex flex-wrap gap-2"></div>
+    </div>
+    <div class="drop-zone border-2 border-dashed border-sky-300 rounded-xl p-4 min-h-[120px] bg-sky-50" data-side="suffer">
+      <h3 class="font-bold text-sky-700">💧 主要「承受」傷害的人</h3>
+      <div class="drop-content mt-2 flex flex-wrap gap-2"></div>
+    </div>
+  </div>
+  <button onclick="checkLevel2()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-6 rounded-full">檢查答案</button>
+  <div id="q2-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 3：誰在決策桌（多題組選擇）-->
+<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-purple-700">🪑 關卡 3：誰應該坐在決策桌？</h2>
+  <p class="mt-2 text-gray-600">下列三種氣候相關決策，誰的聲音最常被忽略？請選出「應該優先邀請」的人：</p>
+
+  <div class="q3 p-4 bg-purple-50 rounded-xl mt-3" data-ans="A">
+    <p class="font-semibold">Q1. 政府要決定「山區土石流警戒標準」時，最該問：</p>
+    <div class="grid md:grid-cols-3 gap-2 mt-2">
+      <button class="q3-opt p-2 border rounded hover:bg-purple-100 text-sm" data-v="A">長期住在該山區的原住民族部落</button>
+      <button class="q3-opt p-2 border rounded hover:bg-purple-100 text-sm" data-v="B">偶爾上山拍照的觀光客</button>
+      <button class="q3-opt p-2 border rounded hover:bg-purple-100 text-sm" data-v="C">住在都市很遠的教授</button>
+    </div>
+  </div>
+
+  <div class="q3 p-4 bg-purple-50 rounded-xl mt-3" data-ans="B">
+    <p class="font-semibold">Q2. 學校要決定「夏天冷氣使用規則」時，最不能漏掉：</p>
+    <div class="grid md:grid-cols-3 gap-2 mt-2">
+      <button class="q3-opt p-2 border rounded hover:bg-purple-100 text-sm" data-v="A">最會念書的資優生</button>
+      <button class="q3-opt p-2 border rounded hover:bg-purple-100 text-sm" data-v="B">家裡沒冷氣 / 有過敏 / 體溫敏感的同學</button>
+      <button class="q3-opt p-2 border rounded hover:bg-purple-100 text-sm" data-v="C">校長的祕書</button>
+    </div>
+  </div>
+
+  <div class="q3 p-4 bg-purple-50 rounded-xl mt-3" data-ans="C">
+    <p class="font-semibold">Q3. 聯合國氣候會議 COP 要討論小島國家存亡，最關鍵的聲音是：</p>
+    <div class="grid md:grid-cols-3 gap-2 mt-2">
+      <button class="q3-opt p-2 border rounded hover:bg-purple-100 text-sm" data-v="A">大型石油公司</button>
+      <button class="q3-opt p-2 border rounded hover:bg-purple-100 text-sm" data-v="B">主辦國領袖</button>
+      <button class="q3-opt p-2 border rounded hover:bg-purple-100 text-sm" data-v="C">吐瓦魯、馬爾地夫等小島居民代表</button>
+    </div>
+  </div>
+  <div id="q3-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 4：原住民智慧寶藏（連連看/配對）-->
+<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-emerald-700">🌿 關卡 4：原住民族的生態智慧寶藏</h2>
+  <p class="mt-2 text-gray-600">原住民族只占全球人口 <strong>6%</strong>，卻守護了地球 <strong>80%</strong> 的生物多樣性（IPCC AR6）。破除「原民生活落後」的迷思吧！連到正確的智慧：</p>
+
+  <div class="mt-4 space-y-3">
+    <div class="q4 p-3 bg-emerald-50 rounded-xl" data-ans="A" data-hint="布農族依山勢與物候決定何時伐檜，不砍母樹幼樹——這就是永續林業。">
+      <p class="font-semibold">Q1. 布農族「砍檜木的智慧」意思是：</p>
+      <div class="grid md:grid-cols-3 gap-2 mt-2">
+        <button class="q4-opt p-2 border rounded hover:bg-emerald-100 text-sm" data-v="A">依節氣挑選老樹、留下母樹與幼樹</button>
+        <button class="q4-opt p-2 border rounded hover:bg-emerald-100 text-sm" data-v="B">砍越多越好</button>
+        <button class="q4-opt p-2 border rounded hover:bg-emerald-100 text-sm" data-v="C">只看錢決定</button>
+      </div>
+    </div>
+    <div class="q4 p-3 bg-emerald-50 rounded-xl" data-ans="B" data-hint="達悟族（雅美族）的飛魚季分為招魚祭、漁撈期、終食祭，以儀式規範捕撈量，是最早的漁業配額制度。">
+      <p class="font-semibold">Q2. 達悟族的「飛魚季」智慧是：</p>
+      <div class="grid md:grid-cols-3 gap-2 mt-2">
+        <button class="q4-opt p-2 border rounded hover:bg-emerald-100 text-sm" data-v="A">一年四季都抓</button>
+        <button class="q4-opt p-2 border rounded hover:bg-emerald-100 text-sm" data-v="B">用祭典規範不同時期的捕撈量，給魚群繁殖時間</button>
+        <button class="q4-opt p-2 border rounded hover:bg-emerald-100 text-sm" data-v="C">專門賣給遊客</button>
+      </div>
+    </div>
+    <div class="q4 p-3 bg-emerald-50 rounded-xl" data-ans="C" data-hint="傳統山田輪作（休耕）讓土地恢復地力，對土壤保育與碳封存有益。">
+      <p class="font-semibold">Q3. 泰雅族「讓田休息」的傳統是：</p>
+      <div class="grid md:grid-cols-3 gap-2 mt-2">
+        <button class="q4-opt p-2 border rounded hover:bg-emerald-100 text-sm" data-v="A">偷懶</button>
+        <button class="q4-opt p-2 border rounded hover:bg-emerald-100 text-sm" data-v="B">迷信</button>
+        <button class="q4-opt p-2 border rounded hover:bg-emerald-100 text-sm" data-v="C">輪作休耕讓土地恢復、符合現代永續農業概念</button>
+      </div>
+    </div>
+  </div>
+  <div id="q4-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 5：公平行動英雄（情境選擇+後果）-->
+<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-rose-700">🎯 關卡 5：熱浪來了！你的選擇？</h2>
+  <p class="mt-2 text-gray-600">情境：台灣 37°C 熱浪警報連發一週。WHO 估 <strong>每年 25 萬</strong> 氣候額外死亡，長者與低收是最高風險。你和班上同學可以做什麼？</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-4">
+    <button class="choice p-4 border-2 border-rose-200 rounded-xl hover:bg-rose-50 text-left" data-c="A">A. 躲在自家冷氣房，反正不關自己事</button>
+    <button class="choice p-4 border-2 border-rose-200 rounded-xl hover:bg-rose-50 text-left" data-c="B">B. 發 IG 抱怨天氣好熱</button>
+    <button class="choice p-4 border-2 border-rose-200 rounded-xl hover:bg-rose-50 text-left" data-c="C">C. 和同學一起做「熱浪預警小卡」，送給社區獨居長輩並留下里長電話</button>
+    <button class="choice p-4 border-2 border-rose-200 rounded-xl hover:bg-rose-50 text-left" data-c="D">D. 只關心自己班上同學，鄰居與社區不管</button>
+  </div>
+  <div id="q5-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 6：WSA 全校行動 (4 checkbox) -->
+<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-indigo-700">🏫 關卡 6：全校行動挑戰 — Whole School Approach</h2>
+  <p class="mt-2 text-gray-600">要真正推動氣候正義，需要「課程、校園、社區、學生」四面向一起動。勾出你願意參與的全部 4 項：</p>
+  <div class="space-y-3 mt-4">
+    <label class="flex items-start gap-3 p-3 bg-indigo-50 rounded-xl cursor-pointer">
+      <input type="checkbox" class="wsa mt-1 w-5 h-5" data-area="curriculum">
+      <span><strong class="text-indigo-700">📚 課程整合</strong>：和班上同學一起訪問家裡是原住民、新住民、身心障礙的同學，寫成「公平的故事」在班上分享（社會/語文跨領域）。</span>
+    </label>
+    <label class="flex items-start gap-3 p-3 bg-indigo-50 rounded-xl cursor-pointer">
+      <input type="checkbox" class="wsa mt-1 w-5 h-5" data-area="operations">
+      <span><strong class="text-indigo-700">🏫 校園營運</strong>：檢查校園的無障礙設施、飲水機、遮蔭樹，把不友善的地方寫成建議書交給校長。</span>
+    </label>
+    <label class="flex items-start gap-3 p-3 bg-indigo-50 rounded-xl cursor-pointer">
+      <input type="checkbox" class="wsa mt-1 w-5 h-5" data-area="community">
+      <span><strong class="text-indigo-700">🤝 社區連結</strong>：與社區里長合作，高年級製作熱浪預警小卡送給獨居長者（對應 dp4、dp7）。</span>
+    </label>
+    <label class="flex items-start gap-3 p-3 bg-indigo-50 rounded-xl cursor-pointer">
+      <input type="checkbox" class="wsa mt-1 w-5 h-5" data-area="agency">
+      <span><strong class="text-indigo-700">🗣️ 學生治理</strong>：擔任「氣候正義小隊長」，每月提出一個讓班上更公平的建議（例如：班級冷氣共享、颱風後關心沒來的同學）。</span>
+    </label>
+  </div>
+  <button onclick="checkWSA()" class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full">解鎖全校英雄徽章</button>
+  <div id="wsa-feedback" class="mt-4"></div>
+</section>
+
+<!-- 成果頁 -->
+<section id="result" class="hidden-step card bg-gradient-to-br from-amber-100 via-rose-100 to-sky-100 rounded-2xl shadow-xl p-8 text-center mb-6">
+  <div class="text-7xl mb-3 badge inline-block rounded-full bg-white p-6">🏆</div>
+  <h2 class="text-3xl font-extrabold text-amber-800">全校英雄 徽章解鎖！</h2>
+  <p class="mt-3 text-lg">你已認識 <strong>10 億</strong> 氣候高風險兒童、<strong>33–36 億</strong> 高脆弱人口、氣候難民 <strong>3,260 萬</strong>、最富 <strong>1%</strong> 碳排等於最貧 <strong>66%</strong>、以及台灣原住民 <strong>59.5 萬</strong>、莫拉克風災 <strong>699</strong> 位罹難者，並承諾用行動守護最容易被忽略的人！</p>
+
+  <div class="bg-white rounded-xl p-5 mt-5 text-left">
+    <h3 class="font-bold text-rose-700 text-xl mb-2">🌱 三個延伸思考（帶回家想想）</h3>
+    <ol class="list-decimal ml-6 space-y-2">
+      <li>如果你家社區要蓋資源回收場或垃圾焚化爐，你覺得它會蓋在哪裡？為什麼常常蓋在貧窮或原住民社區附近？寫下你的觀察與你認為更公平的做法。</li>
+      <li>想一位你認識的人（同學、鄰居、家人），他因為身分、收入、年紀、或身體狀況，可能比別人更容易受到氣候衝擊。你這週可以為他做一件小事嗎？</li>
+      <li>十年後你想從事什麼職業？那份工作可以怎麼推動氣候正義？（提示：每個職業都可以！醫師、建築師、記者、老師、YouTuber、工程師、農夫…）</li>
+    </ol>
+  </div>
+
+  <button onclick="window.print()" class="mt-5 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-6 rounded-full">🖨️ 列印成果頁</button>
+  <button onclick="location.reload()" class="mt-5 ml-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full">🔄 重新挑戰</button>
+</section>
+
+<footer class="text-center text-xs text-gray-500 pb-6">
+  資料來源：UNICEF、IPCC AR6、UN Women、WHO、Oxfam、原住民族委員會、NCDR、IDMC、World Bank。教學套件 UNESCO 3.2-III ｜ 驗證日 2026-04-16
+</footer>
+
+</main>
+
+<script>
+let currentStep = 0;
+const steps = ['intro','level1','level2','level3','level4','level5','level6','result'];
+
+function showStep(i){
+  steps.forEach((s,idx)=>{
+    const el = document.getElementById(s);
+    if(!el) return;
+    if(idx===i) el.classList.remove('hidden-step');
+    else el.classList.add('hidden-step');
+  });
+  for(let k=1;k<=6;k++){
+    const d=document.getElementById('dot'+k);
+    d.classList.remove('done','active');
+    if(k < i) d.classList.add('done');
+    else if(k === i) d.classList.add('active');
+  }
+  const pt = document.getElementById('progressText');
+  if(i>=1 && i<=6) pt.textContent = `第 ${i} / 6 關`;
+  else if(i===7) pt.textContent = '完成！';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startMission(){ currentStep=1; showStep(1); }
+
+// Level 1 — multi-correct: need ≥3 correct picks
+let q1Picks=0, q1Correct=0, q1Total=3;
+document.querySelectorAll('.q1-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(btn.dataset.picked) return;
+    btn.dataset.picked='1';
+    q1Picks++;
+    if(btn.dataset.ans==='1'){
+      btn.classList.add('bg-green-200','border-green-500');
+      q1Correct++;
+    } else {
+      btn.classList.add('bg-rose-200','border-rose-500','shake');
+    }
+    const fb = document.getElementById('q1-feedback');
+    if(q1Correct>=q1Total){
+      fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌟 答對了！同一場暴雨，住山區部落的阿卡面對的風險比市區公寓的阿明高很多。這就是「脆弱性」的差異。</div>';
+      confetti();
+      setTimeout(()=>{currentStep=2;showStep(2);},1600);
+    } else if(q1Picks>=4 && q1Correct<q1Total){
+      fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再想想：請聚焦在「誰的生命、健康、基本生活更受威脅」。你答對 ${q1Correct}/${q1Total}。</div>`;
+    }
+  });
+});
+
+// Level 2 — drag & drop
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{
+    e.preventDefault(); z.classList.remove('over');
+    if(dragged){ z.querySelector('.drop-content').appendChild(dragged); }
+  });
+});
+function checkLevel2(){
+  const zones = document.querySelectorAll('.drop-zone');
+  let correct=0, total=6;
+  zones.forEach(z=>{
+    const side = z.dataset.side;
+    z.querySelectorAll('.drop-content .drag-item').forEach(it=>{
+      if(it.dataset.side===side) correct++;
+    });
+  });
+  const fb = document.getElementById('q2-feedback');
+  if(correct===total){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">⚖️ 全部正確！排放與受害的不對等就是氣候不正義的核心。最富 1% 的排放 ≈ 最貧 66%，但 80% 的流離失所者是女性。</div>';
+    confetti();
+    setTimeout(()=>{currentStep=3;showStep(3);},1600);
+  } else {
+    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 你答對 ${correct}/${total}。提示：常搭私人飛機、大工廠、愛開大車的族群產生較多排放；女童、獨居長者、小島居民承受較多傷害。</div>`;
+  }
+}
+
+// Level 3
+let q3Correct=0, q3Total=3;
+document.querySelectorAll('.q3-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q3');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      q3Correct++;
+    } else {
+      btn.classList.add('bg-red-300','text-white','shake');
+      const correctBtn = parent.querySelector(`.q3-opt[data-v="${ans}"]`);
+      if(correctBtn) correctBtn.classList.add('bg-green-400','text-white');
+    }
+    parent.dataset.answered='1';
+    checkQ3Done();
+  });
+});
+function checkQ3Done(){
+  const answered = document.querySelectorAll('.q3[data-answered="1"]').length;
+  if(answered===q3Total){
+    document.getElementById('q3-feedback').innerHTML =
+      `<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🪑 你答對 ${q3Correct}/${q3Total}！記住氣候正義第一條：讓最受影響的人坐在決策桌上。</div>`;
+    confetti();
+    setTimeout(()=>{currentStep=4;showStep(4);},1600);
+  }
+}
+
+// Level 4
+let q4Done=0;
+document.querySelectorAll('.q4-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q4');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    const hint = parent.dataset.hint;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-green-700 text-sm">✅ 正確！${hint}</p>`);
+    } else {
+      btn.classList.add('bg-red-300','shake');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-rose-700 text-sm">💡 再想想：${hint}</p>`);
+    }
+    parent.dataset.answered='1';
+    q4Done++;
+    if(q4Done===3){
+      document.getElementById('q4-feedback').innerHTML='<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌿 智慧寶藏解鎖！原住民占全球 6% 人口，卻守護 80% 生物多樣性。</div>';
+      confetti();
+      setTimeout(()=>{currentStep=5;showStep(5);},1600);
+    }
+  });
+});
+
+// Level 5
+const choiceFeedback = {
+  A: { tone:'warn', text:'⚠️ 氣候正義要求「看見被忽略的人」。只顧自己會讓隔壁的阿嬤更脆弱。' },
+  B: { tone:'ok', text:'💬 抱怨可以表達感受，但不會改變社區的結構性脆弱。可以更進一步做些什麼？' },
+  C: { tone:'best', text:'🌟 最佳答案！行動 + 資訊 + 連結里長，正是氣候正義三個關鍵：關懷、問責、參與。' },
+  D: { tone:'warn', text:'😢 氣候正義的核心是擴大同理心。別忘了，社區裡的每個人都和你有關。' }
+};
+document.querySelectorAll('.choice').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(document.getElementById('level5').dataset.answered) return;
+    document.getElementById('level5').dataset.answered='1';
+    const c = choiceFeedback[btn.dataset.c];
+    const color = c.tone==='best'?'green':(c.tone==='ok'?'blue':'yellow');
+    btn.classList.add('bg-'+color+'-100','border-'+color+'-500');
+    document.getElementById('q5-feedback').innerHTML =
+      `<div class="feedback-pop bg-${color}-100 border-l-4 border-${color}-500 p-3 rounded">${c.text}</div>`;
+    if(c.tone==='best') confetti();
+    setTimeout(()=>{currentStep=6;showStep(6);},2300);
+  });
+});
+
+// Level 6 — WSA
+function checkWSA(){
+  const boxes = document.querySelectorAll('.wsa');
+  const all = Array.from(boxes).every(b=>b.checked);
+  const fb = document.getElementById('wsa-feedback');
+  if(all){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-4 rounded text-lg">🏅 四面向全勾選！你就是我們班的全校英雄！氣候正義，每個人都重要。</div>';
+    confetti(60);
+    setTimeout(()=>{currentStep=7;showStep(7);},1800);
+  } else {
+    const cnt = Array.from(boxes).filter(b=>b.checked).length;
+    fb.innerHTML = `<div class="feedback-pop bg-amber-100 border-l-4 border-amber-500 p-3 rounded">你選了 ${cnt}/4 個面向。氣候正義需要「課程、校園、社區、學生」四面向一起行動。再想想你可以怎麼參與剩下的面向？</div>`;
+  }
+}
+
+function confetti(n=30){
+  const colors=['#f87171','#fbbf24','#34d399','#60a5fa','#a78bfa'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.top='-20px';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*0.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+</script>
+</body>
+</html>

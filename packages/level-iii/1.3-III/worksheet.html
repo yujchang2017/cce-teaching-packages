@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>碳循環大冒險 — 碳守護者之旅</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:-apple-system,"Noto Sans TC",system-ui,sans-serif;background:linear-gradient(135deg,#d1fae5 0%,#bfdbfe 100%);min-height:100vh}
+  .card{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px)}
+  .confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:9999}
+  @keyframes fall{to{transform:translateY(100vh) rotate(720deg);opacity:0}}
+  .badge{display:inline-block;animation:pop .6s ease}
+  @keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+  .progress-bar{transition:width .6s ease}
+  .stage{display:none}
+  .stage.active{display:block;animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  button.opt{transition:all .15s}
+  button.opt:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,.12)}
+  .correct-flash{animation:flashG .6s}
+  .wrong-flash{animation:flashR .5s}
+  @keyframes flashG{0%{background:#bbf7d0}100%{background:inherit}}
+  @keyframes flashR{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+</style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-3xl mx-auto">
+  <!-- 封面 -->
+  <header class="card rounded-3xl shadow-xl p-6 mb-6">
+    <h1 class="text-2xl md:text-3xl font-bold text-emerald-800 mb-2">碳守護者之旅</h1>
+    <p class="text-slate-700">主題：碳循環 · 1.3-III · 國小 9-12 歲</p>
+    <p class="text-sm text-slate-500 mt-1">驗證日期 2026-04-16</p>
+    <!-- 進度條 -->
+    <div class="mt-4">
+      <div class="flex justify-between text-xs text-slate-600 mb-1">
+        <span>冒險進度</span><span id="progressText">0 / 6</span>
+      </div>
+      <div class="w-full bg-slate-200 rounded-full h-3"><div id="progressBar" class="progress-bar bg-emerald-500 h-3 rounded-full" style="width:0%"></div></div>
+    </div>
+    <div class="mt-3 flex justify-between text-sm">
+      <span>🌱 分數：<b id="score">0</b></span>
+      <span>🏅 徽章：<span id="badgeList">尚未取得</span></span>
+    </div>
+  </header>
+
+  <!-- 角色情境 -->
+  <section class="card rounded-3xl shadow p-6 mb-6">
+    <h2 class="text-xl font-bold text-emerald-700 mb-2">你的任務</h2>
+    <p>你是新上任的「碳循環小偵探小綠」🕵️，地球的碳平衡出了問題——CO2 越來越多！你要走過 6 個關卡，蒐集數據、幫助樹木、制定行動計畫，最後帶領全校成為「碳守護者聯盟」。出發吧！</p>
+  </section>
+
+  <!-- Stage 1: ppm 積木題 -->
+  <section class="stage active card rounded-3xl shadow p-6 mb-6" id="stage1">
+    <h3 class="text-lg font-bold text-emerald-700">關卡 1：數字偵探</h3>
+    <p class="mt-2">2026 年 2 月，NOAA 在夏威夷 Mauna Loa 測到大氣 CO2 濃度創新高。你覺得是多少 ppm？</p>
+    <p class="text-xs text-slate-500 mt-1">來源：NOAA Trends in CO2</p>
+    <div class="grid grid-cols-2 gap-3 mt-4">
+      <button class="opt bg-sky-100 py-3 rounded-xl" onclick="ans1(this,280)">280 ppm</button>
+      <button class="opt bg-sky-100 py-3 rounded-xl" onclick="ans1(this,350)">350 ppm</button>
+      <button class="opt bg-sky-100 py-3 rounded-xl" onclick="ans1(this,429)">429 ppm</button>
+      <button class="opt bg-sky-100 py-3 rounded-xl" onclick="ans1(this,600)">600 ppm</button>
+    </div>
+    <p id="fb1" class="mt-3 text-sm"></p>
+  </section>
+
+  <!-- Stage 2: 碳停留時間拖拉（簡化為排序點擊） -->
+  <section class="stage card rounded-3xl shadow p-6 mb-6" id="stage2">
+    <h3 class="text-lg font-bold text-emerald-700">關卡 2：誰住最久？</h3>
+    <p class="mt-2">請依「碳停留時間由短到長」依序點選以下 4 個碳庫：</p>
+    <div class="flex flex-wrap gap-2 mt-3" id="stage2Box">
+      <button class="opt bg-amber-100 py-2 px-4 rounded-xl" data-rank="1" onclick="ans2(this,1)">大氣（幾年）</button>
+      <button class="opt bg-amber-100 py-2 px-4 rounded-xl" data-rank="3" onclick="ans2(this,3)">海洋（千年）</button>
+      <button class="opt bg-amber-100 py-2 px-4 rounded-xl" data-rank="2" onclick="ans2(this,2)">樹木（幾十年）</button>
+      <button class="opt bg-amber-100 py-2 px-4 rounded-xl" data-rank="4" onclick="ans2(this,4)">石灰岩（上億年）</button>
+    </div>
+    <p id="fb2" class="mt-3 text-sm">點選順序：<span id="s2order"></span></p>
+  </section>
+
+  <!-- Stage 3: 碳收支天平（互動填答） -->
+  <section class="stage card rounded-3xl shadow p-6 mb-6" id="stage3">
+    <h3 class="text-lg font-bold text-emerald-700">關卡 3：碳收支天平</h3>
+    <p class="mt-2">人類每年排放 70 億噸碳。海洋吸 20 億、森林吸 5 億。請問「每年留在大氣中」約多少億噸？</p>
+    <p class="text-xs text-slate-500 mt-1">來源：教育部 CCE 教材《林農畜漁業生產與生物多樣性》</p>
+    <input id="inp3" type="number" placeholder="輸入數字" class="mt-3 border-2 border-emerald-300 rounded-lg px-3 py-2 w-40">
+    <button onclick="ans3()" class="ml-2 bg-emerald-500 text-white py-2 px-4 rounded-xl">送出</button>
+    <p id="fb3" class="mt-3 text-sm"></p>
+  </section>
+
+  <!-- Stage 4: 迷思拆解 -->
+  <section class="stage card rounded-3xl shadow p-6 mb-6" id="stage4">
+    <h3 class="text-lg font-bold text-emerald-700">關卡 4：拆解迷思</h3>
+    <p class="mt-2">小明說：「只要多種樹，我們就可以一直用化石燃料沒關係！」你同意嗎？</p>
+    <div class="grid grid-cols-1 gap-3 mt-4">
+      <button class="opt bg-rose-100 py-3 rounded-xl text-left px-4" onclick="ans4(this,false)">✅ 對啊！種樹可以抵銷全部 CO2。</button>
+      <button class="opt bg-rose-100 py-3 rounded-xl text-left px-4" onclick="ans4(this,true)">❌ 不對。森林每年只能吸 5 億噸，人類排 70 億噸，差太多。</button>
+    </div>
+    <p id="fb4" class="mt-3 text-sm"></p>
+  </section>
+
+  <!-- Stage 5: 光合作用比例題（滑桿） -->
+  <section class="stage card rounded-3xl shadow p-6 mb-6" id="stage5">
+    <h3 class="text-lg font-bold text-emerald-700">關卡 5：樹木的魔法</h3>
+    <p class="mt-2">樹木每長 1 噸木材，約吸幾噸 CO2？拉動滑桿選出最接近的值：</p>
+    <input type="range" min="0.2" max="3" step="0.1" value="1" id="rng5" oninput="document.getElementById('rng5v').textContent=this.value" class="w-full mt-4">
+    <p class="text-center text-lg">目前：<b id="rng5v">1</b> 噸 CO2</p>
+    <button onclick="ans5()" class="bg-emerald-500 text-white py-2 px-4 rounded-xl mt-2">送出</button>
+    <p id="fb5" class="mt-3 text-sm"></p>
+  </section>
+
+  <!-- Stage 6: WSA Challenge -->
+  <section class="stage card rounded-3xl shadow p-6 mb-6" id="stage6">
+    <h3 class="text-lg font-bold text-emerald-700">關卡 6：全校 WSA 行動挑戰</h3>
+    <p class="mt-2">全勾起這 4 項 WSA 行動，你就能帶全校成為「碳守護者聯盟」！</p>
+    <div class="mt-3 space-y-2">
+      <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1" onchange="checkWSA()"><span>📚 <b>課程</b>：和同學一起把「一棵樹的碳故事」做成海報，貼在教室後牆。</span></label>
+      <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1" onchange="checkWSA()"><span>🏫 <b>校園營運</b>：參加「校園樹木普查」，計算我們校園每年可吸多少 CO2。</span></label>
+      <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1" onchange="checkWSA()"><span>🤝 <b>社區連結</b>：去在地紅樹林／公園當一次志工，拍照紀錄。</span></label>
+      <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1" onchange="checkWSA()"><span>🎯 <b>學生領導</b>：加入「碳循環小隊」，每月出 1 期校園碳新聞牆。</span></label>
+    </div>
+    <p id="fb6" class="mt-3 text-sm"></p>
+  </section>
+
+  <!-- Summary -->
+  <section class="stage card rounded-3xl shadow p-6 mb-6" id="stageEnd">
+    <h3 class="text-2xl font-bold text-emerald-700">🎉 你完成了碳守護者之旅！</h3>
+    <p class="mt-2">最終分數：<b id="finalScore"></b> ／ 徽章：<span id="finalBadges"></span></p>
+
+    <h4 class="font-bold mt-5 text-emerald-700">成果總結</h4>
+    <ul class="list-disc pl-6 mt-2 text-slate-700 space-y-1">
+      <li>你知道 2026 年大氣 CO2 已達 <b>429 ppm</b>（NOAA），比工業革命前的 280 ppm 多了 50%。</li>
+      <li>你學會排列碳庫停留時間：大氣＜樹木＜海洋＜石灰岩。</li>
+      <li>你算出每年約 <b>45 億噸</b>碳留在大氣中，才是暖化的關鍵。</li>
+      <li>你拆穿了「種樹就好」迷思，並了解樹木是 1 噸木頭吸 <b>1.6 噸 CO2</b>（教育部 CCE 教材）。</li>
+      <li>你承諾執行 WSA 四面向校園行動，成為全校英雄！</li>
+    </ul>
+
+    <h4 class="font-bold mt-6 text-emerald-700">帶回家的 3 個延伸思考</h4>
+    <ol class="list-decimal pl-6 mt-2 text-slate-700 space-y-1">
+      <li>如果全世界的森林都消失了，碳循環會怎樣？</li>
+      <li>海洋是最大碳匯，為什麼吸收太多 CO2 反而會傷害海洋？（提示：海水酸化）</li>
+      <li>你能說服家人少開一天車嗎？你打算怎麼做？</li>
+    </ol>
+
+    <div class="mt-6 text-center">
+      <div class="text-5xl">🏅</div>
+      <div class="font-bold text-emerald-800 badge">全校碳守護者英雄徽章</div>
+      <button onclick="restart()" class="mt-4 bg-emerald-500 text-white py-2 px-6 rounded-xl">再挑戰一次</button>
+    </div>
+  </section>
+
+  <footer class="text-center text-xs text-slate-500 my-6">UNESCO CCE 1.3-III · 國小 9-12 歲 · 資料來源：NOAA、NASA、TCCIP、教育部 CCE 教材 · 驗證 2026-04-16</footer>
+</div>
+
+<script>
+let score=0,stepsDone=0,total=6,badges=[],s2seq=[];
+function showStage(id){document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+function updateProgress(){const pct=Math.min(100,Math.round(stepsDone/total*100));document.getElementById('progressBar').style.width=pct+'%';document.getElementById('progressText').textContent=stepsDone+' / '+total;document.getElementById('score').textContent=score;document.getElementById('badgeList').textContent=badges.length?badges.join(' '):'尚未取得'}
+function confetti(){for(let i=0;i<60;i++){const d=document.createElement('div');d.className='confetti';d.style.background=['#f59e0b','#10b981','#3b82f6','#ec4899'][i%4];d.style.left=Math.random()*100+'%';d.style.top='-10px';d.style.animation='fall '+(1+Math.random())+'s linear forwards';document.body.appendChild(d);setTimeout(()=>d.remove(),2500)}}
+function cheer(el){el.classList.add('correct-flash');setTimeout(()=>el.classList.remove('correct-flash'),600)}
+function shake(el){el.classList.add('wrong-flash');setTimeout(()=>el.classList.remove('wrong-flash'),500)}
+function award(name){badges.push(name)}
+
+function ans1(btn,v){const fb=document.getElementById('fb1');if(v===429){score+=15;stepsDone++;award('🔬');cheer(btn);confetti();fb.innerHTML='✨ 太棒了！429 ppm 是 2026 年 2 月 NOAA Mauna Loa 的觀測值，創歷史新高。';setTimeout(()=>{showStage('stage2');updateProgress()},1200)}else{shake(btn);fb.textContent='再想想：提示——現在大氣 CO2 已經比工業革命前（280 ppm）多了超過 50%。'}updateProgress()}
+
+function ans2(btn,rank){if(btn.disabled)return;btn.disabled=true;btn.classList.add('opacity-40');s2seq.push(rank);document.getElementById('s2order').textContent=s2seq.join(' → ');if(s2seq.length===4){const ok=JSON.stringify(s2seq)===JSON.stringify([1,2,3,4]);const fb=document.getElementById('fb2');if(ok){score+=15;stepsDone++;award('⏳');confetti();fb.innerHTML='⭐ 完美！碳停留時間：大氣(幾年) → 樹木(幾十年) → 海洋(千年) → 石灰岩(上億年)。';setTimeout(()=>{showStage('stage3');updateProgress()},1400)}else{fb.innerHTML='❌ 順序不對，再試一次喔！正確是：大氣→樹木→海洋→石灰岩。';s2seq=[];document.querySelectorAll('#stage2Box button').forEach(b=>{b.disabled=false;b.classList.remove('opacity-40')});document.getElementById('s2order').textContent=''}updateProgress()}}
+
+function ans3(){const v=parseInt(document.getElementById('inp3').value);const fb=document.getElementById('fb3');if(v===45){score+=20;stepsDone++;award('⚖️');confetti();fb.innerHTML='🌟 對！70 − 20 − 5 = 45 億噸留在大氣，這就是暖化的加速器。';setTimeout(()=>{showStage('stage4');updateProgress()},1400)}else if(v===25||v===65){fb.textContent='接近但不對。提示：70（排放）− 20（海洋）− 5（森林）= ?'}else{fb.textContent='再算算：70 減去海洋吸的 20，再減森林的 5。'}updateProgress()}
+
+function ans4(btn,ok){const fb=document.getElementById('fb4');if(ok){score+=15;stepsDone++;award('🧠');cheer(btn);confetti();fb.innerHTML='💚 正確！種樹很重要，但不能取代減少化石燃料。兩者要一起做！';setTimeout(()=>{showStage('stage5');updateProgress()},1400)}else{shake(btn);fb.textContent='再想想：森林一年吸 5 億，人類排 70 億，差距很大喔。'}updateProgress()}
+
+function ans5(){const v=parseFloat(document.getElementById('rng5').value);const fb=document.getElementById('fb5');if(v>=1.4&&v<=1.8){score+=15;stepsDone++;award('🌳');confetti();fb.innerHTML='🌿 正確範圍！每 1 噸木材需要吸 1.6 噸 CO2，並釋出 1.2 噸 O2（教育部 CCE 教材）。';setTimeout(()=>{showStage('stage6');updateProgress()},1400)}else{fb.textContent='再微調一下，答案在 1.4 ~ 1.8 之間。提示：樹木吸的 CO2 比自己重一點點。'}updateProgress()}
+
+function checkWSA(){const chk=document.querySelectorAll('.wsa:checked').length;const fb=document.getElementById('fb6');if(chk===4){score+=20;stepsDone++;award('🏅');confetti();confetti();fb.innerHTML='🎖️ 你解鎖了「全校英雄徽章」！帶著這 4 個行動回學校推動吧！';setTimeout(()=>{finish()},1600)}else{fb.textContent='已勾選 '+chk+' ／ 4 項。全部勾完才能成為全校英雄！'}updateProgress()}
+
+function finish(){document.getElementById('finalScore').textContent=score;document.getElementById('finalBadges').textContent=badges.join(' ');showStage('stageEnd');updateProgress()}
+function restart(){score=0;stepsDone=0;badges=[];s2seq=[];document.querySelectorAll('button.opt').forEach(b=>{b.disabled=false;b.classList.remove('opacity-40')});document.querySelectorAll('.wsa').forEach(c=>c.checked=false);document.querySelectorAll('[id^=fb]').forEach(p=>p.textContent='');document.getElementById('inp3').value='';document.getElementById('rng5').value=1;document.getElementById('rng5v').textContent='1';document.getElementById('s2order').textContent='';showStage('stage1');updateProgress()}
+updateProgress();
+</script>
+</body>
+</html>

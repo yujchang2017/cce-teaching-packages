@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>你的餐盤，地球的未來 | 高中永續飲食互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#0f172a,#1e293b,#0f172a); min-height:100vh; color:#e2e8f0;}
+  .card { background:rgba(30,41,59,.92); border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.3); border:1px solid rgba(99,102,241,.2);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.15);}
+  .btn:disabled { opacity:.45; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:80px; transition: background .2s; border:2px dashed rgba(148,163,184,.4); border-radius:.75rem;}
+  .drop-zone.over { background:rgba(234,179,8,.15); border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.15);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:rgba(148,163,184,.35); transition:all .3s;}
+  .progress-dot.active { background:#818cf8; transform:scale(1.3); box-shadow:0 0 12px rgba(129,140,248,.5);}
+  .progress-dot.done { background:#34d399; box-shadow:0 0 8px rgba(52,211,153,.4);}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea { border:1px solid rgba(148,163,184,.3); border-radius:.5rem; padding:.75rem; width:100%; font-size:.95rem; background:rgba(15,23,42,.6); color:#e2e8f0; resize:vertical;}
+  textarea:focus { outline:none; border-color:#818cf8; box-shadow:0 0 0 2px rgba(129,140,248,.25);}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  .badge-lock { filter:grayscale(1); opacity:.35;}
+  svg text { pointer-events:none; }
+  input[type="number"] { background:rgba(15,23,42,.6); border:1px solid rgba(148,163,184,.3); color:#e2e8f0; border-radius:.375rem; padding:.25rem .5rem; }
+  input[type="number"]:focus { outline:none; border-color:#818cf8; }
+  .ref-tag { font-size:.65rem; background:rgba(99,102,241,.2); color:#a5b4fc; padding:.1rem .4rem; border-radius:.25rem; }
+  select { background:rgba(15,23,42,.6); border:1px solid rgba(148,163,184,.3); color:#e2e8f0; border-radius:.375rem; padding:.25rem .5rem; }
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-indigo-300">你的餐盤，地球的未來</h1>
+    <p class="text-sm text-slate-400 mt-1">你是「永續飲食研究員」：11 個關卡、9 種高層次任務。完成它們，成為 Level V 永續飲食公民。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">研究員積分</div>
+    <div class="text-2xl font-bold text-emerald-400"><span id="score">0</span> / 110</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-1.5 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs text-slate-500">四面向</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs text-slate-500">碳足跡</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs text-slate-500">糧安</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs text-slate-500">資料</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs text-slate-500">行動者</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs text-slate-500">倫理</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs text-slate-500">CER</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs text-slate-500">倡議</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-9"></div><span class="text-xs text-slate-500">跨域</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-10"></div><span class="text-xs text-slate-500">後設</span>
+  <div class="h-0.5 w-3 bg-slate-700"></div>
+  <div class="progress-dot" id="dot-11"></div><span class="text-xs text-slate-500">反思</span>
+</div>
+
+<!-- Badges -->
+<div class="card p-3 mb-6 flex flex-wrap gap-2 justify-center">
+  <span class="text-lg badge-lock" id="badge-1" title="四面向解碼者">&#x1F331;</span>
+  <span class="text-lg badge-lock" id="badge-2" title="碳足跡計算師">&#x1F9EE;</span>
+  <span class="text-lg badge-lock" id="badge-3" title="資料詮釋專家">&#x1F4CA;</span>
+  <span class="text-lg badge-lock" id="badge-4" title="系統思考者">&#x1F504;</span>
+  <span class="text-lg badge-lock" id="badge-5" title="倫理辯論家">&#x2696;&#xFE0F;</span>
+  <span class="text-lg badge-lock" id="badge-6" title="論證大師">&#x1F3DB;&#xFE0F;</span>
+  <span class="text-lg badge-lock" id="badge-7" title="政策倡議者">&#x1F4E2;</span>
+  <span class="text-lg badge-lock" id="badge-8" title="跨域整合者">&#x1F30D;</span>
+  <span class="text-lg badge-lock" id="badge-9" title="後設認知者">&#x1F9E0;</span>
+</div>
+
+<!-- ===== Level 1: 永續飲食四面向配對 ===== -->
+<section id="level-1" class="card p-6 fade-in mb-4">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F331;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 1｜永續飲食四面向</h2>
+      <p class="text-sm text-slate-400 mt-1">將每個描述拖放到正確的面向分類中。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：永續飲食研究員 ｜ 10 分 <span class="ref-tag">dp1</span></p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+    <div class="drop-zone p-3" id="dz-env" data-cat="env"><p class="text-xs text-slate-500 mb-1 font-bold">環境面向</p></div>
+    <div class="drop-zone p-3" id="dz-health" data-cat="health"><p class="text-xs text-slate-500 mb-1 font-bold">健康面向</p></div>
+    <div class="drop-zone p-3" id="dz-econ" data-cat="econ"><p class="text-xs text-slate-500 mb-1 font-bold">經濟面向</p></div>
+    <div class="drop-zone p-3" id="dz-social" data-cat="social"><p class="text-xs text-slate-500 mb-1 font-bold">社會文化面向</p></div>
+  </div>
+
+  <div id="drag-pool-1" class="flex flex-wrap gap-2 mb-4">
+    <div class="drag-item chip bg-indigo-900 text-indigo-200" draggable="true" data-answer="env" id="d1">低碳排放、低水足跡</div>
+    <div class="drag-item chip bg-indigo-900 text-indigo-200" draggable="true" data-answer="health" id="d2">營養充足且食品安全</div>
+    <div class="drag-item chip bg-indigo-900 text-indigo-200" draggable="true" data-answer="econ" id="d3">價格可負擔且公平貿易</div>
+    <div class="drag-item chip bg-indigo-900 text-indigo-200" draggable="true" data-answer="social" id="d4">尊重在地飲食文化</div>
+    <div class="drag-item chip bg-indigo-900 text-indigo-200" draggable="true" data-answer="env" id="d5">保護生物多樣性</div>
+    <div class="drag-item chip bg-indigo-900 text-indigo-200" draggable="true" data-answer="social" id="d6">維護食物主權</div>
+    <div class="drag-item chip bg-indigo-900 text-indigo-200" draggable="true" data-answer="health" id="d7">預防飲食相關慢性病</div>
+    <div class="drag-item chip bg-indigo-900 text-indigo-200" draggable="true" data-answer="econ" id="d8">支持在地農民生計</div>
+  </div>
+
+  <button class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" id="btn-check-1" onclick="checkLevel1()">檢查答案</button>
+  <p id="fb-1" class="text-sm mt-2 hidden"></p>
+</section>
+
+<!-- ===== Level 2: 碳足跡計算（數據科學分析） ===== -->
+<section id="level-2" class="card p-6 fade-in mb-4 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F9EE;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 2｜飲食碳足跡計算</h2>
+      <p class="text-sm text-slate-400 mt-1">使用食物碳足跡數據計算一日午餐的碳排放。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：碳足跡分析師 ｜ 10 分 <span class="ref-tag">dp2</span></p>
+    </div>
+  </div>
+
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-4">
+    <p class="text-sm mb-2 font-bold text-amber-300">食物碳足跡參考表（kg CO&#x2082;e/kg）</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+      <div>牛肉：60</div><div>豬肉：7</div><div>雞肉：6</div><div>蛋：4.5</div>
+      <div>豆腐：2</div><div>白米（煮熟）：1.2</div><div>蔬菜：0.5</div><div>豆類：0.9</div>
+    </div>
+  </div>
+
+  <div class="space-y-3 mb-4">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">① 某日午餐：白飯 0.3kg + 紅燒牛肉 0.15kg + 燙青菜 0.2kg + 蛋花湯（蛋 0.05kg）。<br>總碳排 = <input type="number" step="0.1" min="0" max="30" class="w-20 text-center q2-input" data-answer="9.99" id="q2a"> kg CO&#x2082;e</p>
+      <p class="text-xs text-slate-500 mt-1">計算過程：0.3×1.2 + 0.15×60 + 0.2×0.5 + 0.05×4.5 = ?</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">② 如果將牛肉換成等量豆腐（0.15kg），總碳排變為 <input type="number" step="0.1" min="0" max="10" class="w-20 text-center q2-input" data-answer="0.99" id="q2b"> kg CO&#x2082;e</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">③ 碳排減少了 <input type="number" step="0.1" min="0" max="100" class="w-20 text-center q2-input" data-answer="90.1" id="q2c"> %（四捨五入到小數點一位）</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">④ 線性外推的局限：為什麼不能直接用上述數據推算「全臺灣若全面改吃豆腐就能減碳 90%」？請寫出至少 2 個局限因素（50+ 字）。</p>
+      <textarea rows="3" id="q2d" placeholder="例如：碳足跡數據為全球平均，臺灣在地畜牧碳排可能不同；飲食轉型涉及供應鏈重組、文化阻力……"></textarea>
+    </div>
+  </div>
+
+  <button class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLevel2()">檢查答案</button>
+  <p id="fb-2" class="text-sm mt-2 hidden"></p>
+</section>
+
+<!-- ===== Level 3: 糧食安全四支柱分析 ===== -->
+<section id="level-3" class="card p-6 fade-in mb-4 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F3DB;&#xFE0F;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 3｜糧食安全四支柱</h2>
+      <p class="text-sm text-slate-400 mt-1">分析臺灣糧食安全的四大支柱現況。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：糧食政策分析師 ｜ 10 分 <span class="ref-tag">dp4, dp6</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-3 mb-4">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">① 臺灣糧食自給率（熱量計）約 <input type="number" step="1" min="0" max="100" class="w-16 text-center" data-answer="31" id="q3a"> %</p>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">② 糧食安全四支柱中，你認為臺灣最脆弱的是哪個支柱？請選擇並說明理由（80+ 字）。</p>
+      <select id="q3b-select" class="mb-2">
+        <option value="">-- 選擇支柱 --</option>
+        <option value="supply">供應 Availability</option>
+        <option value="access">可及 Access</option>
+        <option value="utilization">利用 Utilization</option>
+        <option value="stability">穩定 Stability</option>
+      </select>
+      <textarea rows="3" id="q3b" placeholder="分析你選擇的支柱為何最脆弱，引用至少 1 筆數據……"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">③ COP28 首次將食物系統轉型納入氣候談判的意義為何？（60+ 字）</p>
+      <textarea rows="3" id="q3c" placeholder="思考：為什麼國際社會花了 28 屆 COP 才將食物議題納入？這說明了什麼？"></textarea>
+    </div>
+  </div>
+
+  <button class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLevel3()">提交分析</button>
+  <p id="fb-3" class="text-sm mt-2 hidden"></p>
+</section>
+
+<!-- ===== Level 4: 資料詮釋（全球食物矛盾 + 系統思考） ===== -->
+<section id="level-4" class="card p-6 fade-in mb-4 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F4CA;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 4｜全球食物矛盾與系統思考</h2>
+      <p class="text-sm text-slate-400 mt-1">分析全球食物不平等數據 + 繪製食物系統因果循環圖。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：系統分析師 ｜ 10 分 <span class="ref-tag">dp3, dp2</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-3 mb-4">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">資料詮釋：全球 7.33 億人面臨飢餓，同時每年浪費 13 億噸食物（佔生產 1/3）。食物浪費產生約 3.3 Gt CO&#x2082;e（佔食物系統排放 25%）。</p>
+      <p class="text-sm">① 如果全球食物浪費減半，省下的 6.5 億噸食物理論上能養活多少人？（假設每人每年需 200kg 食物）</p>
+      <input type="number" step="1" min="0" max="50" class="w-20 text-center" data-answer="32.5" id="q4a" placeholder="億人"> <span class="text-sm">億人</span>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">② 但實際上減少浪費未必能直接解決飢餓。請分析至少 2 個結構性原因（80+ 字）。</p>
+      <textarea rows="3" id="q4b" placeholder="提示：考慮分配不平等、地理距離、經濟可及性、食物類型不同……"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm mb-2">③ 系統思考：在下方 CLD 圖中，將因果關係標籤拖到正確位置。</p>
+      <svg class="loop w-full" viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="10" width="130" height="40" rx="8" fill="#334155" stroke="#818cf8" stroke-width="2"/>
+        <text x="85" y="35" fill="#e2e8f0" text-anchor="middle" font-size="12" pointer-events="none">人口增長</text>
+        <rect x="200" y="10" width="130" height="40" rx="8" fill="#334155" stroke="#818cf8" stroke-width="2"/>
+        <text x="265" y="35" fill="#e2e8f0" text-anchor="middle" font-size="12" pointer-events="none">食物需求增加</text>
+        <rect x="370" y="80" width="120" height="40" rx="8" fill="#334155" stroke="#818cf8" stroke-width="2"/>
+        <text x="430" y="105" fill="#e2e8f0" text-anchor="middle" font-size="12" pointer-events="none">農業集約化</text>
+        <rect x="370" y="170" width="120" height="40" rx="8" fill="#334155" stroke="#f87171" stroke-width="2"/>
+        <text x="430" y="195" fill="#e2e8f0" text-anchor="middle" font-size="12" pointer-events="none">環境退化</text>
+        <rect x="200" y="250" width="130" height="40" rx="8" fill="#334155" stroke="#f87171" stroke-width="2"/>
+        <text x="265" y="275" fill="#e2e8f0" text-anchor="middle" font-size="12" pointer-events="none">產量下降</text>
+        <rect x="20" y="170" width="130" height="40" rx="8" fill="#334155" stroke="#34d399" stroke-width="2"/>
+        <text x="85" y="195" fill="#e2e8f0" text-anchor="middle" font-size="12" pointer-events="none">食農教育介入</text>
+        <!-- arrows -->
+        <line x1="150" y1="30" x2="195" y2="30" stroke="#818cf8" stroke-width="2" marker-end="url(#arrow)"/>
+        <line x1="330" y1="40" x2="380" y2="80" stroke="#818cf8" stroke-width="2" marker-end="url(#arrow)"/>
+        <line x1="430" y1="120" x2="430" y2="165" stroke="#f87171" stroke-width="2" marker-end="url(#arrow)"/>
+        <line x1="380" y1="200" x2="330" y2="255" stroke="#f87171" stroke-width="2" marker-end="url(#arrow)"/>
+        <line x1="200" y1="270" x2="140" y2="210" stroke="#34d399" stroke-width="2" stroke-dasharray="6"/>
+        <line x1="85" y1="170" x2="85" y2="55" stroke="#34d399" stroke-width="2" stroke-dasharray="6" marker-end="url(#arrow)"/>
+        <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#818cf8"/></marker></defs>
+        <text x="165" y="22" fill="#a5b4fc" font-size="9" pointer-events="none">+</text>
+        <text x="355" y="55" fill="#a5b4fc" font-size="9" pointer-events="none">+</text>
+        <text x="438" y="148" fill="#f87171" font-size="9" pointer-events="none">+</text>
+        <text x="355" y="240" fill="#f87171" font-size="9" pointer-events="none">+</text>
+        <text x="130" y="235" fill="#34d399" font-size="9" pointer-events="none">-</text>
+        <text x="70" y="115" fill="#34d399" font-size="9" pointer-events="none">-</text>
+      </svg>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm">④ 在上方 CLD 中，「食農教育介入」是一個槓桿點。請說明為什麼它能打斷惡性循環（50+ 字）。</p>
+      <textarea rows="2" id="q4c" placeholder="思考：教育如何改變消費行為、減少浪費、增加永續食品需求……"></textarea>
+    </div>
+  </div>
+
+  <button class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLevel4()">提交分析</button>
+  <p id="fb-4" class="text-sm mt-2 hidden"></p>
+</section>
+
+<!-- ===== Level 5: 行動者角色分析（資料詮釋 #2） ===== -->
+<section id="level-5" class="card p-6 fade-in mb-4 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F465;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 5｜不同行動者的角色分析</h2>
+      <p class="text-sm text-slate-400 mt-1">分析五類行動者在推動永續飲食中的角色、責任與限制。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：政策分析師 ｜ 10 分 <span class="ref-tag">dp4, dp5, dp8</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-3 mb-4">
+    <p class="text-sm text-slate-300 mb-2">對每個行動者，寫出其可採取的關鍵行動（每格 40+ 字）：</p>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">政府</p>
+      <textarea rows="2" id="q5a" placeholder="補貼調整、營養標準、碳定價、學校午餐政策……"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">企業（食品業/零售業）</p>
+      <textarea rows="2" id="q5b" placeholder="減少供應鏈損失、碳足跡標示、植物性蛋白開發……"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">農民</p>
+      <textarea rows="2" id="q5c" placeholder="轉型永續農法、參與碳匯交易、多樣化作物……"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">消費者</p>
+      <textarea rows="2" id="q5d" placeholder="改變購買習慣、減少浪費、選擇低碳食品……"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">學校</p>
+      <textarea rows="2" id="q5e" placeholder="永續午餐標準、食農教育課程、零廚餘挑戰……"></textarea>
+    </div>
+  </div>
+
+  <button class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLevel5()">提交分析</button>
+  <p id="fb-5" class="text-sm mt-2 hidden"></p>
+</section>
+
+<!-- ===== Level 6: 倫理兩難 ===== -->
+<section id="level-6" class="card p-6 fade-in mb-4 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x2696;&#xFE0F;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 6｜倫理兩難辯論</h2>
+      <p class="text-sm text-slate-400 mt-1">「高收入國家應立法限制肉類消費嗎？」</p>
+      <p class="text-xs text-slate-600 mt-1">角色：倫理辯論家 ｜ 10 分 <span class="ref-tag">dp2, dp8</span></p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <div class="bg-slate-800/50 rounded-lg p-4">
+      <p class="text-sm font-bold text-emerald-300 mb-2">立場 A：政策介入合理</p>
+      <p class="text-xs text-slate-400 mb-2">（飲食碳排的外部性、公共衛生前例、氣候正義……）</p>
+      <textarea rows="4" id="q6a" placeholder="闡述立場 A 的理由，引用至少 1 筆數據（100+ 字）……"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-4">
+      <p class="text-sm font-bold text-rose-300 mb-2">立場 B：飲食自由優先</p>
+      <p class="text-xs text-slate-400 mb-2">（文化認同、低收入者負擔、教育優於強制……）</p>
+      <textarea rows="4" id="q6b" placeholder="闡述立場 B 的理由，引用至少 1 筆數據（100+ 字）……"></textarea>
+    </div>
+  </div>
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-4">
+    <p class="text-sm font-bold text-amber-300 mb-2">反駁對方立場</p>
+    <textarea rows="3" id="q6c" placeholder="選擇一個立場，對另一方提出反駁（80+ 字）……"></textarea>
+  </div>
+
+  <button class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLevel6()">提交辯論</button>
+  <p id="fb-6" class="text-sm mt-2 hidden"></p>
+</section>
+
+<!-- ===== Level 7: CER 論證 ===== -->
+<section id="level-7" class="card p-6 fade-in mb-4 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F3DB;&#xFE0F;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 7｜CER 論證寫作</h2>
+      <p class="text-sm text-slate-400 mt-1">題目：「臺灣學校午餐應全面導入行星健康飲食標準嗎？」</p>
+      <p class="text-xs text-slate-600 mt-1">角色：論證寫作者 ｜ 10 分 <span class="ref-tag">dp5, dp6</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-3 mb-4">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">Claim（主張）</p>
+      <textarea rows="2" id="q7a" placeholder="你的立場是什麼？明確表態……"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">Evidence（證據）</p>
+      <textarea rows="3" id="q7b" placeholder="引用至少 2 筆 data_card 數據作為證據……"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">Reasoning（推理）</p>
+      <textarea rows="3" id="q7c" placeholder="解釋你的證據如何支持你的主張……"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">Rebuttal（反駁段）</p>
+      <textarea rows="3" id="q7d" placeholder="預期對方可能的反駁，並回應……"></textarea>
+    </div>
+  </div>
+
+  <button class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLevel7()">提交論證</button>
+  <p id="fb-7" class="text-sm mt-2 hidden"></p>
+</section>
+
+<!-- ===== Level 8: 政策倡議（模擬聽證） ===== -->
+<section id="level-8" class="card p-6 fade-in mb-4 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F4E2;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 8｜模擬聽證：校園午餐在地食材 50%</h2>
+      <p class="text-sm text-slate-400 mt-1">完成利害關係人分析表 + 公民陳情書。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：政策倡議者 ｜ 10 分 <span class="ref-tag">dp6, dp7</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-3 mb-4">
+    <p class="text-sm text-slate-300">對每個利害關係人，填寫其立場與關切（每格 30+ 字）：</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+      <div class="bg-slate-800/50 rounded-lg p-2"><p class="text-xs font-bold text-amber-300">教育局</p><textarea rows="2" id="q8a" placeholder="預算考量、營養標準……"></textarea></div>
+      <div class="bg-slate-800/50 rounded-lg p-2"><p class="text-xs font-bold text-amber-300">營養師</p><textarea rows="2" id="q8b" placeholder="食材多樣性、營養均衡……"></textarea></div>
+      <div class="bg-slate-800/50 rounded-lg p-2"><p class="text-xs font-bold text-amber-300">在地農民</p><textarea rows="2" id="q8c" placeholder="穩定訂單、產能限制……"></textarea></div>
+      <div class="bg-slate-800/50 rounded-lg p-2"><p class="text-xs font-bold text-amber-300">學生代表</p><textarea rows="2" id="q8d" placeholder="口味偏好、價格……"></textarea></div>
+      <div class="bg-slate-800/50 rounded-lg p-2"><p class="text-xs font-bold text-amber-300">食品業者</p><textarea rows="2" id="q8e" placeholder="供應鏈調整成本……"></textarea></div>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">公民陳情書（150+ 字）</p>
+      <textarea rows="5" id="q8f" placeholder="以學生代表身份撰寫正式陳情書，引用至少 2 筆數據，提出具體建議……"></textarea>
+    </div>
+  </div>
+
+  <button class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLevel8()">提交倡議</button>
+  <p id="fb-8" class="text-sm mt-2 hidden"></p>
+</section>
+
+<!-- ===== Level 9: 跨域整合短論文 ===== -->
+<section id="level-9" class="card p-6 fade-in mb-4 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F30D;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 9｜跨域整合短論文</h2>
+      <p class="text-sm text-slate-400 mt-1">題目：「從碳足跡到食物主權：永續飲食的科學、經濟與倫理交叉路口」</p>
+      <p class="text-xs text-slate-600 mt-1">角色：跨域整合研究員 ｜ 10 分 <span class="ref-tag">dp2, dp4, dp8</span></p>
+    </div>
+  </div>
+
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-4">
+    <p class="text-sm text-slate-300 mb-2">五段結構引導（500+ 字，含文獻引用 APA 簡式）：</p>
+    <div class="space-y-2">
+      <div><p class="text-xs font-bold text-amber-300">第一段：引言（導入議題背景）</p>
+      <textarea rows="3" id="q9a" placeholder="食物系統佔全球 26% 碳排放……"></textarea></div>
+      <div><p class="text-xs font-bold text-amber-300">第二段：科學維度（碳足跡與 LCA 分析）</p>
+      <textarea rows="3" id="q9b" placeholder="引用 dp2 數據，分析不同食物碳排差異……"></textarea></div>
+      <div><p class="text-xs font-bold text-amber-300">第三段：經濟維度（糧食安全與供應鏈）</p>
+      <textarea rows="3" id="q9c" placeholder="引用 dp4 四支柱框架，分析臺灣糧食自給率……"></textarea></div>
+      <div><p class="text-xs font-bold text-amber-300">第四段：倫理維度（食物主權與公正轉型）</p>
+      <textarea rows="3" id="q9d" placeholder="引用 dp8 CBDR 原則，討論飲食轉型的文化與公平性……"></textarea></div>
+      <div><p class="text-xs font-bold text-amber-300">第五段：結論與行動建議</p>
+      <textarea rows="3" id="q9e" placeholder="整合三維度，提出可行的個人與政策行動建議……"></textarea></div>
+    </div>
+  </div>
+
+  <button class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLevel9()">提交論文</button>
+  <p id="fb-9" class="text-sm mt-2 hidden"></p>
+</section>
+
+<!-- ===== Level 10: 後設認知 ===== -->
+<section id="level-10" class="card p-6 fade-in mb-4 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F9E0;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 10｜後設認知</h2>
+      <p class="text-sm text-slate-400 mt-1">對比你學習前後的想法變化。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：反思者 ｜ 10 分</p>
+    </div>
+  </div>
+
+  <div class="space-y-3 mb-4">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">學習前：你原本怎麼看永續飲食？</p>
+      <textarea rows="2" id="q10a" placeholder="描述你四節課之前的想法……"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">學習後：你現在怎麼看永續飲食？</p>
+      <textarea rows="2" id="q10b" placeholder="描述你現在的理解有何不同……"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">轉折點：哪個概念或數據最讓你驚訝或改變了你的想法？</p>
+      <textarea rows="2" id="q10c" placeholder="具體指出是哪個概念、哪筆數據，為什麼它改變了你……"></textarea>
+    </div>
+  </div>
+  <p class="text-xs text-slate-500 mb-3">三段合計至少 100 字。</p>
+
+  <button class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLevel10()">提交反思</button>
+  <p id="fb-10" class="text-sm mt-2 hidden"></p>
+</section>
+
+<!-- ===== Level 11: 開放式反思 + WSA ===== -->
+<section id="level-11" class="card p-6 fade-in mb-4 hidden-screen">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">&#x1F4AD;</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-300">關卡 11｜開放式反思 + WSA 行動承諾</h2>
+      <p class="text-sm text-slate-400 mt-1">兩題開放式反思 + 四面向行動勾選。</p>
+      <p class="text-xs text-slate-600 mt-1">角色：永續飲食倡議者 ｜ 10 分</p>
+    </div>
+  </div>
+
+  <div class="space-y-3 mb-4">
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">反思 #1：如果你有 100 萬元預算用於推動永續飲食，你會如何分配？請列出至少 3 項具體計畫及比例（100+ 字）。</p>
+      <textarea rows="4" id="q11a" placeholder="例如：30% 用於校園食農空間建置、25% 用於低碳午餐補貼……"></textarea>
+    </div>
+    <div class="bg-slate-800/50 rounded-lg p-3">
+      <p class="text-sm font-bold text-amber-300">反思 #2：你認為人造肉（cultivated meat）能否取代傳統畜牧業成為永續飲食的解方？為什麼？（100+ 字）</p>
+      <textarea rows="4" id="q11b" placeholder="考慮技術可行性、經濟成本、文化接受度、環境效益……"></textarea>
+    </div>
+  </div>
+
+  <div class="bg-slate-800/50 rounded-lg p-4 mb-4">
+    <p class="text-sm font-bold text-amber-300 mb-3">WSA 四面向行動承諾（各勾選 1 項你願意實踐的行動）：</p>
+    <div class="space-y-2">
+      <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="wsa-gov" class="mt-1 wsa-cb"> <span><strong>治理：</strong>向學生議會提案改善校園午餐永續標準</span></label>
+      <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="wsa-curr" class="mt-1 wsa-cb"> <span><strong>課程：</strong>在下一次跨科報告中融入永續飲食主題</span></label>
+      <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="wsa-ops" class="mt-1 wsa-cb"> <span><strong>營運：</strong>發起或參與校園零廚餘挑戰，追蹤一週剩食量</span></label>
+      <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="wsa-comm" class="mt-1 wsa-cb"> <span><strong>社群：</strong>與家人或社區分享永續飲食知識，嘗試一週地產地消</span></label>
+    </div>
+  </div>
+
+  <button class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" onclick="checkLevel11()">完成學習單</button>
+  <p id="fb-11" class="text-sm mt-2 hidden"></p>
+</section>
+
+<!-- Final -->
+<section id="final-screen" class="card p-8 text-center hidden-screen mb-4">
+  <div class="text-5xl mb-3">&#x1F389;</div>
+  <h2 class="text-2xl font-bold text-emerald-400 mb-2">恭喜完成所有關卡！</h2>
+  <p class="text-slate-300 mb-4">你已成為 Level V 永續飲食公民。每一餐都是一次投票——用你的筷子決定地球的未來。</p>
+  <p class="text-3xl font-bold text-emerald-400">最終積分：<span id="final-score">0</span> / 110</p>
+</section>
+
+</div>
+
+<script>
+let score = 0;
+let currentLevel = 1;
+
+function addScore(pts) { score += pts; document.getElementById('score').textContent = score; }
+function showFeedback(id, msg, ok) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'text-sm mt-2 ' + (ok ? 'text-emerald-400' : 'text-rose-400');
+  el.classList.remove('hidden');
+  if (!ok) el.parentElement.classList.add('shake');
+  setTimeout(() => el.parentElement.classList.remove('shake'), 400);
+}
+function unlockBadge(n) {
+  const b = document.getElementById('badge-' + n);
+  if (b) { b.classList.remove('badge-lock'); b.classList.add('pop'); }
+}
+function advanceLevel(from) {
+  document.getElementById('dot-' + from).classList.remove('active');
+  document.getElementById('dot-' + from).classList.add('done');
+  const next = from + 1;
+  if (next <= 11) {
+    document.getElementById('dot-' + next).classList.add('active');
+    const sect = document.getElementById('level-' + next);
+    if (sect) { sect.classList.remove('hidden-screen'); sect.classList.add('fade-in'); sect.scrollIntoView({behavior:'smooth'}); }
+  } else {
+    document.getElementById('final-screen').classList.remove('hidden-screen');
+    document.getElementById('final-score').textContent = score;
+    document.getElementById('final-screen').scrollIntoView({behavior:'smooth'});
+  }
+  currentLevel = next;
+}
+function confetti() {
+  const colors = ['#818cf8','#34d399','#f59e0b','#f87171','#a78bfa'];
+  for (let i = 0; i < 30; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random()*100+'%';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDelay = Math.random()*0.7+'s';
+    c.style.borderRadius = Math.random()>.5?'50%':'0';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3000);
+  }
+}
+function textLen(id) { return (document.getElementById(id).value || '').trim().length; }
+
+// Drag & Drop for Level 1
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.drag-item').forEach(item => {
+    item.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', item.id); item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+  });
+  document.querySelectorAll('.drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); zone.classList.remove('over');
+      const id = e.dataTransfer.getData('text/plain');
+      const el = document.getElementById(id);
+      if (el) zone.appendChild(el);
+    });
+  });
+});
+
+function checkLevel1() {
+  let correct = 0, total = 8;
+  document.querySelectorAll('.drop-zone').forEach(zone => {
+    const cat = zone.dataset.cat;
+    zone.querySelectorAll('.drag-item').forEach(item => {
+      if (item.dataset.answer === cat) correct++;
+    });
+  });
+  if (correct === total) {
+    addScore(10); unlockBadge(1); confetti();
+    showFeedback('fb-1', '全部正確！你已掌握永續飲食四面向。 +10 分', true);
+    setTimeout(() => advanceLevel(1), 1200);
+  } else {
+    showFeedback('fb-1', correct + '/' + total + ' 正確。提示：低碳排與生物多樣性屬環境面向，食物主權與文化認同屬社會文化面向。', false);
+  }
+}
+
+function checkLevel2() {
+  const a = parseFloat(document.getElementById('q2a').value);
+  const b = parseFloat(document.getElementById('q2b').value);
+  const c = parseFloat(document.getElementById('q2c').value);
+  const dLen = textLen('q2d');
+  // correct: 0.36+9+0.1+0.225 = 9.685 ~ accept 9.5-10.5
+  // alt calc: 0.3*1.2=0.36, 0.15*60=9, 0.2*0.5=0.1, 0.05*4.5=0.225 => 9.685
+  // replaced: 0.36+0.3+0.1+0.225=0.985
+  // reduction: (9.685-0.985)/9.685*100 = 89.8%
+  let numOk = 0;
+  if (a >= 9.5 && a <= 10.5) numOk++;
+  if (b >= 0.8 && b <= 1.2) numOk++;
+  if (c >= 88 && c <= 92) numOk++;
+  if (numOk >= 2 && dLen >= 50) {
+    addScore(10); unlockBadge(2); confetti();
+    showFeedback('fb-2', '碳足跡計算完成！用數據驅動飲食決策。 +10 分', true);
+    setTimeout(() => advanceLevel(2), 1200);
+  } else {
+    let hint = '';
+    if (numOk < 2) hint += '數值計算需再確認（0.3x1.2 + 0.15x60 + 0.2x0.5 + 0.05x4.5）。';
+    if (dLen < 50) hint += ' 局限分析需至少 50 字。';
+    showFeedback('fb-2', hint, false);
+  }
+}
+
+function checkLevel3() {
+  const a = parseInt(document.getElementById('q3a').value);
+  const sel = document.getElementById('q3b-select').value;
+  const bLen = textLen('q3b');
+  const cLen = textLen('q3c');
+  if (a === 31 && sel && bLen >= 80 && cLen >= 60) {
+    addScore(10); confetti();
+    showFeedback('fb-3', '糧食安全分析完成！四支柱框架是政策分析的利器。 +10 分', true);
+    setTimeout(() => advanceLevel(3), 1200);
+  } else {
+    let hint = '';
+    if (a !== 31) hint += '臺灣糧食自給率數據請確認。';
+    if (!sel) hint += ' 請選擇一個支柱。';
+    if (bLen < 80) hint += ' 脆弱度分析需至少 80 字。';
+    if (cLen < 60) hint += ' COP28 意義分析需至少 60 字。';
+    showFeedback('fb-3', hint, false);
+  }
+}
+
+function checkLevel4() {
+  const a = parseFloat(document.getElementById('q4a').value);
+  const bLen = textLen('q4b');
+  const cLen = textLen('q4c');
+  // 6.5億噸/200kg = 6.5e8/200 = 325萬... wait: 6.5億噸=6.5e8噸, 每人200kg=0.2噸, 6.5e8/0.2=32.5億人
+  let numOk = (a >= 30 && a <= 35);
+  if (numOk && bLen >= 80 && cLen >= 50) {
+    addScore(10); unlockBadge(3); unlockBadge(4); confetti();
+    showFeedback('fb-4', '資料詮釋與系統思考完成！你已理解食物系統的複雜性。 +10 分', true);
+    setTimeout(() => advanceLevel(4), 1200);
+  } else {
+    let hint = '';
+    if (!numOk) hint += '計算提示：6.5 億噸 / 每人 0.2 噸 = ? 億人。';
+    if (bLen < 80) hint += ' 結構性原因分析需至少 80 字。';
+    if (cLen < 50) hint += ' 槓桿點說明需至少 50 字。';
+    showFeedback('fb-4', hint, false);
+  }
+}
+
+function checkLevel5() {
+  const fields = ['q5a','q5b','q5c','q5d','q5e'];
+  let allOk = true;
+  fields.forEach(f => { if (textLen(f) < 40) allOk = false; });
+  if (allOk) {
+    addScore(10); confetti();
+    showFeedback('fb-5', '行動者分析完成！推動永續飲食需要所有利害關係人的協作。 +10 分', true);
+    setTimeout(() => advanceLevel(5), 1200);
+  } else {
+    showFeedback('fb-5', '每個行動者分析需至少 40 字。請完善內容。', false);
+  }
+}
+
+function checkLevel6() {
+  const aLen = textLen('q6a'), bLen = textLen('q6b'), cLen = textLen('q6c');
+  if (aLen >= 100 && bLen >= 100 && cLen >= 80) {
+    addScore(10); unlockBadge(5); confetti();
+    showFeedback('fb-6', '倫理辯論完成！能呈現兩造立場並反駁，這是高品質思辨的標誌。 +10 分', true);
+    setTimeout(() => advanceLevel(6), 1200);
+  } else {
+    let hint = '';
+    if (aLen < 100) hint += '立場 A 需至少 100 字。';
+    if (bLen < 100) hint += ' 立場 B 需至少 100 字。';
+    if (cLen < 80) hint += ' 反駁需至少 80 字。';
+    showFeedback('fb-6', hint, false);
+  }
+}
+
+function checkLevel7() {
+  const fields = ['q7a','q7b','q7c','q7d'];
+  const mins = [20, 50, 50, 40];
+  let allOk = true;
+  fields.forEach((f, i) => { if (textLen(f) < mins[i]) allOk = false; });
+  if (allOk) {
+    addScore(10); unlockBadge(6); confetti();
+    showFeedback('fb-7', 'CER 論證完成！含反駁段的論證才有說服力。 +10 分', true);
+    setTimeout(() => advanceLevel(7), 1200);
+  } else {
+    showFeedback('fb-7', 'CER 四段皆需完整填寫（C:20字 E:50字 R:50字 Rebuttal:40字以上）。', false);
+  }
+}
+
+function checkLevel8() {
+  const stakeholders = ['q8a','q8b','q8c','q8d','q8e'];
+  let sOk = true;
+  stakeholders.forEach(f => { if (textLen(f) < 30) sOk = false; });
+  const fLen = textLen('q8f');
+  if (sOk && fLen >= 150) {
+    addScore(10); unlockBadge(7); confetti();
+    showFeedback('fb-8', '政策倡議完成！你的陳情書有理有據。 +10 分', true);
+    setTimeout(() => advanceLevel(8), 1200);
+  } else {
+    let hint = '';
+    if (!sOk) hint += '每個利害關係人分析需至少 30 字。';
+    if (fLen < 150) hint += ' 陳情書需至少 150 字。';
+    showFeedback('fb-8', hint, false);
+  }
+}
+
+function checkLevel9() {
+  const fields = ['q9a','q9b','q9c','q9d','q9e'];
+  let totalLen = 0;
+  fields.forEach(f => totalLen += textLen(f));
+  if (totalLen >= 500) {
+    addScore(10); unlockBadge(8); confetti();
+    showFeedback('fb-9', '跨域整合短論文完成！科學 x 經濟 x 倫理的三維度分析。 +10 分', true);
+    setTimeout(() => advanceLevel(9), 1200);
+  } else {
+    showFeedback('fb-9', '五段合計需至少 500 字（目前 ' + totalLen + ' 字）。', false);
+  }
+}
+
+function checkLevel10() {
+  let totalLen = textLen('q10a') + textLen('q10b') + textLen('q10c');
+  if (totalLen >= 100) {
+    addScore(10); unlockBadge(9); confetti();
+    showFeedback('fb-10', '後設認知完成！自我覺察是深度學習的關鍵。 +10 分', true);
+    setTimeout(() => advanceLevel(10), 1200);
+  } else {
+    showFeedback('fb-10', '三段合計需至少 100 字（目前 ' + totalLen + ' 字）。', false);
+  }
+}
+
+function checkLevel11() {
+  const aLen = textLen('q11a'), bLen = textLen('q11b');
+  const wsaChecked = document.querySelectorAll('.wsa-cb:checked').length;
+  if (aLen >= 100 && bLen >= 100 && wsaChecked >= 4) {
+    addScore(10); confetti();
+    showFeedback('fb-11', '恭喜完成所有關卡！', true);
+    setTimeout(() => advanceLevel(11), 1200);
+  } else {
+    let hint = '';
+    if (aLen < 100) hint += '反思 #1 需至少 100 字。';
+    if (bLen < 100) hint += ' 反思 #2 需至少 100 字。';
+    if (wsaChecked < 4) hint += ' 請勾選 WSA 四面向各一項行動。';
+    showFeedback('fb-11', hint, false);
+  }
+}
+</script>
+</body>
+</html>

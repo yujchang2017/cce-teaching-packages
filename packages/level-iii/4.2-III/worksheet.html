@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>防災超人養成記 — 4.2-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#fee2e2 0%,#fef3c7 50%,#dbeafe 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .feedback-pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #ef4444; box-shadow: 0 0 0 4px rgba(239,68,68,.25); }
+  .drag-item { cursor: grab; user-select: none; }
+  .drag-item.dragging { opacity: .4; }
+  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
+  .badge { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
+  .hidden-step { display: none; }
+  .pulse-red { animation: pulseRed 1.5s infinite; }
+  @keyframes pulseRed { 0%,100%{background-color:#fee2e2} 50%{background-color:#fecaca} }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-red-600 to-orange-500 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">🚨 防災超人養成記</h1>
+    <p class="mt-2 text-orange-50">UNESCO 4.2-III ｜ 9-12 歲 ｜ 學會保護自己、家人，還有整個學校！</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 角色與情境故事 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl">🦸</div>
+    <div>
+      <h2 class="text-2xl font-bold text-red-700">任務簡報：你被選為「家庭防災小隊長」！</h2>
+      <p class="mt-2 leading-relaxed">嗨！我是防災阿熊 🐻。臺灣每年約有 <strong class="text-red-600">3-4 個颱風</strong> 影響我們，近 110 年升溫 <strong class="text-red-600">1.6°C</strong>（全球的 2 倍），強降雨和熱浪越來越多。你的任務是通過 6 個關卡，學會保護家人、教室和社區，解鎖「全校英雄」徽章！</p>
+      <button onclick="startMission()" class="mt-4 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 🛡️</button>
+    </div>
+  </div>
+</section>
+
+<!-- 關卡 1：臺灣 5 大災害排行（選擇）-->
+<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-red-700">🌀 關卡 1：臺灣哪一種災害最常發生？</h2>
+  <p class="mt-2 text-gray-600">臺灣常見的 5 大災害：颱風、強降雨、熱浪、乾旱、地震。根據中央氣象署統計，<strong>每年平均</strong>有多少個颱風會影響臺灣？</p>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+    <button class="q1-opt p-4 border-2 border-red-200 rounded-xl hover:bg-red-50" data-ans="0">約 1 個</button>
+    <button class="q1-opt p-4 border-2 border-red-200 rounded-xl hover:bg-red-50" data-ans="1">約 3-4 個</button>
+    <button class="q1-opt p-4 border-2 border-red-200 rounded-xl hover:bg-red-50" data-ans="0">約 10 個</button>
+    <button class="q1-opt p-4 border-2 border-red-200 rounded-xl hover:bg-red-50" data-ans="0">約 20 個</button>
+  </div>
+  <div id="q1-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 2：家中危險獵人（拖曳）-->
+<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-orange-700">🏠 關卡 2：家中危險獵人 — 把危險物品拖到對的災害</h2>
+  <p class="mt-2 text-gray-600">每個物品在不同災害下會變成危險。幫這些物品配對到最相關的災害：</p>
+
+  <div class="flex flex-wrap gap-3 mt-4" id="itemPool">
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-risk="earthquake">📚 高處的厚重書櫃</div>
+    <div class="drag-item bg-blue-100 px-4 py-2 rounded-full shadow" draggable="true" data-risk="flood">🔌 地板上的延長線</div>
+    <div class="drag-item bg-red-100 px-4 py-2 rounded-full shadow" draggable="true" data-risk="fire">🔥 瓦斯爐沒關火</div>
+    <div class="drag-item bg-cyan-100 px-4 py-2 rounded-full shadow" draggable="true" data-risk="typhoon">🪴 陽台沒綁的花盆</div>
+    <div class="drag-item bg-amber-100 px-4 py-2 rounded-full shadow" draggable="true" data-risk="earthquake">🖼️ 床頭上方的大鏡子</div>
+    <div class="drag-item bg-sky-100 px-4 py-2 rounded-full shadow" draggable="true" data-risk="flood">📱 低樓層的電器插座</div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-yellow-400 bg-yellow-50 rounded-xl p-3" data-risk="earthquake">
+      <p class="font-bold text-yellow-700">🌍 地震</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-blue-400 bg-blue-50 rounded-xl p-3" data-risk="flood">
+      <p class="font-bold text-blue-700">💧 淹水</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-cyan-400 bg-cyan-50 rounded-xl p-3" data-risk="typhoon">
+      <p class="font-bold text-cyan-700">🌀 颱風強風</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-red-400 bg-red-50 rounded-xl p-3" data-risk="fire">
+      <p class="font-bold text-red-700">🔥 火災</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+  </div>
+  <div id="q2-feedback" class="mt-4"></div>
+  <button id="q2-check" onclick="checkLevel2()" class="mt-3 bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-6 rounded-full">檢查答案</button>
+</section>
+
+<!-- 關卡 3：災害 vs 正確應對（多題選擇）-->
+<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-blue-700">🚦 關卡 3：災害當下我該怎麼做？</h2>
+  <p class="mt-2 text-gray-600">下面 3 題選出最正確的反應。記住：<strong>地震就地掩護、洪水往高處、颱風遠離窗戶</strong>。</p>
+  <div id="seasonQs" class="space-y-4 mt-4">
+    <div class="q3 border rounded-xl p-3" data-ans="dch">
+      <p class="font-semibold">🌍 地震正在搖晃，我在教室裡，第一時間應該做什麼？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="run">往外跑到操場</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="elevator">搭電梯下樓</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="dch">蹲下、掩護、穩住（桌下）</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="door">打開教室門</button>
+      </div>
+    </div>
+    <div class="q3 border rounded-xl p-3" data-ans="high">
+      <p class="font-semibold">💧 家門口開始淹水，水已到小腿高，應該？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="wade">涉水出去找爸媽</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="basement">躲到地下室</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="high">關電源，往樓上高處避難</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="swim">拿游泳圈去玩水</button>
+      </div>
+    </div>
+    <div class="q3 border rounded-xl p-3" data-ans="inside">
+      <p class="font-semibold">🌀 颱風陸上警報發布、窗外風雨大作，應該？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="balcony">出去陽台拍風雨影片</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="inside">遠離窗戶待在堅固室內</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="park">去公園看倒樹</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="shop">衝去便利商店</button>
+      </div>
+    </div>
+  </div>
+  <div id="q3-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 4：迷思破解（是非題）-->
+<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-purple-700">🧠 關卡 4：迷思大破解</h2>
+  <p class="mt-2 text-gray-600">下面的說法對嗎？勇敢選答，錯了沒關係，我會告訴你為什麼。</p>
+  <div id="mythQs" class="space-y-4 mt-4">
+    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="手機電話在大災害時常常壅塞或基地台壞掉。臺灣有全國通用的 1991 報平安留言平台，還要加上實體「家庭防災卡」，兩者互補才安全。">
+      <p class="font-semibold">Q1：有手機就不用家庭防災卡，直接打電話就好。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="要看災害！地震要就地掩護沒錯，但洪水、土石流警戒時必須向高處撤離；不能用同一種方法應付所有災害。">
+      <p class="font-semibold">Q2：不管什麼災害，躲在家裡最安全。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+    <div class="q4 border rounded-xl p-3" data-ans="true" data-hint="正確！WHO 指出熱相關死亡 20 年上升約 70%，65 歲以上長輩特別危險。夏天幫他們注意降溫、喝水很重要。">
+      <p class="font-semibold">Q3：熱浪來時，家裡的阿公阿嬤比年輕人更需要特別照顧。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="食物會過期、電池會漏液沒電！消防署建議每 6 個月檢查避難包一次，把過期物品換掉。">
+      <p class="font-semibold">Q4：緊急避難包裝好後就可以放著一輩子不用管。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+  </div>
+  <div id="q4-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 5：情境選擇（同理心 + 復原力）-->
+<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-emerald-700">💛 關卡 5：同學從災區轉學來，你會怎麼做？</h2>
+  <p class="mt-2 text-gray-600">小宇的家在莫拉克風災 15 年後的花蓮 0403 地震被震壞，全家搬到你的學校。他第一天來上課，眼眶紅紅的。你會怎麼做？（沒有標準答案，但每個選擇會有不同結果）</p>
+  <div class="space-y-3 mt-4">
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-emerald-50" data-c="A">A. 立刻衝過去問「你家真的全倒了嗎？」</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-emerald-50" data-c="B">B. 靜靜坐在他旁邊，等他想說再聽</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-emerald-50" data-c="C">C. 裝沒看見，等他自己交朋友</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-emerald-50" data-c="D">D. 分他一顆糖並說「歡迎來這個班，有需要跟我說」</button>
+  </div>
+  <div id="q5-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 6：全校行動挑戰（WSA 四面向）-->
+<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6 border-4 border-amber-400">
+  <h2 class="text-xl font-bold text-amber-700">🏫 關卡 6：全校行動挑戰（Whole School Approach）</h2>
+  <p class="mt-2 text-gray-700">四個面向，一起讓學校變成最安全的地方。請勾選你「本學期會嘗試」的行動，四項全勾，解鎖「全校英雄」徽章！</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <label class="flex items-start gap-3 p-4 border-2 border-blue-200 rounded-xl cursor-pointer hover:bg-blue-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="curriculum" />
+      <div>
+        <p class="font-bold text-blue-700">📚 課程整合</p>
+        <p class="text-sm">自然課認識颱風結構、健康課學 CPR 基礎、社會課訪問阿公阿嬤「921 / 莫拉克的故事」。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-green-200 rounded-xl cursor-pointer hover:bg-green-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="operations" />
+      <div>
+        <p class="font-bold text-green-700">🌳 校園營運</p>
+        <p class="text-sm">班級製作避難包（8 大類物品）+ 每學期地震+火災演練 2 次 + 固定高處重物。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-orange-200 rounded-xl cursor-pointer hover:bg-orange-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="community" />
+      <div>
+        <p class="font-bold text-orange-700">🤝 社區連結</p>
+        <p class="text-sm">邀請在地消防分隊、里長來校分享，與家長會合辦「家庭防災卡填卡日」。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-purple-200 rounded-xl cursor-pointer hover:bg-purple-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="agency" />
+      <div>
+        <p class="font-bold text-purple-700">🙋 學生治理</p>
+        <p class="text-sm">選出「防災小隊長」每月巡檢，向校務會議提出 1 個校園安全改善提案（例：樓梯防滑、走廊淨空）。</p>
+      </div>
+    </label>
+  </div>
+  <button onclick="checkWSA()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full shadow-lg">提交挑戰 🏆</button>
+  <div id="wsa-feedback" class="mt-4"></div>
+</section>
+
+<!-- 徽章與成果 -->
+<section id="result" class="hidden-step card bg-gradient-to-br from-yellow-100 to-amber-200 rounded-2xl shadow-2xl p-8 mb-6 text-center">
+  <div class="text-7xl mb-3 badge inline-block rounded-full bg-white p-6">🏆</div>
+  <h2 class="text-3xl font-extrabold text-amber-800">全校英雄 徽章解鎖！</h2>
+  <p class="mt-3 text-lg">你已經學會認識臺灣 <strong>5 大災害</strong>、<strong>8 類</strong>緊急避難包、<strong>1991</strong> 報平安、以及全校四面向行動，還為從災區來的同學學會了同理心！</p>
+
+  <div class="bg-white rounded-xl p-5 mt-5 text-left">
+    <h3 class="font-bold text-red-700 text-xl mb-2">🛡️ 三個延伸思考（帶回家跟家人討論）</h3>
+    <ol class="list-decimal ml-6 space-y-2">
+      <li>如果你家剛搬到一個新地方，你會先做哪 3 件防災準備？（提示：認識避難所、檢查危險、準備避難包）</li>
+      <li>想一位你最擔心的家人（阿公、阿嬤、小嬰兒），你可以怎麼為他 / 她特別準備（藥品、尿布、換洗衣物）？</li>
+      <li>如果學校只能改善一件事讓大家更安全，你會提什麼提案？寫成一張 A4 提案書，下週交給老師。</li>
+    </ol>
+  </div>
+
+  <!-- 家庭緊急應變計畫書 §4 -->
+  <div class="bg-white rounded-xl p-5 mt-5 text-left">
+    <h3 class="font-bold text-blue-700 text-xl mb-2">📝 §4 家庭緊急應變計畫書（印出來和家人一起填）</h3>
+    <table class="w-full text-sm border-collapse">
+      <tr class="bg-blue-50"><th class="border p-2 w-1/3">項目</th><th class="border p-2">我們家的計畫</th></tr>
+      <tr><td class="border p-2">疏散路線（主+備）</td><td class="border p-2 text-gray-400">例：主：大門→樓梯；備：後門→防火巷</td></tr>
+      <tr><td class="border p-2">集合地點 A / B</td><td class="border p-2 text-gray-400">例：A 樓下 7-11；B 附近公園</td></tr>
+      <tr><td class="border p-2">通訊方式</td><td class="border p-2 text-gray-400">1991 + 爸_____ 媽_____ 阿嬤_____</td></tr>
+      <tr><td class="border p-2">必要物資（8 類）</td><td class="border p-2 text-gray-400">水 / 食物 / 急救 / 手電筒 / 口哨 / 現金證件 / 保暖 / 藥品</td></tr>
+      <tr><td class="border p-2">特別需求家人</td><td class="border p-2 text-gray-400">例：阿嬤的血壓藥、弟弟的奶粉</td></tr>
+    </table>
+  </div>
+
+  <button onclick="window.print()" class="mt-5 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-full">🖨️ 列印成果頁</button>
+  <button onclick="location.reload()" class="mt-5 ml-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full">🔄 重新挑戰</button>
+</section>
+
+<footer class="text-center text-xs text-gray-500 pb-6">
+  資料來源：中央氣象署 CWA、內政部消防署、教育部防災教育資訊網、WHO 氣候變遷與健康、TCCIP／NCDR、Lancet Countdown 2023。教學套件 UNESCO 4.2-III ｜ 驗證日 2026-04-16
+</footer>
+
+</main>
+
+<script>
+let currentStep = 0;
+const steps = ['intro','level1','level2','level3','level4','level5','level6','result'];
+
+function showStep(i){
+  steps.forEach((s,idx)=>{
+    const el = document.getElementById(s);
+    if(!el) return;
+    if(idx===i) el.classList.remove('hidden-step');
+    else el.classList.add('hidden-step');
+  });
+  for(let k=1;k<=6;k++){
+    const d=document.getElementById('dot'+k);
+    d.classList.remove('done','active');
+    if(k < i) d.classList.add('done');
+    else if(k === i) d.classList.add('active');
+  }
+  const pt = document.getElementById('progressText');
+  if(i>=1 && i<=6) pt.textContent = `第 ${i} / 6 關`;
+  else if(i===7) pt.textContent = '完成！';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startMission(){ currentStep=1; showStep(1); }
+
+// Level 1
+document.querySelectorAll('.q1-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const fb = document.getElementById('q1-feedback');
+    if(btn.dataset.ans==='1'){
+      fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 答對了！中央氣象署統計，臺灣每年平均有 3-4 個颱風會影響（警報發布），所以颱風防災是我們最重要的基本功。</div>';
+      confetti();
+      setTimeout(()=>{currentStep=2;showStep(2);},1400);
+    } else {
+      btn.classList.add('shake');
+      fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再想想！提示：不是 1 個也不是 10 個以上，是在 3-4 這個區間。西北太平洋颱風多，但會影響臺灣的數量有限。</div>';
+    }
+  });
+});
+
+// Level 2 — drag & drop
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{
+    e.preventDefault(); z.classList.remove('over');
+    if(dragged){ z.querySelector('.drop-content').appendChild(dragged); }
+  });
+});
+function checkLevel2(){
+  const zones = document.querySelectorAll('.drop-zone');
+  let correct=0, total=6;
+  zones.forEach(z=>{
+    const risk = z.dataset.risk;
+    z.querySelectorAll('.drop-content .drag-item').forEach(it=>{
+      if(it.dataset.risk===risk) correct++;
+    });
+  });
+  const fb = document.getElementById('q2-feedback');
+  if(correct===total){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌟 全部配對正確！你已經學會家中危險獵人的基本功。回家跟爸媽一起畫一張家庭危險地圖吧！</div>';
+    confetti();
+    setTimeout(()=>{currentStep=3;showStep(3);},1500);
+  } else {
+    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 你答對 ${correct}/${total}。提示：書櫃與鏡子最怕地震倒下；延長線與低處插座最怕淹水導電；花盆最怕颱風吹落；瓦斯爐最怕引發火災。</div>`;
+  }
+}
+
+// Level 3
+let q3Correct=0, q3Total=3;
+document.querySelectorAll('.q3-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q3');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      q3Correct++;
+    } else {
+      btn.classList.add('bg-red-300','text-white','shake');
+      const correctBtn = parent.querySelector(`.q3-opt[data-v="${ans}"]`);
+      if(correctBtn) correctBtn.classList.add('bg-green-400','text-white');
+    }
+    parent.dataset.answered='1';
+    checkQ3Done();
+  });
+});
+function checkQ3Done(){
+  const answered = document.querySelectorAll('.q3[data-answered="1"]').length;
+  if(answered===q3Total){
+    document.getElementById('q3-feedback').innerHTML =
+      `<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🚦 你答對 ${q3Correct}/${q3Total}！口訣：地震蹲掩穩、淹水往高走、颱風遠離窗。</div>`;
+    confetti();
+    setTimeout(()=>{currentStep=4;showStep(4);},1400);
+  }
+}
+
+// Level 4
+let q4Done=0, q4Total=4;
+document.querySelectorAll('.q4-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q4');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    const hint = parent.dataset.hint;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-green-700 text-sm">✅ 正確！${hint}</p>`);
+    } else {
+      btn.classList.add('bg-red-300','shake');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-rose-700 text-sm">💡 再想想：${hint}</p>`);
+    }
+    parent.dataset.answered='1';
+    q4Done++;
+    if(q4Done===q4Total){
+      document.getElementById('q4-feedback').innerHTML='<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎯 迷思破解完成！你已經贏過很多大人了。</div>';
+      confetti();
+      setTimeout(()=>{currentStep=5;showStep(5);},1500);
+    }
+  });
+});
+
+// Level 5 — choice consequences
+const choiceFeedback = {
+  A: { tone:'warn', text:'⚠️ 剛經歷災難的人，被追問細節會讓傷口再打開。先傾聽，不急著問。' },
+  B: { tone:'ok', text:'🌙 靜靜陪伴是很好的起點。如果你也能主動微笑或分享一句「歡迎」會更棒。' },
+  C: { tone:'warn', text:'😔 裝沒看見會讓小宇更孤單。一個小動作就能改變別人的一天。' },
+  D: { tone:'best', text:'🌟 最棒的答案！不追問、不裝沒看見，用小小的善意（糖、一句歡迎）打開門。這就是同理心最溫柔的行動。' }
+};
+document.querySelectorAll('.choice').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(document.getElementById('level5').dataset.answered) return;
+    document.getElementById('level5').dataset.answered='1';
+    const c = choiceFeedback[btn.dataset.c];
+    const color = c.tone==='best'?'green':(c.tone==='ok'?'blue':'yellow');
+    btn.classList.add('bg-'+color+'-100','border-'+color+'-500');
+    document.getElementById('q5-feedback').innerHTML =
+      `<div class="feedback-pop bg-${color}-100 border-l-4 border-${color}-500 p-3 rounded">${c.text}</div>`;
+    if(c.tone==='best') confetti();
+    setTimeout(()=>{currentStep=6;showStep(6);},2200);
+  });
+});
+
+// Level 6 — WSA
+function checkWSA(){
+  const boxes = document.querySelectorAll('.wsa');
+  const all = Array.from(boxes).every(b=>b.checked);
+  const fb = document.getElementById('wsa-feedback');
+  if(all){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-4 rounded text-lg">🏅 四面向全勾選！你就是我們班的全校英雄防災隊！</div>';
+    confetti(60);
+    setTimeout(()=>{currentStep=7;showStep(7);},1800);
+  } else {
+    const cnt = Array.from(boxes).filter(b=>b.checked).length;
+    fb.innerHTML = `<div class="feedback-pop bg-amber-100 border-l-4 border-amber-500 p-3 rounded">你選了 ${cnt}/4 個面向。全校英雄需要「課程、校園、社區、學生」四面向一起行動，每個都很重要！再想想你可以怎麼參與剩下的面向？</div>`;
+  }
+}
+
+// Confetti
+function confetti(n=30){
+  const colors=['#ef4444','#f97316','#eab308','#22c55e','#3b82f6','#a855f7'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.top='-20px';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*0.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+</script>
+</body>
+</html>

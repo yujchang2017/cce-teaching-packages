@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.6-V 氣候資訊偵探學院 — 破解錯誤資訊互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @keyframes confetti-fall {
+    0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(120px) rotate(720deg); opacity: 0; }
+  }
+  .confetti-piece {
+    position: fixed;
+    width: 10px; height: 10px;
+    animation: confetti-fall 1.5s ease-out forwards;
+    z-index: 9999;
+    pointer-events: none;
+  }
+  @keyframes badge-pop {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+  .badge-animate { animation: badge-pop 0.5s ease-out forwards; }
+  .progress-bar-fill { transition: width 0.5s ease-in-out; }
+  svg text { pointer-events: none; }
+  .stage-card { transition: all 0.3s ease; }
+  .stage-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .tooltip { position: relative; }
+  .tooltip::after {
+    content: attr(data-tip);
+    position: absolute; bottom: 100%; left: 50%;
+    transform: translateX(-50%); padding: 4px 8px;
+    background: #1f2937; color: white; border-radius: 4px;
+    font-size: 12px; white-space: nowrap;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .tooltip:hover::after { opacity: 1; }
+  textarea:focus { outline: none; box-shadow: 0 0 0 3px rgba(59,130,246,0.3); }
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<div id="app" class="max-w-4xl mx-auto px-4 py-6">
+
+  <!-- Header -->
+  <header class="text-center mb-6">
+    <h1 class="text-3xl font-bold text-blue-800 mb-2">氣候資訊偵探學院</h1>
+    <p class="text-gray-600">Key ID: 4.6-V ｜ 16-18 歲 ｜ 破解氣候錯誤資訊</p>
+    <div class="mt-3 bg-white rounded-full shadow px-4 py-2 inline-flex items-center gap-3">
+      <span class="text-sm text-gray-500">學院進度</span>
+      <div class="w-48 h-3 bg-gray-200 rounded-full overflow-hidden">
+        <div id="progressBar" class="progress-bar-fill h-full bg-gradient-to-r from-blue-500 to-green-500 rounded-full" style="width:0%"></div>
+      </div>
+      <span id="progressText" class="text-sm font-bold text-blue-700">0%</span>
+      <span id="scoreDisplay" class="text-sm font-bold text-amber-600 ml-2">🏅 0 分</span>
+    </div>
+  </header>
+
+  <!-- Stage Navigation -->
+  <nav class="flex flex-wrap justify-center gap-2 mb-6" id="stageNav">
+    <button onclick="goToStage(0)" class="stage-nav-btn px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-700" data-stage="0">1. FLICC 診斷</button>
+    <button onclick="goToStage(1)" class="stage-nav-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-400" data-stage="1" disabled>2. 認知偏誤</button>
+    <button onclick="goToStage(2)" class="stage-nav-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-400" data-stage="2" disabled>3. 歷史偵探</button>
+    <button onclick="goToStage(3)" class="stage-nav-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-400" data-stage="3" disabled>4. 資料詮釋</button>
+    <button onclick="goToStage(4)" class="stage-nav-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-400" data-stage="4" disabled>5. 倫理兩難</button>
+    <button onclick="goToStage(5)" class="stage-nav-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-400" data-stage="5" disabled>6. CER 論證</button>
+    <button onclick="goToStage(6)" class="stage-nav-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-400" data-stage="6" disabled>7. 系統思考</button>
+    <button onclick="goToStage(7)" class="stage-nav-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-400" data-stage="7" disabled>8. 後設認知</button>
+    <button onclick="goToStage(8)" class="stage-nav-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-400" data-stage="8" disabled>WSA 挑戰</button>
+  </nav>
+
+  <!-- ========== STAGE 0: FLICC Diagnosis ========== -->
+  <section id="stage0" class="bg-white rounded-2xl shadow-md p-6 mb-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-3xl">🔍</span>
+      <div>
+        <h2 class="text-xl font-bold text-gray-800">關卡 1：FLICC 否認策略診斷室</h2>
+        <p class="text-sm text-gray-500">情境：你是校園氣候資訊查核中心的實習生，需要診斷社群媒體上的可疑貼文。</p>
+      </div>
+    </div>
+    <p class="text-sm text-blue-700 bg-blue-50 rounded-lg p-3 mb-4">
+      📊 <strong>真實數據</strong>：FLICC 架構辨識出五大科學否認策略。研究顯示預先接種教學法可提升辨識能力 20-30%。（data_card dp2）
+    </p>
+
+    <div id="flicc-questions">
+      <!-- Q1 -->
+      <div class="border rounded-lg p-4 mb-4" id="flicc-q1">
+        <p class="font-medium text-gray-800 mb-2">貼文 1：「某知名物理學家指出，太陽活動週期才是全球暖化的真正原因，IPCC 的報告充滿偏見。」</p>
+        <p class="text-sm text-gray-500 mb-3">這則貼文最主要使用了哪一種 FLICC 否認策略？</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button onclick="checkFLICC(1,'F')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="1" data-val="F">F — 偽專家（Fake experts）</button>
+          <button onclick="checkFLICC(1,'L')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="1" data-val="L">L — 邏輯謬誤（Logical fallacies）</button>
+          <button onclick="checkFLICC(1,'I')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="1" data-val="I">I — 不可能的期望（Impossible expectations）</button>
+          <button onclick="checkFLICC(1,'C1')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="1" data-val="C1">C — 選擇性引用（Cherry picking）</button>
+          <button onclick="checkFLICC(1,'C2')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="1" data-val="C2">C — 陰謀論（Conspiracy theories）</button>
+        </div>
+        <div id="flicc-fb1" class="mt-3 hidden"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="border rounded-lg p-4 mb-4" id="flicc-q2">
+        <p class="font-medium text-gray-800 mb-2">貼文 2：「看看 1998-2012 年的溫度數據，全球暖化明顯已經停止了！」</p>
+        <p class="text-sm text-gray-500 mb-3">這則貼文最主要使用了哪一種 FLICC 否認策略？</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button onclick="checkFLICC(2,'F')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="2" data-val="F">F — 偽專家</button>
+          <button onclick="checkFLICC(2,'L')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="2" data-val="L">L — 邏輯謬誤</button>
+          <button onclick="checkFLICC(2,'I')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="2" data-val="I">I — 不可能的期望</button>
+          <button onclick="checkFLICC(2,'C1')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="2" data-val="C1">C — 選擇性引用</button>
+          <button onclick="checkFLICC(2,'C2')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="2" data-val="C2">C — 陰謀論</button>
+        </div>
+        <div id="flicc-fb2" class="mt-3 hidden"></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="border rounded-lg p-4 mb-4" id="flicc-q3">
+        <p class="font-medium text-gray-800 mb-2">貼文 3：「科學家連明天的天氣都預測不準，怎麼可能預測 50 年後的氣候？」</p>
+        <p class="text-sm text-gray-500 mb-3">這則貼文最主要使用了哪一種 FLICC 否認策略？</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button onclick="checkFLICC(3,'F')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="3" data-val="F">F — 偽專家</button>
+          <button onclick="checkFLICC(3,'L')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="3" data-val="L">L — 邏輯謬誤</button>
+          <button onclick="checkFLICC(3,'I')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="3" data-val="I">I — 不可能的期望</button>
+          <button onclick="checkFLICC(3,'C1')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="3" data-val="C1">C — 選擇性引用</button>
+          <button onclick="checkFLICC(3,'C2')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="3" data-val="C2">C — 陰謀論</button>
+        </div>
+        <div id="flicc-fb3" class="mt-3 hidden"></div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="border rounded-lg p-4 mb-4" id="flicc-q4">
+        <p class="font-medium text-gray-800 mb-2">貼文 4：「氣候變遷根本是全球菁英為了推動碳稅賺錢而編造的騙局，那些科學家都是被收買的。」</p>
+        <p class="text-sm text-gray-500 mb-3">這則貼文最主要使用了哪一種 FLICC 否認策略？</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button onclick="checkFLICC(4,'F')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="4" data-val="F">F — 偽專家</button>
+          <button onclick="checkFLICC(4,'L')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="4" data-val="L">L — 邏輯謬誤</button>
+          <button onclick="checkFLICC(4,'I')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="4" data-val="I">I — 不可能的期望</button>
+          <button onclick="checkFLICC(4,'C1')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="4" data-val="C1">C — 選擇性引用</button>
+          <button onclick="checkFLICC(4,'C2')" class="flicc-btn text-left px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition" data-q="4" data-val="C2">C — 陰謀論</button>
+        </div>
+        <div id="flicc-fb4" class="mt-3 hidden"></div>
+      </div>
+    </div>
+
+    <button id="stage0-next" onclick="completeStage(0)" class="hidden w-full mt-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition">
+      前往下一關 →
+    </button>
+  </section>
+
+  <!-- ========== STAGE 1: Cognitive Bias ========== -->
+  <section id="stage1" class="bg-white rounded-2xl shadow-md p-6 mb-6 hidden">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-3xl">🧠</span>
+      <div>
+        <h2 class="text-xl font-bold text-gray-800">關卡 2：認知偏誤實驗室</h2>
+        <p class="text-sm text-gray-500">情境：你是認知心理學研究助理，負責分析人們為何容易被氣候錯誤資訊影響。</p>
+      </div>
+    </div>
+    <p class="text-sm text-blue-700 bg-blue-50 rounded-lg p-3 mb-4">
+      📊 <strong>真實數據</strong>：損失框架比獲得框架更能促進行為改變約 20%；接觸陰謀論式否認內容後，支持氣候行動意願下降 10-15%。（data_card dp7）
+    </p>
+
+    <!-- Framing Effect Exercise -->
+    <div class="border rounded-lg p-4 mb-4">
+      <p class="font-medium text-gray-800 mb-3">框架效應體驗：以下兩段描述在數學上等價，但你覺得哪一段更能促使你採取行動？</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+        <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+          <p class="font-medium text-red-800">A（損失框架）：</p>
+          <p class="text-sm text-red-700">「若不採取行動，到 2050 年全球每年將有 25 萬人因氣候相關因素額外死亡。」</p>
+        </div>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+          <p class="font-medium text-green-800">B（獲得框架）：</p>
+          <p class="text-sm text-green-700">「若積極行動，到 2050 年我們每年可以拯救 25 萬條因氣候相關因素可能失去的生命。」</p>
+        </div>
+      </div>
+      <div class="flex gap-3 mb-3">
+        <button onclick="selectFrame('A')" id="frame-a-btn" class="flex-1 py-2 border-2 border-gray-300 rounded-lg hover:border-red-400 transition font-medium">選 A</button>
+        <button onclick="selectFrame('B')" id="frame-b-btn" class="flex-1 py-2 border-2 border-gray-300 rounded-lg hover:border-green-400 transition font-medium">選 B</button>
+      </div>
+      <div id="frame-feedback" class="hidden"></div>
+    </div>
+
+    <!-- Open-ended reflection 1 -->
+    <div class="border rounded-lg p-4 mb-4">
+      <p class="font-medium text-gray-800 mb-2">開放式反思 ①：你認為確認偏誤如何影響你平常接收氣候資訊的方式？請舉一個你自身的具體例子。（至少 50 字）</p>
+      <textarea id="reflection1" rows="4" class="w-full border rounded-lg p-3 text-sm resize-y" placeholder="寫下你的反思..."></textarea>
+      <div class="flex justify-between items-center mt-2">
+        <span id="ref1-count" class="text-xs text-gray-400">0 字</span>
+        <button onclick="submitReflection(1)" id="ref1-btn" class="px-4 py-1.5 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition disabled:opacity-50" disabled>提交反思</button>
+      </div>
+      <div id="ref1-feedback" class="mt-2 hidden"></div>
+    </div>
+
+    <button id="stage1-next" onclick="completeStage(1)" class="hidden w-full mt-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition">
+      前往下一關 →
+    </button>
+  </section>
+
+  <!-- ========== STAGE 2: Historical Detective ========== -->
+  <section id="stage2" class="bg-white rounded-2xl shadow-md p-6 mb-6 hidden">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-3xl">🕵️</span>
+      <div>
+        <h2 class="text-xl font-bold text-gray-800">關卡 3：歷史偵探 — 企業否認時間線</h2>
+        <p class="text-sm text-gray-500">情境：你是調查記者，追蹤化石燃料產業的氣候否認歷史。</p>
+      </div>
+    </div>
+    <p class="text-sm text-blue-700 bg-blue-50 rounded-lg p-3 mb-4">
+      📊 <strong>真實數據</strong>：化石燃料產業 2000-2016 年間投入超過 $1B 遊說；ExxonMobil 內部科學家自 1977 年即已知其產品導致暖化。（data_card dp1, dp6）
+    </p>
+
+    <!-- Timeline sorting -->
+    <div class="border rounded-lg p-4 mb-4">
+      <p class="font-medium text-gray-800 mb-3">將以下事件按正確的時間順序排列（拖拉或點選數字）：</p>
+      <div id="timeline-items" class="space-y-2">
+        <div class="timeline-item flex items-center gap-3 bg-gray-50 rounded-lg p-3 cursor-pointer" data-correct="2" onclick="selectTimelineOrder(this)">
+          <span class="timeline-order w-8 h-8 rounded-full bg-gray-300 text-white flex items-center justify-center font-bold text-sm"></span>
+          <p class="text-sm">Global Climate Coalition 成立，化石燃料企業聯合反對氣候立法</p>
+        </div>
+        <div class="timeline-item flex items-center gap-3 bg-gray-50 rounded-lg p-3 cursor-pointer" data-correct="4" onclick="selectTimelineOrder(this)">
+          <span class="timeline-order w-8 h-8 rounded-full bg-gray-300 text-white flex items-center justify-center font-bold text-sm"></span>
+          <p class="text-sm">《巴黎協定》簽署，195 國承諾控制升溫</p>
+        </div>
+        <div class="timeline-item flex items-center gap-3 bg-gray-50 rounded-lg p-3 cursor-pointer" data-correct="1" onclick="selectTimelineOrder(this)">
+          <span class="timeline-order w-8 h-8 rounded-full bg-gray-300 text-white flex items-center justify-center font-bold text-sm"></span>
+          <p class="text-sm">ExxonMobil 內部科學家報告化石燃料將導致全球暖化</p>
+        </div>
+        <div class="timeline-item flex items-center gap-3 bg-gray-50 rounded-lg p-3 cursor-pointer" data-correct="5" onclick="selectTimelineOrder(this)">
+          <span class="timeline-order w-8 h-8 rounded-full bg-gray-300 text-white flex items-center justify-center font-bold text-sm"></span>
+          <p class="text-sm">臺灣修訂《氣候變遷因應法》，碳費制度上路</p>
+        </div>
+        <div class="timeline-item flex items-center gap-3 bg-gray-50 rounded-lg p-3 cursor-pointer" data-correct="3" onclick="selectTimelineOrder(this)">
+          <span class="timeline-order w-8 h-8 rounded-full bg-gray-300 text-white flex items-center justify-center font-bold text-sm"></span>
+          <p class="text-sm">否認運動高峰期，大量資金投入質疑氣候科學</p>
+        </div>
+      </div>
+      <button onclick="checkTimeline()" id="timeline-check-btn" class="mt-3 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50" disabled>檢查順序</button>
+      <div id="timeline-feedback" class="mt-3 hidden"></div>
+    </div>
+
+    <button id="stage2-next" onclick="completeStage(2)" class="hidden w-full mt-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition">
+      前往下一關 →
+    </button>
+  </section>
+
+  <!-- ========== STAGE 3: Data Interpretation ========== -->
+  <section id="stage3" class="bg-white rounded-2xl shadow-md p-6 mb-6 hidden">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-3xl">📊</span>
+      <div>
+        <h2 class="text-xl font-bold text-gray-800">關卡 4：資料詮釋 — 圖表會說謊嗎？</h2>
+        <p class="text-sm text-gray-500">情境：你收到一份氣候數據圖表，需要判斷它是否被操縱過。</p>
+      </div>
+    </div>
+    <p class="text-sm text-blue-700 bg-blue-50 rounded-lg p-3 mb-4">
+      📊 <strong>真實數據</strong>：臺灣過去 110 年升溫約 1.6°C，為全球平均的 1.5 倍。97% 氣候科學家同意人為暖化。（data_card dp3, dp8）
+    </p>
+
+    <!-- SVG Chart -->
+    <div class="border rounded-lg p-4 mb-4">
+      <p class="font-medium text-gray-800 mb-3">下方有兩張圖表，顯示同一組全球溫度資料，但起止年份不同。請分析差異。</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="bg-gray-50 rounded-lg p-3">
+          <p class="text-sm font-medium text-center mb-2 text-red-700">圖 A：1998-2012 年全球溫度距平</p>
+          <svg viewBox="0 0 300 160" class="w-full">
+            <rect x="40" y="10" width="250" height="120" fill="#f9fafb" stroke="#e5e7eb"/>
+            <line x1="40" y1="130" x2="290" y2="130" stroke="#9ca3af" stroke-width="1"/>
+            <line x1="40" y1="10" x2="40" y2="130" stroke="#9ca3af" stroke-width="1"/>
+            <polyline points="50,35 67,40 84,42 101,38 118,45 135,43 152,40 169,42 186,44 203,41 220,39 237,43 254,40 271,38" fill="none" stroke="#ef4444" stroke-width="2"/>
+            <text x="165" y="155" text-anchor="middle" font-size="10" fill="#6b7280">年份 (1998-2012)</text>
+            <text x="15" y="75" text-anchor="middle" font-size="9" fill="#6b7280" transform="rotate(-90,15,75)">溫度距平 °C</text>
+            <text x="40" y="143" font-size="8" fill="#9ca3af">1998</text>
+            <text x="271" y="143" font-size="8" fill="#9ca3af">2012</text>
+            <text x="35" y="40" font-size="8" fill="#9ca3af" text-anchor="end">0.6</text>
+            <text x="35" y="90" font-size="8" fill="#9ca3af" text-anchor="end">0.3</text>
+            <text x="35" y="133" font-size="8" fill="#9ca3af" text-anchor="end">0.0</text>
+          </svg>
+          <p class="text-xs text-center text-gray-500 mt-1">看起來暖化「停滯」了？</p>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-3">
+          <p class="text-sm font-medium text-center mb-2 text-blue-700">圖 B：1970-2025 年全球溫度距平</p>
+          <svg viewBox="0 0 300 160" class="w-full">
+            <rect x="40" y="10" width="250" height="120" fill="#f9fafb" stroke="#e5e7eb"/>
+            <line x1="40" y1="130" x2="290" y2="130" stroke="#9ca3af" stroke-width="1"/>
+            <line x1="40" y1="10" x2="40" y2="130" stroke="#9ca3af" stroke-width="1"/>
+            <polyline points="50,120 60,118 70,115 80,112 90,108 100,105 110,100 120,95 130,90 140,88 150,85 160,80 170,75 180,68 190,65 200,58 210,52 220,48 230,42 240,38 250,32 260,28 270,22 280,18" fill="none" stroke="#3b82f6" stroke-width="2"/>
+            <rect x="165" y="50" width="60" height="22" fill="#fef2f2" stroke="#fca5a5" rx="2"/>
+            <text x="195" y="63" text-anchor="middle" font-size="8" fill="#ef4444">圖A的範圍</text>
+            <text x="165" y="155" text-anchor="middle" font-size="10" fill="#6b7280">年份 (1970-2025)</text>
+            <text x="15" y="75" text-anchor="middle" font-size="9" fill="#6b7280" transform="rotate(-90,15,75)">溫度距平 °C</text>
+            <text x="40" y="143" font-size="8" fill="#9ca3af">1970</text>
+            <text x="280" y="143" font-size="8" fill="#9ca3af">2025</text>
+            <text x="35" y="25" font-size="8" fill="#9ca3af" text-anchor="end">1.2</text>
+            <text x="35" y="75" font-size="8" fill="#9ca3af" text-anchor="end">0.6</text>
+            <text x="35" y="125" font-size="8" fill="#9ca3af" text-anchor="end">0.0</text>
+          </svg>
+          <p class="text-xs text-center text-gray-500 mt-1">完整時間序列顯示明確升溫趨勢</p>
+        </div>
+      </div>
+
+      <p class="font-medium text-gray-800 mb-2">問題：圖 A 使用了哪一種 FLICC 策略來製造「暖化停滯」的假象？</p>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
+        <button onclick="checkDataQ('cherry')" class="data-btn px-4 py-2 border rounded-lg hover:border-blue-400 hover:bg-blue-50 transition text-sm">選擇性引用（Cherry picking）</button>
+        <button onclick="checkDataQ('fake')" class="data-btn px-4 py-2 border rounded-lg hover:border-blue-400 hover:bg-blue-50 transition text-sm">偽專家（Fake experts）</button>
+        <button onclick="checkDataQ('impossible')" class="data-btn px-4 py-2 border rounded-lg hover:border-blue-400 hover:bg-blue-50 transition text-sm">不可能的期望</button>
+      </div>
+      <div id="data-feedback" class="hidden"></div>
+    </div>
+
+    <button id="stage3-next" onclick="completeStage(3)" class="hidden w-full mt-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition">
+      前往下一關 →
+    </button>
+  </section>
+
+  <!-- ========== STAGE 4: Ethical Dilemma ========== -->
+  <section id="stage4" class="bg-white rounded-2xl shadow-md p-6 mb-6 hidden">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-3xl">⚖️</span>
+      <div>
+        <h2 class="text-xl font-bold text-gray-800">關卡 5：倫理兩難 — 言論自由 vs 公共安全</h2>
+        <p class="text-sm text-gray-500">情境：你是校園辯論社顧問，需要分析一個沒有標準答案的倫理議題。</p>
+      </div>
+    </div>
+    <p class="text-sm text-amber-700 bg-amber-50 rounded-lg p-3 mb-4">
+      ⚠️ <strong>注意</strong>：這題沒有標準答案。我們評估的是你的論述品質，而非立場本身。
+    </p>
+
+    <div class="border rounded-lg p-4 mb-4">
+      <div class="bg-gray-100 rounded-lg p-4 mb-4">
+        <p class="font-medium text-gray-800 mb-2">情境描述：</p>
+        <p class="text-sm text-gray-700">某社群媒體平台決定開始標記「可能含有氣候錯誤資訊」的貼文，並降低其觸及率。一位氣候懷疑論者抗議這是「言論審查」，認為每個人都有權表達對氣候科學的質疑。同時，一位氣候科學家指出，WHO 數據顯示延遲行動每年造成 25 萬人額外死亡（dp5），放任錯誤資訊傳播等於助長傷害。UNESCO 指出全球不到 30% 的課綱涵蓋氣候媒體素養（dp4），教育系統還沒準備好讓公眾自行判斷。</p>
+      </div>
+      <p class="font-medium text-gray-800 mb-2">你認為社群平台應該標記並降低氣候錯誤資訊的觸及率嗎？請論述你的理由。（至少 80 字）</p>
+      <textarea id="ethical-response" rows="5" class="w-full border rounded-lg p-3 text-sm resize-y" placeholder="這是一個倫理兩難問題，沒有絕對的對錯。請思考言論自由、公共安全、教育責任等多個面向..."></textarea>
+      <div class="flex justify-between items-center mt-2">
+        <span id="ethical-count" class="text-xs text-gray-400">0 字</span>
+        <button onclick="submitEthical()" id="ethical-btn" class="px-4 py-1.5 bg-amber-600 text-white text-sm rounded-lg hover:bg-amber-700 transition disabled:opacity-50" disabled>提交論述</button>
+      </div>
+      <div id="ethical-feedback" class="mt-2 hidden"></div>
+    </div>
+
+    <button id="stage4-next" onclick="completeStage(4)" class="hidden w-full mt-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition">
+      前往下一關 →
+    </button>
+  </section>
+
+  <!-- ========== STAGE 5: CER Argumentation ========== -->
+  <section id="stage5" class="bg-white rounded-2xl shadow-md p-6 mb-6 hidden">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-3xl">📝</span>
+      <div>
+        <h2 class="text-xl font-bold text-gray-800">關卡 6：CER 論證寫作</h2>
+        <p class="text-sm text-gray-500">情境：你正在撰寫一篇氣候傳播學期報告，需要用科學論證架構組織論點。</p>
+      </div>
+    </div>
+
+    <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-4">
+      <p class="font-medium text-indigo-800 mb-2">CER 架構說明：</p>
+      <ul class="text-sm text-indigo-700 space-y-1">
+        <li><strong>C（Claim / 主張）</strong>：你的核心論點，一句話表述清楚</li>
+        <li><strong>E（Evidence / 證據）</strong>：引用具體數據或事實支持你的主張</li>
+        <li><strong>R（Reasoning / 推理）</strong>：解釋證據如何邏輯上支持你的主張</li>
+      </ul>
+      <p class="text-sm text-indigo-600 mt-2">範例主張：「氣候錯誤資訊對公共健康造成直接傷害。」</p>
+    </div>
+
+    <div class="border rounded-lg p-4 mb-4">
+      <p class="font-medium text-gray-800 mb-3">題目：「教育是對抗氣候錯誤資訊最有效的長期策略。」你同意或不同意？請用 CER 架構論述。</p>
+
+      <div class="space-y-3">
+        <div>
+          <label class="text-sm font-medium text-blue-700">C（Claim / 主張）：</label>
+          <textarea id="cer-claim" rows="2" class="w-full border rounded-lg p-2 text-sm mt-1" placeholder="你的核心論點..."></textarea>
+        </div>
+        <div>
+          <label class="text-sm font-medium text-green-700">E（Evidence / 證據）— 請引用至少 1 筆具體數據：</label>
+          <textarea id="cer-evidence" rows="3" class="w-full border rounded-lg p-2 text-sm mt-1" placeholder="引用 data_card 中的數據或其他可靠來源..."></textarea>
+        </div>
+        <div>
+          <label class="text-sm font-medium text-purple-700">R（Reasoning / 推理）：</label>
+          <textarea id="cer-reasoning" rows="3" class="w-full border rounded-lg p-2 text-sm mt-1" placeholder="解釋你的證據如何支持主張..."></textarea>
+        </div>
+      </div>
+      <div class="flex justify-between items-center mt-3">
+        <span id="cer-count" class="text-xs text-gray-400">C: 0 字 / E: 0 字 / R: 0 字</span>
+        <button onclick="submitCER()" id="cer-btn" class="px-4 py-1.5 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition disabled:opacity-50" disabled>提交 CER 論證</button>
+      </div>
+      <div id="cer-feedback" class="mt-2 hidden"></div>
+    </div>
+
+    <button id="stage5-next" onclick="completeStage(5)" class="hidden w-full mt-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition">
+      前往下一關 →
+    </button>
+  </section>
+
+  <!-- ========== STAGE 6: Systems Thinking ========== -->
+  <section id="stage6" class="bg-white rounded-2xl shadow-md p-6 mb-6 hidden">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-3xl">🔄</span>
+      <div>
+        <h2 class="text-xl font-bold text-gray-800">關卡 7：系統思考 — 錯誤資訊的回饋循環</h2>
+        <p class="text-sm text-gray-500">情境：你是系統分析師，需要繪製氣候錯誤資訊的因果迴路。</p>
+      </div>
+    </div>
+
+    <div class="border rounded-lg p-4 mb-4">
+      <p class="font-medium text-gray-800 mb-3">下方是一個氣候錯誤資訊的因果迴路圖。請判斷每個箭頭的方向（正向 + 或反向 -）。</p>
+
+      <div class="bg-gray-50 rounded-lg p-4 mb-4 flex justify-center">
+        <svg viewBox="0 0 500 320" class="w-full max-w-lg">
+          <!-- Nodes -->
+          <rect x="180" y="10" width="140" height="40" rx="8" fill="#fef2f2" stroke="#f87171" stroke-width="2"/>
+          <text x="250" y="35" text-anchor="middle" font-size="12" fill="#991b1b" font-weight="bold">氣候錯誤資訊量</text>
+
+          <rect x="350" y="100" width="130" height="40" rx="8" fill="#fefce8" stroke="#facc15" stroke-width="2"/>
+          <text x="415" y="125" text-anchor="middle" font-size="12" fill="#854d0e" font-weight="bold">公眾認知混亂</text>
+
+          <rect x="350" y="200" width="130" height="40" rx="8" fill="#f0fdf4" stroke="#4ade80" stroke-width="2"/>
+          <text x="415" y="225" text-anchor="middle" font-size="12" fill="#166534" font-weight="bold">氣候政策延遲</text>
+
+          <rect x="160" y="260" width="160" height="40" rx="8" fill="#eff6ff" stroke="#60a5fa" stroke-width="2"/>
+          <text x="240" y="285" text-anchor="middle" font-size="12" fill="#1e40af" font-weight="bold">碳排放持續增加</text>
+
+          <rect x="20" y="140" width="130" height="40" rx="8" fill="#faf5ff" stroke="#a78bfa" stroke-width="2"/>
+          <text x="85" y="165" text-anchor="middle" font-size="12" fill="#5b21b6" font-weight="bold">化石燃料利潤</text>
+
+          <!-- Arrows -->
+          <path d="M 300 50 Q 370 70 365 100" fill="none" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+          <path d="M 415 140 L 415 200" fill="none" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+          <path d="M 370 240 Q 310 260 300 260" fill="none" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+          <path d="M 170 280 Q 60 260 70 180" fill="none" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+          <path d="M 85 140 Q 120 60 185 30" fill="none" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+            </marker>
+          </defs>
+
+          <!-- Labels for arrows -->
+          <circle cx="345" cy="70" r="14" fill="white" stroke="#d1d5db"/>
+          <text x="345" y="74" text-anchor="middle" font-size="12" fill="#666" id="arrow1-label">?</text>
+
+          <circle cx="430" cy="170" r="14" fill="white" stroke="#d1d5db"/>
+          <text x="430" y="174" text-anchor="middle" font-size="12" fill="#666" id="arrow2-label">?</text>
+
+          <circle cx="340" cy="255" r="14" fill="white" stroke="#d1d5db"/>
+          <text x="340" y="259" text-anchor="middle" font-size="12" fill="#666" id="arrow3-label">?</text>
+
+          <circle cx="100" cy="235" r="14" fill="white" stroke="#d1d5db"/>
+          <text x="100" y="239" text-anchor="middle" font-size="12" fill="#666" id="arrow4-label">?</text>
+
+          <circle cx="120" cy="75" r="14" fill="white" stroke="#d1d5db"/>
+          <text x="120" y="79" text-anchor="middle" font-size="12" fill="#666" id="arrow5-label">?</text>
+        </svg>
+      </div>
+
+      <p class="text-sm text-gray-600 mb-3">點選每個箭頭旁的「?」來標記方向（+ 表示同向增強，- 表示反向抑制）：</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-sm">① 錯誤資訊 → 認知混亂：</span>
+          <button onclick="setArrow(1,'+')" class="arrow-btn px-3 py-1 border rounded text-sm" data-arrow="1" data-val="+">+</button>
+          <button onclick="setArrow(1,'-')" class="arrow-btn px-3 py-1 border rounded text-sm" data-arrow="1" data-val="-">-</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-sm">② 認知混亂 → 政策延遲：</span>
+          <button onclick="setArrow(2,'+')" class="arrow-btn px-3 py-1 border rounded text-sm" data-arrow="2" data-val="+">+</button>
+          <button onclick="setArrow(2,'-')" class="arrow-btn px-3 py-1 border rounded text-sm" data-arrow="2" data-val="-">-</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-sm">③ 政策延遲 → 碳排增加：</span>
+          <button onclick="setArrow(3,'+')" class="arrow-btn px-3 py-1 border rounded text-sm" data-arrow="3" data-val="+">+</button>
+          <button onclick="setArrow(3,'-')" class="arrow-btn px-3 py-1 border rounded text-sm" data-arrow="3" data-val="-">-</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-sm">④ 碳排增加 → 化石燃料利潤：</span>
+          <button onclick="setArrow(4,'+')" class="arrow-btn px-3 py-1 border rounded text-sm" data-arrow="4" data-val="+">+</button>
+          <button onclick="setArrow(4,'-')" class="arrow-btn px-3 py-1 border rounded text-sm" data-arrow="4" data-val="-">-</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-sm">⑤ 化石燃料利潤 → 錯誤資訊：</span>
+          <button onclick="setArrow(5,'+')" class="arrow-btn px-3 py-1 border rounded text-sm" data-arrow="5" data-val="+">+</button>
+          <button onclick="setArrow(5,'-')" class="arrow-btn px-3 py-1 border rounded text-sm" data-arrow="5" data-val="-">-</button>
+        </div>
+      </div>
+      <button onclick="checkSystemLoop()" id="system-check-btn" class="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition disabled:opacity-50" disabled>檢查回饋循環</button>
+      <div id="system-feedback" class="mt-3 hidden"></div>
+    </div>
+
+    <button id="stage6-next" onclick="completeStage(6)" class="hidden w-full mt-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition">
+      前往下一關 →
+    </button>
+  </section>
+
+  <!-- ========== STAGE 7: Metacognition ========== -->
+  <section id="stage7" class="bg-white rounded-2xl shadow-md p-6 mb-6 hidden">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-3xl">🪞</span>
+      <div>
+        <h2 class="text-xl font-bold text-gray-800">關卡 8：後設認知反思</h2>
+        <p class="text-sm text-gray-500">最後一關：回顧你的學習歷程，反思你的思考改變了嗎？</p>
+      </div>
+    </div>
+
+    <div class="border rounded-lg p-4 mb-4">
+      <p class="font-medium text-gray-800 mb-2">開放式反思 ②：經過這份學習單的所有關卡，你對「氣候資訊」的看法有什麼改變？你覺得自己最大的認知盲點是什麼？未來你會如何調整自己接收和分享氣候資訊的方式？（至少 80 字）</p>
+      <textarea id="metacog" rows="5" class="w-full border rounded-lg p-3 text-sm resize-y" placeholder="回想你在開始這份學習單之前的想法，跟現在有什麼不同？你的想法改變了嗎？為什麼？"></textarea>
+      <div class="flex justify-between items-center mt-2">
+        <span id="metacog-count" class="text-xs text-gray-400">0 字</span>
+        <button onclick="submitMetacog()" id="metacog-btn" class="px-4 py-1.5 bg-rose-600 text-white text-sm rounded-lg hover:bg-rose-700 transition disabled:opacity-50" disabled>提交反思</button>
+      </div>
+      <div id="metacog-feedback" class="mt-2 hidden"></div>
+    </div>
+
+    <button id="stage7-next" onclick="completeStage(7)" class="hidden w-full mt-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition">
+      前往最終挑戰 →
+    </button>
+  </section>
+
+  <!-- ========== STAGE 8: WSA Challenge ========== -->
+  <section id="stage8" class="bg-white rounded-2xl shadow-md p-6 mb-6 hidden">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-3xl">🏫</span>
+      <div>
+        <h2 class="text-xl font-bold text-gray-800">WSA 全校行動挑戰</h2>
+        <p class="text-sm text-gray-500">Whole School Approach — 從教室走向全校、社區與社會</p>
+      </div>
+    </div>
+
+    <div class="border rounded-lg p-4 mb-4">
+      <p class="font-medium text-gray-800 mb-3">請在每個面向勾選你願意在這學期內實際採取的行動：</p>
+      <div class="space-y-3">
+        <label class="flex items-start gap-3 p-3 bg-blue-50 rounded-lg cursor-pointer hover:bg-blue-100 transition">
+          <input type="checkbox" class="wsa-check mt-1" value="curriculum" onchange="checkWSA()">
+          <div>
+            <p class="font-medium text-blue-800">📚 課程整合</p>
+            <p class="text-sm text-blue-600">在國文、公民或其他課程的報告中，加入 FLICC 架構分析氣候新聞的實例。</p>
+          </div>
+        </label>
+        <label class="flex items-start gap-3 p-3 bg-green-50 rounded-lg cursor-pointer hover:bg-green-100 transition">
+          <input type="checkbox" class="wsa-check mt-1" value="campus" onchange="checkWSA()">
+          <div>
+            <p class="font-medium text-green-800">🏫 校園營運</p>
+            <p class="text-sm text-green-600">向學校建議設立「氣候事實 vs 迷思」公告欄，或在圖書館推薦相關書籍。</p>
+          </div>
+        </label>
+        <label class="flex items-start gap-3 p-3 bg-amber-50 rounded-lg cursor-pointer hover:bg-amber-100 transition">
+          <input type="checkbox" class="wsa-check mt-1" value="community" onchange="checkWSA()">
+          <div>
+            <p class="font-medium text-amber-800">🤝 社區連結</p>
+            <p class="text-sm text-amber-600">教家人或社區長輩辨識 LINE 群組裡的氣候謠言，用 FLICC 策略解釋。</p>
+          </div>
+        </label>
+        <label class="flex items-start gap-3 p-3 bg-purple-50 rounded-lg cursor-pointer hover:bg-purple-100 transition">
+          <input type="checkbox" class="wsa-check mt-1" value="governance" onchange="checkWSA()">
+          <div>
+            <p class="font-medium text-purple-800">🗳️ 學生治理</p>
+            <p class="text-sm text-purple-600">在班會或學生議會提案，推動校園氣候資訊查核機制或媒體素養課程。</p>
+          </div>
+        </label>
+      </div>
+      <div id="wsa-badge" class="hidden mt-4 text-center">
+        <div class="badge-animate inline-block bg-gradient-to-r from-yellow-400 to-amber-500 text-white px-6 py-3 rounded-full text-lg font-bold shadow-lg">
+          🌟 全校英雄徽章 🌟
+        </div>
+        <p class="text-sm text-amber-700 mt-2">恭喜你承諾從四個面向推動改變！你就是全校的氣候資訊守護者！</p>
+      </div>
+    </div>
+
+    <button id="stage8-next" onclick="completeStage(8)" class="hidden w-full mt-4 py-3 bg-gradient-to-r from-blue-600 to-green-600 text-white font-bold rounded-xl hover:opacity-90 transition">
+      完成所有關卡！查看成果 →
+    </button>
+  </section>
+
+  <!-- ========== SUMMARY ========== -->
+  <section id="summary" class="bg-white rounded-2xl shadow-md p-6 mb-6 hidden">
+    <div class="text-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-2">🎓 氣候資訊偵探學院 — 結業報告</h2>
+      <p class="text-gray-600">你已完成所有關卡！以下是你的學習歷程總結。</p>
+    </div>
+    <div id="summary-content" class="space-y-4"></div>
+
+    <div class="mt-6 bg-blue-50 rounded-lg p-4">
+      <h3 class="font-bold text-blue-800 mb-2">延伸思考（課後）</h3>
+      <ol class="text-sm text-blue-700 space-y-2 list-decimal list-inside">
+        <li>如果一個國家為了保護經濟而延遲氣候行動，導致脆弱國家承受更多災害，這是否構成「氣候不正義」？你如何用 FLICC 分析該國延遲行動的論述？</li>
+        <li>社群媒體平台的演算法是否應該被重新設計，以減少氣候錯誤資訊的傳播？這跟「資訊自由流通」的原則如何平衡？</li>
+        <li>回顧你這整份學習單的歷程，你認為「知道」自己有認知偏誤之後，是否真的能避免被影響？為什麼？</li>
+      </ol>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ===== State =====
+let score = 0;
+let currentStage = 0;
+const totalStages = 9;
+const stageCompleted = Array(totalStages).fill(false);
+let fliccCorrect = 0;
+let fliccAnswered = {};
+let timelineOrder = [];
+let timelineNextNum = 1;
+let arrowAnswers = {};
+let frameSelected = false;
+let ref1Done = false;
+let ethicalDone = false;
+let cerDone = false;
+let systemDone = false;
+let metacogDone = false;
+
+// ===== Utility =====
+function updateProgress() {
+  const done = stageCompleted.filter(Boolean).length;
+  const pct = Math.round((done / totalStages) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressText').textContent = pct + '%';
+  document.getElementById('scoreDisplay').textContent = '🏅 ' + score + ' 分';
+}
+
+function addScore(pts) {
+  score += pts;
+  updateProgress();
+}
+
+function showConfetti() {
+  const colors = ['#f59e0b','#3b82f6','#10b981','#ef4444','#8b5cf6','#ec4899'];
+  for (let i = 0; i < 30; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.left = (Math.random() * 100) + 'vw';
+    c.style.top = (Math.random() * 30) + 'vh';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    c.style.animationDelay = (Math.random() * 0.5) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 2000);
+  }
+}
+
+function goToStage(n) {
+  for (let i = 0; i < totalStages; i++) {
+    document.getElementById('stage' + i).classList.toggle('hidden', i !== n);
+  }
+  currentStage = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function unlockStage(n) {
+  const btns = document.querySelectorAll('.stage-nav-btn');
+  if (btns[n]) {
+    btns[n].disabled = false;
+    btns[n].classList.remove('bg-gray-100', 'text-gray-400');
+    btns[n].classList.add('bg-blue-100', 'text-blue-700');
+  }
+}
+
+function completeStage(n) {
+  stageCompleted[n] = true;
+  showConfetti();
+  updateProgress();
+  if (n < totalStages - 1) {
+    unlockStage(n + 1);
+    goToStage(n + 1);
+  } else {
+    showSummary();
+  }
+}
+
+// ===== Stage 0: FLICC =====
+const fliccAnswerKey = { 1: 'F', 2: 'C1', 3: 'I', 4: 'C2' };
+const fliccHints = {
+  1: { correct: '正確！這是「偽專家」策略——該物理學家不是氣候科學領域的專家。NASA 資料顯示近 40 年太陽輻射量微降，無法解釋持續升溫。', wrong: '再想想：這位「物理學家」是氣候科學家嗎？提示：注意發言者的專業領域是否對應氣候科學。' },
+  2: { correct: '正確！這是「選擇性引用」——1998 年是超強聖嬰年，從異常高點開始畫當然看起來平緩。把時間軸拉長到 1970-2025，升溫趨勢明顯。', wrong: '再想想：為什麼要特別選 1998 年當起點？提示：1998 年發生了什麼特殊的氣候現象？' },
+  3: { correct: '正確！這是「不可能的期望」——混淆了天氣預報（短期混沌系統）和氣候推估（長期統計趨勢），要求科學做到不可能的精確度。', wrong: '再想想：天氣預報和氣候推估是同一件事嗎？提示：想想「擲骰子」的比喻。' },
+  4: { correct: '正確！這是「陰謀論」——聲稱全球數千名科學家集體串謀，這在邏輯和現實上幾乎不可能。', wrong: '再想想：這則貼文的核心指控是什麼？提示：它在暗示科學家們有什麼集體行為？' }
+};
+
+function checkFLICC(q, ans) {
+  if (fliccAnswered[q]) return;
+  const fb = document.getElementById('flicc-fb' + q);
+  fb.classList.remove('hidden');
+  const btns = document.querySelectorAll(`[data-q="${q}"]`);
+
+  if (ans === fliccAnswerKey[q]) {
+    fliccAnswered[q] = true;
+    fliccCorrect++;
+    addScore(10);
+    fb.innerHTML = '<div class="bg-green-50 border border-green-300 rounded-lg p-3 text-sm text-green-800">✅ ' + fliccHints[q].correct + '</div>';
+    btns.forEach(b => {
+      b.disabled = true;
+      if (b.dataset.val === ans) b.classList.add('bg-green-100', 'border-green-500');
+      else b.classList.add('opacity-50');
+    });
+  } else {
+    fb.innerHTML = '<div class="bg-amber-50 border border-amber-300 rounded-lg p-3 text-sm text-amber-800">💡 ' + fliccHints[q].wrong + '</div>';
+    btns.forEach(b => {
+      if (b.dataset.val === ans) b.classList.add('bg-red-50', 'border-red-300');
+    });
+    setTimeout(() => {
+      btns.forEach(b => b.classList.remove('bg-red-50', 'border-red-300'));
+    }, 2000);
+  }
+
+  if (Object.keys(fliccAnswered).length === 4) {
+    document.getElementById('stage0-next').classList.remove('hidden');
+  }
+}
+
+// ===== Stage 1: Cognitive Bias =====
+function selectFrame(choice) {
+  if (frameSelected) return;
+  frameSelected = true;
+  addScore(5);
+  const fb = document.getElementById('frame-feedback');
+  fb.classList.remove('hidden');
+  document.getElementById('frame-a-btn').classList.add(choice === 'A' ? 'border-red-500 bg-red-50' : 'opacity-50');
+  document.getElementById('frame-b-btn').classList.add(choice === 'B' ? 'border-green-500 bg-green-50' : 'opacity-50');
+
+  if (choice === 'A') {
+    fb.innerHTML = '<div class="bg-blue-50 border border-blue-300 rounded-lg p-3 text-sm text-blue-800">你選了損失框架——研究顯示大多數人也跟你一樣！Kahneman & Tversky 的前景理論指出，人對「損失」的敏感度約為「獲得」的 2 倍。這就是為什麼損失框架在氣候溝通中更有效（dp7：效果差異約 20%）。</div>';
+  } else {
+    fb.innerHTML = '<div class="bg-blue-50 border border-blue-300 rounded-lg p-3 text-sm text-blue-800">有趣！你是少數選擇獲得框架的人。研究顯示約 60-70% 的人會選損失框架——因為人對「失去」的敏感度約為「獲得」的 2 倍（Kahneman & Tversky 前景理論）。損失框架在氣候溝通中效果差異約 20%（dp7）。你的選擇可能反映了你個人的樂觀傾向或不同的決策風格。</div>';
+  }
+  checkStage1Complete();
+}
+
+document.getElementById('reflection1').addEventListener('input', function() {
+  const len = this.value.trim().length;
+  document.getElementById('ref1-count').textContent = len + ' 字';
+  document.getElementById('ref1-btn').disabled = len < 50;
+});
+
+function submitReflection(n) {
+  if (ref1Done) return;
+  ref1Done = true;
+  addScore(15);
+  const fb = document.getElementById('ref1-feedback');
+  fb.classList.remove('hidden');
+  fb.innerHTML = '<div class="bg-green-50 border border-green-300 rounded-lg p-3 text-sm text-green-800">✅ 感謝你的反思！承認自己有認知偏誤是批判思考的起點。能覺察自己的偏誤，就已經比大多數人更有能力抵抗錯誤資訊的影響了。</div>';
+  document.getElementById('ref1-btn').disabled = true;
+  checkStage1Complete();
+}
+
+function checkStage1Complete() {
+  if (frameSelected && ref1Done) {
+    document.getElementById('stage1-next').classList.remove('hidden');
+  }
+}
+
+// ===== Stage 2: Timeline =====
+function selectTimelineOrder(el) {
+  const orderEl = el.querySelector('.timeline-order');
+  if (orderEl.textContent !== '') {
+    // Reset this one
+    const prevNum = parseInt(orderEl.textContent);
+    orderEl.textContent = '';
+    orderEl.classList.remove('bg-blue-600');
+    orderEl.classList.add('bg-gray-300');
+    // Renumber remaining
+    timelineOrder = timelineOrder.filter(item => item.el !== el);
+    timelineOrder.forEach((item, idx) => {
+      item.el.querySelector('.timeline-order').textContent = idx + 1;
+    });
+    timelineNextNum = timelineOrder.length + 1;
+  } else {
+    orderEl.textContent = timelineNextNum;
+    orderEl.classList.remove('bg-gray-300');
+    orderEl.classList.add('bg-blue-600');
+    timelineOrder.push({ el: el, num: timelineNextNum });
+    timelineNextNum++;
+  }
+  document.getElementById('timeline-check-btn').disabled = timelineOrder.length < 5;
+}
+
+function checkTimeline() {
+  const items = document.querySelectorAll('.timeline-item');
+  let correct = 0;
+  items.forEach(item => {
+    const expected = parseInt(item.dataset.correct);
+    const actual = parseInt(item.querySelector('.timeline-order').textContent);
+    const orderEl = item.querySelector('.timeline-order');
+    if (actual === expected) {
+      correct++;
+      orderEl.classList.remove('bg-blue-600');
+      orderEl.classList.add('bg-green-600');
+    } else {
+      orderEl.classList.remove('bg-blue-600');
+      orderEl.classList.add('bg-red-500');
+    }
+  });
+
+  const fb = document.getElementById('timeline-feedback');
+  fb.classList.remove('hidden');
+  addScore(correct * 4);
+
+  if (correct === 5) {
+    fb.innerHTML = '<div class="bg-green-50 border border-green-300 rounded-lg p-3 text-sm text-green-800">✅ 完全正確！正確順序：1977 ExxonMobil 內部研究 → 1989 GCC 成立 → 1998-2006 否認高峰 → 2015 巴黎協定 → 2023-2024 臺灣氣候法與碳費。注意：企業「知道」到「承認」之間整整隔了幾十年。</div>';
+  } else {
+    fb.innerHTML = '<div class="bg-amber-50 border border-amber-300 rounded-lg p-3 text-sm text-amber-800">💡 你答對了 ' + correct + '/5 題。正確順序是：① 1977 ExxonMobil 內部研究 → ② 1989 GCC → ③ 1998-2006 否認高峰 → ④ 2015 巴黎協定 → ⑤ 2023-2024 臺灣氣候法。關鍵發現：從知道到行動，人類花了將近 50 年。</div>';
+  }
+  document.getElementById('timeline-check-btn').disabled = true;
+  document.getElementById('stage2-next').classList.remove('hidden');
+}
+
+// ===== Stage 3: Data Interpretation =====
+function checkDataQ(ans) {
+  const fb = document.getElementById('data-feedback');
+  fb.classList.remove('hidden');
+  document.querySelectorAll('.data-btn').forEach(b => b.disabled = true);
+
+  if (ans === 'cherry') {
+    addScore(10);
+    fb.innerHTML = '<div class="bg-green-50 border border-green-300 rounded-lg p-3 text-sm text-green-800">✅ 正確！圖 A 是典型的「選擇性引用（Cherry picking）」。它刻意選擇 1998 年超強聖嬰年作為起點，讓短期波動掩蓋長期趨勢。圖 B 用完整時間序列（1970-2025）顯示了明確的升溫趨勢。這告訴我們：看到任何圖表時，第一件事要問「起止年份是什麼？為什麼選這個範圍？」</div>';
+  } else {
+    fb.innerHTML = '<div class="bg-amber-50 border border-amber-300 rounded-lg p-3 text-sm text-amber-800">💡 不太對。圖 A 的技巧是選擇特定起止年份來製造假象——這是「選擇性引用（Cherry picking）」。1998 年因超強聖嬰現象異常炎熱，從高點開始畫自然看起來「平緩」。但如果看圖 B 的完整趨勢，升溫是非常明確的。</div>';
+  }
+  document.getElementById('stage3-next').classList.remove('hidden');
+}
+
+// ===== Stage 4: Ethical Dilemma =====
+document.getElementById('ethical-response').addEventListener('input', function() {
+  const len = this.value.trim().length;
+  document.getElementById('ethical-count').textContent = len + ' 字';
+  document.getElementById('ethical-btn').disabled = len < 80;
+});
+
+function submitEthical() {
+  if (ethicalDone) return;
+  ethicalDone = true;
+  addScore(15);
+  const text = document.getElementById('ethical-response').value.trim();
+  const fb = document.getElementById('ethical-feedback');
+  fb.classList.remove('hidden');
+
+  let feedback = '✅ 感謝你深入思考這個倫理兩難。';
+  if (text.length >= 120) feedback += ' 你的論述相當充實。';
+  feedback += ' 這個議題的核心張力在於：言論自由是民主社會的基石，但當錯誤資訊造成實質傷害（如延遲氣候行動、每年 25 萬額外死亡）時，社會是否有責任介入？好的答案不在於選哪一邊，而在於是否能兼顧多元面向的考量。';
+
+  fb.innerHTML = '<div class="bg-green-50 border border-green-300 rounded-lg p-3 text-sm text-green-800">' + feedback + '</div>';
+  document.getElementById('ethical-btn').disabled = true;
+  document.getElementById('stage4-next').classList.remove('hidden');
+}
+
+// ===== Stage 5: CER =====
+['cer-claim', 'cer-evidence', 'cer-reasoning'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateCERCount);
+});
+
+function updateCERCount() {
+  const c = document.getElementById('cer-claim').value.trim().length;
+  const e = document.getElementById('cer-evidence').value.trim().length;
+  const r = document.getElementById('cer-reasoning').value.trim().length;
+  document.getElementById('cer-count').textContent = `C: ${c} 字 / E: ${e} 字 / R: ${r} 字`;
+  document.getElementById('cer-btn').disabled = !(c >= 10 && e >= 20 && r >= 20);
+}
+
+function submitCER() {
+  if (cerDone) return;
+  cerDone = true;
+  addScore(20);
+  const fb = document.getElementById('cer-feedback');
+  fb.classList.remove('hidden');
+
+  const evidence = document.getElementById('cer-evidence').value;
+  const hasData = /\d/.test(evidence);
+  let feedback = '✅ CER 論證已提交！';
+  if (hasData) {
+    feedback += ' 很好，你在證據中引用了具體數據，這讓論述更有說服力。';
+  } else {
+    feedback += ' 建議：在證據部分加入具體數據（如 dp2 的「20-30%」或 dp4 的「53%/30%」），會讓你的論證更扎實。';
+  }
+  feedback += ' CER 架構的價值在於讓你的思考有結構——主張明確、證據可查、推理可追蹤。這在日常辯論和學術寫作中都非常實用。';
+
+  fb.innerHTML = '<div class="bg-green-50 border border-green-300 rounded-lg p-3 text-sm text-green-800">' + feedback + '</div>';
+  document.getElementById('cer-btn').disabled = true;
+  document.getElementById('stage5-next').classList.remove('hidden');
+}
+
+// ===== Stage 6: Systems Thinking =====
+const arrowCorrect = { 1: '+', 2: '+', 3: '+', 4: '+', 5: '+' };
+
+function setArrow(n, val) {
+  arrowAnswers[n] = val;
+  document.querySelectorAll(`[data-arrow="${n}"]`).forEach(b => {
+    b.classList.remove('bg-blue-100', 'border-blue-500');
+    if (b.dataset.val === val) {
+      b.classList.add('bg-blue-100', 'border-blue-500');
+    }
+  });
+  // Update SVG label
+  const label = document.getElementById('arrow' + n + '-label');
+  if (label) label.textContent = val;
+
+  document.getElementById('system-check-btn').disabled = Object.keys(arrowAnswers).length < 5;
+}
+
+function checkSystemLoop() {
+  if (systemDone) return;
+  systemDone = true;
+  let correct = 0;
+  for (let i = 1; i <= 5; i++) {
+    if (arrowAnswers[i] === arrowCorrect[i]) correct++;
+  }
+  addScore(correct * 4);
+
+  const fb = document.getElementById('system-feedback');
+  fb.classList.remove('hidden');
+
+  if (correct === 5) {
+    fb.innerHTML = '<div class="bg-green-50 border border-green-300 rounded-lg p-3 text-sm text-green-800">✅ 全部正確！這是一個正向回饋循環（reinforcing loop）：錯誤資訊增加 → 認知混亂增加 → 政策延遲增加 → 碳排增加 → 化石燃料利潤增加 → 投入更多資金製造錯誤資訊。所有箭頭都是「+」（同向增強），形成一個自我強化的惡性循環。打破任何一個環節都能減弱整個循環。</div>';
+  } else {
+    fb.innerHTML = '<div class="bg-amber-50 border border-amber-300 rounded-lg p-3 text-sm text-amber-800">💡 你答對了 ' + correct + '/5。所有箭頭都是「+」（同向增強）。這形成一個正向回饋循環（reinforcing loop）——每個環節的增加都推動下一個環節增加。理解這個循環很重要：只要打破任何一個環節（例如透過教育減少認知混亂），就能減弱整個循環。</div>';
+  }
+  document.getElementById('system-check-btn').disabled = true;
+  document.getElementById('stage6-next').classList.remove('hidden');
+}
+
+// ===== Stage 7: Metacognition =====
+document.getElementById('metacog').addEventListener('input', function() {
+  const len = this.value.trim().length;
+  document.getElementById('metacog-count').textContent = len + ' 字';
+  document.getElementById('metacog-btn').disabled = len < 80;
+});
+
+function submitMetacog() {
+  if (metacogDone) return;
+  metacogDone = true;
+  addScore(15);
+  const fb = document.getElementById('metacog-feedback');
+  fb.classList.remove('hidden');
+  fb.innerHTML = '<div class="bg-green-50 border border-green-300 rounded-lg p-3 text-sm text-green-800">✅ 後設認知反思完成！你能夠回顧自己的思考過程，這本身就是高階思考能力的展現。研究顯示，具備後設認知能力的學習者更能抵抗錯誤資訊的影響——因為他們會持續監控自己的思考品質。記住：批判思考是一生的練習，不是一次的完成。</div>';
+  document.getElementById('metacog-btn').disabled = true;
+  document.getElementById('stage7-next').classList.remove('hidden');
+}
+
+// ===== Stage 8: WSA =====
+function checkWSA() {
+  const checks = document.querySelectorAll('.wsa-check:checked');
+  if (checks.length === 4) {
+    document.getElementById('wsa-badge').classList.remove('hidden');
+    addScore(20);
+    showConfetti();
+  } else {
+    document.getElementById('wsa-badge').classList.add('hidden');
+  }
+  if (checks.length >= 1) {
+    document.getElementById('stage8-next').classList.remove('hidden');
+  }
+}
+
+// ===== Summary =====
+function showSummary() {
+  document.getElementById('summary').classList.remove('hidden');
+  for (let i = 0; i < totalStages; i++) {
+    document.getElementById('stage' + i).classList.add('hidden');
+  }
+
+  const content = document.getElementById('summary-content');
+  content.innerHTML = `
+    <div class="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg p-4 text-center">
+      <p class="text-3xl font-bold text-blue-800 mb-2">最終得分：${score} 分</p>
+      <p class="text-gray-600">${score >= 100 ? '表現卓越！你已經是合格的氣候資訊偵探了！' : score >= 70 ? '表現優良！繼續練習，你會更進步！' : '好的開始！建議回顧各關卡的回饋，加深理解。'}</p>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
+      <div class="bg-white border rounded-lg p-3 text-center">
+        <p class="text-2xl mb-1">🔍</p>
+        <p class="text-sm font-medium">FLICC 診斷</p>
+        <p class="text-xs text-gray-500">${fliccCorrect}/4 正確</p>
+      </div>
+      <div class="bg-white border rounded-lg p-3 text-center">
+        <p class="text-2xl mb-1">🧠</p>
+        <p class="text-sm font-medium">認知偏誤</p>
+        <p class="text-xs text-gray-500">${frameSelected && ref1Done ? '完成' : '部分完成'}</p>
+      </div>
+      <div class="bg-white border rounded-lg p-3 text-center">
+        <p class="text-2xl mb-1">🕵️</p>
+        <p class="text-sm font-medium">歷史偵探</p>
+        <p class="text-xs text-gray-500">${stageCompleted[2] ? '完成' : '未完成'}</p>
+      </div>
+      <div class="bg-white border rounded-lg p-3 text-center">
+        <p class="text-2xl mb-1">📊</p>
+        <p class="text-sm font-medium">資料詮釋</p>
+        <p class="text-xs text-gray-500">${stageCompleted[3] ? '完成' : '未完成'}</p>
+      </div>
+      <div class="bg-white border rounded-lg p-3 text-center">
+        <p class="text-2xl mb-1">⚖️</p>
+        <p class="text-sm font-medium">倫理兩難</p>
+        <p class="text-xs text-gray-500">${ethicalDone ? '完成' : '未完成'}</p>
+      </div>
+      <div class="bg-white border rounded-lg p-3 text-center">
+        <p class="text-2xl mb-1">📝</p>
+        <p class="text-sm font-medium">CER 論證</p>
+        <p class="text-xs text-gray-500">${cerDone ? '完成' : '未完成'}</p>
+      </div>
+      <div class="bg-white border rounded-lg p-3 text-center">
+        <p class="text-2xl mb-1">🔄</p>
+        <p class="text-sm font-medium">系統思考</p>
+        <p class="text-xs text-gray-500">${systemDone ? '完成' : '未完成'}</p>
+      </div>
+      <div class="bg-white border rounded-lg p-3 text-center">
+        <p class="text-2xl mb-1">🪞</p>
+        <p class="text-sm font-medium">後設認知</p>
+        <p class="text-xs text-gray-500">${metacogDone ? '完成' : '未完成'}</p>
+      </div>
+      <div class="bg-white border rounded-lg p-3 text-center">
+        <p class="text-2xl mb-1">🏫</p>
+        <p class="text-sm font-medium">WSA 挑戰</p>
+        <p class="text-xs text-gray-500">${document.querySelectorAll('.wsa-check:checked').length}/4 面向</p>
+      </div>
+    </div>
+  `;
+  showConfetti();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Init
+updateProgress();
+</script>
+
+</body>
+</html>

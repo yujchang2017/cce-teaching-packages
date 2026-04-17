@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候正義偵探社 | 3.3-IV 國中互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif; background:linear-gradient(135deg,#fef3c7,#fecaca,#c7d2fe); min-height:100vh;}
+  .card{background:#fff;border-radius:1.25rem;box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn{transition:all .18s;}
+  .btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.05);}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .drag-item{cursor:grab;user-select:none;}
+  .drag-item.dragging{opacity:.4;}
+  .drop-zone{min-height:90px;transition:background .2s;border:2px dashed #cbd5e1;border-radius:.75rem;}
+  .drop-zone.over{background:#fde68a;border-color:#f59e0b;}
+  .pop{animation:pop .5s ease;}
+  @keyframes pop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
+  .shake{animation:shake .4s;}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .hidden-screen{display:none;}
+  .progress-dot{width:12px;height:12px;border-radius:50%;background:#cbd5e1;}
+  .progress-dot.active{background:#6366f1;transform:scale(1.3);}
+  .progress-dot.done{background:#10b981;}
+  .fade-in{animation:fade .4s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  textarea.cer{border:1px solid #cbd5e1;border-radius:.5rem;padding:.5rem;width:100%;font-size:.95rem;}
+  .chip{display:inline-block;padding:.15rem .6rem;border-radius:999px;font-size:.75rem;font-weight:600;}
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-rose-700">🕵️ 氣候正義偵探社</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『氣候正義實習偵探』：8 個案件，追查『誰排的、誰受害的』。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">偵探積分</div>
+    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-1 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">累積</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">階級</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">資料</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">倫理</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs">CER</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs">專題</span>
+  <div class="h-1 w-3 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs">後設</span>
+</div>
+
+<!-- ===== L1: 累積排放拖拉配對（基礎） ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="mb-3">
+    <h2 class="text-xl font-bold text-sky-700">任務 1｜誰是歷史排放大戶？（10 分）</h2>
+    <p class="text-sm text-slate-700 mt-1">把『國家/區域』拖到正確的累積 CO₂（1751–2017）百分比區。資料來源：Our World in Data。</p>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3" id="pool1">
+    <div class="drag-item bg-sky-100 p-2 rounded text-center font-semibold" draggable="true" data-ans="25">美國 🇺🇸</div>
+    <div class="drag-item bg-sky-100 p-2 rounded text-center font-semibold" draggable="true" data-ans="22">歐盟 28 🇪🇺</div>
+    <div class="drag-item bg-sky-100 p-2 rounded text-center font-semibold" draggable="true" data-ans="12">中國 🇨🇳</div>
+    <div class="drag-item bg-sky-100 p-2 rounded text-center font-semibold" draggable="true" data-ans="3">非洲全洲</div>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
+    <div class="drop-zone p-2" data-slot="25"><p class="text-center text-slate-500 text-sm">~25%</p></div>
+    <div class="drop-zone p-2" data-slot="22"><p class="text-center text-slate-500 text-sm">~22%</p></div>
+    <div class="drop-zone p-2" data-slot="12"><p class="text-center text-slate-500 text-sm">~12.5%</p></div>
+    <div class="drop-zone p-2" data-slot="3"><p class="text-center text-slate-500 text-sm">&lt;3%</p></div>
+  </div>
+  <button class="btn bg-sky-600 text-white px-4 py-2 rounded font-bold" onclick="check1()">提交</button>
+  <p id="fb1" class="mt-2 text-sm"></p>
+</section>
+
+<!-- ===== L2: 階級排放比較（開放反思 #1） ===== -->
+<section id="level-2" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-amber-700">任務 2｜1% vs 66%（10 分）</h2>
+  <p class="text-sm text-slate-700 mt-1">Oxfam 2023：全球最富 1% 的年排放 ≈ 最窮 66% 總和。</p>
+  <p class="mt-3 font-semibold text-slate-800">開放反思 #1：如果你的鄰居一年搭 8 次私人飛機出國，而你一家人一年搭 1 次經濟艙，你認為『一人一份碳配額』公平嗎？為什麼？（至少 60 字，須引用 dp2 數據）</p>
+  <textarea id="q2" class="cer mt-2" rows="4" placeholder="我認為…（請引用『1% ≈ 66%』或『1,500 倍』）"></textarea>
+  <button class="btn bg-amber-600 text-white px-4 py-2 rounded font-bold mt-2" onclick="check2()">提交</button>
+  <p id="fb2" class="mt-2 text-sm"></p>
+</section>
+
+<!-- ===== L3: 資料詮釋（1 兆 vs 890 億） ===== -->
+<section id="level-3" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-emerald-700">任務 3｜資料詮釋：1 兆美元的矛盾（10 分）</h2>
+  <p class="text-sm text-slate-700 mt-1">IEA 2022：化石燃料消費補貼 ≈ 1,000 Billion USD；同年氣候融資 ≈ 89 Billion USD。</p>
+  <ol class="list-decimal pl-5 mt-2 text-sm space-y-2">
+    <li>補貼 ÷ 氣候融資 ≈ ?<input id="q3a" class="border rounded px-2 py-1 ml-1" placeholder="倍"></li>
+    <li>若 1 兆全挪去蓋風機（每座 150 萬美元），可蓋約幾座？<input id="q3b" class="border rounded px-2 py-1 ml-1" placeholder="座"></li>
+    <li>依圖表趨勢，你推論政府『口頭減碳、手上補貼』的主因最可能是？（A 技術 B 選票 C 氣候 D 外交）<input id="q3c" class="border rounded px-2 py-1 ml-1 w-12"></li>
+  </ol>
+  <button class="btn bg-emerald-600 text-white px-4 py-2 rounded font-bold mt-3" onclick="check3()">提交</button>
+  <p id="fb3" class="mt-2 text-sm"></p>
+</section>
+
+<!-- ===== L4: 系統思考（槓桿點） ===== -->
+<section id="level-4" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-indigo-700">任務 4｜系統思考：57 家公司的槓桿點（10 分）</h2>
+  <p class="text-sm text-slate-700">57 家公司 ≈ 80% 工業排放。請畫／描述一個『影響迴路』：從（A）學生社群媒體發聲 →（B）資產撤資壓力 →（C）企業董事會 →（D）減碳承諾 →（E）股價 →（F）回饋到 A。至少標出 1 個『正回饋』與 1 個『負回饋』標籤。</p>
+  <textarea id="q4" class="cer mt-2" rows="5" placeholder="A→B：…（+或-）  B→C：…"></textarea>
+  <label class="block mt-2 text-sm">你找到的 1 個高影響力槓桿點是：<input id="q4p" class="border rounded px-2 py-1 ml-2" placeholder="如：退休基金撤資"></label>
+  <button class="btn bg-indigo-600 text-white px-4 py-2 rounded font-bold mt-2" onclick="check4()">提交</button>
+  <p id="fb4" class="mt-2 text-sm"></p>
+</section>
+
+<!-- ===== L5: 倫理兩難 ===== -->
+<section id="level-5" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-rose-700">任務 5｜倫理兩難：COP28 損失與損害基金（10 分）</h2>
+  <p class="text-sm text-slate-700">COP28 首日承諾 7.92 億美元，但開發中國家每年損失估 1,000–5,800 億美元。</p>
+  <p class="mt-2 font-semibold">兩難：你是 G7 青年代表，支持下列哪個方案？為什麼？（選 1 並說明 ≥80 字，要提到『歷史責任』）</p>
+  <div class="mt-2 space-y-1 text-sm">
+    <label class="block"><input type="radio" name="q5" value="A"> A. 先進國以累積排放比例強制分攤</label>
+    <label class="block"><input type="radio" name="q5" value="B"> B. 中等收入國（含臺灣）也自願捐款</label>
+    <label class="block"><input type="radio" name="q5" value="C"> C. 向 Carbon Majors 57 家公司課『氣候損害稅』</label>
+    <label class="block"><input type="radio" name="q5" value="D"> D. A+B+C 同時</label>
+  </div>
+  <textarea id="q5txt" class="cer mt-2" rows="4" placeholder="我選…，因為歷史責任…"></textarea>
+  <button class="btn bg-rose-600 text-white px-4 py-2 rounded font-bold mt-2" onclick="check5()">提交</button>
+  <p id="fb5" class="mt-2 text-sm"></p>
+</section>
+
+<!-- ===== L6: CER 論證 ===== -->
+<section id="level-6" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-fuchsia-700">任務 6｜CER 論證：漂綠檢測（10 分）</h2>
+  <p class="text-sm text-slate-700">某科技公司宣稱『2030 碳中和』，但其範疇三排放（供應鏈）佔總量 90% 且未公布，仰賴廉價森林抵換。</p>
+  <div class="space-y-2 mt-2">
+    <label class="text-sm font-semibold">Claim（主張）：這家公司的碳中和宣告屬於漂綠嗎？</label>
+    <textarea id="q6c" class="cer" rows="1" placeholder="是 / 否 / 部分是"></textarea>
+    <label class="text-sm font-semibold">Evidence（證據，至少 2 項來自簡報 dp 或 glossary）：</label>
+    <textarea id="q6e" class="cer" rows="3" placeholder="(1) 根據 glossary『漂綠』定義… (2) dp5 Carbon Majors 顯示…"></textarea>
+    <label class="text-sm font-semibold">Reasoning（推論，連結證據 → 主張）：</label>
+    <textarea id="q6r" class="cer" rows="3" placeholder="因為範疇三佔 90% 未公布…所以…"></textarea>
+  </div>
+  <button class="btn bg-fuchsia-600 text-white px-4 py-2 rounded font-bold mt-2" onclick="check6()">提交</button>
+  <p id="fb6" class="mt-2 text-sm"></p>
+</section>
+
+<!-- ===== L7: 專題任務 + 開放反思 #2 ===== -->
+<section id="level-7" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-teal-700">任務 7｜專題任務：氣候正義行動提案（15 分）</h2>
+  <p class="text-sm text-slate-700">三選一設計你的團隊行動。請填寫完整提案書。</p>
+  <div class="mt-2 text-sm">
+    <label class="block"><input type="radio" name="q7t" value="議員信"> ① 寫給地方議員的氣候信</label>
+    <label class="block"><input type="radio" name="q7t" value="漂綠表"> ② 校園供應商漂綠檢查表設計</label>
+    <label class="block"><input type="radio" name="q7t" value="社群倡議"> ③ IG/TikTok 氣候正義系列倡議</label>
+  </div>
+  <label class="block mt-2 text-sm">Why（為何這個問題重要？引用 ≥1 dp 數據）：</label>
+  <textarea id="q7w" class="cer" rows="2"></textarea>
+  <label class="block mt-2 text-sm">Who（目標對象／受益者）：</label>
+  <textarea id="q7who" class="cer" rows="1"></textarea>
+  <label class="block mt-2 text-sm">How（具體 3 步驟 + 時間表）：</label>
+  <textarea id="q7h" class="cer" rows="3"></textarea>
+  <label class="block mt-2 text-sm">Measure（3 個月 SMART 檢核指標）：</label>
+  <textarea id="q7m" class="cer" rows="2"></textarea>
+  <label class="block mt-3 font-semibold text-slate-800">開放反思 #2：『學生能改變體制嗎？』請用瑞典 Greta、臺灣 TWYCC 或你知道的青年氣候運動，寫下至少 80 字的反思，說明你相信或懷疑的理由。</label>
+  <textarea id="q7ref" class="cer mt-1" rows="4"></textarea>
+  <button class="btn bg-teal-600 text-white px-4 py-2 rounded font-bold mt-2" onclick="check7()">提交</button>
+  <p id="fb7" class="mt-2 text-sm"></p>
+</section>
+
+<!-- ===== L8: 後設認知 ===== -->
+<section id="level-8" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-slate-700">任務 8｜後設認知：我學到什麼？（5 分）</h2>
+  <p class="text-sm text-slate-700">回到第 1 節你的直覺答案，比較現在的想法。</p>
+  <label class="block mt-2 text-sm">(1) 這 4 節最『顛覆』我原本想法的一件事是：</label>
+  <textarea id="q8a" class="cer" rows="2"></textarea>
+  <label class="block mt-2 text-sm">(2) 我還感到困惑／想再查的一個問題：</label>
+  <textarea id="q8b" class="cer" rows="2"></textarea>
+  <label class="block mt-2 text-sm">(3) 我下一步具體要做的『一件小事』（本週內）：</label>
+  <textarea id="q8c" class="cer" rows="2"></textarea>
+  <label class="block mt-2 text-sm">(4) 用 1–5 分自評『我對氣候正義的理解深度』：<input id="q8d" type="number" min="1" max="5" class="border rounded px-2 py-1 w-16"></label>
+  <button class="btn bg-slate-700 text-white px-4 py-2 rounded font-bold mt-2" onclick="check8()">提交並完成任務</button>
+  <p id="fb8" class="mt-2 text-sm"></p>
+</section>
+
+<!-- Victory -->
+<section id="win" class="card p-6 mt-4 hidden-screen text-center">
+  <div class="text-5xl">🏆</div>
+  <h2 class="text-2xl font-bold text-emerald-700 mt-2">偵探結案！</h2>
+  <p class="mt-2">你完成了氣候正義偵探社 8 大任務。記得把學習單截圖給老師，並回家與家人分享至少 1 個數據。</p>
+  <p class="mt-2 text-sm text-slate-600">總分：<span id="finalScore"></span> / 80</p>
+</section>
+
+</div>
+
+<script>
+let score=0;
+const setDot=(n,s)=>{const el=document.getElementById('dot-'+n);if(el){el.classList.remove('active','done');el.classList.add(s);}};
+const addScore=(n)=>{score+=n;document.getElementById('score').innerText=score;};
+const show=(id)=>{document.getElementById(id).classList.remove('hidden-screen');document.getElementById(id).scrollIntoView({behavior:'smooth'});};
+
+// L1 drag & drop
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart',e=>{e.dataTransfer.setData('ans',el.dataset.ans);e.dataTransfer.setData('txt',el.innerText);el.classList.add('dragging');});
+  el.addEventListener('dragend',e=>el.classList.remove('dragging'));
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over');});
+  z.addEventListener('dragleave',()=>z.classList.remove('over'));
+  z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('over');const ans=e.dataTransfer.getData('ans'),t=e.dataTransfer.getData('txt');z.innerHTML='<p class="text-center font-bold">'+t+'</p>';z.dataset.got=ans;});
+});
+function check1(){let ok=0;document.querySelectorAll('.drop-zone').forEach(z=>{if(z.dataset.slot===z.dataset.got)ok++;});
+  if(ok===4){document.getElementById('fb1').innerHTML='<span class="text-emerald-600 font-bold">✔ 全對！美國仍是歷史累積第一。</span>';addScore(10);setDot(1,'done');setDot(2,'active');show('level-2');}
+  else document.getElementById('fb1').innerHTML='<span class="text-rose-600">正確 '+ok+'/4，再試一次。</span>';
+}
+function check2(){const v=document.getElementById('q2').value;if(v.length<60||!(v.includes('1%')||v.includes('66%')||v.includes('1,500')||v.includes('1500'))){document.getElementById('fb2').innerHTML='<span class="text-rose-600">請至少 60 字並引用 dp2 數據。</span>';return;}
+  document.getElementById('fb2').innerHTML='<span class="text-emerald-600 font-bold">✔ 已記錄你的反思。</span>';addScore(10);setDot(2,'done');setDot(3,'active');show('level-3');}
+function check3(){const a=document.getElementById('q3a').value,b=document.getElementById('q3b').value,c=(document.getElementById('q3c').value||'').toUpperCase();let ok=0;
+  if(parseFloat(a)>=10&&parseFloat(a)<=12)ok++;if(parseInt(b)>=600000&&parseInt(b)<=700000)ok++;if(c==='B')ok++;
+  if(ok===3){document.getElementById('fb3').innerHTML='<span class="text-emerald-600 font-bold">✔ 答對 3/3！約 11 倍、約 67 萬座、B 選票。</span>';addScore(10);setDot(3,'done');setDot(4,'active');show('level-4');}
+  else document.getElementById('fb3').innerHTML='<span class="text-amber-600">對 '+ok+'/3；提示：1000÷89≈11；1000億÷0.00015億；政客短期誘因。</span>';}
+function check4(){const t=document.getElementById('q4').value,p=document.getElementById('q4p').value;if(t.length<50||(!t.includes('+')&&!t.includes('-'))||p.length<2){document.getElementById('fb4').innerHTML='<span class="text-rose-600">請描述迴路 ≥50 字並標註 + / -，且填寫槓桿點。</span>';return;}
+  document.getElementById('fb4').innerHTML='<span class="text-emerald-600 font-bold">✔ 系統圖已記錄。</span>';addScore(10);setDot(4,'done');setDot(5,'active');show('level-5');}
+function check5(){const r=document.querySelector('input[name="q5"]:checked'),t=document.getElementById('q5txt').value;if(!r||t.length<80||!t.includes('歷史')){document.getElementById('fb5').innerHTML='<span class="text-rose-600">請選擇並 ≥80 字、需含『歷史責任』。</span>';return;}
+  document.getElementById('fb5').innerHTML='<span class="text-emerald-600 font-bold">✔ 立場已登記：'+r.value+'。</span>';addScore(10);setDot(5,'done');setDot(6,'active');show('level-6');}
+function check6(){const c=document.getElementById('q6c').value,e=document.getElementById('q6e').value,r=document.getElementById('q6r').value;
+  if(c.length<1||e.length<30||r.length<30){document.getElementById('fb6').innerHTML='<span class="text-rose-600">C/E/R 三段都要填寫（E、R 各 ≥30 字）。</span>';return;}
+  document.getElementById('fb6').innerHTML='<span class="text-emerald-600 font-bold">✔ 論證完整（範疇三未公布+過度抵換是漂綠紅旗）。</span>';addScore(10);setDot(6,'done');setDot(7,'active');show('level-7');}
+function check7(){const t=document.querySelector('input[name="q7t"]:checked'),w=document.getElementById('q7w').value,h=document.getElementById('q7h').value,m=document.getElementById('q7m').value,ref=document.getElementById('q7ref').value;
+  if(!t||w.length<30||h.length<40||m.length<20||ref.length<80){document.getElementById('fb7').innerHTML='<span class="text-rose-600">請完成提案四欄 + 開放反思 ≥80 字。</span>';return;}
+  document.getElementById('fb7').innerHTML='<span class="text-emerald-600 font-bold">✔ 專題提案登記：'+t.value+'。</span>';addScore(15);setDot(7,'done');setDot(8,'active');show('level-8');}
+function check8(){const a=document.getElementById('q8a').value,b=document.getElementById('q8b').value,c=document.getElementById('q8c').value,d=parseInt(document.getElementById('q8d').value);
+  if(a.length<20||b.length<10||c.length<15||!(d>=1&&d<=5)){document.getElementById('fb8').innerHTML='<span class="text-rose-600">四欄都要填寫且自評 1-5。</span>';return;}
+  document.getElementById('fb8').innerHTML='<span class="text-emerald-600 font-bold">✔ 後設認知完成！</span>';addScore(5);setDot(8,'done');document.getElementById('finalScore').innerText=score;show('win');}
+</script>
+</body>
+</html>

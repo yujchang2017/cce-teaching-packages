@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>6.5-III 永續交通｜小小交通偵探任務卡</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+  body { font-family: "Noto Sans TC", system-ui, sans-serif; background: linear-gradient(135deg,#e0f2fe,#dcfce7); }
+  .card { background: rgba(255,255,255,.92); border-radius: 1rem; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+  .chip { display:inline-block; padding:.2rem .6rem; border-radius:9999px; font-size:.75rem; margin-right:.25rem; }
+  .badge { display:inline-flex; align-items:center; gap:.25rem; padding:.35rem .7rem; border-radius:9999px; font-weight:700; }
+  .progress-outer { background:#e5e7eb; border-radius:9999px; height:14px; overflow:hidden; }
+  .progress-inner { height:100%; background:linear-gradient(90deg,#34d399,#10b981); transition: width .4s ease; }
+  .wrong { background:#fee2e2 !important; }
+  .right { background:#dcfce7 !important; }
+  .drag { cursor:grab; user-select:none; }
+  .drop { min-height:60px; border:2px dashed #94a3b8; border-radius:.75rem; padding:.5rem; }
+  .drop.over { border-color:#10b981; background:#ecfdf5; }
+  .hint-bubble { background:#fef3c7; border-left:4px solid #f59e0b; padding:.5rem .75rem; border-radius:.5rem; margin-top:.5rem; font-size:.9rem; }
+  details summary { cursor:pointer; }
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto space-y-6">
+
+  <!-- 頂部進度條 + 角色 -->
+  <section class="card p-5">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="text-4xl">🕵️</div>
+      <div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-emerald-700">小小交通偵探任務卡</h1>
+        <p class="text-slate-600">情境：你是「永續交通偵探隊」新任隊員 <b id="playerName">小綠</b>，要協助市長破解「每天塞車冒煙」之謎，完成 5 關拿徽章！</p>
+      </div>
+    </div>
+    <label class="text-sm">取個代號：<input id="nameInput" class="border rounded px-2 py-1" placeholder="小綠" /></label>
+    <button onclick="setName()" class="ml-2 px-3 py-1 bg-emerald-500 text-white rounded">確認</button>
+    <div class="mt-4">
+      <div class="flex justify-between text-xs text-slate-500"><span>任務進度</span><span id="progTxt">0 / 5 關</span></div>
+      <div class="progress-outer mt-1"><div id="progBar" class="progress-inner" style="width:0%"></div></div>
+    </div>
+    <div id="badges" class="mt-3 flex flex-wrap gap-2"></div>
+  </section>
+
+  <!-- 關卡 1：需要 vs 想要 → 必要交通 vs 可替代交通 -->
+  <section class="card p-5">
+    <h2 class="text-xl font-bold text-sky-700">第 1 關｜交通大分類（拖曳）</h2>
+    <p class="text-slate-600 text-sm">把交通方式拖到「永續」或「不永續」欄。</p>
+    <div class="grid md:grid-cols-2 gap-3 mt-3">
+      <div class="drop" id="sust" data-type="sust"><b class="text-emerald-700">永續 ✅</b></div>
+      <div class="drop" id="unsust" data-type="unsust"><b class="text-rose-700">較不永續 ⚠️</b></div>
+    </div>
+    <div id="pool" class="mt-4 flex flex-wrap gap-2">
+      <span class="drag chip bg-white border" draggable="true" data-a="sust">🚶 走路</span>
+      <span class="drag chip bg-white border" draggable="true" data-a="sust">🚲 自行車</span>
+      <span class="drag chip bg-white border" draggable="true" data-a="sust">🚇 捷運</span>
+      <span class="drag chip bg-white border" draggable="true" data-a="sust">🚌 公車</span>
+      <span class="drag chip bg-white border" draggable="true" data-a="sust">🚆 火車/鐵路貨運</span>
+      <span class="drag chip bg-white border" draggable="true" data-a="sust">🧑‍🤝‍🧑 共乘電動車</span>
+      <span class="drag chip bg-white border" draggable="true" data-a="unsust">🏎️ 單人開汽油車</span>
+      <span class="drag chip bg-white border" draggable="true" data-a="unsust">🛵 單人騎汽油機車</span>
+      <span class="drag chip bg-white border" draggable="true" data-a="unsust">✈️ 短程飛機</span>
+    </div>
+    <button onclick="checkLvl1()" class="mt-3 px-4 py-2 bg-sky-500 text-white rounded">檢查答案</button>
+    <div id="hint1" class="hint-bubble hidden"></div>
+  </section>
+
+  <!-- 關卡 2：排序碳排（dp3 真實數據） -->
+  <section class="card p-5">
+    <h2 class="text-xl font-bold text-amber-700">第 2 關｜碳煙囪排排站（真實數據）</h2>
+    <p class="text-slate-600 text-sm">每人每公里 CO₂ 排放量（g）請由低到高排列：</p>
+    <ul id="rankList" class="mt-3 space-y-2">
+      <li class="drag p-2 bg-amber-100 rounded border" draggable="true" data-v="0">🚶 步行（0 g）</li>
+      <li class="drag p-2 bg-amber-100 rounded border" draggable="true" data-v="30">🚇 捷運（30 g）</li>
+      <li class="drag p-2 bg-amber-100 rounded border" draggable="true" data-v="85">🚌 公車（85 g）</li>
+      <li class="drag p-2 bg-amber-100 rounded border" draggable="true" data-v="200">🚗 單人汽車（200 g）</li>
+      <li class="drag p-2 bg-amber-100 rounded border" draggable="true" data-v="275">✈️ 短程飛機（275 g）</li>
+    </ul>
+    <p class="text-xs text-slate-500 mt-2">提示：可用滑鼠拖曳或點兩下來「上移」。</p>
+    <button onclick="checkLvl2()" class="mt-3 px-4 py-2 bg-amber-500 text-white rounded">檢查排序</button>
+    <div id="hint2" class="hint-bubble hidden"></div>
+    <p class="mt-2 text-xs text-slate-500">資料來源：IEA Transport Tracking 2024；UK BEIS Conversion Factors。</p>
+  </section>
+
+  <!-- 關卡 3：減碳計算（真實數據 dp5） -->
+  <section class="card p-5">
+    <h2 class="text-xl font-bold text-indigo-700">第 3 關｜減碳計算機</h2>
+    <p class="text-slate-600 text-sm">你家到學校來回 <input id="km" type="number" value="5" class="w-20 border rounded px-2"/> 公里。下週有 <input id="days" type="number" value="3" class="w-16 border rounded px-2"/> 天你把開車改成「走路＋捷運」。</p>
+    <p class="mt-2">每次替代可減約 <b>0.17 kg CO₂／km</b>（汽車 200 g − 捷運 30 g ≈ 170 g）。</p>
+    <button onclick="calcLvl3()" class="mt-2 px-4 py-2 bg-indigo-500 text-white rounded">計算減碳量</button>
+    <p class="mt-3" id="lvl3out"></p>
+    <div id="hint3" class="hint-bubble hidden"></div>
+  </section>
+
+  <!-- 關卡 4：迷思測驗（引導錯答） -->
+  <section class="card p-5">
+    <h2 class="text-xl font-bold text-rose-700">第 4 關｜迷思破解測驗</h2>
+    <div class="space-y-3 mt-2" id="quiz"></div>
+    <button onclick="checkLvl4()" class="mt-3 px-4 py-2 bg-rose-500 text-white rounded">送出</button>
+    <div id="hint4" class="hint-bubble hidden"></div>
+  </section>
+
+  <!-- 關卡 5：WSA 全校途徑 四面向 Checkbox + 全校英雄徽章 -->
+  <section class="card p-5">
+    <h2 class="text-xl font-bold text-emerald-700">第 5 關｜WSA 全校永續交通藍圖 ◆</h2>
+    <p class="text-slate-600 text-sm">要成為「全校英雄」，四個面向每個至少選 1 項，並寫下具體行動：</p>
+    <div class="grid md:grid-cols-2 gap-3 mt-3">
+      <label class="flex items-start gap-2 bg-sky-50 p-3 rounded"><input type="checkbox" class="wsa" data-f="curr" /> <div><b>① 課程與教學</b><br/><textarea class="w-full mt-1 border rounded p-1 text-sm" placeholder="例：製作 3 分鐘交通碳排簡報給低年級"></textarea></div></label>
+      <label class="flex items-start gap-2 bg-emerald-50 p-3 rounded"><input type="checkbox" class="wsa" data-f="camp" /> <div><b>② 校園運作</b><br/><textarea class="w-full mt-1 border rounded p-1 text-sm" placeholder="例：設計校門口友善步行／單車動線"></textarea></div></label>
+      <label class="flex items-start gap-2 bg-amber-50 p-3 rounded"><input type="checkbox" class="wsa" data-f="comm" /> <div><b>③ 社群參與</b><br/><textarea class="w-full mt-1 border rounded p-1 text-sm" placeholder="例：家長共乘揪團卡、走路上學小隊"></textarea></div></label>
+      <label class="flex items-start gap-2 bg-indigo-50 p-3 rounded"><input type="checkbox" class="wsa" data-f="gov" /> <div><b>④ 治理與政策</b><br/><textarea class="w-full mt-1 border rounded p-1 text-sm" placeholder="例：起草班級永續交通公約 3 條"></textarea></div></label>
+    </div>
+    <button onclick="checkLvl5()" class="mt-3 px-4 py-2 bg-emerald-600 text-white rounded">申請『全校英雄徽章』</button>
+    <div id="hint5" class="hint-bubble hidden"></div>
+  </section>
+
+  <!-- 家庭倡議卡 -->
+  <section class="card p-5">
+    <h2 class="text-xl font-bold text-slate-700">家庭倡議任務</h2>
+    <p class="text-sm text-slate-600">用 ≥2 個數據說服家人嘗試永續交通，寫下你的 30 秒話術：</p>
+    <textarea class="w-full border rounded p-2 mt-2" rows="3" placeholder="例：爸媽，交通占台灣 13–14% 碳排，如果我們改走路上學，每次 5 km 可減 0.85 kg CO₂，我還能達成 WHO 每日 60 分鐘運動……"></textarea>
+  </section>
+
+  <!-- 擴充資料與術語 -->
+  <section class="card p-5">
+    <h2 class="text-xl font-bold text-slate-700">延伸學習（真實數據）</h2>
+    <ul class="list-disc pl-6 text-sm space-y-1">
+      <li>dp1 IPCC AR6：全球交通 = 15% GHG，道路占 70%。</li>
+      <li>dp2 台灣交通 = 13–14% GHG；機車 1,400 萬輛、每千人 620 輛。</li>
+      <li>dp5 北捷 200 萬人次/日；YouBike 累計 10 億次。</li>
+      <li>dp6 WHO：兒少每日 60 分鐘活動；走路上學達一半。</li>
+    </ul>
+    <details class="mt-3"><summary class="text-sky-700 font-semibold">📘 關鍵字小辭典</summary>
+      <ul class="mt-2 text-sm list-disc pl-6">
+        <li><b>永續交通</b>：對環境衝擊小、能源效率高、對所有人公平。</li>
+        <li><b>主動通勤</b>：走路、騎車等身體當動力。</li>
+        <li><b>碳排放因子</b>：每公里每人的 GHG 排放量。</li>
+        <li><b>15 分鐘城市</b>：生活所需 15 分鐘可達。</li>
+      </ul>
+    </details>
+  </section>
+</div>
+
+<script>
+  let progress = 0;
+  const totalLvl = 5;
+  const earned = new Set();
+
+  function setName(){
+    const v = document.getElementById('nameInput').value.trim();
+    if(v) document.getElementById('playerName').textContent = v;
+  }
+  function updateProg(){
+    const pct = Math.round(progress/totalLvl*100);
+    document.getElementById('progBar').style.width = pct+'%';
+    document.getElementById('progTxt').textContent = progress+' / '+totalLvl+' 關';
+    if(progress===totalLvl){
+      confetti({particleCount:180, spread:80, origin:{y:.6}});
+    }
+  }
+  function award(id, label, color){
+    if(earned.has(id)) return;
+    earned.add(id);
+    progress++;
+    const el = document.createElement('span');
+    el.className = 'badge';
+    el.style.background = color;
+    el.style.color = '#fff';
+    el.innerHTML = '🏅 '+label;
+    document.getElementById('badges').appendChild(el);
+    confetti({particleCount:60, spread:55, origin:{y:.7}});
+    updateProg();
+  }
+  function showHint(id, txt){
+    const el = document.getElementById(id);
+    el.textContent = '💡 '+txt;
+    el.classList.remove('hidden');
+  }
+
+  /* 拖曳 Lvl1 */
+  document.querySelectorAll('.drag[data-a]').forEach(el=>{
+    el.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text', el.dataset.a + '|' + el.outerHTML); setTimeout(()=>el.style.display='none',0);});
+    el.addEventListener('dragend', e=>{ el.style.display=''; });
+  });
+  document.querySelectorAll('.drop').forEach(zone=>{
+    zone.addEventListener('dragover', e=>{e.preventDefault(); zone.classList.add('over');});
+    zone.addEventListener('dragleave', e=>zone.classList.remove('over'));
+    zone.addEventListener('drop', e=>{
+      e.preventDefault(); zone.classList.remove('over');
+      const [ans, html] = e.dataTransfer.getData('text').split('|');
+      const tmp = document.createElement('div'); tmp.innerHTML = html;
+      const chip = tmp.firstChild;
+      chip.dataset.placed = zone.dataset.type;
+      zone.appendChild(chip);
+      // rebind drag on placed chip
+      chip.addEventListener('dragstart', ev=>{ ev.dataTransfer.setData('text', chip.dataset.a + '|' + chip.outerHTML); setTimeout(()=>chip.style.display='none',0);});
+    });
+  });
+  function checkLvl1(){
+    const chips = document.querySelectorAll('[data-placed]');
+    let ok=0, total=0, miss=[];
+    document.querySelectorAll('.drag[data-a]').forEach(c=>{
+      if(!c.dataset.placed) return;
+      total++;
+      if(c.dataset.placed===c.dataset.a){ ok++; c.classList.add('right'); c.classList.remove('wrong'); }
+      else { c.classList.add('wrong'); c.classList.remove('right'); miss.push(c.textContent.trim()); }
+    });
+    if(total < 9){ showHint('hint1','還有卡片沒拖！請全部放入後再檢查。'); return; }
+    if(ok===total){ showHint('hint1','太棒了！走路、自行車、大眾運輸是最永續的選項。'); award('b1','分類達人','#0ea5e9'); }
+    else { showHint('hint1','再想想：短程飛機＆單人開車碳排非常高；共乘電動車比單人汽油車永續。錯的：'+miss.join('、')); }
+  }
+
+  /* Lvl2 排序：點兩下上移 */
+  document.querySelectorAll('#rankList .drag').forEach(li=>{
+    li.addEventListener('dblclick', ()=>{
+      const p = li.parentNode, prev = li.previousElementSibling;
+      if(prev) p.insertBefore(li, prev);
+    });
+    li.setAttribute('draggable','true');
+    li.addEventListener('dragstart', e=> e.dataTransfer.setData('text', li.dataset.v));
+    li.addEventListener('dragover', e=>e.preventDefault());
+    li.addEventListener('drop', e=>{
+      e.preventDefault();
+      const v = e.dataTransfer.getData('text');
+      const src = [...document.querySelectorAll('#rankList .drag')].find(x=>x.dataset.v===v);
+      if(src && src!==li) li.parentNode.insertBefore(src, li);
+    });
+  });
+  function checkLvl2(){
+    const vals = [...document.querySelectorAll('#rankList .drag')].map(x=>+x.dataset.v);
+    const sorted = vals.every((v,i,a)=> i===0 || a[i-1] <= v);
+    if(sorted){ showHint('hint2','完美！從 0 → 275 g，排放差了將近 10 倍。'); award('b2','數據排序王','#f59e0b'); }
+    else { showHint('hint2','提示：飛機最高，步行最低；捷運<公車<汽車。試著用兩隻眼睛比較 g 值！'); }
+  }
+
+  /* Lvl3 計算 */
+  function calcLvl3(){
+    const km = +document.getElementById('km').value || 0;
+    const d = +document.getElementById('days').value || 0;
+    const saved = (km * 0.17 * d).toFixed(2);
+    const weeks = (saved*52/1000).toFixed(2);
+    document.getElementById('lvl3out').innerHTML =
+      `🌱 一週可減約 <b>${saved} kg CO₂</b>，一年約 <b>${(saved*52).toFixed(1)} kg</b>，等於種 <b>${weeks}</b> 棵小樹一年吸收量！`;
+    if(km>0 && d>0){ showHint('hint3','算得不錯！試著把挑戰拉長到 5 天，看看減量翻倍。'); award('b3','減碳計算機','#6366f1'); }
+    else { showHint('hint3','請輸入公里數與天數再按計算。'); }
+  }
+
+  /* Lvl4 Quiz */
+  const Q = [
+    {q:'電動車＝完全零碳？', opts:['對','錯'], a:1, hint:'電池製造仍耗資源；電動車低碳 50–70%，但不是零。'},
+    {q:'走路太慢不實用？', opts:['對','錯'], a:1, hint:'3 km 內走路常常比開車＋找停車位更快。'},
+    {q:'小孩不能影響家庭交通選擇？', opts:['對','錯'], a:1, hint:'兒童是家庭決策的重要影響者，提出建議常能改變全家。'},
+    {q:'大眾運輸每人每公里碳排比私人汽車低多少？', opts:['1/2','1/5 到 1/10','完全一樣'], a:1, hint:'以北捷 30 g vs 汽車 200 g 為例，約為 1/7。'}
+  ];
+  const qbox = document.getElementById('quiz');
+  Q.forEach((q,i)=>{
+    const html = `<div class="p-3 bg-rose-50 rounded"><p><b>Q${i+1}. ${q.q}</b></p>`+
+      q.opts.map((o,j)=>`<label class="mr-3"><input type="radio" name="q${i}" value="${j}"/> ${o}</label>`).join('')+
+      `<p class="text-xs text-slate-500 mt-1" id="fb${i}"></p></div>`;
+    qbox.insertAdjacentHTML('beforeend', html);
+  });
+  function checkLvl4(){
+    let ok=0;
+    Q.forEach((q,i)=>{
+      const sel = document.querySelector(`input[name=q${i}]:checked`);
+      const fb = document.getElementById('fb'+i);
+      if(!sel){ fb.textContent='（未作答）'; return; }
+      if(+sel.value===q.a){ fb.innerHTML='<span class="text-emerald-700">✅ 正確</span>'; ok++; }
+      else { fb.innerHTML='❌ '+q.hint; }
+    });
+    if(ok===Q.length){ showHint('hint4','全對！你已成功破解迷思。'); award('b4','迷思破解者','#e11d48'); }
+    else { showHint('hint4',`答對 ${ok}/${Q.length}。看紅字提示再試一次！`); }
+  }
+
+  /* Lvl5 WSA */
+  function checkLvl5(){
+    const boxes = [...document.querySelectorAll('.wsa')];
+    const texts = [...document.querySelectorAll('section.card textarea')];
+    const wsaTexts = texts.slice(0,4);
+    const allChecked = boxes.every(b=>b.checked);
+    const allFilled = wsaTexts.every(t=>t.value.trim().length>3);
+    if(allChecked && allFilled){
+      showHint('hint5','申請通過！你完成了 WSA 四面向 — 課程、校園、社群、治理。');
+      award('b5','WSA 全校英雄 🌟','#059669');
+      confetti({particleCount:250, spread:100, origin:{y:.5}, colors:['#10b981','#0ea5e9','#f59e0b','#e11d48']});
+    } else {
+      const miss = [];
+      if(!allChecked) miss.push('勾選四個面向');
+      if(!allFilled) miss.push('每個面向都要寫具體行動（>3 字）');
+      showHint('hint5','還差一點：'+miss.join('；'));
+    }
+  }
+
+  updateProg();
+</script>
+</body>
+</html>

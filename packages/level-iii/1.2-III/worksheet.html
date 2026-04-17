@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>碳偵探小薇的任務 | 溫室效應互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#fef3c7,#bbf7d0); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:120px; transition: background .2s; }
+  .drop-zone.over { background:#fde68a; }
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#10b981; transform:scale(1.3);}
+  .progress-dot.done { background:#059669;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+</style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-3xl mx-auto">
+
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">🔍 碳偵探小薇的任務</h1>
+      <p class="text-sm text-slate-600 mt-1">跟小薇一起解開地球毯子之謎，當個溫室效應小達人！</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> 分</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-3 text-sm text-slate-600">關卡 <span id="step">1</span>/4</span>
+  </div>
+
+  <!-- Level 1: 溫室氣體 vs 非溫室氣體 drag-drop -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🕵️‍♀️</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 1：誰是溫室氣體？</h2>
+        <p class="text-sm text-slate-700 mt-1">小薇說：「要當毯子的氣體才算『溫室氣體』——它們能抓住地面放出的紅外線熱能。把卡片拖到正確的籃子裡吧！」</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 my-4" id="items-box">
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="ghg">🫧 二氧化碳 CO2</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="no">💨 氮氣 N2（78%）</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="ghg">🐄 甲烷 CH4</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="no">🫁 氧氣 O2（21%）</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="ghg">💧 水蒸氣 H2O</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold" draggable="true" data-type="no">🎈 氬氣 Ar（0.9%）</div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div class="drop-zone bg-emerald-50 border-4 border-dashed border-emerald-400 rounded-2xl p-3" data-accept="ghg">
+        <div class="font-bold text-emerald-700 text-center">🧣 是溫室氣體（當毯子）</div>
+        <div class="dz-items flex flex-wrap gap-2 mt-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-sky-50 border-4 border-dashed border-sky-400 rounded-2xl p-3" data-accept="no">
+        <div class="font-bold text-sky-700 text-center">🌬️ 不是溫室氣體</div>
+        <div class="dz-items flex flex-wrap gap-2 mt-2 justify-center"></div>
+      </div>
+    </div>
+
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <button id="l1-next" disabled class="btn mt-2 w-full bg-slate-300 text-white py-3 rounded-xl font-bold">完成分類即可前往下一關 →</button>
+  </section>
+
+  <!-- Level 2: CO2 ppm slider + quiz -->
+  <section id="level-2" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">📈</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 2：CO2 變多了多少？</h2>
+        <p class="text-sm text-slate-700 mt-1">拖動滑桿看看大氣中 CO2 濃度從 1750 年到 2024 年如何變化（資料：NOAA GML）。</p>
+      </div>
+    </div>
+
+    <div class="bg-slate-50 rounded-xl p-4 my-3">
+      <div class="flex justify-between text-sm font-bold mb-2">
+        <span>年份：<span id="year-label" class="text-emerald-600 text-lg">1750</span></span>
+        <span>大氣 CO2：<span id="ppm-label" class="text-red-500 text-lg">280</span> ppm</span>
+      </div>
+      <input id="year-slider" type="range" min="1750" max="2024" value="1750" class="w-full accent-emerald-500">
+      <div class="h-28 flex items-end gap-1 mt-3" id="bar-chart"></div>
+      <p class="text-xs text-slate-500 mt-2">🧭 比較：工業革命前約 280 ppm；2024 年已超過 422 ppm，是至少 80 萬年來最高！</p>
+    </div>
+
+    <p class="font-bold mt-4">🧠 根據資料，下列哪一句話<u>最正確</u>？</p>
+    <div class="flex flex-col gap-2 mt-2" id="l2-options">
+      <button class="btn quiz-opt bg-white border-2 border-emerald-300 rounded-xl p-3 text-left" data-ans="0">A. 大氣中 CO2 一直都是 420 ppm，沒變過。</button>
+      <button class="btn quiz-opt bg-white border-2 border-emerald-300 rounded-xl p-3 text-left" data-ans="1">B. CO2 從工業革命前的 280 ppm，已上升到 2024 年的 422+ ppm，增加超過 50%。</button>
+      <button class="btn quiz-opt bg-white border-2 border-emerald-300 rounded-xl p-3 text-left" data-ans="0">C. 近 50 年 CO2 反而下降了。</button>
+    </div>
+    <p id="l2-feedback" class="mt-3 font-bold min-h-[24px]"></p>
+  </section>
+
+  <!-- Level 3: branching 化石燃料選擇 -->
+  <section id="level-3" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🚗</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 3：減碳大選擇！</h2>
+        <p class="text-sm text-slate-700 mt-1">臺灣 2023 年溫室氣體排放約 <b>2.66 億公噸</b>，能源部門（發電、交通、工廠）占了 <b>90%</b>！你是小薇的同學，上學 1 公里，你會怎麼選？</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-3 my-3" id="l3-choices">
+      <button class="btn choice bg-rose-100 border-2 border-rose-400 rounded-xl p-3 text-left" data-c="a">
+        <b>A.</b> 每天都叫爸媽開車送——很方便。
+      </button>
+      <button class="btn choice bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-left" data-c="b">
+        <b>B.</b> 跟鄰居同學<b>共乘</b>一輛車（2–3 人一起）。
+      </button>
+      <button class="btn choice bg-emerald-100 border-2 border-emerald-400 rounded-xl p-3 text-left" data-c="c">
+        <b>C.</b> 晴天<b>走路或騎腳踏車</b>，雨天搭公車。
+      </button>
+    </div>
+    <div id="l3-story" class="bg-slate-100 rounded-xl p-4 min-h-[80px] text-sm"></div>
+    <button id="l3-next" class="hidden btn mt-3 w-full bg-emerald-500 text-white py-3 rounded-xl font-bold">前往最後一關 →</button>
+  </section>
+
+  <!-- Level 4: 森林吸碳 + 行動承諾 + WSA -->
+  <section id="level-4" class="card p-6 hidden-screen">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="text-4xl">🌳</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 4：森林幫手 ＋ 我的承諾</h2>
+        <p class="text-sm text-slate-700 mt-1">小提示：林木每增加 <b>1 公噸</b>生物量，大約可吸 <b>1.6 公噸 CO2</b> 並放 <b>1.2 公噸 O2</b>！（來源：林業及自然保育署）</p>
+      </div>
+    </div>
+
+    <div class="bg-emerald-50 rounded-xl p-3 my-3 text-sm">
+      🧮 <b>快速算一算</b>：如果校園種 <input id="tree-count" type="number" min="1" max="100" value="10" class="w-16 border-2 border-emerald-400 rounded px-2 mx-1"> 棵樹（假設一年每棵長 0.05 公噸木材），一年可吸收約 <span id="co2-calc" class="font-bold text-emerald-700">0.8</span> 公噸 CO2！
+    </div>
+
+    <p class="font-bold mt-2">✍️ 寫下一個<b>你做得到</b>的減碳行動：</p>
+    <input id="action-input" type="text" placeholder="例：每週走路上學兩天、關掉待機的電視…" class="w-full border-2 border-slate-300 rounded-xl p-3 focus:border-emerald-500 outline-none">
+    <button id="make-card" class="btn w-full mt-3 bg-emerald-500 text-white py-3 rounded-xl font-bold">🎴 生成我的行動卡</button>
+    <div id="card-result" class="hidden mt-4 bg-gradient-to-br from-emerald-200 to-amber-200 rounded-2xl p-5 text-center border-4 border-white pop">
+      <div class="text-5xl">🌱</div>
+      <div class="text-sm text-slate-600 mt-2">溫室效應小達人行動卡</div>
+      <div id="action-text" class="text-xl font-bold my-2 text-emerald-800"></div>
+      <div class="text-xs text-slate-700">— 我是碳偵探小薇的夥伴！</div>
+    </div>
+
+    <div id="wsa-box" class="hidden mt-4 bg-white border-2 border-dashed border-emerald-400 rounded-2xl p-4 fade-in">
+      <h3 class="font-bold text-emerald-700 mb-1">🏫 WSA Challenge：全校一起做（Whole School Approach）</h3>
+      <p class="text-xs text-slate-600 mb-2">一個人減碳有限，全校一起來就強大！從四個面向各選一件事（每項 +10 分）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-emerald-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="課程整合"><span class="text-sm"><b>📚 課程整合</b>：把瓶子溫室實驗帶到自然課，並寫成報告</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-emerald-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="校園營運"><span class="text-sm"><b>💡 校園營運</b>：加入「班級碳偵探隊」，檢查冷氣溫度 &amp; 關閉待機電器</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-emerald-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="社區連結"><span class="text-sm"><b>🤝 社區連結</b>：做 GHG 小海報帶給家人，或參加社區無車日／淨灘</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-emerald-50 cursor-pointer">
+        <input type="checkbox" class="wsa-cb mt-1" data-w="學生治理"><span class="text-sm"><b>🙋 學生治理</b>：在班會提出一條「班級減碳公約」並監督執行</span>
+      </label>
+      <p id="wsa-feedback" class="text-center font-bold text-emerald-600 mt-2 min-h-[20px]"></p>
+    </div>
+    <button id="l4-next" class="hidden btn mt-3 w-full bg-emerald-600 text-white py-3 rounded-xl font-bold">查看我的成就 🏆</button>
+  </section>
+
+  <!-- Final -->
+  <section id="final" class="card p-6 hidden-screen text-center">
+    <div class="text-6xl pop">🏆</div>
+    <h2 class="text-2xl font-bold text-emerald-600 mt-2">恭喜你破關！</h2>
+    <p class="text-slate-700 mt-1">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> 分</p>
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <div class="bg-emerald-50 rounded-xl p-4 text-left mt-3">
+      <h3 class="font-bold text-emerald-700 mb-2">🤔 三個延伸思考</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>如果全班每人每週少開一次車，假設每次少 2 公里，一年可以少排多少 CO2？（提示：汽油車每公里約 0.2 公斤 CO2）</li>
+        <li>你家哪個電器最耗電？有沒有方法可以讓它少排 CO2？（比較：能源占臺灣 GHG 排放 90%）</li>
+        <li>如果你是護林員，你會怎麼保護一棵樹讓它長大吸更多 CO2？你願意邀請哪三位朋友一起參加社區植樹？</li>
+      </ol>
+    </div>
+
+    <button onclick="location.reload()" class="btn mt-4 bg-emerald-500 text-white py-3 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+  </section>
+</div>
+
+<script>
+let score = 0;
+const setScore = v => { score = v; document.getElementById('score').textContent = v; };
+const addScore = n => setScore(score + n);
+const badges = [];
+
+function confetti(){
+  const colors=['#10b981','#f59e0b','#3b82f6','#ef4444','#a855f7'];
+  for(let i=0;i<30;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2500);
+  }
+}
+
+function goStep(n){
+  for(let i=1;i<=5;i++){
+    const sec = document.getElementById(i===5?'final':'level-'+i);
+    if(sec) sec.classList.add('hidden-screen');
+    const d = document.getElementById('dot-'+i);
+    if(d){ d.classList.remove('active','done'); if(i<n) d.classList.add('done'); if(i===n) d.classList.add('active'); }
+  }
+  const target = document.getElementById(n===5?'final':'level-'+n);
+  target.classList.remove('hidden-screen');
+  target.classList.add('fade-in');
+  document.getElementById('step').textContent = Math.min(n,4);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===== Level 1: drag-drop ===== */
+let l1Correct = 0;
+const total1 = document.querySelectorAll('#items-box .drag-item').length;
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
+  el.addEventListener('click', ()=>{
+    document.querySelectorAll('.drag-item').forEach(x=>x.classList.remove('ring-4','ring-emerald-400'));
+    el.classList.add('ring-4','ring-emerald-400');
+    dragged = el;
+  });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{ e.preventDefault(); z.classList.remove('over'); handleDrop(z); });
+  z.addEventListener('click', ()=>{ if(dragged) handleDrop(z); });
+});
+function handleDrop(zone){
+  if(!dragged) return;
+  const fb = document.getElementById('l1-feedback');
+  if(dragged.dataset.type === zone.dataset.accept){
+    zone.querySelector('.dz-items').appendChild(dragged);
+    dragged.setAttribute('draggable','false');
+    dragged.classList.remove('ring-4','ring-emerald-400','bg-yellow-100','border-yellow-400');
+    dragged.classList.add('bg-green-100','border-green-500');
+    addScore(10);
+    l1Correct++;
+    fb.textContent='答對了！ 👏 +10 分';
+    fb.className='mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+    confetti();
+    if(l1Correct === total1){
+      badges.push('🧣 毯子分辨達人');
+      const btn=document.getElementById('l1-next');
+      btn.disabled=false;
+      btn.className='btn mt-2 w-full bg-emerald-500 text-white py-3 rounded-xl font-bold';
+      btn.onclick=()=>goStep(2);
+    }
+  } else {
+    dragged.classList.add('shake');
+    setTimeout(()=>dragged.classList.remove('shake'),400);
+    fb.textContent='再想想！提示：「毯子氣體」要能抓住地面的紅外線熱——N2、O2、Ar 不會喔 💡';
+    fb.className='mt-3 text-center font-bold min-h-[24px] text-rose-500';
+  }
+  dragged=null;
+}
+
+/* ===== Level 2: ppm slider + quiz ===== */
+const slider = document.getElementById('year-slider');
+const yearLabel = document.getElementById('year-label');
+const ppmLabel = document.getElementById('ppm-label');
+const chart = document.getElementById('bar-chart');
+function ppmAt(year){
+  // piecewise approximation of atmospheric CO2 from NOAA GML
+  if(year<=1850) return 280 + (year-1750)/100*5;       // 280 -> 285
+  if(year<=1900) return 285 + (year-1850)/50*10;       // 285 -> 295
+  if(year<=1950) return 295 + (year-1900)/50*15;       // 295 -> 310
+  if(year<=1980) return 310 + (year-1950)/30*30;       // 310 -> 340
+  if(year<=2000) return 340 + (year-1980)/20*30;       // 340 -> 370
+  return 370 + (year-2000)/24*52;                       // 370 -> 422
+}
+// render bars
+for(let y=1750; y<=2024; y+=11){
+  const p = ppmAt(y);
+  const bar = document.createElement('div');
+  bar.style.flex='1';
+  bar.style.height = Math.max(3, (p-270)/160*80)+'px';
+  bar.style.background = p<310?'#60a5fa':(p<370?'#fbbf24':'#ef4444');
+  bar.style.borderRadius='3px';
+  bar.title = y+': '+Math.round(p)+' ppm';
+  chart.appendChild(bar);
+}
+slider.addEventListener('input', ()=>{
+  const y = +slider.value;
+  yearLabel.textContent = y;
+  ppmLabel.textContent = Math.round(ppmAt(y));
+});
+document.querySelectorAll('#l2-options .quiz-opt').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const fb = document.getElementById('l2-feedback');
+    if(btn.dataset.ans === '1'){
+      btn.classList.add('bg-emerald-200','border-emerald-500');
+      fb.textContent='太棒了！工業革命後 CO2 急速上升，這就是地球毯子變厚的原因。 +20 分 🎉';
+      fb.className='mt-3 font-bold min-h-[24px] text-emerald-600 pop';
+      addScore(20);
+      badges.push('📊 CO2 觀察家');
+      confetti();
+      document.querySelectorAll('#l2-options .quiz-opt').forEach(b=>b.disabled=true);
+      setTimeout(()=>goStep(3), 1400);
+    } else {
+      btn.classList.add('shake');
+      setTimeout(()=>btn.classList.remove('shake'),400);
+      fb.textContent='提示：滑桿拉到 1750 看一次、再拉到 2024 看一次，比較兩個數字！';
+      fb.className='mt-3 font-bold min-h-[24px] text-rose-500';
+    }
+  });
+});
+
+/* ===== Level 3: branching ===== */
+const stories = {
+  a: {text:'😟 一個月後：家裡油錢多了、你錯過運動機會，而且每公里汽油車約排 0.2 kg CO2——你的交通排放持續累積。（+0 分）', score:0, badge:null},
+  b: {text:'🙌 共乘讓每人的 CO2 排放減半，還多了聊天時間！短期實用的減碳一步！ +15 分', score:15, badge:'🤝 共乘小夥伴'},
+  c: {text:'🌳 走路／單車完全零 CO2，雨天公車分攤排放；你還變健康了。一年下來少排約 60+ kg CO2，相當於 1 小棵樹的吸收量！ +20 分', score:20, badge:'🚴 零碳通勤者'}
+};
+document.querySelectorAll('#l3-choices .choice').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const s = stories[btn.dataset.c];
+    document.getElementById('l3-story').textContent = s.text;
+    document.getElementById('l3-story').className='bg-yellow-50 rounded-xl p-4 text-sm fade-in';
+    if(s.score>0){ addScore(s.score); if(s.badge) badges.push(s.badge); confetti(); }
+    document.querySelectorAll('#l3-choices .choice').forEach(b=>b.disabled=true);
+    btn.classList.add('ring-4','ring-emerald-500');
+    const nxt=document.getElementById('l3-next');
+    nxt.classList.remove('hidden');
+    nxt.onclick=()=>goStep(4);
+  });
+});
+
+/* ===== Level 4: tree calculator + action card ===== */
+const treeInput = document.getElementById('tree-count');
+const co2Calc = document.getElementById('co2-calc');
+function updateCO2(){
+  const n = Math.max(1, Math.min(100, +treeInput.value || 1));
+  // assume 0.05 t biomass/yr per tree; 1 t biomass absorbs 1.6 t CO2
+  const co2 = (n * 0.05 * 1.6).toFixed(2);
+  co2Calc.textContent = co2;
+}
+treeInput.addEventListener('input', updateCO2);
+updateCO2();
+
+document.getElementById('make-card').addEventListener('click', ()=>{
+  const v = document.getElementById('action-input').value.trim();
+  if(v.length<2){
+    alert('提示：寫下一個具體的小行動，例如「走路上學」或「關掉待機電器」喔！');
+    return;
+  }
+  document.getElementById('action-text').textContent='「我承諾：'+v+'」';
+  document.getElementById('card-result').classList.remove('hidden');
+  addScore(15);
+  badges.push('🌱 行動實踐者');
+  confetti();
+  document.getElementById('wsa-box').classList.remove('hidden');
+  document.getElementById('l4-next').classList.remove('hidden');
+  document.getElementById('l4-next').onclick = showFinal;
+});
+
+/* ===== WSA Challenge ===== */
+const wsaChecked = new Set();
+document.querySelectorAll('.wsa-cb').forEach(cb=>{
+  cb.addEventListener('change', ()=>{
+    const key = cb.dataset.w;
+    const fb = document.getElementById('wsa-feedback');
+    if(cb.checked && !wsaChecked.has(key)){
+      wsaChecked.add(key);
+      addScore(10);
+      fb.textContent = '＋10 分！已選 '+wsaChecked.size+'/4 面向';
+      if(wsaChecked.size === 4){
+        fb.textContent = '🏆 全校英雄！四大面向全破關！';
+        if(!badges.includes('🏫 全校英雄')) badges.push('🏫 全校英雄');
+        confetti();
+      }
+    } else if(!cb.checked && wsaChecked.has(key)){
+      wsaChecked.delete(key);
+      addScore(-10);
+      fb.textContent = '已取消一項，目前 '+wsaChecked.size+'/4';
+    }
+  });
+});
+
+function showFinal(){
+  goStep(5);
+  document.getElementById('final-score').textContent = score;
+  const box = document.getElementById('badges');
+  box.innerHTML='';
+  if(badges.length===0) badges.push('🔍 碳偵探');
+  badges.forEach(b=>{
+    const chip=document.createElement('span');
+    chip.className='bg-emerald-100 border-2 border-emerald-400 rounded-full px-3 py-1 text-sm font-bold pop';
+    chip.textContent=b;
+    box.appendChild(chip);
+  });
+  confetti();
+}
+</script>
+</body>
+</html>

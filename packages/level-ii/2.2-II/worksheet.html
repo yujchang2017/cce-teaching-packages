@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>消失的大朋友 — 恐龍寶寶小探險</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: linear-gradient(180deg, #fff7ed 0%, #fef3c7 50%, #dcfce7 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .popin { animation: popin 0.6s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes popin { 0%{transform:scale(.3);opacity:0} 60%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
+  .bounce { animation: bounce 1s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .wiggle { animation: wiggle 0.4s ease-in-out; }
+  @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-8deg)} 75%{transform:rotate(8deg)} }
+  .shine { animation: shine 2s infinite; }
+  @keyframes shine { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.2) drop-shadow(0 0 18px #fde68a)} }
+  .confetti {
+    position: fixed;
+    width: 14px; height: 14px;
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  .dropzone-active { background: #fde68a !important; transform: scale(1.08); }
+  .big-btn {
+    font-size: 2rem;
+    padding: 1rem 2rem;
+    border-radius: 9999px;
+    font-weight: 800;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.15);
+    transition: all 0.15s;
+  }
+  .big-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,0.15); }
+  svg text { pointer-events: none; }
+  svg { pointer-events: none; }
+  .tap-target { pointer-events: auto; }
+  .card {
+    background: white;
+    border-radius: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+  }
+  .hide { display: none !important; }
+  .big-text { font-size: 1.875rem; font-weight: 700; color: #78350f; }
+  .super-big { font-size: 2.5rem; font-weight: 800; color: #9a3412; }
+</style>
+</head>
+<body class="flex flex-col items-center">
+
+<!-- 可重用恐龍 SVG -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="dino">
+      <ellipse cx="50" cy="60" rx="35" ry="25" fill="#22c55e"/>
+      <circle cx="25" cy="40" r="15" fill="#22c55e"/>
+      <path d="M 85 60 Q 95 55 92 45" stroke="#22c55e" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <circle cx="22" cy="35" r="3" fill="white"/>
+      <circle cx="22" cy="35" r="1.5" fill="black"/>
+      <path d="M 18 45 Q 22 48 26 45" stroke="black" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M 45 40 L 50 30 L 55 40 Z" fill="#15803d"/>
+      <path d="M 55 40 L 60 30 L 65 40 Z" fill="#15803d"/>
+      <rect x="35" y="80" width="8" height="12" rx="3" fill="#22c55e"/>
+      <rect x="55" y="80" width="8" height="12" rx="3" fill="#22c55e"/>
+    </g>
+    <g id="bear">
+      <circle cx="50" cy="55" r="38" fill="#1c1917"/>
+      <circle cx="25" cy="30" r="10" fill="#1c1917"/>
+      <circle cx="75" cy="30" r="10" fill="#1c1917"/>
+      <circle cx="25" cy="30" r="5" fill="#a16207"/>
+      <circle cx="75" cy="30" r="5" fill="#a16207"/>
+      <circle cx="40" cy="50" r="3" fill="white"/>
+      <circle cx="60" cy="50" r="3" fill="white"/>
+      <circle cx="40" cy="50" r="1.5" fill="black"/>
+      <circle cx="60" cy="50" r="1.5" fill="black"/>
+      <path d="M 35 75 L 50 65 L 65 75 Z" fill="white"/>
+      <ellipse cx="50" cy="65" rx="5" ry="3" fill="#78350f"/>
+      <path d="M 42 72 Q 50 78 58 72" stroke="black" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </g>
+    <g id="fossil">
+      <ellipse cx="50" cy="50" rx="40" ry="35" fill="#d6d3d1"/>
+      <ellipse cx="50" cy="50" rx="40" ry="35" fill="none" stroke="#78716c" stroke-width="2"/>
+      <path d="M 30 50 Q 40 40 50 45 Q 60 50 70 45" stroke="#44403c" stroke-width="3" fill="none"/>
+      <circle cx="35" cy="45" r="3" fill="#44403c"/>
+      <circle cx="65" cy="50" r="3" fill="#44403c"/>
+      <path d="M 40 60 L 45 65 L 55 62 L 60 65" stroke="#44403c" stroke-width="2" fill="none"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- 頂部進度條 -->
+<div class="w-full max-w-3xl p-4">
+  <div class="flex items-center justify-center gap-2 text-4xl font-extrabold text-orange-700">
+    <svg width="70" height="70" viewBox="0 0 100 100"><use href="#dino"/></svg>
+    <span>消失的大朋友</span>
+  </div>
+  <div class="text-center text-2xl mt-2 text-amber-800">🦕 恐龍寶寶小探險 🦖</div>
+  <div class="flex gap-2 mt-4 justify-center" id="progress-bar"></div>
+</div>
+
+<!-- ========== 關卡 1：時間長長的彩帶 ========== -->
+<section id="stage1" class="card w-full max-w-3xl m-4 popin">
+  <h2 class="super-big text-center mb-4">🌈 關卡 1：好久好久以前 🌈</h2>
+  <p class="big-text text-center mb-6">恐龍是什麼時候住在地球呢？<br>拖拖看，把恐龍貼紙放到正確的位置！</p>
+
+  <!-- 時間彩帶 -->
+  <div class="relative h-20 mx-4 mb-4">
+    <div class="absolute inset-x-0 top-6 h-8 rounded-full" style="background:linear-gradient(90deg,#fca5a5,#fde68a,#86efac,#93c5fd)"></div>
+    <div class="absolute left-2 top-0 text-amber-900 big-text">很久以前 ⏳</div>
+    <div class="absolute right-2 top-0 text-amber-900 big-text">現在 ⏱️</div>
+    <div id="dropzone-past" class="absolute left-16 top-4 w-24 h-16 border-4 border-dashed border-orange-400 rounded-xl bg-orange-100 bg-opacity-50 flex items-center justify-center tap-target">
+      <span class="text-2xl">🦕?</span>
+    </div>
+    <div id="dropzone-now" class="absolute right-16 top-4 w-24 h-16 border-4 border-dashed border-green-400 rounded-xl bg-green-100 bg-opacity-50 flex items-center justify-center tap-target">
+      <span class="text-2xl">🐻?</span>
+    </div>
+  </div>
+
+  <!-- 拖曳貼紙 -->
+  <div class="flex justify-around mt-8">
+    <div draggable="true" id="drag-dino" data-target="dropzone-past" class="cursor-grab bounce tap-target" style="user-select:none">
+      <svg width="100" height="100" viewBox="0 0 100 100" class="tap-target"><use href="#dino"/></svg>
+      <div class="text-center text-xl font-bold text-green-700">恐龍</div>
+    </div>
+    <div draggable="true" id="drag-bear" data-target="dropzone-now" class="cursor-grab bounce tap-target" style="user-select:none; animation-delay:0.3s">
+      <svg width="100" height="100" viewBox="0 0 100 100" class="tap-target"><use href="#bear"/></svg>
+      <div class="text-center text-xl font-bold text-amber-800">臺灣黑熊</div>
+    </div>
+  </div>
+
+  <div id="fb1" class="mt-6 text-center big-text hide"></div>
+  <button id="btn1" onclick="nextStage(1)" class="big-btn bg-orange-400 text-white mx-auto block mt-6 hide">繼續冒險 ➜</button>
+</section>
+
+<!-- ========== 關卡 2：4 顆糖果剩 1 顆 ========== -->
+<section id="stage2" class="card w-full max-w-3xl m-4 hide">
+  <h2 class="super-big text-center mb-4">🍬 關卡 2：4 隻動物剩幾隻？ 🍬</h2>
+  <p class="big-text text-center mb-4">
+    大石頭撞地球以後，<br>每 4 隻動物裡有 3 隻不見了。<br>
+    點一點正確的答案 👇
+  </p>
+
+  <div class="flex justify-center gap-4 my-6">
+    <span class="text-6xl">🦕</span>
+    <span class="text-6xl">🦖</span>
+    <span class="text-6xl">🦴</span>
+    <span class="text-6xl">🦕</span>
+  </div>
+  <p class="text-center text-xl text-stone-600 mb-4">原本有 4 隻動物朋友</p>
+
+  <div class="flex justify-center gap-4 my-6">
+    <span class="text-6xl grayscale opacity-30">🦕</span>
+    <span class="text-6xl grayscale opacity-30">🦖</span>
+    <span class="text-6xl grayscale opacity-30">🦴</span>
+    <span class="text-6xl shine">🐦</span>
+  </div>
+  <p class="text-center text-xl text-stone-600 mb-4">大石頭撞地球之後……剩下幾隻？</p>
+
+  <div class="grid grid-cols-3 gap-4 mt-4 px-6">
+    <button class="big-btn bg-sky-300 text-sky-900 tap-target" onclick="answer2(this, 0)">0 隻</button>
+    <button class="big-btn bg-green-400 text-white tap-target" onclick="answer2(this, 1)">1 隻 ✨</button>
+    <button class="big-btn bg-pink-300 text-pink-900 tap-target" onclick="answer2(this, 4)">4 隻</button>
+  </div>
+
+  <div id="fb2" class="mt-6 text-center big-text hide"></div>
+  <button id="btn2" onclick="nextStage(2)" class="big-btn bg-orange-400 text-white mx-auto block mt-6 hide">繼續冒險 ➜</button>
+</section>
+
+<!-- ========== 關卡 3：化石配對 ========== -->
+<section id="stage3" class="card w-full max-w-3xl m-4 hide">
+  <h2 class="super-big text-center mb-4">🦴 關卡 3：化石小偵探 🔍</h2>
+  <p class="big-text text-center mb-6">
+    化石是恐龍留給我們的小禮物！<br>
+    請你把化石和正確的動物連在一起 🎯
+  </p>
+
+  <div class="grid grid-cols-2 gap-6 px-4">
+    <button class="tap-target p-4 rounded-2xl bg-amber-100 hover:bg-amber-200 text-center" onclick="matchFossil(this,'dino')">
+      <svg width="100" height="100" viewBox="0 0 100 100" class="mx-auto"><use href="#fossil"/></svg>
+      <div class="text-xl font-bold mt-2">大牙齒化石 🦷</div>
+    </button>
+    <button class="tap-target p-4 rounded-2xl bg-green-100 hover:bg-green-200 text-center" onclick="matchFossil(this,'leaf')">
+      <div class="text-7xl">🍃</div>
+      <div class="text-xl font-bold mt-2">葉子化石</div>
+    </button>
+    <button class="tap-target p-4 rounded-2xl bg-sky-100 hover:bg-sky-200 text-center" onclick="matchFossil(this,'shell')">
+      <div class="text-7xl">🐚</div>
+      <div class="text-xl font-bold mt-2">貝殼化石</div>
+    </button>
+    <button class="tap-target p-4 rounded-2xl bg-orange-100 hover:bg-orange-200 text-center" onclick="matchFossil(this,'bone')">
+      <div class="text-7xl">🦴</div>
+      <div class="text-xl font-bold mt-2">大骨頭化石</div>
+    </button>
+  </div>
+
+  <div id="fb3" class="mt-6 text-center big-text">
+    找到 <span id="fossil-count" class="super-big text-green-600">0</span> / 4 個化石！
+  </div>
+  <button id="btn3" onclick="nextStage(3)" class="big-btn bg-orange-400 text-white mx-auto block mt-6 hide">繼續冒險 ➜</button>
+</section>
+
+<!-- ========== 關卡 4：照顧臺灣動物 ========== -->
+<section id="stage4" class="card w-full max-w-3xl m-4 hide">
+  <h2 class="super-big text-center mb-4">🐻 關卡 4：我會照顧你 💚</h2>
+  <p class="big-text text-center mb-6">
+    臺灣黑熊是我們的動物朋友！<br>
+    請選一個你會做的小行動 ✅
+  </p>
+
+  <svg width="180" height="180" viewBox="0 0 100 100" class="mx-auto mb-4 shine"><use href="#bear"/></svg>
+
+  <div class="flex flex-col gap-4 px-4">
+    <button class="big-btn bg-green-200 text-green-900 tap-target" onclick="promise(this)">🚮 我不亂丟垃圾</button>
+    <button class="big-btn bg-sky-200 text-sky-900 tap-target" onclick="promise(this)">🙅 看到野生動物，只看不抓</button>
+    <button class="big-btn bg-pink-200 text-pink-900 tap-target" onclick="promise(this)">📚 我會多讀動物的書</button>
+  </div>
+
+  <div id="fb4" class="mt-6 text-center big-text hide"></div>
+  <button id="btn4" onclick="showFinal()" class="big-btn bg-orange-400 text-white mx-auto block mt-6 hide">看我的獎章 🏆</button>
+</section>
+
+<!-- ========== 最終頁：獎章 ========== -->
+<section id="final" class="card w-full max-w-3xl m-4 hide text-center">
+  <h2 class="super-big mb-4">🏆 恭喜你！ 🏆</h2>
+  <div class="text-[120px] shine">🦕</div>
+  <div class="super-big text-green-700 my-4">小小恐龍專家<br>證書</div>
+  <p class="big-text mb-6">
+    你知道：<br>
+    🦕 恐龍在很久很久以前就不見了<br>
+    🍬 4 隻動物剩下 1 隻<br>
+    🦴 化石是大家的小禮物<br>
+    🐻 我們要照顧現在的動物朋友
+  </p>
+  <button onclick="location.reload()" class="big-btn bg-orange-400 text-white mx-auto block">🔄 再玩一次</button>
+</section>
+
+<script>
+  // 進度條
+  const stages = 4;
+  const bar = document.getElementById('progress-bar');
+  for (let i = 0; i < stages; i++) {
+    const d = document.createElement('div');
+    d.className = 'w-10 h-6 rounded-full bg-stone-300';
+    d.id = 'pb-' + (i+1);
+    bar.appendChild(d);
+  }
+  function updateBar(n) {
+    for (let i = 1; i <= n; i++) {
+      document.getElementById('pb-'+i).className = 'w-10 h-6 rounded-full bg-green-500';
+    }
+  }
+
+  // confetti
+  function confetti() {
+    const colors = ['#fde047','#fb923c','#34d399','#60a5fa','#f472b6'];
+    for (let i = 0; i < 30; i++) {
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      el.style.left = Math.random() * window.innerWidth + 'px';
+      el.style.top = '-20px';
+      el.style.background = colors[Math.floor(Math.random()*colors.length)];
+      el.style.transition = 'all 2.5s ease-out';
+      document.body.appendChild(el);
+      setTimeout(() => {
+        el.style.top = (window.innerHeight + 40) + 'px';
+        el.style.transform = 'rotate(' + (Math.random()*720-360) + 'deg)';
+      }, 10);
+      setTimeout(() => el.remove(), 2700);
+    }
+  }
+
+  // 關卡 1：拖曳
+  let stage1Done = { dino: false, bear: false };
+  document.querySelectorAll('[draggable=true]').forEach(el => {
+    el.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('id', el.id);
+    });
+    // touch support
+    el.addEventListener('touchstart', e => { e.preventDefault(); el.classList.add('wiggle'); }, { passive: false });
+    el.addEventListener('touchmove', e => {
+      const t = e.touches[0];
+      el.style.position = 'fixed';
+      el.style.left = (t.clientX - 50) + 'px';
+      el.style.top = (t.clientY - 50) + 'px';
+      el.style.zIndex = '100';
+    }, { passive: false });
+    el.addEventListener('touchend', e => {
+      const t = e.changedTouches[0];
+      const dropEl = document.elementFromPoint(t.clientX, t.clientY);
+      const zone = dropEl && dropEl.closest('[id^=dropzone-]');
+      if (zone && zone.id === el.dataset.target) {
+        zone.innerHTML = el.outerHTML;
+        stage1Done[el.id === 'drag-dino' ? 'dino' : 'bear'] = true;
+        checkStage1();
+      }
+      el.style.position = '';
+      el.classList.remove('wiggle');
+    });
+  });
+
+  ['dropzone-past','dropzone-now'].forEach(zid => {
+    const z = document.getElementById(zid);
+    z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('dropzone-active'); });
+    z.addEventListener('dragleave', e => z.classList.remove('dropzone-active'));
+    z.addEventListener('drop', e => {
+      e.preventDefault();
+      z.classList.remove('dropzone-active');
+      const id = e.dataTransfer.getData('id');
+      const el = document.getElementById(id);
+      if (el.dataset.target === zid) {
+        z.innerHTML = el.outerHTML;
+        stage1Done[id === 'drag-dino' ? 'dino' : 'bear'] = true;
+        checkStage1();
+      } else {
+        const fb = document.getElementById('fb1');
+        fb.innerText = '🤔 再試試看！恐龍住很久以前，黑熊住現在喔～';
+        fb.className = 'mt-6 text-center big-text text-orange-600';
+      }
+    });
+  });
+
+  function checkStage1() {
+    if (stage1Done.dino && stage1Done.bear) {
+      const fb = document.getElementById('fb1');
+      fb.innerText = '🎉 太棒了！恐龍住好久以前，黑熊是我們現在的朋友！';
+      fb.className = 'mt-6 text-center big-text text-green-600';
+      document.getElementById('btn1').classList.remove('hide');
+      confetti();
+      updateBar(1);
+    }
+  }
+
+  // 關卡 2：單選
+  function answer2(btn, n) {
+    const fb = document.getElementById('fb2');
+    if (n === 1) {
+      fb.innerText = '🎉 答對了！剩下 1 隻，牠是恐龍的小小後代 🐦～';
+      fb.className = 'mt-6 text-center big-text text-green-600';
+      document.getElementById('btn2').classList.remove('hide');
+      btn.classList.add('shine');
+      confetti();
+      updateBar(2);
+    } else {
+      fb.innerText = '🤔 再想想！4 隻裡有 3 隻不見了，所以剩下……';
+      fb.className = 'mt-6 text-center big-text text-orange-600';
+      btn.classList.add('wiggle');
+      setTimeout(() => btn.classList.remove('wiggle'), 500);
+    }
+  }
+
+  // 關卡 3：多選配對
+  let fossilFound = 0;
+  function matchFossil(btn, kind) {
+    if (btn.classList.contains('shine')) return;
+    btn.classList.add('shine');
+    btn.style.background = '#bbf7d0';
+    fossilFound++;
+    document.getElementById('fossil-count').innerText = fossilFound;
+    if (fossilFound >= 4) {
+      document.getElementById('fb3').innerHTML = '🎉 全部 <span class="super-big text-green-600">4</span> 個化石都找到了！你是小小化石專家！';
+      document.getElementById('btn3').classList.remove('hide');
+      confetti();
+      updateBar(3);
+    }
+  }
+
+  // 關卡 4：承諾
+  function promise(btn) {
+    document.querySelectorAll('#stage4 button.big-btn').forEach(b => {
+      if (b !== btn) b.style.opacity = '0.5';
+    });
+    btn.classList.add('shine');
+    const fb = document.getElementById('fb4');
+    fb.innerHTML = '💚 謝謝你的承諾！<br>臺灣黑熊會給你一個大擁抱 🫂';
+    fb.className = 'mt-6 text-center big-text text-green-700';
+    document.getElementById('btn4').classList.remove('hide');
+    confetti();
+    updateBar(4);
+  }
+
+  // 關卡切換
+  function nextStage(n) {
+    document.getElementById('stage' + n).classList.add('hide');
+    document.getElementById('stage' + (n+1)).classList.remove('hide');
+    document.getElementById('stage' + (n+1)).classList.add('popin');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showFinal() {
+    document.getElementById('stage4').classList.add('hide');
+    document.getElementById('final').classList.remove('hide');
+    document.getElementById('final').classList.add('popin');
+    confetti();
+    setTimeout(confetti, 600);
+    setTimeout(confetti, 1200);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

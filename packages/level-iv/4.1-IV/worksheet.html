@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>不平等的地球 | 氣候變遷社會衝擊互動學習單（4.1-IV）</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;background:linear-gradient(135deg,#fee2e2,#fef3c7,#dbeafe);min-height:100vh;}
+  .card{background:white;border-radius:1.25rem;box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn{transition:all .18s;}
+  .btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.05);}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .pop{animation:pop .5s ease;}
+  @keyframes pop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
+  .shake{animation:shake .4s;}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .confetti{position:fixed;width:10px;height:10px;top:-10px;animation:fall 2.2s linear forwards;z-index:50;pointer-events:none;}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+  .hidden-screen{display:none;}
+  .progress-dot{width:12px;height:12px;border-radius:50%;background:#cbd5e1;}
+  .progress-dot.active{background:#ef4444;transform:scale(1.3);}
+  .progress-dot.done{background:#10b981;}
+  .fade-in{animation:fade .4s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  textarea.cer,textarea.reflect{border:1px solid #cbd5e1;border-radius:.5rem;padding:.5rem;width:100%;font-size:.95rem;}
+  .tag{display:inline-block;padding:.15rem .6rem;border-radius:999px;font-size:.75rem;font-weight:600;}
+  .node{cursor:pointer;border:2px solid #94a3b8;border-radius:.6rem;padding:.5rem;text-align:center;font-size:.85rem;background:#fff;}
+  .node.chosen{border-color:#ef4444;background:#fee2e2;}
+  .chain-line{stroke:#ef4444;stroke-width:3;fill:none;marker-end:url(#arrow);}
+</style>
+</head>
+<body class="text-slate-800 py-6 px-3">
+
+<div class="max-w-4xl mx-auto">
+
+<header class="card p-6 mb-5">
+  <div class="flex justify-between items-start flex-wrap gap-2">
+    <div>
+      <p class="tag bg-red-100 text-red-700">4.1-IV · Level IV · 13-15 歲</p>
+      <h1 class="text-3xl font-extrabold mt-2">不平等的地球 🌍</h1>
+      <p class="text-slate-600">氣候變遷的社會衝擊、脆弱族群與氣候正義</p>
+    </div>
+    <div class="text-right">
+      <p class="text-sm text-slate-500">分數</p>
+      <p id="score" class="text-3xl font-bold text-red-600">0</p>
+    </div>
+  </div>
+  <div id="progress" class="flex gap-2 mt-4"></div>
+</header>
+
+<!-- Scene intro -->
+<section id="scene-intro" class="card p-6 mb-5 screen">
+  <h2 class="text-xl font-bold mb-3">🎬 你的角色</h2>
+  <p class="leading-relaxed">你是 <b>「海晴」</b>，14 歲，住在嘉義東石。你的阿嬤住在同一條巷子的老屋裡，上週熱浪阿嬤因熱衰竭送醫；去年颱風家門口淹到小腿。學校要派代表參加縣市「學生氣候正義聽證會」，你被推選為發言人。接下來六個關卡，你要用知識、數據與同理心，為阿嬤和像她一樣的人說話。</p>
+  <button onclick="go('s1')" class="btn mt-4 bg-red-500 text-white px-5 py-2 rounded-lg font-bold">開始 →</button>
+</section>
+
+<!-- Stage 1: data interpretation -->
+<section id="scene-s1" class="card p-6 mb-5 screen hidden-screen">
+  <h2 class="text-xl font-bold mb-3">📊 關卡 1／6：讀懂 WHO 數據（資料詮釋題）</h2>
+  <p class="mb-3">根據世界衛生組織 WHO（2023），下列敘述何者<b>最準確</b>地解讀「全球 36 億人居住於高度氣候脆弱地區；這些地區極端天氣死亡率為低脆弱地區 15 倍」？</p>
+  <div id="q1" class="space-y-2">
+    <button class="q-opt w-full text-left btn bg-slate-100 hover:bg-slate-200 p-3 rounded-lg" data-correct="0">A. 氣候變遷會讓每個人都一樣慘，只是順序不同。</button>
+    <button class="q-opt w-full text-left btn bg-slate-100 hover:bg-slate-200 p-3 rounded-lg" data-correct="1">B. 15 倍差距顯示氣候衝擊被既有的基礎設施與社會條件放大，不是氣候本身偏心。</button>
+    <button class="q-opt w-full text-left btn bg-slate-100 hover:bg-slate-200 p-3 rounded-lg" data-correct="0">C. 36 億人就是氣候難民，都會被迫遷徙。</button>
+    <button class="q-opt w-full text-left btn bg-slate-100 hover:bg-slate-200 p-3 rounded-lg" data-correct="0">D. 這個比例只是估算，實際可忽略。</button>
+  </div>
+  <div id="fb1" class="mt-3 text-sm"></div>
+</section>
+
+<!-- Stage 2: systems thinking - causal chain -->
+<section id="scene-s2" class="card p-6 mb-5 screen hidden-screen">
+  <h2 class="text-xl font-bold mb-3">🕸️ 關卡 2／6：系統思考——因果鏈（拼成影響阿嬤的因果）</h2>
+  <p class="mb-3">點選 <b>至少 4 個</b>節點，勾出導致「阿嬤在熱浪中送醫」的多重因果；然後在下方寫出連結邏輯。</p>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+    <div class="node" data-n="1">地處頂樓加蓋、西曬</div>
+    <div class="node" data-n="2">獨居、低所得</div>
+    <div class="node" data-n="3">沒冷氣、無法負擔</div>
+    <div class="node" data-n="4">社區無遮蔭、熱島效應</div>
+    <div class="node" data-n="5">醫療資源偏遠</div>
+    <div class="node" data-n="6">政策未特別納入長者</div>
+    <div class="node" data-n="7">氣候變遷使熱浪更頻繁</div>
+    <div class="node" data-n="8">全球排放大國責任</div>
+  </div>
+  <p class="mt-3 text-sm text-slate-600">💡 回饋循環提示：阿嬤送醫 → 家庭醫療負擔 → 更難改善居住 → 下次更脆弱。</p>
+  <label class="block mt-3 font-semibold">寫出 ≥3 條因果連結（例：「7 → 1：熱浪升溫加上西曬，使室內超過 38℃」）</label>
+  <textarea id="s2-text" class="reflect" rows="4" placeholder="1) …&#10;2) …&#10;3) …"></textarea>
+  <button onclick="checkS2()" class="btn mt-3 bg-red-500 text-white px-4 py-2 rounded-lg">送出</button>
+  <div id="fb2" class="mt-3 text-sm"></div>
+</section>
+
+<!-- Stage 3: ethical dilemma -->
+<section id="scene-s3" class="card p-6 mb-5 screen hidden-screen">
+  <h2 class="text-xl font-bold mb-3">⚖️ 關卡 3／6：倫理兩難——該遷村嗎？</h2>
+  <p class="mb-3">政府提出「東石沿海集體遷村方案」補償金豐厚但須五年內搬遷。四個角色各有立場。請選擇最接近你的立場，<b>並論述 ≥80 字</b>理由（包含至少一個本課程概念：脆弱度／氣候正義三支柱／健康社會決定因素／損失與損害 之一）。</p>
+  <div class="space-y-2">
+    <label class="flex items-start gap-2"><input type="radio" name="eth" value="a"> <span><b>政府代表</b>：遷村是最有效的風險管理，應立即執行。</span></label>
+    <label class="flex items-start gap-2"><input type="radio" name="eth" value="b"> <span><b>不願離開的阿嬤</b>：祖墳、方言、蚵田都在這，補償金買不回文化。</span></label>
+    <label class="flex items-start gap-2"><input type="radio" name="eth" value="c"> <span><b>接納社區里長</b>：擔心資源分配與文化差異，需要先準備社會融合。</span></label>
+    <label class="flex items-start gap-2"><input type="radio" name="eth" value="d"> <span><b>環境記者</b>：這是被迫犧牲，政府應先承擔減碳責任、暫緩遷村。</span></label>
+  </div>
+  <textarea id="s3-text" class="reflect mt-3" rows="4" placeholder="我的立場是 …，因為 …（請引用至少一個課程概念）"></textarea>
+  <button onclick="checkS3()" class="btn mt-3 bg-red-500 text-white px-4 py-2 rounded-lg">送出</button>
+  <p class="text-xs text-slate-500 mt-2">本題無標準答案；評量看你的論理結構與多角度考量。</p>
+  <div id="fb3" class="mt-3 text-sm"></div>
+</section>
+
+<!-- Stage 4: CER -->
+<section id="scene-s4" class="card p-6 mb-5 screen hidden-screen">
+  <h2 class="text-xl font-bold mb-3">📝 關卡 4／6：CER 論證寫作</h2>
+  <p class="mb-3">議題：<b>高所得國家是否應對氣候難民負有接納與補償責任？</b></p>
+  <div class="bg-amber-50 p-3 rounded-lg text-sm mb-3">
+    <b>範例引導</b>：<br>
+    <b>Claim（主張）</b>：應負有補償責任。<br>
+    <b>Evidence（證據）</b>：WHO 指出 2030-2050 氣候相關死亡每年新增 25 萬，且集中於低排放國家；36 億人居高脆弱區、死亡率為低脆弱區 15 倍。<br>
+    <b>Reasoning（推理）</b>：排放—衝擊不對稱下，受害者無能力獨自調適；氣候正義之「分配」支柱要求歷史排放責任者提供資源，否則違反程序與分配正義。
+  </div>
+  <label class="font-semibold block">你的 Claim</label>
+  <textarea id="cer-c" class="cer" rows="2"></textarea>
+  <label class="font-semibold block mt-2">你的 Evidence（引用本課數據 ≥1 項）</label>
+  <textarea id="cer-e" class="cer" rows="3"></textarea>
+  <label class="font-semibold block mt-2">你的 Reasoning</label>
+  <textarea id="cer-r" class="cer" rows="3"></textarea>
+  <button onclick="checkS4()" class="btn mt-3 bg-red-500 text-white px-4 py-2 rounded-lg">送出</button>
+  <div id="fb4" class="mt-3 text-sm"></div>
+</section>
+
+<!-- Stage 5: open reflection x2 -->
+<section id="scene-s5" class="card p-6 mb-5 screen hidden-screen">
+  <h2 class="text-xl font-bold mb-3">💭 關卡 5／6：開放反思（兩題）</h2>
+
+  <div class="mb-5">
+    <p class="font-semibold">① 政策抉擇（≥50 字）：你是縣市長，預算有限，只能擇一：(A) 全面冷氣機補貼給低收入家庭；(B) 社區遮蔭公園與樹冠改造。你選哪個？誰會被你的方案忽略？</p>
+    <textarea id="r1" class="reflect mt-2" rows="4" placeholder="我的選擇是 …，理由 …；我的方案可能忽略了 …"></textarea>
+  </div>
+
+  <div>
+    <p class="font-semibold">② 多元觀點（≥50 字）：你的社區有哪一個群體，你原本沒把他們想成「氣候衝擊下的脆弱者」？為什麼現在你認為應該把他們加入？</p>
+    <textarea id="r2" class="reflect mt-2" rows="4" placeholder="我原本沒想到 …，但我現在意識到 …"></textarea>
+  </div>
+
+  <button onclick="checkS5()" class="btn mt-3 bg-red-500 text-white px-4 py-2 rounded-lg">送出</button>
+  <div id="fb5" class="mt-3 text-sm"></div>
+</section>
+
+<!-- Stage 6: metacognition -->
+<section id="scene-s6" class="card p-6 mb-5 screen hidden-screen">
+  <h2 class="text-xl font-bold mb-3">🧠 關卡 6／6：後設認知</h2>
+  <p class="mb-3">想想剛才六個關卡。請回答：</p>
+
+  <label class="font-semibold block">A. 在哪一個關卡，你的想法被挑戰或改變了？你原本怎麼想、現在怎麼想？（≥60 字）</label>
+  <textarea id="m1" class="reflect" rows="4"></textarea>
+
+  <label class="font-semibold block mt-3">B. 哪一個概念你還不確定或想繼續探索？你會怎麼去弄清楚？（≥40 字）</label>
+  <textarea id="m2" class="reflect" rows="3"></textarea>
+
+  <button onclick="checkS6()" class="btn mt-3 bg-red-500 text-white px-4 py-2 rounded-lg">送出</button>
+  <div id="fb6" class="mt-3 text-sm"></div>
+</section>
+
+<!-- WSA 4-checkbox -->
+<section id="scene-wsa" class="card p-6 mb-5 screen hidden-screen">
+  <h2 class="text-xl font-bold mb-3">🏫 全校行動挑戰（WSA Challenge）</h2>
+  <p class="mb-3">下列四項校園行動你本週可以推動嗎？勾選將承諾的項目（四項全勾獲「全校英雄」徽章）：</p>
+  <div class="space-y-2">
+    <label class="flex gap-2 items-start"><input type="checkbox" class="wsa" data-d="c"> <span><b>課程整合</b>：和公民／生物老師提議跨科氣候移民專題。</span></label>
+    <label class="flex gap-2 items-start"><input type="checkbox" class="wsa" data-d="o"> <span><b>校園營運</b>：盤點校內熱脆弱點，提出一處優先改善。</span></label>
+    <label class="flex gap-2 items-start"><input type="checkbox" class="wsa" data-d="m"> <span><b>社區連結</b>：參與獨居長者高溫關懷探訪一次。</span></label>
+    <label class="flex gap-2 items-start"><input type="checkbox" class="wsa" data-d="g"> <span><b>學生治理</b>：向學生會提案成立「氣候正義委員會」席次保留制。</span></label>
+  </div>
+  <button onclick="checkWSA()" class="btn mt-3 bg-amber-500 text-white px-4 py-2 rounded-lg">確認承諾</button>
+  <div id="wsa-fb" class="mt-3"></div>
+</section>
+
+<!-- Project task -->
+<section id="scene-project" class="card p-6 mb-5 screen hidden-screen">
+  <h2 class="text-xl font-bold mb-3">🚀 專題任務（Project Task）</h2>
+  <div class="bg-red-50 p-4 rounded-lg">
+    <p class="font-semibold">氣候正義微報導</p>
+    <p class="mt-2">本週內，找出你校園或社區中一個「被忽略的氣候脆弱群體」（例：獨居長者、戶外工作者、新住民家庭、無住所者、身心障礙同學）。訪談至少一位成員，並完成 500 字報導，內容需包含：</p>
+    <ul class="list-disc ml-6 mt-2 text-sm space-y-1">
+      <li>該群體的氣候暴露與敏感度描述（用本課脆弱度三要素）</li>
+      <li>至少一項本課數據佐證</li>
+      <li>你建議的一項校園或政府行動（政策工具箱）</li>
+      <li>他們自己的聲音至少一段原文引述（非你的代言）</li>
+    </ul>
+    <p class="mt-3 text-sm">成果提交至班級「氣候正義委員會」檔案，並可選擇投稿縣市學生氣候網絡。</p>
+  </div>
+  <button onclick="finish()" class="btn mt-4 bg-emerald-500 text-white px-5 py-2 rounded-lg font-bold">我承接這個任務 →</button>
+</section>
+
+<!-- Summary -->
+<section id="scene-end" class="card p-6 mb-5 screen hidden-screen">
+  <h2 class="text-2xl font-bold mb-3">🎓 成果總結</h2>
+  <div id="badges" class="flex flex-wrap gap-2 mb-4"></div>
+  <p id="end-msg" class="mb-4"></p>
+  <div class="bg-slate-50 p-4 rounded-lg">
+    <h3 class="font-bold mb-2">🔮 延伸三思</h3>
+    <ol class="list-decimal ml-6 space-y-1 text-sm">
+      <li>若氣候難民要求國際難民公約保障，你認為最大的阻力來自什麼？可能的折衷方案？</li>
+      <li>你校園裡的「最高槓桿點」是哪個環節，一個小改動會造成大改變？為什麼？</li>
+      <li>十年後回頭看今天的自己，你最希望「當年的我」做了哪件事？現在就能開始嗎？</li>
+    </ol>
+  </div>
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="btn mt-4 bg-slate-700 text-white px-4 py-2 rounded-lg">回到頂端</button>
+</section>
+
+</div>
+
+<script>
+const screens=['intro','s1','s2','s3','s4','s5','s6','wsa','project','end'];
+let cur='intro',score=0,badges=[];
+function $(id){return document.getElementById(id);}
+function go(s){
+  screens.forEach(k=>$('scene-'+k).classList.add('hidden-screen'));
+  $('scene-'+s).classList.remove('hidden-screen');
+  $('scene-'+s).classList.add('fade-in');
+  cur=s; renderProgress(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderProgress(){
+  const p=$('progress');p.innerHTML='';
+  screens.forEach((k,i)=>{
+    const d=document.createElement('div');d.className='progress-dot';
+    if(k===cur)d.classList.add('active');
+    if(screens.indexOf(cur)>i)d.classList.add('done');
+    p.appendChild(d);
+  });
+}
+function confetti(){for(let i=0;i<40;i++){const c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.background=['#ef4444','#f59e0b','#10b981','#6366f1','#ec4899'][i%5];c.style.animationDelay=(Math.random()*.6)+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),2500);} }
+function addScore(n,label){score+=n;$('score').textContent=score;$('score').classList.add('pop');setTimeout(()=>$('score').classList.remove('pop'),500);if(label)badges.push(label);}
+function hint(el,msg,ok){el.innerHTML=`<div class="p-3 rounded-lg ${ok?'bg-emerald-50 text-emerald-700':'bg-amber-50 text-amber-800'}">${msg}</div>`;}
+
+// S1
+document.querySelectorAll('#q1 .q-opt').forEach(b=>b.addEventListener('click',e=>{
+  const ok=b.dataset.correct==='1';
+  if(ok){b.classList.add('bg-emerald-200');addScore(10,'📊 資料判讀');confetti();hint($('fb1'),'✨ 正解！這正是「不均」與「不公平」的差別——差距來自社會結構。',true);setTimeout(()=>go('s2'),1600);}
+  else{b.classList.add('shake','bg-red-100');setTimeout(()=>b.classList.remove('shake'),500);hint($('fb1'),'再想想：哪個選項指出「差距來自基礎設施與社會條件」？',false);}
+}));
+
+// S2 nodes
+document.querySelectorAll('.node').forEach(n=>n.addEventListener('click',()=>n.classList.toggle('chosen')));
+function checkS2(){
+  const chosen=document.querySelectorAll('.node.chosen').length;
+  const t=$('s2-text').value.trim();
+  if(chosen<4||t.length<40){hint($('fb2'),`需 ≥4 節點（已 ${chosen}）且連結文字 ≥40 字。試著把節點用箭頭語意串起來。`,false);return;}
+  addScore(15,'🕸️ 系統思考');confetti();hint($('fb2'),'🌟 好樣的！你看見了多因共構。回饋循環也請留意：事件本身會反過來加深脆弱。',true);setTimeout(()=>go('s3'),1600);
+}
+
+// S3
+function checkS3(){
+  const v=document.querySelector('input[name=eth]:checked');
+  const t=$('s3-text').value.trim();
+  const concepts=['脆弱','正義','承認','分配','程序','決定因素','損失','損害'];
+  const hit=concepts.some(c=>t.includes(c));
+  if(!v||t.length<80||!hit){hint($('fb3'),`請選一角色、寫 ≥80 字（現 ${t.length}）、且引用至少一個課程概念（脆弱度／氣候正義三支柱／健康社會決定因素／損失與損害）。`,false);return;}
+  addScore(15,'⚖️ 倫理論述');confetti();hint($('fb3'),'🤝 沒有標準答案，但你的理由結構清晰且帶入概念——這就是好的倫理論述。記得：遷村決策中，誰的聲音最容易消失？',true);setTimeout(()=>go('s4'),1800);
+}
+
+// S4 CER
+function checkS4(){
+  const c=$('cer-c').value.trim(),e=$('cer-e').value.trim(),r=$('cer-r').value.trim();
+  const nums=/(36|25|70|37|15|7\.7|2\.4|\d+億|億)/.test(e);
+  if(c.length<15||e.length<40||r.length<40||!nums){hint($('fb4'),'三段皆需完整（C≥15 字／E≥40 字且含本課數字／R≥40 字）。Evidence 一定要具體引用數據。',false);return;}
+  addScore(20,'📝 CER 論證');confetti();hint($('fb4'),'🏅 三段齊全且有數據。進階挑戰：能否加入反方可能的反駁並回應？',true);setTimeout(()=>go('s5'),1800);
+}
+
+// S5 reflection
+function checkS5(){
+  const a=$('r1').value.trim(),b=$('r2').value.trim();
+  if(a.length<50||b.length<50){hint($('fb5'),`兩題都需 ≥50 字（現 ${a.length} / ${b.length}）。`,false);return;}
+  addScore(15,'💭 多元觀點');confetti();hint($('fb5'),'🌈 優秀！看見被忽略者，就是氣候正義第一支柱「承認」的實踐。',true);setTimeout(()=>go('s6'),1800);
+}
+
+// S6 metacognition
+function checkS6(){
+  const a=$('m1').value.trim(),b=$('m2').value.trim();
+  if(a.length<60||b.length<40){hint($('fb6'),`A 需 ≥60 字、B 需 ≥40 字（現 ${a.length} / ${b.length}）。`,false);return;}
+  addScore(15,'🧠 後設認知');confetti();hint($('fb6'),'🧭 學會學習的人最強。知道自己還不知道什麼，就找到了下一個問題。',true);setTimeout(()=>go('wsa'),1800);
+}
+
+// WSA
+function checkWSA(){
+  const picked=document.querySelectorAll('.wsa:checked').length;
+  if(picked===0){hint($('wsa-fb'),'請至少勾選一項承諾。',false);return;}
+  if(picked===4){addScore(20,'🏆 全校英雄');confetti();hint($('wsa-fb'),'🏆🏆 全校英雄徽章解鎖！四面向都啟動，就是 Whole School Approach。',true);}
+  else{addScore(picked*4,'🏫 校園行動');hint($('wsa-fb'),`✅ 承諾 ${picked}/4 項。缺的面向也可以之後補上。`,true);}
+  setTimeout(()=>go('project'),1800);
+}
+
+function finish(){
+  addScore(10,'🚀 接下任務');
+  let msg=`總分 ${score} / 約 120。你完成了資料判讀、系統思考、倫理論述、CER、開放反思、後設認知六大高階任務，並承諾校園行動。`;
+  if(score>=100)msg+='\n🌟 你已具備氣候正義倡議者的核心能力。阿嬤和更多人需要你的聲音。';
+  else msg+='\n💪 持續練習，下一次把論述再扎實一點。';
+  $('end-msg').textContent=msg;
+  $('badges').innerHTML=badges.map(b=>`<span class="tag bg-amber-200 text-amber-900">${b}</span>`).join('');
+  go('end');
+}
+
+renderProgress();
+</script>
+</body>
+</html>

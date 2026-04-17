@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>2.3-IV 生態系與生物多樣性｜深度學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+  .fade-in { animation: fadeIn .5s ease-in; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+  .confetti { position: fixed; top: -10px; width: 8px; height: 14px; opacity: .9; animation: fall 2.4s linear forwards; z-index: 50; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+  .badge { filter: drop-shadow(0 2px 4px rgba(0,0,0,.2)); }
+  details > summary { cursor: pointer; }
+</style>
+</head>
+<body class="bg-gradient-to-br from-emerald-50 via-lime-50 to-sky-50 min-h-screen text-slate-800">
+
+<header class="bg-emerald-700 text-white shadow-lg">
+  <div class="max-w-4xl mx-auto px-4 py-5">
+    <h1 class="text-2xl md:text-3xl font-bold">2.3-IV 生態系、生物多樣性與生態系服務</h1>
+    <p class="text-emerald-100 text-sm mt-1">國中 13–15 歲｜深度學習單｜角色：永續生態偵探</p>
+    <div class="mt-3 flex items-center gap-3">
+      <div class="flex-1 bg-emerald-900/40 rounded-full h-3 overflow-hidden">
+        <div id="progress-bar" class="bg-lime-300 h-3 transition-all" style="width:0%"></div>
+      </div>
+      <span id="progress-text" class="text-sm font-mono">0/7</span>
+      <span class="text-sm">⭐ <span id="score">0</span></span>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-4 py-6 space-y-6">
+
+<!-- 情境 -->
+<section class="bg-white rounded-xl shadow p-5 fade-in">
+  <h2 class="text-lg font-bold text-emerald-700">🕵️ 你的任務</h2>
+  <p class="mt-2 leading-relaxed">你是社區「永續生態偵探小隊」隊長。校長委託你帶領調查——為何學校花園的蝴蝶三年少了一半？你將透過 7 個關卡，運用資料、系統思考、倫理論辯與行動計畫，提出科學且可執行的建議。每關完成後可獲得線索與分數。</p>
+</section>
+
+<!-- Level 1 關卡選擇式：分解者辨識 -->
+<section id="lv1" class="bg-white rounded-xl shadow p-5 fade-in">
+  <h2 class="text-lg font-bold"><span class="text-emerald-600">關卡 1</span>｜誰是真正的生態英雄？</h2>
+  <p class="text-sm text-slate-600 mt-1">多選：下列哪些是生態系中不可或缺但常被忽略的「不起眼英雄」？（正確 3 個）</p>
+  <div id="lv1-opts" class="mt-3 grid grid-cols-2 gap-2"></div>
+  <button onclick="checkLv1()" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg">提交答案</button>
+  <div id="lv1-fb" class="mt-3 text-sm"></div>
+</section>
+
+<!-- Level 2 資料詮釋 -->
+<section id="lv2" class="bg-white rounded-xl shadow p-5 fade-in">
+  <h2 class="text-lg font-bold"><span class="text-emerald-600">關卡 2</span>｜資料詮釋：平均值的陷阱 <span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded">必答</span></h2>
+  <p class="text-sm text-slate-600 mt-1">WWF《2022 地球生命力報告》：全球監測脊椎動物族群自 1970 年以來平均下降 <b>69%</b>。但以下資料顯示各區域差異極大：</p>
+  <div class="mt-3 bg-slate-50 rounded p-3 text-sm">
+    <table class="w-full">
+      <thead><tr class="text-slate-600"><th class="text-left">區域</th><th class="text-right">族群變化</th></tr></thead>
+      <tbody class="font-mono">
+        <tr><td>拉丁美洲淡水</td><td class="text-right text-red-600">-94%</td></tr>
+        <tr><td>非洲陸地</td><td class="text-right text-red-600">-66%</td></tr>
+        <tr><td>亞太海洋</td><td class="text-right text-red-600">-55%</td></tr>
+        <tr><td>歐洲（受保護物種）</td><td class="text-right text-emerald-600">+18%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="mt-3 text-sm">請回答（50 字以上）：「全球平均下降 69%」這個標題有什麼誤導風險？你會如何改寫標題，讓它更貼近真實？</p>
+  <textarea id="lv2-input" rows="3" class="w-full mt-2 border rounded p-2 text-sm" placeholder="請寫出至少 50 字的分析..."></textarea>
+  <button onclick="checkLv2()" class="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg">提交</button>
+  <div id="lv2-fb" class="mt-2 text-sm"></div>
+</section>
+
+<!-- Level 3 光合作用計算 -->
+<section id="lv3" class="bg-white rounded-xl shadow p-5 fade-in">
+  <h2 class="text-lg font-bold"><span class="text-emerald-600">關卡 3</span>｜校園一棵樹的碳帳</h2>
+  <p class="text-sm text-slate-600 mt-1">已知：林木生物量每增加 <b>1 公噸</b>，需吸收 <b>1.6 公噸 CO₂</b>，釋放 <b>1.2 公噸 O₂</b>（教育部 CCE_IV）。若校園榕樹一生累積木材生物量 2.5 公噸，請計算它吸收了多少 CO₂？</p>
+  <div class="mt-3 flex items-center gap-2">
+    <span class="text-sm">吸收 CO₂ =</span>
+    <input id="lv3-input" type="number" step="0.1" class="border rounded p-2 w-24" />
+    <span class="text-sm">公噸</span>
+    <button onclick="checkLv3()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-sm">算算看</button>
+  </div>
+  <div id="lv3-fb" class="mt-2 text-sm"></div>
+</section>
+
+<!-- Level 4 系統思考（因果鏈拖拉） -->
+<section id="lv4" class="bg-white rounded-xl shadow p-5 fade-in">
+  <h2 class="text-lg font-bold"><span class="text-emerald-600">關卡 4</span>｜系統思考：蜜蜂消失的連鎖</h2>
+  <p class="text-sm text-slate-600 mt-1">請將下列事件依「因→果」順序排列（點選事件會依序加入鏈條；再點一次移除）：</p>
+  <div id="lv4-pool" class="mt-3 flex flex-wrap gap-2"></div>
+  <div class="mt-3 bg-slate-50 rounded p-3 min-h-[60px]">
+    <p class="text-xs text-slate-500 mb-1">你的因果鏈：</p>
+    <div id="lv4-chain" class="flex flex-wrap gap-2 text-sm"></div>
+  </div>
+  <button onclick="checkLv4()" class="mt-3 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg">檢查順序</button>
+  <p class="mt-3 text-sm">🔎 延伸：你認為這個「正回饋迴路」中，哪一個環節是最有槓桿效益可以切斷的？為什麼？（寫 40 字以上）</p>
+  <textarea id="lv4-lever" rows="2" class="w-full mt-2 border rounded p-2 text-sm" placeholder="我認為..."></textarea>
+  <div id="lv4-fb" class="mt-2 text-sm"></div>
+</section>
+
+<!-- Level 5 倫理兩難 -->
+<section id="lv5" class="bg-white rounded-xl shadow p-5 fade-in">
+  <h2 class="text-lg font-bold"><span class="text-emerald-600">關卡 5</span>｜倫理兩難：傘護種與傳統文化</h2>
+  <p class="text-sm text-slate-600 mt-1">情境：某原住民部落主張在傳統領域內，依循祭儀規則狩獵少量臺灣黑熊（IUCN 易危、臺灣保育類）。生態保育團體反對、部落長老堅持文化傳承、年輕族人分裂。</p>
+  <p class="mt-2 text-sm">請選擇一個立場並論述（80 字以上，需列出 2 個以上利益相關者 + 1 個折衷方案）：</p>
+  <div class="mt-2 space-y-1 text-sm">
+    <label class="block"><input type="radio" name="lv5-stance" value="A"> A. 完全禁止，以物種保育為優先</label>
+    <label class="block"><input type="radio" name="lv5-stance" value="B"> B. 完全尊重部落自主權</label>
+    <label class="block"><input type="radio" name="lv5-stance" value="C"> C. 折衷：協作治理、科學監測 + 傳統規範並行</label>
+    <label class="block"><input type="radio" name="lv5-stance" value="D"> D. 其他（請說明）</label>
+  </div>
+  <textarea id="lv5-reason" rows="4" class="w-full mt-2 border rounded p-2 text-sm" placeholder="我的立場是...，因為...（需含利益相關者與折衷方案）"></textarea>
+  <button onclick="checkLv5()" class="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg">提交論述</button>
+  <div id="lv5-fb" class="mt-2 text-sm"></div>
+</section>
+
+<!-- Level 6 CER 論證 -->
+<section id="lv6" class="bg-white rounded-xl shadow p-5 fade-in">
+  <h2 class="text-lg font-bold"><span class="text-emerald-600">關卡 6</span>｜CER 論證：「種 10 億棵樹能解決氣候變遷」</h2>
+  <p class="text-sm text-slate-600 mt-1">請以 CER 格式回應這句話。<b>範例引導</b>：</p>
+  <div class="bg-amber-50 border-l-4 border-amber-400 p-3 mt-2 text-sm">
+    <p><b>Claim（主張）</b>：部分正確，但單靠種樹無法解決。</p>
+    <p><b>Evidence（證據）</b>：全球森林每年淨吸收約 5 億噸碳，但人類每年排放約 100 億噸碳——森林只能吸收 5%。</p>
+    <p><b>Reasoning（推理）</b>：因此種樹是有用的補助手段，但關鍵仍在減排。若以單一種造林取代原始林，反而可能降低生物多樣性。</p>
+  </div>
+  <p class="mt-3 text-sm">換你寫：針對「多吃植物性飲食能減緩生物多樣性喪失」這個主張，寫出你的 CER（各段至少 30 字）：</p>
+  <div class="space-y-2 mt-2">
+    <textarea id="lv6-c" rows="2" class="w-full border rounded p-2 text-sm" placeholder="Claim：你的主張..."></textarea>
+    <textarea id="lv6-e" rows="3" class="w-full border rounded p-2 text-sm" placeholder="Evidence：你引用的證據（數據/案例）..."></textarea>
+    <textarea id="lv6-r" rows="3" class="w-full border rounded p-2 text-sm" placeholder="Reasoning：證據如何支持主張..."></textarea>
+  </div>
+  <button onclick="checkLv6()" class="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg">提交 CER</button>
+  <div id="lv6-fb" class="mt-2 text-sm"></div>
+</section>
+
+<!-- Level 7 後設認知 + 開放反思 + 專題任務 -->
+<section id="lv7" class="bg-white rounded-xl shadow p-5 fade-in">
+  <h2 class="text-lg font-bold"><span class="text-emerald-600">關卡 7</span>｜後設認知與專題承諾</h2>
+
+  <p class="mt-2 text-sm font-semibold">📝 開放反思 A（50 字以上）：</p>
+  <p class="text-sm text-slate-600">上完這 4 節課，你對「什麼是重要、什麼是多餘」的看法有沒有改變？舉一個具體例子說明改變發生在哪裡。</p>
+  <textarea id="lv7-a" rows="3" class="w-full mt-1 border rounded p-2 text-sm"></textarea>
+
+  <p class="mt-3 text-sm font-semibold">🧠 後設認知（50 字以上）：</p>
+  <p class="text-sm text-slate-600">你在哪一個關卡「卡關」最久？你如何突破？這告訴你自己什麼學習方式最有效？</p>
+  <textarea id="lv7-b" rows="3" class="w-full mt-1 border rounded p-2 text-sm"></textarea>
+
+  <p class="mt-3 text-sm font-semibold">🚀 專題任務（SMART 承諾）：</p>
+  <p class="text-sm text-slate-600">列出你未來 4 週將執行的 1 項行動（具體、可衡量、可達成、相關、有時限）。</p>
+  <textarea id="lv7-c" rows="3" class="w-full mt-1 border rounded p-2 text-sm" placeholder="例：未來 4 週我將每週三午餐廚餘投入校園堆肥箱，並邀請 3 位同學加入..."></textarea>
+
+  <button onclick="checkLv7()" class="mt-3 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg">完成學習單</button>
+  <div id="lv7-fb" class="mt-2 text-sm"></div>
+</section>
+
+<!-- WSA Challenge -->
+<section class="bg-gradient-to-r from-lime-100 to-emerald-100 rounded-xl shadow p-5 fade-in">
+  <h2 class="text-lg font-bold text-emerald-800">🏫 Whole School Challenge｜全校生態英雄</h2>
+  <p class="text-sm text-slate-700 mt-1">勾選你願意參與的四個面向行動，全部勾選可解鎖「全校英雄」徽章：</p>
+  <div class="mt-2 space-y-2 text-sm">
+    <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1" /> <span><b>課程整合</b>：跨科連結（化學光合作用 × 社會原住民族 × 國文生態書寫）</span></label>
+    <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1" /> <span><b>校園營運</b>：加入校園生物多樣性地圖建置／堆肥站維護排班</span></label>
+    <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1" /> <span><b>社區連結</b>：參與公民科學（eBird / iNaturalist）或與社大/部落合作訪談</span></label>
+    <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1" /> <span><b>學生治理</b>：參選/提案成為生態委員，參與校園治理規範制定</span></label>
+  </div>
+  <div id="wsa-badge" class="mt-3 text-center hidden">
+    <div class="inline-block bg-yellow-400 text-emerald-900 px-6 py-3 rounded-full font-bold badge">🏆 全校英雄徽章解鎖！</div>
+  </div>
+</section>
+
+<!-- Summary -->
+<section id="summary" class="bg-white rounded-xl shadow p-5 hidden">
+  <h2 class="text-xl font-bold text-emerald-700">🎉 成果總結</h2>
+  <p class="mt-2">你完成了 7 個關卡，累積 <span id="final-score" class="font-bold text-emerald-600">0</span> 分！</p>
+  <div class="mt-3 flex flex-wrap gap-2" id="badges"></div>
+  <div class="mt-4 bg-emerald-50 rounded p-3 text-sm">
+    <h3 class="font-semibold text-emerald-800">📌 延伸思考（帶回家討論）</h3>
+    <ol class="list-decimal list-inside mt-1 space-y-1">
+      <li>若你是農業部長，要平衡「黑熊保育」與「部落傳統狩獵權」，你的政策會包含哪兩項設計？</li>
+      <li>用 dp2/dp3 的數據，反駁「只要種 10 億棵樹就解決氣候變遷」這句話。</li>
+      <li>三個月後，你希望自己看到這堂課帶來的第一件具體改變是什麼？為什麼是這件？</li>
+    </ol>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ==== State ==== */
+const state = { score: 0, done: new Set(), total: 7 };
+const $ = s => document.querySelector(s);
+function updateProgress() {
+  const pct = Math.round(state.done.size / state.total * 100);
+  $("#progress-bar").style.width = pct + "%";
+  $("#progress-text").textContent = state.done.size + "/" + state.total;
+  $("#score").textContent = state.score;
+  if (state.done.size === state.total) {
+    $("#summary").classList.remove("hidden");
+    $("#final-score").textContent = state.score;
+    showFinalBadges();
+    burstConfetti();
+  }
+}
+function markDone(id, pts) {
+  if (!state.done.has(id)) { state.done.add(id); state.score += pts; }
+  updateProgress();
+}
+function burstConfetti() {
+  const colors = ["#10b981","#84cc16","#fbbf24","#ef4444","#3b82f6"];
+  for (let i = 0; i < 60; i++) {
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random()*100 + "vw";
+    c.style.background = colors[i%colors.length];
+    c.style.animationDelay = (Math.random()*0.6) + "s";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 3000);
+  }
+}
+function showFinalBadges() {
+  const b = $("#badges");
+  b.innerHTML = "";
+  const items = [
+    {t:"🔬 資料偵探", c:"bg-sky-100 text-sky-800"},
+    {t:"🧠 系統思考家", c:"bg-purple-100 text-purple-800"},
+    {t:"⚖️ 倫理對話者", c:"bg-amber-100 text-amber-800"},
+    {t:"✍️ CER 論證員", c:"bg-rose-100 text-rose-800"},
+    {t:"🌱 永續行動者", c:"bg-emerald-100 text-emerald-800"}
+  ];
+  items.forEach(it => {
+    const span = document.createElement("span");
+    span.className = "px-3 py-1 rounded-full text-sm font-medium " + it.c;
+    span.textContent = it.t;
+    b.appendChild(span);
+  });
+}
+function flash(el, ok, msg) {
+  el.innerHTML = `<div class="${ok?'text-emerald-700 bg-emerald-50':'text-amber-700 bg-amber-50'} p-2 rounded">${msg}</div>`;
+  if (!ok) el.classList.add("shake"); setTimeout(()=>el.classList.remove("shake"), 400);
+}
+
+/* ==== L1 ==== */
+const L1 = [
+  {t:"蚯蚓", ok:true},
+  {t:"腐生真菌", ok:true},
+  {t:"糞金龜", ok:true},
+  {t:"北極熊（旗艦種）", ok:false},
+  {t:"熊貓（旗艦種）", ok:false},
+  {t:"老虎（旗艦種）", ok:false}
+];
+const L1wrap = $("#lv1-opts");
+L1.forEach((o,i) => {
+  const btn = document.createElement("label");
+  btn.className = "flex items-center gap-2 bg-slate-50 hover:bg-slate-100 p-2 rounded cursor-pointer text-sm";
+  btn.innerHTML = `<input type="checkbox" data-i="${i}"><span>${o.t}</span>`;
+  L1wrap.appendChild(btn);
+});
+function checkLv1() {
+  const picks = [...document.querySelectorAll("#lv1-opts input:checked")].map(x=>+x.dataset.i);
+  const okSet = L1.map((o,i)=>o.ok?i:-1).filter(i=>i>=0);
+  const allOk = picks.length===okSet.length && okSet.every(i=>picks.includes(i));
+  if (allOk) { flash($("#lv1-fb"), true, "✅ 太棒了！你辨識出分解者與不起眼的英雄。+15 分"); markDone("lv1",15); }
+  else flash($("#lv1-fb"), false, "💡 提示：關注『分解者』類別——牠們沒有封面魅力，卻是生態系運作的關鍵。再試一次～");
+}
+
+/* ==== L2 ==== */
+function checkLv2() {
+  const v = $("#lv2-input").value.trim();
+  if (v.length < 50) return flash($("#lv2-fb"), false, `📏 再多一點！目前 ${v.length} 字，需 50 字以上。提示：思考「平均」如何隱藏差異。`);
+  const good = /平均|差異|區域|誤導|掩蓋|標題/.test(v);
+  flash($("#lv2-fb"), true, good ? "✅ 你注意到『平均』的陷阱，已具備批判資料素養。+15 分" : "✅ 已紀錄。建議補充『平均掩蓋區域差異』的觀點。+10 分");
+  markDone("lv2", good?15:10);
+}
+
+/* ==== L3 ==== */
+function checkLv3() {
+  const v = parseFloat($("#lv3-input").value);
+  const expected = 2.5 * 1.6; // 4.0
+  if (isNaN(v)) return flash($("#lv3-fb"), false, "請輸入數字。");
+  if (Math.abs(v - expected) < 0.05) { flash($("#lv3-fb"), true, `✅ 正確！2.5 × 1.6 = ${expected} 公噸 CO₂。一棵樹一生的貢獻等於一台小客車跑超過 15,000 公里的排放。+15 分`); markDone("lv3",15); }
+  else flash($("#lv3-fb"), false, `💡 提示：每公噸木材對應 1.6 公噸 CO₂。請再算一次 2.5 × 1.6 = ？`);
+}
+
+/* ==== L4 ==== */
+const L4order = ["蜜蜂消失","授粉減少","果樹減產","農民收入下降","土地轉作單一作物","棲地破碎","更多授粉者消失"];
+const L4pool = $("#lv4-pool"); const L4chain = $("#lv4-chain");
+const L4shuffled = [...L4order].sort(()=>Math.random()-0.5);
+let L4user = [];
+function renderL4() {
+  L4chain.innerHTML = "";
+  L4user.forEach((t,i)=>{
+    const s = document.createElement("span");
+    s.className = "bg-emerald-200 text-emerald-900 px-2 py-1 rounded";
+    s.textContent = (i+1)+". "+t;
+    L4chain.appendChild(s);
+    if (i<L4user.length-1) {
+      const a = document.createElement("span"); a.textContent = "→"; a.className = "text-slate-400"; L4chain.appendChild(a);
+    }
+  });
+}
+L4shuffled.forEach(t=>{
+  const b = document.createElement("button");
+  b.className = "bg-slate-100 hover:bg-emerald-100 px-3 py-1 rounded text-sm";
+  b.textContent = t;
+  b.onclick = () => {
+    if (L4user.includes(t)) { L4user = L4user.filter(x=>x!==t); b.classList.remove("bg-emerald-300"); }
+    else { L4user.push(t); b.classList.add("bg-emerald-300"); }
+    renderL4();
+  };
+  L4pool.appendChild(b);
+});
+function checkLv4() {
+  const okOrder = JSON.stringify(L4user) === JSON.stringify(L4order);
+  const lever = $("#lv4-lever").value.trim();
+  if (!okOrder) return flash($("#lv4-fb"), false, "💡 想想最開始的原因是什麼？再調整順序。提示：從『蜜蜂消失』開始。");
+  if (lever.length < 40) return flash($("#lv4-fb"), false, `順序對了！但槓桿分析還需 40 字以上（目前 ${lever.length} 字）。`);
+  flash($("#lv4-fb"), true, "✅ 系統思考完美！你辨識出正回饋迴路並找到槓桿點。+20 分");
+  markDone("lv4",20);
+}
+
+/* ==== L5 ==== */
+function checkLv5() {
+  const stance = document.querySelector("[name=lv5-stance]:checked");
+  const r = $("#lv5-reason").value.trim();
+  if (!stance) return flash($("#lv5-fb"), false, "請先選擇立場。");
+  if (r.length < 80) return flash($("#lv5-fb"), false, `論述需 80 字以上（目前 ${r.length} 字）。提示：至少列出 2 位利益相關者 + 1 折衷方案。`);
+  const hasStakeholders = /部落|長老|族人|保育|學者|政府|年輕|社會|遊客/.test(r);
+  const hasCompromise = /共管|折衷|協作|配額|監測|限制|規範|對話/.test(r);
+  if (!hasStakeholders || !hasCompromise) return flash($("#lv5-fb"), false, "💡 請補充：具體利益相關者（如長老、保育員）與折衷方案（如共管、配額）。");
+  flash($("#lv5-fb"), true, "✅ 你展現了成熟的倫理思辨——沒有絕對答案，只有權衡。+20 分");
+  markDone("lv5",20);
+}
+
+/* ==== L6 ==== */
+function checkLv6() {
+  const c = $("#lv6-c").value.trim(), e = $("#lv6-e").value.trim(), r = $("#lv6-r").value.trim();
+  if (c.length<30||e.length<30||r.length<30) return flash($("#lv6-fb"), false, `CER 三段各需 30 字以上。目前 C:${c.length} / E:${e.length} / R:${r.length}`);
+  flash($("#lv6-fb"), true, "✅ 完整的 CER 論證結構！你能用證據支持主張。+20 分");
+  markDone("lv6",20);
+}
+
+/* ==== L7 ==== */
+function checkLv7() {
+  const a = $("#lv7-a").value.trim(), b = $("#lv7-b").value.trim(), c = $("#lv7-c").value.trim();
+  if (a.length<50||b.length<50||c.length<30) return flash($("#lv7-fb"), false, `三段請各完成：反思 ${a.length}/50、後設 ${b.length}/50、承諾 ${c.length}/30。`);
+  const smart = /週|月|天|次|個|人|公斤|公克|小時|分鐘/.test(c);
+  flash($("#lv7-fb"), true, smart ? "✅ SMART 承諾完整！你從思考走向行動。+25 分" : "✅ 已紀錄。建議承諾加上可衡量數字（如每週、3 位同學）。+20 分");
+  markDone("lv7", smart?25:20);
+}
+
+/* ==== WSA ==== */
+document.querySelectorAll(".wsa").forEach(cb => cb.addEventListener("change", () => {
+  const all = [...document.querySelectorAll(".wsa")].every(x=>x.checked);
+  $("#wsa-badge").classList.toggle("hidden", !all);
+  if (all) burstConfetti();
+}));
+
+updateProgress();
+</script>
+</body>
+</html>

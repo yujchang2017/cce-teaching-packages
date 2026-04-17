@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>綠能小偵探 — 1.6-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#fef9c3 0%,#dbeafe 50%,#dcfce7 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .feedback-pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,.25); }
+  .drag-item { cursor: grab; user-select: none; }
+  .drag-item.dragging { opacity: .4; }
+  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
+  .badge { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
+  .hidden-step { display: none; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-amber-500 to-green-600 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">☀️ 綠能小偵探</h1>
+    <p class="mt-2 text-yellow-50">UNESCO 1.6-III ｜ 9-12 歲 ｜ 2050 淨零的關鍵就在你我手上！</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 角色與情境故事 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl">🤖</div>
+    <div>
+      <h2 class="text-2xl font-bold text-amber-700">任務簡報：你被選為「綠能小偵探」！</h2>
+      <p class="mt-2 leading-relaxed">嗨！我是陽光機器人「光光」，我的電池快沒電了！台灣 2024 年再生能源只佔 <strong class="text-green-700">11.6%</strong>，距離 2025 目標 <strong class="text-green-700">20%</strong> 還差一大步。請你幫我完成 6 個任務，把校園變綠能基地，解鎖「全校英雄」徽章！</p>
+      <button onclick="startMission()" class="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 ⚡</button>
+    </div>
+  </div>
+</section>
+
+<!-- 關卡 1：能源分類（選擇題）-->
+<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-blue-700">🔌 關卡 1：2023 年全球再生能源發電佔比多少？</h2>
+  <p class="mt-2 text-gray-600">2023 年是人類能源的轉折年，太陽能加風力第一次突破 10%。你猜整體再生能源（含水力）是多少 %？</p>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">約 5%</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">約 15%</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="1">約 30%</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">約 60%</button>
+  </div>
+  <div id="q1-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 2：能源家族拖曳分類 -->
+<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-teal-700">🧩 關卡 2：能源回家 — 分類再生 vs 非再生</h2>
+  <p class="mt-2 text-gray-600">把下面的能源拖到正確的家族。台灣 2024 再生能源裝置裡，太陽光電 <strong>14 GW</strong>、風力 <strong>3 GW</strong> 已經是主力！</p>
+
+  <div class="flex flex-wrap gap-3 mt-4" id="energyPool">
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="renew">☀️ 太陽能</div>
+    <div class="drag-item bg-gray-300 px-4 py-2 rounded-full shadow" draggable="true" data-type="fossil">⛽ 石油</div>
+    <div class="drag-item bg-sky-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="renew">💨 風力</div>
+    <div class="drag-item bg-gray-400 px-4 py-2 rounded-full shadow" draggable="true" data-type="fossil">🏭 煤炭</div>
+    <div class="drag-item bg-blue-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="renew">💧 水力</div>
+    <div class="drag-item bg-gray-200 px-4 py-2 rounded-full shadow" draggable="true" data-type="fossil">🔥 天然氣</div>
+    <div class="drag-item bg-orange-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="renew">🌋 地熱</div>
+    <div class="drag-item bg-green-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="renew">🌾 生質能</div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-6">
+    <div class="drop-zone min-h-[140px] border-2 border-dashed border-green-400 bg-green-50 rounded-xl p-3" data-type="renew">
+      <p class="font-bold text-green-700">🌱 再生能源（自然循環、不會用光）</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[140px] border-2 border-dashed border-gray-500 bg-gray-100 rounded-xl p-3" data-type="fossil">
+      <p class="font-bold text-gray-700">🪨 化石燃料（用完就沒、燒會排 CO2）</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+  </div>
+  <div id="q2-feedback" class="mt-4"></div>
+  <button id="q2-check" onclick="checkLevel2()" class="mt-3 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full">檢查答案</button>
+</section>
+
+<!-- 關卡 3：1 度電碳排算術 -->
+<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-rose-700">🧮 關卡 3：一度電的重量</h2>
+  <p class="mt-2 text-gray-600">台灣電力 2023 年平均每度排 <strong>0.495 kg CO2</strong>。如果小明家一個月用 <strong>300 度</strong>電，會排多少公斤 CO2？</p>
+  <div class="bg-amber-50 p-3 rounded-xl mt-3 text-sm">💡 提示：用「每度 0.495 × 300 度」計算，四捨五入到整數。</div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+    <button class="q3-opt p-4 border-2 border-rose-200 rounded-xl hover:bg-rose-50" data-ans="0">約 50 kg</button>
+    <button class="q3-opt p-4 border-2 border-rose-200 rounded-xl hover:bg-rose-50" data-ans="1">約 149 kg</button>
+    <button class="q3-opt p-4 border-2 border-rose-200 rounded-xl hover:bg-rose-50" data-ans="0">約 300 kg</button>
+    <button class="q3-opt p-4 border-2 border-rose-200 rounded-xl hover:bg-rose-50" data-ans="0">約 900 kg</button>
+  </div>
+  <div id="q3-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 4：迷思破解（是非題）-->
+<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-purple-700">🧠 關卡 4：迷思大破解</h2>
+  <p class="mt-2 text-gray-600">下面的說法正確嗎？大膽選答，答錯也會學到重點。</p>
+  <div id="mythQs" class="space-y-4 mt-4">
+    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="核能不排 CO2 但鈾礦有限、核廢料長達數萬年要管理，UNESCO 分類為「低碳但非再生」，不算再生能源。">
+      <p class="font-semibold">Q1：核能沒有碳排放，所以就是再生能源。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="只有「砍一棵種一棵」才永續！若只砍不補種，燃燒排出的 CO2 和燒煤一樣會造成暖化。">
+      <p class="font-semibold">Q2：燒木材是天然的，不論有沒有補種，都算環保能源。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+    <div class="q4 border rounded-xl p-3" data-ans="true" data-hint="正確！2023 年太陽與陸域風電已是全球最便宜的新建電源；台灣太陽光電裝置量已達 14 GW，2025 年目標再生能源佔 20%。">
+      <p class="font-semibold">Q3：現在太陽能和風力已經是全球最便宜的新電源之一，台灣 2025 目標再生能源佔 20%。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+  </div>
+  <div id="q4-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 5：選擇與後果（情境劇）-->
+<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-indigo-700">🎭 關卡 5：校舍屋頂的抉擇</h2>
+  <p class="mt-2 text-gray-600">學校正在討論閒置屋頂要怎麼用，你會建議怎麼做？（每個選擇會有不同後果）</p>
+  <div class="space-y-3 mt-4">
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-indigo-50" data-c="A">A. 什麼都不做，保持空空的</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-indigo-50" data-c="B">B. 蓋一個水泥儲藏室</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-indigo-50" data-c="C">C. 裝太陽能板 + 做隔熱處理</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-indigo-50" data-c="D">D. 改種樹一片森林</button>
+  </div>
+  <div id="q5-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 6：全校行動挑戰（WSA 四面向）-->
+<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6 border-4 border-amber-400">
+  <h2 class="text-xl font-bold text-amber-700">🏫 關卡 6：全校綠能挑戰（Whole School Approach）</h2>
+  <p class="mt-2 text-gray-700">四個面向，一起讓學校變成綠能基地。請勾選你「本學期會嘗試」的行動，四項全勾，解鎖「全校英雄」徽章！</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <label class="flex items-start gap-3 p-4 border-2 border-blue-200 rounded-xl cursor-pointer hover:bg-blue-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="curriculum" />
+      <div>
+        <p class="font-bold text-blue-700">📚 課程整合</p>
+        <p class="text-sm">自然課記錄教室一週用電量 + 數學課換算 CO2 排放 + 藝文課畫「未來綠能家」。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-green-200 rounded-xl cursor-pointer hover:bg-green-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="operations" />
+      <div>
+        <p class="font-bold text-green-700">🌳 校園營運</p>
+        <p class="text-sm">全校燈具改 LED、冷氣設 26°C、盤點屋頂加裝太陽能板的可能位置。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-orange-200 rounded-xl cursor-pointer hover:bg-orange-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="community" />
+      <div>
+        <p class="font-bold text-orange-700">🤝 社區連結</p>
+        <p class="text-sm">邀請能源署講師或綠電業者到校分享，或全班一起參觀太陽光電 / 風力電廠。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-purple-200 rounded-xl cursor-pointer hover:bg-purple-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="agency" />
+      <div>
+        <p class="font-bold text-purple-700">🙋 學生治理</p>
+        <p class="text-sm">選出「能源小隊長」，向校務會議提出 1 個校園節能或綠能提案。</p>
+      </div>
+    </label>
+  </div>
+  <button onclick="checkWSA()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full shadow-lg">提交挑戰 🏆</button>
+  <div id="wsa-feedback" class="mt-4"></div>
+</section>
+
+<!-- 徽章與成果 -->
+<section id="result" class="hidden-step card bg-gradient-to-br from-yellow-100 to-amber-200 rounded-2xl shadow-2xl p-8 mb-6 text-center">
+  <div class="text-7xl mb-3 badge inline-block rounded-full bg-white p-6">🏆</div>
+  <h2 class="text-3xl font-extrabold text-amber-800">全校英雄 徽章解鎖！</h2>
+  <p class="mt-3 text-lg">你已經學會全球 <strong>30%</strong> 再生能源、台灣 <strong>11.6%</strong>、1 度電排 <strong>0.495 kg</strong> CO2、2050 <strong>淨零</strong>，並為校園綠能許下承諾！</p>
+
+  <div class="bg-white rounded-xl p-5 mt-5 text-left">
+    <h3 class="font-bold text-emerald-700 text-xl mb-2">🌱 三個延伸思考（帶回家想想）</h3>
+    <ol class="list-decimal ml-6 space-y-2">
+      <li>如果家裡電費單出現「綠電方案」，每度多 1 元，你會建議爸媽選嗎？寫下你的理由（給家人看的說服論點）。</li>
+      <li>台灣要 2050 淨零，最大困難是什麼？（例如：土地、成本、民眾接受度）你會建議怎麼克服？</li>
+      <li>十年後你想從事什麼職業？列舉 3 種方式讓你的工作可以幫助能源轉型（每個職業都可以！）。</li>
+    </ol>
+  </div>
+
+  <button onclick="window.print()" class="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full">🖨️ 列印成果頁</button>
+  <button onclick="location.reload()" class="mt-5 ml-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full">🔄 重新挑戰</button>
+</section>
+
+<footer class="text-center text-xs text-gray-500 pb-6">
+  資料來源：IEA Electricity 2024、Ember 2024、IPCC AR6、經濟部能源署、國家發展委員會、FAO。教學套件 UNESCO 1.6-III ｜ 驗證日 2026-04-16
+</footer>
+
+</main>
+
+<script>
+let currentStep = 0;
+const steps = ['intro','level1','level2','level3','level4','level5','level6','result'];
+
+function showStep(i){
+  steps.forEach((s,idx)=>{
+    const el = document.getElementById(s);
+    if(!el) return;
+    if(idx===i) el.classList.remove('hidden-step');
+    else el.classList.add('hidden-step');
+  });
+  for(let k=1;k<=6;k++){
+    const d=document.getElementById('dot'+k);
+    d.classList.remove('done','active');
+    if(k < i) d.classList.add('done');
+    else if(k === i) d.classList.add('active');
+  }
+  const pt = document.getElementById('progressText');
+  if(i>=1 && i<=6) pt.textContent = `第 ${i} / 6 關`;
+  else if(i===7) pt.textContent = '完成！';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startMission(){ currentStep=1; showStep(1); }
+
+// Level 1
+document.querySelectorAll('.q1-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const fb = document.getElementById('q1-feedback');
+    if(btn.dataset.ans==='1'){
+      fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 答對了！2023 年全球再生能源發電約佔 30%，太陽+風首次超過 10%！</div>';
+      confetti();
+      setTimeout(()=>{currentStep=2;showStep(2);},1400);
+    } else {
+      btn.classList.add('shake');
+      fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再想想！提示：全球每 3 度電有 1 度來自再生能源，也就是大約 30%。</div>';
+    }
+  });
+});
+
+// Level 2 — drag & drop
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{
+    e.preventDefault(); z.classList.remove('over');
+    if(dragged){ z.querySelector('.drop-content').appendChild(dragged); }
+  });
+});
+function checkLevel2(){
+  const zones = document.querySelectorAll('.drop-zone');
+  let correct=0, total=8;
+  zones.forEach(z=>{
+    const t = z.dataset.type;
+    z.querySelectorAll('.drop-content .drag-item').forEach(it=>{
+      if(it.dataset.type===t) correct++;
+    });
+  });
+  const fb = document.getElementById('q2-feedback');
+  if(correct===total){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌟 全部分類正確！再生能源：太陽、風、水、地熱、生質；化石燃料：煤、石油、天然氣。</div>';
+    confetti();
+    setTimeout(()=>{currentStep=3;showStep(3);},1500);
+  } else {
+    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 你答對 ${correct}/${total}。提示：自然界能不斷循環補充的是再生；幾億年才形成、用完就沒的是化石燃料。</div>`;
+  }
+}
+
+// Level 3
+document.querySelectorAll('.q3-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const fb = document.getElementById('q3-feedback');
+    if(btn.dataset.ans==='1'){
+      fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 答對！0.495 × 300 ≈ 149 kg CO2。這相當於 1 個大人體重的 CO2，光一個月就排出這麼多！</div>';
+      confetti();
+      setTimeout(()=>{currentStep=4;showStep(4);},1600);
+    } else {
+      btn.classList.add('shake');
+      fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再算一次：0.495 kg × 300 度 = 148.5，四捨五入約 149 kg CO2。</div>';
+    }
+  });
+});
+
+// Level 4
+let q4Done=0;
+document.querySelectorAll('.q4-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q4');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    const hint = parent.dataset.hint;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-green-700 text-sm">✅ 正確！${hint}</p>`);
+    } else {
+      btn.classList.add('bg-red-300','shake');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-rose-700 text-sm">💡 再想想：${hint}</p>`);
+    }
+    parent.dataset.answered='1';
+    q4Done++;
+    if(q4Done===3){
+      document.getElementById('q4-feedback').innerHTML='<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎯 迷思破解完成！你越來越懂能源了。</div>';
+      confetti();
+      setTimeout(()=>{currentStep=5;showStep(5);},1500);
+    }
+  });
+});
+
+// Level 5 — choice consequences
+const choiceFeedback = {
+  A: { tone:'warn', text:'⚠️ 什麼都不做，夏天頂樓教室更熱、冷氣用電更多、排更多 CO2。' },
+  B: { tone:'warn', text:'🏗️ 蓋儲藏室雖然有用，但浪費了陽光資源，而且水泥本身製造過程會大量排 CO2。' },
+  C: { tone:'best', text:'🌟 最佳答案！屋頂光電 + 隔熱可省冷氣用電 15-25%、頂樓降 2-3°C，還能發電賣給台電。這是台灣很多學校正在做的示範！' },
+  D: { tone:'ok', text:'🌱 種樹很棒，但屋頂承重、澆水、根系會毀壞防水層。不如改在地面種樹、屋頂裝太陽能，兩者並進最好。' }
+};
+document.querySelectorAll('.choice').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(document.getElementById('level5').dataset.answered) return;
+    document.getElementById('level5').dataset.answered='1';
+    const c = choiceFeedback[btn.dataset.c];
+    const color = c.tone==='best'?'green':(c.tone==='ok'?'blue':'yellow');
+    btn.classList.add('bg-'+color+'-100','border-'+color+'-500');
+    document.getElementById('q5-feedback').innerHTML =
+      `<div class="feedback-pop bg-${color}-100 border-l-4 border-${color}-500 p-3 rounded">${c.text}</div>`;
+    if(c.tone==='best') confetti();
+    setTimeout(()=>{currentStep=6;showStep(6);},2200);
+  });
+});
+
+// Level 6 — WSA
+function checkWSA(){
+  const boxes = document.querySelectorAll('.wsa');
+  const all = Array.from(boxes).every(b=>b.checked);
+  const fb = document.getElementById('wsa-feedback');
+  if(all){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-4 rounded text-lg">🏅 四面向全勾選！你就是我們班的全校英雄！</div>';
+    confetti(60);
+    setTimeout(()=>{currentStep=7;showStep(7);},1800);
+  } else {
+    const cnt = Array.from(boxes).filter(b=>b.checked).length;
+    fb.innerHTML = `<div class="feedback-pop bg-amber-100 border-l-4 border-amber-500 p-3 rounded">你選了 ${cnt}/4 個面向。全校英雄需要「課程、校園、社區、學生」四面向一起行動！再想想你可以怎麼參與剩下的面向？</div>`;
+  }
+}
+
+// Confetti
+function confetti(n=30){
+  const colors=['#fbbf24','#34d399','#60a5fa','#f87171','#a78bfa'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.top='-20px';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*0.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+</script>
+</body>
+</html>

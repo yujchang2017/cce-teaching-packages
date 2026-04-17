@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.5-IV 互動學習單｜後碳經濟中的我們</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC', system-ui, sans-serif; background: linear-gradient(135deg, #ecfeff 0%, #fef3c7 100%); }
+  .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; margin: 2px; }
+  .stage-btn.active { background: #0891b2; color: white; transform: scale(1.05); }
+  .pop { animation: pop 0.4s ease-out; }
+  @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; animation: fall 2s linear forwards; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .feedback-good { background: #d1fae5; border-left: 4px solid #10b981; }
+  .feedback-hint { background: #fef3c7; border-left: 4px solid #f59e0b; }
+  textarea, input[type=text] { transition: all 0.2s; }
+  textarea:focus, input[type=text]:focus { box-shadow: 0 0 0 3px rgba(8,145,178,0.3); }
+  .arrow-node { cursor: grab; user-select: none; }
+</style>
+</head>
+<body class="min-h-screen">
+<div class="max-w-4xl mx-auto px-4 py-6">
+
+<!-- Header -->
+<header class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h1 class="text-3xl font-bold text-cyan-800">後碳經濟中的我們</h1>
+  <p class="text-gray-600 mt-1">5.5-IV｜國中循環消費行為探究學習單</p>
+  <div class="mt-3 flex flex-wrap items-center gap-3">
+    <span class="text-sm text-gray-500">任務進度：</span>
+    <div class="flex-1 bg-gray-200 rounded-full h-3 overflow-hidden max-w-md">
+      <div id="progressBar" class="bg-gradient-to-r from-cyan-500 to-emerald-500 h-full transition-all" style="width:0%"></div>
+    </div>
+    <span id="progressText" class="text-sm font-semibold text-cyan-700">0 / 6</span>
+  </div>
+  <div id="badges" class="mt-3 flex flex-wrap gap-1"></div>
+</header>
+
+<!-- 情境角色 -->
+<section class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-cyan-800 mb-3">情境角色：你是『永續探員』</h2>
+  <p class="text-gray-700 leading-relaxed">你剛加入學校的『循環經濟小組』。校長希望你調查校園消費現況，提出改善方案。你將穿越 6 個關卡：從全球數據解讀、到購買選擇、再到升級再造與政策倡議。完成所有關卡後，你將成為認證『循環公民』。</p>
+  <div class="mt-4 p-4 bg-amber-50 rounded-lg text-sm">
+    <b>核心數據快覽</b>：全球循環率 <b class="text-red-600">7.2%</b>｜台灣回收率 <b class="text-green-700">~60%</b>｜全球紡織年產 <b class="text-amber-700">1,000 億件</b>（&lt;1% 回收成新衣）｜循環經濟可降 <b class="text-cyan-700">39%</b> 溫室氣體。
+  </div>
+</section>
+
+<!-- 關卡 1：資料詮釋題 -->
+<section id="q1" class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-center gap-2 mb-3">
+    <span class="badge bg-cyan-100 text-cyan-800">關卡 1</span>
+    <span class="badge bg-purple-100 text-purple-800">資料詮釋</span>
+    <h2 class="text-xl font-bold text-cyan-800">解讀矛盾：7.2% vs 討論 3 倍</h2>
+  </div>
+  <p class="text-gray-700 mb-3">《循環差距報告 2024》顯示兩組數據：</p>
+  <div class="bg-gray-50 rounded-lg p-4 mb-3 text-sm font-mono">
+    ▶ 2018 全球循環率 9.1% → 2023 降至 <b>7.2%</b>（↓21%）<br>
+    ▶ 同期間，『循環經濟』這個詞彙的公共討論量 <b>增加約 3 倍</b>
+  </div>
+  <p class="mb-2 font-semibold">問題：這兩組數據放在一起，告訴我們什麼？請以 60+ 字論述。</p>
+  <textarea id="ans1" class="w-full border rounded-lg p-3" rows="4" placeholder="提示：可從『口號 vs 行動』、『意識 vs 結構改變』等角度切入..."></textarea>
+  <button onclick="checkQ1()" class="mt-2 bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg">提交</button>
+  <div id="fb1" class="mt-3 hidden p-3 rounded-lg text-sm"></div>
+</section>
+
+<!-- 關卡 2：購買階段情境選擇 -->
+<section id="q2" class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-center gap-2 mb-3">
+    <span class="badge bg-cyan-100 text-cyan-800">關卡 2</span>
+    <span class="badge bg-blue-100 text-blue-800">購買決策</span>
+    <h2 class="text-xl font-bold text-cyan-800">你會怎麼選？</h2>
+  </div>
+  <p class="text-gray-700 mb-3">情境：學校要你買一支計算機，三個選項：</p>
+  <div class="space-y-2" id="opts2">
+    <button class="opt w-full text-left p-3 border rounded-lg hover:bg-cyan-50" data-v="A">A. 最新款太陽能計算機，NT$ 600，保固 1 年，包裝精美但難拆解</button>
+    <button class="opt w-full text-left p-3 border rounded-lg hover:bg-cyan-50" data-v="B">B. 學長姊用過的二手計算機，NT$ 150，已使用 2 年但功能完好</button>
+    <button class="opt w-full text-left p-3 border rounded-lg hover:bg-cyan-50" data-v="C">C. 品牌新品，NT$ 450，有『環保友善』貼紙（無第三方認證）</button>
+  </div>
+  <div id="fb2" class="mt-3 hidden p-3 rounded-lg text-sm"></div>
+</section>
+
+<!-- 關卡 3：系統思考（因果鏈） -->
+<section id="q3" class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-center gap-2 mb-3">
+    <span class="badge bg-cyan-100 text-cyan-800">關卡 3</span>
+    <span class="badge bg-indigo-100 text-indigo-800">系統思考</span>
+    <h2 class="text-xl font-bold text-cyan-800">建構因果回饋圈</h2>
+  </div>
+  <p class="text-gray-700 mb-3">將下列節點排成一個『消費加速 → 氣候變遷』的因果鏈，並加一條『反饋循環』箭頭使其成為回饋圈。</p>
+  <div class="bg-gray-50 p-3 rounded-lg mb-3">
+    <p class="text-sm mb-2">節點：① 過度消費  ② 原料開採加速  ③ 溫室氣體排放上升  ④ 極端氣候災害  ⑤ 全球升溫  ⑥ 物流與製造擴張</p>
+  </div>
+  <p class="mb-1 text-sm">請填入正確順序（輸入數字，如 1→6→2→3→5→4）：</p>
+  <input id="ans3seq" type="text" class="w-full border rounded-lg p-2 mb-2" placeholder="例如：1→6→2→3→5→4">
+  <p class="mb-1 text-sm">請描述『反饋循環』：災害發生後，人們可能怎麼反應？這個反應會如何影響循環的起點（以 40+ 字說明）：</p>
+  <textarea id="ans3loop" class="w-full border rounded-lg p-3" rows="3" placeholder="想想：災害→消費者行為 or 政府政策 or 價格 → ?"></textarea>
+  <button onclick="checkQ3()" class="mt-2 bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg">提交</button>
+  <div id="fb3" class="mt-3 hidden p-3 rounded-lg text-sm"></div>
+</section>
+
+<!-- 關卡 4：倫理兩難 -->
+<section id="q4" class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-center gap-2 mb-3">
+    <span class="badge bg-cyan-100 text-cyan-800">關卡 4</span>
+    <span class="badge bg-rose-100 text-rose-800">倫理兩難</span>
+    <h2 class="text-xl font-bold text-cyan-800">新手機之爭</h2>
+  </div>
+  <div class="bg-rose-50 p-4 rounded-lg mb-3 text-sm leading-relaxed">
+    爸媽想在你生日買新手機。你現在用的那支還能用但有點卡。新款功能更強，爸媽說『給你未來兩年夠用』，而你知道同學都換了。可是你上週剛學到全球每年丟棄 15 億支手機、稀土開採造成環境污染。你怎麼決定？
+  </div>
+  <p class="mb-2 font-semibold">請論述你的選擇，並回應至少 1 個反對立場（80+ 字）：</p>
+  <textarea id="ans4" class="w-full border rounded-lg p-3" rows="5" placeholder="我的選擇是...；有人可能反對說...；但我認為..."></textarea>
+  <button onclick="checkQ4()" class="mt-2 bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg">提交</button>
+  <div id="fb4" class="mt-3 hidden p-3 rounded-lg text-sm"></div>
+</section>
+
+<!-- 關卡 5：CER 論證寫作 -->
+<section id="q5" class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-center gap-2 mb-3">
+    <span class="badge bg-cyan-100 text-cyan-800">關卡 5</span>
+    <span class="badge bg-emerald-100 text-emerald-800">CER 論證</span>
+    <h2 class="text-xl font-bold text-cyan-800">向校長提案：校園二手市集</h2>
+  </div>
+  <p class="text-gray-700 mb-2">寫一篇 CER 論證（150+ 字），說服校長每學期舉辦一次校園二手市集。</p>
+  <div class="bg-emerald-50 p-3 rounded-lg text-sm mb-3">
+    <b>範例結構</b>：<br>
+    <b>Claim</b>：校園應每學期舉辦二手市集。<br>
+    <b>Evidence</b>：引用 <b>至少 2 個</b> 數據（如 7.2% 全球循環率、快時尚使用次數 ↓36%、紡織年產 1,000 億件...）。<br>
+    <b>Reasoning</b>：解釋為何這些證據支持你的主張。
+  </div>
+  <textarea id="ans5" class="w-full border rounded-lg p-3" rows="6" placeholder="Claim: ...&#10;Evidence 1: ...&#10;Evidence 2: ...&#10;Reasoning: ..."></textarea>
+  <button onclick="checkQ5()" class="mt-2 bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg">提交</button>
+  <div id="fb5" class="mt-3 hidden p-3 rounded-lg text-sm"></div>
+</section>
+
+<!-- 關卡 6：升級再造＋開放反思＋後設認知 -->
+<section id="q6" class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-center gap-2 mb-3">
+    <span class="badge bg-cyan-100 text-cyan-800">關卡 6</span>
+    <span class="badge bg-amber-100 text-amber-800">升級再造 + 後設認知</span>
+    <h2 class="text-xl font-bold text-cyan-800">動手改造 × 回看自己</h2>
+  </div>
+
+  <div class="mb-4">
+    <p class="font-semibold mb-2">6A. 挑一件家中『快丟但還有可能』的物品，設計升級再造方案：</p>
+    <label class="block text-sm mt-2">物品名稱：<input id="q6item" type="text" class="border rounded p-1 ml-2 w-48"></label>
+    <label class="block text-sm mt-2">改造後新功能：<input id="q6func" type="text" class="border rounded p-1 ml-2 w-64"></label>
+    <label class="block text-sm mt-2">預估可延長使用年限：<input id="q6life" type="text" class="border rounded p-1 ml-2 w-28"> 年</label>
+  </div>
+
+  <div class="mb-4">
+    <p class="font-semibold mb-2">6B. 開放反思（60+ 字）：這單元學完後，你對『消費』的看法改變了什麼？為什麼改變？如果沒改變，為什麼？</p>
+    <textarea id="q6reflect" class="w-full border rounded-lg p-3" rows="4" placeholder="上課前我以為...；現在我想..."></textarea>
+  </div>
+
+  <div class="mb-4">
+    <p class="font-semibold mb-2">6C. 後設認知：這份學習單中，哪一關讓你最『不舒服』或最難回答？為什麼？（30+ 字）</p>
+    <textarea id="q6meta" class="w-full border rounded-lg p-3" rows="3" placeholder="最難的是...，因為..."></textarea>
+  </div>
+
+  <button onclick="checkQ6()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg">提交關卡 6</button>
+  <div id="fb6" class="mt-3 hidden p-3 rounded-lg text-sm"></div>
+</section>
+
+<!-- WSA 四面向 Challenge -->
+<section class="bg-gradient-to-br from-emerald-50 to-cyan-50 border-2 border-emerald-300 rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-emerald-800 mb-2">🏫 全校英雄挑戰（WSA Challenge）</h2>
+  <p class="text-gray-700 mb-3 text-sm">勾選你本月承諾的行動，四個面向各選一項即可成為『全校英雄』！</p>
+  <div class="space-y-2">
+    <label class="flex items-start gap-2 p-3 bg-white rounded-lg border hover:border-emerald-400 cursor-pointer">
+      <input type="checkbox" class="wsa mt-1" data-cat="curriculum">
+      <span><b>[課程整合]</b> 我會在至少一個科目的作業中融入循環經濟觀點（如數學百分比、家政改造、社會消費者權益）。</span>
+    </label>
+    <label class="flex items-start gap-2 p-3 bg-white rounded-lg border hover:border-emerald-400 cursor-pointer">
+      <input type="checkbox" class="wsa mt-1" data-cat="campus">
+      <span><b>[校園營運]</b> 我會協助推動一項校園循環設施（二手物銀行、修繕角、廚餘堆肥、雙面列印）。</span>
+    </label>
+    <label class="flex items-start gap-2 p-3 bg-white rounded-lg border hover:border-emerald-400 cursor-pointer">
+      <input type="checkbox" class="wsa mt-1" data-cat="community">
+      <span><b>[社區連結]</b> 我會參與或宣傳一次社區二手市集／Repair Café／在地循環企業參訪。</span>
+    </label>
+    <label class="flex items-start gap-2 p-3 bg-white rounded-lg border hover:border-emerald-400 cursor-pointer">
+      <input type="checkbox" class="wsa mt-1" data-cat="governance">
+      <span><b>[學生治理]</b> 我會向學生會／班代／校務會議提出一項循環經濟提案或參與公民連署。</span>
+    </label>
+  </div>
+  <div id="wsaResult" class="mt-4 hidden"></div>
+</section>
+
+<!-- 專題任務：7 日實驗 -->
+<section class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-cyan-800 mb-2">📅 專題任務：7 日循環消費實驗</h2>
+  <p class="text-sm text-gray-600 mb-3">每天完成一項挑戰並在下一節課分享結果。</p>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
+    <div class="bg-cyan-50 rounded p-2"><b>Day 1</b> 盤點衣櫃</div>
+    <div class="bg-cyan-50 rounded p-2"><b>Day 2</b> 買前 5 問實測</div>
+    <div class="bg-cyan-50 rounded p-2"><b>Day 3</b> 綠漂偵探（找 3 則廣告）</div>
+    <div class="bg-cyan-50 rounded p-2"><b>Day 4</b> 完成升級再造作品</div>
+    <div class="bg-cyan-50 rounded p-2"><b>Day 5</b> 教家人一個循環行為</div>
+    <div class="bg-cyan-50 rounded p-2"><b>Day 6</b> 走訪二手店或修理站</div>
+    <div class="bg-cyan-50 rounded p-2"><b>Day 7</b> 寫反思與下週計畫</div>
+    <div class="bg-amber-100 rounded p-2 font-semibold">📸 拍照留念</div>
+  </div>
+</section>
+
+<!-- 成果總結 -->
+<section id="summary" class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-cyan-800 mb-2">🎯 成果總結 & 延伸思考</h2>
+  <div id="summaryContent" class="text-gray-700 text-sm">完成所有關卡後，這裡會顯示你的表現摘要。</div>
+  <div class="mt-4 p-4 bg-amber-50 rounded-lg">
+    <b>3 個帶走的問題：</b>
+    <ol class="list-decimal ml-5 mt-2 space-y-1 text-sm">
+      <li>如果你是品牌設計師，如何設計一件『從誕生就循環』的產品？</li>
+      <li>當『修理』比『買新』貴，政策該介入嗎？怎麼介入？</li>
+      <li>循環經濟能解決氣候危機嗎？還是我們仍需要『少即是多』的生活哲學？</li>
+    </ol>
+  </div>
+</section>
+
+</div>
+
+<script>
+const state = { completed: new Set(), badges: [] };
+
+function addBadge(name, emoji) {
+  if (state.badges.includes(name)) return;
+  state.badges.push(name);
+  const el = document.createElement('span');
+  el.className = 'badge bg-amber-200 text-amber-900 pop';
+  el.innerHTML = emoji + ' ' + name;
+  document.getElementById('badges').appendChild(el);
+  confetti();
+}
+
+function confetti() {
+  const colors = ['#0891b2', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'];
+  for (let i = 0; i < 30; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.background = colors[i % colors.length];
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.top = '-10px';
+    c.style.animationDelay = Math.random() * 0.5 + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 2500);
+  }
+}
+
+function markDone(id, badge, emoji) {
+  state.completed.add(id);
+  const total = 6;
+  const pct = (state.completed.size / total) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressText').textContent = state.completed.size + ' / ' + total;
+  if (badge) addBadge(badge, emoji);
+  if (state.completed.size === total) {
+    document.getElementById('summaryContent').innerHTML =
+      '<div class="bg-emerald-100 p-4 rounded-lg"><b>🏆 恭喜完成全部 6 關！</b>你已展現循環公民三大素養：<b>資料批判、系統思考、倫理論證</b>。接下來請啟動 7 日實驗，把學習變成習慣。</div>';
+    addBadge('循環公民認證', '🏅');
+  }
+}
+
+function showFb(id, type, msg) {
+  const fb = document.getElementById(id);
+  fb.className = 'mt-3 p-3 rounded-lg text-sm ' + (type === 'good' ? 'feedback-good' : 'feedback-hint');
+  fb.innerHTML = msg;
+  fb.classList.remove('hidden');
+}
+
+function checkQ1() {
+  const ans = document.getElementById('ans1').value.trim();
+  if (ans.length < 60) return showFb('fb1', 'hint', '💡 提示：回答再深入些（需 60+ 字）。想想：『討論』和『實踐』為何可能脫鉤？是誰在討論？誰在生產？');
+  showFb('fb1', 'good', '✅ 很好的觀察！此題核心是『意識提升 ≠ 系統改變』——公共討論多，但生產體系、供應鏈、消費文化未改，結果循環率反而下降。這也提醒我們，個人行動與制度改革需同步。');
+  markDone('q1', '數據洞察家', '🔍');
+}
+
+document.querySelectorAll('#opts2 .opt').forEach(b => b.addEventListener('click', () => {
+  const v = b.dataset.v;
+  if (v === 'B') {
+    showFb('fb2', 'good', '✅ 優秀選擇！B 選項延長既有物命（再使用），符合 6R 中優先級最高的 Reuse，且成本最低。');
+    markDone('q2', '聰明消費者', '🛒');
+  } else if (v === 'A') {
+    showFb('fb2', 'hint', '🤔 再想想：A 雖有『太陽能』賣點，但『難拆解』意味著未來無法維修或回收，且買新品增加需求鏈。還有其他選項。');
+  } else {
+    showFb('fb2', 'hint', '🚨 小心綠漂！『環保友善』無第三方認證，屬於模糊用詞。再看看其他選項。');
+  }
+}));
+
+function checkQ3() {
+  const seq = document.getElementById('ans3seq').value.replace(/\s/g, '');
+  const loop = document.getElementById('ans3loop').value.trim();
+  const validSeq = /1.*6.*2.*3.*5.*4/.test(seq);
+  if (!validSeq) return showFb('fb3', 'hint', '💡 提示：消費行為 → 物流擴張 → 原料開採 → 排放 → 升溫 → 極端災害。想想商業邏輯先有『消費需求』還是『工廠擴張』？');
+  if (loop.length < 40) return showFb('fb3', 'hint', '💡 因果鏈對了！但請補充反饋循環說明（40+ 字）。提示：災害可能推升保險成本、引發災害重建消費 → 又回到消費起點？');
+  showFb('fb3', 'good', '✅ 系統思考到位！正向反饋（災害→重建消費→更多排放）讓危機自我放大，這就是為何循環經濟需要『結構性』介入，而非僅靠個人節約。');
+  markDone('q3', '系統思考者', '🌀');
+}
+
+function checkQ4() {
+  const ans = document.getElementById('ans4').value.trim();
+  if (ans.length < 80) return showFb('fb4', 'hint', '💡 論述需 80+ 字，且必須『回應反對立場』。想想：同學壓力？父母好意？修理成本？');
+  showFb('fb4', 'good', '✅ 倫理兩難沒有標準答案，重點是你有無『看見多面向』——個人慾望、家庭關係、環境成本、社會期待。保留這份敏感度，你的下一個選擇就會更成熟。');
+  markDone('q4', '倫理思辨者', '⚖️');
+}
+
+function checkQ5() {
+  const ans = document.getElementById('ans5').value;
+  const hasClaim = /claim|主張|我認為|應該/i.test(ans);
+  const numbers = ans.match(/7\.?2|9\.?1|1,?000 ?億|36|60|39|500 ?Gt|0\.5|70 ?萬/g) || [];
+  const hasReason = /因為|所以|由於|reasoning|理由/i.test(ans);
+  if (ans.length < 150) return showFb('fb5', 'hint', '💡 CER 需 150+ 字。確認你寫了 Claim、≥2 個數據 Evidence、與 Reasoning。');
+  if (!hasClaim) return showFb('fb5', 'hint', '💡 缺 Claim（明確主張）。請開頭直接說：『校園應...』或『我主張...』。');
+  if (numbers.length < 2) return showFb('fb5', 'hint', '💡 Evidence 需 ≥2 個具體數據。可用：7.2%、60%、1,000 億、36%、39%、0.5% 等。');
+  if (!hasReason) return showFb('fb5', 'hint', '💡 缺 Reasoning。請用『因為...所以...』連結數據與主張。');
+  showFb('fb5', 'good', '✅ CER 結構完整、數據引用 ' + numbers.length + ' 處。論證就是公共說服的基礎語言——拿這篇去跟學務處討論吧！');
+  markDone('q5', '論證寫手', '✍️');
+}
+
+function checkQ6() {
+  const item = document.getElementById('q6item').value.trim();
+  const func = document.getElementById('q6func').value.trim();
+  const reflect = document.getElementById('q6reflect').value.trim();
+  const meta = document.getElementById('q6meta').value.trim();
+  if (!item || !func) return showFb('fb6', 'hint', '💡 先完成升級再造方案（物品＋新功能）。');
+  if (reflect.length < 60) return showFb('fb6', 'hint', '💡 開放反思需 60+ 字，描述你『想法改變』或『為何沒變』。');
+  if (meta.length < 30) return showFb('fb6', 'hint', '💡 後設認知需 30+ 字。誠實面對『不舒服』的題目，這就是成長的線索。');
+  showFb('fb6', 'good', '✅ 太棒了！你把創造力（升級再造）、反思力（改變自己）與覺察力（看見自己）整合在一起——這是 21 世紀公民最稀缺的能力。');
+  markDone('q6', '循環行動家', '♻️');
+}
+
+document.querySelectorAll('.wsa').forEach(cb => cb.addEventListener('change', () => {
+  const all = document.querySelectorAll('.wsa');
+  const n = Array.from(all).filter(c => c.checked).length;
+  const r = document.getElementById('wsaResult');
+  if (n === 4) {
+    r.className = 'mt-4 p-4 bg-emerald-100 rounded-lg pop';
+    r.innerHTML = '<b>🏫 全校英雄徽章已解鎖！</b> 你承諾了課程、營運、社區、治理四面向的行動——這才是真正的 Whole School Approach。';
+    r.classList.remove('hidden');
+    addBadge('全校英雄', '🏫');
+  } else if (n > 0) {
+    r.className = 'mt-4 p-3 bg-amber-50 rounded-lg text-sm';
+    r.innerHTML = '已承諾 ' + n + ' / 4 項，還差 ' + (4 - n) + ' 個面向。';
+    r.classList.remove('hidden');
+  }
+}));
+</script>
+</body>
+</html>

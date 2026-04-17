@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>自然連結小探員 — 6.1-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#d1fae5 0%,#a7f3d0 40%,#fde68a 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .feedback-pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; z-index:9999; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #059669; box-shadow: 0 0 0 4px rgba(5,150,105,.25); }
+  .drag-item { cursor: grab; user-select: none; }
+  .drag-item.dragging { opacity: .4; }
+  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
+  .badge { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
+  .hidden-step { display: none; }
+  .leaf-bounce { animation: bounce 1.2s infinite; display:inline-block; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-emerald-600 to-green-500 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">🌿 自然連結小探員</h1>
+    <p class="mt-2 text-emerald-50">UNESCO 6.1-III ｜ 9-12 歲 ｜ 走出教室，打開你的五感與六條路徑！</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 角色與情境故事 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl leaf-bounce">🦉</div>
+    <div>
+      <h2 class="text-2xl font-bold text-emerald-700">任務簡報：加入「自然連結小探員」！</h2>
+      <p class="mt-2 leading-relaxed">嗨！我是校園老樟樹裡的貓頭鷹「老樟」，我發現最近小朋友都愛待在室內。其實科學家說，每週在大自然至少 <strong class="text-emerald-700">120 分鐘</strong>，心情和健康都會變好！你的任務是通過 6 個關卡，解鎖「全校英雄」徽章，幫全校找回與自然的連結！</p>
+      <button onclick="startMission()" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 🌱</button>
+    </div>
+  </div>
+</section>
+
+<!-- 關卡 1：每週自然時間（情境選擇）-->
+<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-emerald-700">⏰ 關卡 1：每週多久在自然才夠？</h2>
+  <p class="mt-2 text-gray-600">White 等 2019 年的研究（真實數據！）發現，每週在自然中達到一個「門檻時間」，自覺健康與幸福感才會明顯提升。你猜是多少？</p>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+    <button class="q1-opt p-4 border-2 border-emerald-200 rounded-xl hover:bg-emerald-50" data-ans="0">30 分鐘</button>
+    <button class="q1-opt p-4 border-2 border-emerald-200 rounded-xl hover:bg-emerald-50" data-ans="0">60 分鐘</button>
+    <button class="q1-opt p-4 border-2 border-emerald-200 rounded-xl hover:bg-emerald-50" data-ans="1">120 分鐘</button>
+    <button class="q1-opt p-4 border-2 border-emerald-200 rounded-xl hover:bg-emerald-50" data-ans="0">300 分鐘</button>
+  </div>
+  <div id="q1-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 2：六條路徑拖曳配對 -->
+<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-teal-700">🧭 關卡 2：六條路徑 — 幫活動找到對的路徑</h2>
+  <p class="mt-2 text-gray-600">UNESCO 提到六條連結自然的路徑。請把下方活動拖到正確的路徑：</p>
+
+  <div class="flex flex-wrap gap-3 mt-4" id="actPool">
+    <div class="drag-item bg-pink-100 px-4 py-2 rounded-full shadow" draggable="true" data-p="sense">👂 閉眼聽校園 30 秒聲音</div>
+    <div class="drag-item bg-rose-100 px-4 py-2 rounded-full shadow" draggable="true" data-p="emotion">🌳 幫校園的樹取名字</div>
+    <div class="drag-item bg-amber-100 px-4 py-2 rounded-full shadow" draggable="true" data-p="time">📅 每週六上午爬山 2 小時</div>
+    <div class="drag-item bg-sky-100 px-4 py-2 rounded-full shadow" draggable="true" data-p="meaning">📜 想像老樟樹見過的歷史</div>
+    <div class="drag-item bg-green-100 px-4 py-2 rounded-full shadow" draggable="true" data-p="care">♻️ 週末淨灘撿海廢</div>
+    <div class="drag-item bg-purple-100 px-4 py-2 rounded-full shadow" draggable="true" data-p="explore">🔍 用放大鏡觀察螞蟻窩</div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-6">
+    <div class="drop-zone min-h-[110px] border-2 border-dashed border-pink-400 bg-pink-50 rounded-xl p-3" data-p="sense"><p class="font-bold text-pink-700">👁️ 感官接觸</p><div class="drop-content flex flex-wrap gap-1 mt-2"></div></div>
+    <div class="drop-zone min-h-[110px] border-2 border-dashed border-rose-400 bg-rose-50 rounded-xl p-3" data-p="emotion"><p class="font-bold text-rose-700">💖 情感連結</p><div class="drop-content flex flex-wrap gap-1 mt-2"></div></div>
+    <div class="drop-zone min-h-[110px] border-2 border-dashed border-amber-400 bg-amber-50 rounded-xl p-3" data-p="time"><p class="font-bold text-amber-700">⏳ 花時間</p><div class="drop-content flex flex-wrap gap-1 mt-2"></div></div>
+    <div class="drop-zone min-h-[110px] border-2 border-dashed border-sky-400 bg-sky-50 rounded-xl p-3" data-p="meaning"><p class="font-bold text-sky-700">💡 思考意義</p><div class="drop-content flex flex-wrap gap-1 mt-2"></div></div>
+    <div class="drop-zone min-h-[110px] border-2 border-dashed border-green-400 bg-green-50 rounded-xl p-3" data-p="care"><p class="font-bold text-green-700">🌱 關愛行動</p><div class="drop-content flex flex-wrap gap-1 mt-2"></div></div>
+    <div class="drop-zone min-h-[110px] border-2 border-dashed border-purple-400 bg-purple-50 rounded-xl p-3" data-p="explore"><p class="font-bold text-purple-700">🧭 探索發現</p><div class="drop-content flex flex-wrap gap-1 mt-2"></div></div>
+  </div>
+  <div id="q2-feedback" class="mt-4"></div>
+  <button onclick="checkLevel2()" class="mt-3 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full">檢查答案</button>
+</section>
+
+<!-- 關卡 3：森林 vs. 都市 身體反應 -->
+<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-lime-700">🌲 關卡 3：森林浴 — 身體真的會變？</h2>
+  <p class="mt-2 text-gray-600">日本 Park 等 2010 年研究（真實數據！）：森林 vs. 都市散步後，身體指標不一樣。請選出正確答案：</p>
+  <div id="foQs" class="space-y-4 mt-4">
+    <div class="q3 border rounded-xl p-3" data-ans="down">
+      <p class="font-semibold">Q1：在森林散步後，壓力荷爾蒙（皮質醇）會？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="up">上升</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="down">下降約 12-15%</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="same">沒變化</button>
+      </div>
+    </div>
+    <div class="q3 border rounded-xl p-3" data-ans="down">
+      <p class="font-semibold">Q2：在森林散步後，心率和血壓的趨勢是？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="up">上升</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="down">下降</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="same">沒變化</button>
+      </div>
+    </div>
+    <div class="q3 border rounded-xl p-3" data-ans="yes">
+      <p class="font-semibold">Q3：WHO 建議 5-17 歲兒童每天至少 60 分鐘身體活動，在戶外完成可以同時達成心理減壓與身體活動嗎？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="yes">是，一舉兩得</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="no">不行，要分開</button>
+      </div>
+    </div>
+  </div>
+  <div id="q3-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 4：校園綠地達 WHO 標準？（填空計算）-->
+<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-green-700">📐 關卡 4：校園綠地達標嗎？</h2>
+  <p class="mt-2 text-gray-600">WHO 建議每人至少 <strong>9 平方公尺</strong> 綠地，理想 <strong>50 平方公尺</strong>。假設某國小的校園綠地面積為 <strong>3,600 m²</strong>，全校共 <strong>600 人</strong>，計算每人平均綠地，並判斷是否達標。</p>
+  <div class="mt-4 bg-green-50 p-4 rounded-xl">
+    <label class="block font-semibold">每人綠地 = 3600 ÷ 600 = ？ 平方公尺</label>
+    <input id="q4input" type="number" class="mt-2 w-40 p-2 border-2 border-green-300 rounded-lg" placeholder="輸入數字" />
+    <button onclick="checkLevel4()" class="ml-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-5 rounded-full">送出</button>
+  </div>
+  <div id="q4-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 5：情境抉擇 — 週末同學揪你去哪？-->
+<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-purple-700">🎭 關卡 5：週末的抉擇</h2>
+  <p class="mt-2 text-gray-600">這週末同學揪你出去，你會建議怎麼做？每個選擇都沒有對錯，但後果不同。</p>
+  <div class="space-y-3 mt-4">
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="A">A. 整天在家打電動、追劇</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="B">B. 去百貨公司逛 4 小時</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="C">C. 去附近公園野餐、觀察昆蟲 2 小時</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="D">D. 去國家公園健行一整天，用 iNaturalist 拍 5 種生物</button>
+  </div>
+  <div id="q5-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 6：全校行動挑戰（WSA 四面向）-->
+<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6 border-4 border-amber-400">
+  <h2 class="text-xl font-bold text-amber-700">🏫 關卡 6：全校行動挑戰（Whole School Approach）</h2>
+  <p class="mt-2 text-gray-700">四個面向，一起把學校變成與自然連結的家。請勾選你「本學期會嘗試」的行動，四項全勾，解鎖「全校英雄」徽章！</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <label class="flex items-start gap-3 p-4 border-2 border-blue-200 rounded-xl cursor-pointer hover:bg-blue-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="curriculum" />
+      <div>
+        <p class="font-bold text-blue-700">📚 課程整合</p>
+        <p class="text-sm">閱讀 1 本生態文學（吳明益、劉克襄）+ 健體課做 1 次「森林浴」深呼吸練習。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-green-200 rounded-xl cursor-pointer hover:bg-green-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="operations" />
+      <div>
+        <p class="font-bold text-green-700">🌳 校園營運</p>
+        <p class="text-sm">推動校園「靜心花園」或雨水花園，綠化量朝 WHO 9 m²／人 目標努力。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-orange-200 rounded-xl cursor-pointer hover:bg-orange-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="community" />
+      <div>
+        <p class="font-bold text-orange-700">🤝 社區連結</p>
+        <p class="text-sm">邀請國家公園解說員或原住民長者到校分享；家庭一起週末戶外活動。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-purple-200 rounded-xl cursor-pointer hover:bg-purple-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="agency" />
+      <div>
+        <p class="font-bold text-purple-700">🙋 學生治理</p>
+        <p class="text-sm">當「自然大使」，每天帶 1 次下課 5 分鐘戶外呼吸課；用 iNaturalist 做班級觀察專案。</p>
+      </div>
+    </label>
+  </div>
+  <button onclick="checkWSA()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full shadow-lg">提交挑戰 🏆</button>
+  <div id="wsa-feedback" class="mt-4"></div>
+</section>
+
+<!-- 徽章與成果 -->
+<section id="result" class="hidden-step card bg-gradient-to-br from-yellow-100 to-amber-200 rounded-2xl shadow-2xl p-8 mb-6 text-center">
+  <div class="text-7xl mb-3 badge inline-block rounded-full bg-white p-6">🏆</div>
+  <h2 class="text-3xl font-extrabold text-amber-800">全校英雄 徽章解鎖！</h2>
+  <p class="mt-3 text-lg">你已經學到：每週 <strong>120 分鐘</strong> 的自然門檻、森林浴讓皮質醇降 <strong>12-15%</strong>、WHO <strong>9 m²</strong> 綠地標準、台灣 <strong>9 座國家公園</strong>、綠地 <strong>10% 降溫 1°C</strong>，以及六條連結自然的路徑！</p>
+
+  <div class="bg-white rounded-xl p-5 mt-5 text-left">
+    <h3 class="font-bold text-emerald-700 text-xl mb-2">🌱 三個延伸思考（帶回家想想）</h3>
+    <ol class="list-decimal ml-6 space-y-2">
+      <li>如果家裡要搬家，你會希望新家附近有什麼自然元素？為什麼？把你的理由畫成一張「理想家園地圖」。</li>
+      <li>從家到學校的路上，找一個「小地方」（公園角落、牆角、水溝邊）連續觀察一週，記錄至少 3 種生物，並想想怎麼讓那裡更適合生物居住。</li>
+      <li>十年後你想做什麼工作？那份工作可以怎麼跟「讓更多人親近自然」連結？（提示：每種職業都可以！醫生、工程師、YouTuber、農夫、老師…）</li>
+    </ol>
+  </div>
+
+  <button onclick="window.print()" class="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full">🖨️ 列印成果頁</button>
+  <button onclick="location.reload()" class="mt-5 ml-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full">🔄 重新挑戰</button>
+</section>
+
+<footer class="text-center text-xs text-gray-500 pb-6">
+  資料來源：White et al. 2019 Scientific Reports、Park et al. 2010、WHO Europe 2016、WHO 身體活動指引 2020、US EPA、PHE 2020、內政部國家公園署。教學套件 UNESCO 6.1-III ｜ 驗證日 2026-04-16
+</footer>
+
+</main>
+
+<script>
+let currentStep = 0;
+const steps = ['intro','level1','level2','level3','level4','level5','level6','result'];
+
+function showStep(i){
+  steps.forEach((s,idx)=>{
+    const el = document.getElementById(s);
+    if(!el) return;
+    if(idx===i) el.classList.remove('hidden-step');
+    else el.classList.add('hidden-step');
+  });
+  for(let k=1;k<=6;k++){
+    const d=document.getElementById('dot'+k);
+    d.classList.remove('done','active');
+    if(k < i) d.classList.add('done');
+    else if(k === i) d.classList.add('active');
+  }
+  const pt = document.getElementById('progressText');
+  if(i>=1 && i<=6) pt.textContent = `第 ${i} / 6 關`;
+  else if(i===7) pt.textContent = '完成！';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startMission(){ currentStep=1; showStep(1); }
+
+// Level 1
+document.querySelectorAll('.q1-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const fb = document.getElementById('q1-feedback');
+    if(btn.dataset.ans==='1'){
+      fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 答對了！White 2019 研究指出 <strong>120 分鐘/週</strong> 是自覺健康效益的門檻，一天算 17 分鐘就達標，可以分次累積。</div>';
+      confetti();
+      setTimeout(()=>{currentStep=2;showStep(2);},1500);
+    } else {
+      btn.classList.add('shake');
+      fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再想想！提示：一週 7 天，每天平均 17 分鐘剛好達標——一次下課 10 分鐘到草地走走，加起來就夠了。</div>';
+    }
+  });
+});
+
+// Level 2 — drag & drop
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{
+    e.preventDefault(); z.classList.remove('over');
+    if(dragged){ z.querySelector('.drop-content').appendChild(dragged); }
+  });
+});
+function checkLevel2(){
+  const zones = document.querySelectorAll('#level2 .drop-zone');
+  let correct=0, total=6;
+  zones.forEach(z=>{
+    const p = z.dataset.p;
+    z.querySelectorAll('.drop-content .drag-item').forEach(it=>{
+      if(it.dataset.p===p) correct++;
+    });
+  });
+  const fb = document.getElementById('q2-feedback');
+  if(correct===total){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌟 六條路徑全部配對正確！感官、情感、時間、意義、關愛、探索——你都認識了！</div>';
+    confetti();
+    setTimeout(()=>{currentStep=3;showStep(3);},1600);
+  } else {
+    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 你答對 ${correct}/${total}。提示：聽聲音＝感官；淨灘＝關愛；放大鏡觀察＝探索；幫樹取名＝情感。</div>`;
+  }
+}
+
+// Level 3
+let q3Correct=0, q3Total=3;
+document.querySelectorAll('.q3-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q3');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      q3Correct++;
+    } else {
+      btn.classList.add('bg-red-300','text-white','shake');
+      const correctBtn = parent.querySelector(`.q3-opt[data-v="${ans}"]`);
+      if(correctBtn) correctBtn.classList.add('bg-green-400','text-white');
+    }
+    parent.dataset.answered='1';
+    checkQ3Done();
+  });
+});
+function checkQ3Done(){
+  const answered = document.querySelectorAll('#level3 .q3[data-answered="1"]').length;
+  if(answered===q3Total){
+    document.getElementById('q3-feedback').innerHTML =
+      `<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌲 你答對 ${q3Correct}/${q3Total}！森林真的讓身體放鬆，數據說話。</div>`;
+    confetti();
+    setTimeout(()=>{currentStep=4;showStep(4);},1500);
+  }
+}
+
+// Level 4 — 計算題
+function checkLevel4(){
+  const v = parseFloat(document.getElementById('q4input').value);
+  const fb = document.getElementById('q4-feedback');
+  if(isNaN(v)){
+    fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 請輸入一個數字。</div>';
+    return;
+  }
+  if(Math.abs(v-6)<0.01){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎯 正確！每人 <strong>6 m²</strong>，<strong>還沒達到 WHO 9 m² 的最低標準</strong>！你們可以提出種更多樹、設置屋頂花園的提案。</div>';
+    confetti();
+    setTimeout(()=>{currentStep=5;showStep(5);},1800);
+  } else {
+    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再算算：3600 ÷ 600 = ？（提示：答案是一位數）</div>`;
+  }
+}
+
+// Level 5 — choice consequences
+const choiceFeedback = {
+  A: { tone:'warn', text:'⚠️ 整天室內對身體和心情都不好。0 分鐘 < 120 分鐘門檻，久坐也不利健康。建議加入 1 小時戶外時間。' },
+  B: { tone:'warn', text:'🏬 雖然動了，但百貨公司不算自然環境，無法獲得綠地減壓效益，還可能買太多東西。' },
+  C: { tone:'ok', text:'🌳 很棒！2 小時公園時間剛好達 120 分鐘門檻，一次就達標本週目標，還能練習感官和探索路徑。' },
+  D: { tone:'best', text:'🌟 最佳選擇！國家公園一日遊同時滿足「時間、感官、探索、關愛（公民科學）」四條路徑，還貢獻科學資料！' }
+};
+document.querySelectorAll('.choice').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(document.getElementById('level5').dataset.answered) return;
+    document.getElementById('level5').dataset.answered='1';
+    const c = choiceFeedback[btn.dataset.c];
+    const color = c.tone==='best'?'green':(c.tone==='ok'?'blue':'yellow');
+    btn.classList.add('bg-'+color+'-100','border-'+color+'-500');
+    document.getElementById('q5-feedback').innerHTML =
+      `<div class="feedback-pop bg-${color}-100 border-l-4 border-${color}-500 p-3 rounded">${c.text}</div>`;
+    if(c.tone==='best') confetti();
+    setTimeout(()=>{currentStep=6;showStep(6);},2200);
+  });
+});
+
+// Level 6 — WSA
+function checkWSA(){
+  const boxes = document.querySelectorAll('.wsa');
+  const all = Array.from(boxes).every(b=>b.checked);
+  const fb = document.getElementById('wsa-feedback');
+  if(all){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-4 rounded text-lg">🏅 四面向全勾選！你就是我們班的全校英雄！</div>';
+    confetti(60);
+    setTimeout(()=>{currentStep=7;showStep(7);},1800);
+  } else {
+    const cnt = Array.from(boxes).filter(b=>b.checked).length;
+    fb.innerHTML = `<div class="feedback-pop bg-amber-100 border-l-4 border-amber-500 p-3 rounded">你選了 ${cnt}/4 個面向。全校英雄需要「課程、校園、社區、學生」四面向一起行動，每個都很重要！再想想你可以怎麼參與剩下的面向？</div>`;
+  }
+}
+
+// Confetti
+function confetti(n=30){
+  const colors=['#34d399','#fbbf24','#60a5fa','#f87171','#a78bfa'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.top='-20px';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*0.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+</script>
+</body>
+</html>

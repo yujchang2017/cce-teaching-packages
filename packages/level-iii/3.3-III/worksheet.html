@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.3-III 時光機大冒險 ｜ 殖民、工業化與氣候正義</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<style>
+  body{font-family:"Noto Sans TC","PingFang TC",system-ui,sans-serif}
+  .card{transition:transform .2s, box-shadow .2s}
+  .card:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(0,0,0,.08)}
+  .badge{animation:pop .5s ease-out}
+  @keyframes pop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
+  .pg{height:12px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+  .pg > div{height:100%;background:linear-gradient(90deg,#f59e0b,#ef4444);transition:width .4s}
+  .tab-on{background:#1e3a8a;color:#fff}
+  details summary::-webkit-details-marker{display:none}
+  details[open] summary .arr{transform:rotate(90deg)}
+  .arr{display:inline-block;transition:transform .2s}
+</style>
+</head>
+<body class="bg-amber-50 text-gray-800">
+
+<header class="bg-gradient-to-r from-orange-700 via-red-600 to-rose-700 text-white p-6 shadow-lg">
+  <h1 class="text-3xl font-bold">時光機大冒險 <span class="text-yellow-200">🕰️</span></h1>
+  <p class="mt-1 opacity-90">UNESCO 3.3-III｜殖民、工業化與氣候正義｜9-12 歲</p>
+  <div class="mt-4 flex items-center gap-3">
+    <span class="text-sm">進度</span>
+    <div class="pg flex-1 max-w-xl"><div id="pgBar" style="width:0%"></div></div>
+    <span id="pgTxt" class="text-sm font-bold">0 / 5 關</span>
+  </div>
+  <p class="mt-2 text-sm">角色：你是「歷史偵探」！解開 5 個關卡，領取 <b>全校英雄徽章</b> 🏅</p>
+</header>
+
+<main class="max-w-5xl mx-auto p-6 space-y-8">
+
+<!-- 情境角色 -->
+<section class="bg-white rounded-2xl p-6 shadow">
+  <h2 class="text-xl font-bold text-orange-800">🎭 你的任務情境</h2>
+  <p class="mt-2">2050 年，聯合國邀請你擔任「歷史氣候偵探」。你要搭時光機回到 1760 年、1882 年、1930 年、2022 年，找出氣候不正義的源頭，最後帶回一份行動建議書給台灣政府。準備好了嗎？</p>
+</section>
+
+<!-- 關卡 1：歷史排放拼圖 -->
+<section id="s1" class="card bg-white rounded-2xl p-6 shadow">
+  <h2 class="text-xl font-bold text-rose-800">🧩 關卡 1：歷史排放大拼圖（互動一）</h2>
+  <p class="text-sm text-gray-600 mt-1">把下列國家拖到對應的歷史排放占比。</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <div>
+      <p class="font-semibold mb-2">國家卡</p>
+      <div id="bank" class="flex flex-wrap gap-2"></div>
+    </div>
+    <div>
+      <p class="font-semibold mb-2">放到正確的比例（1751-至今）</p>
+      <div class="space-y-2">
+        <div class="drop border-2 border-dashed rounded-lg p-3" data-ans="美國">25% ⟵ <span class="slot text-gray-400">放這裡</span></div>
+        <div class="drop border-2 border-dashed rounded-lg p-3" data-ans="歐盟">22% ⟵ <span class="slot text-gray-400">放這裡</span></div>
+        <div class="drop border-2 border-dashed rounded-lg p-3" data-ans="非洲">&lt; 3% ⟵ <span class="slot text-gray-400">放這裡</span></div>
+        <div class="drop border-2 border-dashed rounded-lg p-3" data-ans="英國(1882前)">1882 前 &gt; 50% ⟵ <span class="slot text-gray-400">放這裡</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="mt-3 text-sm"><b>真實數據來源</b>：Our World in Data / Global Carbon Project（dp1, dp2, dp3）</p>
+  <div id="hint1" class="hidden mt-2 p-3 bg-amber-100 rounded text-sm">💡 提示：工業革命從哪個國家開始？那個國家在 1882 前排了很多！</div>
+  <button onclick="check1()" class="mt-3 px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700">提交答案</button>
+  <div id="fb1" class="mt-2"></div>
+</section>
+
+<!-- 關卡 2：時間軸連連看 -->
+<section id="s2" class="card bg-white rounded-2xl p-6 shadow">
+  <h2 class="text-xl font-bold text-amber-800">⏱️ 關卡 2：台灣歷史時間軸（互動二）</h2>
+  <p class="text-sm text-gray-600 mt-1">為每個年代選擇正確的事件（單選題）</p>
+  <div class="space-y-4 mt-4">
+    <div>
+      <p class="font-semibold">① 1895 年</p>
+      <div class="flex flex-col gap-1 mt-1">
+        <label><input type="radio" name="q2_1" value="a"> A. 台灣獨立建國</label>
+        <label><input type="radio" name="q2_1" value="b"> B. 日治開始，定位「工業日本、農業台灣」</label>
+        <label><input type="radio" name="q2_1" value="c"> C. 台灣加入聯合國</label>
+      </div>
+    </div>
+    <div>
+      <p class="font-semibold">② 1930 年代</p>
+      <div class="flex flex-col gap-1 mt-1">
+        <label><input type="radio" name="q2_2" value="a"> A. 原住民族「集團移住」政策，被迫遷離山林</label>
+        <label><input type="radio" name="q2_2" value="b"> B. 台灣第一間核電廠啟用</label>
+        <label><input type="radio" name="q2_2" value="c"> C. 捷運開通</label>
+      </div>
+    </div>
+    <div>
+      <p class="font-semibold">③ 1960-1980 年代</p>
+      <div class="flex flex-col gap-1 mt-1">
+        <label><input type="radio" name="q2_3" value="a"> A. 綠能全面取代化石燃料</label>
+        <label><input type="radio" name="q2_3" value="b"> B. 台灣以石化紡織等高耗能產業經濟起飛</label>
+        <label><input type="radio" name="q2_3" value="c"> C. 全國推行素食運動</label>
+      </div>
+    </div>
+  </div>
+  <p class="mt-3 text-sm"><b>真實數據來源</b>：國家發展委員會台灣經濟發展史（dp6, dp7）</p>
+  <button onclick="check2()" class="mt-3 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700">提交答案</button>
+  <div id="fb2" class="mt-2"></div>
+</section>
+
+<!-- 關卡 3：翹翹板滑桿（互動三） -->
+<section id="s3" class="card bg-white rounded-2xl p-6 shadow">
+  <h2 class="text-xl font-bold text-blue-800">⚖️ 關卡 3：公平翹翹板（互動三）</h2>
+  <p class="text-sm text-gray-600 mt-1">滑動下列滑桿，看看「排放」與「受害」之間的落差有多大。</p>
+  <div class="mt-4 space-y-4">
+    <div>
+      <label class="font-semibold">最低度開發國家（LDCs）46 國：占全球人口？</label>
+      <input id="s3a" type="range" min="1" max="30" value="14" class="w-full">
+      <p>你的答案：<b id="s3av">14</b>%　(真實：14%)</p>
+    </div>
+    <div>
+      <label class="font-semibold">LDCs 占全球碳排放？</label>
+      <input id="s3b" type="range" min="0" max="20" value="1" class="w-full">
+      <p>你的答案：<b id="s3bv">1</b>%　(真實：1%)</p>
+    </div>
+    <div>
+      <label class="font-semibold">LDCs 氣候災害死亡率是其他國家的幾倍？</label>
+      <input id="s3c" type="range" min="1" max="30" value="15" class="w-full">
+      <p>你的答案：<b id="s3cv">15</b> 倍　(真實：15 倍)</p>
+    </div>
+  </div>
+  <p class="mt-3 text-sm"><b>真實數據來源</b>：UN OHRLLS；IPCC AR6 WGII（dp5）</p>
+  <details class="mt-3"><summary class="cursor-pointer text-blue-700"><span class="arr">▶</span> 點我看反思提示</summary>
+    <div class="mt-2 p-3 bg-blue-50 rounded text-sm">排越少、死越多——這是歷史遺留下的結構。現在我們能做什麼？</div>
+  </details>
+  <button onclick="check3()" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">確認完成</button>
+  <div id="fb3" class="mt-2"></div>
+</section>
+
+<!-- 關卡 4：迷思終結者（引導錯答） -->
+<section id="s4" class="card bg-white rounded-2xl p-6 shadow">
+  <h2 class="text-xl font-bold text-purple-800">🔍 關卡 4：迷思終結者</h2>
+  <p class="text-sm text-gray-600 mt-1">選出「錯誤」的說法（單選）</p>
+  <div class="mt-3 space-y-2">
+    <label class="block p-2 rounded hover:bg-purple-50"><input type="radio" name="q4" value="a"> A. 工業化國家現在減碳就好，過去的排放不用算。</label>
+    <label class="block p-2 rounded hover:bg-purple-50"><input type="radio" name="q4" value="b"> B. IPCC AR6 已把殖民列為氣候脆弱度的成因之一。</label>
+    <label class="block p-2 rounded hover:bg-purple-50"><input type="radio" name="q4" value="c"> C. 2022 年 COP27 成立「損失與損害基金」。</label>
+    <label class="block p-2 rounded hover:bg-purple-50"><input type="radio" name="q4" value="d"> D. CO2 在大氣中停留很久，歷史排放對今天仍有影響。</label>
+  </div>
+  <button onclick="check4()" class="mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">提交</button>
+  <div id="fb4" class="mt-2"></div>
+</section>
+
+<!-- 關卡 5：WSA 全校英雄行動設計 -->
+<section id="s5" class="card bg-gradient-to-br from-emerald-50 to-sky-50 rounded-2xl p-6 shadow border-2 border-emerald-300">
+  <h2 class="text-xl font-bold text-emerald-800">🏅 關卡 5：全校英雄行動設計（WSA 四面向）</h2>
+  <p class="text-sm text-gray-700 mt-1">勾選你今天承諾要推動的行動——四面向至少各勾 1 項，才能領徽章！</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-4">
+    <label class="p-3 bg-white rounded-lg border flex gap-2"><input class="wsa" data-dim="gov" type="checkbox"><span><b>治理 Governance</b>：在班會提議把節能獎金優先補助需要的同學</span></label>
+    <label class="p-3 bg-white rounded-lg border flex gap-2"><input class="wsa" data-dim="edu" type="checkbox"><span><b>教學 Teaching & Learning</b>：在班級佈告欄張貼「歷史排放小故事」</span></label>
+    <label class="p-3 bg-white rounded-lg border flex gap-2"><input class="wsa" data-dim="ops" type="checkbox"><span><b>校園 Campus & Operations</b>：為教室冷氣標示「公平使用原則」</span></label>
+    <label class="p-3 bg-white rounded-lg border flex gap-2"><input class="wsa" data-dim="com" type="checkbox"><span><b>社區 Community Partnerships</b>：邀請在地原住民長者到校分享</span></label>
+  </div>
+  <div class="mt-4">
+    <label class="font-semibold">寫一句「給台灣決策者」的話：</label>
+    <textarea id="advocacy" class="w-full mt-1 p-2 border rounded" rows="2" placeholder="例：請把受害最深的人放在決策桌前。"></textarea>
+  </div>
+  <button onclick="check5()" class="mt-3 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">完成任務，領徽章！</button>
+  <div id="fb5" class="mt-2"></div>
+</section>
+
+<!-- 徽章區 -->
+<section id="badgeBox" class="hidden text-center p-8 bg-yellow-100 rounded-2xl shadow-lg">
+  <div class="badge inline-block text-7xl">🏅</div>
+  <h3 class="text-2xl font-bold text-amber-900 mt-2">你獲得「全校英雄徽章」！</h3>
+  <p class="mt-1">你已經是讓世界變對的歷史偵探。</p>
+  <p class="mt-2 italic text-amber-800">「我們不為過去負責，但為未來負責。」</p>
+</section>
+
+<footer class="text-center text-sm text-gray-500 py-6">資料來源：IPCC AR6 / Our World in Data / UN OHRLLS / UNFCCC / 國發會｜驗證日：2026-04-16</footer>
+</main>
+
+<script>
+const state={p1:false,p2:false,p3:false,p4:false,p5:false};
+function updatePg(){
+  const done=Object.values(state).filter(Boolean).length;
+  document.getElementById('pgBar').style.width=(done*20)+'%';
+  document.getElementById('pgTxt').textContent=done+' / 5 關';
+  if(done===5) fireBadge();
+}
+function fireBadge(){
+  document.getElementById('badgeBox').classList.remove('hidden');
+  if(window.confetti) confetti({particleCount:150,spread:80,origin:{y:.6}});
+  document.getElementById('badgeBox').scrollIntoView({behavior:'smooth'});
+}
+
+// 關卡 1：拖拉
+const answers=['美國','歐盟','非洲','英國(1882前)'];
+const bank=document.getElementById('bank');
+answers.slice().sort(()=>Math.random()-.5).forEach(a=>{
+  const el=document.createElement('div');
+  el.textContent=a;el.draggable=true;el.dataset.v=a;
+  el.className='px-3 py-2 bg-rose-100 rounded-lg cursor-move border border-rose-300';
+  el.addEventListener('dragstart',e=>e.dataTransfer.setData('text',a));
+  bank.appendChild(el);
+});
+document.querySelectorAll('.drop').forEach(d=>{
+  d.addEventListener('dragover',e=>e.preventDefault());
+  d.addEventListener('drop',e=>{
+    e.preventDefault();
+    const v=e.dataTransfer.getData('text');
+    d.querySelector('.slot').textContent=v;
+    d.querySelector('.slot').classList.remove('text-gray-400');
+    d.querySelector('.slot').classList.add('font-bold','text-rose-700');
+    d.dataset.got=v;
+  });
+});
+function check1(){
+  const drops=[...document.querySelectorAll('.drop')];
+  const correct=drops.every(d=>d.dataset.got===d.dataset.ans);
+  const fb=document.getElementById('fb1');
+  if(correct){fb.innerHTML='<span class="text-green-700 font-bold">✅ 正確！你發現了歷史排放的真相。</span>';state.p1=true;updatePg();}
+  else{fb.innerHTML='<span class="text-red-700">❌ 還沒對。<b>提示</b>：工業革命從英國開始，所以 1882 前英國最多。再試試！</span>';document.getElementById('hint1').classList.remove('hidden');}
+}
+
+// 關卡 2
+function check2(){
+  const a1=document.querySelector('input[name=q2_1]:checked')?.value;
+  const a2=document.querySelector('input[name=q2_2]:checked')?.value;
+  const a3=document.querySelector('input[name=q2_3]:checked')?.value;
+  const fb=document.getElementById('fb2');
+  if(a1==='b'&&a2==='a'&&a3==='b'){fb.innerHTML='<span class="text-green-700 font-bold">✅ 全對！台灣歷史偵探認證 ✓</span>';state.p2=true;updatePg();}
+  else{
+    const wrong=[];if(a1!=='b')wrong.push('① 1895 是日治開始');if(a2!=='a')wrong.push('② 1930 是集團移住');if(a3!=='b')wrong.push('③ 1960-80 是石化紡織');
+    fb.innerHTML='<span class="text-red-700">❌ 有錯。提示：'+wrong.join('；')+'。再看一次簡報第 10-11 張！</span>';
+  }
+}
+
+// 關卡 3
+['a','b','c'].forEach(k=>{
+  const s=document.getElementById('s3'+k);
+  s.addEventListener('input',()=>document.getElementById('s3'+k+'v').textContent=s.value);
+});
+function check3(){
+  const fb=document.getElementById('fb3');
+  const a=+document.getElementById('s3a').value,b=+document.getElementById('s3b').value,c=+document.getElementById('s3c').value;
+  if(Math.abs(a-14)<=2&&Math.abs(b-1)<=1&&Math.abs(c-15)<=2){
+    fb.innerHTML='<span class="text-green-700 font-bold">✅ 你感受到不對稱了！排 1% 卻死 15 倍。</span>';state.p3=true;updatePg();
+  }else{fb.innerHTML='<span class="text-red-700">❌ 再想想。真實數字：人口 14%、排放 1%、死亡 15 倍。</span>';}
+}
+
+// 關卡 4
+function check4(){
+  const v=document.querySelector('input[name=q4]:checked')?.value;
+  const fb=document.getElementById('fb4');
+  if(v==='a'){fb.innerHTML='<span class="text-green-700 font-bold">✅ 對！CO2 在大氣停留 100-1000 年，歷史排放仍在暖化今天。</span>';state.p4=true;updatePg();}
+  else if(!v){fb.innerHTML='<span class="text-amber-700">請先選一個。</span>';}
+  else{fb.innerHTML='<span class="text-red-700">❌ 這是正確說法。提示：找「過去排放不用算」的那句。</span>';}
+}
+
+// 關卡 5
+function check5(){
+  const dims=['gov','edu','ops','com'];
+  const got=dims.every(d=>document.querySelector('.wsa[data-dim='+d+']').checked);
+  const adv=document.getElementById('advocacy').value.trim();
+  const fb=document.getElementById('fb5');
+  if(got&&adv.length>=5){fb.innerHTML='<span class="text-green-700 font-bold">✅ 四面向都勾選 + 有倡議！全校英雄誕生 🏅</span>';state.p5=true;updatePg();}
+  else if(!got){fb.innerHTML='<span class="text-red-700">❌ WSA 四面向至少各勾 1 項。</span>';}
+  else{fb.innerHTML='<span class="text-red-700">❌ 倡議句至少 5 字。</span>';}
+}
+</script>
+</body>
+</html>

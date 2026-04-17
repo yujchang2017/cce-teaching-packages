@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>資源英雄大作戰 — 5.1-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#fff7ed 0%,#fef3c7 50%,#dcfce7 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .feedback-pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #f59e0b; box-shadow: 0 0 0 4px rgba(245,158,11,.25); }
+  .option-btn { transition: all .2s; }
+  .option-btn:hover { transform: scale(1.03); }
+  .option-btn.correct { background:#d1fae5 !important; border-color:#10b981 !important; }
+  .option-btn.wrong { background:#fee2e2 !important; border-color:#ef4444 !important; }
+  .badge { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
+  .hidden-step { display: none; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-amber-600 to-orange-500 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">⚡ 資源英雄大作戰</h1>
+    <p class="mt-2 text-amber-50">UNESCO 5.1-III ｜ 9-12 歲 ｜ 拯救地球預算，搶救未來 70 年！</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關 ｜ 分數：<span id="score">0</span></p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 情境故事 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl">🦸</div>
+    <div>
+      <h2 class="text-2xl font-bold text-orange-700">任務簡報：歡迎加入『資源英雄見習生』！</h2>
+      <p class="mt-2 leading-relaxed">嗨！我是資源小精靈「銅兒」。2025 年 <strong class="text-red-600">7 月 24 日</strong> 地球已經超載，人類把一整年的自然資源預算用掉了！更慘的是，<strong>銅礦只剩約 40 年</strong>，我的家人快要絕種了。你的任務是通過 6 個關卡，成為『全校資源英雄』，讓地球的超載日往後推！</p>
+      <button onclick="startMission()" class="mt-4 bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 🔍</button>
+    </div>
+  </div>
+</section>
+
+<!-- 關卡 1：資源分類 -->
+<section id="stage1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-orange-700 mb-2">🔍 關卡 1：可再生 or 不可再生？</h2>
+  <p class="mb-4 text-sm text-gray-600">點擊每個資源，判斷它是『可再生』還是『不可再生』。提示：石油需要數億年才能形成喔！</p>
+  <div id="q1area" class="space-y-3"></div>
+  <div id="q1feedback" class="mt-4"></div>
+  <button id="q1next" onclick="goStage(2)" class="hidden mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full">下一關 ➡️</button>
+</section>
+
+<!-- 關卡 2：地球預算計算機 -->
+<section id="stage2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-orange-700 mb-2">💧 關卡 2：地球預算計算機</h2>
+  <p class="mb-2 text-sm text-gray-600">台灣人平均每天使用 <strong>280 公升</strong> 生活用水。如果你能減少 10%，你一年可省多少公升？</p>
+  <p class="text-xs text-gray-500 mb-3">提示：一年 365 天，280 × 10% = 每日省量，再乘以 365。</p>
+  <input type="number" id="q2input" class="border-2 border-orange-300 rounded-lg p-2 w-40" placeholder="公升數" />
+  <button onclick="checkQ2()" class="ml-2 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg">送出</button>
+  <div id="q2feedback" class="mt-3"></div>
+  <button id="q2next" onclick="goStage(3)" class="hidden mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full">下一關 ➡️</button>
+</section>
+
+<!-- 關卡 3：手機礦物連連看 -->
+<section id="stage3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-orange-700 mb-2">📱 關卡 3：手機裡的 60+ 礦山</h2>
+  <p class="mb-3 text-sm text-gray-600">一支手機超過 60 種金屬。把礦物和它的用途連起來！</p>
+  <div id="q3area" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+  <div id="q3feedback" class="mt-3"></div>
+  <button id="q3next" onclick="goStage(4)" class="hidden mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full">下一關 ➡️</button>
+</section>
+
+<!-- 關卡 4：負外部性法庭 -->
+<section id="stage4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-orange-700 mb-2">⚖️ 關卡 4：負外部性大法官</h2>
+  <p class="mb-3 text-sm text-gray-600">判斷以下情境哪些是『負外部性』（我得利、別人受害）？</p>
+  <div id="q4area" class="space-y-3"></div>
+  <div id="q4feedback" class="mt-3"></div>
+  <button id="q4next" onclick="goStage(5)" class="hidden mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full">下一關 ➡️</button>
+</section>
+
+<!-- 關卡 5：資源倒數 -->
+<section id="stage5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-orange-700 mb-2">⏳ 關卡 5：資源倒數計時</h2>
+  <p class="mb-3 text-sm text-gray-600">把這些事實拖曳排序（或點擊排序）：從『最快用完』到『最慢用完』。</p>
+  <div id="q5area" class="space-y-2"></div>
+  <button onclick="checkQ5()" class="mt-3 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg">送出答案</button>
+  <div id="q5feedback" class="mt-3"></div>
+  <button id="q5next" onclick="goStage(6)" class="hidden mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full">下一關 ➡️</button>
+</section>
+
+<!-- 關卡 6：WSA 全校行動挑戰 -->
+<section id="stage6" class="hidden-step card bg-gradient-to-br from-yellow-50 to-orange-100 rounded-2xl shadow-lg p-6 mb-6 border-4 border-amber-400">
+  <h2 class="text-xl font-bold text-orange-700 mb-2">🏆 關卡 6：WSA 全校英雄挑戰</h2>
+  <p class="mb-3 text-sm text-gray-700">勾選 <strong>全部 4 項</strong> 你願意推動的全校行動，就能解鎖『全校資源英雄』徽章！</p>
+  <div class="space-y-3">
+    <label class="flex items-start gap-3 bg-white p-3 rounded-lg cursor-pointer"><input type="checkbox" class="wsa mt-1" value="1"/><span><strong>課程整合</strong>：在數學課用班級人數 × 280L 算一天的用水，做成海報貼教室。</span></label>
+    <label class="flex items-start gap-3 bg-white p-3 rounded-lg cursor-pointer"><input type="checkbox" class="wsa mt-1" value="2"/><span><strong>校園營運</strong>：組『節能節水審計小組』每月走查教室與廁所，把漏水龍頭列清單交給總務處。</span></label>
+    <label class="flex items-start gap-3 bg-white p-3 rounded-lg cursor-pointer"><input type="checkbox" class="wsa mt-1" value="3"/><span><strong>社區連結</strong>：邀請里辦公室或回收業者到校舉辦『手機旅行記』工作坊，我們全家一起送舊手機去正確回收。</span></label>
+    <label class="flex items-start gap-3 bg-white p-3 rounded-lg cursor-pointer"><input type="checkbox" class="wsa mt-1" value="4"/><span><strong>學生治理</strong>：我願意當『資源英雄委員』，統計班上用電並在班會提改善方案。</span></label>
+  </div>
+  <button onclick="checkWSA()" class="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded-full shadow">解鎖徽章 🏅</button>
+  <div id="wsaFeedback" class="mt-4"></div>
+</section>
+
+<!-- 成果 -->
+<section id="results" class="hidden-step card bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl shadow-xl p-6 mb-6 border-4 border-amber-500">
+  <h2 class="text-2xl font-bold text-orange-800 text-center">🎉 恭喜完成任務！</h2>
+  <div class="text-center my-4">
+    <div class="badge inline-block bg-amber-400 text-white font-bold text-xl px-6 py-3 rounded-full">🏅 全校資源英雄</div>
+  </div>
+  <p class="text-center text-lg">最終分數：<span id="finalScore" class="font-bold text-orange-700">0</span> / 60</p>
+  <div class="mt-6 bg-white rounded-xl p-4">
+    <h3 class="font-bold text-orange-700 mb-2">🤔 三題延伸思考</h3>
+    <ol class="list-decimal list-inside space-y-2 text-sm">
+      <li>如果 2025 年的地球超載日是 7/24，我們要做什麼才能把 2035 年的超載日推遲到 12/31？</li>
+      <li>台灣 97.7% 能源靠進口，你覺得我們家可以如何省下一度電？請列出三件事。</li>
+      <li>如果工廠必須支付污染造成的損失，玩具還會那麼便宜嗎？你願意多付一些錢換乾淨環境嗎？為什麼？</li>
+    </ol>
+  </div>
+  <p class="text-xs text-gray-500 mt-4 text-center">※ Worksheet runtime 註：此檔案尚待人工 Preview 驗證互動與顯示。</p>
+</section>
+
+</main>
+
+<script>
+let score = 0, stage = 1;
+const updateProgress = () => {
+  for (let i=1; i<=6; i++) {
+    const d = document.getElementById('dot'+i);
+    d.classList.remove('active','done');
+    if (i < stage) d.classList.add('done');
+    else if (i === stage) d.classList.add('active');
+  }
+  document.getElementById('progressText').innerHTML = `第 ${stage} / 6 關 ｜ 分數：<span id="score">${score}</span>`;
+};
+function startMission() {
+  document.getElementById('intro').classList.add('hidden-step');
+  document.getElementById('stage1').classList.remove('hidden-step');
+  renderQ1(); renderQ3(); renderQ4(); renderQ5(); updateProgress();
+}
+function goStage(n) {
+  document.getElementById('stage'+stage).classList.add('hidden-step');
+  stage = n;
+  document.getElementById('stage'+n).classList.remove('hidden-step');
+  if (n === 7) document.getElementById('results').classList.remove('hidden-step');
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function pop(el, text, ok) {
+  el.innerHTML = `<div class="feedback-pop ${ok?'bg-green-100 text-green-800':'bg-red-100 text-red-800'} p-3 rounded-lg">${text}</div>`;
+  if (ok) confetti();
+}
+function confetti() {
+  for (let i=0; i<30; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.background = ['#f59e0b','#10b981','#3b82f6','#ef4444'][i%4];
+    c.style.animationDelay = (Math.random()*0.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 3000);
+  }
+}
+
+// Q1: 資源分類
+const q1items = [
+  {name:'☀️ 陽光', r:true}, {name:'🪨 銅礦', r:false},
+  {name:'💧 雨水', r:true}, {name:'🛢️ 石油', r:false},
+  {name:'🌬️ 風', r:true}, {name:'📱 鋰電池金屬', r:false}
+];
+let q1done = 0;
+function renderQ1() {
+  const a = document.getElementById('q1area');
+  a.innerHTML = q1items.map((it,i)=>`
+    <div class="flex items-center gap-3 bg-orange-50 p-3 rounded-lg">
+      <span class="font-bold w-32">${it.name}</span>
+      <button class="option-btn border-2 border-gray-300 px-4 py-1 rounded-lg" onclick="ansQ1(${i},true,this)">可再生</button>
+      <button class="option-btn border-2 border-gray-300 px-4 py-1 rounded-lg" onclick="ansQ1(${i},false,this)">不可再生</button>
+    </div>`).join('');
+}
+function ansQ1(i, pick, btn) {
+  const correct = q1items[i].r === pick;
+  if (correct) {
+    btn.classList.add('correct'); score += 2; q1done++;
+    if (q1done >= q1items.length) {
+      pop(document.getElementById('q1feedback'), `✅ 太棒了！全部答對！你現在知道『不可再生』資源用完就沒了。+12 分`, true);
+      document.getElementById('q1next').classList.remove('hidden');
+    }
+  } else {
+    btn.classList.add('wrong');
+    pop(document.getElementById('q1feedback'),
+      `💡 再想想：像石油、金屬這類需要億萬年才形成的是『不可再生』；陽光、風、雨會自然循環，屬『可再生』。再試一次！`, false);
+    setTimeout(()=>btn.classList.remove('wrong'), 1200);
+  }
+  updateProgress();
+}
+
+// Q2: 計算
+function checkQ2() {
+  const v = parseInt(document.getElementById('q2input').value, 10);
+  const correct = 28 * 365; // 10220
+  const tol = 200;
+  const fb = document.getElementById('q2feedback');
+  if (Math.abs(v - correct) <= tol) {
+    score += 10; pop(fb, `✅ 正確！每天省 28 公升 × 365 天 ≈ ${correct.toLocaleString()} 公升！相當於 ${Math.round(correct/20)} 個 20L 大水桶！+10 分`, true);
+    document.getElementById('q2next').classList.remove('hidden');
+  } else {
+    pop(fb, `💡 提示：280 × 10% = 每天省 28 公升。再乘以 365 天。你算出來是 ${v||'?'}，離答案還差一點喔！`, false);
+  }
+  updateProgress();
+}
+
+// Q3: 連連看
+const q3pairs = [
+  {mineral:'銅 Cu', use:'電線、充電線'},
+  {mineral:'鋰 Li', use:'電池（手機/電動車）'},
+  {mineral:'金 Au', use:'主機板導電接點'},
+  {mineral:'鈷 Co', use:'電池正極材料'}
+];
+let q3sel = null, q3done = 0;
+function renderQ3() {
+  const uses = [...q3pairs].sort(()=>Math.random()-0.5);
+  const a = document.getElementById('q3area');
+  a.innerHTML = `
+    <div class="space-y-2">${q3pairs.map((p,i)=>`<button id="m${i}" class="option-btn block w-full border-2 border-orange-300 p-2 rounded-lg" onclick="q3pickM(${i})">${p.mineral}</button>`).join('')}</div>
+    <div class="space-y-2">${uses.map((p,i)=>`<button id="u${i}" class="option-btn block w-full border-2 border-blue-300 p-2 rounded-lg" onclick="q3pickU('${p.use.replace(/'/g,'')}','${p.mineral}',${i})">${p.use}</button>`).join('')}</div>`;
+}
+function q3pickM(i) {
+  document.querySelectorAll('[id^=m]').forEach(b=>b.classList.remove('ring-4','ring-amber-400'));
+  document.getElementById('m'+i).classList.add('ring-4','ring-amber-400');
+  q3sel = i;
+}
+function q3pickU(use, mineral, ui) {
+  if (q3sel === null) return;
+  const pair = q3pairs[q3sel];
+  const uBtn = document.getElementById('u'+ui);
+  const mBtn = document.getElementById('m'+q3sel);
+  if (pair.use === use) {
+    uBtn.classList.add('correct'); mBtn.classList.add('correct');
+    uBtn.disabled = mBtn.disabled = true;
+    score += 3; q3done++;
+    if (q3done >= 4) {
+      pop(document.getElementById('q3feedback'), `✅ 全配對成功！你知道了手機裡的祕密——至少 60 種金屬，都是來自遙遠的礦山！+12 分`, true);
+      document.getElementById('q3next').classList.remove('hidden');
+    }
+  } else {
+    uBtn.classList.add('wrong');
+    pop(document.getElementById('q3feedback'), `💡 這組不太對。提示：鋰主要用在電池喔！再試試。`, false);
+    setTimeout(()=>uBtn.classList.remove('wrong'), 1200);
+  }
+  q3sel = null;
+  updateProgress();
+}
+
+// Q4: 負外部性
+const q4items = [
+  {text:'工廠排廢水到河裡，下游漁民抓不到魚', y:true},
+  {text:'我家種花，鄰居也能看到漂亮花朵', y:false},
+  {text:'手機亂丟，重金屬滲進土壤汙染地下水', y:true},
+  {text:'我買環保袋自用，減少一次性塑膠使用', y:false},
+  {text:'車子排廢氣讓整條街的人空氣變差', y:true}
+];
+function renderQ4() {
+  const a = document.getElementById('q4area');
+  a.innerHTML = q4items.map((it,i)=>`
+    <div class="bg-orange-50 p-3 rounded-lg flex flex-wrap items-center gap-2">
+      <span class="flex-1 min-w-0">${it.text}</span>
+      <button class="option-btn border-2 border-gray-300 px-3 py-1 rounded" onclick="ansQ4(${i},true,this)">是負外部性</button>
+      <button class="option-btn border-2 border-gray-300 px-3 py-1 rounded" onclick="ansQ4(${i},false,this)">不是</button>
+    </div>`).join('');
+}
+let q4done = 0;
+function ansQ4(i, pick, btn) {
+  const ok = q4items[i].y === pick;
+  if (ok) {
+    btn.classList.add('correct'); score += 3; q4done++;
+    btn.parentElement.querySelectorAll('button').forEach(b=>b.disabled=true);
+    if (q4done >= q4items.length) {
+      pop(document.getElementById('q4feedback'), `✅ 判得精準！負外部性＝我做事、別人承擔後果。全球每年 6,200 萬公噸電子垃圾只有 22% 正確回收，是真實案例。+15 分`, true);
+      document.getElementById('q4next').classList.remove('hidden');
+    }
+  } else {
+    btn.classList.add('wrong');
+    pop(document.getElementById('q4feedback'), `💡 再想想：關鍵是『我行動、別人受害（或受惠但我不分）』。汙染、空氣是典型負外部性。`, false);
+    setTimeout(()=>btn.classList.remove('wrong'), 1200);
+  }
+  updateProgress();
+}
+
+// Q5: 倒數排序
+const q5facts = [
+  {text:'地球超載日：7月24日（約7個月用完全年預算）', order:1},
+  {text:'銅礦預估剩餘約 40 年', order:2},
+  {text:'鋰礦預估剩餘約 70 年', order:3},
+  {text:'太陽能（可再生，用不完）', order:4}
+];
+let q5state = [];
+function renderQ5() {
+  q5state = [...q5facts].sort(()=>Math.random()-0.5);
+  const a = document.getElementById('q5area');
+  a.innerHTML = q5state.map((f,i)=>`
+    <div class="flex items-center gap-2 bg-orange-50 p-2 rounded">
+      <button onclick="q5move(${i},-1)" class="bg-gray-200 px-2 rounded">⬆️</button>
+      <button onclick="q5move(${i},1)" class="bg-gray-200 px-2 rounded">⬇️</button>
+      <span class="flex-1">${f.text}</span>
+    </div>`).join('');
+}
+function q5move(i, d) {
+  const j = i + d;
+  if (j < 0 || j >= q5state.length) return;
+  [q5state[i], q5state[j]] = [q5state[j], q5state[i]];
+  const a = document.getElementById('q5area');
+  a.innerHTML = q5state.map((f,i)=>`
+    <div class="flex items-center gap-2 bg-orange-50 p-2 rounded">
+      <button onclick="q5move(${i},-1)" class="bg-gray-200 px-2 rounded">⬆️</button>
+      <button onclick="q5move(${i},1)" class="bg-gray-200 px-2 rounded">⬇️</button>
+      <span class="flex-1">${f.text}</span>
+    </div>`).join('');
+}
+function checkQ5() {
+  const ok = q5state.every((f,i)=>f.order === i+1);
+  const fb = document.getElementById('q5feedback');
+  if (ok) {
+    score += 8; pop(fb, `✅ 完全正確！你現在了解：從最急迫（超載日）到最安全（太陽能），資源緊迫程度差距驚人。+8 分`, true);
+    document.getElementById('q5next').classList.remove('hidden');
+  } else {
+    pop(fb, `💡 再想想：最緊迫的是 2025 就發生的超載日，然後銅（40年）、鋰（70年）、太陽能永遠有。重新排序試試！`, false);
+  }
+  updateProgress();
+}
+
+// WSA
+function checkWSA() {
+  const checked = document.querySelectorAll('.wsa:checked').length;
+  const fb = document.getElementById('wsaFeedback');
+  if (checked === 4) {
+    score += 3;
+    fb.innerHTML = `<div class="feedback-pop bg-amber-100 border-2 border-amber-500 p-4 rounded-lg"><strong>🏅 全校資源英雄徽章解鎖！</strong><br>你承諾從課程、校園、社區、學生治理四個面向一起行動，這就是 Whole School Approach 的核心精神。</div>`;
+    document.getElementById('finalScore').textContent = score;
+    setTimeout(()=>goStage(7), 1200);
+    confetti();
+  } else {
+    fb.innerHTML = `<div class="bg-yellow-100 p-3 rounded">💡 要解鎖徽章，請勾選 <strong>全部 4 項</strong>（目前 ${checked}/4）。全校行動需要四個面向都到位喔！</div>`;
+  }
+}
+updateProgress();
+</script>
+</body>
+</html>

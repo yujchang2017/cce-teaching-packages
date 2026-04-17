@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>水循環守望者 | 國中水循環互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#bae6fd,#e0f2fe,#fef3c7); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:90px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#bae6fd; border-color:#0284c7;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#0284c7; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea.cer { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem;}
+  input.cer { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem;}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  svg.loop text { font-size:11px; pointer-events:none;}
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-sky-700">💧 水循環守望者</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『流域水文調查員』：8 個任務，走完成為 Level 4 國中水循環公民。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">守望者積分</div>
+    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">循環</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">集水區</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">資料詮釋</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">倫理</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs">情緒</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs">專題</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs">後設</span>
+</div>
+
+<!-- ===== Level 1: 水循環七動詞拖曳配對 ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🌧️</div>
+    <div>
+      <h2 class="text-xl font-bold text-sky-700">任務 1｜水循環七動詞</h2>
+      <p class="text-sm text-slate-700 mt-1">拖曳下方『動詞』到正確的『定義』區。水循環由七個關鍵步驟串成。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：水文素描員 ｜ 10 分</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="evap">💨 蒸發 Evaporation</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="trans">🌿 蒸騰 Transpiration</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="subl">❄️ 昇華 Sublimation</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="runoff">🏞️ 逕流 Run-off</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="infil">🌱 入滲 Infiltration</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="cond">☁️ 凝結 Condensation</div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <div class="drop-zone p-3" data-accept="evap"><div class="font-bold text-slate-700 text-sm">🌊 水從海面/湖面直接變成水氣</div></div>
+    <div class="drop-zone p-3" data-accept="trans"><div class="font-bold text-slate-700 text-sm">🍃 植物從根吸水，由葉背釋放水氣</div></div>
+    <div class="drop-zone p-3" data-accept="subl"><div class="font-bold text-slate-700 text-sm">🧊 冰雪直接變水氣（不經液態）</div></div>
+    <div class="drop-zone p-3" data-accept="runoff"><div class="font-bold text-slate-700 text-sm">💦 雨水在地表流入河川</div></div>
+    <div class="drop-zone p-3" data-accept="infil"><div class="font-bold text-slate-700 text-sm">🪨 雨水滲入土壤，補注地下水</div></div>
+    <div class="drop-zone p-3" data-accept="cond"><div class="font-bold text-slate-700 text-sm">☁️ 水氣遇冷凝結成水滴，形成雲</div></div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <button id="btn-next-1" class="btn mt-4 bg-sky-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 2: 集水區（開放反思 + 選擇題） ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🗺️</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-700">任務 2｜集水區調查員</h2>
+      <p class="text-sm text-slate-700 mt-1">集水區是『雨水最後流到同一出口』的地理範圍，以『分水嶺』為邊界。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：集水區素描員 ｜ 10 分 ｜ <span class="chip bg-violet-100 text-violet-800">開放式反思</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 420 200" class="w-full max-w-xl mx-auto block bg-emerald-50 rounded">
+    <!-- ridgeline -->
+    <path d="M10,140 Q100,40 210,80 Q320,40 410,140" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="4,3"/>
+    <text x="180" y="35" font-size="11" fill="#dc2626">分水嶺（Ridge/Divide）</text>
+    <!-- main river -->
+    <path d="M210,80 Q215,140 250,190" fill="none" stroke="#0284c7" stroke-width="3"/>
+    <!-- tributaries -->
+    <path d="M100,120 Q150,130 210,110" fill="none" stroke="#38bdf8" stroke-width="2"/>
+    <path d="M320,120 Q270,130 225,120" fill="none" stroke="#38bdf8" stroke-width="2"/>
+    <text x="230" y="185" font-size="11" fill="#0284c7">出口（Outlet）</text>
+    <text x="80" y="160" font-size="10" fill="#0f172a">A 村（高處）</text>
+    <text x="320" y="160" font-size="10" fill="#0f172a">B 農田</text>
+    <text x="150" y="195" font-size="10" fill="#0f172a">C 下游城鎮</text>
+  </svg>
+
+  <div class="mt-3 space-y-3">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q2-1｜若 A 村把山坡開發為農地，最可能的後果是？（4 分）</label>
+      <div id="q21">
+        <label class="block text-sm"><input type="radio" name="q21" value="A"> A. C 下游洪水風險上升、枯水期更缺水</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="B"> B. C 下游完全不受影響，因為距離遠</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="C"> C. 只有 A 村自己承擔後果</label>
+      </div>
+      <p class="text-xs mt-1 text-slate-500 q21-fb"></p>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q2-2｜<strong>開放反思</strong>：想像你家住在 C 下游，若沒有跨村治理機制，你會如何說服 A 村保留森林？（60 字以上，6 分）</label>
+      <textarea class="cer" id="q22" rows="3" placeholder="可以從利益、情感、公平、共同未來等角度說明…"></textarea>
+    </div>
+  </div>
+  <button id="btn-next-2" class="btn mt-4 bg-sky-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+</section>
+
+<!-- ===== Level 3: 資料詮釋（臺灣雨量變異） ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📈</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 3｜資料詮釋：臺灣雨量『豐枯差擴大』</h2>
+      <p class="text-sm text-slate-700 mt-1">下方是臺灣年雨量模擬示意（基於 TCCIP 觀測趨勢簡化）：總量趨勢不明顯，但『年際變異』顯著增加。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：水文資料科學家 ｜ 10 分 ｜ <span class="chip bg-amber-100 text-amber-800">資料詮釋題</span></p>
+    </div>
+  </div>
+  <svg viewBox="0 0 420 200" class="w-full max-w-xl mx-auto block bg-slate-50 rounded">
+    <line x1="40" y1="170" x2="410" y2="170" stroke="#334155" stroke-width="1"/>
+    <line x1="40" y1="20" x2="40" y2="170" stroke="#334155" stroke-width="1"/>
+    <text x="5" y="25" font-size="10">mm</text>
+    <text x="5" y="175" font-size="10">0</text>
+    <text x="40" y="190" font-size="10">1960</text>
+    <text x="150" y="190" font-size="10">1985</text>
+    <text x="260" y="190" font-size="10">2010</text>
+    <text x="370" y="190" font-size="10">2024</text>
+    <!-- earlier: low variance around mean -->
+    <polyline fill="none" stroke="#0ea5e9" stroke-width="2"
+      points="40,110 55,105 70,115 85,108 100,112 115,100 130,118 145,106 160,122 175,108 190,95 205,130 220,85 235,138 250,80 265,148 280,78 295,150 310,70 325,160 340,65 355,165 370,60 385,158 400,62"/>
+    <line x1="40" y1="110" x2="180" y2="108" stroke="#dc2626" stroke-width="1" stroke-dasharray="3,2"/>
+    <text x="50" y="102" font-size="10" fill="#dc2626">早期：變異小</text>
+    <text x="280" y="50" font-size="10" fill="#dc2626">晚期：極豐極枯交替</text>
+  </svg>
+
+  <div class="mt-4 space-y-3">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q3-1｜下列哪項陳述最符合圖中趨勢？（4 分）</label>
+      <div class="space-y-1" id="q31">
+        <label class="block text-sm"><input type="radio" name="q31" value="A"> A. 臺灣年雨量持續下降，會愈來愈乾</label>
+        <label class="block text-sm"><input type="radio" name="q31" value="B"> B. 平均變化不大，但年際起伏明顯加大，豐枯差擴大</label>
+        <label class="block text-sm"><input type="radio" name="q31" value="C"> C. 臺灣雨量只和颱風次數有關，和氣候變遷無關</label>
+      </div>
+      <p class="text-xs mt-1 text-slate-500 q31-fb"></p>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q3-2｜『總降雨變多，為什麼還會缺水？』請<strong>推論 2 個可能原因</strong>（各 40 字以上）：（6 分）</label>
+      <textarea class="cer" id="q32" rows="3" placeholder="原因 1（可考慮：逕流、蒸發散、入滲、季節分布）…&#10;原因 2…"></textarea>
+    </div>
+  </div>
+  <button id="btn-next-3" class="btn mt-4 bg-sky-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+</section>
+
+<!-- ===== Level 4: 系統思考 — 水氣正反饋循環 ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-700">任務 4｜系統思考：水氣正反饋循環</h2>
+      <p class="text-sm text-slate-700 mt-1">完成『升溫 → 蒸發增 → 水氣是溫室氣體 → 再升溫』的正反饋：把 4 張卡片拖到正確位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統分析師 ｜ 10 分 ｜ <span class="chip bg-rose-100 text-rose-800">系統思考題</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 500 260" class="loop w-full bg-slate-50 rounded">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L0,10 L10,5 z" fill="#64748b"/></marker>
+    </defs>
+    <rect x="10" y="10" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="1"/>
+    <text x="85" y="40" text-anchor="middle" fill="#92400e" id="slot-1-text">（拖這裡 1）</text>
+
+    <rect x="340" y="10" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="2"/>
+    <text x="415" y="40" text-anchor="middle" fill="#92400e" id="slot-2-text">（拖這裡 2）</text>
+
+    <rect x="340" y="200" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="3"/>
+    <text x="415" y="230" text-anchor="middle" fill="#92400e" id="slot-3-text">（拖這裡 3）</text>
+
+    <rect x="10" y="200" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="4"/>
+    <text x="85" y="230" text-anchor="middle" fill="#92400e" id="slot-4-text">（拖這裡 4）</text>
+
+    <line x1="160" y1="35" x2="340" y2="35" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="415" y1="60" x2="415" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="340" y1="225" x2="160" y2="225" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="85" y1="200" x2="85" y2="60" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="250" y="130" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="bold">正反饋（+）</text>
+  </svg>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3" id="loop-items">
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">① 全球氣溫升高</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">② 海洋蒸發增強</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">③ 大氣水氣濃度↑</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">④ 溫室效應加強</div>
+  </div>
+  <p id="loop-fb" class="mt-3 text-sm"></p>
+  <button id="btn-next-4" class="btn mt-4 bg-sky-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 5: 倫理兩難（溫鹽環流國際責任） ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">⚖️</div>
+    <div>
+      <h2 class="text-xl font-bold text-pink-700">任務 5｜倫理兩難：溫鹽環流與氣候正義</h2>
+      <p class="text-sm text-slate-700 mt-1">情境：IPCC 警告 AMOC 本世紀『極可能』減弱，若崩潰將主要衝擊西歐與熱帶降雨帶；太平洋島國因海平面上升而滅頂；臺灣是中高碳排、中度脆弱國家。若有國際會議要各國分擔減碳成本，你認為臺灣應該如何主張？</p>
+      <p class="text-xs text-slate-500 mt-1">角色：青年氣候外交官 ｜ 10 分 ｜ <span class="chip bg-pink-100 text-pink-800">倫理兩難題</span> <span class="chip bg-violet-100 text-violet-800">開放式反思</span></p>
+    </div>
+  </div>
+  <div class="mb-3">
+    <label class="block text-sm font-semibold mb-1">你的立場與理由（50 字以上；沒有標準答案，但需有論點）：</label>
+    <textarea class="cer" id="q5" rows="5" placeholder="例如：我認為臺灣應…（立場）。因為…（引用資料或原則，如 CBDR 共同但差異責任、歷史排放、能力原則）。所以…（推論結論）。"></textarea>
+    <p class="text-xs mt-1 text-slate-500">提示關鍵詞：CBDR、氣候正義、歷史累積排放、氣候融資、調適 vs 減緩、脆弱群體</p>
+    <p id="q5-fb" class="text-xs mt-1"></p>
+  </div>
+  <button id="btn-next-5" class="btn mt-4 bg-sky-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 6: 情緒韌性書寫（S2） ===== -->
+<section id="level-6" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">💙</div>
+    <div>
+      <h2 class="text-xl font-bold text-indigo-700">任務 6｜情緒韌性：從小林村到我的感受</h2>
+      <p class="text-sm text-slate-700 mt-1">情境：2009 莫拉克颱風 3 日降下超過 2,900 mm 雨量，高雄小林村遭深層崩塌掩埋，全台死亡失蹤約 700 人。請在安全的學習空間寫下你的情緒。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：社區情緒支持者 ｜ 10 分 ｜ <span class="chip bg-indigo-100 text-indigo-800">情緒韌性／SEL</span></p>
+    </div>
+  </div>
+
+  <div class="bg-indigo-50 p-3 rounded text-xs mb-3">
+    <strong>提醒</strong>：情緒沒有對錯。氣候焦慮（climate anxiety）是全球 45% 青少年共同經驗，研究證實『承認情緒 → 轉為行動 → 建立社群』是有效調適路徑（Hickman et al. 2021, Lancet Planetary Health）。
+  </div>
+
+  <div class="space-y-2">
+    <label class="block text-sm font-semibold">Q6-1｜讀完 2009 莫拉克案例，你心中最強的感受是什麼？（可多選）</label>
+    <div class="flex flex-wrap gap-2 text-sm" id="q6-emos">
+      <label><input type="checkbox" class="emo" value="悲傷"> 悲傷</label>
+      <label><input type="checkbox" class="emo" value="憤怒"> 憤怒</label>
+      <label><input type="checkbox" class="emo" value="無力"> 無力</label>
+      <label><input type="checkbox" class="emo" value="恐懼"> 恐懼</label>
+      <label><input type="checkbox" class="emo" value="決心"> 決心行動</label>
+      <label><input type="checkbox" class="emo" value="希望"> 希望</label>
+      <label><input type="checkbox" class="emo" value="麻木"> 麻木（也很正常）</label>
+    </div>
+    <label class="block text-sm font-semibold mt-2">Q6-2｜寫一句『我現在感覺…，我想要…』（50 字以上，不評分不公開，只為自己）：</label>
+    <textarea class="cer" id="q6-text" rows="4" placeholder="例如：我現在感覺既難過又想做點什麼，我想要…"></textarea>
+    <p id="q6-fb" class="text-xs mt-1"></p>
+  </div>
+  <button id="btn-next-6" class="btn mt-4 bg-sky-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 7: 專題任務（社區水循環韌性提案） + CER + WSA ===== -->
+<section id="level-7" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏘️</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 7｜專題：社區水循環韌性提案書</h2>
+      <p class="text-sm text-slate-700 mt-1">為你的學校或社區設計一份水韌性提案。請完成結構模板（含 CER 論證）+ 下方 WSA 四面向檢核。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：校園水資源委員會提案人 ｜ 15 分 ｜ <span class="chip bg-amber-100 text-amber-800">專題式學習</span> <span class="chip bg-emerald-100 text-emerald-800">CER 論證</span></p>
+    </div>
+  </div>
+
+  <div class="bg-slate-50 p-3 rounded text-xs mb-3">
+    <strong>CER 範例（節水）</strong>：
+    <br><strong>C</strong>：學校應加裝感應式水龍頭並啟動雨水回收。
+    <br><strong>E</strong>：依水利署資料，校園用水約 40% 為洗手台，且莫拉克後極端雨量事件增加（TCCIP），有高潛力回收。
+    <br><strong>R</strong>：感應龍頭可減 25-30% 耗水、雨水回收可補注澆灌，同時降低豪雨地表逕流，兼顧節水與防洪。
+  </div>
+
+  <div class="space-y-2 mb-4">
+    <label class="block text-sm font-semibold">① 提案標題（動詞+對象）</label>
+    <input id="p-title" class="cer" placeholder="例：校園雨水回收＋感應龍頭升級方案">
+    <label class="block text-sm font-semibold">② 現況問題（含在地脆弱族群考量，50 字以上）</label>
+    <textarea class="cer" id="p-problem" rows="2" placeholder="描述學校/社區目前的用水/排水/淹水問題，以及誰最脆弱（身障、高齡、低樓層等）"></textarea>
+    <label class="block text-sm font-semibold">③ Claim + Evidence + Reasoning（100 字以上，E 需含數字）</label>
+    <textarea class="cer" id="p-cer" rows="4" placeholder="C（主張）…&#10;E（證據，含數字，可引 data_card）…&#10;R（理由）…"></textarea>
+    <label class="block text-sm font-semibold">④ 具體行動步驟（至少 3 步）</label>
+    <textarea class="cer" id="p-steps" rows="3" placeholder="1. …&#10;2. …&#10;3. …"></textarea>
+    <label class="block text-sm font-semibold">⑤ 可量化 KPI（成效指標）</label>
+    <input id="p-kpi" class="cer" placeholder="例：半年內校園用水減 15%、雨水回收補注 X 噸">
+  </div>
+
+  <div class="bg-sky-50 p-3 rounded mb-3">
+    <p class="font-bold text-sky-800 text-sm">🎯 WSA Challenge 四面向檢核（全勾才能解鎖下一關）</p>
+    <label class="block mt-1 text-sm"><input type="checkbox" class="wsa"> <strong>治理</strong>：提案送學生議會／班聯會／校務會議，含決策路徑</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>課程</strong>：提案可跨科連結（自然／社會／地理／國文／綜合）</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>校園營運</strong>：提案改變校園硬體／管線／採購／每月公告</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>社群</strong>：提案擴散到家庭或社區（里辦／家長會／NGO）</label>
+  </div>
+  <p id="p-fb" class="text-xs"></p>
+  <button id="btn-next-7" class="btn mt-4 bg-sky-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+</section>
+
+<!-- ===== Level 8: 後設認知 ===== -->
+<section id="level-8" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🧠</div>
+    <div>
+      <h2 class="text-xl font-bold text-fuchsia-700">任務 8｜後設認知反思</h2>
+      <p class="text-sm text-slate-700 mt-1">最後一站。想一想：你怎麼想？</p>
+      <p class="text-xs text-slate-500 mt-1">角色：自我觀察員 ｜ 5 分 ｜ <span class="chip bg-fuchsia-100 text-fuchsia-800">後設認知題</span> <span class="chip bg-violet-100 text-violet-800">開放式反思</span></p>
+    </div>
+  </div>
+
+  <div class="space-y-2">
+    <label class="block text-sm font-semibold">Q8-1｜上這堂課之前，你對『水循環』與『缺水』的想法是什麼？（50 字以上）</label>
+    <textarea class="cer" id="m-before" rows="3"></textarea>
+    <label class="block text-sm font-semibold">Q8-2｜現在你的想法是什麼？有沒有改變？為什麼？（50 字以上）</label>
+    <textarea class="cer" id="m-after" rows="3"></textarea>
+    <label class="block text-sm font-semibold">Q8-3｜哪個資料、任務或討論對你影響最大？為什麼？</label>
+    <input id="m-key" class="cer" placeholder="例：小林村情境讓我第一次把『2,900 mm』和活生生的社區連起來">
+  </div>
+  <p id="m-fb" class="mt-2 text-xs"></p>
+  <button id="btn-finish" class="btn mt-4 bg-emerald-600 text-white px-8 py-2 rounded-lg font-bold" disabled>完成任務 🎉</button>
+</section>
+
+<!-- ===== Final Summary ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in text-center">
+  <h2 class="text-3xl font-bold text-sky-700 mb-2">🏆 你完成了！</h2>
+  <p class="text-slate-700 mb-4">你已完成 8 個任務：水循環、集水區、資料詮釋、系統思考、倫理兩難、情緒韌性、社區提案、後設反思。</p>
+  <div class="grid grid-cols-4 gap-2 max-w-2xl mx-auto my-4">
+    <div class="p-2"><div class="text-3xl">🌧️</div><div class="text-xs mt-1">水循環師</div></div>
+    <div class="p-2"><div class="text-3xl">🗺️</div><div class="text-xs mt-1">集水區調查員</div></div>
+    <div class="p-2"><div class="text-3xl">📈</div><div class="text-xs mt-1">資料詮釋家</div></div>
+    <div class="p-2"><div class="text-3xl">🔄</div><div class="text-xs mt-1">系統思考者</div></div>
+    <div class="p-2"><div class="text-3xl">⚖️</div><div class="text-xs mt-1">倫理思辨家</div></div>
+    <div class="p-2"><div class="text-3xl">💙</div><div class="text-xs mt-1">情緒支持者</div></div>
+    <div class="p-2"><div class="text-3xl">🏘️</div><div class="text-xs mt-1">社區提案人</div></div>
+    <div class="p-2"><div class="text-3xl">🧠</div><div class="text-xs mt-1">後設學習者</div></div>
+  </div>
+  <div class="bg-amber-50 rounded-xl p-4 max-w-2xl mx-auto text-left">
+    <p class="font-bold text-amber-800 mb-2">🎯 三個沒有標準答案的問題（帶回家繼續想）</p>
+    <ol class="list-decimal list-inside text-sm space-y-1 text-slate-700">
+      <li>『海洋鹼化（Ocean Alkalinity Enhancement）』能封存碳但改變海洋化學，你支持研究嗎？</li>
+      <li>半導體用水 vs 農業用水，限水時該怎麼分最合理？請想出超越『平均分』的方案。</li>
+      <li>你這個年紀最該優先：自己節水、在學校推水政策、還是參與公共倡議？為什麼？</li>
+    </ol>
+  </div>
+  <div class="mt-6 text-lg font-bold text-emerald-600">最終守望者積分：<span id="final-score">0</span> / 80</div>
+  <button onclick="location.reload()" class="btn mt-4 bg-sky-600 text-white px-6 py-2 rounded-lg font-bold">再玩一次</button>
+</section>
+
+</div>
+
+<script>
+(() => {
+  const S = { score:0, current:1 };
+  const setScore = (n)=>{ S.score += n; document.getElementById('score').textContent = S.score; };
+  const goto = (n)=>{
+    document.getElementById('level-'+S.current).classList.add('hidden-screen');
+    S.current = n;
+    const next = document.getElementById('level-'+n) || document.getElementById('level-final');
+    next.classList.remove('hidden-screen');
+    for(let i=1;i<=8;i++){
+      const d = document.getElementById('dot-'+i);
+      if(!d) continue;
+      d.classList.remove('active','done');
+      if(i < n) d.classList.add('done');
+      else if(i === n) d.classList.add('active');
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  const confetti = ()=>{
+    const colors=['#0ea5e9','#10b981','#6366f1','#ec4899','#f59e0b'];
+    for(let i=0;i<40;i++){
+      const el=document.createElement('div');
+      el.className='confetti';
+      el.style.left=Math.random()*100+'vw';
+      el.style.background=colors[i%colors.length];
+      el.style.animationDelay=(Math.random()*0.6)+'s';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),2500);
+    }
+  };
+
+  // ===== Level 1: Drag match =====
+  const setupDrag = (container, zones, onComplete) => {
+    let dragged = null;
+    container.querySelectorAll('.drag-item').forEach(it=>{
+      it.addEventListener('dragstart', e=>{ dragged=it; it.classList.add('dragging'); });
+      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null;});
+    });
+    zones.forEach(z=>{
+      z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over');});
+      z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+      z.addEventListener('drop', e=>{
+        e.preventDefault(); z.classList.remove('over');
+        if(!dragged) return;
+        const want = z.dataset.accept || z.dataset.slot;
+        const got = dragged.dataset.match || dragged.dataset.loop;
+        if(String(want)===String(got)){
+          dragged.classList.add('pop');
+          z.appendChild(dragged);
+          dragged.setAttribute('draggable','false');
+          dragged.style.cursor='default';
+          onComplete && onComplete(true);
+        } else {
+          z.classList.add('shake');
+          setTimeout(()=>z.classList.remove('shake'),400);
+          onComplete && onComplete(false);
+        }
+      });
+    });
+  };
+  const box1 = document.getElementById('level-1');
+  const zones1 = box1.querySelectorAll('.drop-zone');
+  let done1 = 0, err1 = 0;
+  setupDrag(box1, zones1, ok=>{
+    if(ok){ done1++; if(done1===6){ setScore(10-Math.min(err1,5)); document.getElementById('btn-next-1').disabled=false; document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 水循環七動詞配對完成！（還有「降水」不需拖曳，為自然落下）</span>'; confetti(); } }
+    else { err1++; document.getElementById('feedback-1').innerHTML='<span class="text-rose-600">❌ 提示：蒸發從水體、蒸騰從植物、昇華從冰雪，逕流在地表流、入滲滲入土壤、凝結是水氣變水滴。再試試。</span>'; }
+  });
+  document.getElementById('btn-next-1').onclick = ()=>goto(2);
+
+  // ===== Level 2: watershed Q + reflection =====
+  const btn2 = document.getElementById('btn-next-2');
+  const checkL2 = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked');
+    const q22 = document.getElementById('q22').value.trim();
+    btn2.disabled = !(q21 && q22.length>=60);
+  };
+  document.querySelectorAll('input[name=q21]').forEach(r=>r.onchange=checkL2);
+  document.getElementById('q22').oninput = checkL2;
+  btn2.onclick = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked').value;
+    const fb = document.querySelector('.q21-fb');
+    let p=0;
+    if(q21==='A'){ fb.textContent='✅ 正解 A：上游的土地利用會改變逕流與入滲，下游洪旱都會受影響——這就是集水區治理要跨界合作的原因。'; fb.className='text-xs mt-1 text-emerald-700 q21-fb'; p+=4;}
+    else { fb.textContent='❌ 正解為 A。上游森林能保水、減緩逕流，砍除後豪雨直衝下游，枯水期也沒有入滲可補。'; fb.className='text-xs mt-1 text-rose-600 q21-fb';}
+    if(document.getElementById('q22').value.length>=60) p+=6;
+    setScore(p); confetti(); goto(3);
+  };
+
+  // ===== Level 3: Data interpretation =====
+  const btn3 = document.getElementById('btn-next-3');
+  const checkL3 = ()=>{
+    const q31 = document.querySelector('input[name=q31]:checked');
+    const q32 = document.getElementById('q32').value.trim();
+    btn3.disabled = !(q31 && q32.length>=80);
+  };
+  document.querySelectorAll('input[name=q31]').forEach(r=>r.onchange=checkL3);
+  document.getElementById('q32').oninput = checkL3;
+  btn3.onclick = ()=>{
+    const q31 = document.querySelector('input[name=q31]:checked').value;
+    const fb = document.querySelector('.q31-fb');
+    let p = 0;
+    if(q31==='B'){ fb.textContent='✅ 正解 B：臺灣雨量長期總量趨勢不明顯，但年際變異增加、豐枯差擴大，符合『水循環強化』的理論預期。'; fb.className='text-xs mt-1 text-emerald-700 q31-fb'; p+=4;}
+    else { fb.textContent='❌ 正解為 B。總量長期變化不大，但『變異』顯著增加。極端降雨更頻繁、連續無降雨日數也更長。'; fb.className='text-xs mt-1 text-rose-600 q31-fb';}
+    if(document.getElementById('q32').value.length>=80) p+=6;
+    setScore(p);
+    confetti();
+    goto(4);
+  };
+
+  // ===== Level 4: Feedback loop drag =====
+  const slots = document.querySelectorAll('.loop-slot');
+  const loopItems = document.querySelectorAll('#loop-items .drag-item');
+  let loopCorrect = 0, loopErr = 0;
+  let dragged2 = null;
+  loopItems.forEach(it=>{
+    it.addEventListener('dragstart', ()=>{dragged2=it; it.classList.add('dragging');});
+    it.addEventListener('dragend', ()=>{if(dragged2) dragged2.classList.remove('dragging'); dragged2=null;});
+  });
+  slots.forEach(s=>{
+    s.addEventListener('dragover', e=>e.preventDefault());
+    s.addEventListener('drop', e=>{
+      e.preventDefault();
+      if(!dragged2) return;
+      const want = s.dataset.slot, got = dragged2.dataset.loop;
+      if(want===got){
+        const t = document.getElementById('slot-'+want+'-text');
+        t.textContent = dragged2.textContent;
+        dragged2.style.visibility='hidden';
+        loopCorrect++;
+        if(loopCorrect===4){
+          setScore(10-Math.min(loopErr,5));
+          document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 完成！升溫 → 蒸發↑ → 水氣↑（強溫室氣體）→ 溫室效應↑ → 再升溫。這是水氣正反饋。</span>';
+          document.getElementById('btn-next-4').disabled=false;
+          confetti();
+        }
+      } else {
+        s.classList.add('shake'); setTimeout(()=>s.classList.remove('shake'),400);
+        loopErr++;
+        document.getElementById('loop-fb').innerHTML='<span class="text-rose-600">❌ 順序錯了。提示：從『氣溫升高』開始，蒸發是下一步嗎？</span>';
+      }
+    });
+  });
+  document.getElementById('btn-next-4').onclick = ()=>goto(5);
+
+  // ===== Level 5: Ethics =====
+  const btn5 = document.getElementById('btn-next-5');
+  document.getElementById('q5').oninput = (e)=>{
+    const len = e.target.value.trim().length;
+    document.getElementById('q5-fb').textContent = `已寫 ${len} 字（需 50 字以上）`;
+    btn5.disabled = len < 50;
+  };
+  btn5.onclick = ()=>{ setScore(10); confetti(); goto(6);};
+
+  // ===== Level 6: Emotional resilience =====
+  const btn6 = document.getElementById('btn-next-6');
+  const checkL6 = ()=>{
+    const emo = document.querySelectorAll('.emo:checked').length >= 1;
+    const text = document.getElementById('q6-text').value.trim().length >= 50;
+    btn6.disabled = !(emo && text);
+    document.getElementById('q6-fb').textContent = emo && text ? '✅ 感謝你願意書寫。承認情緒是調適的第一步。' :
+      `勾選 ≥1 情緒｜文字 ${document.getElementById('q6-text').value.trim().length}/50 字`;
+  };
+  document.querySelectorAll('.emo').forEach(c=>c.onchange=checkL6);
+  document.getElementById('q6-text').oninput=checkL6;
+  btn6.onclick = ()=>{ setScore(10); confetti(); goto(7);};
+
+  // ===== Level 7: Project + WSA =====
+  const btn7 = document.getElementById('btn-next-7');
+  const checkP = ()=>{
+    const cer = document.getElementById('p-cer').value.trim();
+    const hasNum = /\d/.test(cer);
+    const ok =
+      document.getElementById('p-title').value.trim().length>=5 &&
+      document.getElementById('p-problem').value.trim().length>=50 &&
+      cer.length>=100 && hasNum &&
+      document.getElementById('p-steps').value.trim().length>=20 &&
+      document.getElementById('p-kpi').value.trim().length>=5 &&
+      document.querySelectorAll('.wsa:checked').length === 4;
+    document.getElementById('p-fb').innerHTML = ok ?
+      '<span class="text-emerald-700">✅ 提案完整、CER 含數字、WSA 四面向全覆蓋！</span>' :
+      '<span class="text-slate-500">請完成五欄（CER 需含數字、≥100 字）+ WSA 四項全勾選</span>';
+    btn7.disabled = !ok;
+  };
+  ['p-title','p-problem','p-cer','p-steps','p-kpi'].forEach(id=>document.getElementById(id).oninput=checkP);
+  document.querySelectorAll('.wsa').forEach(c=>c.onchange=checkP);
+  btn7.onclick = ()=>{ setScore(15); confetti(); goto(8);};
+
+  // ===== Level 8: Metacognition =====
+  const btnF = document.getElementById('btn-finish');
+  const checkM = ()=>{
+    const ok =
+      document.getElementById('m-before').value.trim().length>=50 &&
+      document.getElementById('m-after').value.trim().length>=50 &&
+      document.getElementById('m-key').value.trim().length>=3;
+    document.getElementById('m-fb').textContent = ok ? '✅ 可以完成任務。' : '請完成三題（前後想法皆 50 字以上）';
+    btnF.disabled = !ok;
+  };
+  ['m-before','m-after','m-key'].forEach(id=>document.getElementById(id).oninput=checkM);
+  btnF.onclick = ()=>{
+    setScore(5);
+    document.getElementById('final-score').textContent = S.score;
+    document.getElementById('level-8').classList.add('hidden-screen');
+    document.getElementById('level-final').classList.remove('hidden-screen');
+    for(let i=1;i<=8;i++){ const d=document.getElementById('dot-'+i); if(d){d.classList.remove('active');d.classList.add('done');}}
+    confetti(); setTimeout(confetti,500); setTimeout(confetti,1000);
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+})();
+</script>
+</body>
+</html>

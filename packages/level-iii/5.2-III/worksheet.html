@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>阿修的寶藏探險 — 5.2-III 循環經濟互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#fef3c7 0%,#dcfce7 50%,#dbeafe 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .feedback-pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; z-index:999; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #f59e0b; box-shadow: 0 0 0 4px rgba(245,158,11,.25); }
+  .drag-item { cursor: grab; user-select: none; }
+  .drag-item.dragging { opacity: .4; }
+  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
+  .badge { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
+  .hidden-step { display: none; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-amber-500 to-emerald-600 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">♻️ 阿修的寶藏探險</h1>
+    <p class="mt-2 text-amber-50">UNESCO 5.2-III ｜ 9-12 歲 ｜ 發現『廢棄物』原來是別人眼中的寶藏！</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 角色與情境故事 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl">🦝</div>
+    <div>
+      <h2 class="text-2xl font-bold text-amber-700">任務簡報：你被選為「循環小偵探」！</h2>
+      <p class="mt-2 leading-relaxed">嗨！我是浣熊阿修，最會翻垃圾找寶物！台灣每年有 <strong class="text-emerald-700">55 萬公噸廚餘</strong>、<strong class="text-emerald-700">7.8 萬公噸舊衣</strong> 被丟棄，但你知道嗎？這些可能全是別人眼中的黃金！通過 6 個關卡，解鎖「全校英雄」徽章，一起把學校變成循環寶藏地圖！</p>
+      <button onclick="startMission()" class="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 🔍</button>
+    </div>
+  </div>
+</section>
+
+<!-- 關卡 1：數字大驚奇 -->
+<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-blue-700">🔢 關卡 1：台灣的回收力量</h2>
+  <p class="mt-2 text-gray-600">根據環境部 2024 年資料，台灣一般廢棄物的<strong>資源回收率</strong>是多少？</p>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">約 20%</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">約 35%</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="1">約 59.9%</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">約 85%</button>
+  </div>
+  <div id="q1-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 2：廢棄物配管道（拖曳） -->
+<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-teal-700">🧩 關卡 2：廢棄物回家 — 把物品拖到對的管道</h2>
+  <p class="mt-2 text-gray-600">不同的廢棄物，有不同的「價值兌換管道」。幫它們找到最適合的家：</p>
+
+  <div class="flex flex-wrap gap-3 mt-4" id="itemPool">
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="recycle">🥤 寶特瓶</div>
+    <div class="drag-item bg-blue-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="flea">👕 還堪穿的舊T恤</div>
+    <div class="drag-item bg-pink-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="food">🍎 吃不完但未過期的水果</div>
+    <div class="drag-item bg-green-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="ewaste">📱 壞掉的舊手機</div>
+    <div class="drag-item bg-orange-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="recycle">📰 舊報紙</div>
+    <div class="drag-item bg-cyan-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="food">🥬 菜葉廚餘</div>
+    <div class="drag-item bg-purple-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="flea">🧸 不玩的絨毛娃娃</div>
+    <div class="drag-item bg-red-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="ewaste">🔋 廢電池</div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-green-400 bg-green-50 rounded-xl p-3" data-hab="recycle">
+      <p class="font-bold text-green-700">♻️ 資源回收站<br><span class="text-xs font-normal">寶特瓶 >95% 回收率</span></p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-blue-400 bg-blue-50 rounded-xl p-3" data-hab="flea">
+      <p class="font-bold text-blue-700">🛍️ 跳蚤市場／二手店<br><span class="text-xs font-normal">舊衣 60% 再利用</span></p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-pink-400 bg-pink-50 rounded-xl p-3" data-hab="food">
+      <p class="font-bold text-pink-700">🍽️ 食物銀行／廚餘桶<br><span class="text-xs font-normal">堆肥、豬飼料、沼氣</span></p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-purple-400 bg-purple-50 rounded-xl p-3" data-hab="ewaste">
+      <p class="font-bold text-purple-700">📱 3C / 電池回收<br><span class="text-xs font-normal">都市礦山：黃金 60 倍</span></p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+  </div>
+  <div id="q2-feedback" class="mt-4"></div>
+  <button id="q2-check" onclick="checkLevel2()" class="mt-3 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full">檢查答案</button>
+</section>
+
+<!-- 關卡 3：誰眼中的寶（角色視角） -->
+<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-amber-700">👥 關卡 3：誰眼中的寶？</h2>
+  <p class="mt-2 text-gray-600">同一件東西，不同的人看到不同價值。選出最可能把它當「寶」的角色：</p>
+  <div id="roleQs" class="space-y-4 mt-4">
+    <div class="q3 border rounded-xl p-3" data-ans="recycler">
+      <p class="font-semibold">📰 一疊舊報紙 — 誰最可能把它當成『可交換現金的原料』？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="recycler">♻️ 資源回收阿伯</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="student">🎒 國小學生</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="gamer">🎮 電競玩家</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="chef">👨‍🍳 廚師</button>
+      </div>
+    </div>
+    <div class="q3 border rounded-xl p-3" data-ans="vintage">
+      <p class="font-semibold">👕 一件 90 年代老 T 恤（有設計感）— 誰最想收藏？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="recycler">♻️ 回收阿伯</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="vintage">🛍️ 古著店老闆</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="farmer">🌾 農夫</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="engineer">🔧 工程師</button>
+      </div>
+    </div>
+    <div class="q3 border rounded-xl p-3" data-ans="bank">
+      <p class="font-semibold">🥫 超市即期罐頭（還能吃）— 誰最需要它？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="bank">🏛️ 食物銀行</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="zoo">🦁 動物園</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="jeweler">💎 珠寶店</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="car">🚗 修車廠</button>
+      </div>
+    </div>
+  </div>
+  <div id="q3-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 4：迷思破解 -->
+<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-rose-700">🧠 關卡 4：迷思大破解</h2>
+  <p class="mt-2 text-gray-600">下面的說法對嗎？錯了沒關係，我會告訴你為什麼。</p>
+  <div id="mythQs" class="space-y-4 mt-4">
+    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="只丟進回收桶還不夠！沒洗、沒拆、分錯類會讓整袋變成垃圾。正確清洗、分類（紙/塑/鐵鋁/玻璃）才真正進入循環。">
+      <p class="font-semibold">Q1：只要把東西丟進回收桶，就算做到回收了。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="廚餘絕對不是垃圾！台灣每年55萬公噸廚餘可變豬飼料、有機堆肥、沼氣發電。分類好就是能源！">
+      <p class="font-semibold">Q2：廚餘就是垃圾，直接丟就好。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+    <div class="q4 border rounded-xl p-3" data-ans="true" data-hint="正確！1噸廢手機可提煉約300公克黃金，比一般金礦石高60倍！這就是『都市礦山』。">
+      <p class="font-semibold">Q3：1 公噸廢手機可以提煉出的黃金，比一般金礦石多 60 倍。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+  </div>
+  <div id="q4-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 5：跳蚤市場情境劇 -->
+<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-purple-700">🎭 關卡 5：跳蚤市集老闆抉擇</h2>
+  <p class="mt-2 text-gray-600">你在班級跳蚤市集擺攤，收到一件 <strong>8 成新、有小破洞的牛仔外套</strong>。你會怎麼做？</p>
+  <div class="space-y-3 mt-4">
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="A">A. 破洞不能穿，直接丟垃圾桶</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="B">B. 保持原樣低價 20 元賣出</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="C">C. 縫一個可愛刺繡蓋住破洞，標價 120 元</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="D">D. 捐給舊衣回收箱，讓它出口再利用</button>
+  </div>
+  <div id="q5-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 6：全校行動 WSA -->
+<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6 border-4 border-amber-400">
+  <h2 class="text-xl font-bold text-amber-700">🏫 關卡 6：全校行動挑戰（Whole School Approach）</h2>
+  <p class="mt-2 text-gray-700">四個面向一起動，把學校變成循環寶藏地圖。勾選你「本學期會嘗試」的行動，四項全勾解鎖「全校英雄」徽章！</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <label class="flex items-start gap-3 p-4 border-2 border-blue-200 rounded-xl cursor-pointer hover:bg-blue-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="curriculum" />
+      <div>
+        <p class="font-bold text-blue-700">📚 課程整合</p>
+        <p class="text-sm">社會課做「台灣回收率 59.9%」海報；自然課做廚餘堆肥實驗；語文課讀惜物繪本。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-green-200 rounded-xl cursor-pointer hover:bg-green-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="operations" />
+      <div>
+        <p class="font-bold text-green-700">🌳 校園營運</p>
+        <p class="text-sm">設班級舊物交換角、細分回收桶（紙/塑/鐵鋁/玻璃/電池/3C）、校園廚餘堆肥區。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-orange-200 rounded-xl cursor-pointer hover:bg-orange-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="community" />
+      <div>
+        <p class="font-bold text-orange-700">🤝 社區連結</p>
+        <p class="text-sm">邀里長、回收阿伯到校分享；參與社區跳蚤市集；與食物銀行合作剩食募集。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-purple-200 rounded-xl cursor-pointer hover:bg-purple-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="agency" />
+      <div>
+        <p class="font-bold text-purple-700">🙋 學生治理</p>
+        <p class="text-sm">選「循環小隊長」；向校務會議提案：校園禁一次性餐具／定期辦二手書市。</p>
+      </div>
+    </label>
+  </div>
+  <button onclick="checkWSA()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full shadow-lg">提交挑戰 🏆</button>
+  <div id="wsa-feedback" class="mt-4"></div>
+</section>
+
+<!-- 徽章與成果 -->
+<section id="result" class="hidden-step card bg-gradient-to-br from-yellow-100 to-amber-200 rounded-2xl shadow-2xl p-8 mb-6 text-center">
+  <div class="text-7xl mb-3 badge inline-block rounded-full bg-white p-6">🏆</div>
+  <h2 class="text-3xl font-extrabold text-amber-800">全校英雄 徽章解鎖！</h2>
+  <p class="mt-3 text-lg">你已經學會用新眼光看廢棄物！台灣回收率 <strong>59.9%</strong>、寶特瓶回收 <strong>>95%</strong>、全球循環經濟可減碳 <strong>39%</strong>，你的每一次選擇都是改變的力量！</p>
+
+  <div class="bg-white rounded-xl p-5 mt-5 text-left">
+    <h3 class="font-bold text-emerald-700 text-xl mb-2">🌱 三個延伸思考（帶回家想想）</h3>
+    <ol class="list-decimal ml-6 space-y-2">
+      <li>如果班上要辦校園跳蚤市集，你會怎麼幫一件二手物訂價？寫下 3 個影響因素（物品狀況、稀缺度、市場需求、回收成本）。</li>
+      <li>假設你是市長，要讓全市回收率從 59.9% 提升到 80%，你會優先做哪 3 件事？（提示：教育、設施、誘因）</li>
+      <li>寫一封短信給你最愛的品牌（Nike、任天堂、玩具品牌…），問他們何時能做到 100% 循環材料？你希望他們做什麼改變？</li>
+    </ol>
+  </div>
+
+  <button onclick="window.print()" class="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full">🖨️ 列印成果頁</button>
+  <button onclick="location.reload()" class="mt-5 ml-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full">🔄 重新挑戰</button>
+</section>
+
+<footer class="text-center text-xs text-gray-500 pb-6">
+  資料來源：環境部 2024、UN E-waste Monitor 2024、Ellen MacArthur Foundation、UNEP Food Waste Index 2024、UN University。教學套件 UNESCO 5.2-III ｜ 驗證日 2026-04-16
+</footer>
+
+</main>
+
+<script>
+let currentStep = 0;
+const steps = ['intro','level1','level2','level3','level4','level5','level6','result'];
+
+function showStep(i){
+  steps.forEach((s,idx)=>{
+    const el = document.getElementById(s);
+    if(!el) return;
+    if(idx===i) el.classList.remove('hidden-step');
+    else el.classList.add('hidden-step');
+  });
+  for(let k=1;k<=6;k++){
+    const d=document.getElementById('dot'+k);
+    d.classList.remove('done','active');
+    if(k < i) d.classList.add('done');
+    else if(k === i) d.classList.add('active');
+  }
+  const pt = document.getElementById('progressText');
+  if(i>=1 && i<=6) pt.textContent = `第 ${i} / 6 關`;
+  else if(i===7) pt.textContent = '完成！';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startMission(){ currentStep=1; showStep(1); }
+
+// Level 1
+document.querySelectorAll('.q1-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const fb = document.getElementById('q1-feedback');
+    if(btn.dataset.ans==='1'){
+      fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 答對了！台灣回收率達 <strong>59.9%</strong>，世界前列！人均每日垃圾從 1998 年的 1.14kg 降到 0.41kg。</div>';
+      confetti();
+      setTimeout(()=>{currentStep=2;showStep(2);},1500);
+    } else {
+      btn.classList.add('shake');
+      fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再想想！提示：台灣是全球回收率前十名，遠高於全球平均，但還沒達到 80% 那麼極端。</div>';
+    }
+  });
+});
+
+// Level 2 — drag & drop
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{
+    e.preventDefault(); z.classList.remove('over');
+    if(dragged){ z.querySelector('.drop-content').appendChild(dragged); }
+  });
+});
+function checkLevel2(){
+  const zones = document.querySelectorAll('.drop-zone');
+  let correct=0, total=8;
+  zones.forEach(z=>{
+    const hab = z.dataset.hab;
+    z.querySelectorAll('.drop-content .drag-item').forEach(it=>{
+      if(it.dataset.hab===hab) correct++;
+    });
+  });
+  const fb = document.getElementById('q2-feedback');
+  if(correct===total){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌟 全部配對正確！你真的是循環小偵探，每種廢棄物都找到了最好的家。</div>';
+    confetti();
+    setTimeout(()=>{currentStep=3;showStep(3);},1500);
+  } else {
+    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 你答對 ${correct}/${total}。提示：寶特瓶與舊報紙→資源回收；堪穿舊衣與玩具→跳蚤市場；食物→食物銀行/廚餘；手機與電池→3C 回收。</div>`;
+  }
+}
+
+// Level 3
+let q3Correct=0, q3Total=3;
+document.querySelectorAll('.q3-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q3');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      q3Correct++;
+    } else {
+      btn.classList.add('bg-red-300','text-white','shake');
+      const correctBtn = parent.querySelector(`.q3-opt[data-v="${ans}"]`);
+      if(correctBtn) correctBtn.classList.add('bg-green-400','text-white');
+    }
+    parent.dataset.answered='1';
+    checkQ3Done();
+  });
+});
+function checkQ3Done(){
+  const answered = document.querySelectorAll('.q3[data-answered="1"]').length;
+  if(answered===q3Total){
+    document.getElementById('q3-feedback').innerHTML =
+      `<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🗓️ 你答對 ${q3Correct}/${q3Total}！廢棄物的價值，取決於看的人是誰。</div>`;
+    confetti();
+    setTimeout(()=>{currentStep=4;showStep(4);},1500);
+  }
+}
+
+// Level 4
+let q4Done=0;
+document.querySelectorAll('.q4-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q4');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    const hint = parent.dataset.hint;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-green-700 text-sm">✅ 正確！${hint}</p>`);
+    } else {
+      btn.classList.add('bg-red-300','shake');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-rose-700 text-sm">💡 再想想：${hint}</p>`);
+    }
+    parent.dataset.answered='1';
+    q4Done++;
+    if(q4Done===3){
+      document.getElementById('q4-feedback').innerHTML='<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎯 迷思破解完成！</div>';
+      confetti();
+      setTimeout(()=>{currentStep=5;showStep(5);},1500);
+    }
+  });
+});
+
+// Level 5
+const choiceFeedback = {
+  A: { tone:'warn', text:'⚠️ 太可惜了！8 成新的外套進焚化爐，不只浪費資源，還製造碳排。廢棄物的價值常被我們低估。' },
+  B: { tone:'ok', text:'💰 便宜賣出比丟掉好，但 8 成新的外套原本可以賣更高價——你低估了它的回收價值。' },
+  C: { tone:'best', text:'🌟 最佳答案！這就是 Repair（修理）+ Upcycle（升級再造）！修改後價值從 20 元跳到 120 元，這正是循環經濟的精髓。' },
+  D: { tone:'ok', text:'👕 捐贈是好選擇，讓它在非洲或國內二手店延續生命。但若能先修理再賣出/捐贈，價值會更高。' }
+};
+document.querySelectorAll('.choice').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(document.getElementById('level5').dataset.answered) return;
+    document.getElementById('level5').dataset.answered='1';
+    const c = choiceFeedback[btn.dataset.c];
+    const color = c.tone==='best'?'green':(c.tone==='ok'?'blue':'yellow');
+    btn.classList.add('bg-'+color+'-100','border-'+color+'-500');
+    document.getElementById('q5-feedback').innerHTML =
+      `<div class="feedback-pop bg-${color}-100 border-l-4 border-${color}-500 p-3 rounded">${c.text}</div>`;
+    if(c.tone==='best') confetti();
+    setTimeout(()=>{currentStep=6;showStep(6);},2200);
+  });
+});
+
+// Level 6 — WSA
+function checkWSA(){
+  const boxes = document.querySelectorAll('.wsa');
+  const all = Array.from(boxes).every(b=>b.checked);
+  const fb = document.getElementById('wsa-feedback');
+  if(all){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-4 rounded text-lg">🏅 四面向全勾選！你就是我們班的全校英雄！</div>';
+    confetti(60);
+    setTimeout(()=>{currentStep=7;showStep(7);},1800);
+  } else {
+    const cnt = Array.from(boxes).filter(b=>b.checked).length;
+    fb.innerHTML = `<div class="feedback-pop bg-amber-100 border-l-4 border-amber-500 p-3 rounded">你選了 ${cnt}/4 個面向。全校英雄需要「課程、校園、社區、學生」四面向一起動，每個都重要！再想想還能參與哪個面向？</div>`;
+  }
+}
+
+// Confetti
+function confetti(n=30){
+  const colors=['#f87171','#fbbf24','#34d399','#60a5fa','#a78bfa'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.top='-20px';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*0.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+</script>
+</body>
+</html>

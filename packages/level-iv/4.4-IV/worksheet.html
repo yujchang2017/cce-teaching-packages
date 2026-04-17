@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>互聯互通的力量 | 國中韌性互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#dcfce7,#fef3c7,#fce7f3); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:60px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.5rem; padding:.5rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea.cer { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem;}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.done { background:#10b981;}
+  .hidden-screen { display:none; }
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">🌿 互聯互通的力量</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『韌性規劃師』：8 個任務，完成就是 Level 4 國中韌性公民。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">韌性積分</div>
+    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot" id="dot-1"></div><span class="text-xs">特徵</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">四場景</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">資料詮釋</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">系統思考</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">倫理</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs">CER</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs">專題</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs">後設</span>
+</div>
+
+<!-- ===== §1: 特徵配對（基礎層） ===== -->
+<section id="sec-1" class="card p-6 fade-in mb-4">
+  <h2 class="text-xl font-bold text-sky-700">任務 1｜韌性七特徵配對</h2>
+  <p class="text-sm text-slate-700 mt-1">把左邊『情境』拖到右邊『特徵』。角色：韌性規劃實習生 ｜ 10 分</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <div>
+      <h3 class="font-semibold mb-2">情境（拖曳）</h3>
+      <div id="bank1" class="space-y-2">
+        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="冗餘性">學校有兩條獨立供電線路</div>
+        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="適應能力">暑假高溫時把體育課移到早上</div>
+        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="穩健性">校舍耐震結構能承受 7 級地震</div>
+        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="靈活性">同一間大禮堂可當教室/避難所/投票所</div>
+        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="反應能力">警報響後 3 分鐘內完成全校疏散</div>
+        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="足智多謀">利用雨水桶 + 太陽能板應付停水停電</div>
+        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="整合性">學校、里辦、醫療所共用風險資訊系統</div>
+      </div>
+    </div>
+    <div>
+      <h3 class="font-semibold mb-2">七大特徵</h3>
+      <div class="space-y-2">
+        <div class="drop-zone" data-key="適應能力"><b>適應能力</b></div>
+        <div class="drop-zone" data-key="穩健性"><b>穩健性</b></div>
+        <div class="drop-zone" data-key="冗餘性"><b>冗餘性</b></div>
+        <div class="drop-zone" data-key="靈活性"><b>靈活性</b></div>
+        <div class="drop-zone" data-key="反應能力"><b>反應能力</b></div>
+        <div class="drop-zone" data-key="足智多謀"><b>足智多謀</b></div>
+        <div class="drop-zone" data-key="整合性"><b>整合性</b></div>
+      </div>
+    </div>
+  </div>
+  <button onclick="check1()" class="btn mt-4 bg-sky-600 text-white px-4 py-2 rounded-lg">檢查</button>
+  <div id="fb1" class="text-sm mt-2"></div>
+</section>
+
+<!-- ===== §2: 四場景實作（基礎層） ===== -->
+<section id="sec-2" class="card p-6 fade-in mb-4">
+  <h2 class="text-xl font-bold text-teal-700">任務 2｜四場景韌性設計</h2>
+  <p class="text-sm text-slate-700 mt-1">選一個場景，至少使用 3 個韌性特徵，寫出具體策略。10 分</p>
+  <select id="scene" class="border rounded p-2 mt-2">
+    <option>森林</option><option>學校</option><option>城市基礎設施</option><option>農場</option>
+  </select>
+  <textarea id="plan2" class="cer mt-2" rows="4" placeholder="例：我的場景是森林。我會使用：冗餘性（多樹種混合）、足智多謀（原民傳統管理）、整合性（林管處 + 部落共管）..."></textarea>
+  <button onclick="mark(2)" class="btn mt-2 bg-teal-600 text-white px-4 py-2 rounded-lg">完成</button>
+</section>
+
+<!-- ===== §3: 資料詮釋（深度 1／6） ===== -->
+<section id="sec-3" class="card p-6 fade-in mb-4">
+  <h2 class="text-xl font-bold text-amber-700">任務 3｜資料詮釋：強颱比例</h2>
+  <p class="text-sm text-slate-700 mt-1">TCCIP 資料：臺灣強颱比例 1961-1990 年 15% → 1991-2020 年 35%，2024 凱米颱風高雄月世界單日降雨 >900mm。<span class="chip bg-amber-100 text-amber-700">深度：資料詮釋</span></p>
+  <div class="mt-2 space-y-2">
+    <label class="block text-sm">(a) 用數字描述趨勢（至少 1 個百分比）：<textarea id="d3a" class="cer" rows="2"></textarea></label>
+    <label class="block text-sm">(b) 可能原因（≥2 個）：<textarea id="d3b" class="cer" rows="2"></textarea></label>
+    <label class="block text-sm">(c) 該優先強化哪 2 項韌性特徵？為什麼？<textarea id="d3c" class="cer" rows="2"></textarea></label>
+  </div>
+  <button onclick="mark(3)" class="btn mt-2 bg-amber-600 text-white px-4 py-2 rounded-lg">完成</button>
+</section>
+
+<!-- ===== §4: 系統思考（深度 2／6） ===== -->
+<section id="sec-4" class="card p-6 fade-in mb-4">
+  <h2 class="text-xl font-bold text-indigo-700">任務 4｜系統思考：因果迴圈</h2>
+  <p class="text-sm text-slate-700 mt-1">畫出『城市精簡主義 → 單一排水系統 → 強降雨淹水 → 災害成本上升 → 更多工程 → 更多不透水面 → ?』的迴圈，並標出 1 個干預點。<span class="chip bg-indigo-100 text-indigo-700">深度：系統思考</span></p>
+  <textarea id="d4" class="cer" rows="5" placeholder="用文字描述至少 5 個節點、箭頭（→）、正/負回饋（+/-），並指出：如果你是市長，會在哪個節點介入？為什麼？"></textarea>
+  <button onclick="mark(4)" class="btn mt-2 bg-indigo-600 text-white px-4 py-2 rounded-lg">完成</button>
+</section>
+
+<!-- ===== §5: 倫理兩難（深度 3／6） ===== -->
+<section id="sec-5" class="card p-6 fade-in mb-4">
+  <h2 class="text-xl font-bold text-rose-700">任務 5｜倫理兩難：傳統領域 vs 開發</h2>
+  <p class="text-sm text-slate-700 mt-1">保留原住民傳統領域、限制都市開發，對都市人公平嗎？<span class="chip bg-rose-100 text-rose-700">深度：倫理兩難</span></p>
+  <div class="mt-2 space-y-2">
+    <label class="block text-sm">我的立場：<textarea id="d5a" class="cer" rows="2"></textarea></label>
+    <label class="block text-sm">3 個支持理由（引用 dp5 的 80%/6% 或 MOE 0044 被忽視的生態智慧）：<textarea id="d5b" class="cer" rows="3"></textarea></label>
+    <label class="block text-sm">對方最強的反駁 + 我如何回應：<textarea id="d5c" class="cer" rows="3"></textarea></label>
+  </div>
+  <button onclick="mark(5)" class="btn mt-2 bg-rose-600 text-white px-4 py-2 rounded-lg">完成</button>
+</section>
+
+<!-- ===== §6: CER 論證（深度 4／6） ===== -->
+<section id="sec-6" class="card p-6 fade-in mb-4">
+  <h2 class="text-xl font-bold text-purple-700">任務 6｜CER 論證：冗餘值得嗎？</h2>
+  <p class="text-sm text-slate-700 mt-1">主張 Claim-證據 Evidence-理由 Reasoning：『學校預算應投入 20% 用於冗餘系統』是否合理？<span class="chip bg-purple-100 text-purple-700">深度：CER 論證</span></p>
+  <div class="mt-2 space-y-2">
+    <label class="block text-sm">Claim（我的主張，1 句）：<textarea id="d6a" class="cer" rows="1"></textarea></label>
+    <label class="block text-sm">Evidence（至少 1 項資料，如 dp7 花蓮 403 分級復建、dp1 IPCC 33-36 億脆弱人口）：<textarea id="d6b" class="cer" rows="2"></textarea></label>
+    <label class="block text-sm">Reasoning（連結資料與主張的邏輯）：<textarea id="d6c" class="cer" rows="3"></textarea></label>
+  </div>
+  <button onclick="mark(6)" class="btn mt-2 bg-purple-600 text-white px-4 py-2 rounded-lg">完成</button>
+</section>
+
+<!-- ===== §7: 開放反思 ① + 專題任務（深度 5／6） ===== -->
+<section id="sec-7" class="card p-6 fade-in mb-4">
+  <h2 class="text-xl font-bold text-emerald-700">任務 7｜專題：學校韌性提案書 + 開放反思</h2>
+  <p class="text-sm text-slate-700 mt-1">WSA 四面向至少覆蓋 2 個。<span class="chip bg-emerald-100 text-emerald-700">深度：專題任務 + 開放反思 #1</span></p>
+  <div class="mt-2 space-y-2">
+    <label class="block text-sm">① 現況盤點（學校最脆弱的 1-2 處）：<textarea id="d7a" class="cer" rows="2"></textarea></label>
+    <label class="block text-sm">② 策略（對應 ≥3 項韌性特徵）：<textarea id="d7b" class="cer" rows="3"></textarea></label>
+    <label class="block text-sm">③ WSA 覆蓋（勾選並各寫一句）：
+      <div class="grid grid-cols-2 gap-1 text-xs mt-1">
+        <label><input type="checkbox" id="wsa-g"> 治理 Governance</label>
+        <label><input type="checkbox" id="wsa-c"> 課程 Curriculum</label>
+        <label><input type="checkbox" id="wsa-o"> 營運 Operations</label>
+        <label><input type="checkbox" id="wsa-s"> 社群 Community</label>
+      </div>
+      <textarea id="d7c" class="cer mt-1" rows="2" placeholder="各面向具體做什麼"></textarea>
+    </label>
+    <label class="block text-sm">④ 開放反思：如果這個提案 10 年後成功了，你希望學校變成什麼樣？（≥3 句）<textarea id="d7d" class="cer" rows="3"></textarea></label>
+  </div>
+  <button onclick="mark(7)" class="btn mt-2 bg-emerald-600 text-white px-4 py-2 rounded-lg">完成</button>
+</section>
+
+<!-- ===== §8: 後設認知反思（深度 6／6） + 開放反思 ② ===== -->
+<section id="sec-8" class="card p-6 fade-in mb-4">
+  <h2 class="text-xl font-bold text-slate-700">任務 8｜後設認知反思 + 開放延伸</h2>
+  <p class="text-sm text-slate-700 mt-1"><span class="chip bg-slate-200 text-slate-700">深度：後設認知 + 開放反思 #2</span></p>
+  <div class="mt-2 space-y-2">
+    <label class="block text-sm">(a) 上課前，我對『韌性』的想法是：<textarea id="d8a" class="cer" rows="2"></textarea></label>
+    <label class="block text-sm">(b) 現在我的想法是：<textarea id="d8b" class="cer" rows="2"></textarea></label>
+    <label class="block text-sm">(c) 最關鍵的轉變是哪一個資料/故事/圖像？為什麼？<textarea id="d8c" class="cer" rows="2"></textarea></label>
+    <label class="block text-sm">(d) 開放延伸：你願意為韌性付出多少『效率代價』？舉個人生活的例子（≥50 字）<textarea id="d8d" class="cer" rows="3"></textarea></label>
+  </div>
+  <button onclick="mark(8)" class="btn mt-2 bg-slate-600 text-white px-4 py-2 rounded-lg">完成</button>
+</section>
+
+<div class="card p-4 text-center mt-4">
+  <p class="text-sm text-slate-600">完成全部 8 任務並提交給老師，你就是 Level 4 國中韌性公民 🌟</p>
+</div>
+
+</div>
+
+<script>
+let score = 0;
+const setDot = (i, done=true) => { const d=document.getElementById('dot-'+i); if(d && done) d.classList.add('done'); };
+const setScore = (add) => { score += add; document.getElementById('score').textContent = score; };
+
+// Drag-drop for §1
+document.querySelectorAll('#bank1 .drag-item').forEach(el => {
+  el.addEventListener('dragstart', e => { e.dataTransfer.setData('text', el.dataset.ans); el.classList.add('dragging'); e.dataTransfer.setData('id', el.textContent); });
+  el.addEventListener('dragend', () => el.classList.remove('dragging'));
+});
+document.querySelectorAll('#sec-1 .drop-zone').forEach(z => {
+  z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', () => z.classList.remove('over'));
+  z.addEventListener('drop', e => {
+    e.preventDefault(); z.classList.remove('over');
+    const ans = e.dataTransfer.getData('text');
+    const dragging = document.querySelector('.dragging');
+    if (dragging) { z.appendChild(dragging); dragging.dataset.dropped = ans; }
+  });
+});
+function check1(){
+  let correct = 0, total = 0;
+  document.querySelectorAll('#sec-1 .drop-zone').forEach(z => {
+    z.querySelectorAll('.drag-item').forEach(item => {
+      total++;
+      if (item.dataset.ans === z.dataset.key) correct++;
+    });
+  });
+  const fb = document.getElementById('fb1');
+  fb.textContent = `正確 ${correct}/${total}`;
+  if (correct >= 6) { fb.className='text-green-600 text-sm mt-2'; setDot(1); setScore(10); }
+  else { fb.className='text-red-600 text-sm mt-2'; }
+}
+function mark(i){
+  setDot(i); setScore(10);
+  alert('已記錄任務 '+i+'。繼續下一題！');
+}
+</script>
+</body>
+</html>

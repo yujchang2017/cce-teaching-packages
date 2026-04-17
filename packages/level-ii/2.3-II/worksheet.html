@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>大自然寶藏 — 小松鼠阿栗的寶藏探險</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: linear-gradient(180deg, #d1fae5 0%, #fef3c7 60%, #fde68a 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .popin { animation: popin 0.6s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes popin { 0%{transform:scale(.3);opacity:0} 60%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
+  .bounce { animation: bounce 1s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .wiggle { animation: wiggle 0.4s ease-in-out; }
+  @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-8deg)} 75%{transform:rotate(8deg)} }
+  .shine { animation: shine 2s infinite; }
+  @keyframes shine { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.3) drop-shadow(0 0 20px #86efac)} }
+  .confetti {
+    position: fixed;
+    width: 14px; height: 14px;
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  .dropzone-active { background: #bbf7d0 !important; transform: scale(1.08); }
+  .big-btn {
+    font-size: 2rem;
+    padding: 1rem 2rem;
+    border-radius: 9999px;
+    font-weight: 800;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.15);
+    transition: all 0.15s;
+  }
+  .big-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,0.15); }
+  svg text { pointer-events: none; }
+  .card {
+    background: white;
+    border-radius: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+  }
+  .hide { display: none !important; }
+</style>
+</head>
+<body class="flex flex-col items-center">
+
+<!-- 主角：小松鼠阿栗 SVG (可重用) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="squirrel">
+      <!-- 身體 -->
+      <ellipse cx="50" cy="60" rx="28" ry="30" fill="#b45309"/>
+      <!-- 大尾巴 -->
+      <path d="M 75 60 Q 95 40 90 15 Q 80 25 78 45" fill="#d97706" stroke="#92400e" stroke-width="2"/>
+      <!-- 頭 -->
+      <circle cx="50" cy="30" r="20" fill="#d97706"/>
+      <!-- 耳朵 -->
+      <ellipse cx="35" cy="15" rx="6" ry="10" fill="#d97706"/>
+      <ellipse cx="65" cy="15" rx="6" ry="10" fill="#d97706"/>
+      <ellipse cx="35" cy="16" rx="3" ry="6" fill="#fbbf24"/>
+      <ellipse cx="65" cy="16" rx="3" ry="6" fill="#fbbf24"/>
+      <!-- 眼睛 -->
+      <circle cx="42" cy="28" r="3" fill="black"/>
+      <circle cx="58" cy="28" r="3" fill="black"/>
+      <circle cx="43" cy="27" r="1" fill="white"/>
+      <circle cx="59" cy="27" r="1" fill="white"/>
+      <!-- 鼻子和嘴 -->
+      <ellipse cx="50" cy="35" rx="2" ry="1.5" fill="black"/>
+      <path d="M 45 40 Q 50 44 55 40" stroke="black" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- 肚子小花紋 -->
+      <ellipse cx="50" cy="65" rx="14" ry="18" fill="#fde68a"/>
+      <!-- 松果在手裡 -->
+      <ellipse cx="25" cy="55" rx="6" ry="8" fill="#78350f"/>
+      <path d="M 25 50 L 25 60 M 22 52 L 28 58 M 28 52 L 22 58" stroke="#451a03" stroke-width="1"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- 頂部進度條 -->
+<div class="w-full max-w-3xl p-4">
+  <div class="flex items-center justify-center gap-2 text-3xl font-extrabold text-amber-800">
+    <svg width="60" height="60" viewBox="0 0 100 100"><use href="#squirrel"/></svg>
+    <span>小松鼠阿栗的寶藏探險</span>
+  </div>
+  <div class="flex gap-2 mt-4 justify-center" id="progress-bar">
+    <!-- 填充 -->
+  </div>
+</div>
+
+<!-- 關卡容器 -->
+<main class="w-full max-w-3xl p-4 flex-1 flex items-center justify-center">
+
+  <!-- 開始畫面 -->
+  <section id="intro" class="card text-center popin">
+    <svg width="180" height="180" viewBox="0 0 100 100" class="mx-auto bounce"><use href="#squirrel"/></svg>
+    <h1 class="text-4xl font-extrabold text-amber-700 mt-4">嗨！我是阿栗！</h1>
+    <p class="text-2xl text-gray-700 mt-4">今天跟我一起去找<span class="text-emerald-600 font-bold">大自然的寶藏</span>吧！</p>
+    <p class="text-xl text-gray-500 mt-2">一起玩 3 個小關卡！</p>
+    <button onclick="startGame()" class="big-btn bg-emerald-400 hover:bg-emerald-300 text-white mt-6">開始</button>
+  </section>
+
+  <!-- 關卡 1：感恩禮物（點擊配對「大自然送的」/「人做的」） -->
+  <section id="level1" class="card w-full hide">
+    <div class="flex items-center gap-3 mb-4">
+      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#squirrel"/></svg>
+      <p class="text-2xl font-bold text-amber-700">阿栗：這個是大自然送的嗎？</p>
+    </div>
+    <div id="l1-target" class="text-center my-4">
+      <div class="text-2xl font-bold text-emerald-700 mb-2">看看這個東西...</div>
+      <div id="l1-scene-box" class="mx-auto flex items-center justify-center h-40">
+        <div id="l1-scene-emoji" class="text-8xl"></div>
+      </div>
+      <div id="l1-scene-label" class="text-2xl font-bold text-amber-800 mt-2"></div>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mt-6">
+      <button class="big-btn bg-emerald-300 hover:bg-emerald-200 text-emerald-900" data-ans="nature" onclick="l1Pick(this)">
+        <span class="text-5xl">🌳</span><br/><span class="text-xl">大自然送的</span>
+      </button>
+      <button class="big-btn bg-orange-300 hover:bg-orange-200 text-orange-900" data-ans="human" onclick="l1Pick(this)">
+        <span class="text-5xl">🏭</span><br/><span class="text-xl">人做的</span>
+      </button>
+    </div>
+    <p id="l1-feedback" class="text-2xl text-center mt-4 font-bold hide"></p>
+    <p id="l1-progress" class="text-center mt-2 text-lg text-gray-600"></p>
+  </section>
+
+  <!-- 關卡 2：仿生配對 — 拖拉發明到對的自然老師 -->
+  <section id="level2" class="card w-full hide">
+    <div class="flex items-center gap-3 mb-4">
+      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#squirrel"/></svg>
+      <p class="text-2xl font-bold text-amber-700">阿栗：人類跟誰學的？拖一拖！</p>
+    </div>
+    <div class="flex justify-around my-4 flex-wrap gap-3" id="l2-items">
+      <!-- 可拖拉發明品 -->
+    </div>
+    <div class="grid grid-cols-3 gap-3 mt-6">
+      <div class="dropzone card text-center h-36 flex flex-col items-center justify-center border-4 border-dashed border-emerald-400" data-nature="maple">
+        <div class="text-5xl">🍁</div>
+        <div class="text-xl font-bold text-emerald-700">楓樹種子</div>
+      </div>
+      <div class="dropzone card text-center h-36 flex flex-col items-center justify-center border-4 border-dashed border-lime-400" data-nature="burr">
+        <div class="text-5xl">🌿</div>
+        <div class="text-xl font-bold text-lime-700">鬼針草</div>
+      </div>
+      <div class="dropzone card text-center h-36 flex flex-col items-center justify-center border-4 border-dashed border-amber-400" data-nature="bird">
+        <div class="text-5xl">🐦</div>
+        <div class="text-xl font-bold text-amber-700">小鳥翅膀</div>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <p id="l2-feedback" class="text-2xl font-bold hide"></p>
+    </div>
+  </section>
+
+  <!-- 關卡 3：三寶分類（點擊選對箱子） -->
+  <section id="level3" class="card w-full hide">
+    <div class="flex items-center gap-3 mb-4">
+      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#squirrel"/></svg>
+      <p class="text-2xl font-bold text-amber-700">阿栗：三寶分類！點一點放進對的箱子！</p>
+    </div>
+    <div class="text-center my-4">
+      <div class="text-7xl mb-2" id="l3-current-emoji"></div>
+      <div class="text-2xl font-bold text-amber-800" id="l3-current-label"></div>
+    </div>
+    <div class="grid grid-cols-3 gap-3 mt-4" id="l3-bins">
+      <button class="card bg-blue-100 hover:bg-blue-200 p-4 text-center" data-bin="recycle" onclick="l3Pick(this)">
+        <div class="text-5xl">♻️</div>
+        <div class="text-xl font-bold text-blue-700 mt-2">回收</div>
+      </button>
+      <button class="card bg-pink-100 hover:bg-pink-200 p-4 text-center" data-bin="reuse" onclick="l3Pick(this)">
+        <div class="text-5xl">🎁</div>
+        <div class="text-xl font-bold text-pink-700 mt-2">再利用</div>
+      </button>
+      <button class="card bg-yellow-100 hover:bg-yellow-200 p-4 text-center" data-bin="compost" onclick="l3Pick(this)">
+        <div class="text-5xl">🌱</div>
+        <div class="text-xl font-bold text-yellow-700 mt-2">堆肥</div>
+      </button>
+    </div>
+    <div class="text-center mt-4">
+      <p id="l3-feedback" class="text-2xl font-bold hide mt-3"></p>
+      <p id="l3-count" class="text-xl text-gray-600 mt-2"></p>
+    </div>
+  </section>
+
+  <!-- 結尾成就畫面 -->
+  <section id="finale" class="card text-center hide">
+    <div class="shine">
+      <svg width="200" height="200" viewBox="0 0 100 100" class="mx-auto bounce"><use href="#squirrel"/></svg>
+    </div>
+    <div class="text-6xl mt-4">🏆</div>
+    <h1 class="text-4xl font-extrabold text-emerald-700 mt-4">你是超棒的大自然守護員！</h1>
+    <p class="text-2xl text-gray-700 mt-4">阿栗送你一張 <span class="text-amber-600 font-bold">金色橡實徽章</span>！</p>
+    <div class="card mt-6 bg-emerald-100 border-4 border-emerald-300">
+      <p class="text-xl font-bold text-emerald-800">小小任務（回家做）</p>
+      <p class="text-2xl mt-2">這個週末，跟爸爸媽媽到公園，<br/><span class="text-amber-700 font-bold">撿 5 片不一樣的葉子</span>，回家貼在本子上，跟葉子說謝謝！</p>
+    </div>
+    <button onclick="restart()" class="big-btn bg-emerald-400 hover:bg-emerald-300 text-white mt-6">再玩一次</button>
+  </section>
+
+</main>
+
+<script>
+  // ============ 全域狀態 ============
+  const STATE = { level: 0, total: 3 };
+
+  // ============ 進度條 ============
+  function drawProgress() {
+    const bar = document.getElementById('progress-bar');
+    bar.innerHTML = '';
+    for (let i = 1; i <= STATE.total; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'w-10 h-10 rounded-full flex items-center justify-center text-xl font-extrabold ' +
+        (i < STATE.level ? 'bg-emerald-500 text-white' :
+         i === STATE.level ? 'bg-amber-400 text-amber-900 bounce' : 'bg-gray-300 text-gray-600');
+      dot.textContent = i < STATE.level ? '★' : i;
+      bar.appendChild(dot);
+    }
+  }
+
+  // ============ 彩帶 ============
+  function confetti() {
+    const colors = ['#10b981','#fbbf24','#a3e635','#f472b6','#f97316'];
+    for (let i = 0; i < 40; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = (50 + (Math.random()-0.5)*80) + 'vw';
+      c.style.top = '50vh';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.transform = 'rotate(' + Math.random()*360 + 'deg)';
+      document.body.appendChild(c);
+      const dx = (Math.random()-0.5) * 600;
+      const dy = (Math.random()-0.3) * 600;
+      c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy}px) rotate(720deg)`, opacity: 0 }
+      ], { duration: 1500, easing: 'cubic-bezier(.17,.67,.83,.67)' });
+      setTimeout(() => c.remove(), 1600);
+    }
+  }
+
+  // ============ 畫面切換 ============
+  function show(id) {
+    ['intro','level1','level2','level3','finale'].forEach(s => {
+      const el = document.getElementById(s);
+      if (!el) return;
+      if (s === id) { el.classList.remove('hide'); el.classList.add('popin'); }
+      else { el.classList.add('hide'); el.classList.remove('popin'); }
+    });
+  }
+
+  function startGame() {
+    STATE.level = 1;
+    drawProgress();
+    loadLevel1();
+    show('level1');
+  }
+
+  // ============ 關卡 1：大自然送的 vs 人做的 ============
+  const L1_ITEMS = [
+    { emoji: '🌳', label: '大樹', ans: 'nature' },
+    { emoji: '🚗', label: '汽車', ans: 'human' },
+    { emoji: '🍎', label: '蘋果', ans: 'nature' },
+    { emoji: '📱', label: '手機', ans: 'human' },
+    { emoji: '🐟', label: '小魚', ans: 'nature' }
+  ];
+  let l1Idx = 0;
+  let l1Correct = 0;
+
+  function loadLevel1() {
+    l1Idx = 0;
+    l1Correct = 0;
+    showL1Item();
+    document.getElementById('l1-feedback').classList.add('hide');
+    document.querySelectorAll('#level1 button[data-ans]').forEach(b => b.disabled = false);
+  }
+
+  function showL1Item() {
+    const it = L1_ITEMS[l1Idx];
+    document.getElementById('l1-scene-emoji').textContent = it.emoji;
+    document.getElementById('l1-scene-label').textContent = it.label;
+    document.getElementById('l1-progress').textContent = `${l1Idx + 1} / ${L1_ITEMS.length}`;
+  }
+
+  function l1Pick(btn) {
+    const fb = document.getElementById('l1-feedback');
+    const correctAns = L1_ITEMS[l1Idx].ans;
+    fb.classList.remove('hide');
+    if (btn.dataset.ans === correctAns) {
+      fb.textContent = '🎉 答對啦！';
+      fb.className = 'text-3xl text-center mt-4 font-bold text-emerald-500 popin';
+      l1Correct++;
+      confetti();
+      document.querySelectorAll('#level1 button[data-ans]').forEach(b => b.disabled = true);
+      setTimeout(() => {
+        l1Idx++;
+        if (l1Idx >= L1_ITEMS.length) {
+          // 進入下一關
+          STATE.level = 2;
+          drawProgress();
+          loadLevel2();
+          show('level2');
+        } else {
+          showL1Item();
+          fb.classList.add('hide');
+          document.querySelectorAll('#level1 button[data-ans]').forEach(b => b.disabled = false);
+        }
+      }, 1500);
+    } else {
+      fb.textContent = '😊 想一想，再試試！';
+      fb.className = 'text-2xl text-center mt-4 font-bold text-orange-500';
+      btn.classList.add('wiggle');
+      setTimeout(() => btn.classList.remove('wiggle'), 400);
+    }
+  }
+
+  // ============ 關卡 2：仿生拖拉 ============
+  const L2_ITEMS = [
+    { id: 'helicopter', label: '直升機', nature: 'maple', emoji: '🚁' },
+    { id: 'velcro',     label: '魔鬼氈', nature: 'burr',  emoji: '👟' },
+    { id: 'airplane',   label: '飛機',   nature: 'bird',  emoji: '✈️' }
+  ];
+  let l2Correct = 0;
+
+  function loadLevel2() {
+    l2Correct = 0;
+    const box = document.getElementById('l2-items');
+    box.innerHTML = '';
+    L2_ITEMS.slice().sort(() => Math.random()-0.5).forEach(it => {
+      const d = document.createElement('div');
+      d.className = 'card text-center cursor-grab bg-white shadow-lg p-4';
+      d.draggable = true;
+      d.dataset.id = it.id;
+      d.dataset.nature = it.nature;
+      d.innerHTML = `<div class="text-5xl">${it.emoji}</div><div class="text-lg text-gray-700 mt-1 font-bold">${it.label}</div>`;
+      d.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', it.id));
+      d.addEventListener('touchstart', e => startTouchDrag(d, e), { passive: false });
+      box.appendChild(d);
+    });
+
+    document.querySelectorAll('#level2 .dropzone').forEach(z => {
+      z.ondragover = e => { e.preventDefault(); z.classList.add('dropzone-active'); };
+      z.ondragleave = () => z.classList.remove('dropzone-active');
+      z.ondrop = e => {
+        e.preventDefault();
+        z.classList.remove('dropzone-active');
+        const id = e.dataTransfer.getData('text/plain');
+        const src = document.querySelector(`#l2-items [data-id="${id}"]`);
+        if (!src) return;
+        handleL2Drop(src, z);
+      };
+    });
+    document.getElementById('l2-feedback').classList.add('hide');
+  }
+
+  function handleL2Drop(src, z) {
+    if (src.dataset.nature === z.dataset.nature) {
+      src.classList.add('popin');
+      z.appendChild(src);
+      src.draggable = false;
+      l2Correct++;
+      if (l2Correct === L2_ITEMS.length) {
+        const fb = document.getElementById('l2-feedback');
+        fb.classList.remove('hide');
+        fb.textContent = '🎉 太棒了！仿生小達人！';
+        fb.className = 'text-3xl font-bold text-emerald-500 popin';
+        confetti();
+        setTimeout(() => {
+          STATE.level = 3;
+          drawProgress();
+          loadLevel3();
+          show('level3');
+        }, 1800);
+      } else {
+        const mini = document.createElement('div');
+        mini.textContent = '✨';
+        mini.className = 'text-4xl popin';
+        z.appendChild(mini);
+        setTimeout(() => mini.remove(), 600);
+      }
+    } else {
+      src.classList.add('wiggle');
+      const fb = document.getElementById('l2-feedback');
+      fb.classList.remove('hide');
+      fb.textContent = '😊 再試試！想想哪個大自然老師最像？';
+      fb.className = 'text-xl font-bold text-orange-500';
+      setTimeout(() => src.classList.remove('wiggle'), 400);
+    }
+  }
+
+  // --- touch fallback ---
+  let l2Selected = null;
+  function startTouchDrag(el, e) {
+    if (!el.draggable) return;
+    e.preventDefault();
+    if (l2Selected) l2Selected.classList.remove('ring-4','ring-emerald-400');
+    l2Selected = el;
+    el.classList.add('ring-4','ring-emerald-400');
+  }
+  document.addEventListener('touchend', function(e) {
+    if (!l2Selected) return;
+    const t = e.changedTouches[0];
+    const target = document.elementFromPoint(t.clientX, t.clientY);
+    const zone = target && target.closest('.dropzone');
+    if (zone) {
+      handleL2Drop(l2Selected, zone);
+    }
+    l2Selected.classList.remove('ring-4','ring-emerald-400');
+    l2Selected = null;
+  });
+
+  // ============ 關卡 3：三寶分類 ============
+  const L3_ITEMS = [
+    { emoji: '📄', label: '紙',     bin: 'recycle' },
+    { emoji: '🍌', label: '香蕉皮', bin: 'compost' },
+    { emoji: '👕', label: '舊衣服', bin: 'reuse'   },
+    { emoji: '🍶', label: '玻璃瓶', bin: 'recycle' },
+    { emoji: '🍎', label: '蘋果核', bin: 'compost' },
+    { emoji: '📦', label: '紙箱',   bin: 'reuse'   }
+  ];
+  let l3Idx = 0;
+  let l3Correct = 0;
+
+  function loadLevel3() {
+    l3Idx = 0;
+    l3Correct = 0;
+    showL3Item();
+    document.getElementById('l3-feedback').classList.add('hide');
+  }
+
+  function showL3Item() {
+    const it = L3_ITEMS[l3Idx];
+    document.getElementById('l3-current-emoji').textContent = it.emoji;
+    document.getElementById('l3-current-label').textContent = it.label;
+    document.getElementById('l3-count').textContent = `${l3Idx + 1} / ${L3_ITEMS.length}`;
+  }
+
+  function l3Pick(btn) {
+    const fb = document.getElementById('l3-feedback');
+    const correct = L3_ITEMS[l3Idx].bin;
+    fb.classList.remove('hide');
+    if (btn.dataset.bin === correct) {
+      fb.textContent = '🎉 放對了！';
+      fb.className = 'text-3xl font-bold text-emerald-500 popin mt-3';
+      l3Correct++;
+      confetti();
+      setTimeout(() => {
+        l3Idx++;
+        if (l3Idx >= L3_ITEMS.length) {
+          // 結束
+          STATE.level = 4;
+          drawProgress();
+          show('finale');
+          setTimeout(confetti, 300);
+          setTimeout(confetti, 900);
+        } else {
+          showL3Item();
+          fb.classList.add('hide');
+        }
+      }, 1200);
+    } else {
+      fb.textContent = '😊 想一想：這是吃的？紙？還是舊東西？';
+      fb.className = 'text-xl font-bold text-orange-500 mt-3';
+      btn.classList.add('wiggle');
+      setTimeout(() => btn.classList.remove('wiggle'), 400);
+    }
+  }
+
+  function restart() {
+    STATE.level = 0;
+    show('intro');
+    drawProgress();
+  }
+
+  // init
+  drawProgress();
+</script>
+</body>
+</html>

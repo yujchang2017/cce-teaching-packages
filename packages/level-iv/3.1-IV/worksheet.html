@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.1-IV 互動學習單｜同一場風暴，不一樣的雨</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC', system-ui, -apple-system, sans-serif; }
+  .fade-in { animation: fade 0.5s ease-in; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .pulse-badge { animation: pulse 1.4s infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+  .confetti { position: fixed; width: 10px; height: 10px; border-radius: 2px; top: -20px; z-index: 99; animation: fall 3s linear forwards; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(540deg); opacity: 0; } }
+  .step-active { background: linear-gradient(135deg, #7c3aed, #ec4899); color: white; }
+  .hidden-panel { display: none; }
+  textarea { resize: vertical; }
+</style>
+</head>
+<body class="bg-gradient-to-br from-sky-50 via-violet-50 to-pink-50 min-h-screen">
+
+<div class="max-w-5xl mx-auto p-4 md:p-8">
+
+  <!-- Header -->
+  <header class="text-center mb-6">
+    <h1 class="text-3xl md:text-4xl font-black text-violet-900 mb-2">同一場風暴，不一樣的雨</h1>
+    <p class="text-gray-700">3.1-IV｜氣候影響的不平等與脆弱族群｜國中 13–15 歲</p>
+    <div class="mt-3 flex items-center justify-center gap-2 text-sm">
+      <span class="px-3 py-1 bg-violet-200 rounded-full">你的角色：<b id="roleLabel">—</b></span>
+      <span class="px-3 py-1 bg-pink-200 rounded-full">分數：<b id="scoreLabel">0</b></span>
+      <span class="px-3 py-1 bg-amber-200 rounded-full">徽章：<b id="badgeLabel">0</b> / 7</span>
+    </div>
+    <!-- Progress bar -->
+    <div class="w-full bg-gray-200 rounded-full h-3 mt-3">
+      <div id="progressBar" class="bg-gradient-to-r from-violet-600 to-pink-500 h-3 rounded-full transition-all" style="width:0%"></div>
+    </div>
+    <div class="flex flex-wrap justify-center gap-2 mt-3 text-xs">
+      <button onclick="goStep(0)" class="stepBtn px-2 py-1 rounded bg-gray-200">0 角色</button>
+      <button onclick="goStep(1)" class="stepBtn px-2 py-1 rounded bg-gray-200">1 資料詮釋</button>
+      <button onclick="goStep(2)" class="stepBtn px-2 py-1 rounded bg-gray-200">2 系統思考</button>
+      <button onclick="goStep(3)" class="stepBtn px-2 py-1 rounded bg-gray-200">3 倫理兩難</button>
+      <button onclick="goStep(4)" class="stepBtn px-2 py-1 rounded bg-gray-200">4 CER 論證</button>
+      <button onclick="goStep(5)" class="stepBtn px-2 py-1 rounded bg-gray-200">5 反思 ×2</button>
+      <button onclick="goStep(6)" class="stepBtn px-2 py-1 rounded bg-gray-200">6 WSA 挑戰</button>
+      <button onclick="goStep(7)" class="stepBtn px-2 py-1 rounded bg-gray-200">7 專題任務</button>
+      <button onclick="goStep(8)" class="stepBtn px-2 py-1 rounded bg-gray-200">8 後設認知 + 成果</button>
+    </div>
+  </header>
+
+  <!-- ========== Step 0 角色選擇 ========== -->
+  <section id="step-0" class="step bg-white rounded-2xl shadow-lg p-6 mb-6">
+    <h2 class="text-xl font-bold mb-3">🎭 選擇你的探究角色</h2>
+    <p class="text-gray-600 mb-4">你將以這個身分完成整份學習單。不同角色會影響你看見的事情。</p>
+    <div class="grid md:grid-cols-3 gap-3">
+      <button onclick="pickRole('青年倡議者')" class="role-btn p-4 border-2 rounded-xl hover:bg-violet-50">
+        <div class="text-3xl">🌍</div><div class="font-bold">青年倡議者</div><div class="text-xs text-gray-600">關心全球氣候正義</div>
+      </button>
+      <button onclick="pickRole('社區調查員')" class="role-btn p-4 border-2 rounded-xl hover:bg-violet-50">
+        <div class="text-3xl">🗺️</div><div class="font-bold">社區調查員</div><div class="text-xs text-gray-600">關心在地脆弱族群</div>
+      </button>
+      <button onclick="pickRole('學生會代表')" class="role-btn p-4 border-2 rounded-xl hover:bg-violet-50">
+        <div class="text-3xl">🏫</div><div class="font-bold">學生會代表</div><div class="text-xs text-gray-600">推動校園治理改革</div>
+      </button>
+    </div>
+    <div class="text-right mt-4"><button onclick="nextStep()" id="next0" class="bg-violet-600 text-white px-5 py-2 rounded-lg disabled:bg-gray-300" disabled>下一關 →</button></div>
+  </section>
+
+  <!-- ========== Step 1 資料詮釋 ========== -->
+  <section id="step-1" class="step hidden-panel bg-white rounded-2xl shadow-lg p-6 mb-6">
+    <h2 class="text-xl font-bold mb-3">📊 關卡 1｜資料詮釋：閱讀真實數據</h2>
+    <p class="text-gray-600 mb-3">以下皆為 WHO、UN Women 等權威機構數據。請完成解讀題。</p>
+    <div class="bg-violet-50 p-4 rounded-lg space-y-2 text-sm">
+      <p>📌 <b>dp1</b>：至 2050 年，氣候變遷可能使 <b>1.58 億名女性與女孩</b>陷入貧困（比男性多 1,600 萬）。（UN Women）</p>
+      <p>📌 <b>dp3</b>：高脆弱區極端天氣死亡率為低脆弱區 <b>15 倍</b>。（WHO / IPCC AR6）</p>
+      <p>📌 <b>dp5</b>：過去 20 年，<b>65+ 歲熱相關死亡率上升 70%</b>；37% 熱浪死亡歸因於氣候變遷。（WHO）</p>
+      <p>📌 <b>dp6</b>：2025 UN Spotlight：熱浪期間女性遇害率增加 <b>28%</b>。</p>
+    </div>
+
+    <div class="mt-4 space-y-3">
+      <div>
+        <p class="font-semibold">Q1. dp3 的「15 倍」指的是什麼？</p>
+        <div class="space-y-1">
+          <label class="block"><input type="radio" name="q1" value="a" onchange="q1Check('a')"> A. 高脆弱區的氣候事件發生 15 倍</label>
+          <label class="block"><input type="radio" name="q1" value="b" onchange="q1Check('b')"> B. 高脆弱區的暴露程度 15 倍</label>
+          <label class="block"><input type="radio" name="q1" value="c" onchange="q1Check('c')"> C. 同樣極端天氣下，高脆弱區「死亡率」是低脆弱區 15 倍</label>
+        </div>
+        <p id="q1Fb" class="text-sm mt-1"></p>
+      </div>
+
+      <div>
+        <p class="font-semibold">Q2. 從 dp5，哪個群體的熱風險最高？</p>
+        <div class="space-y-1">
+          <label class="block"><input type="radio" name="q2" value="a" onchange="q2Check('a')"> A. 青少年</label>
+          <label class="block"><input type="radio" name="q2" value="b" onchange="q2Check('b')"> B. 65 歲以上長者</label>
+          <label class="block"><input type="radio" name="q2" value="c" onchange="q2Check('c')"> C. 沒差別</label>
+        </div>
+        <p id="q2Fb" class="text-sm mt-1"></p>
+      </div>
+
+      <div>
+        <p class="font-semibold">Q3（開放）：請用 60 字以上，解釋 dp1 與 dp6 合起來告訴我們什麼結構性現象？</p>
+        <textarea id="q3" rows="3" class="w-full border rounded p-2" placeholder="例如：氣候危機會放大原本的性別不平等..."></textarea>
+        <button onclick="openCheck('q3', 60, 'q3Fb')" class="mt-1 bg-violet-600 text-white px-3 py-1 rounded text-sm">提交</button>
+        <p id="q3Fb" class="text-sm mt-1"></p>
+      </div>
+    </div>
+    <div class="text-right mt-4"><button onclick="nextStep()" class="bg-violet-600 text-white px-5 py-2 rounded-lg">下一關 →</button></div>
+  </section>
+
+  <!-- ========== Step 2 系統思考 CLD ========== -->
+  <section id="step-2" class="step hidden-panel bg-white rounded-2xl shadow-lg p-6 mb-6">
+    <h2 class="text-xl font-bold mb-3">🔁 關卡 2｜系統思考：建構因果迴路</h2>
+    <p class="text-gray-600 mb-3">把下列概念拖拉排成一個「增強迴路」（Reinforcing Loop），並在下方說明它為什麼會讓脆弱群體越來越弱。</p>
+
+    <!-- Drag boxes -->
+    <div id="chipBank" class="flex flex-wrap gap-2 p-3 bg-gray-100 rounded-lg min-h-[60px]">
+      <div draggable="true" class="chip bg-sky-200 px-3 py-1 rounded cursor-move">貧窮</div>
+      <div draggable="true" class="chip bg-sky-200 px-3 py-1 rounded cursor-move">住屋脆弱</div>
+      <div draggable="true" class="chip bg-sky-200 px-3 py-1 rounded cursor-move">災害損失</div>
+      <div draggable="true" class="chip bg-sky-200 px-3 py-1 rounded cursor-move">更加貧窮</div>
+      <div draggable="true" class="chip bg-pink-200 px-3 py-1 rounded cursor-move">（干擾）富裕度假屋</div>
+      <div draggable="true" class="chip bg-pink-200 px-3 py-1 rounded cursor-move">（干擾）5G 訊號</div>
+    </div>
+
+    <div class="mt-3 text-sm text-gray-700">👉 請把 4 個正確節點拖到下方依序：</div>
+    <div class="grid grid-cols-4 gap-2 mt-2">
+      <div class="dropzone border-2 border-dashed border-violet-300 rounded p-3 min-h-[50px] text-center" data-idx="0">① 起點</div>
+      <div class="dropzone border-2 border-dashed border-violet-300 rounded p-3 min-h-[50px] text-center" data-idx="1">② </div>
+      <div class="dropzone border-2 border-dashed border-violet-300 rounded p-3 min-h-[50px] text-center" data-idx="2">③ </div>
+      <div class="dropzone border-2 border-dashed border-violet-300 rounded p-3 min-h-[50px] text-center" data-idx="3">④ 回到起點</div>
+    </div>
+    <button onclick="checkCLD()" class="mt-3 bg-violet-600 text-white px-3 py-1 rounded">檢查迴路</button>
+    <p id="cldFb" class="mt-2 text-sm"></p>
+
+    <div class="mt-4">
+      <p class="font-semibold">📝 說明題（≥ 40 字）：這個迴路中，你會在哪一個節點設介入槓桿點？為什麼？</p>
+      <textarea id="cldNote" rows="3" class="w-full border rounded p-2" placeholder="例如：我會在『住屋脆弱』加裝..."></textarea>
+      <button onclick="openCheck('cldNote', 40, 'cldNoteFb')" class="mt-1 bg-violet-600 text-white px-3 py-1 rounded text-sm">提交</button>
+      <p id="cldNoteFb" class="text-sm mt-1"></p>
+    </div>
+
+    <div class="text-right mt-4"><button onclick="nextStep()" class="bg-violet-600 text-white px-5 py-2 rounded-lg">下一關 →</button></div>
+  </section>
+
+  <!-- ========== Step 3 倫理兩難 ========== -->
+  <section id="step-3" class="step hidden-panel bg-white rounded-2xl shadow-lg p-6 mb-6">
+    <h2 class="text-xl font-bold mb-3">⚖️ 關卡 3｜倫理兩難：沒有標準答案</h2>
+    <div class="bg-amber-50 p-4 rounded-lg">
+      <p class="font-semibold mb-2">情境</p>
+      <p>暴洪來襲，村內救援隊只能搶救一處建築。<b>A</b>：收容 20 位孩童的育幼院。<b>B</b>：12 位部落長者的祖靈集會所（具 150 年歷史）。<b>C</b>：剛搬來兩年的 5 戶外移低收家庭。</p>
+    </div>
+    <div class="mt-3">
+      <p class="font-semibold">你的選擇：</p>
+      <div class="flex gap-2 mt-1">
+        <button onclick="pickDilemma('A')" class="dilemma-btn border-2 px-4 py-1 rounded">A 育幼院</button>
+        <button onclick="pickDilemma('B')" class="dilemma-btn border-2 px-4 py-1 rounded">B 祖靈集會所</button>
+        <button onclick="pickDilemma('C')" class="dilemma-btn border-2 px-4 py-1 rounded">C 外移家庭</button>
+      </div>
+    </div>
+    <div class="mt-3">
+      <p class="font-semibold">請寫下你的論證（≥ 80 字，須包含：立場 / 理由 / 你知道的代價）</p>
+      <textarea id="dilemmaNote" rows="4" class="w-full border rounded p-2" placeholder="我選_____，因為_____，我承認的代價是_____"></textarea>
+      <button onclick="openCheck('dilemmaNote', 80, 'dilemmaFb')" class="mt-1 bg-violet-600 text-white px-3 py-1 rounded text-sm">提交</button>
+      <p id="dilemmaFb" class="text-sm mt-1"></p>
+    </div>
+    <div class="mt-3 text-xs text-gray-500">💡 沒有『對』的答案，但有『負責任』的答案——能說清理由、承認代價、尊重反對觀點。</div>
+    <div class="text-right mt-4"><button onclick="nextStep()" class="bg-violet-600 text-white px-5 py-2 rounded-lg">下一關 →</button></div>
+  </section>
+
+  <!-- ========== Step 4 CER 論證 ========== -->
+  <section id="step-4" class="step hidden-panel bg-white rounded-2xl shadow-lg p-6 mb-6">
+    <h2 class="text-xl font-bold mb-3">🧠 關卡 4｜CER 論證寫作</h2>
+    <div class="bg-sky-50 p-3 rounded-lg text-sm mb-3">
+      <p class="font-semibold">範例引導：</p>
+      <p><b>Claim</b>：政府應免費為獨居長者住宅安裝冷氣。</p>
+      <p><b>Evidence</b>：WHO 指 65+ 熱相關死亡 20 年升 70%；37% 熱浪死亡歸因氣候變遷。</p>
+      <p><b>Reasoning</b>：熱脆弱度 = 暴露 × 敏感度 ÷ 調適力；老人三項皆最弱，補助可降低結構性脆弱。</p>
+    </div>
+    <p class="font-semibold mb-2">你的任務：提出一個針對「校園或在地社區脆弱族群」的調適政策，並用 CER 論證（每段 ≥ 30 字）。</p>
+    <label class="block text-sm font-semibold mt-2">Claim 主張：</label>
+    <textarea id="cer-c" rows="2" class="w-full border rounded p-2"></textarea>
+    <label class="block text-sm font-semibold mt-2">Evidence 證據（至少引用 1 個 data_card 數據）：</label>
+    <textarea id="cer-e" rows="2" class="w-full border rounded p-2"></textarea>
+    <label class="block text-sm font-semibold mt-2">Reasoning 推論：</label>
+    <textarea id="cer-r" rows="3" class="w-full border rounded p-2"></textarea>
+    <button onclick="cerCheck()" class="mt-2 bg-violet-600 text-white px-3 py-1 rounded">提交 CER</button>
+    <p id="cerFb" class="text-sm mt-1"></p>
+    <div class="text-right mt-4"><button onclick="nextStep()" class="bg-violet-600 text-white px-5 py-2 rounded-lg">下一關 →</button></div>
+  </section>
+
+  <!-- ========== Step 5 開放反思 x2 ========== -->
+  <section id="step-5" class="step hidden-panel bg-white rounded-2xl shadow-lg p-6 mb-6">
+    <h2 class="text-xl font-bold mb-3">💭 關卡 5｜開放反思（兩題）</h2>
+    <div class="space-y-4">
+      <div>
+        <p class="font-semibold">反思 1（≥ 50 字）：臺灣雖然富裕，但內部仍有不平等。請舉一個你生活中看到的「氣候不公」實例，並說明你看到誰、承受了什麼、他沒有什麼資源？</p>
+        <textarea id="r1" rows="4" class="w-full border rounded p-2"></textarea>
+        <button onclick="openCheck('r1', 50, 'r1Fb')" class="mt-1 bg-violet-600 text-white px-3 py-1 rounded text-sm">提交</button>
+        <p id="r1Fb" class="text-sm mt-1"></p>
+      </div>
+      <div>
+        <p class="font-semibold">反思 2（≥ 50 字）：如果你是最沒權力的那一方，你希望這個世界為你改變什麼？有哪一項是現在學生可以推動的？</p>
+        <textarea id="r2" rows="4" class="w-full border rounded p-2"></textarea>
+        <button onclick="openCheck('r2', 50, 'r2Fb')" class="mt-1 bg-violet-600 text-white px-3 py-1 rounded text-sm">提交</button>
+        <p id="r2Fb" class="text-sm mt-1"></p>
+      </div>
+    </div>
+    <div class="text-right mt-4"><button onclick="nextStep()" class="bg-violet-600 text-white px-5 py-2 rounded-lg">下一關 →</button></div>
+  </section>
+
+  <!-- ========== Step 6 WSA Challenge ========== -->
+  <section id="step-6" class="step hidden-panel bg-white rounded-2xl shadow-lg p-6 mb-6">
+    <h2 class="text-xl font-bold mb-3">🏫 關卡 6｜全校方法挑戰（WSA Challenge）</h2>
+    <p class="text-gray-600 mb-3">勾選 4 個你願意在 1 個月內推動的具體行動，全部達成即可獲「全校英雄」徽章。</p>
+    <div class="space-y-2">
+      <label class="flex items-start gap-2 p-2 border rounded cursor-pointer hover:bg-violet-50">
+        <input type="checkbox" class="wsa mt-1" data-pillar="curriculum"> <span><b>[課程整合]</b> 與公民或自然科老師提議做一次「社區脆弱度盤點」作業</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 border rounded cursor-pointer hover:bg-violet-50">
+        <input type="checkbox" class="wsa mt-1" data-pillar="campus"> <span><b>[校園營運]</b> 找出校內最熱的 1 間教室，填寫改善提案給學務處</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 border rounded cursor-pointer hover:bg-violet-50">
+        <input type="checkbox" class="wsa mt-1" data-pillar="community"> <span><b>[社區連結]</b> 拜訪 1 位獨居長者或弱勢家戶，記錄他們夏天最困擾的事</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 border rounded cursor-pointer hover:bg-violet-50">
+        <input type="checkbox" class="wsa mt-1" data-pillar="governance"> <span><b>[學生治理]</b> 向學生會提案設立「氣候公正代表」席次並爭取校務會議列席</span>
+      </label>
+    </div>
+    <button onclick="wsaCheck()" class="mt-3 bg-violet-600 text-white px-4 py-2 rounded">提交 WSA 挑戰</button>
+    <p id="wsaFb" class="text-sm mt-2"></p>
+    <div class="text-right mt-4"><button onclick="nextStep()" class="bg-violet-600 text-white px-5 py-2 rounded-lg">下一關 →</button></div>
+  </section>
+
+  <!-- ========== Step 7 專題任務 ========== -->
+  <section id="step-7" class="step hidden-panel bg-white rounded-2xl shadow-lg p-6 mb-6">
+    <h2 class="text-xl font-bold mb-3">🎯 關卡 7｜專題任務：公正氣候行動計畫</h2>
+    <p class="text-gray-600 mb-3">選擇 1 個主題，完成 4 欄設計草案。</p>
+    <select id="projTheme" class="border rounded p-2 w-full">
+      <option value="">-- 選主題 --</option>
+      <option>A 校園偏熱教室降溫（年齡/經濟脆弱）</option>
+      <option>B 社區獨居長者熱浪關懷系統</option>
+      <option>C 學生治理：校務基金氣候公正支出提案</option>
+      <option>D 臺灣企業供應鏈對 LDC 影響倡議</option>
+    </select>
+    <div class="grid md:grid-cols-2 gap-3 mt-3">
+      <div>
+        <label class="text-sm font-semibold">利害關係人地圖（列 ≥3 位）：</label>
+        <textarea id="proj-stk" rows="3" class="w-full border rounded p-2"></textarea>
+      </div>
+      <div>
+        <label class="text-sm font-semibold">3 個具體行動：</label>
+        <textarea id="proj-act" rows="3" class="w-full border rounded p-2"></textarea>
+      </div>
+      <div>
+        <label class="text-sm font-semibold">時間軸（1 週/1 月/1 學期）：</label>
+        <textarea id="proj-time" rows="3" class="w-full border rounded p-2"></textarea>
+      </div>
+      <div>
+        <label class="text-sm font-semibold">成功指標與風險評估：</label>
+        <textarea id="proj-risk" rows="3" class="w-full border rounded p-2"></textarea>
+      </div>
+    </div>
+    <button onclick="projCheck()" class="mt-3 bg-violet-600 text-white px-4 py-2 rounded">提交專題草案</button>
+    <p id="projFb" class="text-sm mt-2"></p>
+    <div class="text-right mt-4"><button onclick="nextStep()" class="bg-violet-600 text-white px-5 py-2 rounded-lg">下一關 →</button></div>
+  </section>
+
+  <!-- ========== Step 8 後設認知 + 成果 ========== -->
+  <section id="step-8" class="step hidden-panel bg-white rounded-2xl shadow-lg p-6 mb-6">
+    <h2 class="text-xl font-bold mb-3">🧩 關卡 8｜後設認知 + 學習成果總結</h2>
+    <p class="font-semibold">後設認知題（≥ 60 字）：</p>
+    <p class="text-sm text-gray-600 mb-2">課程開始前你對「氣候不公」的想法是什麼？完成這份學習單後，有哪個數據、故事或關卡**改變了你的想法**？為什麼？你還有什麼疑問想追下去？</p>
+    <textarea id="meta" rows="5" class="w-full border rounded p-2"></textarea>
+    <button onclick="openCheck('meta', 60, 'metaFb')" class="mt-1 bg-violet-600 text-white px-3 py-1 rounded text-sm">提交</button>
+    <p id="metaFb" class="text-sm mt-1"></p>
+
+    <div id="summaryBox" class="mt-6 p-5 bg-gradient-to-r from-violet-100 to-pink-100 rounded-xl hidden-panel">
+      <h3 class="text-2xl font-bold text-violet-900 mb-3">🏆 學習成果總結</h3>
+      <div id="summaryContent" class="text-sm"></div>
+      <div class="mt-4">
+        <h4 class="font-bold mb-2">🌱 三題帶回家延伸思考：</h4>
+        <ol class="list-decimal ml-5 text-sm space-y-1">
+          <li>（系統）臺灣碳費如撥一部分給 LDCs 調適基金，會產生什麼正負連鎖？畫你自己的因果迴路。</li>
+          <li>（倫理）阿公堅持不搬離低窪海岸祖厝，政府要強制遷村。你作為他的孫子會怎麼談？</li>
+          <li>（能動性）5 年後你成為家長會會長或村長，你要做哪 1 件讓最脆弱者受益的氣候改變？寫 300 字行動草案。</li>
+        </ol>
+      </div>
+    </div>
+
+    <button onclick="showSummary()" class="mt-4 bg-gradient-to-r from-violet-600 to-pink-500 text-white px-6 py-2 rounded-lg font-bold">🎉 產出學習成果</button>
+  </section>
+</div>
+
+<script>
+  // ===== State =====
+  const state = { step: 0, score: 0, badges: new Set(), role: '', answers: {} };
+  const totalSteps = 9;
+
+  function setStepUI() {
+    document.querySelectorAll('.step').forEach((el, i) => {
+      el.classList.toggle('hidden-panel', i !== state.step);
+      if (i === state.step) el.classList.add('fade-in');
+    });
+    document.querySelectorAll('.stepBtn').forEach((b, i) => {
+      b.classList.toggle('step-active', i === state.step);
+    });
+    document.getElementById('progressBar').style.width = Math.round((state.step / (totalSteps-1)) * 100) + '%';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  function nextStep() { if (state.step < totalSteps-1) { state.step++; setStepUI(); } }
+  function goStep(n) { state.step = n; setStepUI(); }
+
+  function addScore(n, badge) {
+    state.score += n;
+    if (badge) state.badges.add(badge);
+    document.getElementById('scoreLabel').innerText = state.score;
+    document.getElementById('badgeLabel').innerText = state.badges.size;
+    burstConfetti();
+  }
+  function burstConfetti() {
+    const colors = ['#7c3aed','#ec4899','#f59e0b','#10b981','#3b82f6'];
+    for (let i=0; i<18; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random()*100+'vw';
+      c.style.background = colors[i%colors.length];
+      c.style.animationDuration = (2+Math.random()*2)+'s';
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(), 4000);
+    }
+  }
+
+  // ===== Step 0 Role =====
+  function pickRole(r) {
+    state.role = r;
+    document.getElementById('roleLabel').innerText = r;
+    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('bg-violet-100','border-violet-500'));
+    event.currentTarget.classList.add('bg-violet-100','border-violet-500');
+    document.getElementById('next0').disabled = false;
+    addScore(5, '角色啟動');
+  }
+
+  // ===== Step 1 =====
+  function q1Check(v) {
+    const fb = document.getElementById('q1Fb');
+    if (v === 'c') { fb.innerHTML = '✅ 正確！死亡率——相同的災害，結果差 15 倍。'; fb.className='text-sm mt-1 text-green-700'; addScore(10,'資料高手'); state.answers.q1='ok'; }
+    else { fb.innerHTML = '💡 再想想：題目關鍵字是「同樣極端天氣下」比較什麼？重讀 dp3。'; fb.className='text-sm mt-1 text-amber-700'; }
+  }
+  function q2Check(v) {
+    const fb = document.getElementById('q2Fb');
+    if (v === 'b') { fb.innerHTML='✅ 正確！年齡是敏感度重要因子。'; fb.className='text-sm mt-1 text-green-700'; addScore(10); state.answers.q2='ok'; }
+    else { fb.innerHTML='💡 dp5 特別指出哪個年齡層？'; fb.className='text-sm mt-1 text-amber-700'; }
+  }
+  function openCheck(id, min, fbId) {
+    const txt = document.getElementById(id).value.trim();
+    const fb = document.getElementById(fbId);
+    if (txt.length < min) {
+      fb.innerHTML = `💡 再多寫一些（目前 ${txt.length} 字，需 ≥ ${min}）。提示：可以從結構、權力、資源三個角度切入。`;
+      fb.className='text-sm mt-1 text-amber-700';
+      return false;
+    }
+    fb.innerHTML = '✅ 很好，你的觀察已經看到結構性層次。'; fb.className='text-sm mt-1 text-green-700';
+    if (!state.answers[id]) { addScore(10); state.answers[id]='ok'; }
+    return true;
+  }
+
+  // ===== Step 2 CLD Drag =====
+  let draggedChip = null;
+  document.addEventListener('dragstart', e => { if (e.target.classList.contains('chip')) draggedChip = e.target; });
+  document.addEventListener('dragover', e => { if (e.target.classList.contains('dropzone')) e.preventDefault(); });
+  document.addEventListener('drop', e => {
+    if (e.target.classList.contains('dropzone') && draggedChip) {
+      e.preventDefault();
+      e.target.innerHTML = '';
+      e.target.appendChild(draggedChip);
+    }
+  });
+  function checkCLD() {
+    const expected = ['貧窮','住屋脆弱','災害損失','更加貧窮'];
+    const zones = document.querySelectorAll('.dropzone');
+    const got = Array.from(zones).map(z => (z.querySelector('.chip')||{}).innerText || '');
+    const ok = expected.every((v,i)=> got[i] === v);
+    const fb = document.getElementById('cldFb');
+    if (ok) { fb.innerHTML='✅ 完美增強迴路！脆弱 → 損失 → 更脆弱。'; fb.className='text-sm mt-1 text-green-700'; addScore(15,'系統思考者'); state.answers.cld='ok'; }
+    else { fb.innerHTML='💡 仔細想因果順序：先窮 → 住得差 → 災害衝擊大 → 更窮。干擾項不該放入。'; fb.className='text-sm mt-1 text-amber-700'; }
+  }
+
+  // ===== Step 3 Dilemma =====
+  function pickDilemma(k) {
+    document.querySelectorAll('.dilemma-btn').forEach(b=>b.classList.remove('bg-violet-200'));
+    event.currentTarget.classList.add('bg-violet-200');
+    state.answers.dilemmaPick = k;
+  }
+
+  // ===== Step 4 CER =====
+  function cerCheck() {
+    const c = document.getElementById('cer-c').value.trim();
+    const e = document.getElementById('cer-e').value.trim();
+    const r = document.getElementById('cer-r').value.trim();
+    const fb = document.getElementById('cerFb');
+    if (c.length<20 || e.length<20 || r.length<20) {
+      fb.innerHTML = `💡 三段各需 ≥ 20 字（現在 C:${c.length} / E:${e.length} / R:${r.length}）。證據段請引用具體數字（如 15 倍、25 萬人）。`;
+      fb.className='text-sm mt-1 text-amber-700';
+      return;
+    }
+    const hasNum = /\d/.test(e) || /(倍|億|萬|%)/.test(e);
+    if (!hasNum) {
+      fb.innerHTML='💡 證據段建議引用 data_card 的具體數字，比較有說服力。';
+      fb.className='text-sm mt-1 text-amber-700';
+      return;
+    }
+    fb.innerHTML='✅ 結構清楚、有數據、有邏輯——這就是好論證！';
+    fb.className='text-sm mt-1 text-green-700';
+    if (!state.answers.cer) { addScore(20,'CER 論證者'); state.answers.cer='ok'; }
+  }
+
+  // ===== Step 6 WSA =====
+  function wsaCheck() {
+    const boxes = document.querySelectorAll('.wsa');
+    const picked = Array.from(boxes).filter(b=>b.checked);
+    const pillars = new Set(picked.map(b=>b.dataset.pillar));
+    const fb = document.getElementById('wsaFb');
+    if (pillars.size === 4) {
+      fb.innerHTML='🌟 恭喜！你勾選了四面向全部行動，獲得「<span class="pulse-badge inline-block">全校英雄 🏆</span>」徽章！';
+      fb.className='text-sm mt-2 text-green-700';
+      if (!state.answers.wsa) { addScore(25,'全校英雄 🏆'); state.answers.wsa='ok'; }
+    } else {
+      fb.innerHTML=`💡 目前勾 ${picked.length} / 4 面向（需：課程、營運、社區、治理各 1）。真正的改變需要四面向並進。`;
+      fb.className='text-sm mt-2 text-amber-700';
+    }
+  }
+
+  // ===== Step 7 Project =====
+  function projCheck() {
+    const theme = document.getElementById('projTheme').value;
+    const vals = ['proj-stk','proj-act','proj-time','proj-risk'].map(id=>document.getElementById(id).value.trim());
+    const fb = document.getElementById('projFb');
+    if (!theme) { fb.innerHTML='💡 請先選主題。'; fb.className='text-sm mt-2 text-amber-700'; return; }
+    if (vals.some(v=>v.length<15)) { fb.innerHTML='💡 每欄請 ≥ 15 字，提供具體細節。'; fb.className='text-sm mt-2 text-amber-700'; return; }
+    fb.innerHTML='✅ 草案完整！把它帶進課堂分享——真實世界會謝謝你。'; fb.className='text-sm mt-2 text-green-700';
+    if (!state.answers.proj) { addScore(20,'行動設計師'); state.answers.proj='ok'; }
+  }
+
+  // ===== Step 8 Summary =====
+  function showSummary() {
+    const completed = Object.keys(state.answers).filter(k=>state.answers[k]==='ok').length;
+    const box = document.getElementById('summaryBox');
+    const sc = document.getElementById('summaryContent');
+    sc.innerHTML = `
+      <p>🎭 角色：<b>${state.role || '未設定'}</b></p>
+      <p>📊 總分：<b>${state.score}</b> 分</p>
+      <p>🏅 徽章：<b>${Array.from(state.badges).join('、') || '—'}</b></p>
+      <p>✅ 完成關卡：<b>${completed}</b> / 11</p>
+      <p class="mt-2 text-violet-900 font-semibold">你對氣候正義的理解，已經從「知道」走向「論證」與「行動」。繼續下去！</p>
+    `;
+    box.classList.remove('hidden-panel');
+    box.classList.add('fade-in');
+    burstConfetti(); burstConfetti();
+  }
+
+  // init
+  setStepUI();
+</script>
+</body>
+</html>

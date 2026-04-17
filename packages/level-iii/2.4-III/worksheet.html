@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>小小友善農夫 — 2.4-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#fef3c7 0%,#dcfce7 50%,#e0f2fe 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .feedback-pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; z-index: 9999; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,.25); }
+  .drag-item { cursor: grab; user-select: none; }
+  .drag-item.dragging { opacity: .4; }
+  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
+  .badge { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
+  .hidden-step { display: none; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-amber-500 to-green-600 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">🌾 小小友善農夫</h1>
+    <p class="mt-2 text-amber-50">UNESCO 2.4-III ｜ 9-12 歲 ｜ 守護餐桌、蜜蜂、石虎和土壤！</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 角色與情境故事 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl">🐝</div>
+    <div>
+      <h2 class="text-2xl font-bold text-amber-700">任務簡報：你被選為「友善農場設計師」！</h2>
+      <p class="mt-2 leading-relaxed">嗨！我是蜜蜂小蜜，全球 <strong class="text-amber-600">75%</strong> 的糧食作物需要我和朋友們授粉。但氣候變遷、農藥正讓我們失去家。你的任務是完成 6 個關卡，解鎖「全校英雄」徽章，一起打造友善餐桌！</p>
+      <button onclick="startMission()" class="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 🌱</button>
+    </div>
+  </div>
+</section>
+
+<!-- 關卡 1：馴化大揭密（配對） -->
+<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-green-700">🧬 關卡 1：馴化大揭密</h2>
+  <p class="mt-2 text-gray-600">人類花幾千年把野生動植物變成農場夥伴。把「野生種」拖到對應的「馴化種」旁邊：</p>
+
+  <div class="flex flex-wrap gap-3 mt-4" id="domPool">
+    <div class="drag-item bg-emerald-100 px-4 py-2 rounded-full shadow" draggable="true" data-pair="rice">🌾 野稻</div>
+    <div class="drag-item bg-emerald-100 px-4 py-2 rounded-full shadow" draggable="true" data-pair="dog">🐺 野狼</div>
+    <div class="drag-item bg-emerald-100 px-4 py-2 rounded-full shadow" draggable="true" data-pair="chicken">🐓 原雞</div>
+    <div class="drag-item bg-emerald-100 px-4 py-2 rounded-full shadow" draggable="true" data-pair="pig">🐗 野豬</div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+    <div class="drop-zone min-h-[100px] border-2 border-dashed border-amber-400 bg-amber-50 rounded-xl p-3" data-pair="rice">
+      <p class="font-bold text-amber-700">🍚 水稻</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[100px] border-2 border-dashed border-amber-400 bg-amber-50 rounded-xl p-3" data-pair="dog">
+      <p class="font-bold text-amber-700">🐕 家犬</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[100px] border-2 border-dashed border-amber-400 bg-amber-50 rounded-xl p-3" data-pair="chicken">
+      <p class="font-bold text-amber-700">🐔 肉雞</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[100px] border-2 border-dashed border-amber-400 bg-amber-50 rounded-xl p-3" data-pair="pig">
+      <p class="font-bold text-amber-700">🐖 家豬</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+  </div>
+  <div id="q1-feedback" class="mt-4"></div>
+  <button onclick="checkLevel1()" class="mt-3 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full">檢查答案</button>
+</section>
+
+<!-- 關卡 2：蜜蜂大功臣（選擇題） -->
+<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-yellow-700">🐝 關卡 2：蜜蜂大功臣</h2>
+  <p class="mt-2 text-gray-600">根據 FAO 報告，全球多少比例的糧食作物需要動物授粉？</p>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+    <button class="q2-opt p-4 border-2 border-yellow-200 rounded-xl hover:bg-yellow-50" data-ans="0">約 10%</button>
+    <button class="q2-opt p-4 border-2 border-yellow-200 rounded-xl hover:bg-yellow-50" data-ans="0">約 30%</button>
+    <button class="q2-opt p-4 border-2 border-yellow-200 rounded-xl hover:bg-yellow-50" data-ans="1">約 75%</button>
+    <button class="q2-opt p-4 border-2 border-yellow-200 rounded-xl hover:bg-yellow-50" data-ans="0">100%</button>
+  </div>
+  <div id="q2-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 3：土壤大發現（多題） -->
+<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-orange-700">🌍 關卡 3：土壤大發現</h2>
+  <p class="mt-2 text-gray-600">看不見的土壤世界藏著大秘密，回答下面三題：</p>
+  <div id="soilQs" class="space-y-4 mt-4">
+    <div class="q3 border rounded-xl p-3" data-ans="billion">
+      <p class="font-semibold">Q1：1 克健康的農田土壤裡，大約有多少個微生物？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="hundred">約 100 個</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="million">約 100 萬個</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="billion">超過 10 億個</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="zero">幾乎沒有</button>
+      </div>
+    </div>
+    <div class="q3 border rounded-xl p-3" data-ans="ghg">
+      <p class="font-semibold">Q2：IPCC 報告指出，全球農業（含畜牧與砍林）貢獻多少溫室氣體排放？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="low">約 3%</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="ghg">約 21–23%</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="half">約 50%</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="all">幾乎 100%</button>
+      </div>
+    </div>
+    <div class="q3 border rounded-xl p-3" data-ans="water">
+      <p class="font-semibold">Q3：台灣的水，有多少比例用在農業？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="low">約 10%</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="mid">約 30%</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="water">超過 70%</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="all">幾乎全部</button>
+      </div>
+    </div>
+  </div>
+  <div id="q3-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 4：迷思破解（是非題） -->
+<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-rose-700">🧠 關卡 4：農業迷思大破解</h2>
+  <p class="mt-2 text-gray-600">下面的說法對嗎？錯了沒關係，我會告訴你為什麼。</p>
+  <div id="mythQs" class="space-y-4 mt-4">
+    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="農業用地佔全球陸地 38%、貢獻溫室氣體 21–23%。怎麼耕作直接影響生物多樣性與氣候。">
+      <p class="font-semibold">Q1：農業只是種田，跟生物多樣性與氣候變遷沒關係。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="化學農藥會傷害蜜蜂、石虎與土壤微生物。健康的土壤 1 克有 10 億個微生物，牠們才是讓作物長好的真正功臣。">
+      <p class="font-semibold">Q2：農藥噴越多、化肥下越多，作物就會長得越好。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+    <div class="q4 border rounded-xl p-3" data-ans="true" data-hint="正確！全球 75% 糧食作物（FAO/IPBES）靠動物授粉。沒有蜜蜂、蝴蝶，蘋果、草莓、咖啡、可可幾乎都會絕跡。">
+      <p class="font-semibold">Q3：沒有蜜蜂和其他授粉者，我們會吃不到蘋果、草莓、咖啡和巧克力。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+  </div>
+  <div id="q4-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 5：友善石虎米情境劇 -->
+<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-purple-700">🎭 關卡 5：苗栗農夫阿明的選擇</h2>
+  <p class="mt-2 text-gray-600">阿明在苗栗淺山種稻，田邊常看到石虎足跡。他下個月想對付稻田裡的田鼠，你會建議他？（沒有絕對答案，但每個選擇會有不同後果）</p>
+  <div class="space-y-3 mt-4">
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="A">A. 買滅鼠藥大量灑田，最快又便宜</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="B">B. 申請「友善石虎」方案，改用捕鼠夾＋貓頭鷹巢箱</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="C">C. 什麼都不做，讓田鼠吃稻子</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="D">D. 全部休耕，把田賣掉改蓋房子</button>
+  </div>
+  <div id="q5-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 6：全校行動挑戰（WSA 四面向） -->
+<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6 border-4 border-amber-400">
+  <h2 class="text-xl font-bold text-amber-700">🏫 關卡 6：全校行動挑戰（Whole School Approach）</h2>
+  <p class="mt-2 text-gray-700">四個面向，一起讓學校變成友善農業基地。請勾選你「本學期會嘗試」的行動，四項全勾，解鎖「全校英雄」徽章！</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <label class="flex items-start gap-3 p-4 border-2 border-blue-200 rounded-xl cursor-pointer hover:bg-blue-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="curriculum" />
+      <div>
+        <p class="font-bold text-blue-700">📚 課程整合</p>
+        <p class="text-sm">自然課觀察土壤與授粉者＋社會課計算一週午餐食物里程＋綜合課寫「我的友善餐桌日記」。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-green-200 rounded-xl cursor-pointer hover:bg-green-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="operations" />
+      <div>
+        <p class="font-bold text-green-700">🌳 校園營運</p>
+        <p class="text-sm">劃設班級可食地景（蔥、地瓜、紅藜）＋設廚餘堆肥桶＋種 3 種蜜源植物吸引蜜蜂回校。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-orange-200 rounded-xl cursor-pointer hover:bg-orange-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="community" />
+      <div>
+        <p class="font-bold text-orange-700">🤝 社區連結</p>
+        <p class="text-sm">邀請在地有機／友善耕作農夫進校分享＋全班團購一次友善石虎米或綠保米。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-purple-200 rounded-xl cursor-pointer hover:bg-purple-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="agency" />
+      <div>
+        <p class="font-bold text-purple-700">🙋 學生治理</p>
+        <p class="text-sm">成立「食農小隊」記錄剩食與堆肥＋向校務會議提出 1 個校園食農提案（如「不要剩食日」）。</p>
+      </div>
+    </label>
+  </div>
+  <button onclick="checkWSA()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full shadow-lg">提交挑戰 🏆</button>
+  <div id="wsa-feedback" class="mt-4"></div>
+</section>
+
+<!-- 徽章與成果 -->
+<section id="result" class="hidden-step card bg-gradient-to-br from-yellow-100 to-amber-200 rounded-2xl shadow-2xl p-8 mb-6 text-center">
+  <div class="text-7xl mb-3 badge inline-block rounded-full bg-white p-6">🏆</div>
+  <h2 class="text-3xl font-extrabold text-amber-800">全校英雄 徽章解鎖！</h2>
+  <p class="mt-3 text-lg">你已經認識全球 <strong>75%</strong> 糧食作物靠授粉、農業佔陸地 <strong>38%</strong>、溫室氣體 <strong>21–23%</strong>、台灣有機面積 <strong>&gt;2 萬公頃</strong>、1 克土壤 <strong>10 億微生物</strong>，並為石虎與農夫許下守護承諾！</p>
+
+  <div class="bg-white rounded-xl p-5 mt-5 text-left">
+    <h3 class="font-bold text-amber-700 text-xl mb-2">🌱 三個延伸思考（帶回家想想）</h3>
+    <ol class="list-decimal ml-6 space-y-2">
+      <li>如果你家社區有一塊空地，你會建議變成停車場、公園，還是社區菜園？寫下你的理由與替代方案。</li>
+      <li>未來如果氣候讓台灣種不出稻米，我們要靠科技、進口，還是轉型吃其他作物？你會怎麼選？</li>
+      <li>十年後你長大，想做什麼職業？那份工作可以怎麼支持友善農業？（提示：廚師、醫師、程式設計、YouTuber 都可以！）</li>
+    </ol>
+  </div>
+
+  <button onclick="window.print()" class="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full">🖨️ 列印成果頁</button>
+  <button onclick="location.reload()" class="mt-5 ml-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full">🔄 重新挑戰</button>
+</section>
+
+<footer class="text-center text-xs text-gray-500 pb-6">
+  資料來源：FAO/IPBES 授粉評估、IPCC AR6 WGIII、農業部農糧署有機資訊網、農業統計年報、生物多樣性研究所。教學套件 UNESCO 2.4-III ｜ 驗證日 2026-04-16
+</footer>
+
+</main>
+
+<script>
+let currentStep = 0;
+const steps = ['intro','level1','level2','level3','level4','level5','level6','result'];
+
+function showStep(i){
+  steps.forEach((s,idx)=>{
+    const el = document.getElementById(s);
+    if(!el) return;
+    if(idx===i) el.classList.remove('hidden-step');
+    else el.classList.add('hidden-step');
+  });
+  for(let k=1;k<=6;k++){
+    const d=document.getElementById('dot'+k);
+    d.classList.remove('done','active');
+    if(k < i) d.classList.add('done');
+    else if(k === i) d.classList.add('active');
+  }
+  const pt = document.getElementById('progressText');
+  if(i>=1 && i<=6) pt.textContent = `第 ${i} / 6 關`;
+  else if(i===7) pt.textContent = '完成！';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startMission(){ currentStep=1; showStep(1); }
+
+// Level 1 — drag & drop domestication pairs
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{
+    e.preventDefault(); z.classList.remove('over');
+    if(dragged){ z.querySelector('.drop-content').appendChild(dragged); }
+  });
+});
+function checkLevel1(){
+  const zones = document.querySelectorAll('#level1 .drop-zone');
+  let correct=0, total=4;
+  zones.forEach(z=>{
+    const pair = z.dataset.pair;
+    z.querySelectorAll('.drop-content .drag-item').forEach(it=>{
+      if(it.dataset.pair===pair) correct++;
+    });
+  });
+  const fb = document.getElementById('q1-feedback');
+  if(correct===total){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 全部配對正確！馴化是人類和野生動植物幾千年的合作故事。</div>';
+    confetti();
+    setTimeout(()=>{currentStep=2;showStep(2);},1500);
+  } else {
+    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 你答對 ${correct}/${total}。提示：狗的祖先是野狼、水稻來自野稻、肉雞來自原雞、家豬來自野豬。</div>`;
+  }
+}
+
+// Level 2
+document.querySelectorAll('.q2-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const fb = document.getElementById('q2-feedback');
+    if(btn.dataset.ans==='1'){
+      fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 答對了！FAO/IPBES 報告指出全球約 75% 糧食作物需要動物授粉，佔農業產量 35%。沒有蜜蜂就沒有草莓、咖啡、巧克力！</div>';
+      confetti();
+      setTimeout(()=>{currentStep=3;showStep(3);},1500);
+    } else {
+      btn.classList.add('shake');
+      fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再想想！提示：比你想像的多很多。你今天吃的水果、堅果、咖啡，幾乎都需要蜜蜂幫忙。</div>';
+    }
+  });
+});
+
+// Level 3
+let q3Correct=0, q3Total=3;
+document.querySelectorAll('.q3-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q3');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      q3Correct++;
+    } else {
+      btn.classList.add('bg-red-300','text-white','shake');
+      const correctBtn = parent.querySelector(`.q3-opt[data-v="${ans}"]`);
+      if(correctBtn) correctBtn.classList.add('bg-green-400','text-white');
+    }
+    parent.dataset.answered='1';
+    checkQ3Done();
+  });
+});
+function checkQ3Done(){
+  const answered = document.querySelectorAll('.q3[data-answered="1"]').length;
+  if(answered===q3Total){
+    document.getElementById('q3-feedback').innerHTML =
+      `<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌱 你答對 ${q3Correct}/${q3Total}！農業背後有數不盡的生命與資源。</div>`;
+    confetti();
+    setTimeout(()=>{currentStep=4;showStep(4);},1500);
+  }
+}
+
+// Level 4
+let q4Done=0;
+document.querySelectorAll('.q4-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q4');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    const hint = parent.dataset.hint;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-green-700 text-sm">✅ 正確！${hint}</p>`);
+    } else {
+      btn.classList.add('bg-red-300','shake');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-rose-700 text-sm">💡 再想想：${hint}</p>`);
+    }
+    parent.dataset.answered='1';
+    q4Done++;
+    if(q4Done===3){
+      document.getElementById('q4-feedback').innerHTML='<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎯 迷思破解完成！</div>';
+      confetti();
+      setTimeout(()=>{currentStep=5;showStep(5);},1500);
+    }
+  });
+});
+
+// Level 5 — choice consequences
+const choiceFeedback = {
+  A: { tone:'warn', text:'⚠️ 滅鼠藥會讓石虎誤食中毒，台灣每年有石虎因此死亡。化學農藥也會傷害蜜蜂與土壤 10 億微生物。' },
+  B: { tone:'best', text:'🌟 最佳答案！友善石虎方案用捕鼠夾加上貓頭鷹巢箱（天敵自然控制），既保護石虎也讓田裡生物多樣性回來。阿明還可貼「友善石虎」標章，米賣更好。' },
+  C: { tone:'warn', text:'🐭 田鼠若不控制，稻子會大量受損。有機／友善農法不是「什麼都不做」，而是用生態方法管理。' },
+  D: { tone:'warn', text:'😢 把田賣掉蓋房子，不僅石虎失去棲地，台灣的糧食自給率也會下降。農地是大家的食物保險。' }
+};
+document.querySelectorAll('.choice').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(document.getElementById('level5').dataset.answered) return;
+    document.getElementById('level5').dataset.answered='1';
+    const c = choiceFeedback[btn.dataset.c];
+    const color = c.tone==='best'?'green':(c.tone==='ok'?'blue':'yellow');
+    btn.classList.add('bg-'+color+'-100','border-'+color+'-500');
+    document.getElementById('q5-feedback').innerHTML =
+      `<div class="feedback-pop bg-${color}-100 border-l-4 border-${color}-500 p-3 rounded">${c.text}</div>`;
+    if(c.tone==='best') confetti();
+    setTimeout(()=>{currentStep=6;showStep(6);},2200);
+  });
+});
+
+// Level 6 — WSA
+function checkWSA(){
+  const boxes = document.querySelectorAll('.wsa');
+  const all = Array.from(boxes).every(b=>b.checked);
+  const fb = document.getElementById('wsa-feedback');
+  if(all){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-4 rounded text-lg">🏅 四面向全勾選！你就是我們班的全校英雄！</div>';
+    confetti(60);
+    setTimeout(()=>{currentStep=7;showStep(7);},1800);
+  } else {
+    const cnt = Array.from(boxes).filter(b=>b.checked).length;
+    fb.innerHTML = `<div class="feedback-pop bg-amber-100 border-l-4 border-amber-500 p-3 rounded">你選了 ${cnt}/4 個面向。全校英雄需要「課程、校園、社區、學生」四面向一起行動。再想想你可以怎麼參與剩下的面向？</div>`;
+  }
+}
+
+// Confetti
+function confetti(n=30){
+  const colors=['#f87171','#fbbf24','#34d399','#60a5fa','#a78bfa'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.top='-20px';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*0.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+</script>
+</body>
+</html>

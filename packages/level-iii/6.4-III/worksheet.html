@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>6.4-III 永續的生活空間｜EEWH 超級改造王</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:"Noto Sans TC","PingFang TC",system-ui,sans-serif;background:linear-gradient(135deg,#d1fae5 0%,#fef3c7 50%,#e0e7ff 100%);}
+  .badge-glow{animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.7)}50%{box-shadow:0 0 0 18px rgba(16,185,129,0)}}
+  .shake{animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+  .pop{animation:pop .35s}
+  @keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+  .confetti{position:fixed;width:10px;height:16px;top:-20px;opacity:.9;pointer-events:none;z-index:9999;animation:fall 2.5s linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+  .dot{width:14px;height:14px;border-radius:50%;background:#d1d5db;display:inline-block;margin:0 4px;transition:all .3s}
+  .dot.active{background:#10b981;transform:scale(1.35)}
+  .stage{display:none}.stage.active{display:block}
+  .opt{transition:all .2s}.opt:hover{transform:translateY(-3px)}
+  .correct{background:#d1fae5!important;border-color:#10b981!important}
+  .wrong{background:#fee2e2!important;border-color:#ef4444!important}
+</style>
+</head>
+<body class="min-h-screen py-8">
+<div class="max-w-5xl mx-auto px-4">
+
+<header class="bg-white/80 backdrop-blur rounded-3xl shadow-xl p-6 mb-6 border-4 border-emerald-300">
+  <div class="flex items-center justify-between flex-wrap gap-3">
+    <div>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-emerald-700">🏡 EEWH 超級改造王</h1>
+      <p class="text-gray-600 mt-1">UNESCO 6.4-III · 永續的生活空間 · 9-12 歲</p>
+    </div>
+    <div class="text-right">
+      <p class="text-sm text-gray-500">任務進度</p>
+      <p class="text-lg font-bold text-emerald-600"><span id="progressText">第 0 / 6 關</span></p>
+      <div class="mt-2">
+        <span class="dot" data-s="1"></span><span class="dot" data-s="2"></span><span class="dot" data-s="3"></span>
+        <span class="dot" data-s="4"></span><span class="dot" data-s="5"></span><span class="dot" data-s="6"></span>
+      </div>
+    </div>
+  </div>
+  <div class="w-full bg-gray-200 rounded-full h-3 mt-4"><div id="bar" class="bg-gradient-to-r from-emerald-400 to-sky-500 h-3 rounded-full" style="width:0%"></div></div>
+</header>
+
+<section class="bg-gradient-to-br from-amber-100 to-orange-100 rounded-3xl p-6 mb-6 shadow-lg border-2 border-amber-300">
+  <h2 class="text-xl font-bold text-orange-700">📜 任務簡報：地球守護者你好！</h2>
+  <p class="mt-2 text-gray-700 leading-relaxed">我是<b>「綠屋頂松鼠小松」🐿️</b>，來自未來 2050 年的都市叢林。全球建築每年排放 <b class="text-red-600">34%</b> 的 CO₂，家戶空污每年奪走 <b class="text-red-600">2.9 百萬</b> 人的生命。需要你幫忙破解 6 道改造關卡，把我的家變回能呼吸的永續空間！完成即獲得「<b class="text-emerald-600">全校英雄徽章</b>」🏆</p>
+</section>
+
+<!-- 關 1 -->
+<section id="s1" class="stage active bg-white rounded-3xl shadow-xl p-6 mb-6">
+  <h3 class="text-2xl font-bold text-sky-700">關卡 1｜哪一間最永續？</h3>
+  <p class="text-gray-600 mt-1">以「生活品質、功能性、自然友善」三支柱判斷，哪一棟最接近永續生活空間？</p>
+  <div class="grid md:grid-cols-3 gap-3 mt-4">
+    <button class="opt q1 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🏙️ 24 小時冷氣的玻璃帷幕大樓</button>
+    <button class="opt q1 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="yes">📚 通風＋採光＋屋頂發電的北投圖書館</button>
+    <button class="opt q1 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🏚️ 沒窗、沒綠化的鐵皮加蓋</button>
+  </div>
+  <p id="fb1" class="mt-3 text-sm"></p>
+</section>
+
+<!-- 關 2 數字偵探 -->
+<section id="s2" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
+  <h3 class="text-2xl font-bold text-sky-700">關卡 2｜數字偵探</h3>
+  <p class="text-gray-600 mt-1">全球「建築部門」（包含營運 + 建材）大約占能源相關 CO₂ 排放的多少？</p>
+  <div class="grid md:grid-cols-4 gap-3 mt-4">
+    <button class="opt q2 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🌱 約 5%</button>
+    <button class="opt q2 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🍃 約 15%</button>
+    <button class="opt q2 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="yes">🔥 約 34%</button>
+    <button class="opt q2 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🌋 約 70%</button>
+  </div>
+  <p id="fb2" class="mt-3 text-sm"></p>
+  <p class="mt-2 text-xs text-gray-500">📊 真實數據：UNEP / IEA Global Status Report for Buildings and Construction 2024</p>
+</section>
+
+<!-- 關 3 拖曳：EEWH 九指標分類 -->
+<section id="s3" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
+  <h3 class="text-2xl font-bold text-sky-700">關卡 3｜拖曳配對：EEWH 九指標 → 三支柱</h3>
+  <p class="text-gray-600 mt-1">把 6 個 EEWH 指標拖到對應的「三支柱」欄裡。</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <div>
+      <p class="font-semibold mb-2">🎒 指標卡（可拖）</p>
+      <div id="pool" class="space-y-2">
+        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="quality">🫁 室內健康與環境</div>
+        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="nature">🦋 生物多樣性</div>
+        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="function">💡 日常節能</div>
+        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="nature">🌳 綠化量</div>
+        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="function">💧 水資源</div>
+        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="quality">🧼 污水垃圾改善</div>
+      </div>
+    </div>
+    <div>
+      <p class="font-semibold mb-2">🎯 三支柱欄位</p>
+      <div id="slots" class="space-y-2">
+        <div class="slot p-3 rounded-lg bg-sky-50 border-2 border-dashed border-sky-400 min-h-[80px]" data-k="quality"><b>🛋️ 生活品質</b>（拖入 2 張）</div>
+        <div class="slot p-3 rounded-lg bg-amber-50 border-2 border-dashed border-amber-400 min-h-[80px]" data-k="function"><b>⚙️ 功能性</b>（拖入 2 張）</div>
+        <div class="slot p-3 rounded-lg bg-emerald-50 border-2 border-dashed border-emerald-400 min-h-[80px]" data-k="nature"><b>🌿 自然友善</b>（拖入 2 張）</div>
+      </div>
+      <button id="check3" class="mt-3 bg-sky-500 text-white px-4 py-2 rounded-lg font-bold">檢查配對</button>
+      <p id="fb3" class="mt-2 text-sm"></p>
+    </div>
+  </div>
+</section>
+
+<!-- 關 4 碳帳本 -->
+<section id="s4" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
+  <h3 class="text-2xl font-bold text-sky-700">關卡 4｜有毒空氣偵查</h3>
+  <p class="text-gray-600 mt-1">WHO 建議兒童長期暴露 PM2.5 不超過 5 µg/m³，臺灣 2023 年年均值是？</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-4">
+    <button class="opt q4 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">💚 約 3 µg/m³（比 WHO 還低）</button>
+    <button class="opt q4 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="yes">😷 約 13.7 µg/m³（超標 2.7 倍）</button>
+    <button class="opt q4 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">⚠️ 約 50 µg/m³</button>
+    <button class="opt q4 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🌋 超過 100 µg/m³</button>
+  </div>
+  <p id="fb4" class="mt-3 text-sm"></p>
+  <p class="mt-2 text-xs text-gray-500">📊 WHO Global Air Quality Guidelines 2021；環境部空氣品質監測年報 2023</p>
+</section>
+
+<!-- 關 5 情境角色 -->
+<section id="s5" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
+  <h3 class="text-2xl font-bold text-sky-700">關卡 5｜情境抉擇：班導說「屋頂種菜會漏水！」</h3>
+  <p class="text-gray-600 mt-1">你想幫學校推動屋頂綠化，班導持反對意見。你會怎麼回應？</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-4">
+    <button class="opt q5 p-4 rounded-xl border-2 border-gray-200 bg-blue-50 text-left" data-a="A">A. 「好吧，那算了。」放棄提案。</button>
+    <button class="opt q5 p-4 rounded-xl border-2 border-gray-200 bg-blue-50 text-left" data-a="B">B. 「老師妳太落伍了！」大聲頂嘴。</button>
+    <button class="opt q5 p-4 rounded-xl border-2 border-gray-200 bg-blue-50 text-left" data-a="C">C. 「老師，綠屋頂可降溫 2-5°C、省 30% 空調電費，我們可以邀建築師來評估防水層！」</button>
+    <button class="opt q5 p-4 rounded-xl border-2 border-gray-200 bg-blue-50 text-left" data-a="D">D. 偷偷在陽台種，不告訴老師。</button>
+  </div>
+  <p id="fb5" class="mt-3 text-sm"></p>
+</section>
+
+<!-- 關 6 WSA 4 checkbox -->
+<section id="s6" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
+  <h3 class="text-2xl font-bold text-sky-700">關卡 6｜全校英雄行動（WSA 四面向）</h3>
+  <p class="text-gray-600 mt-1">勾選你願意挑戰的行動，四個都勾才能解鎖「全校英雄」徽章！🏆</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-4">
+    <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 cursor-pointer"><input type="checkbox" class="wsa mt-1" data-k="curriculum"><div><b>📚 課程與學習</b><br><span class="text-sm">在自然課實地量測教室的 CO₂ 或 PM2.5，並用 EEWH 九指標寫一份體檢表。</span></div></label>
+    <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 cursor-pointer"><input type="checkbox" class="wsa mt-1" data-k="operations"><div><b>🏫 校園營運</b><br><span class="text-sm">加入「EEWH 小隊」推動教室 LED 換裝、屋頂綠化試點或開窗通風時段。</span></div></label>
+    <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 cursor-pointer"><input type="checkbox" class="wsa mt-1" data-k="community"><div><b>🏘️ 社區夥伴</b><br><span class="text-sm">和家人畫出社區「遮蔭地圖」；拜訪鄰近綠建築並分享照片給里辦。</span></div></label>
+    <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 cursor-pointer"><input type="checkbox" class="wsa mt-1" data-k="agency"><div><b>🗣️ 學生治理</b><br><span class="text-sm">向校長或家長會提案「校園 EEWH 改造計畫」，列出三項可行行動。</span></div></label>
+  </div>
+  <button id="finish" class="mt-5 bg-gradient-to-r from-emerald-500 to-sky-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg">解鎖全校英雄徽章 🏆</button>
+  <p id="fb6" class="mt-3 text-sm"></p>
+</section>
+
+<!-- 成果 -->
+<section id="result" class="hidden bg-gradient-to-br from-yellow-100 to-pink-100 rounded-3xl shadow-2xl p-8 mb-6 text-center border-4 border-yellow-400">
+  <div id="badge" class="inline-block badge-glow bg-gradient-to-br from-emerald-400 to-sky-500 text-white rounded-full w-40 h-40 flex items-center justify-center text-5xl shadow-2xl mx-auto">🏆</div>
+  <h2 class="text-3xl font-extrabold mt-4 text-emerald-700">恭喜！你是 6.4-III 全校英雄！</h2>
+  <p class="text-gray-700 mt-2">你記住了：建築排 34% CO₂、臺灣 PM2.5 超標 2.7 倍、綠屋頂可降溫 2-5°C。</p>
+  <div class="mt-6 text-left max-w-2xl mx-auto bg-white/70 rounded-2xl p-5">
+    <h3 class="font-bold text-lg text-sky-700">🧠 延伸思考（請與家人討論）</h3>
+    <ol class="list-decimal ml-6 mt-2 space-y-2 text-gray-700">
+      <li>如果所有新學校都強制做綠建築，會不會更貴？你覺得值得嗎？</li>
+      <li>舊公寓沒有預算改造，小孩可以先做哪 3 件事改善室內空氣？</li>
+      <li>你願意讓家裡冷氣夏天只設 26°C 嗎？可以用什麼替代方式更舒服？</li>
+    </ol>
+  </div>
+  <button onclick="window.print()" class="mt-5 bg-sky-600 text-white px-5 py-2 rounded-lg">🖨️ 列印我的英雄證書</button>
+</section>
+
+<footer class="text-center text-xs text-gray-500 mt-6 pb-10">© 6.4-III UNESCO CCE · 數據 2026-04-16 驗證 · WHO / UNEP / IEA / IPCC / TCCIP / 環境部 EEWH</footer>
+
+</div>
+
+<script>
+let stage=1, score=0;
+
+function setStage(n){
+  document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('s'+n); if(el){el.classList.add('active'); el.scrollIntoView({behavior:'smooth'});}
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active', i<n));
+  document.getElementById('progressText').textContent='第 '+n+' / 6 關';
+  document.getElementById('bar').style.width=((n-1)/6*100)+'%';
+  stage=n;
+}
+
+function confetti(){
+  const colors=['#f59e0b','#10b981','#3b82f6','#ec4899','#8b5cf6'];
+  for(let i=0;i<40;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*0.6)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+
+// Q1
+document.querySelectorAll('.q1').forEach(b=>b.addEventListener('click',()=>{
+  const ok=b.dataset.a==='yes';
+  document.querySelectorAll('.q1').forEach(x=>x.disabled=true);
+  if(ok){ b.classList.add('correct'); document.getElementById('fb1').innerHTML='✅ 答對！北投圖書館靠自然通風＋採光＋屋頂發電，是公共綠建築經典案例。<span class="pop inline-block">🎉</span>'; score++; setTimeout(()=>setStage(2),900);}
+  else{ b.classList.add('wrong','shake'); document.getElementById('fb1').innerHTML='❌ 再想想！提示：永續≠豪華，也≠簡陋。正解是「📚 北投圖書館」。<br>點下一題繼續 →'; setTimeout(()=>setStage(2),1800);}
+}));
+
+// Q2
+document.querySelectorAll('.q2').forEach(b=>b.addEventListener('click',()=>{
+  const ok=b.dataset.a==='yes';
+  document.querySelectorAll('.q2').forEach(x=>x.disabled=true);
+  if(ok){ b.classList.add('correct'); document.getElementById('fb2').innerHTML='✅ 答對！建築部門占全球能源相關 CO₂ 排放 <b>34%</b>，每三口 CO₂ 就有一口來自建築！'; score++; confetti(); setTimeout(()=>setStage(3),900);}
+  else{ b.classList.add('wrong','shake'); document.getElementById('fb2').innerHTML='❌ 正解是 <b>34%</b>。提示：建築包括水泥鋼筋 + 冷氣暖氣。'; setTimeout(()=>setStage(3),1800);}
+}));
+
+// Q3 drag
+let dragged=null;
+document.querySelectorAll('.drag').forEach(d=>{
+  d.addEventListener('dragstart',e=>{dragged=d;e.dataTransfer.effectAllowed='move';});
+});
+document.querySelectorAll('.slot').forEach(s=>{
+  s.addEventListener('dragover',e=>e.preventDefault());
+  s.addEventListener('drop',e=>{e.preventDefault(); if(dragged){ s.appendChild(dragged); }});
+});
+document.getElementById('check3').addEventListener('click',()=>{
+  const slots=document.querySelectorAll('#slots .slot');
+  let ok=true;
+  slots.forEach(sl=>{
+    const k=sl.dataset.k;
+    const items=sl.querySelectorAll('.drag');
+    if(items.length<2){ ok=false; sl.classList.add('wrong'); return; }
+    items.forEach(it=>{ if(it.dataset.k!==k){ ok=false; sl.classList.add('wrong'); } });
+    if(ok) sl.classList.add('correct');
+  });
+  if(ok){ document.getElementById('fb3').innerHTML='✅ 完美！三支柱對應 EEWH 指標：生活品質（室內健康、污水垃圾）、功能性（節能、水資源）、自然友善（生物多樣性、綠化量）。'; score++; confetti(); setTimeout(()=>setStage(4),1400);}
+  else{ document.getElementById('fb3').innerHTML='❌ 有些指標放錯家。提示：「生物多樣性、綠化量」屬於<b>自然友善</b>；「節能、水資源」屬於<b>功能性</b>。再試一次或點下一題。'; setTimeout(()=>setStage(4),2600);}
+});
+
+// Q4
+document.querySelectorAll('.q4').forEach(b=>b.addEventListener('click',()=>{
+  const ok=b.dataset.a==='yes';
+  document.querySelectorAll('.q4').forEach(x=>x.disabled=true);
+  if(ok){b.classList.add('correct'); document.getElementById('fb4').innerHTML='✅ 沒錯！臺灣 2023 年年均 <b>13.7 µg/m³</b>，超標 WHO 2.7 倍。兒童肺部更脆弱，開窗通風很重要！'; score++; setTimeout(()=>setStage(5),1100);}
+  else{b.classList.add('wrong','shake'); document.getElementById('fb4').innerHTML='❌ 正解是 13.7 µg/m³。你剛剛<b>太樂觀或太悲觀</b>了。臺灣空氣其實比 WHO 標準髒 2.7 倍！'; setTimeout(()=>setStage(5),1800);}
+}));
+
+// Q5
+const fb5={
+  A:{ok:false,msg:'🙁 放棄就什麼也沒改變。用數據說話吧！'},
+  B:{ok:false,msg:'😬 頂嘴會讓老師更反對，訊息完全傳不到。'},
+  C:{ok:true, msg:'✅ 超棒！用「降溫 2-5°C、省 30% 空調、邀請專家」組合拳，正是 B1 論述 + B2 行動！'},
+  D:{ok:false,msg:'🫥 偷偷做無法推動整個校園改變。公開溝通才能成為全校英雄。'}
+};
+document.querySelectorAll('.q5').forEach(b=>b.addEventListener('click',()=>{
+  const r=fb5[b.dataset.a];
+  document.querySelectorAll('.q5').forEach(x=>x.disabled=true);
+  b.classList.add(r.ok?'correct':'wrong');
+  document.getElementById('fb5').innerHTML=r.msg;
+  if(r.ok){score++; confetti();}
+  setTimeout(()=>setStage(6),1400);
+}));
+
+// Q6 WSA
+document.getElementById('finish').addEventListener('click',()=>{
+  const checked=[...document.querySelectorAll('.wsa:checked')].map(x=>x.dataset.k);
+  const all=['curriculum','operations','community','agency'];
+  const allChecked=all.every(k=>checked.includes(k));
+  if(allChecked){
+    score++;
+    document.getElementById('fb6').innerHTML='✅ WSA 全打勾！你真的是<b>全校英雄</b>！';
+    document.getElementById('result').classList.remove('hidden');
+    document.querySelectorAll('.dot').forEach(d=>d.classList.add('active'));
+    document.getElementById('bar').style.width='100%';
+    document.getElementById('progressText').textContent='第 6 / 6 關 ✓';
+    confetti(); setTimeout(confetti,400); setTimeout(confetti,800);
+    document.getElementById('result').scrollIntoView({behavior:'smooth'});
+  } else {
+    document.getElementById('fb6').innerHTML='⚠️ 至少四個都勾才能成為「全校英雄」！因為真正的改變需要<b>課程 + 營運 + 社區 + 學生</b>全部出動。';
+  }
+});
+
+setStage(1);
+</script>
+</body>
+</html>

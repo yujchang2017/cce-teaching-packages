@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>生物多樣性小偵探 — 2.1-III 互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#e0f2fe 0%,#dcfce7 50%,#fef3c7 100%); min-height:100vh; }
+  .card { transition: transform .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .feedback-pop { animation: pop .4s ease-out; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
+  .progress-dot.done { background: #10b981; transform: scale(1.2); }
+  .progress-dot.active { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,.25); }
+  .drag-item { cursor: grab; user-select: none; }
+  .drag-item.dragging { opacity: .4; }
+  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
+  .badge { animation: glow 2s infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
+  .hidden-step { display: none; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-gradient-to-r from-green-600 to-emerald-500 text-white p-6 shadow-lg">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-extrabold">🌿 生物多樣性小偵探</h1>
+    <p class="mt-2 text-emerald-50">UNESCO 2.1-III ｜ 9-12 歲 ｜ 出發認識地球的 870 萬鄰居！</p>
+    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
+      <div class="progress-dot" id="dot5"></div>
+      <div class="progress-dot" id="dot6"></div>
+    </div>
+    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 md:p-6">
+
+<!-- 角色與情境故事 -->
+<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <div class="flex items-start gap-4">
+    <div class="text-6xl">🦝</div>
+    <div>
+      <h2 class="text-2xl font-bold text-emerald-700">任務簡報：你被選為「校園生態小偵探」！</h2>
+      <p class="mt-2 leading-relaxed">嗨！我是石虎阿花，台灣野外只剩約 <strong class="text-red-600">500 隻</strong> 的我，需要你幫忙守護家園。你的任務是通過 6 個關卡，解鎖「全校英雄」徽章，一起讓學校變成生物的庇護所！</p>
+      <button onclick="startMission()" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 🔍</button>
+    </div>
+  </div>
+</section>
+
+<!-- 關卡 1：數字大驚奇（填空/選擇）-->
+<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-blue-700">🔢 關卡 1：地球到底有幾種生物？</h2>
+  <p class="mt-2 text-gray-600">科學家目前<strong>已命名</strong>的物種約 210 萬種，但<strong>估計</strong>地球上實際有更多。你猜是多少？</p>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">100 萬</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">300 萬</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="1">約 870 萬</button>
+    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">50 萬</button>
+  </div>
+  <div id="q1-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 2：生態系連連看（拖曳）-->
+<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-teal-700">🧩 關卡 2：生物回家 — 把動物拖到對的家</h2>
+  <p class="mt-2 text-gray-600">台灣有約 <strong>6 萬 2 千種</strong>原生物種，其中 <strong>25%</strong> 是只有台灣才有的特有種！幫這些生物找到自己的生態系：</p>
+
+  <div class="flex flex-wrap gap-3 mt-4" id="animalPool">
+    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="forest">🐆 石虎</div>
+    <div class="drag-item bg-blue-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="wetland">🪿 黑面琵鷺</div>
+    <div class="drag-item bg-pink-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="ocean">🐠 小丑魚</div>
+    <div class="drag-item bg-green-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="urban">🦜 綠繡眼</div>
+    <div class="drag-item bg-orange-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="forest">🐻 台灣黑熊</div>
+    <div class="drag-item bg-cyan-100 px-4 py-2 rounded-full shadow" draggable="true" data-hab="ocean">🐬 花紋海豚</div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-green-400 bg-green-50 rounded-xl p-3" data-hab="forest">
+      <p class="font-bold text-green-700">🌲 森林 / 淺山</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-blue-400 bg-blue-50 rounded-xl p-3" data-hab="wetland">
+      <p class="font-bold text-blue-700">💧 濕地</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-cyan-400 bg-cyan-50 rounded-xl p-3" data-hab="ocean">
+      <p class="font-bold text-cyan-700">🌊 海洋（珊瑚礁 &lt;1% 卻養 &gt;25% 海洋物種）</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+    <div class="drop-zone min-h-[120px] border-2 border-dashed border-gray-400 bg-gray-50 rounded-xl p-3" data-hab="urban">
+      <p class="font-bold text-gray-700">🏙️ 都市 / 校園</p>
+      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
+    </div>
+  </div>
+  <div id="q2-feedback" class="mt-4"></div>
+  <button id="q2-check" onclick="checkLevel2()" class="mt-3 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full">檢查答案</button>
+</section>
+
+<!-- 關卡 3：季節生物曆（選擇題，多題）-->
+<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-amber-700">📅 關卡 3：季節的魔法</h2>
+  <p class="mt-2 text-gray-600">不同的季節，會看到不同的生物。把下面的生物配到對的季節：</p>
+  <div id="seasonQs" class="space-y-4 mt-4">
+    <div class="q3 border rounded-xl p-3" data-ans="winter">
+      <p class="font-semibold">🪿 黑面琵鷺（全球 6,988 隻，台灣度冬 4,135 隻）通常何時來台灣？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="spring">春</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="summer">夏</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="autumn">秋</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="winter">冬</button>
+      </div>
+    </div>
+    <div class="q3 border rounded-xl p-3" data-ans="summer">
+      <p class="font-semibold">🦗 夏天公園裡最吵的是哪種昆蟲的叫聲？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="spring">蝴蝶羽化</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="summer">蟬鳴</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="autumn">蟋蟀</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="winter">螢火蟲</button>
+      </div>
+    </div>
+    <div class="q3 border rounded-xl p-3" data-ans="spring">
+      <p class="font-semibold">🌸 春天雨量增加、氣溫回暖，最容易看到哪個現象？</p>
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="spring">蝴蝶大量羽化</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="summer">黑面琵鷺離台</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="autumn">落葉繽紛</button>
+        <button class="q3-opt px-3 py-1 border rounded-full" data-v="winter">櫻花鉤吻鮭產卵</button>
+      </div>
+    </div>
+  </div>
+  <div id="q3-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 4：迷思破解（是非題）-->
+<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-rose-700">🧠 關卡 4：迷思大破解</h2>
+  <p class="mt-2 text-gray-600">下面的說法對嗎？勇敢選答，錯了沒關係，我會告訴你為什麼。</p>
+  <div id="mythQs" class="space-y-4 mt-4">
+    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="都市裡也有很多生物！研究顯示綠地每增加10%，溫度降1°C，也會招來更多鳥類昆蟲。">
+      <p class="font-semibold">Q1：生物多樣性只存在原始森林，都市裡沒有。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="看「種類」而非「數量」。100 隻麻雀不等於 100 種鳥。保護原生種、稀有種才能提升多樣性。">
+      <p class="font-semibold">Q2：校園看到很多麻雀，就代表生物多樣性很高。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+    <div class="q4 border rounded-xl p-3" data-ans="true" data-hint="正確！IPBES 報告指出約 100 萬種動植物面臨絕種，人類造成的速度是自然背景值的數十倍以上。">
+      <p class="font-semibold">Q3：人類活動正讓地球物種以異常快的速度消失，約 100 萬種動植物面臨絕種風險。</p>
+      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
+    </div>
+  </div>
+  <div id="q4-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 5：選擇權與後果（情境劇）-->
+<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
+  <h2 class="text-xl font-bold text-purple-700">🎭 關卡 5：石虎的路口抉擇</h2>
+  <p class="mt-2 text-gray-600">阿花要穿越一條公路去找食物，你會建議牠怎麼做？（沒有標準答案，但每個選擇會有不同後果）</p>
+  <div class="space-y-3 mt-4">
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="A">A. 直接衝過馬路，越快越好</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="B">B. 等天黑車少再過</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="C">C. 找「動物通道」（生態廊道）</button>
+    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="D">D. 放棄過馬路，在原地挨餓</button>
+  </div>
+  <div id="q5-feedback" class="mt-4"></div>
+</section>
+
+<!-- 關卡 6：全校行動挑戰（WSA 四面向）-->
+<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6 border-4 border-amber-400">
+  <h2 class="text-xl font-bold text-amber-700">🏫 關卡 6：全校行動挑戰（Whole School Approach）</h2>
+  <p class="mt-2 text-gray-700">四個面向，一起把學校變成生物的家。請勾選你「本學期會嘗試」的行動，四項全勾，解鎖「全校英雄」徽章！</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <label class="flex items-start gap-3 p-4 border-2 border-blue-200 rounded-xl cursor-pointer hover:bg-blue-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="curriculum" />
+      <div>
+        <p class="font-bold text-blue-700">📚 課程整合</p>
+        <p class="text-sm">自然課記錄校園 5 種生物 + 語文課閱讀一本生態繪本（如吳明益、劉克襄）。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-green-200 rounded-xl cursor-pointer hover:bg-green-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="operations" />
+      <div>
+        <p class="font-bold text-green-700">🌳 校園營運</p>
+        <p class="text-sm">在校園角落種 3 棵原生蜜源植物（馬利筋、馬纓丹），做 1 個昆蟲旅館。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-orange-200 rounded-xl cursor-pointer hover:bg-orange-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="community" />
+      <div>
+        <p class="font-bold text-orange-700">🤝 社區連結</p>
+        <p class="text-sm">邀請里長或在地鳥會來學校分享，或全班參加一次社區植樹／淨灘。</p>
+      </div>
+    </label>
+    <label class="flex items-start gap-3 p-4 border-2 border-purple-200 rounded-xl cursor-pointer hover:bg-purple-50">
+      <input type="checkbox" class="wsa mt-1" data-aspect="agency" />
+      <div>
+        <p class="font-bold text-purple-700">🙋 學生治理</p>
+        <p class="text-sm">選出「生態小隊長」，向校務會議提出 1 個校園生物多樣性提案。</p>
+      </div>
+    </label>
+  </div>
+  <button onclick="checkWSA()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full shadow-lg">提交挑戰 🏆</button>
+  <div id="wsa-feedback" class="mt-4"></div>
+</section>
+
+<!-- 徽章與成果 -->
+<section id="result" class="hidden-step card bg-gradient-to-br from-yellow-100 to-amber-200 rounded-2xl shadow-2xl p-8 mb-6 text-center">
+  <div class="text-7xl mb-3 badge inline-block rounded-full bg-white p-6">🏆</div>
+  <h2 class="text-3xl font-extrabold text-amber-800">全校英雄 徽章解鎖！</h2>
+  <p class="mt-3 text-lg">你已經認識了 <strong>210 萬已命名、估 870 萬</strong> 地球物種、台灣 <strong>62,000 種</strong> 原生生物、為 <strong>約 500 隻</strong>石虎與 <strong>4,135 隻</strong> 黑面琵鷺許下守護承諾！</p>
+
+  <div class="bg-white rounded-xl p-5 mt-5 text-left">
+    <h3 class="font-bold text-emerald-700 text-xl mb-2">🌱 三個延伸思考（帶回家想想）</h3>
+    <ol class="list-decimal ml-6 space-y-2">
+      <li>如果校方要蓋新操場，要砍一片小樹林，你會支持、反對，還是有第三種方案？寫下你的理由與替代做法。</li>
+      <li>從你家到學校的路上，找一個「小地方」（水溝邊、屋頂、牆角）觀察一週，記錄至少 3 種生物，並想想怎麼讓那裡更適合生物居住。</li>
+      <li>十年後你想從事什麼職業？那份工作怎麼跟「保護生物多樣性」連結？（提示：每個職業都可以！農夫、建築師、老師、YouTuber、工程師…）</li>
+    </ol>
+  </div>
+
+  <button onclick="window.print()" class="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full">🖨️ 列印成果頁</button>
+  <button onclick="location.reload()" class="mt-5 ml-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full">🔄 重新挑戰</button>
+</section>
+
+<footer class="text-center text-xs text-gray-500 pb-6">
+  資料來源：IPBES 2019、NOAA、農業部生物多樣性研究所、HKBWS 2024 黑面琵鷺普查、US EPA。教學套件 UNESCO 2.1-III ｜ 驗證日 2026-04-16
+</footer>
+
+</main>
+
+<script>
+let currentStep = 0;
+const steps = ['intro','level1','level2','level3','level4','level5','level6','result'];
+
+function showStep(i){
+  steps.forEach((s,idx)=>{
+    const el = document.getElementById(s);
+    if(!el) return;
+    if(idx===i) el.classList.remove('hidden-step');
+    else el.classList.add('hidden-step');
+  });
+  // progress dots
+  for(let k=1;k<=6;k++){
+    const d=document.getElementById('dot'+k);
+    d.classList.remove('done','active');
+    if(k < i) d.classList.add('done');
+    else if(k === i) d.classList.add('active');
+  }
+  const pt = document.getElementById('progressText');
+  if(i>=1 && i<=6) pt.textContent = `第 ${i} / 6 關`;
+  else if(i===7) pt.textContent = '完成！';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startMission(){ currentStep=1; showStep(1); }
+
+// Level 1
+document.querySelectorAll('.q1-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const fb = document.getElementById('q1-feedback');
+    if(btn.dataset.ans==='1'){
+      fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 答對了！科學家估計地球有約 870 萬種生物，我們只認識不到四分之一。</div>';
+      confetti();
+      setTimeout(()=>{currentStep=2;showStep(2);},1400);
+    } else {
+      btn.classList.add('shake');
+      fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再想想！提示：已命名是 210 萬，但很多深海或雨林物種還沒被發現，估計數字比已命名多好幾倍。</div>';
+    }
+  });
+});
+
+// Level 2 — drag & drop
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
+  el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); });
+});
+document.querySelectorAll('.drop-zone').forEach(z=>{
+  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
+  z.addEventListener('drop', e=>{
+    e.preventDefault(); z.classList.remove('over');
+    if(dragged){ z.querySelector('.drop-content').appendChild(dragged); }
+  });
+});
+function checkLevel2(){
+  const zones = document.querySelectorAll('.drop-zone');
+  let correct=0, total=6;
+  zones.forEach(z=>{
+    const hab = z.dataset.hab;
+    z.querySelectorAll('.drop-content .drag-item').forEach(it=>{
+      if(it.dataset.hab===hab) correct++;
+    });
+  });
+  const fb = document.getElementById('q2-feedback');
+  if(correct===total){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌟 全部配對正確！台灣擁有 62,000 種原生物種，陸、海、都市都有牠們的家。</div>';
+    confetti();
+    setTimeout(()=>{currentStep=3;showStep(3);},1500);
+  } else {
+    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 你答對 ${correct}/${total}。提示：石虎住淺山森林、黑面琵鷺在濕地（七股）、小丑魚在珊瑚礁、綠繡眼常見於都市行道樹。</div>`;
+  }
+}
+
+// Level 3
+let q3Correct=0, q3Total=3;
+document.querySelectorAll('.q3-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q3');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      q3Correct++;
+    } else {
+      btn.classList.add('bg-red-300','text-white','shake');
+      const correctBtn = parent.querySelector(`.q3-opt[data-v="${ans}"]`);
+      if(correctBtn) correctBtn.classList.add('bg-green-400','text-white');
+    }
+    parent.dataset.answered='1';
+    checkQ3Done();
+  });
+});
+function checkQ3Done(){
+  const answered = document.querySelectorAll('.q3[data-answered="1"]').length;
+  if(answered===q3Total){
+    document.getElementById('q3-feedback').innerHTML =
+      `<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🗓️ 你答對 ${q3Correct}/${q3Total}！季節塑造生物的生命節奏。</div>`;
+    confetti();
+    setTimeout(()=>{currentStep=4;showStep(4);},1400);
+  }
+}
+
+// Level 4
+let q4Done=0;
+document.querySelectorAll('.q4-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent = btn.closest('.q4');
+    if(parent.dataset.answered) return;
+    const ans = parent.dataset.ans;
+    const hint = parent.dataset.hint;
+    if(btn.dataset.v===ans){
+      btn.classList.add('bg-green-400','text-white');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-green-700 text-sm">✅ 正確！${hint}</p>`);
+    } else {
+      btn.classList.add('bg-red-300','shake');
+      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-rose-700 text-sm">💡 再想想：${hint}</p>`);
+    }
+    parent.dataset.answered='1';
+    q4Done++;
+    if(q4Done===3){
+      document.getElementById('q4-feedback').innerHTML='<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎯 迷思破解完成！</div>';
+      confetti();
+      setTimeout(()=>{currentStep=5;showStep(5);},1500);
+    }
+  });
+});
+
+// Level 5 — choice consequences
+const choiceFeedback = {
+  A: { tone:'warn', text:'⚠️ 直衝很危險！台灣每年約有十幾隻石虎死於路殺。直接衝馬路是石虎族群最大的威脅之一。' },
+  B: { tone:'ok', text:'🌙 等天黑是好主意，但還是可能遇到夜間車輛。更好的做法是配合「動物通道」設計。' },
+  C: { tone:'best', text:'🌟 最佳答案！生態廊道（動物通道）是政府專為石虎等野生動物設計的過路結構，苗栗已有多處設置。' },
+  D: { tone:'warn', text:'😢 挨餓會讓石虎虛弱甚至死亡。根本解決方法是建設安全過路設施和保護棲地連結。' }
+};
+document.querySelectorAll('.choice').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(document.getElementById('level5').dataset.answered) return;
+    document.getElementById('level5').dataset.answered='1';
+    const c = choiceFeedback[btn.dataset.c];
+    const color = c.tone==='best'?'green':(c.tone==='ok'?'blue':'yellow');
+    btn.classList.add('bg-'+color+'-100','border-'+color+'-500');
+    document.getElementById('q5-feedback').innerHTML =
+      `<div class="feedback-pop bg-${color}-100 border-l-4 border-${color}-500 p-3 rounded">${c.text}</div>`;
+    if(c.tone==='best') confetti();
+    setTimeout(()=>{currentStep=6;showStep(6);},2200);
+  });
+});
+
+// Level 6 — WSA
+function checkWSA(){
+  const boxes = document.querySelectorAll('.wsa');
+  const all = Array.from(boxes).every(b=>b.checked);
+  const fb = document.getElementById('wsa-feedback');
+  if(all){
+    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-4 rounded text-lg">🏅 四面向全勾選！你就是我們班的全校英雄！</div>';
+    confetti(60);
+    setTimeout(()=>{currentStep=7;showStep(7);},1800);
+  } else {
+    const cnt = Array.from(boxes).filter(b=>b.checked).length;
+    fb.innerHTML = `<div class="feedback-pop bg-amber-100 border-l-4 border-amber-500 p-3 rounded">你選了 ${cnt}/4 個面向。全校英雄需要「課程、校園、社區、學生」四面向一起行動，每個都很重要！再想想你可以怎麼參與剩下的面向？</div>`;
+  }
+}
+
+// Confetti
+function confetti(n=30){
+  const colors=['#f87171','#fbbf24','#34d399','#60a5fa','#a78bfa'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.top='-20px';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*0.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+</script>
+</body>
+</html>

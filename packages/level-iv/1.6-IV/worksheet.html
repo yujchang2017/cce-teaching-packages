@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>插座的另一端 | 國中再生能源互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif; background:linear-gradient(135deg,#fef3c7,#bbf7d0,#bfdbfe); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform:translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor:grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:70px; transition:background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation:pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation:shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#16a34a; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation:fade .4s ease;}
+  @keyframes fade { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none}}
+  textarea.cer { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem;}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-4xl mx-auto">
+
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">⚡ 插座的另一端</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『校園能源顧問』：9 個任務，走完你就是 Level 4 國中能源公民。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">顧問積分</div>
+    <div class="text-2xl font-bold text-amber-600"><span id="score">0</span> / 90</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">原理</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">風車</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">容量</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">資料詮釋</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">家鄉</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-6"></div><span class="text-xs">CER</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-7"></div><span class="text-xs">倫理</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-8"></div><span class="text-xs">專題</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-9"></div><span class="text-xs">後設</span>
+</div>
+
+<!-- ===== Level 1: 能量轉換鏈 ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔗</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-700">任務 1｜能量轉換鏈拼圖</h2>
+      <p class="text-sm text-slate-700 mt-1">拖曳正確的『中介形式』到每種再生能源的鏈條中。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：能源科學小助教 ｜ 10 分</p>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-5 gap-3 mb-3">
+    <div class="p-3 bg-sky-50 rounded-xl text-sm">☀️ 太陽光電<br><span class="text-xs">光子 → ? → 電流</span><div class="drop-zone mt-2" data-ans="光電效應（電子躍遷）"></div></div>
+    <div class="p-3 bg-sky-50 rounded-xl text-sm">💧 水力<br><span class="text-xs">? → 動能 → 電</span><div class="drop-zone mt-2" data-ans="重力位能"></div></div>
+    <div class="p-3 bg-sky-50 rounded-xl text-sm">🌬 風力<br><span class="text-xs">太陽加熱 → ? → 葉片轉</span><div class="drop-zone mt-2" data-ans="氣壓差"></div></div>
+    <div class="p-3 bg-sky-50 rounded-xl text-sm">🌋 地熱<br><span class="text-xs">? → 熱 → 蒸汽 → 電</span><div class="drop-zone mt-2" data-ans="放射性衰變"></div></div>
+    <div class="p-3 bg-sky-50 rounded-xl text-sm">🌾 生質能<br><span class="text-xs">光合作用 → ? → 燃燒</span><div class="drop-zone mt-2" data-ans="碳氫化合物"></div></div>
+  </div>
+  <div class="flex flex-wrap gap-2" id="l1-items">
+    <div class="drag-item chip bg-amber-200" draggable="true" data-val="光電效應（電子躍遷）">光電效應（電子躍遷）</div>
+    <div class="drag-item chip bg-amber-200" draggable="true" data-val="重力位能">重力位能</div>
+    <div class="drag-item chip bg-amber-200" draggable="true" data-val="氣壓差">氣壓差</div>
+    <div class="drag-item chip bg-amber-200" draggable="true" data-val="放射性衰變">放射性衰變</div>
+    <div class="drag-item chip bg-amber-200" draggable="true" data-val="碳氫化合物">碳氫化合物</div>
+  </div>
+  <button class="btn mt-3 bg-emerald-600 text-white px-4 py-2 rounded-lg" onclick="checkL1()">提交任務 1</button>
+  <div id="l1-msg" class="mt-2 text-sm"></div>
+</section>
+
+<!-- ===== Level 2: 風車記錄（觀察） ===== -->
+<section id="level-2" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-sky-700">任務 2｜DIY 小風車觀察紀錄 <span class="text-xs text-slate-500">10 分</span></h2>
+  <p class="text-sm text-slate-700 mt-1">課堂做過紙杯小風車後，填寫觀察：</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-3 text-sm">
+    <label>吹氣『正面』時風車是否轉動？
+      <select class="border rounded p-1 ml-2" id="l2-q1"><option value="">--</option><option>會轉</option><option>不會轉</option><option>不確定</option></select>
+    </label>
+    <label>吹氣『側面』時風車是否轉動？
+      <select class="border rounded p-1 ml-2" id="l2-q2"><option value="">--</option><option>會轉</option><option>不會轉</option><option>不確定</option></select>
+    </label>
+  </div>
+  <label class="block text-sm mt-3">用 30 字以上寫下：為什麼風向會影響轉速？這個原理和真實風機有什麼關係？
+    <textarea class="cer mt-1" id="l2-reflect" rows="3" placeholder="提示：想到風的『動能』、葉片角度、面積..."></textarea>
+  </label>
+  <button class="btn mt-3 bg-sky-600 text-white px-4 py-2 rounded-lg" onclick="checkL2()">提交任務 2</button>
+  <div id="l2-msg" class="mt-2 text-sm"></div>
+</section>
+
+<!-- ===== Level 3: 容量因素計算 ===== -->
+<section id="level-3" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-amber-700">任務 3｜容量因素計算 <span class="text-xs text-slate-500">10 分</span></h2>
+  <p class="text-sm text-slate-700 mt-1">一年有 8,760 小時。裝置容量 1 GW 的太陽光電，容量因素 20%，一年實際發電多少 GWh？</p>
+  <div class="mt-3 text-sm">
+    <p>公式：裝置容量 × 8,760 × 容量因素 = 年發電量</p>
+    <label class="block mt-2">你的答案（GWh）：
+      <input type="number" id="l3-a1" class="border rounded p-1 ml-2 w-32">
+    </label>
+    <p class="mt-3">同樣 1 GW 的燃煤（容量因素 70%），一年發電多少 GWh？</p>
+    <label class="block mt-2">你的答案（GWh）：
+      <input type="number" id="l3-a2" class="border rounded p-1 ml-2 w-32">
+    </label>
+  </div>
+  <button class="btn mt-3 bg-amber-600 text-white px-4 py-2 rounded-lg" onclick="checkL3()">提交任務 3</button>
+  <div id="l3-msg" class="mt-2 text-sm"></div>
+</section>
+
+<!-- ===== Level 4: 資料詮釋 — 臺灣綠電佔比 ===== -->
+<section id="level-4" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-indigo-700">任務 4｜資料詮釋：臺灣綠電要成長多快？ <span class="text-xs text-slate-500">10 分</span></h2>
+  <p class="text-sm text-slate-700 mt-1">資料：2023 臺灣再生能源發電佔比約 <b>9.5%</b>；目標 2050 年達 <b>60-70%</b>。</p>
+  <svg viewBox="0 0 400 180" class="w-full max-w-xl mx-auto my-3 border rounded">
+    <line x1="40" y1="160" x2="380" y2="160" stroke="#64748b"/>
+    <line x1="40" y1="20" x2="40" y2="160" stroke="#64748b"/>
+    <rect x="80" y="130" width="40" height="30" fill="#16a34a"/>
+    <text x="85" y="125" font-size="11">9.5%</text>
+    <text x="85" y="175" font-size="10">2023</text>
+    <rect x="280" y="30" width="40" height="130" fill="#16a34a" opacity="0.5"/>
+    <text x="275" y="25" font-size="11">65%</text>
+    <text x="285" y="175" font-size="10">2050</text>
+    <text x="10" y="25" font-size="10">%</text>
+  </svg>
+  <label class="block text-sm mt-2">Q4-1（計算）：從 2023 到 2050 共 27 年，若線性成長，每年平均需增加多少個百分點？
+    <input type="number" id="l4-a1" class="border rounded p-1 ml-2 w-32" step="0.01"> 個百分點
+  </label>
+  <label class="block text-sm mt-3">Q4-2（多因素推論 60+ 字）：你認為線性成長可能嗎？列出至少 2 項促進因素、2 項阻礙因素，並說明為什麼。
+    <textarea class="cer mt-1" id="l4-a2" rows="4" placeholder="促進：技術降本、政策、企業 RE100...；阻礙：選址爭議、電網、公正轉型..."></textarea>
+  </label>
+  <button class="btn mt-3 bg-indigo-600 text-white px-4 py-2 rounded-lg" onclick="checkL4()">提交任務 4</button>
+  <div id="l4-msg" class="mt-2 text-sm"></div>
+</section>
+
+<!-- ===== Level 5: 家鄉能源盤點 ===== -->
+<section id="level-5" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-teal-700">任務 5｜家鄉能源地圖 <span class="text-xs text-slate-500">10 分</span></h2>
+  <p class="text-sm text-slate-700 mt-1">用 Google Map + 公開資料，找出你家 2 公里內至少 3 項能源設施（可包含：光電、風機、火力電廠、變電所、加油站、瓦斯管線）。</p>
+  <div class="grid md:grid-cols-3 gap-2 mt-2 text-sm">
+    <label>設施 1：<input class="border p-1 rounded w-full mt-1" id="l5-f1" placeholder="如：某國小屋頂光電"></label>
+    <label>設施 2：<input class="border p-1 rounded w-full mt-1" id="l5-f2" placeholder="如：某變電所"></label>
+    <label>設施 3：<input class="border p-1 rounded w-full mt-1" id="l5-f3" placeholder="如：某加油站"></label>
+  </div>
+  <label class="block text-sm mt-3">Q5（批判分析 C3，50+ 字）：從『可再生性』角度評估你家鄉的能源組合。屬於再生 vs 非再生的比例大約如何？你覺得最該優先增加的再生能源是哪一種？為什麼？
+    <textarea class="cer mt-1" id="l5-reflect" rows="4" placeholder="50+ 字..."></textarea>
+  </label>
+  <button class="btn mt-3 bg-teal-600 text-white px-4 py-2 rounded-lg" onclick="checkL5()">提交任務 5</button>
+  <div id="l5-msg" class="mt-2 text-sm"></div>
+</section>
+
+<!-- ===== Level 6: CER — 生質能永續偵查 ===== -->
+<section id="level-6" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-rose-700">任務 6｜生質能永續 CER 論證 <span class="text-xs text-slate-500">10 分</span></h2>
+  <p class="text-sm text-slate-700 mt-1">選一項你見過的在地生質能使用（如：阿嬤燒柴煮飯 / 廚餘發電廠 / 校園烤肉活動）。用 CER 結構判斷它是否永續。</p>
+  <label class="block text-sm mt-2">情境：<input class="border p-1 rounded w-full" id="l6-case" placeholder="例如：阿公用自家龍眼木燒柴火煮飯"></label>
+  <label class="block text-sm mt-2"><b>C (主張 Claim)</b>：這個使用永續 / 不永續 / 有條件永續？
+    <textarea class="cer mt-1" id="l6-c" rows="2"></textarea>
+  </label>
+  <label class="block text-sm mt-2"><b>E (證據 Evidence)</b>：至少 3 筆證據（來源＋再生速度＋有無更好替代）。<span class="text-xs text-rose-600">自動檢查：需提到『速度』或『替代』或具體數字</span>
+    <textarea class="cer mt-1" id="l6-e" rows="4"></textarea>
+  </label>
+  <label class="block text-sm mt-2"><b>R (推理 Reasoning)</b>：為什麼這些證據支持你的主張？（50+ 字）
+    <textarea class="cer mt-1" id="l6-r" rows="3"></textarea>
+  </label>
+  <button class="btn mt-3 bg-rose-600 text-white px-4 py-2 rounded-lg" onclick="checkL6()">提交任務 6</button>
+  <div id="l6-msg" class="mt-2 text-sm"></div>
+</section>
+
+<!-- ===== Level 7: 倫理兩難（核能 vs 綠電）===== -->
+<section id="level-7" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-purple-700">任務 7｜倫理兩難：核電延役？ <span class="text-xs text-slate-500">10 分</span></h2>
+  <p class="text-sm text-slate-700 mt-1">情境：你的縣市核電廠預計 2025 年除役。支持延役的一方說：『電不夠用、綠電跟不上、燃煤會更髒。』反對的一方說：『核廢料要守上萬年、斷層下方不安全。』</p>
+  <div class="bg-purple-50 p-3 rounded mt-2 text-xs">提示：『代際正義（intergenerational justice）』原則——這一代的便利不能轉嫁給不可同意的未來世代。</div>
+  <label class="block text-sm mt-3">Q7-1（80+ 字論述，無標準答案）：你的立場是什麼？提出你的決策，並同時承認『對方合理的地方』是什麼，說明你為什麼仍選擇你的立場。
+    <textarea class="cer mt-1" id="l7-a1" rows="5"></textarea>
+  </label>
+  <label class="block text-sm mt-3">Q7-2：除了『延役 vs 除役』，有沒有第三條路？（例如：加速綠電 + 儲能投資 + 需量管理）
+    <textarea class="cer mt-1" id="l7-a2" rows="3"></textarea>
+  </label>
+  <button class="btn mt-3 bg-purple-600 text-white px-4 py-2 rounded-lg" onclick="checkL7()">提交任務 7</button>
+  <div id="l7-msg" class="mt-2 text-sm"></div>
+</section>
+
+<!-- ===== Level 8: 專題任務 — 校園提案書 + WSA ===== -->
+<section id="level-8" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-orange-700">任務 8｜校園再生能源提案書 + WSA 檢核 <span class="text-xs text-slate-500">15 分</span></h2>
+  <p class="text-sm text-slate-700 mt-1">為學校設計一項再生能源或節能行動。用 CER 結構 + WSA 四面向。</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-2 text-sm">
+    <label>行動名稱：<input class="border p-1 rounded w-full mt-1" id="l8-name" placeholder="例如：屋頂光電可行性評估"></label>
+    <label>負責人 / 時程：<input class="border p-1 rounded w-full mt-1" id="l8-when" placeholder="例如：環保股長 / 本學期"></label>
+  </div>
+  <label class="block text-sm mt-2"><b>現況盤點</b>：<textarea class="cer mt-1" id="l8-status" rows="2"></textarea></label>
+  <label class="block text-sm mt-2"><b>主張 Claim</b>：<textarea class="cer mt-1" id="l8-c" rows="2"></textarea></label>
+  <label class="block text-sm mt-2"><b>證據 Evidence（含今日資料 dp1-dp7 至少 2 筆）</b>：<textarea class="cer mt-1" id="l8-e" rows="3"></textarea></label>
+  <label class="block text-sm mt-2"><b>推理 Reasoning</b>：<textarea class="cer mt-1" id="l8-r" rows="2"></textarea></label>
+  <label class="block text-sm mt-2"><b>可行動步驟</b>：<textarea class="cer mt-1" id="l8-steps" rows="3"></textarea></label>
+  <label class="block text-sm mt-2"><b>成效指標</b>（可量化）：<textarea class="cer mt-1" id="l8-kpi" rows="2"></textarea></label>
+  <div class="mt-3 p-3 bg-orange-50 rounded">
+    <p class="font-bold text-sm">WSA 四面向檢核（至少勾 3 個才通過）：</p>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> 治理：有學生代表 / 校務會議 / 學生議會的參與設計</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> 課程：跨科連結（自然/社會/綜合/藝文）</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> 校園營運：改變校舍 / 設備 / 採購 / 用電</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> 社群：連結家長 / 里辦 / NGO / 業者</label>
+  </div>
+  <button class="btn mt-3 bg-orange-600 text-white px-4 py-2 rounded-lg" onclick="checkL8()">提交任務 8</button>
+  <div id="l8-msg" class="mt-2 text-sm"></div>
+</section>
+
+<!-- ===== Level 9: 後設認知 + 承諾 ===== -->
+<section id="level-9" class="card p-6 fade-in hidden-screen mt-4">
+  <h2 class="text-xl font-bold text-slate-700">任務 9｜後設反思 + 承諾書 <span class="text-xs text-slate-500">5 分</span></h2>
+  <label class="block text-sm mt-2">Q9-1：上這四節課前，你對『再生能源』的想法是？
+    <textarea class="cer mt-1" id="l9-before" rows="2"></textarea>
+  </label>
+  <label class="block text-sm mt-2">Q9-2：現在，你的想法哪裡改變了？為什麼？（50+ 字）
+    <textarea class="cer mt-1" id="l9-after" rows="3"></textarea>
+  </label>
+  <label class="block text-sm mt-2">Q9-3（承諾）：接下來一個月，你願意做一件具體的事是？（可以是在家、在校、在網路）
+    <textarea class="cer mt-1" id="l9-commit" rows="2"></textarea>
+  </label>
+  <div class="bg-slate-50 p-3 rounded mt-3 text-xs">🌳 最後一題開放延伸（帶回家）：如果你爸媽問『裝屋頂光電要 8-10 年才回本，要裝嗎？』你會怎麼回？沒有標準答案，但你必須用至少一個今天的資料（dp1-dp7）支持你的建議。</div>
+  <button class="btn mt-3 bg-slate-700 text-white px-4 py-2 rounded-lg" onclick="checkL9()">完成所有任務</button>
+  <div id="l9-msg" class="mt-2 text-sm"></div>
+</section>
+
+<!-- Final -->
+<section id="final" class="card p-6 fade-in hidden-screen mt-4 text-center">
+  <div class="text-5xl">🌱</div>
+  <h2 class="text-2xl font-bold text-emerald-700 mt-2">你已完成『能源顧問』全程！</h2>
+  <p class="mt-2">總積分：<b id="final-score">0</b> / 90</p>
+  <p class="text-sm text-slate-600 mt-3">請把你的提案書與影片腳本寄給老師，並在下次班會發起討論。</p>
+</section>
+
+</div>
+<script>
+let score=0;
+function gain(n,lvl){score+=n;document.getElementById('score').textContent=score;markDone(lvl);}
+function markDone(n){const d=document.getElementById('dot-'+n);if(d){d.classList.remove('active');d.classList.add('done');}const nx=document.getElementById('dot-'+(n+1));if(nx)nx.classList.add('active');}
+function show(n){document.getElementById('level-'+n).classList.remove('hidden-screen');document.getElementById('level-'+n).scrollIntoView({behavior:'smooth'});}
+
+// L1 drag-drop
+(function(){
+  const items=document.querySelectorAll('#l1-items .drag-item');
+  const zones=document.querySelectorAll('#level-1 .drop-zone');
+  let dragged=null;
+  items.forEach(i=>{
+    i.addEventListener('dragstart',()=>{dragged=i;i.classList.add('dragging');});
+    i.addEventListener('dragend',()=>{i.classList.remove('dragging');});
+  });
+  zones.forEach(z=>{
+    z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over');});
+    z.addEventListener('dragleave',()=>z.classList.remove('over'));
+    z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('over');if(dragged){z.innerHTML='';z.appendChild(dragged);z.dataset.filled=dragged.dataset.val;}});
+  });
+})();
+function checkL1(){
+  const zones=document.querySelectorAll('#level-1 .drop-zone');
+  let ok=0;zones.forEach(z=>{if(z.dataset.filled===z.dataset.ans)ok++;});
+  const m=document.getElementById('l1-msg');
+  if(ok===zones.length){m.innerHTML='<span class="text-emerald-600 font-bold">✅ 全對！+10 分</span>';gain(10,1);show(2);}
+  else m.innerHTML='<span class="text-rose-600">答對 '+ok+'/'+zones.length+'，再試試。</span>';
+}
+
+function checkL2(){
+  const q1=document.getElementById('l2-q1').value;const q2=document.getElementById('l2-q2').value;const t=document.getElementById('l2-reflect').value.trim();
+  const m=document.getElementById('l2-msg');
+  if(!q1||!q2||t.length<30){m.innerHTML='<span class="text-rose-600">請完成兩個選擇，且反思 ≥30 字。</span>';return;}
+  m.innerHTML='<span class="text-emerald-600 font-bold">✅ 完成觀察紀錄！+10 分</span>';gain(10,2);show(3);
+}
+
+function checkL3(){
+  const a1=+document.getElementById('l3-a1').value;const a2=+document.getElementById('l3-a2').value;
+  const m=document.getElementById('l3-msg');
+  // 1 GW × 8760 × 0.2 = 1752; × 0.7 = 6132
+  const ok1=Math.abs(a1-1752)<50;const ok2=Math.abs(a2-6132)<100;
+  if(ok1&&ok2){m.innerHTML='<span class="text-emerald-600 font-bold">✅ 正確！太陽光電 ≈1,752 GWh、燃煤 ≈6,132 GWh。看出差異了嗎？+10 分</span>';gain(10,3);show(4);}
+  else m.innerHTML='<span class="text-rose-600">再算一次：裝置容量(GW) × 8760 × 容量因素。</span>';
+}
+
+function checkL4(){
+  const a1=+document.getElementById('l4-a1').value;const a2=document.getElementById('l4-a2').value.trim();
+  const m=document.getElementById('l4-msg');
+  // (65-9.5)/27 ≈ 2.06
+  const ok1=a1>=1.8&&a1<=2.3;
+  if(!ok1){m.innerHTML='<span class="text-rose-600">算式：(65-9.5)/27 ≈ 2.06 個百分點/年。</span>';return;}
+  if(a2.length<60){m.innerHTML='<span class="text-rose-600">多因素推論需 ≥60 字（至少 2 促進 + 2 阻礙）。</span>';return;}
+  m.innerHTML='<span class="text-emerald-600 font-bold">✅ 資料詮釋完成！+10 分</span>';gain(10,4);show(5);
+}
+
+function checkL5(){
+  const f=['l5-f1','l5-f2','l5-f3'].map(i=>document.getElementById(i).value.trim());
+  const r=document.getElementById('l5-reflect').value.trim();
+  const m=document.getElementById('l5-msg');
+  if(f.some(x=>!x)||r.length<50){m.innerHTML='<span class="text-rose-600">請填 3 項設施，並完成 ≥50 字批判分析。</span>';return;}
+  m.innerHTML='<span class="text-emerald-600 font-bold">✅ 家鄉盤點完成！+10 分</span>';gain(10,5);show(6);
+}
+
+function checkL6(){
+  const c=document.getElementById('l6-c').value.trim();const e=document.getElementById('l6-e').value.trim();const r=document.getElementById('l6-r').value.trim();const cs=document.getElementById('l6-case').value.trim();
+  const m=document.getElementById('l6-msg');
+  if(!cs||c.length<10||r.length<50){m.innerHTML='<span class="text-rose-600">需選情境、寫主張、推理 ≥50 字。</span>';return;}
+  const hasDepth=/(速度|替代|年|循環|林|廢|光電|熱|\d)/.test(e);
+  if(!hasDepth||e.length<40){m.innerHTML='<span class="text-rose-600">證據不足：需提到『速度』或『替代』或具體數字，且 ≥40 字。</span>';return;}
+  m.innerHTML='<span class="text-emerald-600 font-bold">✅ CER 論證通過！+10 分</span>';gain(10,6);show(7);
+}
+
+function checkL7(){
+  const a1=document.getElementById('l7-a1').value.trim();const a2=document.getElementById('l7-a2').value.trim();
+  const m=document.getElementById('l7-msg');
+  if(a1.length<80||a2.length<20){m.innerHTML='<span class="text-rose-600">立場論述 ≥80 字、第三條路 ≥20 字。提醒：必須承認對方合理處。</span>';return;}
+  m.innerHTML='<span class="text-emerald-600 font-bold">✅ 倫理思辨完成（無標準答案，重點是論證品質）！+10 分</span>';gain(10,7);show(8);
+}
+
+function checkL8(){
+  const fields=['l8-name','l8-status','l8-c','l8-e','l8-r','l8-steps','l8-kpi'].map(i=>document.getElementById(i).value.trim());
+  const wsa=document.querySelectorAll('.wsa:checked').length;
+  const m=document.getElementById('l8-msg');
+  if(fields.some(x=>x.length<8)){m.innerHTML='<span class="text-rose-600">每欄至少 8 字。</span>';return;}
+  const hasData=/dp[1-7]|\d+(%|GW|年)/.test(fields[3]);
+  if(!hasData){m.innerHTML='<span class="text-rose-600">證據需引用 dp1-dp7 或含具體數字（%、GW、年）。</span>';return;}
+  if(wsa<3){m.innerHTML='<span class="text-rose-600">WSA 四面向至少勾 3 個。</span>';return;}
+  m.innerHTML='<span class="text-emerald-600 font-bold">✅ 專題提案書通過！+15 分</span>';gain(15,8);show(9);
+}
+
+function checkL9(){
+  const b=document.getElementById('l9-before').value.trim();const a=document.getElementById('l9-after').value.trim();const c=document.getElementById('l9-commit').value.trim();
+  const m=document.getElementById('l9-msg');
+  if(b.length<10||a.length<50||c.length<10){m.innerHTML='<span class="text-rose-600">後設反思需 ≥50 字，其餘 ≥10 字。</span>';return;}
+  gain(5,9);
+  document.getElementById('final-score').textContent=score;
+  document.getElementById('final').classList.remove('hidden-screen');
+  document.getElementById('final').scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>

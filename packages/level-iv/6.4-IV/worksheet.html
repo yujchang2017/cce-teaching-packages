@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.4-IV 永續生活空間｜社區永續建築師</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Noto Sans TC', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #e0f7fa 0%, #e8f5e9 100%); }
+  .card { background: white; border-radius: 1rem; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+  .btn { transition: all .2s; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.15); }
+  .badge { animation: pop .5s cubic-bezier(.2,1.4,.5,1); }
+  @keyframes pop { 0% { transform: scale(.3); opacity:0; } 100% { transform: scale(1); opacity:1; } }
+  .confetti { position: fixed; top: -10px; animation: fall 3s linear; pointer-events: none; z-index: 9999; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+  .progress-bar { transition: width .4s ease; }
+  .pill { display:inline-block; padding:.15rem .65rem; border-radius:999px; font-size:.75rem; font-weight:600; }
+  .draggable { cursor: move; user-select: none; }
+  .dropzone { min-height: 48px; border: 2px dashed #94a3b8; border-radius: .5rem; background: rgba(255,255,255,.5); }
+  .dropzone.over { border-color: #10b981; background: #d1fae5; }
+  .hl-tip { background: #fef3c7; border-left: 4px solid #f59e0b; padding: .75rem; border-radius: .5rem; font-size: .9rem; color: #78350f; }
+  textarea { font-family: inherit; }
+</style>
+</head>
+<body class="min-h-screen py-6 px-4">
+
+<div class="max-w-5xl mx-auto">
+
+  <!-- 標題 -->
+  <header class="card p-6 mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-emerald-700">社區永續建築師</h1>
+        <p class="text-slate-600 mt-1 text-sm">6.4-IV 永續生活空間 ｜ 國中 13-15 歲 ｜ 情境任務型學習單</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="pill bg-emerald-100 text-emerald-700">分數 <span id="score">0</span> / 100</span>
+        <span class="pill bg-amber-100 text-amber-700">徽章 <span id="badgeCount">0</span> / 7</span>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="w-full bg-slate-200 rounded-full h-2">
+        <div id="progress" class="progress-bar h-2 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full" style="width:0%"></div>
+      </div>
+      <p class="text-xs text-slate-500 mt-1"><span id="progressText">尚未開始</span></p>
+    </div>
+  </header>
+
+  <!-- 情境引言 -->
+  <section class="card p-6 mb-6">
+    <h2 class="text-xl font-bold text-emerald-700 mb-2">🏙 情境任務</h2>
+    <p class="text-slate-700 leading-relaxed">
+      你是 <b>大翠里永續改造委員會</b> 新聘的國中學生代表。里長給你一張卡片寫著：
+      <em>「我們里有 4,800 人，社區綠地只有 3.5 m²/人（WHO 標準 9 m²），夏天平均比郊區高 3°C，
+      屋頂總面積約 18,000 m²，沒有任何雨水回收裝置。」</em>
+      你的任務：提出 <b>數據支持、社會可行、經濟合理、生態友善</b> 的行動方案，並在下面 6 關完成分析與倡議。
+    </p>
+    <div class="hl-tip mt-3">💡 完成所有關卡可解鎖「全校（全社區）英雄」徽章，並下載你的提案書。</div>
+  </section>
+
+  <!-- 關卡 1：資料詮釋 -->
+  <section class="card p-6 mb-6" id="task1">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-bold text-sky-700">關卡 1 · 資料詮釋｜讀懂里長的卡片</h2>
+      <span class="pill bg-sky-100 text-sky-700">資料解讀</span>
+    </div>
+    <p class="mb-3 text-sm text-slate-600">比對里的數據與以下三個國際/國內標準，判斷大翠里「最需要優先改善」的面向。</p>
+    <div class="grid md:grid-cols-3 gap-3 mb-4 text-sm">
+      <div class="bg-emerald-50 rounded-lg p-3"><b>WHO</b><br>人均綠地應 ≥ 9 m²<br>300 m 內應有綠地</div>
+      <div class="bg-sky-50 rounded-lg p-3"><b>EPA</b><br>都市熱島約 +0.5~4°C<br>綠屋頂降溫 15-25°C</div>
+      <div class="bg-amber-50 rounded-lg p-3"><b>環境部</b><br>100m² 屋頂 @ 2000mm 雨量<br>年回收雨水約 160 噸</div>
+    </div>
+    <p class="text-sm mb-2 font-semibold">Q1：請依證據選擇最需優先處理的問題（單選）</p>
+    <div class="space-y-2" id="q1opts">
+      <label class="block cursor-pointer hover:bg-slate-50 p-2 rounded"><input type="radio" name="q1" value="a"> A. 屋頂都沒用，浪費雨水最嚴重，先做雨水回收</label>
+      <label class="block cursor-pointer hover:bg-slate-50 p-2 rounded"><input type="radio" name="q1" value="b"> B. 綠地 3.5 m²/人 不到 WHO 標準 40%，最影響身心健康，應同步增設綠空間與雨水系統</label>
+      <label class="block cursor-pointer hover:bg-slate-50 p-2 rounded"><input type="radio" name="q1" value="c"> C. 溫度高 3°C 最緊急，應立刻全社區裝冷氣</label>
+      <label class="block cursor-pointer hover:bg-slate-50 p-2 rounded"><input type="radio" name="q1" value="d"> D. 人口 4,800 太多，應該限制人口</label>
+    </div>
+    <button class="btn mt-3 bg-sky-600 text-white px-4 py-2 rounded-lg" onclick="checkQ1()">送出</button>
+    <div id="q1fb" class="mt-3"></div>
+  </section>
+
+  <!-- 關卡 2：系統思考（拖拉因果鏈） -->
+  <section class="card p-6 mb-6" id="task2">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-bold text-indigo-700">關卡 2 · 系統思考｜建立綠屋頂的正向回饋</h2>
+      <span class="pill bg-indigo-100 text-indigo-700">系統圖</span>
+    </div>
+    <p class="mb-3 text-sm text-slate-600">把下列事件拖入正確順序，組成「綠屋頂 → 多重效益 → 社區更永續」的因果鏈。</p>
+    <div class="mb-3">
+      <p class="text-xs text-slate-500 mb-1">事件卡片（拖入下方順位）：</p>
+      <div id="cardPool" class="flex flex-wrap gap-2 p-3 bg-slate-100 rounded-lg min-h-[60px]">
+        <div class="draggable bg-white border-2 border-indigo-300 rounded-lg px-3 py-2 text-sm" draggable="true" data-id="A">A. 屋頂鋪設植栽與土壤</div>
+        <div class="draggable bg-white border-2 border-indigo-300 rounded-lg px-3 py-2 text-sm" draggable="true" data-id="B">B. 空調用電下降 15-30%</div>
+        <div class="draggable bg-white border-2 border-indigo-300 rounded-lg px-3 py-2 text-sm" draggable="true" data-id="C">C. CO2 排放減少，氣候更穩定</div>
+        <div class="draggable bg-white border-2 border-indigo-300 rounded-lg px-3 py-2 text-sm" draggable="true" data-id="D">D. 屋頂表面降溫 15-25°C</div>
+        <div class="draggable bg-white border-2 border-indigo-300 rounded-lg px-3 py-2 text-sm" draggable="true" data-id="E">E. 植物吸收雨水、減緩洪患</div>
+      </div>
+    </div>
+    <div class="grid grid-cols-5 gap-2 mb-3">
+      <div class="dropzone" data-slot="0"><p class="text-xs text-center text-slate-400 mt-3">第 1 步</p></div>
+      <div class="dropzone" data-slot="1"><p class="text-xs text-center text-slate-400 mt-3">第 2 步</p></div>
+      <div class="dropzone" data-slot="2"><p class="text-xs text-center text-slate-400 mt-3">第 3 步</p></div>
+      <div class="dropzone" data-slot="3"><p class="text-xs text-center text-slate-400 mt-3">第 4 步</p></div>
+      <div class="dropzone" data-slot="4"><p class="text-xs text-center text-slate-400 mt-3">第 5 步</p></div>
+    </div>
+    <button class="btn bg-indigo-600 text-white px-4 py-2 rounded-lg" onclick="checkQ2()">檢查順序</button>
+    <div id="q2fb" class="mt-3"></div>
+  </section>
+
+  <!-- 關卡 3：CER 論證寫作 -->
+  <section class="card p-6 mb-6" id="task3">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-bold text-rose-700">關卡 3 · CER 論證｜寫一段倡議文</h2>
+      <span class="pill bg-rose-100 text-rose-700">論證</span>
+    </div>
+    <div class="hl-tip mb-3">
+      <b>範例：</b> <b>Claim</b>「大翠里應在活動中心屋頂設置雨水回收示範系統」。
+      <b>Evidence</b>「100 m² 屋頂、年雨量 2000 mm 可回收 160 噸雨水（環境部 2023）；本里屋頂 18,000 m² 可達 28,800 噸。」
+      <b>Reasoning</b>「可供廁所沖水與綠地澆灌，減少自來水支出並降低洪水風險。」
+    </div>
+    <p class="text-sm mb-2 font-semibold">你的倡議（至少 80 字，須包含具體數據）：</p>
+    <label class="text-xs text-slate-600">Claim（你的主張，1 句）</label>
+    <textarea id="cer_c" class="w-full border rounded-lg p-2 mb-2" rows="2" placeholder="例：大翠里國中小應合作推動『綠屋頂聯盟』，從屋頂降溫開始…"></textarea>
+    <label class="text-xs text-slate-600">Evidence（至少引用 2 筆數據）</label>
+    <textarea id="cer_e" class="w-full border rounded-lg p-2 mb-2" rows="3" placeholder="例：EPA 指出綠屋頂降溫 15-25°C；WHO 建議 9m²/人綠地…"></textarea>
+    <label class="text-xs text-slate-600">Reasoning（為什麼重要+可行）</label>
+    <textarea id="cer_r" class="w-full border rounded-lg p-2 mb-2" rows="3" placeholder="例：這能同時解決熱島、健康與教育三大議題…"></textarea>
+    <button class="btn bg-rose-600 text-white px-4 py-2 rounded-lg" onclick="checkQ3()">提交論證</button>
+    <div id="q3fb" class="mt-3"></div>
+  </section>
+
+  <!-- 關卡 4：倫理兩難 -->
+  <section class="card p-6 mb-6" id="task4">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-bold text-amber-700">關卡 4 · 倫理兩難｜80 年老樹 vs 新綠建築</h2>
+      <span class="pill bg-amber-100 text-amber-700">倫理思辨</span>
+    </div>
+    <p class="text-sm text-slate-700 mb-3">
+      大翠里計畫把舊里民活動中心拆除，改建為五層樓綠建築（預計節能 40%、含雨水回收、綠屋頂），
+      但基地上有一棵 <b>80 年老榕樹</b>，依法必須移除。環保團體、里民、建築師三方意見分歧。
+    </p>
+    <p class="text-sm font-semibold mb-2">你的立場（選一並論述，沒有標準答案）：</p>
+    <div class="space-y-2 mb-3">
+      <label class="block cursor-pointer hover:bg-slate-50 p-2 rounded"><input type="radio" name="q4" value="keep"> ① 保留老樹，修改建築設計（即使額外成本 200 萬）</label>
+      <label class="block cursor-pointer hover:bg-slate-50 p-2 rounded"><input type="radio" name="q4" value="replace"> ② 移除老樹，種植 20 棵新樹補償，全力推進綠建築</label>
+      <label class="block cursor-pointer hover:bg-slate-50 p-2 rounded"><input type="radio" name="q4" value="move"> ③ 花費 150 萬將老樹異地移植（成功率約 60%）</label>
+    </div>
+    <label class="text-xs text-slate-600">你的理由（至少 60 字，須同時回應至少一個反對立場）</label>
+    <textarea id="q4reason" class="w-full border rounded-lg p-2 mb-2" rows="4" placeholder="例如：我選擇保留老樹，因為…；我理解反方認為…但是…"></textarea>
+    <button class="btn bg-amber-600 text-white px-4 py-2 rounded-lg" onclick="checkQ4()">提交立場</button>
+    <div id="q4fb" class="mt-3"></div>
+  </section>
+
+  <!-- 關卡 5：開放反思 -->
+  <section class="card p-6 mb-6" id="task5">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-bold text-emerald-700">關卡 5 · 開放反思｜我的行動半徑</h2>
+      <span class="pill bg-emerald-100 text-emerald-700">反思</span>
+    </div>
+    <p class="text-sm text-slate-700 mb-3">回答兩題，每題至少 50 字。</p>
+    <label class="text-sm font-semibold">Q5-1：若你家附近綠地低於 WHO 9 m²/人，你會做哪三件具體的事？請排優先順序並說明原因。</label>
+    <textarea id="q5_1" class="w-full border rounded-lg p-2 mb-3" rows="4" placeholder="我的三件事：1. … 2. … 3. …；優先原因…"></textarea>
+    <label class="text-sm font-semibold">Q5-2：課程中哪一個永續策略（被動式設計／綠屋頂／雨水回收／永續建材／綠藍空間／節能照明）最打動你？為什麼？</label>
+    <textarea id="q5_2" class="w-full border rounded-lg p-2 mb-3" rows="4" placeholder="最打動我的是…，因為…"></textarea>
+    <button class="btn bg-emerald-600 text-white px-4 py-2 rounded-lg" onclick="checkQ5()">送出反思</button>
+    <div id="q5fb" class="mt-3"></div>
+  </section>
+
+  <!-- 關卡 6：後設認知 -->
+  <section class="card p-6 mb-6" id="task6">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-bold text-purple-700">關卡 6 · 後設認知｜我的想法改變了嗎？</h2>
+      <span class="pill bg-purple-100 text-purple-700">後設認知</span>
+    </div>
+    <p class="text-sm text-slate-700 mb-3">上課前後對「永續空間」的想法有什麼不同？請誠實寫下，無對錯。</p>
+    <label class="text-sm font-semibold">Q6-1：上課前，我以為「永續建築」大約是……</label>
+    <textarea id="q6_1" class="w-full border rounded-lg p-2 mb-3" rows="3" placeholder="我以為…"></textarea>
+    <label class="text-sm font-semibold">Q6-2：現在，我的想法改變了嗎？哪個數據或案例最震撼我？</label>
+    <textarea id="q6_2" class="w-full border rounded-lg p-2 mb-3" rows="3" placeholder="改變/沒改變，因為…"></textarea>
+    <label class="text-sm font-semibold">Q6-3：我接下來「這週內」可以做的一件小事是？</label>
+    <textarea id="q6_3" class="w-full border rounded-lg p-2 mb-3" rows="2" placeholder="這週我要…"></textarea>
+    <button class="btn bg-purple-600 text-white px-4 py-2 rounded-lg" onclick="checkQ6()">提交後設認知</button>
+    <div id="q6fb" class="mt-3"></div>
+  </section>
+
+  <!-- WSA Challenge -->
+  <section class="card p-6 mb-6" id="wsaBox">
+    <h2 class="text-lg font-bold text-teal-700 mb-3">🏫 WSA Challenge｜全校英雄任務</h2>
+    <p class="text-sm text-slate-600 mb-3">勾選你願意在校園/社區行動的四個面向（全勾才解鎖全校英雄徽章）：</p>
+    <div class="grid md:grid-cols-2 gap-2 text-sm">
+      <label class="flex items-start gap-2 p-2 bg-slate-50 rounded"><input type="checkbox" class="wsa mt-1" data-k="curriculum"> <span><b>課程整合</b>：在自然/社會/綜合課帶同學認識 EEWH 九大指標</span></label>
+      <label class="flex items-start gap-2 p-2 bg-slate-50 rounded"><input type="checkbox" class="wsa mt-1" data-k="operation"> <span><b>校園營運</b>：向總務處提案增設雨水回收桶或微型綠屋頂</span></label>
+      <label class="flex items-start gap-2 p-2 bg-slate-50 rounded"><input type="checkbox" class="wsa mt-1" data-k="community"> <span><b>社區連結</b>：寫信給里長倡議社區綠地達 WHO 9m²/人</span></label>
+      <label class="flex items-start gap-2 p-2 bg-slate-50 rounded"><input type="checkbox" class="wsa mt-1" data-k="governance"> <span><b>學生治理</b>：發起「永續校園小組」，爭取提案與表決權</span></label>
+    </div>
+    <div id="wsaFb" class="mt-3"></div>
+  </section>
+
+  <!-- 專題任務 -->
+  <section class="card p-6 mb-6" id="projectBox">
+    <h2 class="text-lg font-bold text-slate-800 mb-3">📘 專題任務（期末繳交）</h2>
+    <p class="text-sm text-slate-700 mb-3">以「大翠里永續空間改造計畫」為題，整合本學習單產出 3-5 頁報告：</p>
+    <ul class="list-disc pl-6 text-sm text-slate-700 space-y-1">
+      <li>封面 + 問題診斷（用關卡 1 資料）</li>
+      <li>改造藍圖（至少 3 項策略，須有系統圖 — 來自關卡 2）</li>
+      <li>CER 倡議段落（來自關卡 3）</li>
+      <li>倫理考量（來自關卡 4）</li>
+      <li>個人反思（來自關卡 5-6）+ 行動時程表</li>
+    </ul>
+  </section>
+
+  <!-- 成果總結 -->
+  <section class="card p-6 mb-6" id="summary">
+    <h2 class="text-lg font-bold mb-3">🏆 你的成果</h2>
+    <div id="badges" class="flex flex-wrap gap-2 mb-3"></div>
+    <div id="finalMsg" class="text-slate-700"></div>
+  </section>
+
+  <!-- 延伸思考 -->
+  <section class="card p-6 mb-8">
+    <h2 class="text-lg font-bold text-slate-700 mb-2">🌱 延伸思考（課後自由書寫）</h2>
+    <ol class="list-decimal pl-6 text-sm text-slate-700 space-y-2">
+      <li>如果 2050 年台灣建築全面淨零，你覺得「我家」會和現在有什麼不同？列 5 個具體改變。</li>
+      <li>你認為國中生參與公共空間決策的最大阻力是什麼？怎麼突破？</li>
+      <li>綠建築的全球數據（32%能源/34%CO2）很大，但你個人行動很小。這中間的落差，你怎麼看？</li>
+    </ol>
+  </section>
+
+  <footer class="text-center text-xs text-slate-400 py-6">
+    6.4-IV Sustainable Living Spaces ｜ UNESCO ESD ｜ 教育部永續發展教育素材庫 ｜ 2026-04-16
+  </footer>
+</div>
+
+<script>
+const state = {
+  score: 0, badges: new Set(), done: new Set()
+};
+
+function award(key, label, pts) {
+  if (state.done.has(key)) return;
+  state.done.add(key);
+  state.badges.add(label);
+  state.score = Math.min(100, state.score + pts);
+  renderHeader();
+  renderBadges();
+  confetti();
+}
+
+function confetti() {
+  const emojis = ['🌳','🏡','💧','🌿','☀️','🌱','🏆'];
+  for (let i=0;i<18;i++){
+    const el = document.createElement('div');
+    el.className='confetti';
+    el.style.left = Math.random()*100+'%';
+    el.style.fontSize = (14+Math.random()*20)+'px';
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    el.style.animationDelay = (Math.random()*.6)+'s';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 3200);
+  }
+}
+
+function renderHeader() {
+  document.getElementById('score').textContent = state.score;
+  document.getElementById('badgeCount').textContent = state.badges.size;
+  const pct = Math.round(state.score);
+  document.getElementById('progress').style.width = pct+'%';
+  document.getElementById('progressText').textContent =
+    pct===0?'尚未開始':pct<50?'繼續加油！':pct<100?'快完成了！':'全部完成，你是社區英雄！';
+}
+
+function renderBadges() {
+  const box = document.getElementById('badges');
+  box.innerHTML='';
+  state.badges.forEach(b=>{
+    const span = document.createElement('span');
+    span.className='badge pill bg-gradient-to-r from-emerald-200 to-teal-200 text-emerald-800';
+    span.textContent='🏅 '+b;
+    box.appendChild(span);
+  });
+  if (state.badges.size >= 7) {
+    document.getElementById('finalMsg').innerHTML =
+      '<div class="hl-tip">🎉 恭喜！你解鎖了全部 7 個徽章，正式成為 <b>全校（全社區）英雄</b>。請把你的答案匯整為專題報告，交給老師與里長。</div>';
+  }
+}
+
+function fb(id, ok, msg) {
+  const el = document.getElementById(id);
+  el.innerHTML = '<div class="'+(ok?'bg-emerald-50 text-emerald-800 border-emerald-300':'bg-amber-50 text-amber-800 border-amber-300')+' border rounded-lg p-3 text-sm">'+msg+'</div>';
+}
+
+// Q1
+function checkQ1() {
+  const v = document.querySelector('input[name=q1]:checked');
+  if (!v) return fb('q1fb', false, '請先選一個選項。');
+  if (v.value === 'b') {
+    award('q1','資料偵探', 15);
+    fb('q1fb', true, '✅ 正確！B 是最全面的選項——綠地明顯低於 WHO 標準，連動影響健康，同時應搭配雨水系統做組合策略。');
+  } else if (v.value === 'c') {
+    fb('q1fb', false, '💡 提示：冷氣會消耗更多電，加劇 CO2 與熱島。想一想「根本原因」而非症狀處理，再試一次。');
+  } else if (v.value === 'a') {
+    fb('q1fb', false, '💡 提示：雨水回收很重要，但只看屋頂會忽略人均綠地不足的健康衝擊。請找最「全面」的選項。');
+  } else {
+    fb('q1fb', false, '💡 提示：人口不是問題，空間規劃才是。請再想想哪個選項同時回應了三個數據。');
+  }
+}
+
+// Q2 drag-drop
+(function(){
+  let dragged = null;
+  document.addEventListener('dragstart', e=>{
+    if (e.target.classList.contains('draggable')) { dragged = e.target; e.target.style.opacity='.4'; }
+  });
+  document.addEventListener('dragend', e=>{
+    if (dragged) { dragged.style.opacity='1'; dragged = null; }
+  });
+  document.querySelectorAll('.dropzone').forEach(z=>{
+    z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
+    z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+    z.addEventListener('drop', e=>{
+      e.preventDefault(); z.classList.remove('over');
+      if (dragged) {
+        z.innerHTML=''; z.appendChild(dragged);
+      }
+    });
+  });
+  document.getElementById('cardPool').addEventListener('dragover', e=>e.preventDefault());
+  document.getElementById('cardPool').addEventListener('drop', e=>{
+    e.preventDefault();
+    if (dragged) document.getElementById('cardPool').appendChild(dragged);
+  });
+})();
+
+function checkQ2() {
+  const seq = [];
+  document.querySelectorAll('.dropzone').forEach(z=>{
+    const d = z.querySelector('.draggable');
+    seq.push(d?d.dataset.id:null);
+  });
+  const correct = ['A','D','B','C','E'];
+  const correct2 = ['A','D','B','E','C'];
+  const strMatch = (s)=> seq.join(',')===s.join(',');
+  if (strMatch(correct) || strMatch(correct2)) {
+    award('q2','系統思考家', 18);
+    fb('q2fb', true, '✅ 正確！綠屋頂 → 降溫 → 省電 → 減排 + 吸水減洪 → 社區更永續。這就是多重效益的正向回饋。');
+  } else if (seq.includes(null)) {
+    fb('q2fb', false, '💡 提示：還有步驟沒放進去，請把五張卡全部依序放進五個欄位。');
+  } else {
+    fb('q2fb', false, '💡 提示：先想「起點」是什麼（誰是原因？），再想「結果」（誰被影響？）。A 是起點，C 或 E 是最後的整體影響。再試試！');
+  }
+}
+
+// Q3 CER
+function checkQ3() {
+  const c = document.getElementById('cer_c').value.trim();
+  const e = document.getElementById('cer_e').value.trim();
+  const r = document.getElementById('cer_r').value.trim();
+  const total = c.length+e.length+r.length;
+  const hasNum = /\d/.test(e);
+  if (!c||!e||!r) return fb('q3fb', false, '💡 三個欄位都要填寫，Claim/Evidence/Reasoning 缺一不可。');
+  if (total < 80) return fb('q3fb', false, '💡 字數不足 80 字，請再補充具體內容。');
+  if (!hasNum) return fb('q3fb', false, '💡 Evidence 需要具體數據（例如 160 噸、9 m²、34%）才有說服力，請補一筆數字。');
+  award('q3','論證寫手', 18);
+  fb('q3fb', true, '✅ 很好！你的 CER 結構完整且使用了數據。這種寫法可以直接拿去寫倡議信。');
+}
+
+// Q4 ethics
+function checkQ4() {
+  const v = document.querySelector('input[name=q4]:checked');
+  const r = document.getElementById('q4reason').value.trim();
+  if (!v) return fb('q4fb', false, '請先選一個立場。');
+  if (r.length < 60) return fb('q4fb', false, '💡 理由至少 60 字，且需回應一個反對立場（例如「我理解反方認為…，但是…」）。');
+  const hasObj = /(但是|不過|然而|反方|對方|有人會認為|雖然)/.test(r);
+  if (!hasObj) return fb('q4fb', false, '💡 請在論述中加入對反對意見的回應（用「雖然/但是/然而/我理解反方認為」等詞）。');
+  award('q4','倫理思考者', 16);
+  fb('q4fb', true, '✅ 這題沒有標準答案，重要的是你能為自己立場負責，並理解他人觀點。這就是公民素養。');
+}
+
+// Q5 open
+function checkQ5() {
+  const a = document.getElementById('q5_1').value.trim();
+  const b = document.getElementById('q5_2').value.trim();
+  if (a.length < 50 || b.length < 50) return fb('q5fb', false, '💡 兩題都至少 50 字，請更具體描述你的想法。');
+  award('q5','在地行動派', 12);
+  fb('q5fb', true, '✅ 記下這些想法——它們是你一整個青少年時期可以持續累積的行動清單。');
+}
+
+// Q6 metacognition
+function checkQ6() {
+  const a = document.getElementById('q6_1').value.trim();
+  const b = document.getElementById('q6_2').value.trim();
+  const c = document.getElementById('q6_3').value.trim();
+  if (!a||!b||!c) return fb('q6fb', false, '💡 三題都要填；後設認知是學習中最重要的一環，不要跳過。');
+  if ((a+b+c).length < 80) return fb('q6fb', false, '💡 整體字數不足，請更具體反思你的思考轉變。');
+  award('q6','反思者', 12);
+  fb('q6fb', true, '✅ 能察覺自己想法的改變，就是你成為獨立思考者的開始。');
+}
+
+// WSA
+document.querySelectorAll('.wsa').forEach(cb=>{
+  cb.addEventListener('change', ()=>{
+    const all = Array.from(document.querySelectorAll('.wsa'));
+    if (all.every(x=>x.checked)) {
+      award('wsa','全校英雄', 9);
+      fb('wsaFb', true, '🎉 四面向全數承諾！你就是全校英雄。請真的去做第一件小事。');
+    }
+  });
+});
+
+renderHeader();
+</script>
+</body>
+</html>
