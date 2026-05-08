@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>永續交通 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border);
+    border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em;
+    background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .question-cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px; margin: 30px 0;
+  }
+  .question-card {
+    background: var(--c-bg); border: 2px solid var(--c-accent);
+    border-radius: 12px; padding: 24px; font-size: 1.15rem; text-align: center;
+    color: var(--c-text); position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%; font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .three-col {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0;
+  }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 {
+    margin: 0 0 10px; font-size: 1.15rem; text-align: center;
+    padding-bottom: 8px; border-bottom: 1px dashed var(--c-border);
+  }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+
+  .summary-keys {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0;
+  }
+  .key-card {
+    text-align: center; padding: 30px 20px; border-radius: 16px;
+    background: var(--c-bg); border: 3px solid;
+  }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  .ws-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1.05rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 14px 16px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px);
+    height: 48px;
+  }
+
+  .pledge-form {
+    border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px;
+    background: var(--c-bg); max-width: 750px; margin: 20px auto;
+  }
+  .pledge-form .row {
+    display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem;
+  }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .data-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px; margin: 20px 0;
+  }
+  .data-card {
+    background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px;
+    padding: 18px; text-align: center;
+  }
+  .data-card .v { font-size: 2rem; font-weight: 800; color: var(--c-accent); margin: 4px 0; }
+  .data-card .lbl { font-size: 0.95rem; color: var(--c-muted); }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">永續交通 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>從一公里開始</h2>
+    <p class="subtitle">交通、碳與我們的城市</p>
+    <p style="font-size: 1rem; color: var(--c-muted); margin-top: 16px;">永續交通｜國中 13–15 歲</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>你今天怎麼來學校?</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>走路 / 騎車</div>
+      <div class="question-card"><div class="q-num">2</div>機車 / 公車</div>
+      <div class="question-card"><div class="q-num">3</div>捷運 / 共乘</div>
+      <div class="question-card"><div class="q-num">4</div>家長開車</div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      每一公里的選擇背後,都有一個數字 —— <strong style="color: var(--c-warn);">碳排放</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>我的一天有多少碳?</h2>
+    <p class="subtitle">碳足跡與運具比較</p>
+  </div>
+</section>
+
+<!-- 4. dp1 交通 23% -->
+<section class="slide" id="slide-dp1">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>交通佔全球能源 CO₂ 約 23%</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:全球 CO₂ 部門長條圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>交通佔能源相關 CO₂ 約 23%,其中道路運輸超過 70%</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>依據 IPCC AR6 WG3 第十章(2022)</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>為什麼交通難減碳?</strong>能量密度高、基礎設施龐大、行為習慣難改。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://www.ipcc.ch/report/ar6/wg3/chapter/chapter-10/" target="_blank" rel="noopener">聯合國氣候變遷小組 第六次評估報告 第十章</a>
+  </div>
+</section>
+
+<!-- 5. dp2 五運具 -->
+<section class="slide" id="slide-dp2">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>五種運具的 CO₂ 比拼</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:五色橫條圖 — 五種運具碳排]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>每人·公里 CO₂ — 小客車 170 / 機車 90 / 公車 80 / 捷運 30 / 自行車 0 g</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>歐洲環境署(EEA)2023 年資料</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>動手算:</strong>每天通勤 5 km,從機車改公車,一年(200 上學日)省多少 CO₂?<br>
+      5 × (90−80) × 2 × 200 = <strong style="color: var(--c-accent);">20,000 g = 20 公斤</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://www.eea.europa.eu/en/topics/in-depth/transport-and-mobility" target="_blank" rel="noopener">歐洲環境署 — 交通與移動</a>
+  </div>
+</section>
+
+<!-- 6. MOE 教材 1 -->
+<section class="slide" id="slide-moe1">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>教育部教材:陸上交通面面觀</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>共 乘</h4>
+        <ul>
+          <li>同班同學共乘上學</li>
+          <li>家長接送順路共乘</li>
+          <li>每車人數 ≥ 3</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>低耗能</h4>
+        <ul>
+          <li>大眾運輸優先</li>
+          <li>電動公車 / 自行車</li>
+          <li>步行短程</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>調整作息</h4>
+        <ul>
+          <li>減少不必要移動</li>
+          <li>線上會議取代通勤</li>
+          <li>就近上學</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 16px; color: var(--c-muted);">
+      小組 5 分鐘任務:用校園節能減碳資訊平臺,算「我們班一週上學總 CO₂」
+    </p>
+  </div>
+  <div class="slide-source">
+    參考教材:教育部教案《0209_CCE_陸上交通面面觀》
+  </div>
+</section>
+
+<!-- 7. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>為什麼臺灣機車這麼多?</h2>
+    <p class="subtitle">在地脈絡與多因素分析</p>
+  </div>
+</section>
+
+<!-- 8. dp3 臺灣交通 -->
+<section class="slide" id="slide-dp3">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>臺灣交通的數字</h2>
+  <div class="slide-body">
+    <div class="data-grid">
+      <div class="data-card">
+        <div class="lbl">交通佔全國排放</div>
+        <div class="v">~14%</div>
+        <div class="lbl">2022 年</div>
+      </div>
+      <div class="data-card">
+        <div class="lbl">機車登記</div>
+        <div class="v">1,400+</div>
+        <div class="lbl">萬輛(全球密度名列前茅)</div>
+      </div>
+      <div class="data-card">
+        <div class="lbl">小客車登記</div>
+        <div class="v">850</div>
+        <div class="lbl">萬輛</div>
+      </div>
+    </div>
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center; margin-top: 20px;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:臺灣機車與小客車分布地圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>5 個交織因素 — 地形、氣候、都市規劃、油價、過去公共運輸投資不足</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>臺灣交通現況 — 多因素系統</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://www.cca.gov.tw/" target="_blank" rel="noopener">中華民國環境部 氣候變遷署</a> ・ <a href="https://stat.motc.gov.tw/" target="_blank" rel="noopener">交通部統計查詢網</a>
+  </div>
+</section>
+
+<!-- 9. MOE 教材 2 烏賊車 -->
+<section class="slide" id="slide-moe2">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>教育部教材:深海闇王(烏賊車)與化石燃料</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:烏賊車插圖 + 高雄機車碳排計算公式]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>計算公式:</strong>機車總數 × 每日平均距離 × 碳排係數 = 縣市年機車碳排</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>高雄機車年度碳排估算示範</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>提示參考數字:</strong>臺北 ~90 萬輛、臺中 ~180 萬輛、高雄 ~220 萬輛
+    </p>
+  </div>
+  <div class="slide-source">
+    參考教材:教育部教案《0187_CCE_深海闇王(烏賊車)與化石燃料》
+  </div>
+</section>
+
+<!-- 10. MOE 教材 2b 軌道 -->
+<section class="slide" id="slide-moe2b">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>教育部教材:途謀佈軌(軌道大眾運輸)</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:臺灣捷運與鐵路路網圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>軌道每人·km CO₂ ≈ 公車的 1/2、汽車的 1/10</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>軌道運輸的減碳優勢</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1rem; margin-top: 16px; color: var(--c-muted);">
+      <strong>討論:</strong>「如果你家鄉的捷運因為經費被砍了,你會怎麼主張?」
+    </p>
+  </div>
+  <div class="slide-source">
+    參考教材:教育部教案《0207_CCE_途謀佈軌(軌道大眾運輸)》
+  </div>
+</section>
+
+<!-- 11. 迷思:電動車 dp4 -->
+<section class="slide" id="slide-myth-ev">
+  <div class="slide-tag">活動二・步驟 4 ・迷思澄清</div>
+  <h2>電動車真的零碳嗎?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:生命週期碳足跡示意 — 電池製造→使用→報廢]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>75 kWh 電池製造排放 5–10 噸 CO₂;臺灣電力結構下,電動車比汽油車減 30–50%</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>生命週期碳足跡(LCA)</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      真正關鍵:<strong>電力脫碳</strong> + <strong>延長使用年限</strong> + <strong>電池回收</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 12. dp4 2050 淨零 -->
+<section class="slide" id="slide-dp4">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>臺灣 2050 淨零:運具電動化</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:淨零路徑時間軸 — 2030 / 2040 里程碑]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵里程碑:</strong>2030 公車與公務車 100% 電動化 / 2040 新售汽機車 100% 電動化</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>「運具電動化及無碳化」是 12 項關鍵戰略之一</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>思考:</strong>你 2040 年幾歲?你買第一輛車時,會是哪種?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://www.cca.gov.tw/" target="_blank" rel="noopener">國家發展委員會 / 臺灣 2050 淨零排放路徑</a>
+  </div>
+</section>
+
+<!-- 13. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>自行車、步行與可步行城市</h2>
+    <p class="subtitle">主動運輸與治理</p>
+  </div>
+</section>
+
+<!-- 14. 思辨 公平 -->
+<section class="slide" id="slide-justice">
+  <div class="slide-tag">活動三・倫理兩難</div>
+  <h2>為汽車設計的城市,對誰公平?</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>過斑馬線的阿嬤</div>
+      <div class="question-card"><div class="q-num">2</div>走路上學的弟妹</div>
+      <div class="question-card"><div class="q-num">3</div>輪椅或嬰兒車家人</div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 30px; color: var(--c-accent);">
+      <strong>交通正義:</strong>永續交通不只是減碳,也是「誰能自由移動」的問題
+    </p>
+  </div>
+</section>
+
+<!-- 15. dp5 健康紅利 -->
+<section class="slide" id="slide-dp5">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>自行車與步行的健康紅利</h2>
+  <div class="slide-body">
+    <div class="data-grid">
+      <div class="data-card">
+        <div class="lbl">每週騎車 30+ 分</div>
+        <div class="v">−10%</div>
+        <div class="lbl">全因死亡風險</div>
+      </div>
+      <div class="data-card">
+        <div class="lbl">每日步行</div>
+        <div class="v">7,000</div>
+        <div class="lbl">步以上心血管風險明顯下降</div>
+      </div>
+    </div>
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center; margin-top: 20px;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:WHO 主動運輸效益圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵概念:</strong>「主動運輸」= 節能源 + 節醫療支出</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>世界衛生組織 2022 年彙整研究</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://www.who.int/news-room/fact-sheets/detail/physical-activity" target="_blank" rel="noopener">世界衛生組織 — 身體活動與主動運輸</a>
+  </div>
+</section>
+
+<!-- 16. dp7 哥本哈根 荷蘭 -->
+<section class="slide" id="slide-dp7">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>國際案例:哥本哈根與荷蘭</h2>
+  <div class="slide-body">
+    <div class="data-grid">
+      <div class="data-card">
+        <div class="lbl">哥本哈根</div>
+        <div class="v">49%</div>
+        <div class="lbl">通勤者騎車上班上學</div>
+      </div>
+      <div class="data-card">
+        <div class="lbl">荷蘭每人</div>
+        <div class="v">1.3 輛</div>
+        <div class="lbl">自行車;兒童 80% 以上騎車上學</div>
+      </div>
+    </div>
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center; margin-top: 20px;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:哥本哈根自行車高速公路 + 荷蘭兒童騎車隊]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>歷史關鍵:</strong>1970 年代石油危機 + 公民運動「Stop de Kindermoord」推動投資</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>基礎設施塑造文化</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://www.cyclingembassy.dk/" target="_blank" rel="noopener">哥本哈根自行車大使館</a>
+  </div>
+</section>
+
+<!-- 17. dp6 可步行 6 指標 -->
+<section class="slide" id="slide-dp6">
+  <div class="slide-tag">活動三・步驟 3 ・學習單</div>
+  <h2>可步行性的 6 項指標</h2>
+  <div class="slide-body">
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>指標</th>
+          <th>說明</th>
+          <th>校園周邊打分(1–5)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>① 人行道連續性</th><td>有沒有斷頭、攤販或停車佔用</td><td class="fill"></td></tr>
+        <tr><th>② 路口等待</th><td>路口等待時間與行人優先</td><td class="fill"></td></tr>
+        <tr><th>③ 樹蔭遮蔽</th><td>夏天有沒有可遮陽的路段</td><td class="fill"></td></tr>
+        <tr><th>④ 交通事故率</th><td>過去事故熱點</td><td class="fill"></td></tr>
+        <tr><th>⑤ 治安照明</th><td>夜間女性安全感</td><td class="fill"></td></tr>
+        <tr><th>⑥ 目的地密度</th><td>15 分鐘可達商店 / 公園</td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+    <p style="text-align: center; font-size: 1rem; margin-top: 16px; color: var(--c-muted);">
+      實地踏查校園周邊 500 公尺 → 變成第 4 節提案書的「問題診斷」
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://unhabitat.org/" target="_blank" rel="noopener">聯合國人居署 / Walk Score 方法</a>
+  </div>
+</section>
+
+<!-- 18. MOE 3 Ubike -->
+<section class="slide" id="slide-moe3">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>教育部教材:綠色騎跡 Ubike</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:Ubike 站點分布 + 課程架構]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>課程設計:</strong>陽明國小 160 分鐘,自然 × 社會跨域;國中可升級加入「資料分析」</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>共享單車體驗課程</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>國中升級任務:</strong>查 Ubike 站點 API,分析借還流量尖峰,找出「借車荒漠」區
+    </p>
+  </div>
+  <div class="slide-source">
+    參考教材:教育部教案《0202_CCE_綠色騎跡 Ubike(共享單車體驗)》(map.csv 第 537 列)
+  </div>
+</section>
+
+<!-- 19. 開放延伸 1 15 分鐘城市 -->
+<section class="slide" id="slide-ext1">
+  <div class="slide-tag">開放延伸 ①</div>
+  <h2>15 分鐘城市,你怎麼看?</h2>
+  <div class="slide-body">
+    <p style="font-size: 1.1rem; text-align: center; color: var(--c-muted);">
+      巴黎 2020 提出:每位居民 15 分鐘步行 / 騎車內可達工作、商店、學校、醫療、公園、文化娛樂六大功能
+    </p>
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center; margin: 20px 0;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:巴黎、上海、臺北 15 分鐘可達範圍對照地圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>爭議:</strong>支持 — 減碳、健康、社區連結;反對 — 限縮市郊、仕紳化加劇</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>15-minute city 概念對比</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>學習單寫作:</strong>哪 2 件事會變好?哪 1 件事你擔心?
+    </p>
+  </div>
+</section>
+
+<!-- 20. 開放延伸 2 共享 -->
+<section class="slide" id="slide-ext2">
+  <div class="slide-tag">開放延伸 ②</div>
+  <h2>共享運具真的減碳嗎?</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>共享優勢</h4>
+        <ul>
+          <li>一輛車多人用</li>
+          <li>降低私有車需求</li>
+          <li>解決最後一哩</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>反彈效應</h4>
+        <ul>
+          <li>原本走路改用電動機車</li>
+          <li>大眾運輸使用減少</li>
+          <li>取代步行而非汽車</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>關鍵變數</h4>
+        <ul>
+          <li>共享運具動力來源</li>
+          <li>替代了什麼運具</li>
+          <li>使用密度</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      <strong>小組任務:</strong>調查校園周邊 Ubike / GoShare 使用,寫下共享運具對在地減碳的「淨效應」
+    </p>
+  </div>
+</section>
+
+<!-- 21. 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>我們的校園減碳行動</h2>
+    <p class="subtitle">WSA 整合與專題</p>
+  </div>
+</section>
+
+<!-- 22. MOE 4 潔淨能源 -->
+<section class="slide" id="slide-moe4">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>教育部教材:潔淨能源愛地球</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:氫能與運輸減碳示意]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>核心概念:</strong>燃料電池用氫為燃料,只排出水氣;但「灰氫 vs 綠氫」差異關鍵</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>氫能運輸示意</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>提醒:</strong>未來技術不是萬靈丹,當下的步行、騎車、大眾運輸才是這十年最確定的減碳路徑
+    </p>
+  </div>
+  <div class="slide-source">
+    參考教材:教育部教案《0192_CCE_潔淨能源愛地球》
+  </div>
+</section>
+
+<!-- 23. 專題 -->
+<section class="slide" id="slide-project">
+  <div class="slide-tag">活動四・步驟 2 ・學習單(投影版)</div>
+  <h2>校園永續交通提案書</h2>
+  <div class="slide-body">
+    <p style="font-size: 1.05rem; color: var(--c-muted); text-align: center;">
+      五個主題擇一(或自訂),用 CER 結構寫出提案
+    </p>
+    <div class="three-col" style="grid-template-columns: repeat(5, 1fr); gap: 10px;">
+      <div class="col-card fam"><h4>A</h4><p style="margin: 0;">步行巴士 Walking Bus</p></div>
+      <div class="col-card sch"><h4>B</h4><p style="margin: 0;">校園自行車停車棚</p></div>
+      <div class="col-card com"><h4>C</h4><p style="margin: 0;">Ubike / 公車資訊看板</p></div>
+      <div class="col-card fam"><h4>D</h4><p style="margin: 0;">每週一走路日</p></div>
+      <div class="col-card sch"><h4>E</h4><p style="margin: 0;">15 分鐘校園生活圈</p></div>
+    </div>
+    <div class="pledge-form">
+      <div class="row"><span class="lbl">主張(Claim):</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">證據(Evidence):</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">推理(Reasoning):</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">行動步驟:</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">成效指標:</span><span class="blank"></span></div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §6</a></div>
+</section>
+
+<!-- 24. WSA -->
+<section class="slide" id="slide-wsa">
+  <div class="slide-tag">活動四・步驟 3</div>
+  <h2>WSA 四面向整合</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 12px;">
+      四個輪子同時轉,才是真正的系統改變
+    </p>
+    <div class="three-col" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="col-card fam">
+        <h4>治 理</h4>
+        <ul>
+          <li>學生氣候委員會</li>
+          <li>校務會議提案</li>
+          <li>班聯會推動</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>課 程</h4>
+        <ul>
+          <li>跨科主題週</li>
+          <li>數學算碳排</li>
+          <li>英文讀 IPCC</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>營 運</h4>
+        <ul>
+          <li>校門步行優先區</li>
+          <li>自行車停車棚</li>
+          <li>採購電動公務車</li>
+        </ul>
+      </div>
+      <div class="col-card fam">
+        <h4>社 群</h4>
+        <ul>
+          <li>家長會合作</li>
+          <li>里辦串聯</li>
+          <li>NGO 進校分享</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 20px;">
+      互評檢核:你的提案打勾了幾個面向?<strong style="color: var(--c-accent);">4 個都勾,才是系統改變</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 25. 總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字,一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">數據</div>
+        <div class="desc">交通佔全球 23%<br>運具碳排相差 170 倍</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">系統</div>
+        <div class="desc">不是個人愛方便<br>是基礎設施與政策</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">行動</div>
+        <div class="desc">校園、家庭、社區<br>每個尺度都能出力</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      帶回家的問題:<br>
+      <strong style="color: var(--c-accent);">家人會聽你的交通減碳建議嗎?你願意從明天開始改一件事嗎?</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">25</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+
+</body>
+</html>

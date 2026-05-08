@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>交通工具小偵探 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #16a34a;
+    --c-accent-soft: #dcfce7;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text);
+    line-height: 1.6;
+    margin: 0;
+    background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 44px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 36px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    border: 1px solid var(--c-border);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    font-family: monospace; font-size: 0.8em;
+    background: #fff; margin: 0 2px;
+  }
+
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px);
+    scroll-snap-align: start;
+    padding: 40px 60px;
+    display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .question-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 30px 0;
+  }
+  .question-card {
+    background: var(--c-bg);
+    border: 2px solid var(--c-accent);
+    border-radius: 12px;
+    padding: 24px;
+    font-size: 1.15rem;
+    text-align: center;
+    color: var(--c-text);
+    position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px;
+    background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%;
+    font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 20px 0;
+  }
+  .compare-card {
+    border: 2px solid var(--c-border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 20px 0;
+  }
+  .col-card {
+    border: 2px solid var(--c-border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 {
+    margin: 0 0 10px;
+    font-size: 1.15rem;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+
+  .summary-keys {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin: 30px 0;
+  }
+  .key-card {
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: 16px;
+    background: var(--c-bg);
+    border: 3px solid;
+  }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  .pledge-form {
+    border: 2px solid var(--c-accent);
+    border-radius: 12px;
+    padding: 24px 30px;
+    background: var(--c-bg);
+    max-width: 700px;
+    margin: 20px auto;
+  }
+  .pledge-form .row {
+    display: flex; align-items: baseline;
+    gap: 12px; margin: 16px 0;
+    font-size: 1.05rem;
+  }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank {
+    flex: 1;
+    border-bottom: 2px solid var(--c-text);
+    height: 28px;
+  }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .emoji-row { font-size: 2.4rem; text-align: center; letter-spacing: 0.4em; margin: 20px 0; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">交通工具小偵探 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>交通工具小偵探</h2>
+    <p class="subtitle">和小熊嘟嘟一起找:哪些交通工具對地球好?</p>
+    <div class="emoji-row">🐻 🚲 🌍 🚌 👣</div>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-need">
+  <div class="slide-tag">起點</div>
+  <h2>為什麼我們需要交通工具?</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>🏫<br>去學校上課</div>
+      <div class="question-card"><div class="q-num">2</div>🛒<br>去超市買東西</div>
+      <div class="question-card"><div class="q-num">3</div>👴<br>去看阿公阿嬤</div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      交通工具幫我們去 <strong style="color: var(--c-accent);">遠遠的地方</strong>!<br>
+      但是,不同的交通工具會用不一樣的能源喔。
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>交通工具大集合!</h2>
+    <p class="subtitle">認識多種交通工具,知道為什麼我們需要它們</p>
+  </div>
+</section>
+
+<!-- 4. 交通工具大家族 dp1 -->
+<section class="slide" id="slide-family">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>交通工具大家族(9 種以上)</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:9 種交通工具大圖示]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>9 種以上常見交通工具,像大家族一樣,每個都不一樣!</div>
+        <div style="font-size: 2rem; margin: 14px 0; letter-spacing: 0.2em;">👣 🚲 🚌 🚇 🚆 🚗 🏍️ ✈️ ⛴️</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>9 種以上的交通工具:走路、腳踏車、公車、捷運、火車、汽車、摩托車、飛機、船</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      <strong>互動:</strong>用手指數一數,你坐過哪幾種?
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:教育部校園節能減碳「陸上交通面面觀」教案(MOE RAG)
+  </div>
+</section>
+
+<!-- 5. 它們吃什麼 -->
+<section class="slide" id="slide-energy">
+  <div class="slide-tag">活動一・步驟 3 補充</div>
+  <h2>它們吃什麼能量?</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>🚲 腳踏車</h4>
+        <ul>
+          <li style="list-style: none; text-align: center; font-size: 2.5rem;">🍌</li>
+          <li>吃你的力氣<br>(吃飽飯有力氣騎)</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>🚌 公車・🚗 汽車</h4>
+        <ul>
+          <li style="list-style: none; text-align: center; font-size: 2.5rem;">⛽</li>
+          <li>喝油<br>(會冒一點黑煙)</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>🚇 捷運・電車</h4>
+        <ul>
+          <li style="list-style: none; text-align: center; font-size: 2.5rem;">🔋</li>
+          <li>用電池<br>(電從哪裡來?)</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px; color: var(--c-muted);">
+      不同的能量,對地球有不一樣的影響喔!
+    </p>
+  </div>
+</section>
+
+<!-- 6. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>對地球好的小選擇</h2>
+    <p class="subtitle">乾淨小腳 vs 嘟嘟冒煙</p>
+  </div>
+</section>
+
+<!-- 7. 乾淨小腳 vs 嘟嘟冒煙 dp2 -->
+<section class="slide" id="slide-clean-vs-smoke">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>乾淨小腳 vs 嘟嘟冒煙</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">乾 淨 小 腳</div>
+        <div class="icon">👣 🚲</div>
+        <h3>0 排氣 💚</h3>
+        <p>走路、騎腳踏車<br>不用燒油,不會排黑煙</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">嘟 嘟 冒 煙</div>
+        <div class="icon">🚗 💨</div>
+        <h3>有排氣</h3>
+        <p>汽車、摩托車要喝油<br>屁屁會冒一點點黑煙</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      <strong>口訣:</strong>乾淨小腳!(拍腳)・嘟嘟冒煙!(嘴發「嘟嘟」)
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:教育部「走路上學好處多」能源資源永續教案(MOE RAG)
+  </div>
+</section>
+
+<!-- 8. 大餅比一比 dp3 -->
+<section class="slide" id="slide-pie">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>大餅比一比:4 塊裡 1 塊是交通工具</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:4 塊大餅圓餅圖,1 塊塗灰標「汽車卡車」]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>美國的髒空氣,每 4 塊大餅裡有 1 塊是交通工具造成的(大約 28%)</div>
+        <div style="font-size: 2.6rem; margin: 14px 0; letter-spacing: 0.3em;">🥧 🥧 🥧 <span style="filter: grayscale(1) brightness(0.6);">🥧</span></div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>4 塊大餅裡有 1 塊是灰色的(汽車與卡車的 28%)</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      <strong>互動:</strong>請孩子用手指出灰色那塊大餅,一起說「有一塊變灰灰!」
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.epa.gov/greenvehicles/fast-facts-transportation-greenhouse-gas-emissions" target="_blank" rel="noopener">美國環境保護署 — 交通溫室氣體快速指標</a>
+  </div>
+</section>
+
+<!-- 9. 公車大力士 dp4 -->
+<section class="slide" id="slide-bus">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>公車大力士:1 台 = 30 台汽車</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:1 大公車 vs 30 台小汽車對比圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>1 台公車載 30 個人,等於 30 台汽車載得完的人,但只用 1 台的油!</div>
+        <div style="font-size: 2rem; margin: 14px 0;">🚌 = 🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗 ...×30</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>1 台公車載客量 ≈ 30 台汽車</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      <strong>互動:</strong>孩子圍成圈假裝是「公車排排坐」,發「嘟嘟~出發」聲
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:教育部「陸上交通面面觀」、「途謀佈軌」大眾運輸減碳教案(MOE RAG)
+  </div>
+</section>
+
+<!-- 10. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>我是小小地球保護者!</h2>
+    <p class="subtitle">做出我的永續交通承諾</p>
+  </div>
+</section>
+
+<!-- 11. 走路騎車變超人 dp5 -->
+<section class="slide" id="slide-hero">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>走路騎車變超人!</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:小孩戴超人披風走路圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>世界衛生組織說 — 每天動一動,走路、騎車讓身體更強壯!</div>
+        <div style="font-size: 3rem; margin: 14px 0; letter-spacing: 0.3em;">🦸 👣 🚲</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>走路、騎腳踏車 = 給身體補充超人能量</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      <strong>互動:</strong>全班做超人手勢(一隻手向前伸)+ 跺腳 3 下!
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.who.int/news-room/fact-sheets/detail/physical-activity" target="_blank" rel="noopener">世界衛生組織 — 身體活動實況報導</a>
+  </div>
+</section>
+
+<!-- 12. 永續交通三大好朋友 -->
+<section class="slide" id="slide-3friends">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>永續交通三大好朋友</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>👣 走路</h4>
+        <ul>
+          <li>0 排氣</li>
+          <li>身體更強壯</li>
+          <li>近近的最適合</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>🚲 腳踏車</h4>
+        <ul>
+          <li>0 排氣</li>
+          <li>速度比走路快</li>
+          <li>中距離最適合</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>🚌 公車</h4>
+        <ul>
+          <li>1 台 = 30 台汽車</li>
+          <li>大家一起省油</li>
+          <li>遠距離最適合</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 24px; color: var(--c-accent);">
+      <strong>三兄弟對地球好,也對我們身體好!</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 13. 情境挑戰 -->
+<section class="slide" id="slide-scenario">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>情境挑戰:今天怎麼去?</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>🏞️<br><strong>公園</strong><br>(走 5 分鐘到)</div>
+      <div class="question-card"><div class="q-num">2</div>🏥<br><strong>醫院</strong><br>(遠遠的)</div>
+      <div class="question-card"><div class="q-num">3</div>🛒<br><strong>超市</strong><br>(3 條街)</div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px; color: var(--c-soc);">
+      <strong>沒有對錯,只有「最適合」!</strong><br>
+      <span style="font-size: 1rem; color: var(--c-muted);">每個人需要的不一樣,我們要尊重彼此的選擇 💗</span>
+    </p>
+  </div>
+</section>
+
+<!-- 14. 家庭小任務 -->
+<section class="slide" id="slide-pledge">
+  <div class="slide-tag">活動三・步驟 4 ・學習單(投影版)</div>
+  <h2>家庭小任務:這禮拜我想…</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      回家以後,跟爸媽一起選一個對地球好的交通方式!
+    </p>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">這禮拜我想試試:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我會跟誰一起做:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">要去的地方:</span>
+        <span class="blank"></span>
+      </div>
+      <hr style="margin: 18px 0; border: 0; border-top: 1px dashed var(--c-border);">
+      <div class="row">
+        <span class="lbl">小偵探簽名:</span>
+        <span class="blank"></span>
+        <span class="lbl">爸媽簽名:</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 15. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三件大事,一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 件</div>
+        <div class="word">很多種</div>
+        <div class="desc">交通工具像大家族<br>有 9 種以上</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 件</div>
+        <div class="word">好選擇</div>
+        <div class="desc">走路、騎車、坐公車<br>對地球好</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 件</div>
+        <div class="word">我能選</div>
+        <div class="desc">小朋友也能選擇<br>跟爸媽說一聲</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">我是交通小偵探!給自己拍拍手! 👏</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">15</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

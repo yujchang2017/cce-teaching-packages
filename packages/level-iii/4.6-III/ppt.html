@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.6-III 應對氣候錯誤／虛假訊息 — 投影片</title>
+<style>
+:root {
+  --c-accent: #f59e0b;
+  --c-cog: #3b82f6;
+  --c-soc: #ec4899;
+  --c-beh: #22c55e;
+  --c-dark: #1e293b;
+  --c-mid: #334155;
+  --c-light: #f8fafc;
+  --c-muted: #94a3b8;
+  --c-border: #e2e8f0;
+  --c-red: #ef4444;
+  --c-yellow: #eab308;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; font-family: 'Noto Sans TC', system-ui, sans-serif; background: #0f172a; }
+
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 44px; background: var(--c-dark); color: #fff;
+  display: flex; align-items: center; padding: 0 1.25rem; gap: 1rem;
+  border-bottom: 2px solid var(--c-accent);
+}
+#topbar a { color: var(--c-muted); font-size: 0.85rem; text-decoration: none; white-space: nowrap; }
+#topbar a:hover { color: #fff; }
+#topbar h1 { font-size: 0.9rem; font-weight: 700; color: #fff; flex: 1; }
+
+#navbar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  height: 40px; background: var(--c-dark); color: var(--c-muted);
+  display: flex; align-items: center; justify-content: center; gap: 1.5rem;
+  font-size: 0.8rem; border-top: 1px solid var(--c-mid);
+}
+#slide-counter { font-weight: 600; color: var(--c-accent); }
+
+#deck {
+  position: fixed; top: 44px; bottom: 40px; left: 0; right: 0;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.slide {
+  width: 100%; height: 100%;
+  scroll-snap-align: start;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 2.5rem 3rem;
+  position: relative;
+}
+
+.slide-cover { background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0c1f2e 100%); color: #fff; }
+.slide-question { background: #1e293b; color: #fff; }
+.slide-divider { background: linear-gradient(135deg, #7c2d12 0%, #92400e 100%); color: #fff; }
+.slide-content { background: var(--c-light); color: var(--c-dark); }
+.slide-ws { background: #f0fdf4; color: var(--c-dark); }
+.slide-pledge { background: #fdf2f8; color: var(--c-dark); }
+.slide-summary { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; }
+.slide-ext { background: #eff6ff; color: var(--c-dark); }
+
+.kicker { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7; margin-bottom: 0.5rem; }
+.slide-title { font-size: clamp(1.5rem, 4vw, 2.3rem); font-weight: 800; line-height: 1.2; margin-bottom: 0.75rem; }
+.slide-subtitle { font-size: clamp(0.9rem, 2vw, 1.1rem); opacity: 0.85; max-width: 640px; text-align: center; }
+.slide-body { font-size: clamp(0.85rem, 1.8vw, 1rem); max-width: 700px; width: 100%; }
+.accent-bar { width: 64px; height: 5px; background: var(--c-accent); border-radius: 3px; margin: 1rem auto; }
+
+.big-stat { font-size: clamp(2.8rem, 7vw, 5rem); font-weight: 900; color: var(--c-accent); line-height: 1; }
+.stat-label { font-size: 0.9rem; opacity: 0.8; margin-top: 0.25rem; }
+
+.act-badge { background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.4); border-radius: 2rem; padding: 0.3rem 1rem; font-size: 0.8rem; margin-bottom: 1rem; display: inline-block; }
+
+/* message card game */
+.msg-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; width: 100%; max-width: 720px; margin: 0.75rem 0; }
+.msg-card { border-radius: 0.5rem; padding: 0.85rem 1rem; font-size: 0.82rem; line-height: 1.4; }
+.msg-card.truth { background: #f0fdf4; border: 2px solid var(--c-beh); }
+.msg-card.mis { background: #fefce8; border: 2px solid var(--c-yellow); }
+.msg-card.dis { background: #fef2f2; border: 2px solid var(--c-red); }
+.msg-card .tag { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 0.3rem; }
+.msg-card.truth .tag { color: var(--c-beh); }
+.msg-card.mis .tag { color: #a16207; }
+.msg-card.dis .tag { color: var(--c-red); }
+
+/* color code row */
+.color-row { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin: 1rem 0; }
+.color-chip { border-radius: 0.5rem; padding: 0.65rem 1.25rem; text-align: center; font-weight: 700; font-size: 0.85rem; min-width: 140px; }
+.chip-white { background: #f1f5f9; color: var(--c-dark); border: 2px solid #94a3b8; }
+.chip-yellow { background: #fef9c3; color: #854d0e; border: 2px solid var(--c-yellow); }
+.chip-red { background: #fee2e2; color: #991b1b; border: 2px solid var(--c-red); }
+
+/* 5-step stairs */
+.steps-list { list-style: none; width: 100%; max-width: 580px; margin: 0.75rem 0; }
+.steps-list li { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.55rem 1rem; margin-bottom: 0.4rem; background: #fff; border: 1px solid var(--c-border); border-radius: 0.5rem; font-size: 0.88rem; }
+.step-num { font-size: 1.2rem; font-weight: 900; color: var(--c-accent); width: 1.5rem; flex-shrink: 0; }
+.step-kanji { font-size: 0.75rem; color: var(--c-muted); font-weight: 700; margin-left: auto; align-self: center; }
+
+/* source vs suspect */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; width: 100%; max-width: 600px; margin: 0.75rem 0; }
+.compare-card { border-radius: 0.5rem; padding: 0.85rem 1rem; font-size: 0.85rem; }
+.compare-card.trust { background: #f0fdf4; border: 2px solid var(--c-beh); }
+.compare-card.suspect { background: #fef2f2; border: 2px solid var(--c-red); }
+.compare-card h4 { font-size: 0.8rem; font-weight: 800; margin-bottom: 0.4rem; }
+.compare-card.trust h4 { color: #166534; }
+.compare-card.suspect h4 { color: #991b1b; }
+
+/* check table */
+.check-table { width: 100%; max-width: 640px; border-collapse: collapse; font-size: 0.82rem; margin: 0.75rem 0; background: #fff; border-radius: 0.5rem; overflow: hidden; border: 1px solid var(--c-border); }
+.check-table th { background: #f1f5f9; padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--c-border); font-size: 0.75rem; }
+.check-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--c-border); vertical-align: top; }
+.check-table tr:last-child td { border-bottom: none; }
+
+/* 6 types grid */
+.six-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; width: 100%; max-width: 600px; margin: 0.75rem 0; }
+.six-card { border-radius: 0.5rem; padding: 0.65rem 0.75rem; text-align: center; font-size: 0.8rem; font-weight: 600; }
+.six-card.a1 { background: #dcfce7; color: #166534; }
+.six-card.a2 { background: #d1fae5; color: #065f46; }
+.six-card.a3 { background: #fef9c3; color: #854d0e; }
+.six-card.a4 { background: #fef3c7; color: #92400e; }
+.six-card.a5 { background: #fee2e2; color: #991b1b; }
+.six-card.a6 { background: #fecaca; color: #7f1d1d; }
+.six-card .sub { font-size: 0.67rem; font-weight: 400; display: block; margin-top: 0.15rem; }
+
+/* dialogue bubble */
+.dialogue { width: 100%; max-width: 560px; margin: 0.75rem 0; }
+.bubble { border-radius: 1rem; padding: 0.75rem 1.1rem; margin-bottom: 0.6rem; font-size: 0.88rem; max-width: 90%; }
+.bubble.left { background: #e0f2fe; color: #0c4a6e; border-bottom-left-radius: 0.25rem; }
+.bubble.right { background: #dcfce7; color: #14532d; border-bottom-right-radius: 0.25rem; margin-left: auto; }
+.bubble .speaker { font-size: 0.7rem; font-weight: 700; opacity: 0.7; margin-bottom: 0.2rem; }
+
+/* WSA 4-box */
+.wsa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; width: 100%; max-width: 600px; margin: 0.75rem 0; }
+.wsa-card { background: #fff; border: 1px solid var(--c-border); border-radius: 0.5rem; padding: 0.9rem 1rem; }
+.wsa-card h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem; }
+.wsa-card p { font-size: 0.78rem; color: var(--c-muted); }
+.wsa-card.curr h4 { color: var(--c-cog); }
+.wsa-card.ops h4 { color: var(--c-beh); }
+.wsa-card.comm h4 { color: var(--c-accent); }
+.wsa-card.voice h4 { color: var(--c-soc); }
+
+/* pledge / badge */
+.badge-circle { width: 140px; height: 140px; border-radius: 50%; background: linear-gradient(135deg, var(--c-accent), #b45309); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0.75rem auto; box-shadow: 0 4px 24px rgba(245,158,11,0.4); }
+.badge-circle .badge-icon { font-size: 2.5rem; }
+.badge-circle .badge-text { font-size: 0.58rem; color: #fff; font-weight: 700; text-align: center; margin-top: 0.2rem; }
+
+.hope-frame { background: #fff; border: 2px solid var(--c-soc); border-radius: 0.5rem; padding: 1.1rem 1.25rem; width: 100%; max-width: 520px; margin: 0.75rem 0; }
+.hope-frame h4 { font-size: 0.92rem; font-weight: 700; color: var(--c-soc); margin-bottom: 0.6rem; }
+.pledge-line { height: 34px; border: none; border-bottom: 1px dashed #f9a8d4; width: 100%; background: transparent; display: block; margin-bottom: 0.4rem; }
+
+/* summary keys */
+.summary-keys { display: flex; flex-wrap: wrap; gap: 1.25rem; justify-content: center; margin: 1rem 0; }
+.key-card { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 0.75rem; padding: 1rem 1.5rem; text-align: center; min-width: 140px; }
+.key-card .key-word { font-size: 1.3rem; font-weight: 800; color: var(--c-accent); }
+.key-card .key-desc { font-size: 0.75rem; color: rgba(255,255,255,0.75); margin-top: 0.25rem; }
+
+/* misconception list */
+.mis-list { width: 100%; max-width: 660px; margin: 0.75rem 0; }
+.mis-item { display: flex; gap: 0.5rem; align-items: flex-start; margin-bottom: 0.5rem; font-size: 0.82rem; }
+.mis-item .x { color: var(--c-red); font-weight: 800; font-size: 1rem; flex-shrink: 0; }
+
+/* source note */
+.source { font-size: 0.72rem; color: var(--c-muted); margin-top: 0.5rem; }
+.source a { color: var(--c-muted); text-decoration: underline; }
+
+/* ext platform list */
+.platform-list { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin: 0.75rem 0; }
+.platform-card { background: #fff; border: 1px solid var(--c-border); border-radius: 0.5rem; padding: 0.75rem 1.1rem; text-align: center; min-width: 140px; }
+.platform-card .pname { font-size: 0.95rem; font-weight: 700; color: var(--c-dark); }
+.platform-card .pdesc { font-size: 0.72rem; color: var(--c-muted); margin-top: 0.15rem; }
+
+.question-big { font-size: clamp(1.2rem, 3vw, 1.7rem); font-weight: 800; color: var(--c-accent); text-align: center; max-width: 640px; line-height: 1.3; margin: 0.5rem 0; }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a href="lesson_plan.html">← 回教案</a>
+  <h1>4.6-III 應對氣候錯誤／虛假訊息 — 我們是真相偵探</h1>
+</div>
+
+<div id="deck">
+
+  <!-- slide-cover -->
+  <section class="slide slide-cover" id="slide-cover">
+    <div class="kicker">4.6-III ╱ Level III ╱ 9–12 歲</div>
+    <div class="slide-title" style="text-align:center;">歡迎來到<br>真相偵探社！</div>
+    <div class="accent-bar"></div>
+    <div class="slide-subtitle">應對氣候錯誤／虛假訊息<br>Tackling Climate Mis/Disinformation</div>
+  </section>
+
+  <!-- slide-question -->
+  <section class="slide slide-question" id="slide-question">
+    <div class="kicker">今天的大問題</div>
+    <div class="question-big">網路上說的氣候訊息，<br>哪些是真的？<br>我怎麼判斷？</div>
+    <div class="accent-bar"></div>
+    <div class="slide-subtitle" style="color:rgba(255,255,255,0.8);">今天我們要學：分辨錯誤與虛假、使用五步驟查核、同理溝通、讓全校更有免疫力</div>
+  </section>
+
+  <!-- 活動一過場 -->
+  <section class="slide slide-divider" id="slide-a1">
+    <div class="act-badge">活動一</div>
+    <div class="slide-title" style="text-align:center;">什麼是假訊息？<br>命名偵探社</div>
+    <div class="slide-subtitle" style="color:rgba(255,255,255,0.8);">先玩一場「哪則是真的？」投票遊戲</div>
+  </section>
+
+  <!-- slide-game -->
+  <section class="slide slide-content" id="slide-game">
+    <div class="kicker">活動一 — 開場遊戲</div>
+    <div class="slide-title">這三則訊息哪個是真的？</div>
+    <div class="msg-grid">
+      <div class="msg-card truth">
+        <div class="tag">訊息 A</div>
+        2024 年全球平均氣溫已比工業化前高約 1.47°C，是有紀錄以來最熱一年。
+      </div>
+      <div class="msg-card mis">
+        <div class="tag">訊息 B</div>
+        冬天還會冷、還會下雪，所以地球根本沒有在暖化。
+      </div>
+      <div class="msg-card dis">
+        <div class="tag">訊息 C</div>
+        【AI 合成影片】知名科學家說：「暖化是為了騙取補助金的謊言」。
+      </div>
+    </div>
+    <div class="slide-body" style="font-size:0.83rem; color:#64748b; text-align:center; margin-top:0.5rem;">
+      先把答案放心裡——等一下揭曉！
+    </div>
+  </section>
+
+  <!-- slide-define -->
+  <section class="slide slide-content" id="slide-define">
+    <div class="kicker">揭曉答案 + 定義</div>
+    <div class="slide-title">三色卡分類法</div>
+    <div class="color-row">
+      <div class="color-chip chip-white">白色 = 真實訊息<br><small>A 是真的</small></div>
+      <div class="color-chip chip-yellow">黃色 = 錯誤訊息<br><small>B 是誤解，非故意</small></div>
+      <div class="color-chip chip-red">紅色 = 虛假訊息<br><small>C 是故意捏造</small></div>
+    </div>
+    <div class="slide-body" style="margin-top:0.5rem; font-size:0.88rem; max-width:580px; text-align:center;">
+      <strong>錯誤訊息（misinformation）</strong>＝不小心搞錯，分享者自己也誤會了<br>
+      <strong>虛假訊息（disinformation）</strong>＝故意製造、散播，為了影響別人的想法
+    </div>
+    <div class="source" style="margin-top:0.75rem; text-align:center;">97%+ 氣候科學家共識：<a href="https://science.nasa.gov/climate-change/scientific-consensus/" target="_blank">美國太空總署（NASA）</a></div>
+  </section>
+
+  <!-- 活動二過場 -->
+  <section class="slide slide-divider" id="slide-a2">
+    <div class="act-badge">活動二</div>
+    <div class="slide-title" style="text-align:center;">真相偵探<br>五步驟查核練習</div>
+    <div class="slide-subtitle" style="color:rgba(255,255,255,0.8);">口訣：源、雙、容、理、問</div>
+  </section>
+
+  <!-- slide-5steps -->
+  <section class="slide slide-content" id="slide-5steps">
+    <div class="kicker">聯合國教科文組織 — 9-12 歲兒童媒體素養框架</div>
+    <div class="slide-title">真相偵探五步驟</div>
+    <ul class="steps-list">
+      <li><span class="step-num">①</span><div>查來源——這是誰寫的？有無機構背景、日期？</div><span class="step-kanji">源</span></li>
+      <li><span class="step-num">②</span><div>雙重查證——在另一個可信來源也能查到嗎？</div><span class="step-kanji">雙</span></li>
+      <li><span class="step-num">③</span><div>看內容——公平嗎？何時寫的？有無錯字和情緒化標題？</div><span class="step-kanji">容</span></li>
+      <li><span class="step-num">④</span><div>問合理性——這顛覆了整個科學界嗎？合常識嗎？</div><span class="step-kanji">理</span></li>
+      <li><span class="step-num">⑤</span><div>請教師長——查不出來不丟臉，求助是一種能力。</div><span class="step-kanji">問</span></li>
+    </ul>
+    <div class="source">來源：<a href="https://www.unesco.org/en/media-information-literacy" target="_blank">聯合國教科文組織媒體與資訊素養（4.6-III）</a></div>
+  </section>
+
+  <!-- slide-source-check -->
+  <section class="slide slide-content" id="slide-source-check">
+    <div class="kicker">步驟① ╱ ② — 查來源 + 雙重查證</div>
+    <div class="slide-title">可信 vs 可疑來源</div>
+    <div class="compare-grid">
+      <div class="compare-card trust">
+        <h4>可信來源特徵</h4>
+        有明確機構名稱<br>
+        有日期與作者<br>
+        引用公開數據<br>
+        例：NASA、TCCIP、TFC
+      </div>
+      <div class="compare-card suspect">
+        <h4>可疑來源警訊</h4>
+        匿名帳號或無機構<br>
+        日期不明或很舊<br>
+        情緒化標題（震驚！）<br>
+        只有單一來源「獨家」
+      </div>
+    </div>
+    <div class="slide-body" style="font-size:0.83rem; color:#64748b; text-align:center; margin-top:0.25rem;">
+      真正的查核者會把所有證據攤開——這就是台灣事實查核中心每篇報告的精神
+    </div>
+  </section>
+
+  <!-- slide-tfc -->
+  <section class="slide slide-content" id="slide-tfc">
+    <div class="kicker">步驟② — 雙重查證工具</div>
+    <div class="slide-title">台灣事實查核中心（TFC）</div>
+    <div class="slide-body" style="text-align:center; margin-bottom:0.75rem; font-size:0.9rem;">
+      亞洲首個通過國際事實查核聯盟（IFCN）驗證的機構<br>
+      每份報告公開三個欄位：
+    </div>
+    <div class="color-row" style="margin:0.5rem 0;">
+      <div class="color-chip chip-white" style="background:#eff6ff; border-color:#3b82f6; color:#1e3a5f;">查核過程</div>
+      <div class="color-chip chip-white" style="background:#f0fdf4; border-color:#22c55e; color:#14532d;">查核結果</div>
+      <div class="color-chip chip-white" style="background:#fef9c3; border-color:#eab308; color:#713f12;">資料來源</div>
+    </div>
+    <div class="slide-body" style="font-size:0.85rem; text-align:center; margin-top:0.5rem;">
+      任何人都可以複查——「相信我」不是查核，<strong>公開可驗證的證據</strong>才是。
+    </div>
+    <div class="source"><a href="https://tfc-taiwan.org.tw/" target="_blank">tfc-taiwan.org.tw</a></div>
+  </section>
+
+  <!-- slide-demo -->
+  <section class="slide slide-content" id="slide-demo">
+    <div class="kicker">活動二 — 教師示範</div>
+    <div class="slide-title">示範查核：「南極冰變多，所以沒暖化」</div>
+    <table class="check-table">
+      <thead>
+        <tr><th>步驟</th><th>查核結果</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>①查來源</td><td>匿名社群帳號，無機構背景</td></tr>
+        <tr><td>②雙重查證</td><td>美國太空總署 + TCCIP：臺灣百年升溫約 1.6°C，全球均溫持續上升</td></tr>
+        <tr><td>③看內容</td><td>斷章取義，日期不明，標題煽情</td></tr>
+        <tr><td>④問合理性</td><td>與 97% 科學共識矛盾，南極整體冰量長期仍呈減少趨勢</td></tr>
+        <tr><td>⑤結論</td><td style="color:#dc2626; font-weight:700;">錯誤訊息（誤解部分數據，非故意）</td></tr>
+      </tbody>
+    </table>
+    <div class="source">數據：<a href="https://tccip.ncdr.nat.gov.tw/" target="_blank">TCCIP</a> ╱ <a href="https://science.nasa.gov/climate-change/scientific-consensus/" target="_blank">NASA</a></div>
+  </section>
+
+  <!-- 活動三過場 -->
+  <section class="slide slide-divider" id="slide-a3">
+    <div class="act-badge">活動三</div>
+    <div class="slide-title" style="text-align:center;">深偽、六類公眾<br>與同理溝通</div>
+    <div class="slide-subtitle" style="color:rgba(255,255,255,0.8);">ORID 討論法：觀察→感受→詮釋→決定</div>
+  </section>
+
+  <!-- slide-deepfake -->
+  <section class="slide slide-content" id="slide-deepfake">
+    <div class="kicker">O（觀察）— 新威脅：深偽 Deepfake</div>
+    <div class="slide-title">AI 合成影片怎麼辨識？</div>
+    <div class="compare-grid" style="max-width:560px;">
+      <div class="compare-card suspect">
+        <h4>深偽影片常見線索</h4>
+        嘴型與聲音不同步<br>
+        眼睛眨動不自然<br>
+        臉部邊緣有光暈<br>
+        陰影方向奇怪
+      </div>
+      <div class="compare-card trust">
+        <h4>最強辨識武器</h4>
+        查原始出處<br>
+        重要聲明不會只有<br>「匿名帳號獨家」<br>多來源交叉確認
+      </div>
+    </div>
+    <div class="slide-body" style="font-size:0.85rem; text-align:center; margin-top:0.5rem;">
+      AI 讓假訊息更難辨別，但也讓查核更快——<strong>人 + AI + 查核工具</strong>三合一才是新素養。
+    </div>
+  </section>
+
+  <!-- slide-6types -->
+  <section class="slide slide-content" id="slide-6types">
+    <div class="kicker">I（詮釋）— 耶魯大學氣候傳播計畫</div>
+    <div class="slide-title">六類公眾光譜</div>
+    <div class="six-grid">
+      <div class="six-card a1">警覺的<span class="sub">最關心氣候</span></div>
+      <div class="six-card a2">關心的<span class="sub">支持行動</span></div>
+      <div class="six-card a3">謹慎的<span class="sub">未確定但開放</span></div>
+      <div class="six-card a4">不投入的<span class="sub">沒特別意見</span></div>
+      <div class="six-card a5">懷疑的<span class="sub">不確定人為因素</span></div>
+      <div class="six-card a6">否認的<span class="sub">認為暖化是假的</span></div>
+    </div>
+    <div class="slide-body" style="font-size:0.83rem; color:#64748b; text-align:center; margin-top:0.25rem;">
+      虛假訊息最容易讓「謹慎」與「不投入」的人轉向懷疑<br>你的家人、同學大約落在哪一類？（畫家人光譜圖）
+    </div>
+    <div class="source"><a href="https://climatecommunication.yale.edu/about/projects/global-warmings-six-americas/" target="_blank">耶魯大學氣候傳播計畫 — Six Americas</a></div>
+  </section>
+
+  <!-- slide-dialogue -->
+  <section class="slide slide-content" id="slide-dialogue">
+    <div class="kicker">D（決定）— 同理溝通句型</div>
+    <div class="slide-title">情緒先，事實後</div>
+    <div class="dialogue">
+      <div class="bubble left">
+        <div class="speaker">阿嬤</div>
+        夏天變熱是太陽活動變強，又不是人的問題，你學校都教什麼？
+      </div>
+      <div class="bubble right">
+        <div class="speaker">我</div>
+        阿嬤我懂你的意思，天氣真的越來越怪……
+      </div>
+      <div class="bubble right">
+        <div class="speaker">我</div>
+        我查到美國太空總署的資料說，超過 97% 的科學家確認主要是人類活動造成的。
+      </div>
+      <div class="bubble right">
+        <div class="speaker">我</div>
+        要不要我們一起看看 TCCIP 的台灣升溫曲線？
+      </div>
+    </div>
+    <div class="slide-body" style="font-size:0.83rem; color:#64748b; text-align:center;">
+      重點：攻擊的是「訊息」，不是「人」——吵架只會讓家人更不相信我們
+    </div>
+  </section>
+
+  <!-- 活動四過場 -->
+  <section class="slide slide-divider" id="slide-a4">
+    <div class="act-badge">活動四</div>
+    <div class="slide-title" style="text-align:center;">全校行動</div>
+    <div class="slide-subtitle" style="color:rgba(255,255,255,0.8);">讓學校更不容易被氣候假訊息影響</div>
+  </section>
+
+  <!-- slide-wsa -->
+  <section class="slide slide-ws" id="slide-wsa">
+    <div class="kicker">全校取徑 Whole School Approach — 對付假訊息版</div>
+    <div class="slide-title">四面向全校免疫計畫</div>
+    <div class="wsa-grid">
+      <div class="wsa-card curr">
+        <h4>① 課程</h4>
+        <p>4.6-III 整合自然、資訊、語文、綜合；發展跨領域「真相偵探單元」</p>
+      </div>
+      <div class="wsa-card ops">
+        <h4>② 校園營運</h4>
+        <p>圖書館設「真相偵探角」；校網固定區塊「本週查核」</p>
+      </div>
+      <div class="wsa-card comm">
+        <h4>③ 社區連結</h4>
+        <p>邀請台灣事實查核中心專家到校；家長會聯署「不轉傳假訊息」</p>
+      </div>
+      <div class="wsa-card voice">
+        <h4>④ 學生治理</h4>
+        <p>班級真相偵探小隊；每週升旗公告一則本週假訊息 + 五步驟示範</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- slide-student-action -->
+  <section class="slide slide-ws" id="slide-student-action">
+    <div class="kicker">全校取徑 — 你能做的</div>
+    <div class="slide-title">學生行動清單</div>
+    <ul class="steps-list">
+      <li><span class="step-num">①</span><div>每週查核家族群組裡一則可疑訊息</div></li>
+      <li><span class="step-num">②</span><div>在班級投影「本週真相偵探榜」</div></li>
+      <li><span class="step-num">③</span><div>做一張五步驟查核海報貼在教室</div></li>
+      <li><span class="step-num">④</span><div>今晚教一位家人使用五步驟（家庭外傳任務）</div></li>
+      <li><span class="step-num">⑤</span><div>同學爭吵時先說：「我們查查看？」</div></li>
+    </ul>
+    <div class="slide-body" style="font-size:0.83rem; color:#64748b; text-align:center; margin-top:0.25rem;">
+      完成以上任務 → 解鎖「全校英雄徽章」！
+    </div>
+  </section>
+
+  <!-- slide-badge -->
+  <section class="slide slide-pledge" id="slide-badge">
+    <div class="kicker">授徽儀式</div>
+    <div class="slide-title" style="text-align:center;">真相偵探<br>全校英雄徽章</div>
+    <div class="badge-circle">
+      <div class="badge-icon">🔍</div>
+      <div class="badge-text">Truth Detective<br>Hero Badge</div>
+    </div>
+    <div class="hope-frame">
+      <h4>我的承諾——下次看到可疑訊息，我會……</h4>
+      <div class="pledge-line"></div>
+      <div class="pledge-line"></div>
+    </div>
+    <div class="slide-body" style="font-size:0.8rem; color:#64748b; text-align:center;">
+      家庭外傳任務完成 + 家人簽名回條 → 正式成為真相偵探
+    </div>
+  </section>
+
+  <!-- 延伸一 -->
+  <section class="slide slide-ext" id="slide-ext1">
+    <div class="kicker">延伸資源一 — 台灣中文查核平台</div>
+    <div class="slide-title">回家就能用的查核工具</div>
+    <div class="platform-list">
+      <div class="platform-card">
+        <div class="pname">TFC</div>
+        <div class="pdesc">台灣事實查核中心<br>IFCN 認證</div>
+      </div>
+      <div class="platform-card">
+        <div class="pname">MyGoPen</div>
+        <div class="pdesc">謠言查證<br>繁中介面</div>
+      </div>
+      <div class="platform-card">
+        <div class="pname">Cofacts</div>
+        <div class="pdesc">真的假的<br>LINE Bot 對話</div>
+      </div>
+    </div>
+    <div class="slide-body" style="font-size:0.83rem; color:#64748b; text-align:center; margin-top:0.5rem;">
+      全部免費、全部中文——回家就能和家人一起用
+    </div>
+  </section>
+
+  <!-- 延伸二 -->
+  <section class="slide slide-ext" id="slide-ext2">
+    <div class="kicker">延伸資源二 — 國際權威氣候資料庫</div>
+    <div class="slide-title">查氣候事實，找這四個</div>
+    <div class="platform-list">
+      <div class="platform-card">
+        <div class="pname">NASA</div>
+        <div class="pdesc">美國太空總署<br>氣候科學共識</div>
+      </div>
+      <div class="platform-card">
+        <div class="pname">IPCC</div>
+        <div class="pdesc">政府間氣候<br>變化專門委員會</div>
+      </div>
+      <div class="platform-card">
+        <div class="pname">TCCIP</div>
+        <div class="pdesc">臺灣氣候<br>變遷推估平台</div>
+      </div>
+      <div class="platform-card">
+        <div class="pname">NOAA</div>
+        <div class="pdesc">美國海洋<br>暨大氣總署</div>
+      </div>
+    </div>
+    <div class="slide-body" style="font-size:0.83rem; color:#64748b; text-align:center; margin-top:0.5rem;">
+      這些網站公開所有數據，是你對抗假訊息的後盾
+    </div>
+  </section>
+
+  <!-- slide-summary -->
+  <section class="slide slide-summary" id="slide-summary">
+    <div class="kicker">今天的三個關鍵詞</div>
+    <div class="slide-title" style="text-align:center; color:#fff;">源、雙、容、理、問</div>
+    <div class="accent-bar"></div>
+    <div class="summary-keys">
+      <div class="key-card">
+        <div class="key-word">辨識</div>
+        <div class="key-desc">錯誤 vs 虛假<br>97% 科學共識</div>
+      </div>
+      <div class="key-card">
+        <div class="key-word">查核</div>
+        <div class="key-desc">五步驟口訣<br>TFC 三欄位</div>
+      </div>
+      <div class="key-card">
+        <div class="key-word">傳播</div>
+        <div class="key-desc">同理→事實<br>家庭外傳任務</div>
+      </div>
+    </div>
+    <div class="slide-subtitle" style="color:rgba(255,255,255,0.7); margin-top:1rem;">
+      看到→停一下→想一想→查一查→再決定分享<br>我們班，一起當真相偵探！
+    </div>
+  </section>
+
+</div><!-- /deck -->
+
+<div id="navbar">
+  <span class="nav-hint">← →  換頁</span>
+  <span id="slide-counter">1 / 18</span>
+  <span class="nav-hint">PageUp/PageDown</span>
+</div>
+
+<script>
+(function(){
+  const deck = document.getElementById('deck');
+  const counter = document.getElementById('slide-counter');
+  const slides = Array.from(deck.querySelectorAll('.slide'));
+  const total = slides.length;
+  let current = 0;
+
+  function goTo(idx){
+    if(idx < 0) idx = 0;
+    if(idx >= total) idx = total - 1;
+    slides[idx].scrollIntoView({behavior:'smooth'});
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        current = slides.indexOf(e.target);
+        counter.textContent = (current + 1) + ' / ' + total;
+      }
+    });
+  }, { root: deck, threshold: 0.5 });
+
+  slides.forEach(s => observer.observe(s));
+
+  document.addEventListener('keydown', e => {
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown'){
+      e.preventDefault(); goTo(current + 1);
+    } else if(e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp'){
+      e.preventDefault(); goTo(current - 1);
+    }
+  });
+})();
+</script>
+</body>
+</html>

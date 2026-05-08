@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>循環經濟與日常生活 — 投影片 5.2-V</title>
+<style>
+  :root{
+    --c-accent:#0f766e;--c-accent-soft:#ccfbf1;
+    --c-cog:#2563eb;--c-cog-soft:#dbeafe;
+    --c-soc:#db2777;--c-soc-soft:#fce7f3;
+    --c-beh:#16a34a;--c-beh-soft:#dcfce7;
+    --c-warn:#ea580c;--c-text:#1f2937;--c-muted:#6b7280;
+    --c-border:#e5e7eb;--c-bg:#f9fafb
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    color:var(--c-text);line-height:1.6;background:#fff}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;
+    background:rgba(255,255,255,.95);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--c-border);
+    display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--c-accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.9rem;font-weight:500;color:var(--c-muted);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;
+    background:rgba(255,255,255,.95);backdrop-filter:blur(8px);
+    border-top:1px solid var(--c-border);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;z-index:100;font-size:.85rem;color:var(--c-muted)}
+  .nav-indicator{font-family:monospace;color:var(--c-text)}
+  .nav-cur{color:var(--c-accent);font-weight:700}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--c-border);
+    border-bottom-width:2px;border-radius:4px;font-family:monospace;
+    font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;
+    padding:48px 64px;display:flex;flex-direction:column;
+    border-bottom:1px dashed var(--c-border);position:relative}
+  .slide-num{position:absolute;top:14px;right:20px;
+    font-size:.8rem;font-family:monospace;color:var(--c-border)}
+  .slide h2{font-size:1.9rem;margin:0 0 20px;color:var(--c-text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;
+    background:linear-gradient(135deg,var(--c-accent-soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.6rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--c-accent);color:#fff;
+    padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--c-accent);
+    letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.2rem;color:var(--c-accent)}
+  .slide.divider .step-chips{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .chip{background:var(--c-accent-soft);color:var(--c-accent);
+    border-radius:20px;padding:4px 14px;font-size:.9rem}
+  .q-box{background:var(--c-accent-soft);border-left:5px solid var(--c-accent);
+    border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;
+    font-size:1.4rem;line-height:1.6;color:var(--c-accent);font-weight:600}
+  .q-sub{font-size:1.05rem;color:var(--c-muted);font-weight:400;margin-top:10px}
+  .data-card{border:2px solid var(--c-border);border-radius:12px;padding:22px 28px;
+    margin:20px 0;background:var(--c-bg)}
+  .data-card .dc-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;
+    color:var(--c-muted);margin-bottom:8px}
+  .data-card .dc-fact{font-size:1.2rem;font-weight:700;color:var(--c-text);
+    margin-bottom:10px;line-height:1.5}
+  .data-card .dc-src{font-size:.85rem;color:var(--c-muted)}
+  .act-card{border:2px solid var(--c-border);border-radius:12px;padding:22px 28px;margin:20px 0}
+  .act-card .ac-badge{display:inline-block;background:var(--c-accent);color:#fff;
+    font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:4px;
+    margin-bottom:12px;letter-spacing:.08em}
+  .act-card .ac-task{font-size:1.15rem;color:var(--c-text);line-height:1.6}
+  .ws-frame{border:2px dashed var(--c-accent);border-radius:12px;
+    padding:28px 32px;margin:20px 0;background:#fff}
+  .ws-frame .ws-title{font-size:1rem;font-weight:700;color:var(--c-accent);margin-bottom:14px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--c-border);padding:10px 14px}
+  .ws-table th{background:var(--c-accent-soft);color:var(--c-accent);font-weight:700;text-align:center}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,
+    #d1d5db 20px,#d1d5db 21px);height:52px;vertical-align:bottom}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}
+  .compare-card{border:2px solid var(--c-border);border-radius:12px;padding:20px 24px}
+  .compare-card h3{font-size:1rem;font-weight:700;margin-bottom:12px}
+  .compare-card ul{padding-left:18px}
+  .compare-card li{margin-bottom:8px;font-size:.95rem}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:20px 0}
+  .summary-keys{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+  .key-card{border:2px solid var(--c-border);border-radius:10px;
+    padding:16px 20px;max-width:260px;text-align:center}
+  .key-card .kc-id{font-family:monospace;font-weight:700;margin-bottom:8px}
+  .key-card p{margin:0;font-size:.95rem}
+  figure{margin:20px 0}
+  figure figcaption{font-size:.85rem;color:var(--c-muted);margin-top:8px;text-align:center}
+  .step-list{display:flex;flex-direction:column;gap:14px;margin:16px 0}
+  .step-item{display:flex;align-items:flex-start;gap:14px}
+  .step-num{min-width:32px;height:32px;background:var(--c-accent);color:#fff;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:.9rem;flex-shrink:0;margin-top:2px}
+  .step-text{font-size:1rem;line-height:1.6}
+  .big-stat{text-align:center;padding:20px;margin:8px 0}
+  .big-stat .stat-num{font-size:3rem;font-weight:900;color:var(--c-accent);line-height:1}
+  .big-stat .stat-label{font-size:.9rem;color:var(--c-muted);margin-top:6px}
+  .pill-list{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+  .pill{background:var(--c-accent-soft);color:var(--c-accent);
+    border-radius:20px;padding:6px 16px;font-size:.95rem;font-weight:600}
+  .pill-warn{background:#fff7ed;color:var(--c-warn);border:1.5px solid var(--c-warn)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">循環經濟與日常生活 ｜ Level V ・ 5.2-V</span>
+</header>
+
+<main>
+
+<!-- 1. COVER -->
+<section class="slide cover" id="slide-cover">
+  <span class="slide-num">1</span>
+  <div class="slide-body">
+    <div class="level-tag">Level V ・ 5.2-V</div>
+    <h2>循環經濟與日常生活</h2>
+    <p style="font-size:1.1rem;color:var(--c-muted);margin-top:16px">
+      生態設計・生命週期分析・共享經濟・全球治理
+    </p>
+  </div>
+</section>
+
+<!-- 2. BIG QUESTION -->
+<section class="slide" id="slide-question">
+  <span class="slide-num">2</span>
+  <div class="slide-body">
+    <div class="q-box">
+      你上一支手機用了幾年？<br>
+      它為什麼被淘汰——壞了、慢了、還是想換新的？
+      <div class="q-sub">
+        全球每年生產 14 億支手機，電子廢棄物達 6,200 萬噸。誰來負責？
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">全球循環警訊</div>
+      <div class="dc-fact">全球循環利用率僅 7.2%，較 2018 年的 9.1% 下降約 21%——儘管「循環經濟」的討論熱度近五年增加近三倍</div>
+      <div class="dc-src">來源：Circle Economy 基金會循環差距報告 2024</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. ACTIVITY 1 DIVIDER -->
+<section class="slide divider" id="slide-a1">
+  <span class="slide-num">3</span>
+  <div class="slide-body">
+    <div class="act-badge">活動一</div>
+    <h2>線性 vs 循環：生態設計的力量</h2>
+    <div class="step-chips">
+      <span class="chip">步驟 1 線性/循環對比</span>
+      <span class="chip">步驟 2 生態設計案例</span>
+      <span class="chip">步驟 3 計畫性淘汰討論</span>
+    </div>
+  </div>
+</section>
+
+<!-- 4. 線性 vs 循環 -->
+<section class="slide" id="slide-linear-vs-circular">
+  <span class="slide-num">4</span>
+  <h2>線性 vs 循環：兩種根本不同的邏輯</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-warn)">
+        <h3 style="color:var(--c-warn)">線性經濟（開採→製造→丟棄）</h3>
+        <ul>
+          <li>資源單向流動，使用一次後廢棄</li>
+          <li>依賴不斷開採新原物料</li>
+          <li>廢棄物是系統的終點</li>
+          <li>設計不考量生命終端</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-accent)">
+        <h3 style="color:var(--c-accent)">循環經濟（製造→使用→循環）</h3>
+        <ul>
+          <li>材料與產品維持在使用循環中</li>
+          <li>3R 層級：減量 &gt; 再利用 &gt; 再循環</li>
+          <li>廢棄物是系統設計失敗的訊號</li>
+          <li>設計從一開始就考量循環</li>
+        </ul>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">設計的力量</div>
+      <div class="dc-fact">產品在設計階段即決定了高達 80% 的環境衝擊——設計端介入是最有效的槓桿點</div>
+      <div class="dc-src">來源：歐盟執委會；歐盟《永續產品生態設計規範》ESPR (2024)</div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. 生態設計案例 -->
+<section class="slide" id="slide-eco-design">
+  <span class="slide-num">5</span>
+  <h2>生態設計：歐盟的立法實踐</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="compare-card" style="border-color:var(--c-cog)">
+        <h3 style="color:var(--c-cog)">ESPR（2024）</h3>
+        <p style="font-size:.85rem">《永續產品生態設計規範》要求電子、紡織、建材等產品滿足耐用性、可維修性、可回收性與碳足跡透明標準</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-soc)">
+        <h3 style="color:var(--c-soc)">維修權指令（2024）</h3>
+        <p style="font-size:.85rem">製造商在保固期外仍須提供合理費用維修服務；循環利用率目標 12%→24%（2030）</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-beh)">
+        <h3 style="color:var(--c-beh)">包裝廢棄物規範（2025）</h3>
+        <p style="font-size:.85rem">2030 年包裝減量目標；強制再利用比例；禁止特定一次性包裝</p>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">小組分析任務</div>
+      <div class="ac-task">
+        各組選一產品類別（電子 / 紡織 / 包裝），分析其生態設計可行策略：<br>
+        如何讓它更「可重複使用、可維修、可拆解」？
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. 計畫性淘汰 -->
+<section class="slide" id="slide-planned-obsolescence">
+  <span class="slide-num">6</span>
+  <h2>計畫性淘汰 vs 生態設計</h2>
+  <div class="slide-body">
+    <div class="q-box" style="font-size:1.2rem">
+      蘋果公司被指控故意讓舊 iPhone 變慢——<br>這是犯罪還是商業策略？
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-warn)">
+        <h3 style="color:var(--c-warn)">計畫性淘汰手段</h3>
+        <ul>
+          <li>設計缺陷（不可更換電池）</li>
+          <li>軟體鎖定（強制停止更新）</li>
+          <li>零件不可替換（膠水封裝）</li>
+          <li>配件不相容（頻繁換接口）</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-beh)">
+        <h3 style="color:var(--c-beh)">生態設計反制</h3>
+        <ul>
+          <li>模組化設計（Fairphone 案例）</li>
+          <li>維修手冊公開</li>
+          <li>零件供應保證 10 年</li>
+          <li>軟體更新維護週期延長</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:.9rem;color:var(--c-muted);margin-top:12px">
+      作為消費者，你如何辨識並優先選擇具生態設計特徵的產品？
+    </p>
+  </div>
+</section>
+
+<!-- 7. ACTIVITY 2 DIVIDER -->
+<section class="slide divider" id="slide-a2">
+  <span class="slide-num">7</span>
+  <div class="slide-body">
+    <div class="act-badge">活動二</div>
+    <h2>產品生命週期分析（LCA）與數據科學</h2>
+    <div class="step-chips">
+      <span class="chip">步驟 1 LCA 手機案例</span>
+      <span class="chip">步驟 2 數據科學計算</span>
+      <span class="chip">步驟 3 臺灣回收 vs 循環</span>
+    </div>
+  </div>
+</section>
+
+<!-- 8. LCA 手機 -->
+<section class="slide" id="slide-lca">
+  <span class="slide-num">8</span>
+  <h2>LCA 案例：一支手機的碳足跡</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center">
+        <div style="font-size:.8rem;color:var(--c-muted);margin-bottom:8px">圖表佔位</div>
+        <div style="font-size:1.4rem;font-weight:700;color:var(--c-accent);margin-bottom:12px">[此處放：手機碳足跡各階段比例圓餅圖]</div>
+        <div style="font-size:1.1rem;color:var(--c-text);margin-bottom:8px">
+          <strong>製造 80–85%</strong>｜使用 10–15%｜運輸 2–5%｜末端處理 2–5%
+        </div>
+        <div style="font-size:.85rem;color:var(--c-muted)">示意圖待補繪</div>
+      </div>
+      <figcaption>智慧型手機碳足跡約 70–80 kgCO₂e，你拆開包裝前 85% 碳排已產生</figcaption>
+    </figure>
+    <div class="data-card">
+      <div class="dc-label">電子廢棄物危機</div>
+      <div class="dc-fact">全球每年生產約 14 億支智慧型手機；2022 年全球電子廢棄物達 6,200 萬噸，年成長率 3–5%</div>
+      <div class="dc-src">來源：聯合國訓練研究所全球電子廢棄物監測 2024</div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. 數據科學 -->
+<section class="slide" id="slide-lca-datascience">
+  <span class="slide-num">9</span>
+  <h2>數據科學任務：延長使用年限的減碳效益</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">計算工作單</div>
+      <div style="margin-bottom:16px;font-size:.95rem">
+        <strong>已知：</strong>全球約 14 億支手機，平均使用年限 2.5 年，單機碳足跡約 75 kgCO₂e（取中間值）
+      </div>
+      <table class="ws-table">
+        <thead>
+          <tr><th>情境</th><th>計算過程</th><th>年減碳量（估算）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>使用年限延長至 4 年</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>使用年限延長至 5 年</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>你的假設條件</td><td class="fill"></td><td class="fill"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">不確定性分析</div>
+      <div class="ac-task">列舉至少 2 個影響計算結果的不確定性來源，並說明如何處理這些不確定性</div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. 臺灣回收 vs 循環 -->
+<section class="slide" id="slide-taiwan-recycling">
+  <span class="slide-num">10</span>
+  <h2>臺灣：回收率高 ≠ 循環利用率高</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="big-stat" style="border:2px solid var(--c-beh);border-radius:12px">
+        <div class="stat-num" style="color:var(--c-beh)">55%</div>
+        <div class="stat-label">臺灣資源回收率（2023）<br>全球前段班</div>
+      </div>
+      <div class="big-stat" style="border:2px solid var(--c-warn);border-radius:12px">
+        <div class="stat-num" style="color:var(--c-warn)">7.2%</div>
+        <div class="stat-label">全球循環利用率（2024）<br>且在持續下降中</div>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">概念辨析</div>
+      <div class="ac-task">
+        為什麼兩個數字差這麼大？<br>
+        <strong>回收率</strong>＝廢棄物中被收集的比例<br>
+        <strong>循環利用率</strong>＝真正回到經濟循環（維持原材料價值）的比例<br>
+        「降級回收」（downcycling）讓大量材料喪失原有價值
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">臺灣循環產業</div>
+      <div class="dc-fact">每年一般廢棄物約 1,100 萬噸；循環經濟相關產值超過新台幣 1 兆元（2022）</div>
+      <div class="dc-src">來源：環境部資源循環署；行政院循環經濟方案</div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. ACTIVITY 3 DIVIDER -->
+<section class="slide divider" id="slide-a3">
+  <span class="slide-num">11</span>
+  <div class="slide-body">
+    <div class="act-badge">活動三</div>
+    <h2>共享經濟、大數據與倫理兩難</h2>
+    <div class="step-chips">
+      <span class="chip">步驟 1 共享經濟深度分析</span>
+      <span class="chip">步驟 2 反彈效應辯論</span>
+      <span class="chip">步驟 3 CER 論證撰寫</span>
+    </div>
+  </div>
+</section>
+
+<!-- 12. 共享經濟深度分析 -->
+<section class="slide" id="slide-sharing-economy">
+  <span class="slide-num">12</span>
+  <h2>共享經濟：定義、規模與大數據</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="big-stat" style="border:2px solid var(--c-cog);border-radius:12px">
+        <div class="stat-num" style="color:var(--c-cog)">5,070</div>
+        <div class="stat-label">億美元（2023 市場規模）</div>
+      </div>
+      <div class="big-stat" style="border:2px solid var(--c-accent);border-radius:12px">
+        <div class="stat-num" style="color:var(--c-accent)">1.5兆</div>
+        <div class="stat-label">美元（2032 預估）</div>
+      </div>
+      <div class="big-stat" style="border:2px solid var(--c-soc);border-radius:12px">
+        <div class="stat-num" style="color:var(--c-soc)">13%</div>
+        <div class="stat-label">年複合成長率（CAGR）</div>
+      </div>
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h3>大數據的角色</h3>
+        <ul>
+          <li>需求預測：動態調整供給</li>
+          <li>動態定價：即時反映供需</li>
+          <li>使用者行為分析：優化媒合</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-soc)">
+        <h3 style="color:var(--c-soc)">數據風險</h3>
+        <ul>
+          <li>隱私洩露：位置與行為數據</li>
+          <li>演算法歧視：定價不公平</li>
+          <li>平台壟斷：數據集中化</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13. 反彈效應辯論 -->
+<section class="slide" id="slide-rebound-debate">
+  <span class="slide-num">13</span>
+  <h2>共享 ≠ 必然環保：反彈效應辯論</h2>
+  <div class="slide-body">
+    <div class="q-box" style="font-size:1.15rem">
+      Airbnb 讓閒置房屋被利用——這是環保創新，<br>
+      還是誘發額外旅遊需求而增加碳排？
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-beh)">
+        <h3 style="color:var(--c-beh)">正方：共享提升效率</h3>
+        <ul>
+          <li>閒置資源得到利用</li>
+          <li>減少新建飯店的建材消耗</li>
+          <li>鼓勵本地化、慢旅行模式</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-warn)">
+        <h3 style="color:var(--c-warn)">反方：反彈效應抵銷</h3>
+        <ul>
+          <li>低成本誘發更多非必要旅遊</li>
+          <li>長途廉航需求增加</li>
+          <li>社區房價上漲（社會外部性）</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:.9rem;color:var(--c-muted);margin-top:12px">
+      <strong>反彈效應（Rebound Effect）：</strong>效率提升帶來的資源節約，被新增消費部分或全部抵消的現象
+    </p>
+  </div>
+</section>
+
+<!-- 14. CER 論證 -->
+<section class="slide" id="slide-cer">
+  <span class="slide-num">14</span>
+  <h2>CER 論證撰寫</h2>
+  <div class="slide-body">
+    <div class="q-box" style="font-size:1.2rem">
+      計畫性淘汰應該被法律禁止嗎？
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">CER 論證架構</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div>
+          <strong style="color:var(--c-cog)">Claim（主張）：</strong>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px;margin-top:6px"></div>
+        </div>
+        <div>
+          <strong style="color:var(--c-cog)">Evidence（證據）：</strong>引用歐盟 ESPR「80% 環境衝擊在設計決定」+ 維修權指令目標 12→24%
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px;margin-top:6px"></div>
+        </div>
+        <div>
+          <strong style="color:var(--c-cog)">Reasoning（推理）：</strong>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px;margin-top:6px"></div>
+        </div>
+        <div>
+          <strong style="color:var(--c-warn)">反駁段：</strong>預期反論及你的回應
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px;margin-top:6px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15. ACTIVITY 4 DIVIDER -->
+<section class="slide divider" id="slide-a4">
+  <span class="slide-num">15</span>
+  <div class="slide-body">
+    <div class="act-badge">活動四</div>
+    <h2>全球治理、模擬聽證與 WSA 行動整合</h2>
+    <div class="step-chips">
+      <span class="chip">步驟 1 全球循環治理比較</span>
+      <span class="chip">步驟 2 EPR 模擬聽證</span>
+      <span class="chip">步驟 3 論文 + WSA 承諾</span>
+    </div>
+  </div>
+</section>
+
+<!-- 16. 全球治理 -->
+<section class="slide" id="slide-global-governance">
+  <span class="slide-num">16</span>
+  <h2>全球循環治理：三國路徑比較</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="compare-card" style="border-color:var(--c-cog)">
+        <h3 style="color:var(--c-cog)">荷蘭</h3>
+        <p style="font-size:.85rem">目標 2050 年全面循環；政府、企業、公民三方協定；循環採購法規最嚴格</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-soc)">
+        <h3 style="color:var(--c-soc)">日本</h3>
+        <p style="font-size:.85rem">「循環型社會形成推進基本法」（2000）；家電/汽車/建材 EPR 制度；3R 文化深植</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-beh)">
+        <h3 style="color:var(--c-beh)">中國</h3>
+        <p style="font-size:.85rem">循環經濟五年規劃（2021）；工業生態園區模式；廢棄物進口禁令後推動國內循環</p>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">全球資源壓力</div>
+      <div class="dc-fact">全球 90% 的生物多樣性喪失與水資源壓力源自原物料開採；循環轉型可到 2030 年減排 39%、減少原物料消耗 28%</div>
+      <div class="dc-src">來源：聯合國環境規劃署國際資源小組；艾倫麥克阿瑟基金會</div>
+    </div>
+  </div>
+</section>
+
+<!-- 17. EPR 模擬聽證 -->
+<section class="slide" id="slide-epr-hearing">
+  <span class="slide-num">17</span>
+  <h2>模擬聽證：是否強制實施 EPR？</h2>
+  <div class="slide-body">
+    <div class="q-box" style="font-size:1.15rem">
+      辯題：是否應強制實施延伸生產者責任（EPR），<br>要求電子製造商負責回收與處置其產品？
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">利害關係人立場準備</div>
+      <table class="ws-table">
+        <thead>
+          <tr><th>角色</th><th>核心利益</th><th>論點方向</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>政府環保局</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>電子製造商</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>消費者團體</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>回收業者</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>國際組織代表</td><td class="fill"></td><td class="fill"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 18. WSA 承諾 -->
+<section class="slide" id="slide-wsa">
+  <span class="slide-num">18</span>
+  <h2>WSA 行動承諾</h2>
+  <div class="slide-body">
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">治</div>
+        <div class="step-text">學生議會設「循環經濟委員會」→ 提出校園零廢棄行動方案 → 送行政會議審議</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">課</div>
+        <div class="step-text">跨科整合：設計課（生態設計實作）+ 數學（LCA 計算）+ 資訊（大數據與隱私）</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">營</div>
+        <div class="step-text">發起校園 Repair Café（維修咖啡館）、二手交換平台、物質流分析（MFA）</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">社</div>
+        <div class="step-text">與在地環保局、ESG 企業合作舉辦循環經濟市集、社區物資銀行</div>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">個人承諾</div>
+      <div class="ac-task">在上方四個面向中，每個面向勾選 1 項你在本學期內將實際執行的具體行動</div>
+    </div>
+  </div>
+</section>
+
+<!-- 19. 後設認知 -->
+<section class="slide" id="slide-metacognition">
+  <span class="slide-num">19</span>
+  <h2>後設認知反思</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">四節課後的認知轉變（100+ 字）</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div>
+          <p style="font-weight:600;margin-bottom:8px">1. 四節課前後，你對「循環經濟」的定義有何改變？</p>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px"></div>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px;margin-top:8px"></div>
+        </div>
+        <div>
+          <p style="font-weight:600;margin-bottom:8px">2. 哪個概念最顛覆你原有的想法？（如：反彈效應、回收率 vs 循環率、80% 設計決定論）</p>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px"></div>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px;margin-top:8px"></div>
+        </div>
+        <div>
+          <p style="font-weight:600;margin-bottom:8px">3. 你打算如何在日常生活中實踐生命週期途徑？</p>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 20. 總結 -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <span class="slide-num">20</span>
+  <div class="slide-body">
+    <h2 style="color:var(--c-beh)">今天學到了什麼？</h2>
+    <div class="summary-keys">
+      <div class="key-card" style="border-color:var(--c-cog)">
+        <div class="kc-id" style="color:var(--c-cog)">設計</div>
+        <p>80% 環境衝擊在設計階段決定。生態設計（3R + LCA）是最有效的槓桿點，遠勝過末端回收</p>
+      </div>
+      <div class="key-card" style="border-color:var(--c-cog)">
+        <div class="kc-id" style="color:var(--c-cog)">批判</div>
+        <p>共享 ≠ 必然環保（反彈效應）；回收率高 ≠ 循環利用率高（降級回收）；認知提升 ≠ 行為改變</p>
+      </div>
+      <div class="key-card" style="border-color:var(--c-beh)">
+        <div class="kc-id" style="color:var(--c-beh)">行動</div>
+        <p>個人選擇（生態設計產品、延長使用）× 制度設計（EPR、ESPR）× 全球合作，三層同步才能真正轉型</p>
+      </div>
+    </div>
+    <p style="margin-top:30px"><a href="lesson_plan.html" style="color:var(--c-accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / 20</span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換・捲動換頁</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  if (!slides.length || !cur) return;
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

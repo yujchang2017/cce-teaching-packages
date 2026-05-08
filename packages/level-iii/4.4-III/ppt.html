@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>互聯的力量：人類、自然與建造系統 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border);
+    border-bottom-width: 2px; border-radius: 4px; font-family: monospace;
+    font-size: 0.8em; background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .slide.divider .subtitle { font-size: 1.1rem; color: var(--c-muted); margin-top: 8px; }
+
+  .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin: 18px 0; }
+  .stat-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 20px 16px; text-align: center; }
+  .stat-card .big-num { font-size: 2.6rem; font-weight: 900; color: var(--c-accent); line-height: 1.1; }
+  .stat-card .unit { font-size: 0.85rem; color: var(--c-muted); margin-top: 4px; }
+  .stat-card .label { font-size: 0.95rem; font-weight: 600; margin-top: 8px; }
+
+  .three-sys { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin: 20px 0; }
+  .sys-card { border-radius: 12px; padding: 22px 18px; text-align: center; }
+  .sys-card.nat { background: #dcfce7; border: 2px solid var(--c-beh); }
+  .sys-card.hum { background: #dbeafe; border: 2px solid var(--c-cog); }
+  .sys-card.blt { background: #f3f4f6; border: 2px solid #374151; }
+  .sys-card .icon { font-size: 2.4rem; margin-bottom: 10px; }
+  .sys-card h4 { margin: 0 0 8px; font-size: 1.1rem; }
+  .sys-card.nat h4 { color: var(--c-beh); }
+  .sys-card.hum h4 { color: var(--c-cog); }
+  .sys-card.blt h4 { color: #374151; }
+  .sys-card p { margin: 0; font-size: 0.9rem; color: var(--c-muted); }
+
+  .journey-steps {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    margin: 20px 0; justify-content: center;
+  }
+  .step { background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 8px; padding: 10px 14px; text-align: center; font-size: 0.9rem; min-width: 80px; }
+  .step .icon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+  .step-arrow { font-size: 1.2rem; color: var(--c-muted); }
+
+  .cascade { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; max-width: 700px; }
+  .cascade-item { display: flex; align-items: center; gap: 14px; background: var(--c-bg); border-left: 4px solid var(--c-accent); border-radius: 0 8px 8px 0; padding: 12px 16px; }
+  .cascade-item .ci-icon { font-size: 1.6rem; min-width: 36px; }
+  .cascade-item .ci-text { font-size: 1rem; }
+  .cascade-item.warn { border-left-color: var(--c-warn); }
+  .cascade-item.danger { border-left-color: #dc2626; }
+
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin: 18px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 20px; text-align: center; }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; color: var(--c-muted); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.3rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; font-size: 0.9rem; }
+
+  .ws-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 1rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 12px 14px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px); height: 44px; }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; margin: 26px 0; }
+  .key-card { text-align: center; padding: 26px 16px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.8rem; font-weight: 800; margin: 10px 0; }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.88rem; color: var(--c-muted); margin-top: 8px; }
+
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 20px 26px; background: var(--c-bg); max-width: 660px; margin: 14px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 10px; margin: 12px 0; font-size: 1rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 26px; }
+
+  .checklist { list-style: none; padding: 0; margin: 10px 0; }
+  .checklist li { padding: 9px 0; border-bottom: 1px dashed var(--c-border); font-size: 1rem; }
+  .checklist li::before { content: "☐ "; margin-right: 6px; color: var(--c-accent); font-size: 1.1em; }
+
+  .wsa-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin: 16px 0; }
+  .wsa-card { background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 10px; padding: 16px; }
+  .wsa-card h4 { margin: 0 0 8px; font-size: 1rem; color: var(--c-accent); }
+  .wsa-card ul { margin: 0; padding-left: 16px; font-size: 0.88rem; }
+  .wsa-card li { margin: 4px 0; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">互聯的力量：人類、自然與建造系統 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- ===== 封面 ===== -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content:center;">
+    <div style="font-size:0.9rem;color:var(--c-accent);letter-spacing:0.15em;margin-bottom:10px;">UNESCO 4.4-III ｜ 9-12 歲</div>
+    <h2>互聯的力量<br>一顆番茄的氣候旅程</h2>
+    <p class="subtitle">人類 × 自然 × 建造系統相互依存</p>
+  </div>
+</section>
+
+<!-- ===== 三大系統登場 ===== -->
+<section class="slide" id="slide-systems">
+  <div class="slide-tag">起點</div>
+  <h2>任何東西背後，都有三位好朋友</h2>
+  <div class="slide-body">
+    <div class="three-sys">
+      <div class="sys-card nat">
+        <div class="icon">🌿</div>
+        <h4>自然系統</h4>
+        <p>森林、河川、海洋、氣候、動植物之間的連結</p>
+      </div>
+      <div class="sys-card hum">
+        <div class="icon">👥</div>
+        <h4>人類系統</h4>
+        <p>學校、家庭、農業分工、經濟制度、志工組織</p>
+      </div>
+      <div class="sys-card blt">
+        <div class="icon">🏗️</div>
+        <h4>建造系統</h4>
+        <p>道路、電力線、自來水、通訊網路、橋樑、醫院</p>
+      </div>
+    </div>
+    <p style="font-size:1.1rem;text-align:center;margin-top:16px;">三個系統缺一不可——今天跟著<strong style="color:var(--c-accent);">一顆番茄</strong>，看看它們怎麼合作。</p>
+  </div>
+</section>
+
+<!-- ===== 活動一過場 ===== -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動一</div>
+    <h2>番茄旅程圖</h2>
+    <p class="subtitle">食物系統如何連結三大系統？</p>
+  </div>
+</section>
+
+<!-- ===== 番茄的旅程 ===== -->
+<section class="slide" id="slide-journey">
+  <div class="slide-tag">活動一・步驟 1</div>
+  <h2>一顆番茄的旅程：7 站連接</h2>
+  <div class="slide-body">
+    <div class="journey-steps">
+      <div class="step"><span class="icon">🌱</span>農田</div>
+      <div class="step-arrow">→</div>
+      <div class="step"><span class="icon">✂️</span>採收</div>
+      <div class="step-arrow">→</div>
+      <div class="step"><span class="icon">🚛</span>卡車</div>
+      <div class="step-arrow">→</div>
+      <div class="step"><span class="icon">🏭</span>批發</div>
+      <div class="step-arrow">→</div>
+      <div class="step"><span class="icon">❄️</span>冷藏</div>
+      <div class="step-arrow">→</div>
+      <div class="step"><span class="icon">🏪</span>超市</div>
+      <div class="step-arrow">→</div>
+      <div class="step"><span class="icon">🏠</span>你家</div>
+    </div>
+    <p style="font-size:1.05rem;text-align:center;margin:16px 0;">每一站都需要<strong style="color:var(--c-beh);">自然</strong>、<strong style="color:var(--c-cog);">人類</strong>、<strong style="color:#374151;">建造</strong>三種系統合作，缺一不可。</p>
+    <p style="font-size:1rem;color:var(--c-muted);text-align:center;">台灣糧食自給率只有 <strong style="color:var(--c-warn);">30.3%</strong>，7 成食物來自國外——任何一站出問題，餐桌就會有感。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.moa.gov.tw/ws.php?id=42477" target="_blank" rel="noopener">行政院農業部 糧食供需年報（2022）</a></div>
+</section>
+
+<!-- ===== 食物系統自給率 ===== -->
+<section class="slide" id="slide-self-sufficiency">
+  <div class="slide-tag">活動一・數據 dp2</div>
+  <h2>台灣糧食自給率：只有 30.3%</h2>
+  <div class="slide-body">
+    <div style="display:flex;align-items:center;gap:36px;flex-wrap:wrap;margin:16px 0;">
+      <div style="min-width:200px;">
+        <figure>
+          <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:36px 24px;background:var(--c-accent-soft);text-align:center;">
+            <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+            <div style="font-size:1.2rem;color:var(--c-accent);font-weight:700;margin-bottom:8px;">[此處放：10 格圖示—3 格綠色（台灣）、7 格灰（進口）]</div>
+            <div style="font-size:0.85rem;color:var(--c-muted);">📌 示意圖待補繪</div>
+          </div>
+          <figcaption>台灣吃的食物有近 7 成來自國外</figcaption>
+        </figure>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <div class="stat-cards" style="grid-template-columns:1fr;">
+          <div class="stat-card">
+            <div class="big-num">30.3<span style="font-size:1.6rem;">%</span></div>
+            <div class="unit">熱量計糧食自給率（2022）</div>
+            <div class="label">其餘 7 成靠進口</div>
+          </div>
+          <div class="stat-card" style="border-color:var(--c-warn);">
+            <div class="big-num" style="color:var(--c-warn);">33<span style="font-size:1.6rem;">%</span></div>
+            <div class="unit">全球溫室氣體來自食物系統</div>
+            <div class="label">每 3 噸排放，1 噸是食物</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:1rem;background:#fef3c7;border-radius:8px;padding:12px 16px;margin-top:8px;">
+      <strong>打開家裡冰箱，找 5 樣食物標上產地</strong>——哪些是「外國來的朋友」？
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.fao.org/newsroom/detail/Food-systems-account-for-more-than-one-third-of-global-greenhouse-gas-emissions/en" target="_blank" rel="noopener">FAO 2021 Food Systems GHG</a> ／ 農業部糧食供需年報 2022</div>
+</section>
+
+<!-- ===== 活動二過場 ===== -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動二</div>
+    <h2>系統被衝擊會怎樣？</h2>
+    <p class="subtitle">0303 大停電與莫拉克颱風的連鎖反應</p>
+  </div>
+</section>
+
+<!-- ===== 停電 ===== -->
+<section class="slide" id="slide-blackout">
+  <div class="slide-tag">活動二・數據 dp3</div>
+  <h2>0303 大停電：415 萬戶的骨牌效應</h2>
+  <div class="slide-body">
+    <div class="stat-cards" style="margin-bottom:16px;">
+      <div class="stat-card">
+        <div class="big-num">415</div>
+        <div class="unit">萬戶</div>
+        <div class="label">2021 年 3/3 停電影響範圍</div>
+      </div>
+    </div>
+    <div class="cascade">
+      <div class="cascade-item"><span class="ci-icon">⚡</span><span class="ci-text"><strong>電力中斷</strong>——一條電線掉下，整個社會停擺</span></div>
+      <div class="cascade-item warn"><span class="ci-icon">🚦</span><span class="ci-text"><strong>紅綠燈熄滅</strong>——交通系統（建造）癱瘓</span></div>
+      <div class="cascade-item warn"><span class="ci-icon">💧</span><span class="ci-text"><strong>抽水站停擺</strong>——自來水系統（建造）中斷</span></div>
+      <div class="cascade-item danger"><span class="ci-icon">🏥</span><span class="ci-text"><strong>醫院緊急發電</strong>——人類系統（醫療）拉警報</span></div>
+    </div>
+    <p style="font-size:1rem;margin-top:12px;">電力是把其他系統串起來的「<strong>骨幹</strong>」，失去它就像抽掉骨牌第一片。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.taipower.com.tw/" target="_blank" rel="noopener">台灣電力公司 303 停電事故檢討報告（2021）</a></div>
+</section>
+
+<!-- ===== 連鎖反應 ===== -->
+<section class="slide" id="slide-cascade">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>系統互聯：一點破，處處傷</h2>
+  <div class="slide-body">
+    <div style="text-align:center;margin:16px 0;">
+      <figure>
+        <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:36px 24px;background:var(--c-accent-soft);text-align:center;max-width:600px;margin:0 auto;">
+          <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+          <div style="font-size:1.2rem;color:var(--c-accent);font-weight:700;margin-bottom:8px;">[此處放：倒骨牌圖示 — 電→水→交通→通訊→食物]</div>
+          <div style="font-size:1.05rem;margin:12px 0;"><strong>電力 → 水 → 交通 → 通訊 → 食物供應</strong></div>
+          <div style="font-size:0.85rem;color:var(--c-muted);">📌 示意圖待補繪</div>
+        </div>
+        <figcaption>建造系統失靈時，人類系統與自然系統也會同時承壓</figcaption>
+      </figure>
+    </div>
+    <p style="font-size:1rem;text-align:center;">小組任務：在學習單上畫出「一個系統被衝擊後，另外兩個會怎樣？」</p>
+  </div>
+</section>
+
+<!-- ===== 莫拉克 ===== -->
+<section class="slide" id="slide-morakot">
+  <div class="slide-tag">活動二・數據 dp4</div>
+  <h2>2009 年莫拉克颱風：三大系統同時受傷</h2>
+  <div class="slide-body">
+    <div class="stat-cards">
+      <div class="stat-card" style="border-color:#dc2626;">
+        <div class="big-num" style="color:#dc2626;">673</div>
+        <div class="unit">人 死亡 / 失蹤</div>
+        <div class="label">人類系統衝擊</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div class="big-num" style="color:var(--c-warn);">100</div>
+        <div class="unit">座橋樑毀損</div>
+        <div class="label">建造系統衝擊</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div class="big-num" style="color:var(--c-beh);">195<span style="font-size:1.4rem;">億</span></div>
+        <div class="unit">元 農業損失</div>
+        <div class="label">自然+人類系統衝擊</div>
+      </div>
+    </div>
+    <p style="font-size:1rem;margin-top:16px;">山崩、農損、家園破壞常常<strong>一起發生</strong>——必須同時修復自然與建造系統。</p>
+    <p style="font-size:1rem;color:var(--c-muted);">氣候像一個<strong>放大鏡</strong>，讓系統的脆弱點被看得更清楚。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署 ／ 水保局 莫拉克風災調查報告（2009）</a></div>
+</section>
+
+<!-- ===== 活動三過場 ===== -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三</div>
+    <h2>讓系統更堅強</h2>
+    <p class="subtitle">都市綠地、食物浪費與碳足跡的解方</p>
+  </div>
+</section>
+
+<!-- ===== 氣候放大鏡 ===== -->
+<section class="slide" id="slide-magnify">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>氣候變遷：讓系統更脆弱的放大鏡</h2>
+  <div class="slide-body">
+    <div class="three-sys">
+      <div class="sys-card nat" style="background:#fef9c3;border-color:#ca8a04;">
+        <div class="icon">🌡️</div>
+        <h4 style="color:#92400e;">自然系統衝擊</h4>
+        <p>乾旱、極端降雨、珊瑚白化、物種減少</p>
+      </div>
+      <div class="sys-card hum" style="background:#fee2e2;border-color:#dc2626;">
+        <div class="icon">🏘️</div>
+        <h4 style="color:#991b1b;">人類系統衝擊</h4>
+        <p>農業失收、糧食不安全、難民潮</p>
+      </div>
+      <div class="sys-card blt" style="background:#fde8d8;border-color:var(--c-warn);">
+        <div class="icon">🌉</div>
+        <h4 style="color:var(--c-warn);">建造系統衝擊</h4>
+        <p>道路沖毀、電網受損、供水中斷</p>
+      </div>
+    </div>
+    <p style="font-size:1rem;text-align:center;margin-top:16px;">讓系統更有「<strong style="color:var(--c-accent);">韌性</strong>」的四把鑰匙：<strong>分散・在地・綠化・減廢</strong></p>
+  </div>
+</section>
+
+<!-- ===== 都市綠地 ===== -->
+<section class="slide" id="slide-trees">
+  <div class="slide-tag">活動三・數據 dp6</div>
+  <h2>一棵校園老榕樹：三位一體的英雄</h2>
+  <div class="slide-body">
+    <div class="stat-cards">
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div class="big-num" style="color:var(--c-beh);">2.5-5</div>
+        <div class="unit">公噸 CO₂ / 公頃 / 年</div>
+        <div class="label">都市綠地年吸碳量</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-cog);">
+        <div class="big-num" style="color:var(--c-cog);">-2°C</div>
+        <div class="unit">局部降溫效果</div>
+        <div class="label">夏天少流幾滴汗</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-soc);">
+        <div class="big-num" style="color:var(--c-soc);">🐦🦋🐛</div>
+        <div class="label">提供野生動物棲地<br>三系統一次串起來！</div>
+      </div>
+    </div>
+    <p style="font-size:1rem;margin-top:14px;">校園一棵老榕樹同時提供：<strong>自然系統</strong>（棲地、氣候）、<strong>人類系統</strong>（降溫、身心健康）、<strong>建造系統</strong>（減少冷氣能耗）三大服務。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.epa.gov/heatislands" target="_blank" rel="noopener">US EPA Heat Island Effect</a> ／ FAO Forests and Sustainable Cities（2014-2024）</div>
+</section>
+
+<!-- ===== 食物系統 GHG ===== -->
+<section class="slide" id="slide-food-ghg">
+  <div class="slide-tag">活動三・數據 dp1</div>
+  <h2>食物系統占全球溫室氣體排放 1/3</h2>
+  <div class="slide-body">
+    <div style="display:flex;align-items:center;gap:30px;flex-wrap:wrap;margin:14px 0;">
+      <div style="min-width:200px;">
+        <figure>
+          <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:36px 20px;background:var(--c-accent-soft);text-align:center;">
+            <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+            <div style="font-size:1.2rem;color:var(--c-accent);font-weight:700;margin-bottom:8px;">[此處放：大圓餅圖—1/3 紅色標示「食物系統」]</div>
+            <div style="font-size:0.85rem;color:var(--c-muted);">📌 示意圖待補繪</div>
+          </div>
+          <figcaption>每 3 噸全球排放，就有 1 噸來自食物系統</figcaption>
+        </figure>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <div class="stat-card" style="margin-bottom:14px;">
+          <div class="big-num">33<span style="font-size:1.6rem;">%</span></div>
+          <div class="unit">全球溫室氣體</div>
+          <div class="label">來自食物系統（FAO 2021）</div>
+        </div>
+        <p style="font-size:1rem;">從種植、運輸、加工到丟棄——每一口飯都跟氣候息息相關。</p>
+        <div style="font-size:1rem;background:var(--c-accent-soft);border-radius:8px;padding:10px 14px;margin-top:10px;">
+          <strong style="color:var(--c-accent);">餐盤就是投票箱：</strong>你每一口都在支持某種食物系統。
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.fao.org/newsroom/detail/Food-systems-account-for-more-than-one-third-of-global-greenhouse-gas-emissions/en" target="_blank" rel="noopener">FAO 2021</a></div>
+</section>
+
+<!-- ===== 食物浪費 ===== -->
+<section class="slide" id="slide-waste">
+  <div class="slide-tag">活動三・數據 dp5</div>
+  <h2>全球每年浪費 10.5 億公噸食物</h2>
+  <div class="slide-body">
+    <div class="stat-cards">
+      <div class="stat-card" style="border-color:#dc2626;">
+        <div class="big-num" style="color:#dc2626;">10.5<span style="font-size:1.6rem;">億</span></div>
+        <div class="unit">公噸 / 年</div>
+        <div class="label">全球食物浪費量</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div class="big-num" style="color:var(--c-warn);">19<span style="font-size:1.6rem;">%</span></div>
+        <div class="unit">占可食食物</div>
+        <div class="label">約五分之一食物被丟掉</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div class="big-num" style="color:var(--c-beh);">8-10<span style="font-size:1.6rem;">%</span></div>
+        <div class="unit">GHG 可減少量</div>
+        <div class="label">若全球剩食減半</div>
+      </div>
+    </div>
+    <p style="font-size:1.05rem;text-align:center;margin-top:16px;">
+      <strong style="color:var(--c-accent);">吃光光，就是氣候行動！</strong>
+    </p>
+    <p style="font-size:1rem;color:var(--c-muted);text-align:center;">量測一週午餐剩食，算出減碳量，參加科展環境組。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.unep.org/resources/publications/food-waste-index-report-2024" target="_blank" rel="noopener">UNEP Food Waste Index Report 2024</a></div>
+</section>
+
+<!-- ===== 碳足跡對比 ===== -->
+<section class="slide" id="slide-cfp">
+  <div class="slide-tag">活動三・數據 dp7</div>
+  <h2>餐盤就是投票箱：碳足跡相差 20 倍</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-beh);background:#dcfce7;">
+        <div class="label" style="color:var(--c-beh);">本地當令蔬菜</div>
+        <div style="font-size:3.5rem;font-weight:900;color:var(--c-beh);">0.3</div>
+        <p style="font-size:0.9rem;">kgCO₂e / 份</p>
+        <p style="margin-top:8px;">在地種植、短距離運輸</p>
+      </div>
+      <div class="compare-card" style="border-color:#dc2626;background:#fee2e2;">
+        <div class="label" style="color:#dc2626;">進口牛肉</div>
+        <div style="font-size:3.5rem;font-weight:900;color:#dc2626;">6-7</div>
+        <p style="font-size:0.9rem;">kgCO₂e / 份</p>
+        <p style="margin-top:8px;">長途運輸、畜牧甲烷</p>
+      </div>
+    </div>
+    <p style="font-size:1rem;text-align:center;margin-top:14px;">差距超過 <strong style="font-size:1.4rem;color:var(--c-warn);">20 倍</strong>——選什麼吃就是在影響系統！</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://cfp-calculate.tw/cfpc/" target="_blank" rel="noopener">環境部 產品碳足跡資料庫（2023）</a></div>
+</section>
+
+<!-- ===== 活動四過場 ===== -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動四</div>
+    <h2>讓我們的系統更有韌性</h2>
+    <p class="subtitle">全校行動 × 承諾 × 總結</p>
+  </div>
+</section>
+
+<!-- ===== 韌性四把鑰匙 ===== -->
+<section class="slide" id="slide-resilience">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>讓系統更有韌性的四把鑰匙</h2>
+  <div class="slide-body">
+    <div class="stat-cards" style="grid-template-columns:repeat(4,1fr);">
+      <div class="stat-card" style="border-color:var(--c-cog);">
+        <div style="font-size:2rem;">🔀</div>
+        <div class="label" style="color:var(--c-cog);">分散</div>
+        <p style="font-size:0.85rem;color:var(--c-muted);margin-top:8px;">不把所有雞蛋放在同一個籃子</p>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div style="font-size:2rem;">🏡</div>
+        <div class="label" style="color:var(--c-beh);">在地</div>
+        <p style="font-size:0.85rem;color:var(--c-muted);margin-top:8px;">縮短食物里程、支持在地農夫</p>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-accent);">
+        <div style="font-size:2rem;">🌳</div>
+        <div class="label" style="color:var(--c-accent);">綠化</div>
+        <p style="font-size:0.85rem;color:var(--c-muted);margin-top:8px;">種樹降溫、增加生態服務</p>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div style="font-size:2rem;">♻️</div>
+        <div class="label" style="color:var(--c-warn);">減廢</div>
+        <p style="font-size:0.85rem;color:var(--c-muted);margin-top:8px;">從剩食到零廢棄，每個人都能做</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WSA 學習單 ===== -->
+<section class="slide" id="slide-survey">
+  <div class="slide-tag">活動四・步驟 2・學習單（投影版）</div>
+  <h2>系統節點調查表</h2>
+  <div class="slide-body">
+    <p style="color:var(--c-muted);font-size:1rem;margin:0 0 12px;">找出你學校或社區中，三大系統各自的「節點」（最關鍵的部分）。</p>
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>系統</th>
+          <th>校園/社區中的節點</th>
+          <th>如果這個節點出問題……</th>
+          <th>我能做什麼？</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="color:var(--c-beh);font-weight:600;">🌿 自然系統</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td style="color:var(--c-cog);font-weight:600;">👥 人類系統</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td style="color:#374151;font-weight:600;">🏗️ 建造系統</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- ===== WSA 全校視野 ===== -->
+<section class="slide" id="slide-wsa">
+  <div class="slide-tag">活動四・全校行動視野</div>
+  <h2>WSA：全校一起讓系統更強</h2>
+  <div class="slide-body">
+    <div class="wsa-grid">
+      <div class="wsa-card">
+        <h4>📚 課程整合</h4>
+        <ul>
+          <li>自然課：食物鏈 + 系統思考</li>
+          <li>社會課：糧食自給、韌性社區</li>
+          <li>主題週「番茄旅程」跨科整合</li>
+        </ul>
+      </div>
+      <div class="wsa-card">
+        <h4>🏫 校園營運</h4>
+        <ul>
+          <li>低碳午餐＋剩食量測</li>
+          <li>校園植樹降溫計畫</li>
+          <li>節電節水大隊</li>
+        </ul>
+      </div>
+      <div class="wsa-card">
+        <h4>🤝 社區連結</h4>
+        <ul>
+          <li>邀農夫進校，辦在地食材市集</li>
+          <li>與社區合辦停電演習</li>
+          <li>連結社區廚餘堆肥站</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 承諾書 ===== -->
+<section class="slide" id="slide-pledge">
+  <div class="slide-tag">活動四・學習單（投影版）</div>
+  <h2>本月系統英雄承諾書</h2>
+  <div class="slide-body">
+    <p style="text-align:center;color:var(--c-muted);font-size:1rem;">從四個面向挑一個，簽下你的承諾，四項全勾解鎖「全校英雄」徽章！</p>
+    <ul class="checklist">
+      <li>課程：在自然課或社會課提出一個「系統連結」的觀察</li>
+      <li>校園：量測一週午餐剩食，計算減碳潛力</li>
+      <li>社區：找出 5 樣家裡食物的產地，畫成家庭食物地圖</li>
+      <li>治理：擔任「互聯小隊長」，向全班報告一個系統改善方案</li>
+    </ul>
+    <div class="pledge-form" style="margin-top:14px;">
+      <div class="row"><span class="lbl">我選擇的面向與行動：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">開始日期：</span><span class="blank" style="max-width:100px;"></span><span class="lbl">完成目標：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">承諾人：</span><span class="blank"></span><span class="lbl">見證夥伴：</span><span class="blank"></span></div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- ===== 三關鍵字總結 ===== -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">互聯</div>
+        <div class="desc">自然・人類・建造<br>三大系統緊緊相連<br>一個出問題，全部感受到</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">衝擊</div>
+        <div class="desc">0303 停電 415 萬戶<br>莫拉克 100 座橋毀<br>氣候是系統的放大鏡</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">韌性</div>
+        <div class="desc">分散・在地・綠化・減廢<br>吃光光也是氣候行動<br>你就是互聯的力量</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.1rem;margin-top:20px;">
+      <strong style="color:var(--c-accent);">人類、自然、建造系統手牽手，我們的城市才夠韌性。你，就是互聯的力量！</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">16</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+</body>
+</html>

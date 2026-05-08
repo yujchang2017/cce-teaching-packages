@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候變遷的社會影響 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e; --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb; --c-soc: #db2777; --c-beh: #16a34a;
+    --c-warn: #ea580c; --c-text: #1f2937; --c-muted: #6b7280;
+    --c-border: #e5e7eb; --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 16px; margin: 20px 0; }
+  .stat-card { background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 12px; padding: 18px 14px; text-align: center; }
+  .stat-card .stat-num { font-size: 2rem; font-weight: 800; color: var(--c-accent); }
+  .stat-card .stat-label { font-size: 0.85rem; color: var(--c-muted); margin-top: 4px; }
+  .four-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  .four-card { border-radius: 12px; padding: 18px; border: 2px solid; }
+  .four-card.body { border-color: var(--c-warn); background: #fff7ed; }
+  .four-card.mind { border-color: var(--c-soc); background: #fdf2f8; }
+  .four-card.econ { border-color: var(--c-cog); background: #eff6ff; }
+  .four-card.rel { border-color: var(--c-beh); background: #f0fdf4; }
+  .four-card h3 { margin: 0 0 10px; font-size: 1rem; }
+  .four-card.body h3 { color: var(--c-warn); }
+  .four-card.mind h3 { color: var(--c-soc); }
+  .four-card.econ h3 { color: var(--c-cog); }
+  .four-card.rel h3 { color: var(--c-beh); }
+  .four-card ul { margin: 0; padding-left: 1.2em; font-size: 0.95rem; }
+  .action-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin: 20px 0; }
+  .action-col { border: 2px solid var(--c-border); border-radius: 10px; padding: 14px; }
+  .action-col h4 { margin: 0 0 8px; font-size: 0.95rem; text-align: center; color: var(--c-accent); border-bottom: 1px dashed var(--c-border); padding-bottom: 6px; }
+  .action-col ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; }
+  .ws-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 1rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 12px 14px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg,transparent 0,transparent 18px,#d1d5db 18px,#d1d5db 19px); height: 46px; }
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 22px 28px; background: var(--c-bg); max-width: 700px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 14px 0; font-size: 1rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 28px 16px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 10px 0; }
+  .key-card .desc { font-size: 0.9rem; color: var(--c-muted); margin-top: 6px; }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">氣候變遷的社會影響 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content:center;">
+    <h2>氣候變遷，離我們多近？</h2>
+    <p class="subtitle">從數據、地圖、情緒、行動四個角度探索</p>
+    <p style="margin-top:20px;color:var(--c-muted);font-size:1rem;">4.1-III｜國小中高年級（9–12 歲）</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>你有沒有遇過這些？</h2>
+  <div class="slide-body">
+    <div class="stat-grid" style="grid-template-columns:repeat(2,1fr);">
+      <div class="stat-card"><div style="font-size:2rem;">🌡️</div><div style="font-weight:700;margin-top:8px;">熱到不想上學</div></div>
+      <div class="stat-card"><div style="font-size:2rem;">🌀</div><div style="font-weight:700;margin-top:8px;">颱風停課</div></div>
+      <div class="stat-card"><div style="font-size:2rem;">🌊</div><div style="font-weight:700;margin-top:8px;">家裡或路上淹水</div></div>
+      <div class="stat-card"><div style="font-size:2rem;">🥵</div><div style="font-weight:700;margin-top:8px;">午後突如其來的大雷雨</div></div>
+    </div>
+    <p style="text-align:center;font-size:1.1rem;margin-top:20px;color:var(--c-accent);font-weight:600;">這些不是運氣不好——這是氣候變遷正在影響我們。</p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動一</div>
+    <h2>氣候變遷正在發生</h2>
+    <p class="subtitle">離我們多近？</p>
+  </div>
+</section>
+
+<!-- 4. NASA 全球均溫 -->
+<section class="slide" id="slide-nasa">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>2024 年：史上最熱的一年</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center;">
+        <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--c-accent);font-weight:700;margin-bottom:12px;">[此處放：1880–2024 全球均溫曲線]</div>
+        <div style="font-size:1.1rem;margin:14px 0;"><strong>2024 年：較工業革命前高 +1.47°C</strong><br>最熱 10 年全部集中在最近 10 年</div>
+        <div style="font-size:0.85rem;color:var(--c-muted);margin-top:12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>來源：美國太空總署 — 氣候關鍵指標</figcaption>
+    </figure>
+    <p style="text-align:center;font-size:1.05rem;margin-top:14px;">為什麼近十年這麼熱？（燃燒煤炭、石油、天然氣 → 溫室氣體增加）</p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://climate.nasa.gov/vital-signs/global-temperature/" target="_blank" rel="noopener">美國太空總署 — 氣候關鍵指標・全球溫度</a>
+  </div>
+</section>
+
+<!-- 5. 臺灣升溫地圖 -->
+<section class="slide" id="slide-tw">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>臺灣：升溫約為全球 2 倍</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center;">
+        <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--c-accent);font-weight:700;margin-bottom:12px;">[此處放：臺灣縣市升溫地圖]</div>
+        <div style="font-size:1.1rem;margin:14px 0;"><strong>臺灣百年升溫約 1.6°C ≈ 全球平均 2 倍</strong><br>高溫日（≥36°C）在許多測站約翻倍</div>
+        <div style="font-size:0.85rem;color:var(--c-muted);margin-top:12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>來源：臺灣氣候變遷推估資訊與調適知識平台（TCCIP）</figcaption>
+    </figure>
+    <p style="text-align:center;color:var(--c-muted);margin-top:12px;">找出你的縣市在哪裡——操場、教室、上下學路上「真的變熱了」不是錯覺。</p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://tccip.ncdr.nat.gov.tw/" target="_blank" rel="noopener">臺灣氣候變遷推估資訊與調適知識平台</a>
+  </div>
+</section>
+
+<!-- 6. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動二</div>
+    <h2>我們、學校、社區會怎麼被影響？</h2>
+    <p class="subtitle">四個面向的衝擊</p>
+  </div>
+</section>
+
+<!-- 7. 健康衝擊 -->
+<section class="slide" id="slide-health">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>健康衝擊：兩組關鍵數字</h2>
+  <div class="slide-body">
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num">25 萬</div>
+        <div class="stat-label">人/年額外死亡<br>2030–2050 年預估<br>（世界衛生組織）</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">+70%</div>
+        <div class="stat-label">65 歲以上長輩<br>高溫死亡人數增幅<br>過去 20 年（世界衛生組織）</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.05rem;margin-top:16px;">夏天記得提醒家中長輩多喝水、別在最熱時間外出。</p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health" target="_blank" rel="noopener">世界衛生組織 — 氣候變遷與健康</a>
+  </div>
+</section>
+
+<!-- 8. 四格影響 -->
+<section class="slide" id="slide-four">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>氣候變遷的四格影響</h2>
+  <div class="slide-body">
+    <div class="four-grid">
+      <div class="four-card body">
+        <h3>身體健康</h3>
+        <ul><li>熱浪中暑風險上升</li><li>豪雨後傳染病增加</li><li>空污加劇呼吸道問題</li></ul>
+      </div>
+      <div class="four-card mind">
+        <h3>心理健康</h3>
+        <ul><li>氣候焦慮（Eco-anxiety）</li><li>災後創傷壓力症候群</li><li>對未來的擔心與無力感</li></ul>
+      </div>
+      <div class="four-card econ">
+        <h3>經濟影響</h3>
+        <ul><li>颱風、水災毀損財物</li><li>農漁業減產收入降低</li><li>夏季冷氣用電費用增加</li></ul>
+      </div>
+      <div class="four-card rel">
+        <h3>人際關係</h3>
+        <ul><li>氣候難民家庭分離</li><li>社區因災害重建壓力</li><li>不同世代對氣候看法分歧</li></ul>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:0.95rem;color:var(--c-muted);">小組討論：你們身邊發生過哪一格的例子？</p>
+  </div>
+</section>
+
+<!-- 9. 未來學校地圖學習單 -->
+<section class="slide" id="slide-schoolmap">
+  <div class="slide-tag">活動二・步驟 3 ・學習單（投影版）</div>
+  <h2>未來學校地圖：2030 年夏天</h2>
+  <div class="slide-body">
+    <p style="font-size:1.05rem;color:var(--c-muted);">想像 2030 年夏天——在學校地圖上標出「熱點」和「行動點」。</p>
+    <table class="ws-table">
+      <thead>
+        <tr><th>校園地點</th><th>現在的狀況</th><th>2030 年可能的變化</th><th>我的調適建議</th></tr>
+      </thead>
+      <tbody>
+        <tr><th>操場</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><th>教室</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><th>上下學路</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 10. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三</div>
+    <h2>全球視野與公平</h2>
+    <p class="subtitle">誰最脆弱？</p>
+  </div>
+</section>
+
+<!-- 11. 全球脆弱人口 -->
+<section class="slide" id="slide-global">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>全球約 36 億人生活在高度脆弱地區</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center;">
+        <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--c-accent);font-weight:700;margin-bottom:12px;">[此處放：全球高脆弱地區地圖]</div>
+        <div style="font-size:1.1rem;margin:14px 0;"><strong>約 36 億人</strong>住在高度脆弱地區<br>2020 年食物不安全人口<strong>比以往多約 9,800 萬人</strong></div>
+        <div style="font-size:0.85rem;color:var(--c-muted);margin-top:12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>來源：世界衛生組織 — 氣候變遷與健康</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health" target="_blank" rel="noopener">世界衛生組織 — 氣候變遷與健康</a>
+  </div>
+</section>
+
+<!-- 12. 誰最脆弱討論卡 -->
+<section class="slide" id="slide-fairness">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>如果學校申請一筆氣候調適經費——先幫誰？</h2>
+  <div class="slide-body">
+    <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="stat-card"><div style="font-size:1.8rem;">👴</div><div style="font-weight:700;color:var(--c-warn);margin-top:8px;">校長</div><div style="font-size:0.85rem;color:var(--c-muted);">需要整體規劃與預算</div></div>
+      <div class="stat-card"><div style="font-size:1.8rem;">🧓</div><div style="font-weight:700;color:var(--c-warn);margin-top:8px;">社區長者</div><div style="font-size:0.85rem;color:var(--c-muted);">高溫熱浪最脆弱</div></div>
+      <div class="stat-card"><div style="font-size:1.8rem;">🧒</div><div style="font-weight:700;color:var(--c-warn);margin-top:8px;">低年級學生</div><div style="font-size:0.85rem;color:var(--c-muted);">體溫調節能力較弱</div></div>
+      <div class="stat-card"><div style="font-size:1.8rem;">♿</div><div style="font-weight:700;color:var(--c-warn);margin-top:8px;">特教生</div><div style="font-size:0.85rem;color:var(--c-muted);">緊急疏散需要更多協助</div></div>
+      <div class="stat-card"><div style="font-size:1.8rem;">🌏</div><div style="font-weight:700;color:var(--c-warn);margin-top:8px;">新住民家庭</div><div style="font-size:0.85rem;color:var(--c-muted);">語言障礙影響防災訊息接收</div></div>
+    </div>
+    <p style="text-align:center;font-size:1rem;margin-top:16px;color:var(--c-accent);">用角色卡模擬決策——公平不是每人一樣，而是讓每個人得到需要的照顧。</p>
+  </div>
+</section>
+
+<!-- 13. 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動四</div>
+    <h2>學校＋社區行動計畫</h2>
+    <p class="subtitle">從個人到社區的行動光譜</p>
+  </div>
+</section>
+
+<!-- 14. 8件調適行動 -->
+<section class="slide" id="slide-proposal">
+  <div class="slide-tag">活動四・步驟 2</div>
+  <h2>學校可以做的 8 件調適行動</h2>
+  <div class="slide-body">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;">
+      <div style="background:var(--c-bg);border:2px solid var(--c-beh);border-radius:10px;padding:14px;text-align:center;font-size:0.9rem;"><div style="font-size:1.6rem;">🌿</div>綠屋頂</div>
+      <div style="background:var(--c-bg);border:2px solid var(--c-beh);border-radius:10px;padding:14px;text-align:center;font-size:0.9rem;"><div style="font-size:1.6rem;">🌳</div>校園種樹</div>
+      <div style="background:var(--c-bg);border:2px solid var(--c-beh);border-radius:10px;padding:14px;text-align:center;font-size:0.9rem;"><div style="font-size:1.6rem;">☂️</div>遮蔭走廊</div>
+      <div style="background:var(--c-bg);border:2px solid var(--c-beh);border-radius:10px;padding:14px;text-align:center;font-size:0.9rem;"><div style="font-size:1.6rem;">💧</div>雨水回收</div>
+      <div style="background:var(--c-bg);border:2px solid var(--c-cog);border-radius:10px;padding:14px;text-align:center;font-size:0.9rem;"><div style="font-size:1.6rem;">🎒</div>班級節能公約</div>
+      <div style="background:var(--c-bg);border:2px solid var(--c-cog);border-radius:10px;padding:14px;text-align:center;font-size:0.9rem;"><div style="font-size:1.6rem;">🌡️</div>氣候小組長</div>
+      <div style="background:var(--c-bg);border:2px solid var(--c-cog);border-radius:10px;padding:14px;text-align:center;font-size:0.9rem;"><div style="font-size:1.6rem;">🧰</div>防災包檢查</div>
+      <div style="background:var(--c-bg);border:2px solid var(--c-soc);border-radius:10px;padding:14px;text-align:center;font-size:0.9rem;"><div style="font-size:1.6rem;">📮</div>社區防熱小卡</div>
+    </div>
+    <p style="text-align:center;color:var(--c-muted);font-size:0.95rem;">每組挑一項，寫出 5W1H 提案後上台 2 分鐘簡報。</p>
+  </div>
+</section>
+
+<!-- 15. 家庭承諾卡 -->
+<section class="slide" id="slide-pledge">
+  <div class="slide-tag">活動四・步驟 3 ・學習單（投影版）</div>
+  <h2>家庭承諾卡</h2>
+  <div class="slide-body">
+    <p style="text-align:center;font-size:1.05rem;color:var(--c-muted);">把擔心變成行動！寫下本週要和家人一起做的 1 件減碳行動。</p>
+    <div class="pledge-form">
+      <div class="row"><span class="lbl">我這週要做的行動是：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">我會邀請的家人是：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">執行的時間 / 地點：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">這個行動對環境的幫助：</span><span class="blank"></span></div>
+      <hr style="margin:16px 0;border:0;border-top:1px dashed var(--c-border);">
+      <div class="row">
+        <span class="lbl">承諾人簽名：</span><span class="blank"></span>
+        <span class="lbl">見證夥伴：</span><span class="blank"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">影響</div>
+        <div class="desc">氣候變遷衝擊<br>身體、心理、經濟、人際</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">公平</div>
+        <div class="desc">不同族群受影響<br>程度不同，需要公平對待</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">調適</div>
+        <div class="desc">從班級到社區<br>每個行動都算數</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.1rem;margin-top:24px;">
+      <strong style="color:var(--c-accent);">氣候變遷影響我們、我們的學校、我們的社區——我們可以一起行動！</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">16</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color:var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      slides[Math.min(current + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      slides[Math.max(current - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+</body>
+</html>

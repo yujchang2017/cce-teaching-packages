@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.3-V 負責任消費 — 教學投影片</title>
+<style>
+  :root{--c-accent:#0f766e;--c-soft:#ccfbf1;--c-accent-soft:#f0fdfa;--c-cog:#2563eb;--c-soc:#db2777;--c-beh:#16a34a;--c-text:#1f2937;--c-muted:#6b7280;--c-border:#e5e7eb;--c-bg:#f9fafb}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--c-text);background:#fff;line-height:1.65}
+  /* topbar */
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--c-accent);text-decoration:none;font-weight:600;font-size:.95rem;white-space:nowrap}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.9rem;font-weight:500;color:var(--c-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  /* navbar */
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--c-muted)}
+  .page-indicator{font-family:monospace;color:var(--c-text)}.nav-current{color:var(--c-accent);font-weight:700}
+  .hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--c-border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  /* slides */
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--c-border);position:relative}
+  @media(max-width:700px){.slide{padding:32px 24px}}
+  .slide-num{position:absolute;top:14px;right:20px;font-size:.75rem;font-family:monospace;color:var(--c-border)}
+  .slide h2{font-size:1.9rem;margin-bottom:20px;color:var(--c-text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  /* cover + divider */
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--c-soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.6rem;line-height:1.2;max-width:800px}
+  .level-tag{display:inline-block;background:var(--c-accent);color:#fff;padding:4px 16px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.85rem;color:var(--c-accent);letter-spacing:.2em;font-weight:700;margin-bottom:12px;text-transform:uppercase}
+  .slide.divider h2{font-size:2.2rem;color:var(--c-accent);max-width:700px}
+  .slide.divider .chips{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .chip{background:var(--c-soft);color:var(--c-accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  /* question slide */
+  .q-box{background:var(--c-soft);border-left:5px solid var(--c-accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.35rem;line-height:1.6;color:var(--c-accent);font-weight:600;max-width:750px}
+  .q-sub{font-size:1rem;color:var(--c-muted);font-weight:400;margin-top:10px;line-height:1.6}
+  /* data card */
+  .data-card{border:2px solid var(--c-border);border-radius:12px;padding:22px 28px;margin:16px 0;background:var(--c-bg)}
+  .dc-label{font-size:.78rem;font-weight:700;letter-spacing:.15em;color:var(--c-muted);margin-bottom:8px}
+  .dc-fact{font-size:1.15rem;font-weight:700;color:var(--c-text);margin-bottom:10px;line-height:1.5}
+  .dc-src{font-size:.83rem;color:var(--c-muted)}.dc-src a{color:var(--c-accent);text-decoration:none;border-bottom:1px dashed var(--c-accent)}
+  /* chart placeholder */
+  .chart-placeholder{border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center;margin:16px 0}
+  .chart-placeholder .cp-label{font-size:.78rem;color:var(--c-muted);letter-spacing:.15em;margin-bottom:8px}
+  .chart-placeholder .cp-title{font-size:1.35rem;color:var(--c-accent);font-weight:700;margin-bottom:12px}
+  .chart-placeholder .cp-data{font-size:1.05rem;margin:14px 0}
+  .chart-placeholder .cp-note{font-size:.83rem;color:var(--c-muted);margin-top:12px}
+  figcaption{font-size:.85rem;color:var(--c-muted);text-align:center;margin-top:8px}
+  /* activity card */
+  .act-card{border:2px solid var(--c-border);border-radius:12px;padding:20px 26px;margin:16px 0}
+  .ac-badge{display:inline-block;background:var(--c-accent);color:#fff;font-size:.78rem;font-weight:700;padding:2px 10px;border-radius:4px;margin-bottom:10px;letter-spacing:.08em}
+  .ac-task{font-size:1.1rem;color:var(--c-text);line-height:1.65}
+  /* ws */
+  .ws-frame{border:2px dashed var(--c-accent);border-radius:12px;padding:28px 32px;margin:16px 0;background:#fff}
+  .ws-title{font-size:1rem;font-weight:700;color:var(--c-accent);margin-bottom:14px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--c-border);padding:12px 14px;text-align:center;font-size:.95rem}
+  .ws-table th{background:var(--c-soft);color:var(--c-accent);font-weight:700}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:56px}
+  .ws-lines{display:flex;flex-direction:column;gap:14px;margin-top:10px}
+  .ws-line{border-bottom:1.5px solid #d1d5db;height:28px}
+  /* compare grid */
+  .compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:16px 0}
+  .compare-card{border:1px solid var(--c-border);border-radius:10px;padding:14px 16px;background:var(--c-bg)}
+  .compare-card h4{font-size:.9rem;color:var(--c-accent);margin-bottom:8px}
+  .compare-card ul{padding-left:1.2em;font-size:.9rem}
+  /* two-col */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0}
+  @media(max-width:600px){.two-col{grid-template-columns:1fr}}
+  .col-card{border:1px solid var(--c-border);border-radius:10px;padding:16px 18px;background:var(--c-bg)}
+  .col-card h4{font-size:.95rem;margin-bottom:8px;color:var(--c-accent)}
+  /* summary */
+  .summary-keys{display:flex;flex-direction:column;gap:14px;margin:16px 0;max-width:720px}
+  .key-card{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--c-border);border-radius:10px;padding:14px 18px;background:var(--c-bg)}
+  .key-num{font-size:1.4rem;font-weight:700;color:var(--c-accent);font-family:monospace;min-width:2rem}
+  .key-text{font-size:.98rem;line-height:1.6}
+  /* pledge */
+  .pledge-form{border:2px solid var(--c-beh);border-radius:12px;padding:24px 28px;margin:16px 0;background:#f0fdf4;max-width:680px}
+  .pledge-form h4{color:var(--c-beh);font-size:1rem;margin-bottom:14px}
+  .pledge-row{display:flex;align-items:center;gap:10px;margin:10px 0}
+  .pledge-box{width:18px;height:18px;border:2px solid var(--c-beh);border-radius:4px;flex-shrink:0}
+  .slide-src{margin-top:auto;padding-top:12px;border-top:1px dashed var(--c-border);font-size:.78rem;color:var(--c-muted)}
+  .slide-src a{color:var(--c-accent);text-decoration:none;border-bottom:1px dashed var(--c-accent)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">負責任消費：行為因素、態度落差與綠色轉型 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- SLIDE 1: COVER -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-num">1 / 20</div>
+  <div class="slide-body">
+    <div class="level-tag">Level V｜高中 10–12 年級</div>
+    <h2>負責任消費<br>行為因素、態度落差與綠色轉型</h2>
+    <p style="color:var(--c-muted);max-width:640px;font-size:1.05rem;margin-top:16px">Key ID: 6.3-V｜4 節課 × 50 分鐘</p>
+    <p style="color:var(--c-muted);font-size:.9rem;margin-top:8px">SDG 12：負責任消費與生產</p>
+  </div>
+</section>
+
+<!-- SLIDE 2: QUESTION -->
+<section class="slide" id="slide-question">
+  <div class="slide-num">2 / 20</div>
+  <div class="slide-body">
+    <div class="q-box">
+      你是消費者，還是被消費者？
+      <div class="q-sub">你的消費行為有多少是「你選的」，又有多少是「被選的」？<br>寫下你上週最後一筆消費，以及驅動你購買的原因。</div>
+    </div>
+    <div style="margin-top:20px;color:var(--c-muted);font-size:.95rem">
+      <strong style="color:var(--c-text)">三個影響維度：</strong>心理因素（動機・知覺・信念・態度）｜個人因素（年齡・職業・生活型態）｜社會因素（參考群體・家庭・地位）
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: DIVIDER — 活動一 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-num">3 / 20</div>
+  <div class="slide-body">
+    <div class="act-badge">活動一</div>
+    <h2>消費者行為解剖<br>三大因素與自我覺察</h2>
+    <div class="chips">
+      <span class="chip">步驟 1 開場衝擊</span>
+      <span class="chip">步驟 2 三因素架構</span>
+      <span class="chip">步驟 3 個人消費地圖</span>
+      <span class="chip">步驟 4 物質足跡數據</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: consumer factors -->
+<section class="slide" id="slide-consumer-factors">
+  <div class="slide-num">4 / 20</div>
+  <h2>消費行為三因素框架</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h4>心理因素</h4>
+        <ul>
+          <li>動機（需要 vs 想要）</li>
+          <li>知覺與品牌印象</li>
+          <li>信念與態度</li>
+          <li>學習與記憶效應</li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <h4>個人因素</h4>
+        <ul>
+          <li>年齡與生命週期</li>
+          <li>職業與經濟狀況</li>
+          <li>生活型態</li>
+          <li>人格與自我概念</li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <h4>社會因素</h4>
+        <ul>
+          <li>參考群體（同儕影響）</li>
+          <li>家庭消費習慣</li>
+          <li>角色與社會地位</li>
+          <li>文化與次文化</li>
+        </ul>
+      </div>
+    </div>
+    <div class="act-card" style="margin-top:16px">
+      <div class="ac-badge">學習任務</div>
+      <div class="ac-task">將便利貼上的消費原因歸入三因素框架，找出你消費行為中最強大的驅動力</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: personal consumption map -->
+<section class="slide" id="slide-consumer-map">
+  <div class="slide-num">5 / 20</div>
+  <h2>個人消費地圖</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">學習任務：畫出你的消費因素影響力圖</div>
+      <div class="ws-table" style="max-width:600px">
+        <table class="ws-table">
+          <tr><th>心理因素</th><th>個人因素</th><th>社會因素</th></tr>
+          <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        </table>
+      </div>
+      <p style="font-size:.9rem;color:var(--c-muted);margin-top:12px">完成後：標示「最強影響因素」，並寫 100 字以上的反思</p>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">關鍵數據</div>
+      <div class="dc-fact">全球 65–70% 消費者「願意購買永續產品」，但實際選擇永續產品者僅 20–30%</div>
+      <div class="dc-src">來源：<a href="https://www.unesco.org/en/esd" target="_blank" rel="noopener">聯合國教科文組織永續發展教育</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: material footprint -->
+<section class="slide" id="slide-material-footprint">
+  <div class="slide-num">6 / 20</div>
+  <h2>全球物質足跡趨勢</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：2000–2022 全球人均物質足跡趨勢圖]</div>
+        <div class="cp-data"><strong>關鍵數據：</strong>人均物質足跡從 2000 年 8.1 噸 → 2017 年 12 噸（+48%）；2015–2022 年整體成長 21.3%</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>資料來源：聯合國 SDG 12 監測數據（2022）</figcaption>
+    </figure>
+    <div class="data-card">
+      <div class="dc-label">重要發現</div>
+      <div class="dc-fact">北美與歐洲的物質足跡比國內消費高出 14%——高收入國家透過進口將環境衝擊外包給他國</div>
+      <div class="dc-src">來源：<a href="https://sdgs.un.org/goals/goal12" target="_blank" rel="noopener">聯合國 SDG 12</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 7: DIVIDER — 活動二 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-num">7 / 20</div>
+  <div class="slide-body">
+    <div class="act-badge">活動二</div>
+    <h2>態度-行為落差<br>資料分析與系統思考</h2>
+    <div class="chips">
+      <span class="chip">步驟 1 快測回顧</span>
+      <span class="chip">步驟 2 落差實證</span>
+      <span class="chip">步驟 3 碳足跡計算</span>
+      <span class="chip">步驟 4 系統思考</span>
+      <span class="chip">步驟 5 臺灣數據</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: attitude gap -->
+<section class="slide" id="slide-attitude-gap">
+  <div class="slide-num">8 / 20</div>
+  <h2>態度-行為落差：三組數據</h2>
+  <div class="slide-body">
+    <div class="data-card">
+      <div class="dc-label">數據 1｜態度-行為落差</div>
+      <div class="dc-fact">願意購買永續產品：65–70%　→　實際行動：20–30%　→　落差：~40 個百分點</div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">數據 2｜全球循環度悖論</div>
+      <div class="dc-fact">循環度從 2018 年 9.1% 降至 2023 年 7.2%，同期循環經濟討論量成長三倍</div>
+      <div class="dc-src">來源：<a href="https://www.circularity-gap.world/2024" target="_blank" rel="noopener">Circle Economy 循環差距報告 2024</a></div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">數據 3｜食物浪費</div>
+      <div class="dc-fact">全球每年約 10.5 億噸食物被浪費，60% 來自家庭，貢獻全球溫室氣體排放 8–10%</div>
+      <div class="dc-src">來源：<a href="https://www.unep.org/resources/publication/food-waste-index-report-2024" target="_blank" rel="noopener">聯合國環境規劃署食物浪費指數 2024</a></div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">三層分析</div>
+      <div class="ac-task">描述（數字是什麼）→ 解釋（為什麼這樣）→ 推論（對永續消費意味著什麼）</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9: carbon calc -->
+<section class="slide" id="slide-carbon-calc">
+  <div class="slide-num">9 / 20</div>
+  <h2>消費碳足跡計算任務</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">選擇一項日常消費，估算生命週期碳足跡</div>
+      <table class="ws-table">
+        <tr><th>消費品項</th><th>原料</th><th>生產</th><th>運輸</th><th>使用</th><th>廢棄</th><th>合計 CO₂e</th></tr>
+        <tr><td>□ 手搖飲</td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>□ 外送餐</td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>□ 快時尚</td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </table>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">關鍵概念</div>
+      <div class="dc-fact">全球電子廢棄物 2022 年達人均 7.8 公斤，僅 22.3% 妥善處理，年潛在回收價值 570 億美元</div>
+      <div class="dc-src">來源：<a href="https://ewastemonitor.info/" target="_blank" rel="noopener">全球電子廢棄物監測報告 2024</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10: system CLD -->
+<section class="slide" id="slide-system-cld">
+  <div class="slide-num">10 / 20</div>
+  <h2>系統思考：過度消費因果循環圖</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：過度消費因果循環圖（CLD）]</div>
+        <div class="cp-data"><strong>要素：</strong>正反饋 ① 社群媒體放大　正反饋 ② 計畫性淘汰　負反饋 綠色消費覺醒　槓桿點 預設選項設計</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>小組任務：畫出 ≥2 個正反饋、1 個負反饋與 1 個槓桿點</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- SLIDE 11: taiwan data -->
+<section class="slide" id="slide-taiwan-data">
+  <div class="slide-num">11 / 20</div>
+  <h2>臺灣消費數據與回收迷思</h2>
+  <div class="slide-body">
+    <div class="data-card">
+      <div class="dc-label">臺灣數據（2023）</div>
+      <div class="dc-fact">人均廢棄物 1.14 公斤/日　資源回收率 56%　年塑膠廢棄物 67 萬噸</div>
+      <div class="dc-src">來源：<a href="https://www.reca.gov.tw/" target="_blank" rel="noopener">環境部資源循環署</a></div>
+    </div>
+    <div class="q-box" style="font-size:1.1rem">
+      回收率 56% 代表臺灣消費很永續嗎？
+      <div class="q-sub">分母是「已產生的垃圾」——真正的問題是源頭減量。<br>Reduce → Reuse → Recycle　優先順序不可倒置</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 12: DIVIDER — 活動三 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-num">12 / 20</div>
+  <div class="slide-body">
+    <div class="act-badge">活動三</div>
+    <h2>綠色管理<br>政策分析與倫理兩難</h2>
+    <div class="chips">
+      <span class="chip">步驟 1 矛盾的政策信號</span>
+      <span class="chip">步驟 2 四部門分析</span>
+      <span class="chip">步驟 3 倫理辯論</span>
+      <span class="chip">步驟 4 CER 論證</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 13: fossil subsidy -->
+<section class="slide" id="slide-fossil-subsidy">
+  <div class="slide-num">13 / 20</div>
+  <h2>矛盾的政策信號</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="col-card">
+        <h4>化石燃料補貼</h4>
+        <p style="font-size:1.8rem;font-weight:700;color:#dc2626;margin:8px 0">1.1 兆美元</p>
+        <p style="font-size:.9rem;color:var(--c-muted)">2023 年全球補貼額（疫情前的三倍）</p>
+      </div>
+      <div class="col-card">
+        <h4>永續消費政策</h4>
+        <p style="font-size:1.8rem;font-weight:700;color:var(--c-beh);margin:8px 0">530 項</p>
+        <p style="font-size:.9rem;color:var(--c-muted)">71 國推行的政策工具，年增 6%</p>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">思辨問題</div>
+      <div class="dc-fact">補貼化石燃料的同時推動永續消費政策——這矛盾嗎？誰受益，誰付代價？</div>
+      <div class="dc-src">來源：<a href="https://sdgs.un.org/goals/goal12" target="_blank" rel="noopener">聯合國 SDG 12 進度報告</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 14: green mgmt -->
+<section class="slide" id="slide-green-mgmt">
+  <div class="slide-num">14 / 20</div>
+  <h2>四部門綠色管理系統</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h4>農業</h4>
+        <ul><li>有機農法</li><li>循環農業</li><li>地產地消</li></ul>
+      </div>
+      <div class="compare-card">
+        <h4>工業（循環經濟五模式）</h4>
+        <ul><li>循環供應</li><li>資源循環</li><li>延長產品生命</li><li>共享平台</li><li>產品即服務</li></ul>
+      </div>
+      <div class="compare-card">
+        <h4>建築</h4>
+        <ul><li>綠建築標章</li><li>節能設計</li><li>建材循環</li></ul>
+      </div>
+      <div class="compare-card">
+        <h4>製造</h4>
+        <ul><li>延壽設計</li><li>可拆解設計</li><li>再製造</li></ul>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">臺灣數據（2023–2024）</div>
+      <div class="dc-fact">事業廢棄物再利用率 81%；環保標章產品 5,400 項，但消費端選購率偏低</div>
+      <div class="dc-src">來源：<a href="https://www.greenmark.org.tw/" target="_blank" rel="noopener">環境部環保標章</a>｜<a href="https://www.cepo.org.tw/" target="_blank" rel="noopener">經濟部循環經濟推動辦公室</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 15: ethics debate -->
+<section class="slide" id="slide-ethics-debate">
+  <div class="slide-num">15 / 20</div>
+  <h2>倫理兩難辯論</h2>
+  <div class="slide-body">
+    <div class="q-box">
+      企業有義務為消費者做出永續選擇嗎？
+      <div class="q-sub">計畫性淘汰（Planned Obsolescence）vs 消費者自由</div>
+    </div>
+    <div class="two-col">
+      <div class="col-card" style="border-color:var(--c-cog)">
+        <h4 style="color:var(--c-cog)">正方：企業責任</h4>
+        <ul style="font-size:.9rem">
+          <li>計畫性淘汰是結構性浪費</li>
+          <li>電子廢棄物 7.8 kg/人的危機企業難辭其咎</li>
+          <li>歐盟已推動「維修權」立法</li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-color:var(--c-soc)">
+        <h4 style="color:var(--c-soc)">反方：消費自由</h4>
+        <ul style="font-size:.9rem">
+          <li>消費者有權選擇功能提升與體驗創新</li>
+          <li>強制延長壽命可能抑制技術進步</li>
+          <li>市場競爭自然淘汰不良企業</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:.9rem;color:var(--c-muted);margin-top:12px">各組 4 分鐘陳述 + 3 分鐘交互質詢｜好的論證必須承認對方最強論點再回應</p>
+  </div>
+</section>
+
+<!-- SLIDE 16: CER argument -->
+<section class="slide" id="slide-cer-argument">
+  <div class="slide-num">16 / 20</div>
+  <h2>CER 論證（進階版）</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">論題：臺灣環保標章制度能否有效引導綠色消費？</div>
+      <table class="ws-table">
+        <tr><th>Claim 主張</th><th>Evidence 證據</th><th>Reasoning 推理</th><th>Rebuttal 反駁段</th></tr>
+        <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </table>
+      <p style="font-size:.85rem;color:var(--c-muted);margin-top:10px">可引用：環保標章 5,400 項、消費端選購率偏低、廢棄物總量微增等數據</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 17: DIVIDER — 活動四 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-num">17 / 20</div>
+  <div class="slide-body">
+    <div class="act-badge">活動四</div>
+    <h2>學生治理行動<br>跨域整合與後設反思</h2>
+    <div class="chips">
+      <span class="chip">步驟 1 全校永續框架</span>
+      <span class="chip">步驟 2 模擬聽證</span>
+      <span class="chip">步驟 3 跨域短論文</span>
+      <span class="chip">步驟 4 後設認知</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 18: mock hearing -->
+<section class="slide" id="slide-mock-hearing">
+  <div class="slide-num">18 / 20</div>
+  <h2>模擬議會聽證：全校禁用一次性餐具</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card"><h4>教育局</h4><p style="font-size:.88rem">在環保政策與行政簡便之間取得平衡</p></div>
+      <div class="compare-card"><h4>校園餐廳</h4><p style="font-size:.88rem">擔心清洗成本與營運效率</p></div>
+      <div class="compare-card"><h4>環保社團</h4><p style="font-size:.88rem">主張源頭減量是唯一出路</p></div>
+      <div class="compare-card"><h4>家長會</h4><p style="font-size:.88rem">擔心衛生問題與學生不便</p></div>
+      <div class="compare-card"><h4>學生會</h4><p style="font-size:.88rem">在環保理念與同學反彈之間協調</p></div>
+    </div>
+    <p style="font-size:.9rem;color:var(--c-muted);margin-top:14px">各組 3 分鐘陳述 + 2 分鐘被質詢｜完成利害關係人分析表（權力大小・受影響程度・立場・可能結盟）</p>
+  </div>
+</section>
+
+<!-- SLIDE 19: essay guide -->
+<section class="slide" id="slide-essay-guide">
+  <div class="slide-num">19 / 20</div>
+  <h2>跨域整合短論文</h2>
+  <div class="slide-body">
+    <div class="q-box" style="font-size:1.1rem">
+      從態度到行動：行為科學能否設計出永續消費的未來？
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">500 字以上｜整合心理學・經濟學・倫理學三維度</div>
+      <div class="ws-lines">
+        <div style="font-size:.9rem;color:var(--c-muted)">① 問題界定：態度-行為落差的本質（引用落差數據）</div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--c-muted)">② 經濟學分析：外部性與市場失靈（引用循環度悖論）</div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--c-muted)">③ 行為科學介入：推力設計（引用環保標章與限塑政策）</div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--c-muted)">④ 倫理反思：誰有責任改變？</div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--c-muted)">⑤ 結論與建議</div>
+        <div class="ws-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 20: SUMMARY -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <div class="slide-num">20 / 20</div>
+  <div class="slide-body">
+    <h2 style="color:var(--c-accent);font-size:2rem;margin-bottom:24px">核心收穫</h2>
+    <div class="summary-keys">
+      <div class="key-card">
+        <div class="key-num">1</div>
+        <div class="key-text">消費行為不是純粹的個人選擇——心理、個人、社會三大因素共同塑造了我們的消費模式</div>
+      </div>
+      <div class="key-card">
+        <div class="key-num">2</div>
+        <div class="key-text">態度-行為落差是真實、普遍且可理解的——理解它是改變它的第一步</div>
+      </div>
+      <div class="key-card">
+        <div class="key-num">3</div>
+        <div class="key-text">改變不只在個人層面——綠色管理系統、政策推力、選擇架構設計都是可介入的槓桿點</div>
+      </div>
+    </div>
+    <div class="pledge-form">
+      <h4>我的行動承諾</h4>
+      <div class="pledge-row"><div class="pledge-box"></div><span>治理：</span><div style="flex:1;border-bottom:1px solid var(--c-beh);margin-left:4px"></div></div>
+      <div class="pledge-row"><div class="pledge-box"></div><span>課程：</span><div style="flex:1;border-bottom:1px solid var(--c-beh);margin-left:4px"></div></div>
+      <div class="pledge-row"><div class="pledge-box"></div><span>營運：</span><div style="flex:1;border-bottom:1px solid var(--c-beh);margin-left:4px"></div></div>
+      <div class="pledge-row"><div class="pledge-box"></div><span>社群：</span><div style="flex:1;border-bottom:1px solid var(--c-beh);margin-left:4px"></div></div>
+    </div>
+    <p style="margin-top:20px"><a href="lesson_plan.html" style="color:var(--c-accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator">投影片 <span class="nav-current" id="navCur">1</span> / 20</span>
+  <span class="hint"><kbd>←</kbd><kbd>→</kbd> 切換投影片</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur = document.getElementById('navCur');
+  if (!slides.length || !cur) return;
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => io.observe(s));
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -10 && r.top < window.innerHeight * 0.5;
+    });
+    const ci = i >= 0 ? i : 0;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = slides[Math.min(ci + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(ci - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

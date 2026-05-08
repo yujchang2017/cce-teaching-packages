@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>永續廢棄物處理實踐 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text);
+    line-height: 1.6;
+    margin: 0;
+    background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 44px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 36px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    border: 1px solid var(--c-border);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    font-family: monospace; font-size: 0.8em;
+    background: #fff;
+    margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px);
+    scroll-snap-align: start;
+    padding: 40px 60px;
+    display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem;
+    color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .question-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 30px 0;
+  }
+  .question-card {
+    background: var(--c-bg);
+    border: 2px solid var(--c-accent);
+    border-radius: 12px;
+    padding: 24px;
+    font-size: 1.15rem;
+    text-align: center;
+    color: var(--c-text);
+    position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px;
+    background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%;
+    font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 20px 0;
+  }
+  .compare-card {
+    border: 2px solid var(--c-border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+  .ws-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1.05rem; }
+  .ws-table th, .ws-table td {
+    border: 2px solid var(--c-border);
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px);
+    height: 48px;
+  }
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 20px 0;
+  }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 {
+    margin: 0 0 10px;
+    font-size: 1.15rem;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card {
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: 16px;
+    background: var(--c-bg);
+    border: 3px solid;
+  }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .pledge-form {
+    border: 2px solid var(--c-accent);
+    border-radius: 12px;
+    padding: 24px 30px;
+    background: var(--c-bg);
+    max-width: 700px;
+    margin: 20px auto;
+  }
+  .pledge-form .row {
+    display: flex; align-items: baseline;
+    gap: 12px; margin: 16px 0;
+    font-size: 1.05rem;
+  }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+  .checklist { list-style: none; padding: 0; margin: 12px 0; }
+  .checklist li {
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--c-border);
+    font-size: 1rem;
+  }
+  .checklist li::before {
+    content: "☐ ";
+    margin-right: 6px;
+    color: var(--c-accent); font-size: 1.1em;
+  }
+  .hope-frame {
+    border: 3px dashed var(--c-soc);
+    border-radius: 16px;
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 700px;
+    background: #fff5f7;
+  }
+  .hope-frame .prompt {
+    font-size: 1.4rem;
+    color: var(--c-soc);
+    font-weight: 700;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .hope-frame .text-area {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 30px, #f3a3bc 30px, #f3a3bc 31px);
+    height: 120px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+  }
+  .hope-frame .draw-area {
+    border: 2px dashed #f9a8d4;
+    height: 140px;
+    border-radius: 6px;
+    text-align: center;
+    color: #f9a8d4;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.95rem;
+  }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  .five-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .five-grid .item {
+    border: 2px solid var(--c-accent);
+    border-radius: 10px;
+    padding: 14px 8px;
+    text-align: center;
+    background: var(--c-bg);
+  }
+  .five-grid .item .ico { font-size: 2rem; }
+  .five-grid .item .title { font-weight: 700; color: var(--c-accent); margin: 6px 0 2px; font-size: 1rem; }
+  .five-grid .item .desc { font-size: 0.85rem; color: var(--c-muted); }
+  .impact-chain {
+    display: grid;
+    grid-template-columns: repeat(7, auto);
+    gap: 8px;
+    align-items: center;
+    margin: 16px 0;
+    font-size: 1rem;
+  }
+  .impact-chain .cause, .impact-chain .effect, .impact-chain .final {
+    padding: 12px 16px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .impact-chain .cause { background: #fef3c7; color: #92400e; }
+  .impact-chain .effect { background: #dbeafe; color: var(--c-cog); }
+  .impact-chain .final { background: #dcfce7; color: #166534; }
+  .impact-chain .arrow { color: var(--c-muted); font-size: 1.4rem; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">永續廢棄物處理實踐 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>零廢棄小戰士!</h2>
+    <p class="subtitle">從垃圾到黑金的冒險</p>
+    <div style="font-size: 4rem; margin: 16px 0;">♻️ 🌱 🪴</div>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>今天的垃圾,藏了三個大問題</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>垃圾去哪了?埋下去還是燒掉?</div>
+      <div class="question-card"><div class="q-num">2</div>剩菜廚餘,真的只能丟嗎?</div>
+      <div class="question-card"><div class="q-num">3</div>身為小學生,我能做什麼?</div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 30px; color: var(--c-accent);">
+      <strong>口號:少產生、再利用、會堆肥、勤分類!</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>垃圾從哪裡來?</h2>
+    <p class="subtitle">認識掩埋與焚燒這兩條老路</p>
+  </div>
+</section>
+
+<!-- 4. 全球垃圾震撼彈 (dp2) -->
+<section class="slide" id="slide-global-waste">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>全球每年產生 23 億公噸垃圾</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:全球垃圾總量趨勢長條圖(2024 vs 2050)]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>全球都市固體廢棄物現況約 23 億公噸/年,若不改變現況,2050 年將增至約 38 億公噸。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>來源:聯合國環境署 — 全球廢棄物管理展望 2024</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>比喻:</strong>如果排成垃圾車隊,可以繞地球好幾圈!
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.unep.org/resources/global-waste-management-outlook-2024" target="_blank" rel="noopener">聯合國環境署 — 全球廢棄物管理展望 2024</a>
+  </div>
+</section>
+
+<!-- 5. 台灣的驕傲與責任 (dp1, dp7) -->
+<section class="slide" id="slide-tw-pride">
+  <div class="slide-tag">活動一・步驟 1, 3</div>
+  <h2>台灣 4 合 1:全球前段班,但還能更好</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:台灣回收率成長曲線(1998 → 2024)]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>台灣一般廢棄物回收率超過 55%,自 1998 年迄今成長超過 10 倍;但每人每天仍會丟出約 1 公斤垃圾。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>來源:行政院環境部 資源循環署</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      4 合 1 系統:民眾分類 + 清潔隊 + 回收商 + 回收基金 = 我們做得很好,但還能做得更好!
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://recycle.moenv.gov.tw/" target="_blank" rel="noopener">行政院環境部 資源循環署 回收基金管理會</a>
+  </div>
+</section>
+
+<!-- 6. 什麼是掩埋 -->
+<section class="slide" id="slide-landfill">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>什麼是掩埋(Landfill)?</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">定 義</div>
+        <div class="icon">🕳️</div>
+        <h3>把垃圾埋進去</h3>
+        <p>需要鋪防滲層、收集滲出水與甲烷氣體</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">問 題</div>
+        <div class="icon">⚠️</div>
+        <h3>佔空間、會污染</h3>
+        <p>污染地下水、釋放甲烷(暖化效應是 CO₂ 的 80 倍以上)</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 18px;">
+      <strong>提問:</strong>為什麼不能一直把垃圾埋下去?
+    </p>
+  </div>
+</section>
+
+<!-- 7. 什麼是焚燒 -->
+<section class="slide" id="slide-incineration">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>什麼是焚燒(Incineration)?</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">定 義</div>
+        <div class="icon">🔥</div>
+        <h3>用高溫燒掉</h3>
+        <p>體積大幅減少,現代焚化爐還能發電</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">問 題</div>
+        <div class="icon">💨</div>
+        <h3>底渣 + 廢氣</h3>
+        <p>剩下約 1/4 底渣與飛灰仍須掩埋;處理不當會排放戴奧辛等有害物質</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 18px;">
+      <strong>結論:</strong>減量 &gt; 回收 &gt; 堆肥 &gt; 焚化 &gt; 掩埋。讓送進垃圾場的東西越少越好!
+    </p>
+  </div>
+</section>
+
+<!-- 8. 分解大考驗 (dp5) -->
+<section class="slide" id="slide-decompose">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>垃圾的分解大考驗</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:不同材質分解時間時間軸(蘋果核 → 鋁罐 → 塑膠袋 → 玻璃)]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>蘋果核 2 個月、鋁罐 80–200 年、塑膠袋 10–1000 年、玻璃瓶超過 100 萬年。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>來源:聯合國環境署 — 終結塑膠污染 / 美國海洋大氣總署 海洋廢棄物計畫</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 18px;">
+      <strong>震撼:</strong>你今天丟的塑膠袋,你的曾曾曾孫都還看得到!
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.unep.org/interactives/beat-plastic-pollution/" target="_blank" rel="noopener">聯合國環境署 — 終結塑膠污染</a>
+  </div>
+</section>
+
+<!-- 9. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>堆肥的魔法與健康土壤</h2>
+    <p class="subtitle">廚餘其實是大地的維他命</p>
+  </div>
+</section>
+
+<!-- 10. 堆肥是什麼 (dp4) -->
+<section class="slide" id="slide-compost">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>堆肥:把廚房垃圾變成黑金</h2>
+  <div class="slide-body">
+    <div class="impact-chain">
+      <div class="cause">🍎 廚餘</div>
+      <div class="arrow">+</div>
+      <div class="cause">🍂 落葉</div>
+      <div class="arrow">+</div>
+      <div class="effect">💧 水・空氣</div>
+      <div class="arrow">→</div>
+      <div class="final">🪴 黑金腐植質</div>
+    </div>
+    <figure style="margin-top: 20px;">
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:堆肥前後對比圖(廚餘桶 vs 黑色腐植土)]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>家庭廚餘 + 落葉做堆肥,可減少約 30% 送往焚化爐與掩埋場的垃圾量,同時減少甲烷排放。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>來源:美國環保署 — 家庭堆肥</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.epa.gov/recycle/composting-home" target="_blank" rel="noopener">美國環保署 — 家庭堆肥指南</a>
+  </div>
+</section>
+
+<!-- 11. 堆肥的 5 個超能力 (dp6) -->
+<section class="slide" id="slide-compost-power">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>堆肥的 5 個超能力</h2>
+  <div class="slide-body">
+    <div class="five-grid">
+      <div class="item"><div class="ico">🌱</div><div class="title">改善生長</div><div class="desc">植物更健康</div></div>
+      <div class="item"><div class="ico">🛡️</div><div class="title">減少侵蝕</div><div class="desc">土壤不流失</div></div>
+      <div class="item"><div class="ico">💧</div><div class="title">保水 +20%</div><div class="desc">節約用水</div></div>
+      <div class="item"><div class="ico">🌡️</div><div class="title">調節溫度</div><div class="desc">土壤更穩定</div></div>
+      <div class="item"><div class="ico">🗑️</div><div class="title">減量 30%</div><div class="desc">少甲烷排放</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 24px;">
+      <strong>磁鐵卡配對:</strong>把每個好處配對到正確的科學原因!
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.epa.gov/recycle/composting-home" target="_blank" rel="noopener">美國環保署 — 堆肥的好處</a>
+  </div>
+</section>
+
+<!-- 12. 健康土壤 5 大工作 -->
+<section class="slide" id="slide-soil-jobs">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>健康土壤的 5 大工作</h2>
+  <div class="slide-body">
+    <div class="five-grid">
+      <div class="item"><div class="ico">🌾</div><div class="title">種植</div><div class="desc">食物來源</div></div>
+      <div class="item"><div class="ico">💧</div><div class="title">儲水</div><div class="desc">減少乾旱</div></div>
+      <div class="item"><div class="ico">🧪</div><div class="title">過濾</div><div class="desc">淨化水質</div></div>
+      <div class="item"><div class="ico">🐛</div><div class="title">供養</div><div class="desc">生物多樣性</div></div>
+      <div class="item"><div class="ico">🌍</div><div class="title">固碳</div><div class="desc">減緩暖化</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      <strong>有趣事實:</strong>1 茶匙的健康土壤裡,有超過 10 億個微生物!沒有健康土壤,就沒有穩定的食物。
+    </p>
+  </div>
+</section>
+
+<!-- 13. 堆肥桶 DIY -->
+<section class="slide" id="slide-diy-compost">
+  <div class="slide-tag">活動二・步驟 4 / 活動四・步驟 2</div>
+  <h2>堆肥桶 DIY:寶特瓶版</h2>
+  <div class="slide-body">
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>材料 / 步驟</th><th>內容</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>容器</th><td>寶特瓶 / 花盆</td></tr>
+        <tr><th>綠色料</th><td>果皮、菜葉、咖啡渣(提供氮)</td></tr>
+        <tr><th>褐色料</th><td>落葉、碎報紙、紙板(提供碳)</td></tr>
+        <tr><th>比例</th><td>綠色料:褐色料 ≈ 1 : 3</td></tr>
+        <tr><th>維護</th><td>每週翻攪一次,保持濕潤但不滴水</td></tr>
+        <tr><th>完成時間</th><td>2–3 個月後 → 黑金腐植質</td></tr>
+      </tbody>
+    </table>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 14px;">
+      <strong>學生預測:</strong>兩週後會發生什麼?(留待第 4 節觀察)
+    </p>
+  </div>
+</section>
+
+<!-- 14. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>世界另一端的垃圾故事</h2>
+    <p class="subtitle">脆弱社區的真實生活</p>
+  </div>
+</section>
+
+<!-- 15. 食物不是垃圾 (dp3) -->
+<section class="slide" id="slide-food-waste">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>食物不是垃圾!</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:全球食物浪費比例(1/5)+ 家庭佔比餅圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>全球每年浪費約 10.5 億公噸食物(全球食物的 1/5),家庭是最大來源。如果都拿去做堆肥?無數噸土壤養分回到大地!</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>來源:聯合國環境署 — 全球食物浪費指數報告 2024</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>小組計算:</strong>若我們班每天少丟 500 克廚餘,一年省多少?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.unep.org/resources/report/food-waste-index-report-2024" target="_blank" rel="noopener">聯合國環境署 — 全球食物浪費指數報告 2024</a>
+  </div>
+</section>
+
+<!-- 16. 世界另一端的垃圾山 -->
+<section class="slide" id="slide-world-dumps">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>世界另一端的垃圾故事</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:三大露天掩埋場世界地圖標記]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵故事:</strong>肯亞 Dandora、印尼 Bantar Gebang、菲律賓 Payatas 等露天掩埋場——許多孩子在垃圾山上生活、撿拾回收物維生。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>呼應聯合國永續發展目標 SDG 12:負責任的消費與生產</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>提問:</strong>如果你是住在那邊的小孩,你希望世界怎麼幫你?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://sdgs.un.org/goals/goal12" target="_blank" rel="noopener">聯合國永續發展目標 SDG 12</a>
+  </div>
+</section>
+
+<!-- 17. 全球南北知識交換 -->
+<section class="slide" id="slide-global-exchange">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>全球南北知識交換</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>印度 Goonj</h4>
+        <ul>
+          <li>把舊衣物變成生活物資</li>
+          <li>解決鄉村婦女衛生需求</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>肯亞 Takataka</h4>
+        <ul>
+          <li>都市分類回收社會企業</li>
+          <li>從垃圾找出資源價值</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>巴西 Catadores</h4>
+        <ul>
+          <li>拾荒者組成合作社</li>
+          <li>讓拾荒成為正式職業</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      <strong>角色扮演:</strong>台灣學校 × 肯亞學校視訊會議——我們可以分享 4 合 1 經驗,也能向他們學「惜物」智慧。
+    </p>
+  </div>
+</section>
+
+<!-- 18. 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>行動與反思</h2>
+    <p class="subtitle">我是零廢棄小戰士</p>
+  </div>
+</section>
+
+<!-- 19. 5R 行動指南 -->
+<section class="slide" id="slide-5r">
+  <div class="slide-tag">活動四・步驟 3</div>
+  <h2>5R 行動指南</h2>
+  <div class="slide-body">
+    <div class="five-grid">
+      <div class="item"><div class="ico">📉</div><div class="title">Reduce</div><div class="desc">減少:少買、少要</div></div>
+      <div class="item"><div class="ico">🔄</div><div class="title">Reuse</div><div class="desc">重複用:保鮮盒</div></div>
+      <div class="item"><div class="ico">🛠️</div><div class="title">Repair</div><div class="desc">維修:修一修</div></div>
+      <div class="item"><div class="ico">🚫</div><div class="title">Refuse</div><div class="desc">拒用:免洗餐具</div></div>
+      <div class="item"><div class="ico">♻️</div><div class="title">Recycle</div><div class="desc">回收:洗淨分類</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 24px; color: var(--c-muted);">
+      參考教育部 KEE 教案《垃圾危機》(0064) 5R 原則
+    </p>
+  </div>
+</section>
+
+<!-- 20. 我的家庭挑戰 -->
+<section class="slide" id="slide-family">
+  <div class="slide-tag">活動四・步驟 3 ・學習單(投影版)</div>
+  <h2>我的家庭挑戰:一週任務</h2>
+  <div class="slide-body">
+    <div class="pledge-form">
+      <ul class="checklist">
+        <li>和爸媽一起秤家裡一天的垃圾(公斤)</li>
+        <li>分類出可回收與廚餘各多少</li>
+        <li>計算減量百分比(本週 vs 上週)</li>
+        <li>選 5R 中至少 3 項,寫下這週要做的具體行動</li>
+      </ul>
+      <hr style="margin: 18px 0; border: 0; border-top: 1px dashed var(--c-border);">
+      <div class="row">
+        <span class="lbl">學生簽名:</span>
+        <span class="blank"></span>
+        <span class="lbl">家人簽名:</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 21. 三欄行動 -->
+<section class="slide" id="slide-actions">
+  <div class="slide-tag">活動四・補充</div>
+  <h2>我可以做什麼?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 12px;">
+      從家庭、學校到社區,有哪些行動?
+    </p>
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>家 庭</h4>
+        <ul>
+          <li>家裡做寶特瓶堆肥桶</li>
+          <li>正確分類四色廚餘</li>
+          <li>自備餐具與環保袋</li>
+          <li>修補東西不丟掉</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>學 校</h4>
+        <ul>
+          <li>校園黑金站收集落葉與廚餘</li>
+          <li>四色分類桶值日生秤重</li>
+          <li>減包裝午餐</li>
+          <li>環保小尖兵輪值</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>社 區</h4>
+        <ul>
+          <li>每月「社區環保日」</li>
+          <li>學校堆肥送在地農場</li>
+          <li>國際姊妹校垃圾故事交流</li>
+          <li>教家人正確分類</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 22. 希望之牆 -->
+<section class="slide" id="slide-hope">
+  <div class="slide-tag">活動四・步驟 4</div>
+  <h2>希望之牆:寫給 2030 年的學校</h2>
+  <div class="slide-body">
+    <div class="hope-frame">
+      <div class="prompt">「我希望 2030 年的學校……」</div>
+      <div class="text-area"></div>
+      <div class="draw-area">✏️ 在這裡畫一個夢想垃圾桶</div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; color: var(--c-muted); margin-top: 14px;">
+      完成後貼到教室後牆,組成全班的「希望之牆」。
+    </p>
+  </div>
+</section>
+
+<!-- 23. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字,一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">減量</div>
+        <div class="desc">少產生才是根本<br>5R 從 Reduce 開始</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">堆肥</div>
+        <div class="desc">廚餘變黑金<br>減 30% 垃圾與甲烷</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">分類</div>
+        <div class="desc">4 合 1 系統靠你<br>洗淨、乾燥、分對</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">少產生、再利用、會堆肥、勤分類——我是零廢棄小戰士!</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">23</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

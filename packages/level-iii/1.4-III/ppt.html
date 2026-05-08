@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>水循環與淡水危機 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e; --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb; --c-soc: #db2777; --c-beh: #16a34a;
+    --c-warn: #ea580c; --c-text: #1f2937; --c-muted: #6b7280;
+    --c-border: #e5e7eb; --c-bg: #f9fafb;
+    --c-water: #0ea5e9; --c-water-soft: #e0f2fe;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-water-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; color: var(--c-water); }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-water); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-water); }
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap: 14px; margin: 18px 0; }
+  .stat-card { background: var(--c-water-soft); border: 2px solid var(--c-water); border-radius: 12px; padding: 18px; text-align: center; }
+  .stat-card .num { font-size: 2rem; font-weight: 800; color: var(--c-water); }
+  .stat-card .unit { font-size: 0.75rem; color: var(--c-muted); margin-top: 2px; }
+  .stat-card .lbl { font-size: 0.88rem; font-weight: 600; margin-top: 5px; }
+  .drops-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 20px 0; }
+  .drop { width: 36px; height: 36px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; color: #fff; }
+  .drop-sea { background: #1d4ed8; }
+  .drop-ice { background: #7dd3fc; }
+  .drop-fresh { background: var(--c-accent); }
+  .drop-label { transform: none; font-size: 0; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 18px; }
+  .compare-card .label { font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; }
+  .compare-card h3 { margin: 6px 0; font-size: 1.1rem; }
+  .compare-card p { margin: 0; font-size: 0.9rem; color: var(--c-muted); }
+  .impact-chain { display: flex; align-items: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+  .impact-chain .node { padding: 8px 14px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; }
+  .impact-chain .arrow { color: var(--c-muted); font-size: 1.2rem; }
+  .node-cause { background: #fef3c7; color: #92400e; }
+  .node-eff { background: #dbeafe; color: var(--c-cog); }
+  .node-final { background: #fee2e2; color: #991b1b; }
+  .ws-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.95rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 10px 12px; text-align: center; }
+  .ws-table th { background: var(--c-water-soft); color: var(--c-water); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg,transparent 0,transparent 18px,#d1d5db 18px,#d1d5db 19px); height: 44px; }
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 20px 26px; background: var(--c-bg); max-width: 680px; margin: 14px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 10px; margin: 12px 0; font-size: 1rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 26px; }
+  .checklist { list-style: none; padding: 0; margin: 12px 0; }
+  .checklist li { padding: 8px 0; border-bottom: 1px dashed var(--c-border); font-size: 0.95rem; }
+  .checklist li::before { content: "☐ "; margin-right: 6px; color: var(--c-accent); font-size: 1.1em; }
+  .hope-frame { border: 3px dashed var(--c-soc); border-radius: 16px; padding: 26px; margin: 16px auto; max-width: 680px; background: #fff5f7; }
+  .hope-frame .prompt { font-size: 1.3rem; color: var(--c-soc); font-weight: 700; margin-bottom: 14px; text-align: center; }
+  .hope-frame .text-area { background: repeating-linear-gradient(0deg,transparent 0,transparent 28px,#f3a3bc 28px,#f3a3bc 29px); height: 100px; border-radius: 6px; margin-bottom: 12px; }
+  .hope-frame .draw-area { border: 2px dashed #f9a8d4; height: 120px; border-radius: 6px; text-align: center; color: #f9a8d4; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin: 22px 0; }
+  .key-card { text-align: center; padding: 26px 14px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.78rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 8px 0; }
+  .key-card .desc { font-size: 0.86rem; color: var(--c-muted); }
+  .key-card.k1 { border-color: var(--c-water); } .key-card.k1 .word { color: var(--c-water); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.86rem; color: var(--c-muted); margin-top: 8px; }
+  .question-bubble { background: var(--c-water-soft); border: 2px solid var(--c-water); border-radius: 12px; padding: 14px 18px; margin: 10px 0; font-size: 1rem; }
+  .question-bubble .q-icon { font-size: 1.3rem; margin-right: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">水循環與淡水危機 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- ===== 1. 封面 ===== -->
+<section class="slide cover" id="slide-100drops">
+  <div class="slide-body" style="justify-content:center;">
+    <div style="font-size:0.9rem;color:var(--c-water);letter-spacing:0.2em;margin-bottom:10px;">1.4-III｜國小 9–12 歲</div>
+    <h2>水，夠嗎？</h2>
+    <p class="subtitle">地球水循環的大挑戰</p>
+    <div style="margin-top:24px;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;">
+      <!-- 100 drops visual: 97 blue, 2 light blue, 1 green -->
+      <div style="display:flex;flex-wrap:wrap;gap:4px;max-width:460px;justify-content:center;">
+        <!-- 97 sea drops -->
+        <span style="font-size:1.1rem;" title="海水">💧💧💧💧💧💧💧💧💧💧</span>
+        <span style="font-size:1.1rem;">💧💧💧💧💧💧💧💧💧💧</span>
+        <span style="font-size:1.1rem;">💧💧💧💧💧💧💧💧💧💧</span>
+        <span style="font-size:1.1rem;">💧💧💧💧💧💧💧💧💧💧</span>
+        <span style="font-size:1.1rem;">💧💧💧💧💧💧💧💧💧💧</span>
+        <span style="font-size:1.1rem;">💧💧💧💧💧💧💧💧💧💧</span>
+        <span style="font-size:1.1rem;">💧💧💧💧💧💧💧💧💧💧</span>
+        <span style="font-size:1.1rem;">💧💧💧💧💧💧💧💧💧💧</span>
+        <span style="font-size:1.1rem;">💧💧💧💧💧💧💧💧💧💧</span>
+        <span style="font-size:1.1rem;">💧💧💧💧💧💧💧</span>
+        <!-- 2 ice drops -->
+        <span style="font-size:1.1rem;" title="冰川">🧊🧊</span>
+        <!-- 0.5 fresh water -->
+        <span style="font-size:1.3rem;" title="可用淡水" style="border:2px solid var(--c-accent);border-radius:50%;padding:2px;">🫧</span>
+      </div>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:16px;justify-content:center;font-size:0.85rem;flex-wrap:wrap;">
+      <span>💧 × 97 = 海水（不能喝）</span>
+      <span>🧊 × 2 = 冰川冰帽</span>
+      <span>🫧 × 0.5 = 可用淡水</span>
+    </div>
+    <p style="margin-top:14px;font-size:1.1rem;"><strong style="color:var(--c-water);">100 滴水中，只剩半滴可以用！</strong></p>
+  </div>
+</section>
+
+<!-- ===== 2. 20 億人沒水喝 ===== -->
+<section class="slide" id="slide-2billion">
+  <div class="slide-tag">起點數據</div>
+  <h2>現在，全世界有超過 20 億人沒有安全的水喝</h2>
+  <div class="slide-body">
+    <div class="stat-row">
+      <div class="stat-card"><div class="num">&gt;20 億</div><div class="unit">人</div><div class="lbl">缺乏安全飲用水</div></div>
+      <div class="stat-card"><div class="num">50%</div><div class="unit">全球人口</div><div class="lbl">每年至少 1 個月嚴重缺水</div></div>
+      <div class="stat-card"><div class="num">70%</div><div class="unit">全球淡水</div><div class="lbl">用於農業</div></div>
+      <div class="stat-card"><div class="num">70%</div><div class="unit">自然災害死亡</div><div class="lbl">與水相關（洪水、乾旱）</div></div>
+    </div>
+    <div class="question-bubble">
+      <span class="q-icon">🤔</span><strong>想一想：</strong>班上 30 個人，換算一下——大約有幾個人會沒有安全的水喝？你有什麼感覺？
+    </div>
+    <figure style="margin-top:14px;">
+      <div style="border:2px dashed var(--c-water);border-radius:12px;padding:32px;background:var(--c-water-soft);text-align:center;">
+        <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.3rem;color:var(--c-water);font-weight:700;margin-bottom:10px;">[此處放：世界地圖——紅色標示嚴重缺水地區]</div>
+        <div style="font-size:0.95rem;margin:10px 0;">非洲部分、中東、印度北部、墨西哥——這些地方的人每天怎麼取水？</div>
+        <div style="font-size:0.85rem;color:var(--c-muted);margin-top:10px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>全球缺水熱點：有些人要走好幾公里才能取到一桶水</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.un.org/en/climatechange/science/climate-issues/water" target="_blank" rel="noopener">UN Climate Action — Water</a></div>
+</section>
+
+<!-- ===== 3. 臺灣洪水與旱災 ===== -->
+<section class="slide" id="slide-tw-flood">
+  <div class="slide-tag">活動一・步驟 1</div>
+  <h2>臺灣的水：同時變得「更多」又「更少」？</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-water);">
+        <div class="label" style="color:var(--c-water);">豐水期（夏季）</div>
+        <h3>雨一次下太多 ⛈️</h3>
+        <p>短時強降雨增加 → 淹水、土石流風險上升 → 水庫裝不下</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-warn);">
+        <div class="label" style="color:var(--c-warn);">枯水期（冬春）</div>
+        <h3>久久都不下雨 🏜️</h3>
+        <p>2021 百年大旱：日月潭見底、學校停水、農田休耕</p>
+      </div>
+    </div>
+    <div style="background:var(--c-bg);border:2px solid var(--c-accent);border-radius:10px;padding:14px 18px;margin-top:12px;">
+      <p style="margin:0;font-size:1rem;"><strong>TCCIP 推估：</strong>臺灣未來豐水期流量增加、枯水期流量減少，「豐枯差異加大」——缺水和豪雨會同時變嚴重。</p>
+    </div>
+    <div class="question-bubble" style="margin-top:12px;">
+      <span class="q-icon">🤔</span><strong>想一想：</strong>停水那天你家怎麼度過？你覺得水不夠用的時候，最需要的是什麼？
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://tccip.ncdr.nat.gov.tw/" target="_blank" rel="noopener">TCCIP 臺灣氣候變遷推估資訊平台</a></div>
+</section>
+
+<!-- ===== 4. 臺灣水故事 ===== -->
+<section class="slide" id="slide-tw-water">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>臺灣水的數字故事</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-water);border-radius:12px;padding:32px;background:var(--c-water-soft);text-align:center;">
+        <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.3rem;color:var(--c-water);font-weight:700;margin-bottom:10px;">[此處放：臺灣月降雨量長條圖（過去 vs 未來推估）]</div>
+        <div style="font-size:0.95rem;margin:10px 0;"><strong>關鍵數據：</strong>年雨量豐沛，但超過 70% 直接流入海——留不住是最大問題</div>
+        <div style="font-size:0.85rem;color:var(--c-muted);margin-top:10px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>如果冰川融一半：全球海平面上升約 6 公尺，臺灣超過 1,000 km² 沿海低地可能被淹——包括臺北盆地、西部平原</figcaption>
+    </figure>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;">
+      <div style="background:#eff6ff;border-radius:8px;padding:12px;font-size:0.9rem;"><strong style="color:var(--c-cog);">🌊 海平面上升：</strong>格陵蘭 + 南極西側冰棚各融一半 → 海平面 +6 m → 臺灣 1,000+ km² 被淹沒（NCDR 推估）</div>
+      <div style="background:#fff7ed;border-radius:8px;padding:12px;font-size:0.9rem;"><strong style="color:var(--c-warn);">🏗️ 沿海鹹化：</strong>過度抽取地下水 + 海水入侵 → 井水變鹹 → 飲用水問題（吐瓦魯同款）</div>
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://ccis.ncdr.nat.gov.tw/" target="_blank" rel="noopener">國家災害防救科技中心 NCDR</a></div>
+</section>
+
+<!-- ===== 5. 水循環 ===== -->
+<section class="slide" id="slide-cycle">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>水在地球上的旅行：水循環</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-water);border-radius:12px;padding:36px;background:var(--c-water-soft);text-align:center;">
+        <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.3rem;color:var(--c-water);font-weight:700;margin-bottom:10px;">[此處放：水循環示意圖]</div>
+        <div style="font-size:0.95rem;margin:10px 0;">太陽 → 蒸發 → 雲 → 降水 → 逕流 → 海洋 / 地下水 → 植物吸收 → 再蒸發</div>
+        <div style="font-size:0.85rem;color:var(--c-muted);margin-top:10px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>水在地球上永不消失——只是不斷旅行，以液態、固態、氣態循環</figcaption>
+    </figure>
+    <div class="impact-chain" style="margin-top:14px;">
+      <div class="node node-cause">🌡️ 氣候變暖</div>
+      <div class="arrow">→</div>
+      <div class="node node-eff">熱空氣裝更多水蒸氣</div>
+      <div class="arrow">→</div>
+      <div class="node node-eff">雨更激烈 OR 更乾燥</div>
+      <div class="arrow">→</div>
+      <div class="node node-final">該乾更乾、該濕更濕</div>
+    </div>
+    <p style="font-size:0.9rem;color:var(--c-muted);margin-top:8px;">過去 20 年陸地上的水每年下降約 1 公分；2000 年以來洪水災害增加 <strong>134%</strong>、乾旱頻率增加 <strong>29%</strong>。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.un.org/en/climatechange/science/climate-issues/water" target="_blank" rel="noopener">UN Climate Action — Water</a></div>
+</section>
+
+<!-- ===== 6. 冰塊實驗 ===== -->
+<section class="slide" id="slide-icetest">
+  <div class="slide-tag">活動二・步驟 2 ・實驗</div>
+  <h2>海冰 vs 陸冰：哪一個融化會讓海平面升高？</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-water);">
+        <div class="label" style="color:var(--c-water);">A 杯：冰塊浮在水中（海冰）</div>
+        <h3>融化後水位不變 ✅</h3>
+        <p>冰塊原本就泡在水裡——融化前後，水的總體積沒有改變。北冰洋融冰不會直接升高海平面。</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-warn);">
+        <div class="label" style="color:var(--c-warn);">B 杯：冰塊放在石頭上（陸冰）</div>
+        <h3>融化後水位升高 ⚠️</h3>
+        <p>冰塊原本在「陸地上」，融化後水流進杯子，水面會升高。格陵蘭、南極冰蓋、高山冰川都是陸冰！</p>
+      </div>
+    </div>
+    <div style="background:var(--c-water-soft);border-radius:10px;padding:14px 18px;margin-top:12px;">
+      <p style="margin:0;font-size:1rem;">🧊 <strong>自己試試看：</strong>回家拿兩個透明杯子，一杯冰塊浮在水中、一杯冰塊放在小石頭上，記錄融化前後水位的變化！</p>
+    </div>
+    <div class="question-bubble" style="margin-top:10px;">
+      <span class="q-icon">🤔</span><strong>想一想：</strong>全球暖化讓陸冰融化 → 海平面上升 → 臺灣哪些地方會受影響？（看看臺灣地圖）
+    </div>
+  </div>
+</section>
+
+<!-- ===== 7. 活動三過場：極端 ===== -->
+<section class="slide divider" id="slide-extreme">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三</div>
+    <h2>水變得更極端了</h2>
+    <p style="color:var(--c-muted);font-size:1.1rem;margin-top:8px;">認識兩個受氣候變遷影響的真實家庭</p>
+  </div>
+</section>
+
+<!-- ===== 8. 兩個家庭 ===== -->
+<section class="slide" id="slide-families">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>A 家庭（尼泊爾山村） vs B 家庭（吐瓦魯小島）</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-beh);">
+        <div class="label" style="color:var(--c-beh);">🏔️ A 家庭：尼泊爾喜馬拉雅山村</div>
+        <h3>靠冰川融水生活</h3>
+        <p>冰川縮小 → 短期洪水暴漲 → 長期水源消失。他們正在種更多樹、挖蓄水池、改種耐旱作物。</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-water);">
+        <div class="label" style="color:var(--c-water);">🏝️ B 家庭：吐瓦魯太平洋小島</div>
+        <h3>靠地下水 + 雨水生活</h3>
+        <p>海水倒灌 → 井水變鹹 → 改靠雨水桶 + 淡化機。年輕人陸續移民紐西蘭尋找新家。</p>
+      </div>
+    </div>
+    <div style="background:var(--c-bg);border:2px solid var(--c-accent);border-radius:10px;padding:14px 18px;margin-top:12px;">
+      <p style="margin:0;font-size:1rem;"><strong>討論：</strong>這兩個家庭遇到的問題一樣嗎？都是氣候變遷，為什麼不同？<br>
+      <span style="font-size:0.9rem;color:var(--c-muted);">提示：地理位置不同 → 冰川融化 vs 海平面上升，帶來不同的水問題。</span></p>
+    </div>
+    <div class="question-bubble" style="margin-top:10px;">
+      <span class="q-icon">💭</span>如果你是吐瓦魯的小朋友，會想對全世界說什麼？
+    </div>
+  </div>
+</section>
+
+<!-- ===== 9. 水足跡 ===== -->
+<section class="slide" id="slide-footprint">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>你的餐盤背後藏了幾桶水？</h2>
+  <div class="slide-body">
+    <div class="stat-row">
+      <div class="stat-card"><div class="num">255 L</div><div class="unit">一杯牛奶的水足跡</div><div class="lbl">生產過程耗水</div></div>
+      <div class="stat-card"><div class="num">1,500 L</div><div class="unit">一塊牛排的水足跡</div><div class="lbl">是蔬菜的好幾倍</div></div>
+      <div class="stat-card"><div class="num">2,000–5,000 L</div><div class="unit">一人一天食物</div><div class="lbl">全球農業耗水 70%</div></div>
+    </div>
+    <table class="ws-table">
+      <thead><tr><th>今天早餐</th><th>食材名稱</th><th>猜猜水足跡</th><th>實際約多少（L）</th></tr></thead>
+      <tbody>
+        <tr><td>🍞 吐司一片</td><td>小麥</td><td class="fill"></td><td>約 48 L</td></tr>
+        <tr><td>🥚 水煮蛋一顆</td><td>雞蛋</td><td class="fill"></td><td>約 200 L</td></tr>
+        <tr><td>🥛 牛奶一杯</td><td>牛乳</td><td class="fill"></td><td>約 255 L</td></tr>
+        <tr><td>🥦 你加的蔬菜</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.9rem;color:var(--c-muted);">💡 多吃蔬菜、少吃肉，是最有效的「節水」飲食選擇！</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.un.org/en/climatechange/science/climate-issues/water" target="_blank" rel="noopener">UN Climate Action — Water</a></div>
+</section>
+
+<!-- ===== 10. 承諾卡 ===== -->
+<section class="slide" id="slide-pledge">
+  <div class="slide-tag">活動四・步驟 1 ・學習單（投影版）</div>
+  <h2>我的節水承諾卡</h2>
+  <div class="slide-body">
+    <p style="text-align:center;font-size:1rem;color:var(--c-muted);">從這週開始，選 3 件事做到——兩兩互相承諾並簽名！</p>
+    <ul class="checklist" style="max-width:600px;margin:0 auto;">
+      <li>刷牙時關水龍頭（每次省約 6 公升）</li>
+      <li>淋浴控制在 5 分鐘內（比泡澡省 100 公升）</li>
+      <li>洗米水、洗菜水拿去澆花</li>
+      <li>發現水龍頭漏水，馬上告訴大人</li>
+      <li>多吃蔬菜、少吃肉（降低食物水足跡）</li>
+    </ul>
+    <div class="pledge-form">
+      <div class="row"><span class="lbl">我選擇的 3 件事是：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">我要邀請一起做的人：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">承諾人簽名：</span><span class="blank"></span><span class="lbl">見證夥伴：</span><span class="blank"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 11. 希望框 + 三關鍵字 ===== -->
+<section class="slide" id="slide-hope">
+  <div class="slide-tag">活動四・步驟 2 ・總結</div>
+  <h2>希望牆 + 三個關鍵字</h2>
+  <div class="slide-body">
+    <div class="hope-frame" style="margin-bottom:14px;">
+      <div class="prompt">「我希望 10 年後的水世界……」</div>
+      <div class="text-area"></div>
+      <div class="draw-area">✏️ 在這裡畫一幅圖</div>
+    </div>
+    <div class="summary-keys">
+      <div class="key-card k1"><div class="num">第 1 個</div><div class="word">珍貴</div><div class="desc">可用淡水只剩 0.5%<br>從不浪費開始</div></div>
+      <div class="key-card k2"><div class="num">第 2 個</div><div class="word">極端</div><div class="desc">暖化讓水循環失衡<br>乾的更乾、濕的更濕</div></div>
+      <div class="key-card k3"><div class="num">第 3 個</div><div class="word">行動</div><div class="desc">每個人都能節水<br>從今天開始</div></div>
+    </div>
+    <p style="text-align:center;font-size:1rem;margin-top:10px;color:var(--c-muted);">帶回家的問題：如果你家鄉的井明天會變鹹，你會先做什麼？你願意把「吃什麼」當成節水行動嗎？</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">11</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color:var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      slides[Math.min(current + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      slides[Math.max(current - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const t = document.querySelector(location.hash);
+    if (t) setTimeout(() => t.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+</body>
+</html>

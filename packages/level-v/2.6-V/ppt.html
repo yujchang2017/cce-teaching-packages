@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>重新連結自然與保護自然 — 投影片</title>
+<style>
+  :root{--accent:#0f766e;--soft:#ccfbf1;--cog:#2563eb;--soc:#db2777;--beh:#16a34a;--warn:#ea580c;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--text);line-height:1.6;margin:0;background:#fff}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.95rem;font-weight:500;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--muted)}
+  .nav-indicator{font-family:monospace;color:var(--text)} .nav-cur{color:var(--accent);font-weight:700}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--border);position:relative}
+  .slide-num{position:absolute;top:14px;right:20px;font-size:.8rem;font-family:monospace;color:var(--border)}
+  .slide h2{font-size:2rem;margin:0 0 20px;color:var(--text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.8rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--accent);color:#fff;padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--accent);letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.4rem;color:var(--accent)}
+  .slide.divider .act-steps{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .act-step-chip{background:var(--soft);color:var(--accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  .q-box{background:var(--soft);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.4rem;line-height:1.6;color:var(--accent);font-weight:600}
+  .q-sub{font-size:1.05rem;color:var(--muted);font-weight:400;margin-top:10px}
+  .data-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0;background:var(--bg)}
+  .data-card .dc-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;color:var(--muted);margin-bottom:8px}
+  .data-card .dc-fact{font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.5}
+  .data-card .dc-src{font-size:.85rem;color:var(--muted)}
+  .act-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0}
+  .act-card .ac-badge{display:inline-block;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:4px;margin-bottom:12px;letter-spacing:.08em}
+  .act-card .ac-task{font-size:1.15rem;color:var(--text);line-height:1.6}
+  .ws-frame{border:2px dashed var(--accent);border-radius:12px;padding:28px 32px;margin:20px 0;background:#fff}
+  .ws-frame .ws-title{font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:14px}
+  .ws-lines{display:flex;flex-direction:column;gap:14px}
+  .ws-line{border-bottom:1.5px solid #d1d5db;height:28px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--border);padding:12px 14px;text-align:center}
+  .ws-table th{background:var(--soft);color:var(--accent);font-weight:700}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:52px}
+  .chart-placeholder{border:2px dashed var(--muted);border-radius:8px;padding:40px 20px;margin:16px 0;text-align:center;color:var(--muted);font-size:.95rem;background:var(--bg)}
+  .chart-placeholder .cp-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;margin-bottom:8px;color:var(--accent)}
+  .summary-keys{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin:24px 0}
+  .summary-key{background:var(--soft);border:2px solid var(--accent);border-radius:12px;padding:18px 24px;text-align:center;min-width:160px}
+  .summary-key .sk-word{font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:6px}
+  .summary-key .sk-desc{font-size:.9rem;color:var(--muted)}
+  .slide-src{margin-top:auto;padding-top:12px;border-top:1px dashed var(--border);font-size:.8rem;color:var(--muted)}
+  a.ext{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  a.ext::after{content:" ↗";font-size:.8em;opacity:.7}
+  ul{padding-left:1.4em} li{margin:4px 0}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">重新連結自然與保護自然 ｜ Level V</span>
+</header>
+
+<main>
+
+<!-- S1: Cover -->
+<section class="slide cover" id="slide-cover">
+  <span class="slide-num">1/20</span>
+  <div class="slide-body">
+    <div class="level-tag">Level V</div>
+    <h2>重新連結自然與保護自然</h2>
+    <p style="color:var(--muted);font-size:1.05rem">生物多樣性 × 保護區 × 環境正義</p>
+  </div>
+</section>
+
+<!-- S2: Big Question -->
+<section class="slide" id="slide-question">
+  <span class="slide-num">2/20</span>
+  <div class="slide-body">
+    <h2>大問題</h2>
+    <div class="q-box">
+      我們如何在全球承諾保護 30% 土地的目標下，確保保護行動同時兼顧生態有效性與社會正義？
+      <div class="q-sub">思考：誰制定規則？誰承擔代價？誰受益？</div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">關鍵數據</div>
+      <div class="dc-fact">《昆明—蒙特婁全球生物多樣性框架》目標：2030 年前保護 30% 陸地與海洋（30×30）</div>
+      <div class="dc-src">資料來源：生物多樣性公約秘書處，2022</div>
+    </div>
+  </div>
+</section>
+
+<!-- S3: A1 Divider -->
+<section class="slide divider" id="slide-a1">
+  <span class="slide-num">3/20</span>
+  <div class="slide-body">
+    <div class="act-badge">活動一</div>
+    <h2>30×30 時間軸解讀</h2>
+    <div class="act-steps">
+      <span class="act-step-chip">步驟一：觀察時間軸</span>
+      <span class="act-step-chip">步驟二：分析關鍵節點</span>
+      <span class="act-step-chip">步驟三：小組討論</span>
+    </div>
+  </div>
+</section>
+
+<!-- S4: COP Timeline -->
+<section class="slide" id="slide-cop-timeline">
+  <span class="slide-num">4/20</span>
+  <div class="slide-body">
+    <h2>生物多樣性保護的全球承諾時間軸</h2>
+    <div class="chart-placeholder">
+      <div class="cp-label">時間軸圖表</div>
+      1992 《生物多樣性公約》→ 2010 愛知目標（失敗）→ 2022 昆明—蒙特婁框架（30×30）→ 2030 目標年限
+    </div>
+    <div class="data-card">
+      <div class="dc-label">現況差距</div>
+      <div class="dc-fact">目前全球陸地保護區覆蓋率約 17%、海洋約 8%，距 30% 目標仍有明顯落差</div>
+      <div class="dc-src">生物多樣性公約秘書處，2022</div>
+    </div>
+    <ul>
+      <li>愛知目標（2010-2020）：20 項目標均未完全達成</li>
+      <li>KM 框架：23 個具體目標，含資金、原住民權益、主流化</li>
+    </ul>
+  </div>
+</section>
+
+<!-- S5: A1 Discussion -->
+<section class="slide" id="slide-a1-discuss">
+  <span class="slide-num">5/20</span>
+  <div class="slide-body">
+    <h2>小組討論：誰決定保什麼？</h2>
+    <div class="act-card">
+      <div class="ac-badge">討論任務</div>
+      <div class="ac-task">
+        <p>分析以下問題，每組記錄 2 個觀點：</p>
+        <ul>
+          <li>為什麼愛知目標失敗？哪些結構性因素？</li>
+          <li>30×30 目標如何確保品質，不只是面積？</li>
+          <li>台灣目前保護區比例如何？有哪些挑戰？</li>
+        </ul>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">台灣數據</div>
+      <div class="dc-fact">台灣陸域保護區約占國土面積 22%（含國家公園、自然保護區等），但有效管理程度參差</div>
+      <div class="dc-src">林業及自然保育署，2023</div>
+    </div>
+  </div>
+</section>
+
+<!-- S6: A2 Divider -->
+<section class="slide divider" id="slide-a2">
+  <span class="slide-num">6/20</span>
+  <div class="slide-body">
+    <div class="act-badge">活動二</div>
+    <h2>IUCN 綠色名錄與保護區品質</h2>
+    <div class="act-steps">
+      <span class="act-step-chip">步驟一：閱讀案例</span>
+      <span class="act-step-chip">步驟二：品質評估</span>
+      <span class="act-step-chip">步驟三：辯論</span>
+    </div>
+  </div>
+</section>
+
+<!-- S7: Quality -->
+<section class="slide" id="slide-quality">
+  <span class="slide-num">7/20</span>
+  <div class="slide-body">
+    <h2>保護區品質：不只是劃設面積</h2>
+    <div class="chart-placeholder">
+      <div class="cp-label">比較圖：紙上保護 vs. 有效管理</div>
+      示意圖：各國保護區面積達標率 vs. IUCN 綠色名錄認證率對比
+    </div>
+    <div class="data-card">
+      <div class="dc-label">IUCN 綠色名錄</div>
+      <div class="dc-fact">截至 2023 年，全球僅約 60 個保護地通過 IUCN 綠色名錄認證，代表最高管理標準</div>
+      <div class="dc-src">IUCN 保護地綠色名錄，2023</div>
+    </div>
+    <ul>
+      <li>「紙上保護區」：劃設但缺乏實質管理經費與人力</li>
+      <li>綠色名錄標準：治理、規劃、管理、成果四大面向</li>
+      <li>有效保護 ≠ 面積達標：品質重於數量</li>
+    </ul>
+  </div>
+</section>
+
+<!-- S8: Heritage -->
+<section class="slide" id="slide-heritage">
+  <span class="slide-num">8/20</span>
+  <div class="slide-body">
+    <h2>世界遺產與生物多樣性熱點</h2>
+    <div class="chart-placeholder">
+      <div class="cp-label">地圖：UNESCO 世界自然遺產分布</div>
+      示意地圖：全球 218 處世界自然遺產（2023），與生物多樣性熱點重疊區域
+    </div>
+    <div class="data-card">
+      <div class="dc-label">UNESCO 世界遺產與氣候</div>
+      <div class="dc-fact">UNESCO 世界遺產委員會指出，全球 30% 以上自然遺產因氣候變遷面臨高度威脅</div>
+      <div class="dc-src">UNESCO 世界遺產中心，2023</div>
+    </div>
+    <ul>
+      <li>氣候威脅：珊瑚礁白化、冰川退縮、海平面上升</li>
+      <li>案例：大堡礁（澳洲）、非洲山地大猩猩棲地</li>
+    </ul>
+  </div>
+</section>
+
+<!-- S9: A3 Divider -->
+<section class="slide divider" id="slide-a3">
+  <span class="slide-num">9/20</span>
+  <div class="slide-body">
+    <div class="act-badge">活動三</div>
+    <h2>物種滅絕加速與環境捍衛者</h2>
+    <div class="act-steps">
+      <span class="act-step-chip">步驟一：數據分析</span>
+      <span class="act-step-chip">步驟二：案例研究</span>
+      <span class="act-step-chip">步驟三：角色扮演</span>
+    </div>
+  </div>
+</section>
+
+<!-- S10: Species Loss -->
+<section class="slide" id="slide-sloss">
+  <span class="slide-num">10/20</span>
+  <div class="slide-body">
+    <h2>物種滅絕：第六次大滅絕</h2>
+    <div class="chart-placeholder">
+      <div class="cp-label">折線圖：生物多樣性指數下降趨勢（1970-2020）</div>
+      示意圖：地球生命力指數（Living Planet Index）50 年間下降約 73%
+    </div>
+    <div class="data-card">
+      <div class="dc-label">IPBES 全球評估</div>
+      <div class="dc-fact">IPBES 2019 年報告：約 100 萬物種面臨滅絕威脅，其中數十萬種可能在數十年內消失</div>
+      <div class="dc-src">政府間生物多樣性和生態系統服務科學政策平台（IPBES），2019</div>
+    </div>
+    <ul>
+      <li>主要驅動力：土地使用變化、過度開採、氣候變遷、污染、外來種</li>
+      <li>滅絕速率：比自然背景速率快 100–1000 倍</li>
+    </ul>
+  </div>
+</section>
+
+<!-- S11: Defenders -->
+<section class="slide" id="slide-defenders">
+  <span class="slide-num">11/20</span>
+  <div class="slide-body">
+    <h2>環境捍衛者：保護自然的代價</h2>
+    <div class="chart-placeholder">
+      <div class="cp-label">長條圖：各地區環境捍衛者遇害人數（2012-2022）</div>
+      示意圖：全球 10 年間超過 1,700 名環境捍衛者遇害，拉丁美洲佔最多
+    </div>
+    <div class="data-card">
+      <div class="dc-label">全球見證報告</div>
+      <div class="dc-fact">全球見證（Global Witness）統計：2022 年有 177 名土地與環境捍衛者遇害，平均每兩天一人；超過 40% 為原住民族</div>
+      <div class="dc-src">全球見證（Global Witness），2023</div>
+    </div>
+    <ul>
+      <li>拉丁美洲：哥倫比亞、巴西、宏都拉斯為高風險地區</li>
+      <li>面臨威脅：暴力、法律騷擾、監控、入獄</li>
+      <li>國際人權法：聯合國人權捍衛者宣言（1998）</li>
+    </ul>
+  </div>
+</section>
+
+<!-- S12: A3 Activity -->
+<section class="slide" id="slide-a3-activity">
+  <span class="slide-num">12/20</span>
+  <div class="slide-body">
+    <h2>角色扮演：模擬聯合國環境大會</h2>
+    <div class="act-card">
+      <div class="ac-badge">任務說明</div>
+      <div class="ac-task">
+        <p>各組擔任不同利害關係人，就「是否支持 30×30 目標」發表 2 分鐘立場聲明：</p>
+        <ul>
+          <li>小島嶼開發中國家（SIDS）代表</li>
+          <li>原住民族代表</li>
+          <li>農業大國政府代表</li>
+          <li>國際環保 NGO 代表</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">立場準備表</div>
+      <div class="ws-lines">
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S13: A4 Divider -->
+<section class="slide divider" id="slide-a4">
+  <span class="slide-num">13/20</span>
+  <div class="slide-body">
+    <div class="act-badge">活動四</div>
+    <h2>公民社會行動與聽證模擬</h2>
+    <div class="act-steps">
+      <span class="act-step-chip">步驟一：案例分析</span>
+      <span class="act-step-chip">步驟二：政策提案</span>
+      <span class="act-step-chip">步驟三：模擬聽證</span>
+    </div>
+  </div>
+</section>
+
+<!-- S14: CSO Action -->
+<section class="slide" id="slide-cso">
+  <span class="slide-num">14/20</span>
+  <div class="slide-body">
+    <h2>公民社會：誰在推動改變？</h2>
+    <div class="data-card">
+      <div class="dc-label">公民社會組織行動</div>
+      <div class="dc-fact">全球超過 1,400 個公民社會組織參與昆明—蒙特婁框架談判過程，倡議納入原住民族知識與社區主導保護模式</div>
+      <div class="dc-src">生物多樣性公約民間社會論壇，2022</div>
+    </div>
+    <ul>
+      <li>社區保護地（ICCAs）：原住民族自主管理的保護模式</li>
+      <li>抗議入罪化：部分國家以「生態恐怖主義」法律壓制環保行動</li>
+      <li>台灣案例：反水泥採礦、湿地保護等地方環境行動</li>
+    </ul>
+  </div>
+</section>
+
+<!-- S15: Hearing Simulation -->
+<section class="slide" id="slide-hearing">
+  <span class="slide-num">15/20</span>
+  <div class="slide-body">
+    <h2>模擬聽證：台灣保護區政策</h2>
+    <div class="act-card">
+      <div class="ac-badge">聽證任務</div>
+      <div class="ac-task">
+        <p>針對議題「台灣應如何提升保護區有效管理？」進行模擬立法院公聽會：</p>
+        <ul>
+          <li>提案方：說明政策具體措施（CER 論證格式）</li>
+          <li>質詢方：提出疑問與挑戰</li>
+          <li>回應方：回應質疑並補充論據</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">論證工作單（CER + 反駁）</div>
+      <table class="ws-table">
+        <tr><th>主張</th><th>證據</th><th>推理</th><th>反駁與回應</th></tr>
+        <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- S16: Policy Proposal -->
+<section class="slide" id="slide-policy">
+  <span class="slide-num">16/20</span>
+  <div class="slide-body">
+    <h2>政策提案工作單</h2>
+    <div class="ws-frame">
+      <div class="ws-title">我的政策提案</div>
+      <table class="ws-table">
+        <tr><th>政策目標</th><th>具體措施</th><th>預期成效</th><th>潛在阻力</th></tr>
+        <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </table>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">提案要素</div>
+      <div class="ac-task">包含：目標、對象、機制、資金來源、原住民族知識整合方式</div>
+    </div>
+  </div>
+</section>
+
+<!-- S17: Reflection -->
+<section class="slide" id="slide-reflection">
+  <span class="slide-num">17/20</span>
+  <div class="slide-body">
+    <h2>反思：我與自然的連結</h2>
+    <div class="ws-frame">
+      <div class="ws-title">個人反思卡</div>
+      <div class="ws-lines">
+        <div style="font-size:.9rem;color:var(--muted);margin-bottom:4px">今天最讓我有新想法的一件事：</div>
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--muted);margin-bottom:4px;margin-top:12px">我願意採取的一個具體行動：</div>
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--muted);margin-bottom:4px;margin-top:12px">我想進一步了解的問題：</div>
+        <div class="ws-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S18: Action Pledge -->
+<section class="slide" id="slide-pledge">
+  <span class="slide-num">18/20</span>
+  <div class="slide-body">
+    <h2>行動承諾</h2>
+    <div class="ws-frame">
+      <div class="ws-title">我的生物多樣性行動承諾</div>
+      <div style="font-size:1rem;color:var(--text);margin-bottom:16px">我，＿＿＿＿＿，承諾在未來一個月內：</div>
+      <div class="ws-lines">
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+      </div>
+      <div style="margin-top:20px;font-size:.9rem;color:var(--muted)">日期：＿＿＿ 年 ＿＿ 月 ＿＿ 日 &nbsp;&nbsp; 簽名：＿＿＿＿＿＿</div>
+    </div>
+  </div>
+</section>
+
+<!-- S19: Hope Frame -->
+<section class="slide" id="slide-hope">
+  <span class="slide-num">19/20</span>
+  <div class="slide-body">
+    <h2>希望框架：自然與人類共存的未來</h2>
+    <div class="data-card">
+      <div class="dc-label">積極案例</div>
+      <div class="dc-fact">哥斯大黎加在 1980-2000 年間森林覆蓋率從 21% 回升至 52%，透過生態系服務付費（PES）機制實現</div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">願景建構</div>
+      <div class="ac-task">如果 2030 年台灣成功實現高品質保護目標，你的社區會有什麼改變？描述你希望看到的景象。</div>
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">2030 願景描述</div>
+      <div class="ws-lines">
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S20: Summary -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <span class="slide-num">20/20</span>
+  <div class="slide-body">
+    <h2 style="color:var(--beh)">三個關鍵概念</h2>
+    <div class="summary-keys">
+      <div class="summary-key">
+        <div class="sk-word">30×30</div>
+        <div class="sk-desc">全球 2030 年保護 30% 陸地與海洋的目標，品質與面積同等重要</div>
+      </div>
+      <div class="summary-key">
+        <div class="sk-word">環境正義</div>
+        <div class="sk-desc">保護行動必須兼顧生態有效性與原住民族、在地社群的權益</div>
+      </div>
+      <div class="summary-key">
+        <div class="sk-word">公民行動</div>
+        <div class="sk-desc">個人、社區與公民社會組織都是推動生物多樣性保護的重要力量</div>
+      </div>
+    </div>
+    <p style="margin-top:30px"><a href="lesson_plan.html" style="color:var(--accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / 20</span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換・捲動換頁</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  if (!slides.length || !cur) return;
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

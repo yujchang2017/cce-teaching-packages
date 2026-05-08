@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的大自然朋友 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #15803d;
+    --c-accent-soft: #dcfce7;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text);
+    line-height: 1.6;
+    margin: 0;
+    background: #fff;
+  }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .question-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 30px 0; }
+  .question-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px; font-size: 1.15rem; text-align: center; color: var(--c-text); position: relative; }
+  .question-card .q-num { position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px; background: var(--c-bg); max-width: 700px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  .placeholder { border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center; }
+  .placeholder .ph-tag { font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px; }
+  .placeholder .ph-title { font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px; }
+  .placeholder .ph-data { font-size: 1.1rem; margin: 14px 0; }
+  .placeholder .ph-note { font-size: 0.85rem; color: var(--c-muted); margin-top: 12px; }
+  .emoji-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 18px; margin: 24px 0; }
+  .emoji-card { background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 12px; padding: 18px 12px; text-align: center; }
+  .emoji-card .icon { font-size: 3rem; }
+  .emoji-card .label { margin-top: 8px; font-weight: 600; color: var(--c-text); }
+  .emoji-card .desc { font-size: 0.85rem; color: var(--c-muted); margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">我的大自然朋友 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>我的大自然朋友</h2>
+    <p class="subtitle">小松鼠可可帶你拜訪大自然的好朋友</p>
+    <svg viewBox="0 0 500 220" width="500" style="margin: 20px 0;">
+      <ellipse cx="250" cy="200" rx="220" ry="14" fill="#bbf7d0"/>
+      <rect x="240" y="120" width="20" height="80" fill="#92400e"/>
+      <ellipse cx="250" cy="120" rx="80" ry="60" fill="#16a34a"/>
+      <ellipse cx="200" cy="100" rx="50" ry="40" fill="#22c55e"/>
+      <ellipse cx="300" cy="100" rx="50" ry="40" fill="#22c55e"/>
+      <circle cx="120" cy="80" r="22" fill="#fbbf24"/>
+      <g fill="#f97316">
+        <circle cx="380" cy="180" r="14"/>
+        <ellipse cx="380" cy="170" rx="6" ry="10"/>
+        <circle cx="376" cy="180" r="2" fill="#1f2937"/>
+        <circle cx="384" cy="180" r="2" fill="#1f2937"/>
+      </g>
+      <text x="100" y="200" font-size="20">🌸</text>
+      <text x="160" y="200" font-size="20">🦋</text>
+      <text x="420" y="100" font-size="20">🐦</text>
+    </svg>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-friends">
+  <div class="slide-tag">起點</div>
+  <h2>大自然裡面有誰?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.1rem; color: var(--c-muted);">
+      你看到幾種不一樣的朋友?
+    </p>
+    <div class="emoji-grid">
+      <div class="emoji-card"><div class="icon">🐻</div><div class="label">動物</div><div class="desc">熊、鳥、蝴蝶</div></div>
+      <div class="emoji-card"><div class="icon">🌳</div><div class="label">植物</div><div class="desc">花、草、樹</div></div>
+      <div class="emoji-card"><div class="icon">🐟</div><div class="label">水裡朋友</div><div class="desc">魚、螃蟹</div></div>
+      <div class="emoji-card"><div class="icon">🌬️</div><div class="label">大自然</div><div class="desc">風、水、陽光</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 24px;">
+      <strong style="color: var(--c-accent);">我們也是大自然的一份子!</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>大自然的好朋友</h2>
+    <p class="subtitle">認識臺灣的特別寶貝</p>
+  </div>
+</section>
+
+<!-- 4. 暖身歌謠 -->
+<section class="slide" id="slide-warmup">
+  <div class="slide-tag">活動一・步驟 1</div>
+  <h2>暖身歌謠《大自然好朋友》</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">♪</div>小花</div>
+      <div class="question-card"><div class="q-num">♪</div>小草</div>
+      <div class="question-card"><div class="q-num">♪</div>小蟲蟲</div>
+      <div class="question-card"><div class="q-num">♪</div>大家是好朋友~</div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 30px; color: var(--c-accent);">
+      <strong>跟老師一起拍手唱、比手勢</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 5. 臺灣特有種 -->
+<section class="slide" id="slide-endemic">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>臺灣的特別寶貝</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="placeholder">
+        <div class="ph-tag">圖表佔位</div>
+        <div class="ph-title">[此處放:臺灣特有種大禮盒插畫]</div>
+        <div class="ph-data"><strong>關鍵數據:</strong>臺灣有 4000+ 種植物,1000+ 種「只有臺灣才有」</div>
+        <div class="ph-note">📌 示意圖待補繪 — 大禮盒打開,跑出黑熊、藍鵲、獼猴、蝴蝶蘭、油桐花</div>
+      </div>
+      <figcaption>臺灣像一個大寶盒,裡面藏著只有這裡才有的特別朋友</figcaption>
+    </figure>
+    <div class="emoji-grid" style="margin-top: 20px;">
+      <div class="emoji-card"><div class="icon">🐻</div><div class="label">臺灣黑熊</div><div class="desc">胸前 V 字</div></div>
+      <div class="emoji-card"><div class="icon">🦜</div><div class="label">臺灣藍鵲</div><div class="desc">長尾巴</div></div>
+      <div class="emoji-card"><div class="icon">🐒</div><div class="label">臺灣獼猴</div><div class="desc">山上家族</div></div>
+      <div class="emoji-card"><div class="icon">🌸</div><div class="label">蝴蝶蘭</div><div class="desc">花中皇后</div></div>
+      <div class="emoji-card"><div class="icon">🌼</div><div class="label">油桐花</div><div class="desc">五月雪</div></div>
+    </div>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://en.wikipedia.org/wiki/Biodiversity_of_Taiwan" target="_blank" rel="noopener">維基百科 — 臺灣的生物多樣性</a>
+  </div>
+</section>
+
+<!-- 6. 螢火蟲 -->
+<section class="slide" id="slide-fireflies">
+  <div class="slide-tag">活動一・補充</div>
+  <h2>臺灣的螢火蟲小星星</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="placeholder">
+        <div class="ph-tag">圖表佔位</div>
+        <div class="ph-title">[此處放:夜空螢火蟲插畫]</div>
+        <div class="ph-data"><strong>關鍵數據:</strong>臺灣有 65 種螢火蟲,全世界第 3 多!</div>
+        <div class="ph-note">📌 示意圖待補繪 — 黑色夜空 + 黃色光點,像星星掉到地上</div>
+      </div>
+      <figcaption>晚上山裡的小光點,就是臺灣的 65 種螢火蟲</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px; color: var(--c-accent);">
+      <strong>全班眨眼睛 + 雙手一開一合,扮演小小發光螢火蟲!</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://en.wikipedia.org/wiki/Biodiversity_of_Taiwan" target="_blank" rel="noopener">維基百科 — 臺灣的生物多樣性</a>
+  </div>
+</section>
+
+<!-- 7. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>森林讓我好舒服</h2>
+    <p class="subtitle">用五感認識大自然</p>
+  </div>
+</section>
+
+<!-- 8. 臺灣一半都是森林 -->
+<section class="slide" id="slide-forest55">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>臺灣一半都是綠綠的森林!</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="placeholder">
+        <div class="ph-tag">圖表佔位</div>
+        <div class="ph-title">[此處放:臺灣形狀餅圖]</div>
+        <div class="ph-data"><strong>關鍵數據:</strong>森林佔臺灣面積約 55%(比一半還多)</div>
+        <div class="ph-note">📌 示意圖待補繪 — 臺灣形狀,一半綠色森林、一半其他</div>
+      </div>
+      <figcaption>一半的臺灣,都穿著綠綠的森林衣服</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      <strong style="color: var(--c-accent);">全班張開雙手當森林,輕輕搖,像樹被風吹~</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://en.wikipedia.org/wiki/Biodiversity_of_Taiwan" target="_blank" rel="noopener">維基百科 — 臺灣的生物多樣性</a> ・
+    <a href="https://www.forest.gov.tw/" target="_blank" rel="noopener">行政院農業部林業及自然保育署</a>
+  </div>
+</section>
+
+<!-- 9. 五感體驗 -->
+<section class="slide" id="slide-five-senses">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>聽聽大自然在說話</h2>
+  <div class="slide-body">
+    <div class="emoji-grid">
+      <div class="emoji-card" style="border-color: #2563eb;"><div class="icon">👃</div><div class="label">聞</div><div class="desc">深呼吸 3 次</div></div>
+      <div class="emoji-card" style="border-color: #16a34a;"><div class="icon">✋</div><div class="label">摸</div><div class="desc">摸樹皮</div></div>
+      <div class="emoji-card" style="border-color: #f59e0b;"><div class="icon">👂</div><div class="label">聽</div><div class="desc">鳥叫風聲</div></div>
+      <div class="emoji-card" style="border-color: #db2777;"><div class="icon">👀</div><div class="label">看</div><div class="desc">最美的葉子</div></div>
+      <div class="emoji-card" style="border-color: #8b5cf6;"><div class="icon">🗣️</div><div class="label">說</div><div class="desc">我的感覺</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      <strong>大自然在說話:</strong>嘰嘰、呼呼、嘩嘩、唧唧
+    </p>
+  </div>
+</section>
+
+<!-- 10. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>地球生日派對</h2>
+    <p class="subtitle">慶祝 4 月 22 日世界地球日</p>
+  </div>
+</section>
+
+<!-- 11. 4/22 地球日 -->
+<section class="slide" id="slide-earthday">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>4 月 22 日 — 地球的生日!</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="placeholder">
+        <div class="ph-tag">圖表佔位</div>
+        <div class="ph-title">[此處放:地球戴生日帽插畫]</div>
+        <div class="ph-data"><strong>關鍵日子:</strong>4/22 世界地球日 ・ 5/22 生物多樣性日</div>
+        <div class="ph-note">📌 示意圖待補繪 — 地球戴生日帽,蛋糕寫 4/22,周圍有花、樹、動物禮物</div>
+      </div>
+      <figcaption>每年 4 月 22 日,全世界一起謝謝地球</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px; color: var(--c-accent);">
+      <strong>全班一起唱「生日快樂」給地球,比心給地球~</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.un.org/en/observances/earth-day" target="_blank" rel="noopener">聯合國 — 國際地球母親日</a> ・
+    <a href="https://www.cbd.int/biodiversity-day" target="_blank" rel="noopener">生物多樣性公約 — 國際生物多樣性日</a>
+  </div>
+</section>
+
+<!-- 12. 愛地球從小事開始 -->
+<section class="slide" id="slide-keeper">
+  <div class="slide-tag">活動二・步驟 3 ・活動三・延伸</div>
+  <h2>愛地球從小事開始</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 12px;">
+      在家、在學校、在社區,每個人都能出力!
+    </p>
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>家 庭</h4>
+        <ul>
+          <li>關燈、拔插頭</li>
+          <li>自己帶水壺</li>
+          <li>少吃 1 餐肉</li>
+          <li>幫家裡植物澆水</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>學 校</h4>
+        <ul>
+          <li>校園自然角</li>
+          <li>不亂丟垃圾</li>
+          <li>當「自然小隊長」</li>
+          <li>地球日卡片牆</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>社 區</h4>
+        <ul>
+          <li>家庭撿垃圾任務</li>
+          <li>假日森林散步</li>
+          <li>4/22 一起做 1 件愛地球的事</li>
+          <li>不欺負小動物</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13. 我的地球愛心卡 -->
+<section class="slide" id="slide-pledge">
+  <div class="slide-tag">活動三・步驟 3 ・學習單(投影版)</div>
+  <h2>我的地球愛心卡</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      在卡片上畫你最愛的動植物,寫或畫「我會 ___ 保護你」。
+    </p>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">我最愛的動物 / 植物是:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我會 ___ 保護你:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我這週可以做的小行動:</span>
+        <span class="blank"></span>
+      </div>
+      <hr style="margin: 18px 0; border: 0; border-top: 1px dashed var(--c-border);">
+      <div class="row">
+        <span class="lbl">大自然小隊長簽名:</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 14. 三關鍵字總結 -->
+<section class="slide" id="slide-bye">
+  <div class="slide-tag">總結</div>
+  <h2>三個小約定,記在心裡</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">朋友</div>
+        <div class="desc">動物、植物、我們<br>都是大自然好朋友</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">感受</div>
+        <div class="desc">到森林走一走<br>身體會舒服</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">行動</div>
+        <div class="desc">4/22 地球日<br>每個人都能愛地球</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      可可再見,大自然再見~<br>
+      <strong style="color: var(--c-accent);">回家做三件事:散步、澆水、撿 3 個垃圾。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">14</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

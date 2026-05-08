@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>永續飲食 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border);
+    border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em;
+    background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .question-cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px; margin: 30px 0;
+  }
+  .question-card {
+    background: var(--c-bg); border: 2px solid var(--c-accent);
+    border-radius: 12px; padding: 24px; font-size: 1.15rem; text-align: center;
+    color: var(--c-text); position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%; font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 {
+    margin: 0 0 10px; font-size: 1.15rem; text-align: center;
+    padding-bottom: 8px; border-bottom: 1px dashed var(--c-border);
+  }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card {
+    text-align: center; padding: 30px 20px; border-radius: 16px;
+    background: var(--c-bg); border: 3px solid;
+  }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .ws-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1.05rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 14px 16px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px);
+    height: 48px;
+  }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  .data-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px; margin: 20px 0;
+  }
+  .data-card {
+    background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px;
+    padding: 18px; text-align: center;
+  }
+  .data-card .v { font-size: 2rem; font-weight: 800; color: var(--c-accent); margin: 4px 0; }
+  .data-card .lbl { font-size: 0.95rem; color: var(--c-muted); }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">永續飲食 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>從我的便當,到地球的餐桌</h2>
+    <p class="subtitle">永續飲食｜國中 13–15 歲</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>四節課,四個大問題</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>我的便當對地球做了什麼?</div>
+      <div class="question-card"><div class="q-num">2</div>地球餐桌長什麼樣?</div>
+      <div class="question-card"><div class="q-num">3</div>誰該負責?</div>
+      <div class="question-card"><div class="q-num">4</div>我們學校能做什麼?</div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      每天 <strong style="color: var(--c-warn);">210 億頓飯</strong>,你的選擇是其中一份
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>我的便當在「哇」什麼?</h2>
+    <p class="subtitle">食物的全球足跡</p>
+  </div>
+</section>
+
+<!-- 4. 暖身投票 -->
+<section class="slide" id="slide-vote">
+  <div class="slide-tag">活動一・步驟 1</div>
+  <h2>哪一份便當最永續?</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam"><h4>A 牛肉丼</h4><p style="text-align: center; font-size: 2.5rem; margin: 10px 0;">🥩</p></div>
+      <div class="col-card sch"><h4>B 雞腿便當</h4><p style="text-align: center; font-size: 2.5rem; margin: 10px 0;">🍗</p></div>
+      <div class="col-card com"><h4>C 豆腐排</h4><p style="text-align: center; font-size: 2.5rem; margin: 10px 0;">🥗</p></div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 30px; color: var(--c-accent);">
+      <strong>憑直覺投票</strong>,先記住你的選擇 — 結束時我們會回頭看
+    </p>
+  </div>
+</section>
+
+<!-- 5. dp1 食物 26% -->
+<section class="slide" id="slide-dp1">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>食物佔全球溫室氣體 26%</h2>
+  <div class="slide-body">
+    <div class="data-grid">
+      <div class="data-card"><div class="lbl">全球溫室氣體</div><div class="v">26%</div><div class="lbl">來自食物系統</div></div>
+      <div class="data-card"><div class="lbl">地球可居地</div><div class="v">50%</div><div class="lbl">被農業使用</div></div>
+      <div class="data-card"><div class="lbl">畜牧占農地</div><div class="v">75%</div><div class="lbl"></div></div>
+      <div class="data-card"><div class="lbl">淡水抽取</div><div class="v">70%</div><div class="lbl">用在農業</div></div>
+    </div>
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center; margin-top: 20px;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:全球 GHG 部門圓餅圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵概念:</strong>每吃一口,牽動氣候、土地、水三個地球系統</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>Poore & Nemecek(2018, Science)— 119 國 38,700 座農場</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://ourworldindata.org/environmental-impacts-of-food" target="_blank" rel="noopener">數據看世界 — 食物的環境影響</a>
+  </div>
+</section>
+
+<!-- 6. dp3 蛋白質等量 -->
+<section class="slide" id="slide-dp3">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>同樣 100g 蛋白質,差 38 倍</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:蛋白質等量碳足跡橫條圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>每 100g 蛋白質 — 牛肉 25 / 雞肉 4.3 / 豆腐 1.6 / 豆類 0.65 公斤 CO₂e</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>「公平單位」是資料詮釋的關鍵</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      牛是反芻動物 → 腸道發酵產生甲烷;甲烷 100 年暖化效應 ≈ CO₂ 的 28 倍
+    </p>
+    <p style="text-align: center; font-size: 1rem; margin-top: 12px; color: var(--c-muted);">
+      <strong>開放延伸:</strong>若用「每公斤食物」而非「每 100g 蛋白質」,結果會怎麼變?哪種單位更公平?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://ourworldindata.org/environmental-impacts-of-food" target="_blank" rel="noopener">Poore & Nemecek 2018;數據看世界</a>
+  </div>
+</section>
+
+<!-- 7. 迷思 在地 -->
+<section class="slide" id="slide-myth-local">
+  <div class="slide-tag">活動一・步驟 4 ・迷思澄清</div>
+  <h2>吃在地一定比進口低碳?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:食物碳足跡組成餅圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>運輸佔總碳足跡僅約 10%,生產方式才是主因</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>食物里程 ≠ 碳足跡</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      搭船從紐西蘭運來的蘋果,可能比本地溫室蘋果還低碳。<br>
+      <strong style="color: var(--c-accent);">支持在地有經濟、文化、糧食安全的理由,但減碳要看全生命週期。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 8. 系統思考 -->
+<section class="slide" id="slide-system">
+  <div class="slide-tag">活動一・步驟 5</div>
+  <h2>把「吃」放進系統圖</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:吃 — 食物系統圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵節點:</strong>氣候 / 生物多樣性 / 水 / 健康 / 就業 / 文化 / 運輸 / 包裝</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>看見連結,而不是切片</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>小組任務:</strong>用便利貼畫一張系統圖,至少 6 個節點 + 3 條因果箭頭
+    </p>
+  </div>
+</section>
+
+<!-- 9. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>從餐桌到地球餐桌</h2>
+    <p class="subtitle">EAT-Lancet 與臺灣現實</p>
+  </div>
+</section>
+
+<!-- 10. dp2 EAT-Lancet -->
+<section class="slide" id="slide-dp2">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>EAT-Lancet 行星健康飲食</h2>
+  <div class="slide-body">
+    <div class="data-grid">
+      <div class="data-card"><div class="lbl">每年可預防</div><div class="v">1,100 萬</div><div class="lbl">人過早死亡</div></div>
+      <div class="data-card"><div class="lbl">紅肉與糖須減</div><div class="v">50%+</div><div class="lbl"></div></div>
+      <div class="data-card"><div class="lbl">蔬果、堅果、豆類</div><div class="v">×2</div><div class="lbl">需倍增</div></div>
+    </div>
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center; margin-top: 20px;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:行星健康飲食盤示意]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>核心:</strong>蔬果、全穀、豆類、堅果為主,紅肉與糖大幅減量</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>2019 年 37 位科學家的共識報告</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1rem; margin-top: 16px; color: var(--c-muted);">
+      <strong>開放延伸:</strong>比對自家一週晚餐,最接近與最偏離的是哪一天?為什麼?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://eatforum.org/eat-lancet-commission/eat-lancet-commission-summary-report/" target="_blank" rel="noopener">EAT-Lancet 委員會摘要報告</a>
+  </div>
+</section>
+
+<!-- 11. dp5 臺灣自給率 -->
+<section class="slide" id="slide-dp5">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>臺灣的餐桌數字</h2>
+  <div class="slide-body">
+    <div class="data-grid">
+      <div class="data-card"><div class="lbl">糧食自給率(熱量計)</div><div class="v">~31%</div><div class="lbl">2022–2023</div></div>
+      <div class="data-card"><div class="lbl">7 成熱量</div><div class="v">進口</div><div class="lbl">糧食安全議題</div></div>
+      <div class="data-card"><div class="lbl">1 公斤牛肉</div><div class="v">36.4 kg</div><div class="lbl">CO₂ 排放</div></div>
+      <div class="data-card"><div class="lbl">每日不吃肉</div><div class="v">−7 kg</div><div class="lbl">CO₂</div></div>
+    </div>
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center; margin-top: 20px;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:臺灣糧食自給率歷年趨勢圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵問題:</strong>颱風、戰爭或國際糧價波動,誰先餓?</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>連結兩議題:糧食安全 + 氣候減排</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1rem; margin-top: 16px; color: var(--c-muted);">
+      <strong>開放延伸:</strong>若把自給率拉回 40%,你覺得最該保障哪 3 項作物?為什麼?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://www.moa.gov.tw/" target="_blank" rel="noopener">中華民國農業部 糧食供需年報</a> ・ <a href="https://co2.ftis.org.tw/pageA3_2.asp" target="_blank" rel="noopener">教育部節能減碳資訊平臺</a>
+  </div>
+</section>
+
+<!-- 12. 南方代價 -->
+<section class="slide" id="slide-global-cost">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>南方國家的代價</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:亞馬遜雨林砍伐 + 飼料作物外銷示意]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵概念:</strong>亞馬遜每年因黃豆與牛肉產業失去數千平方公里森林</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>食物公義(Food Justice)議題</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>同理寫作:</strong>對遠方受影響的農民,寫下一句你想說的話。
+    </p>
+  </div>
+  <div class="slide-source">
+    參考:<a href="https://www.greenpeace.org/taiwan/update/33645/" target="_blank" rel="noopener">綠色和平台灣 — 飲食系列動畫</a>(map.csv 第 222 列)
+  </div>
+</section>
+
+<!-- 13. dp7 食物銀行 -->
+<section class="slide" id="slide-dp7">
+  <div class="slide-tag">活動三・步驟 4</div>
+  <h2>剩食補位:食物銀行</h2>
+  <div class="slide-body">
+    <div class="data-grid">
+      <div class="data-card"><div class="lbl">2017 安得烈累計轉送</div><div class="v">206</div><div class="lbl">公噸剩食</div></div>
+      <div class="data-card"><div class="lbl">市價</div><div class="v">4,300</div><div class="lbl">萬元</div></div>
+      <div class="data-card"><div class="lbl">幫助</div><div class="v">21 萬</div><div class="lbl">人次</div></div>
+    </div>
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center; margin-top: 20px;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:食物銀行運作流程示意]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>反思題:</strong>食物銀行是美好的補位,還是制度不完善的替代?</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>政府、市場、公民社會三元治理</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://andrew.org.tw/" target="_blank" rel="noopener">安得烈慈善協會</a>
+  </div>
+</section>
+
+<!-- 14. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>誰來負責?</h2>
+    <p class="subtitle">永續飲食的治理兩難</p>
+  </div>
+</section>
+
+<!-- 15. 倫理兩難 紅肉碳稅 -->
+<section class="slide" id="slide-dilemma">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>紅肉課碳稅,你贊成嗎?</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>贊 成</h4>
+        <ul>
+          <li>外部成本內部化</li>
+          <li>引導行為</li>
+          <li>促進健康</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>反 對</h4>
+        <ul>
+          <li>懲罰低收入家庭</li>
+          <li>干預飲食自由</li>
+          <li>衝擊畜牧業</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>折 衷</h4>
+        <ul>
+          <li>稅收回饋農民轉型</li>
+          <li>補貼蔬果</li>
+          <li>分階段實施</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      <strong>「好答案」的要件:</strong>是否考慮健康、自由、公平、產業四面?是否有資料支持?是否聆聽另一方?
+    </p>
+    <p style="text-align: center; font-size: 1rem; margin-top: 12px; color: var(--c-muted);">
+      <strong>開放延伸:</strong>除了課稅,還有哪些政策工具?(補貼、標示、教育)
+    </p>
+  </div>
+</section>
+
+<!-- 16. 四角色 -->
+<section class="slide" id="slide-roles">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>四角色協商:校園每週一蔬食日</h2>
+  <div class="slide-body">
+    <div class="three-col" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="col-card fam">
+        <h4>政 府</h4>
+        <p style="margin: 0; font-size: 0.95rem;">公衛、淨零、產業考量;政策工具與配套</p>
+      </div>
+      <div class="col-card sch">
+        <h4>畜牧農民</h4>
+        <p style="margin: 0; font-size: 0.95rem;">產業生計、轉型援助、文化價值</p>
+      </div>
+      <div class="col-card com">
+        <h4>家 長</h4>
+        <p style="margin: 0; font-size: 0.95rem;">營養擔憂、家庭預算、文化習慣</p>
+      </div>
+      <div class="col-card fam">
+        <h4>學生代表</h4>
+        <p style="margin: 0; font-size: 0.95rem;">氣候未來、口味偏好、選擇自由</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      10 分鐘協商,目標是<strong style="color: var(--c-accent);">產出一個四方都能接受的方案</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 17. 迷思 有機 -->
+<section class="slide" id="slide-myth-organic">
+  <div class="slide-tag">活動三・步驟 3 ・迷思澄清</div>
+  <h2>有機 = 永續?素食 = 永續?</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>「有機」</h4>
+        <p style="font-size: 0.95rem;">減少化肥農藥對土壤好,但單位產量低 → 需更多土地;若砍森林換有機,氣候帳虧大</p>
+      </div>
+      <div class="col-card sch">
+        <h4>「素食」</h4>
+        <p style="font-size: 0.95rem;">大量進口加工素料、反季節蔬果可能更高碳;重點是<strong>全食物、當季、在地、少浪費</strong></p>
+      </div>
+      <div class="col-card com">
+        <h4>「個人不重要」</h4>
+        <p style="font-size: 0.95rem;">高所得族群人均紅肉減半,可顯著降低全球 GHG / 土地 / 水壓力 — 集體尺度有政策意義</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      永續是<strong style="color: var(--c-accent);">光譜</strong>,不是二選一的標章
+    </p>
+  </div>
+</section>
+
+<!-- 18. 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>我能做什麼?</h2>
+    <p class="subtitle">WSA 行動方案設計</p>
+  </div>
+</section>
+
+<!-- 19. 小內閣 -->
+<section class="slide" id="slide-cabinet">
+  <div class="slide-tag">活動四・步驟 2</div>
+  <h2>班級永續飲食小內閣</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 16px;">
+      學生不是配角,是共同治理者
+    </p>
+    <div class="three-col" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="col-card fam">
+        <h4>菜單長</h4>
+        <ul>
+          <li>提建議</li>
+          <li>調查口味</li>
+          <li>蔬食日設計</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>採購長</h4>
+        <ul>
+          <li>調查在地食材</li>
+          <li>季節作物表</li>
+          <li>聯繫小農</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>廚餘長</h4>
+        <ul>
+          <li>每日秤重</li>
+          <li>製作折線圖</li>
+          <li>分析浪費熱點</li>
+        </ul>
+      </div>
+      <div class="col-card fam">
+        <h4>倡議長</h4>
+        <ul>
+          <li>對外溝通</li>
+          <li>家長通訊</li>
+          <li>校刊投稿</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      <strong>提案會送到學校永續委員會</strong> — 民主練習,不是辦家家酒
+    </p>
+  </div>
+</section>
+
+<!-- 20. WSA 四面向 -->
+<section class="slide" id="slide-wsa">
+  <div class="slide-tag">活動四・步驟 3</div>
+  <h2>WSA 四面向整合</h2>
+  <div class="slide-body">
+    <div class="three-col" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="col-card fam">
+        <h4>治 理</h4>
+        <ul>
+          <li>永續飲食委員會</li>
+          <li>學生代表</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>教 學</h4>
+        <ul>
+          <li>跨科主題週</li>
+          <li>自然 × 家政 × 社會</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>設 施</h4>
+        <ul>
+          <li>廚餘秤重</li>
+          <li>當季食材採購</li>
+          <li>蔬食日</li>
+        </ul>
+      </div>
+      <div class="col-card fam">
+        <h4>社 群</h4>
+        <ul>
+          <li>串聯在地小農</li>
+          <li>家長會 / 食物銀行</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      四個輪子同時轉,學校才真的在教永續
+    </p>
+  </div>
+</section>
+
+<!-- 21. 30 天計畫 -->
+<section class="slide" id="slide-project">
+  <div class="slide-tag">活動四・步驟 3 ・學習單(投影版)</div>
+  <h2>我們學校的 30 天計畫</h2>
+  <div class="slide-body">
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th style="width: 18%;">面向</th>
+          <th style="width: 32%;">第 1–10 天</th>
+          <th style="width: 25%;">第 11–20 天</th>
+          <th style="width: 25%;">第 21–30 天</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>治 理</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><th>教 學</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><th>設 施</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><th>社 群</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+    <p style="text-align: center; font-size: 1rem; margin-top: 12px;">
+      <strong>必填:</strong>引用 ≥ 3 個本課數據 ・ 至少 1 個可衡量指標(如:廚餘減 20%)
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 22. 後設認知 -->
+<section class="slide" id="slide-meta">
+  <div class="slide-tag">活動四・步驟 4</div>
+  <h2>後設認知 3-2-1</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>3 件學到的</h4>
+        <p style="text-align: center; color: var(--c-muted); margin: 8px 0 0;">最讓你驚訝的事實?</p>
+      </div>
+      <div class="col-card sch">
+        <h4>2 件想問的</h4>
+        <p style="text-align: center; color: var(--c-muted); margin: 8px 0 0;">還沒解決的疑惑?</p>
+      </div>
+      <div class="col-card com">
+        <h4>1 件要做的</h4>
+        <p style="text-align: center; color: var(--c-muted); margin: 8px 0 0;">這週要採取的行動?</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 30px; color: var(--c-accent);">
+      <strong>能覺察自己在想什麼,比學會新知識更重要</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 23. 結語 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字,一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">系統</div>
+        <div class="desc">食物 = 氣候 + 土地 + 水<br>佔全球 GHG 26%</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">公平</div>
+        <div class="desc">同營養不同代價<br>遠方的代價</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">投票</div>
+        <div class="desc">每一餐都是<br>對未來地球的投票</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      你不必成為完美的素食者,也不必放棄家鄉味<br>
+      <strong style="color: var(--c-accent);">有意識地吃、願意問問題、和同學家人一起行動。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">23</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+
+</body>
+</html>

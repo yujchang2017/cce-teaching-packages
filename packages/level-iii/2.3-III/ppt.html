@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生態系、生物多樣性與生態系服務 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border);
+    border-bottom-width: 2px; border-radius: 4px; font-family: monospace;
+    font-size: 0.8em; background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .slide.divider .subtitle { font-size: 1.1rem; color: var(--c-muted); margin-top: 8px; }
+
+  .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; margin: 20px 0; }
+  .stat-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 22px 18px; text-align: center; }
+  .stat-card .big-num { font-size: 2.8rem; font-weight: 900; color: var(--c-accent); line-height: 1.1; }
+  .stat-card .unit { font-size: 0.85rem; color: var(--c-muted); margin-top: 4px; }
+  .stat-card .label { font-size: 0.95rem; font-weight: 600; margin-top: 8px; }
+
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 22px; text-align: center; }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; color: var(--c-muted); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.3rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; font-size: 0.95rem; }
+  .compare-card .icon { font-size: 2.8rem; margin: 8px 0; }
+
+  .floor-grid { display: grid; grid-template-columns: 80px 1fr; gap: 6px 16px; margin: 16px 0; max-width: 720px; }
+  .floor-label {
+    background: var(--c-accent); color: #fff; font-weight: 700; font-size: 0.88rem;
+    border-radius: 6px; display: flex; align-items: center; justify-content: center;
+    padding: 10px 4px; text-align: center;
+  }
+  .floor-content { background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 6px; padding: 12px 16px; font-size: 1rem; }
+  .floor-content strong { color: var(--c-accent); }
+
+  .ws-table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 1rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 12px 14px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px); height: 44px; }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 28px 0; }
+  .key-card { text-align: center; padding: 28px 18px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.8rem; font-weight: 800; margin: 10px 0; }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 22px 28px; background: var(--c-bg); max-width: 680px; margin: 16px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 10px; margin: 14px 0; font-size: 1rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 26px; }
+
+  .checklist { list-style: none; padding: 0; margin: 12px 0; }
+  .checklist li { padding: 9px 0; border-bottom: 1px dashed var(--c-border); font-size: 1rem; }
+  .checklist li::before { content: "☐ "; margin-right: 6px; color: var(--c-accent); font-size: 1.1em; }
+
+  .debate-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 18px 0; }
+  .debate-card { border-radius: 12px; padding: 18px; }
+  .debate-card.pro { background: #dcfce7; border: 2px solid var(--c-beh); }
+  .debate-card.con { background: #fef9c3; border: 2px solid #ca8a04; }
+  .debate-card h4 { margin: 0 0 10px; font-size: 1rem; }
+  .debate-card.pro h4 { color: var(--c-beh); }
+  .debate-card.con h4 { color: #92400e; }
+  .debate-card ul { margin: 0; padding-left: 18px; font-size: 0.93rem; }
+  .debate-card li { margin: 5px 0; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">生態系、生物多樣性與生態系服務 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- ===== 封面 ===== -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content:center;">
+    <div style="font-size:0.9rem;color:var(--c-accent);letter-spacing:0.15em;margin-bottom:10px;">UNESCO 2.3-III ｜ 9-12 歲</div>
+    <h2>地球的百貨公司：<br>生態系服務</h2>
+    <p class="subtitle">每天你用的，大自然默默在提供</p>
+  </div>
+</section>
+
+<!-- ===== 大問題 ===== -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點大問</div>
+  <h2>今天我們要回答三個大問</h2>
+  <div class="slide-body">
+    <div class="stat-cards">
+      <div class="stat-card" style="border-color:var(--c-cog);">
+        <div style="font-size:2.2rem;">🫁</div>
+        <div class="label" style="color:var(--c-cog);">① 誰在幫地球製造氧氣？</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div style="font-size:2.2rem;">🏪</div>
+        <div class="label" style="color:var(--c-warn);">② 生態系到底給了我們什麼？</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div style="font-size:2.2rem;">💧</div>
+        <div class="label" style="color:var(--c-beh);">③ 這些資源是無限的嗎？</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.05rem;color:var(--c-muted);margin-top:20px;">下課前，我們一起回答這三個問題。</p>
+  </div>
+</section>
+
+<!-- ===== 活動一過場 ===== -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動一</div>
+    <h2>認識生態系服務</h2>
+    <p class="subtitle">從海洋、森林到台灣——自然給了我們什麼？</p>
+  </div>
+</section>
+
+<!-- ===== 海洋：兩口呼吸 ===== -->
+<section class="slide" id="slide-ocean">
+  <div class="slide-tag">活動一・數據 dp1</div>
+  <h2>每兩口呼吸，一口來自海洋</h2>
+  <div class="slide-body">
+    <div style="display:flex;align-items:center;gap:36px;flex-wrap:wrap;margin:16px 0;">
+      <div style="text-align:center;min-width:160px;">
+        <div style="font-size:5rem;font-weight:900;color:var(--c-accent);line-height:1;">50%</div>
+        <div style="font-size:0.95rem;color:var(--c-muted);margin-top:6px;">大氣氧氣來自<br>海洋浮游植物</div>
+      </div>
+      <div style="flex:1;min-width:240px;">
+        <p style="font-size:1.15rem;">海洋裡肉眼看不見的<strong>浮游植物</strong>，透過光合作用製造地球大氣中約一半的氧氣。</p>
+        <p style="font-size:1rem;color:var(--c-muted);">保護海洋 = 保護你的下一口空氣。</p>
+        <div style="font-size:1rem;background:var(--c-accent-soft);border-radius:8px;padding:12px 16px;margin-top:14px;">
+          <strong style="color:var(--c-accent);">想一想：</strong>什麼活動可能傷害海洋浮游植物？
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://oceanservice.noaa.gov/facts/ocean-oxygen.html" target="_blank" rel="noopener">NOAA National Ocean Service</a> ／ NASA Earth Observatory（NOAA/NASA, 2021-2024）</div>
+</section>
+
+<!-- ===== 全球森林 ===== -->
+<section class="slide" id="slide-forest">
+  <div class="slide-tag">活動一・數據 dp2</div>
+  <h2>地球的大冰箱：全球森林</h2>
+  <div class="slide-body">
+    <div class="stat-cards" style="margin-bottom:20px;">
+      <div class="stat-card">
+        <div class="big-num">6,620<span style="font-size:1.6rem;">億</span></div>
+        <div class="unit">公噸碳儲存量</div>
+        <div class="label">全球森林碳庫</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div class="big-num" style="color:var(--c-beh);">1/3</div>
+        <div class="unit">化石燃料 CO₂</div>
+        <div class="label">每年被森林吸收</div>
+      </div>
+    </div>
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:36px;background:var(--c-accent-soft);text-align:center;">
+        <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.3rem;color:var(--c-accent);font-weight:700;margin-bottom:10px;">[此處放：全球森林分佈熱力圖]</div>
+        <div style="font-size:1.05rem;margin:12px 0;"><strong>關鍵數據：</strong>儲碳 6,620 億公噸、年吸 1/3 化石燃料 CO₂</div>
+        <div style="font-size:0.85rem;color:var(--c-muted);margin-top:10px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>全球森林是最大陸地碳匯——砍一棵樹，會把多少碳釋放回大氣？</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.fao.org/forest-resources-assessment/2020/en/" target="_blank" rel="noopener">FAO Global Forest Resources Assessment 2020</a> ／ IPCC AR6</div>
+</section>
+
+<!-- ===== 台灣的肺 ===== -->
+<section class="slide" id="slide-taiwan">
+  <div class="slide-tag">活動一・數據 dp3</div>
+  <h2>台灣的肺：森林覆蓋 60.71%</h2>
+  <div class="slide-body">
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="big-num">60.71<span style="font-size:1.6rem;">%</span></div>
+        <div class="unit">國土森林覆蓋率</div>
+        <div class="label">全球前段班</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div class="big-num" style="color:var(--c-beh);">2,150<span style="font-size:1.5rem;">萬</span></div>
+        <div class="unit">公噸 CO₂ / 年</div>
+        <div class="label">全台年吸碳量<br>≈ 全國排放 7-8%</div>
+      </div>
+    </div>
+    <p style="font-size:1.05rem;margin-top:16px;">每走進一片山林，都是在向地球的大冰箱說謝謝。你上次進森林是什麼時候？</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.forest.gov.tw/" target="_blank" rel="noopener">農業部林業及自然保育署（2024）</a></div>
+</section>
+
+<!-- ===== 生態系服務百貨公司 ===== -->
+<section class="slide" id="slide-services">
+  <div class="slide-tag">活動一・概念投影</div>
+  <h2>生態系服務的百貨公司</h2>
+  <div class="slide-body">
+    <p style="color:var(--c-muted);margin:0 0 14px;">生態系就像一間百貨公司，全部「免費」——但只要我們不破壞它。</p>
+    <div class="floor-grid">
+      <div class="floor-label" style="background:var(--c-muted);">3F<br>支持</div>
+      <div class="floor-content"><strong>支持服務：</strong>光合作用、土壤形成、養分循環——讓其他樓層都能運作</div>
+      <div class="floor-label" style="background:var(--c-soc);">2F<br>文化</div>
+      <div class="floor-content"><strong>文化服務：</strong>美感體驗、心靈療癒、生態旅遊、知識傳承</div>
+      <div class="floor-label" style="background:var(--c-beh);">1F<br>調節</div>
+      <div class="floor-content"><strong>調節服務：</strong>氣候調節、授粉、淨水、防洪、病蟲害控制</div>
+      <div class="floor-label" style="background:var(--c-cog);">B1<br>物質</div>
+      <div class="floor-content"><strong>物質服務：</strong>木材、魚類、水果、乾淨的水、藥材——摸得到、拿得走</div>
+    </div>
+    <p style="font-size:1rem;color:var(--c-muted);margin-top:12px;">物質服務 vs 非物質服務，你平常更容易注意到哪一種？</p>
+  </div>
+</section>
+
+<!-- ===== 活動二過場 ===== -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動二</div>
+    <h2>授粉者與藍碳</h2>
+    <p class="subtitle">看不見的服務，卻是餐桌與氣候的守護者</p>
+  </div>
+</section>
+
+<!-- ===== 授粉者 ===== -->
+<section class="slide" id="slide-pollinator">
+  <div class="slide-tag">活動二・數據 dp4</div>
+  <h2>沒有蜜蜂，就沒有草莓冰淇淋</h2>
+  <div class="slide-body">
+    <div class="stat-cards" style="grid-template-columns:repeat(3,1fr);">
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div style="font-size:2rem;">🍓🍫☕</div>
+        <div class="big-num" style="font-size:2.2rem;">75%</div>
+        <div class="unit">糧食作物靠授粉者</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-cog);">
+        <div style="font-size:2rem;">💰</div>
+        <div class="big-num" style="font-size:1.5rem; line-height:1.3;">2,350-5,770<br>億</div>
+        <div class="unit">美元 / 年 授粉服務年值</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div style="font-size:2rem;">🐝🦋🪲</div>
+        <div class="label" style="color:var(--c-beh);">蜜蜂・蝴蝶・甲蟲<br>超市的隱形英雄</div>
+      </div>
+    </div>
+    <p style="font-size:1rem;margin-top:16px;">若授粉者消失：咖啡、巧克力、杏仁、蘋果——超市水果區會空掉一半。</p>
+    <div style="font-size:1rem;background:var(--c-accent-soft);border-radius:8px;padding:12px 16px;margin-top:12px;">
+      <strong style="color:var(--c-accent);">今天吃過哪些「被授粉」的食物？</strong>
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.ipbes.net/assessment-reports/pollinators" target="_blank" rel="noopener">IPBES Pollination Assessment 2016</a></div>
+</section>
+
+<!-- ===== 藍碳 ===== -->
+<section class="slide" id="slide-bluecarbon">
+  <div class="slide-tag">活動二・數據 dp5</div>
+  <h2>藍碳英雄：紅樹林的超能力</h2>
+  <div class="slide-body">
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="big-num">1,023</div>
+        <div class="unit">公噸碳 / 公頃 / 年</div>
+        <div class="label">是熱帶雨林的 3-5 倍！</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div class="big-num" style="color:var(--c-warn);">-35%</div>
+        <div class="unit">全球紅樹林已消失</div>
+        <div class="label">過去 50 年</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-soc);">
+        <div class="big-num" style="color:var(--c-soc);">680</div>
+        <div class="unit">公頃</div>
+        <div class="label">台灣現存紅樹林<br>（淡水·四草·高美）</div>
+      </div>
+    </div>
+    <p style="font-size:1rem;margin-top:16px;">紅樹林不只吸碳，還能<strong>擋海浪</strong>、<strong>養育幼魚</strong>——砍掉換魚塭，其實是賠本生意。</p>
+    <p style="font-size:1rem;color:var(--c-muted);">為什麼紅樹林吸碳這麼強？（提示：水下的土壤能長期鎖碳，即「藍碳」）</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.unep.org/explore-topics/oceans-seas/what-we-do/working-regional-seas/blue-carbon" target="_blank" rel="noopener">UNEP Blue Carbon</a> ／ Donato et al. 2011 / 林業署</div>
+</section>
+
+<!-- ===== 學習單：生態系服務配對 ===== -->
+<section class="slide" id="slide-ws-services">
+  <div class="slide-tag">活動二・學習單（投影版）</div>
+  <h2>生態系服務配對表</h2>
+  <div class="slide-body">
+    <p style="color:var(--c-muted);font-size:1rem;margin:0 0 12px;">把下方服務分類到百貨公司的樓層，並寫出一個台灣在地的例子。</p>
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>服務</th>
+          <th>百貨樓層（B1/1F/2F/3F）</th>
+          <th>台灣在地例子</th>
+          <th>如果沒有它……</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>紅樹林吸碳</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>蜜蜂授粉</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>森林淨水</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>珊瑚礁觀光</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>土壤微生物分解</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- ===== 活動三過場 ===== -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三</div>
+    <h2>資源有限——存款快見底了</h2>
+    <p class="subtitle">化石燃料與野生動物族群的倒數計時</p>
+  </div>
+</section>
+
+<!-- ===== 有限資源 ===== -->
+<section class="slide" id="slide-finite">
+  <div class="slide-tag">活動三・概念</div>
+  <h2>自然資源不是無限的</h2>
+  <div class="slide-body">
+    <div style="display:flex;align-items:center;gap:32px;flex-wrap:wrap;margin:16px 0;">
+      <div style="text-align:center;font-size:5rem;">🪣</div>
+      <div style="flex:1;min-width:240px;">
+        <p style="font-size:1.2rem;font-weight:600;">大水壺每次倒，總有一天會空。</p>
+        <p style="font-size:1.05rem;color:var(--c-muted);">礦產、化石燃料、地下水、漁業資源——每一樣都是<strong>有限的存款</strong>。</p>
+        <div style="font-size:1rem;background:#fef3c7;border-radius:8px;padding:12px 16px;margin-top:14px;">
+          <strong>UNESCO 核心觀念：</strong>只能取用利息（生態系再生量），不能花掉本金（存量）。
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 化石燃料年曆 ===== -->
+<section class="slide" id="slide-fossil">
+  <div class="slide-tag">活動三・數據 dp6</div>
+  <h2>化石燃料的倒數年曆</h2>
+  <div class="slide-body">
+    <div class="stat-cards">
+      <div class="stat-card" style="border-color:#374151;">
+        <div class="big-num" style="color:#374151;">139</div>
+        <div class="unit">年</div>
+        <div class="label">煤炭（以 2020 年速度）</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div class="big-num" style="color:var(--c-warn);">54</div>
+        <div class="unit">年</div>
+        <div class="label">石油</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-cog);">
+        <div class="big-num" style="color:var(--c-cog);">49</div>
+        <div class="unit">年</div>
+        <div class="label">天然氣</div>
+      </div>
+    </div>
+    <p style="font-size:1.1rem;margin-top:18px;text-align:center;">
+      如果你現在 11 歲，石油用完時你大約 <strong style="color:var(--c-warn);font-size:1.4rem;">65 歲</strong>。
+    </p>
+    <p style="text-align:center;font-size:0.95rem;color:var(--c-muted);margin-top:8px;">改用再生能源可以延長——但有限是事實。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.iea.org/" target="_blank" rel="noopener">BP Statistical Review 2022 ／ IEA</a></div>
+</section>
+
+<!-- ===== 野生動物存款簿 ===== -->
+<section class="slide" id="slide-wildlife">
+  <div class="slide-tag">活動三・數據 dp7</div>
+  <h2>野生鄰居的存款簿快見底了</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:#dc2626;">
+        <div class="label">1970 年 → 現在・全球</div>
+        <div style="font-size:4rem;font-weight:900;color:#dc2626;">-69%</div>
+        <p>野生脊椎動物族群<br>平均減幅</p>
+      </div>
+      <div class="compare-card" style="border-color:#b91c1c;">
+        <div class="label">淡水物種更嚴重</div>
+        <div style="font-size:4rem;font-weight:900;color:#b91c1c;">-83%</div>
+        <p>淡水野生動物族群減幅</p>
+      </div>
+    </div>
+    <p style="font-size:1.05rem;margin-top:14px;">
+      <strong>比喻：</strong>就像存款一直被提領，利息不夠用，連本金都快花光了。<br>生態系服務正在變弱，能提供給我們的好處也會減少。
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.worldwildlife.org/pages/living-planet-report-2022" target="_blank" rel="noopener">WWF 地球生命力報告 2022</a></div>
+</section>
+
+<!-- ===== 學習單：追蹤 ===== -->
+<section class="slide" id="slide-ws-track">
+  <div class="slide-tag">活動三・學習單（投影版）</div>
+  <h2>自然資源追蹤表</h2>
+  <div class="slide-body">
+    <p style="color:var(--c-muted);font-size:1rem;margin:0 0 12px;">今天你用過哪些來自大自然的東西？一起追蹤看看。</p>
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>物品 / 行為</th>
+          <th>來自哪種資源</th>
+          <th>這個資源有限嗎？</th>
+          <th>我可以少用嗎？</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>早餐的土司</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>騎車或坐公車</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>使用的水</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>你想加的一樣</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- ===== 活動四過場 ===== -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動四</div>
+    <h2>行動與承諾</h2>
+    <p class="subtitle">從授粉者小劇場到全校行動挑戰</p>
+  </div>
+</section>
+
+<!-- ===== 授粉者小劇場 ===== -->
+<section class="slide" id="slide-seed">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>授粉者小劇場：一條看不見的線</h2>
+  <div class="slide-body">
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin:24px 0;flex-wrap:wrap;font-size:1.05rem;">
+      <div style="background:#fef3c7;padding:16px 18px;border-radius:10px;text-align:center;min-width:110px;">
+        🐝<br><strong>蜜蜂</strong><br><span style="font-size:0.85rem;color:var(--c-muted);">花 3 分鐘<br>訪 20 朵花</span>
+      </div>
+      <div style="font-size:1.6rem;color:var(--c-muted);">→</div>
+      <div style="background:#dcfce7;padding:16px 18px;border-radius:10px;text-align:center;min-width:110px;">
+        🧑‍🌾<br><strong>農夫</strong><br><span style="font-size:0.85rem;color:var(--c-muted);">多收 1 籃蘋果</span>
+      </div>
+      <div style="font-size:1.6rem;color:var(--c-muted);">→</div>
+      <div style="background:#dbeafe;padding:16px 18px;border-radius:10px;text-align:center;min-width:110px;">
+        🧒<br><strong>你的便當</strong><br><span style="font-size:0.85rem;color:var(--c-muted);">多了一份水果</span>
+      </div>
+    </div>
+    <p style="font-size:1.1rem;text-align:center;">這條看不見的線，就是<strong style="color:var(--c-accent);">生態系服務</strong>。<br>它天天都在發生，我們只需要不破壞它。</p>
+    <p style="font-size:1rem;text-align:center;color:var(--c-muted);margin-top:8px;">接下來：在學習單上畫出你最喜歡食物背後的「生態服務鏈」。</p>
+  </div>
+</section>
+
+<!-- ===== 辯論 ===== -->
+<section class="slide" id="slide-debate">
+  <div class="slide-tag">活動四・步驟 2</div>
+  <h2>小辯論：要不要保護這片紅樹林？</h2>
+  <div class="slide-body">
+    <p style="color:var(--c-muted);font-size:0.95rem;margin:0 0 14px;">情境：附近要蓋新道路，需要砍掉一片紅樹林。你支持保護還是贊成開發？用今天學的數據說服別人。</p>
+    <div class="debate-cards">
+      <div class="debate-card pro">
+        <h4>✅ 支持保護紅樹林</h4>
+        <ul>
+          <li>每公頃年吸 1,023 公噸碳，是熱帶雨林 3-5 倍</li>
+          <li>養育幼魚，保護漁業資源</li>
+          <li>台灣現存僅 680 公頃，全球已失 35%</li>
+          <li>擋海浪、防止海岸侵蝕</li>
+        </ul>
+      </div>
+      <div class="debate-card con">
+        <h4>🤔 考慮開發建設</h4>
+        <ul>
+          <li>道路帶來交通便利與就業機會</li>
+          <li>可以在別處種樹補回來？</li>
+          <li>當地居民有發展需求</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:0.95rem;color:var(--c-muted);margin-top:10px;">兩組輪流說話 2 分鐘，再換邊。思考：「生態系服務的損失」能用錢算清楚嗎？</p>
+  </div>
+</section>
+
+<!-- ===== 學習單：承諾書 ===== -->
+<section class="slide" id="slide-ws-pledge">
+  <div class="slide-tag">活動四・步驟 3・學習單（投影版）</div>
+  <h2>全校行動挑戰書</h2>
+  <div class="slide-body">
+    <p style="text-align:center;font-size:1rem;color:var(--c-muted);">四項全勾，你就是「全校英雄」！</p>
+    <ul class="checklist">
+      <li>每人種一顆原生樹苗，連續照顧 4 週（我的植物日記）</li>
+      <li>做一個「昆蟲旅館」或「蜜源植物箱」給授粉者</li>
+      <li>減少一次性塑膠使用（計算省了幾公克垃圾）</li>
+      <li>每週至少一天「蔬食日」，並向家人說明原因</li>
+    </ul>
+    <div class="pledge-form" style="margin-top:16px;">
+      <div class="row"><span class="lbl">我選擇的行動是：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">我承諾從</span><span class="blank" style="max-width:80px;"></span><span class="lbl">起連續做</span><span class="blank" style="max-width:50px;"></span><span class="lbl">天</span></div>
+      <div class="row"><span class="lbl">承諾人簽名：</span><span class="blank"></span><span class="lbl">見證夥伴：</span><span class="blank"></span></div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- ===== 三關鍵字總結 ===== -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">服務</div>
+        <div class="desc">生態系是地球的百貨公司<br>物質・調節・文化・支持<br>全都「免費」——直到被破壞</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">有限</div>
+        <div class="desc">化石燃料、野生物種、紅樹林<br>都是正在減少的存款<br>1970 年來野生動物 -69%</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">行動</div>
+        <div class="desc">種樹、減塑、蔬食、授粉花園<br>每一個選擇都在<br>為地球存款</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.1rem;margin-top:22px;">
+      <strong style="color:var(--c-accent);">你的每一個選擇，都在支持或消耗地球的百貨公司。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">15</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+</body>
+</html>

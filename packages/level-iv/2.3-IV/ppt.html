@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生態系、生物多樣性與生態系服務 — 投影片</title>
+<style>
+  :root{--accent:#0f766e;--soft:#ccfbf1;--cog:#2563eb;--soc:#db2777;--beh:#16a34a;--warn:#ea580c;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--text);line-height:1.6;margin:0;background:#fff}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.95rem;font-weight:500;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--muted)}
+  .nav-indicator{font-family:monospace;color:var(--text)}
+  .nav-cur{color:var(--accent);font-weight:700}
+  .nav-total{color:var(--muted)}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--border);position:relative}
+  .slide-num{position:absolute;top:14px;right:20px;font-size:.8rem;font-family:monospace;color:var(--border)}
+  .slide h2{font-size:2rem;margin:0 0 20px;color:var(--text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  /* cover & divider */
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.8rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--accent);color:#fff;padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--accent);letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.4rem;color:var(--accent)}
+  .slide.divider .act-steps{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .act-step-chip{background:var(--soft);color:var(--accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  /* question slide */
+  .q-box{background:var(--soft);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.4rem;line-height:1.6;color:var(--accent);font-weight:600}
+  .q-sub{font-size:1.05rem;color:var(--muted);font-weight:400;margin-top:10px}
+  /* data card */
+  .data-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0;background:var(--bg)}
+  .data-card .dc-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;color:var(--muted);margin-bottom:8px}
+  .data-card .dc-fact{font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.5}
+  .data-card .dc-src{font-size:.85rem;color:var(--muted)}
+  .data-card .dc-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  /* activity card */
+  .act-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0}
+  .act-card .ac-badge{display:inline-block;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:4px;margin-bottom:12px;letter-spacing:.08em}
+  .act-card .ac-task{font-size:1.15rem;color:var(--text);line-height:1.6}
+  /* worksheet */
+  .ws-frame{border:2px dashed var(--accent);border-radius:12px;padding:28px 32px;margin:20px 0;background:#fff}
+  .ws-frame .ws-title{font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:14px}
+  .ws-lines{display:flex;flex-direction:column;gap:14px}
+  .ws-line{border-bottom:1.5px solid #d1d5db;height:28px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--border);padding:12px 14px;text-align:center}
+  .ws-table th{background:var(--soft);color:var(--accent);font-weight:700}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:52px}
+  /* pledge form */
+  .pledge-form{border:2px solid var(--accent);border-radius:12px;padding:28px 32px;margin:20px 0;background:#fff}
+  .pledge-form .pf-title{font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:18px;text-align:center}
+  .pledge-line{display:flex;align-items:baseline;gap:12px;margin:14px 0}
+  .pledge-line .pl-label{font-weight:600;white-space:nowrap;min-width:80px}
+  .pledge-line .pl-line{flex:1;border-bottom:1.5px solid #d1d5db;height:28px}
+  /* chart placeholder */
+  .chart-placeholder{border:2px dashed var(--accent);border-radius:12px;padding:40px;background:var(--soft);text-align:center;margin:20px 0}
+  .chart-placeholder .cp-label{font-size:.8rem;color:var(--muted);letter-spacing:.15em;margin-bottom:8px}
+  .chart-placeholder .cp-title{font-size:1.4rem;color:var(--accent);font-weight:700;margin-bottom:12px}
+  .chart-placeholder .cp-data{font-size:1.1rem;margin:14px 0}
+  .chart-placeholder .cp-note{font-size:.85rem;color:var(--muted);margin-top:12px}
+  /* highlight boxes */
+  .hl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:20px 0}
+  .hl-card{background:var(--soft);border-radius:10px;padding:18px 20px;text-align:center}
+  .hl-card .hc-num{font-size:2rem;font-weight:800;color:var(--accent);line-height:1}
+  .hl-card .hc-desc{font-size:.95rem;color:var(--text);margin-top:8px}
+  /* summary */
+  .summary-keys{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:28px}
+  .sk-chip{background:var(--soft);border:2px solid var(--accent);color:var(--accent);border-radius:24px;padding:10px 24px;font-size:1.1rem;font-weight:700}
+  /* source */
+  .slide-src{margin-top:auto;padding-top:12px;border-top:1px dashed var(--border);font-size:.8rem;color:var(--muted)}
+  .slide-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  a.ext{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  a.ext::after{content:" ↗";font-size:.8em;opacity:.7}
+  ul.bullet{padding-left:1.4em;margin:12px 0}
+  ul.bullet li{margin:8px 0;font-size:1.05rem}
+  .step-tag{display:inline-block;background:var(--accent);color:#fff;border-radius:4px;padding:2px 10px;font-size:.85rem;font-weight:700;margin-right:8px}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">生態系、生物多樣性與生態系服務 ｜ Level IV</span>
+</header>
+
+<main>
+
+<!-- ===== SLIDE 1: COVER ===== -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body">
+    <div class="level-tag">Level IV</div>
+    <h2>生態系、生物多樣性<br>與生態系服務</h2>
+    <p style="color:var(--muted);max-width:680px;font-size:1.05rem;margin-top:12px">當我們讓一種物種消失，究竟失去了什麼？生態系如何支撐地球上所有生命，包括我們人類？</p>
+  </div>
+</section>
+
+<!-- ===== SLIDE 2: BIG QUESTION ===== -->
+<section class="slide" id="slide-question">
+  <div class="slide-body">
+    <h2>大問題</h2>
+    <div class="q-box">
+      校園裡的一棵樹，為誰服務？
+      <div class="q-sub">——它提供樹蔭、淨化空氣、庇護鳥巢、儲存碳；但如果它消失了，會帶走什麼？</div>
+    </div>
+    <ul class="bullet">
+      <li>地球上約有 <strong>870 萬種</strong>生物，彼此相依構成生態系</li>
+      <li>生態系提供的服務是免費的，但往往到失去才被看見</li>
+      <li>今天，我們來解析這張看不見的「支持網」</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== SLIDE 3: ACTIVITY 1 DIVIDER ===== -->
+<section class="slide divider" id="slide-a1">
+  <div class="act-badge">活動一</div>
+  <h2>生態系的交響樂</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">物種卡抽牌</span>
+    <span class="act-step-chip">滅絕骨牌</span>
+    <span class="act-step-chip">關鍵數據</span>
+  </div>
+</section>
+
+<!-- ===== SLIDE 4: A1 — Global Biodiversity Crisis ===== -->
+<section class="slide" id="slide-a1-data">
+  <div class="slide-body">
+    <h2>物種消失的速度</h2>
+    <div class="hl-grid">
+      <div class="hl-card">
+        <div class="hc-num">100 萬+</div>
+        <div class="hc-desc">目前受滅絕威脅的物種數量<br><span style="font-size:.85rem;color:var(--muted)">聯合國生物多樣性與生態系服務政府間科學政策平台 2019</span></div>
+      </div>
+      <div class="hl-card">
+        <div class="hc-num">−69%</div>
+        <div class="hc-desc">1970–2018 年野生脊椎動物族群平均降幅<br><span style="font-size:.85rem;color:var(--muted)">世界自然基金會 2022</span></div>
+      </div>
+    </div>
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：地球生命力指數 1970–2018 趨勢圖]</div>
+        <div class="cp-data"><strong>關鍵數據：</strong>五十年內野生動物族群平均減少近七成，哺乳類、鳥類、魚類、爬蟲類、兩棲類均下降</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+      <figcaption style="font-size:.85rem;color:var(--muted);text-align:center;margin-top:6px">資料來源：世界自然基金會《地球生命力報告 2022》</figcaption>
+    </figure>
+  </div>
+  <div class="slide-src">資料：<a href="https://www.ipbes.net/global-assessment" target="_blank">IPBES 全球評估 2019</a> ／ <a href="https://www.worldwildlife.org/pages/living-planet-report-2022" target="_blank">WWF 地球生命力報告 2022</a></div>
+</section>
+
+<!-- ===== SLIDE 5: A1 — Symphony Simulation ===== -->
+<section class="slide" id="slide-a1-sim">
+  <div class="slide-body">
+    <h2>交響樂抽牌模擬</h2>
+    <div class="act-card">
+      <div class="ac-badge">小組活動</div>
+      <div class="ac-task">
+        <ol style="padding-left:1.4em;margin:0">
+          <li>每人抽一張「物種卡」，代表一種生態系成員（植物、昆蟲、鳥類、哺乳類、分解者）</li>
+          <li>用繩子/毛線建立「誰吃誰、誰依賴誰」的食物網連結</li>
+          <li>老師隨機移除一張卡，各組分析：<strong>誰跟著斷線？</strong></li>
+          <li>討論：關鍵種消失後，哪些生態系服務跟著崩潰？</li>
+        </ol>
+      </div>
+    </div>
+    <p style="color:var(--muted);font-size:.95rem">💡 提示：授粉者（蜜蜂）、分解者（真菌）通常是最關鍵的隱形成員</p>
+  </div>
+</section>
+
+<!-- ===== SLIDE 6: A1 — Taiwan Endemic Species ===== -->
+<section class="slide" id="slide-tw-endemic">
+  <div class="slide-body">
+    <h2>臺灣的生態系寶庫</h2>
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：臺灣特有種比例圓餅圖]</div>
+        <div class="cp-data"><strong>關鍵數據：</strong>臺灣維管束植物約 30% 為特有種；臺灣黑熊、臺灣藍鵲、石虎、臺灣雲豹（已滅絕）均為特有種</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+      <figcaption style="font-size:.85rem;color:var(--muted);text-align:center;margin-top:6px">資料來源：農業部生物多樣性資源入口網</figcaption>
+    </figure>
+    <div class="data-card">
+      <div class="dc-label">生物多樣性熱點</div>
+      <div class="dc-fact">臺灣陸域面積僅占全球 0.024%，卻擁有全球約 2.5% 的維管束植物物種，密度居全球前列。</div>
+      <div class="dc-src">資料：<a href="https://biodiv.tw" target="_blank">農業部生物多樣性資源入口網</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 7: ACTIVITY 2 DIVIDER ===== -->
+<section class="slide divider" id="slide-a2">
+  <div class="act-badge">活動二</div>
+  <h2>校園碳帳本</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">光合作用方程式</span>
+    <span class="act-step-chip">校園碳吸收計算</span>
+    <span class="act-step-chip">碳匯比較</span>
+  </div>
+</section>
+
+<!-- ===== SLIDE 8: A2 — Photosynthesis ===== -->
+<section class="slide" id="slide-photosynthesis">
+  <div class="slide-body">
+    <h2>光合作用：生命的能量工廠</h2>
+    <div style="background:var(--soft);border-radius:12px;padding:28px 32px;text-align:center;font-size:1.3rem;font-family:monospace;margin:20px 0;color:var(--accent);font-weight:700">
+      6CO₂ + 6H₂O + 光能 → C₆H₁₂O₆ + 6O₂
+    </div>
+    <ul class="bullet">
+      <li>植物固定大氣中的 CO₂，轉換成有機物，成為整條食物鏈的基礎</li>
+      <li>一棵成熟喬木每年可固定 <strong>10–25 公斤 CO₂</strong>（依樹種與胸徑而定）</li>
+      <li>健康的土壤也是碳庫：農業部林業及自然保育署估計，臺灣森林每年碳吸收量超過 2,000 萬公噸</li>
+    </ul>
+    <p style="color:var(--muted);font-size:.9rem">關鍵概念：移除一棵樹不只是失去一棵樹，而是失去每年持續的碳固定服務</p>
+  </div>
+  <div class="slide-src">資料：<a href="https://www.forest.gov.tw" target="_blank">農業部林業及自然保育署</a></div>
+</section>
+
+<!-- ===== SLIDE 9: A2 — Carbon Calc Worksheet ===== -->
+<section class="slide" id="slide-carbon-calc">
+  <div class="slide-body">
+    <h2>校園碳帳本工作單</h2>
+    <div class="ws-frame">
+      <div class="ws-title">📋 校園碳帳本（小組填寫）</div>
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th>地點/樹種</th>
+            <th>估計胸徑 (cm)</th>
+            <th>棵數</th>
+            <th>估計年固碳量 (kg CO₂)</th>
+            <th>提供的其他生態系服務</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>（例：操場榕樹）</td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>（例：花圃灌木）</td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>（例：走廊爬藤）</td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td style="font-weight:700;background:var(--soft)">小計</td><td class="fill" colspan="2"></td><td class="fill" style="font-weight:700"></td><td class="fill"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 10: A2 — Carbon Sinks ===== -->
+<section class="slide" id="slide-carbon-sinks">
+  <div class="slide-body">
+    <h2>兩大碳匯：森林 vs. 海洋</h2>
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：全球陸地森林 vs. 海洋碳吸收比較長條圖]</div>
+        <div class="cp-data"><strong>關鍵數據：</strong>陸地生態系（以森林為主）與海洋各自吸收全球每年人為 CO₂ 排放量的約 25–30%，合計抵消超過一半</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+      <figcaption style="font-size:.85rem;color:var(--muted);text-align:center;margin-top:6px">資料來源：聯合國生物多樣性與生態系服務政府間科學政策平台 2019</figcaption>
+    </figure>
+    <p style="color:var(--muted);font-size:.95rem;margin-top:8px">🌊 藍碳（紅樹林、海草床、鹽沼）雖面積小，固碳效率卻是熱帶雨林的 3–5 倍</p>
+  </div>
+  <div class="slide-src">資料：<a href="https://www.ipbes.net/global-assessment" target="_blank">IPBES 全球評估 2019</a></div>
+</section>
+
+<!-- ===== SLIDE 11: ACTIVITY 3 DIVIDER ===== -->
+<section class="slide divider" id="slide-a3">
+  <div class="act-badge">活動三</div>
+  <h2>原住民族智慧與生物多樣性</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">案例閱讀</span>
+    <span class="act-step-chip">倫理兩難辯論</span>
+    <span class="act-step-chip">在地知識反思</span>
+  </div>
+</section>
+
+<!-- ===== SLIDE 12: A3 — Indigenous Knowledge ===== -->
+<section class="slide" id="slide-indigenous">
+  <div class="slide-body">
+    <h2>在地生態知識的力量</h2>
+    <div class="data-card">
+      <div class="dc-label">全球數據</div>
+      <div class="dc-fact">原住民族土地雖僅占全球陸域面積的 22%，卻保護了地球上約 80% 的生物多樣性。</div>
+      <div class="dc-src">資料：<a href="https://www.cbd.int" target="_blank">生物多樣性公約</a></div>
+    </div>
+    <ul class="bullet">
+      <li>泰雅族的「gaga」傳統規範獵場輪休，防止過度捕獵</li>
+      <li>排灣族的小米種原保存，保存了現代農業失落的基因多樣性</li>
+      <li>阿美族的海洋祭儀，包含季節性禁漁的生態智慧</li>
+    </ul>
+    <p style="color:var(--muted);font-size:.9rem">思考：當「保育」政策與原住民族的傳統生活方式衝突時，誰的知識更值得被尊重？</p>
+  </div>
+</section>
+
+<!-- ===== SLIDE 13: A3 — Ethics Dilemma ===== -->
+<section class="slide" id="slide-ethics">
+  <div class="slide-body">
+    <h2>倫理兩難情境</h2>
+    <div class="q-box">
+      情境：政府宣布在某部落傳統領域設立國家公園，禁止狩獵與採集。部落族人說這片山林是他們幾百年的家，也是他們守護生物多樣性的方式。
+      <div class="q-sub">正方 vs. 反方：你支持設立限制，還是尊重傳統領域自治？</div>
+    </div>
+    <div class="hl-grid">
+      <div class="hl-card" style="background:#eff6ff;text-align:left">
+        <div style="font-weight:700;color:var(--cog);margin-bottom:8px">支持設立限制</div>
+        <div style="font-size:.9rem">・法律保護稀有物種<br>・統一管理防止商業濫捕<br>・生態系服務惠及全民</div>
+      </div>
+      <div class="hl-card" style="background:#f0fdf4;text-align:left">
+        <div style="font-weight:700;color:var(--beh);margin-bottom:8px">尊重傳統領域自治</div>
+        <div style="font-size:.9rem">・原住民族的在地知識有效<br>・傳統規範已包含永續機制<br>・土地正義與自決權</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 14: ACTIVITY 4 DIVIDER ===== -->
+<section class="slide divider" id="slide-a4">
+  <div class="act-badge">活動四</div>
+  <h2>校園堆肥行動計畫</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">堆肥原理</span>
+    <span class="act-step-chip">DIY 設計</span>
+    <span class="act-step-chip">永續承諾書</span>
+  </div>
+</section>
+
+<!-- ===== SLIDE 15: A4 — Compost Science ===== -->
+<section class="slide" id="slide-compost">
+  <div class="slide-body">
+    <h2>堆肥：分解者的力量</h2>
+    <div class="hl-grid">
+      <div class="hl-card">
+        <div class="hc-num" style="font-size:1.4rem">碳氮比</div>
+        <div class="hc-desc">25–30:1 為最佳堆肥比例<br>（落葉：廚餘≈ 3:1）</div>
+      </div>
+      <div class="hl-card">
+        <div class="hc-num" style="font-size:1.4rem">6 週</div>
+        <div class="hc-desc">適當管理下有機物分解<br>成熟堆肥的時間</div>
+      </div>
+      <div class="hl-card">
+        <div class="hc-num" style="font-size:1.4rem">80%↓</div>
+        <div class="hc-desc">校園廚餘進入焚化爐<br>的比例可大幅降低</div>
+      </div>
+    </div>
+    <ul class="bullet">
+      <li><strong>棕色材料</strong>（落葉、紙箱）提供碳源，<strong>綠色材料</strong>（廚餘、草屑）提供氮源</li>
+      <li>細菌、真菌、蚯蚓是主角——它們把廢棄物變成「黑金」</li>
+      <li>成熟堆肥可用於校園花圃，關閉養分循環</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== SLIDE 16: A4 — Compost DIY ===== -->
+<section class="slide" id="slide-compost-diy">
+  <div class="slide-body">
+    <h2>設計你的校園堆肥系統</h2>
+    <div class="act-card">
+      <div class="ac-badge">小組設計任務</div>
+      <div class="ac-task">
+        <ol style="padding-left:1.4em;margin:0">
+          <li>選定校園廢棄物來源（午餐廚餘？落葉？植物修剪？）</li>
+          <li>決定堆肥方法：<strong>戶外翻堆式 / 蚯蚓箱 / 封閉桶式</strong></li>
+          <li>計算每週可收集的棕色與綠色材料量，確認碳氮比</li>
+          <li>規劃維護分工：哪個班級或社團負責每週翻堆？</li>
+          <li>設計「成效指標」：6 週後如何知道成功了？</li>
+        </ol>
+      </div>
+    </div>
+    <p style="color:var(--muted);font-size:.9rem">💡 可參考農業部推廣資源，或邀請社區農夫到校分享</p>
+  </div>
+</section>
+
+<!-- ===== SLIDE 17: A4 — Pledge Worksheet ===== -->
+<section class="slide" id="slide-pledge">
+  <div class="slide-body">
+    <h2>生物多樣性永續承諾書</h2>
+    <div class="pledge-form">
+      <div class="pf-title">🌿 我對生態系的承諾</div>
+      <div class="pledge-line">
+        <span class="pl-label">我的名字</span>
+        <div class="pl-line"></div>
+      </div>
+      <div class="pledge-line">
+        <span class="pl-label">我承諾在校園做</span>
+        <div class="pl-line"></div>
+      </div>
+      <div class="pledge-line">
+        <span class="pl-label">具體行動是</span>
+        <div class="pl-line"></div>
+      </div>
+      <div class="pledge-line">
+        <span class="pl-label">我會邀請</span>
+        <div class="pl-line"></div>
+        <span style="white-space:nowrap">一起行動</span>
+      </div>
+      <div class="pledge-line">
+        <span class="pl-label">6 週後我會</span>
+        <div class="pl-line"></div>
+      </div>
+      <div style="margin-top:18px;text-align:right">
+        <span style="font-size:.9rem;color:var(--muted)">日期：________　簽名：________________</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 18: SUMMARY ===== -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <div class="slide-body">
+    <h2 style="color:var(--beh)">今天學到了什麼？</h2>
+    <div class="summary-keys">
+      <div class="sk-chip">生態系服務</div>
+      <div class="sk-chip">生物多樣性</div>
+      <div class="sk-chip">碳匯</div>
+      <div class="sk-chip">在地知識</div>
+      <div class="sk-chip">養分循環</div>
+    </div>
+    <p style="color:var(--muted);max-width:600px;margin:24px auto 0;font-size:1rem">每一個物種都是交響樂的一個聲部；當我們保護生物多樣性，我們是在守護讓人類得以存在的整個樂團。</p>
+    <p style="margin-top:30px"><a href="lesson_plan.html" style="color:var(--accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / <span class="nav-total" id="navTotal"></span></span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換・捲動換頁</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  const tot    = document.getElementById('navTotal');
+  if (!slides.length || !cur) return;
+  if (tot) tot.textContent = slides.length;
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

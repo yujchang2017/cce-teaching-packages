@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>應對氣候影響:安全與復原力策略 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .question-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 30px 0; }
+  .question-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px; font-size: 1.15rem; text-align: center; color: var(--c-text); position: relative; }
+  .question-card .q-num { position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .ws-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1.05rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 14px 16px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px); height: 48px; }
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px; background: var(--c-bg); max-width: 700px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">應對氣候影響:安全與復原力策略 — 教學投影片</span>
+</header>
+
+<main>
+
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>風雨來了,我準備好了!</h2>
+    <p class="subtitle">應對氣候影響:安全與復原力策略｜國小 9–12 歲</p>
+    <div style="font-size: 4rem; margin-top: 30px;">🌀 ⚡ 🌊 🔥 🌡️</div>
+  </div>
+</section>
+
+<section class="slide" id="slide-question">
+  <div class="slide-tag">本課三大問</div>
+  <h2>今天我們要回答的三個問題</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>臺灣有哪些極端天氣與氣候災害?</div>
+      <div class="question-card"><div class="q-num">2</div>我們家、教室、社區要怎麼準備與應對?</div>
+      <div class="question-card"><div class="q-num">3</div>面對災區的人,我們能怎麼關心與支持?</div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 30px; color: var(--c-accent);">
+      <strong>把這三題記著,下課前我們一起回答。</strong>
+    </p>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>認識臺灣的氣候災害</h2>
+    <p class="subtitle">先認識,才會準備</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-5disasters">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>臺灣 5 大災害</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:臺灣 5 大災害插圖排行]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>颱風、強降雨、熱浪、乾旱、地震 5 種;每年平均 3–4 個颱風影響臺灣</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>5 大災害插圖:颱風 / 強降雨 / 熱浪 / 乾旱 / 地震</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>提問:</strong>住在山區、海邊、平原的人,最怕的可能是哪一種?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.cwa.gov.tw/V8/C/P/Typhoon/" target="_blank" rel="noopener">中央氣象署 — 颱風統計</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-morakot">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>莫拉克的教訓</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:阿里山豪雨災區照片]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>2009 年 8 月,阿里山 3 天內下了超過 2,800 毫米的雨;全臺 673 人罹難</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>2,800 毫米差不多是教室的高度,讓孩子感受極端降雨的衝擊</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>提問:</strong>為什麼傷亡這麼大?(山區、土石流、撤離太慢)
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://rdc28.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署颱風資料庫 / 國家災害防救科技中心</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-tw-warming">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>臺灣升溫 1.6°C ≈ 全球 2 倍</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:臺灣升溫折線圖 + 強降雨頻率]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>近 110 年升溫 1.6°C(全球 2 倍);未來強降雨與熱浪預估持續增加</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>世界衛生組織預估 2030–2050 每年額外 25 萬人死亡(熱浪、傳染病、營養不良)</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://tccip.ncdr.nat.gov.tw/" target="_blank" rel="noopener">臺灣氣候變遷推估資訊與調適知識平台(TCCIP)</a> ・
+    <a href="https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health" target="_blank" rel="noopener">世界衛生組織 — 氣候變遷與健康</a>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>家裡和教室的風險獵人</h2>
+    <p class="subtitle">找到風險,才能改善</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-risk-formula">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>風險是什麼?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:三圈交集圖 危險事件 × 暴露 × 脆弱度]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵公式:</strong>風險 = 危險事件 × 暴露程度 × 脆弱度</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>同一個颱風,在堅固大樓和山邊老房子,結果完全不同</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      我們不能阻止颱風,但可以減少<strong>暴露</strong>(不去危險地方)和<strong>脆弱度</strong>(家更堅固、準備更充分)。
+    </p>
+  </div>
+</section>
+
+<section class="slide" id="slide-home-hunter">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>家裡的危險獵人</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:家中 3D 俯瞰圖,紅圈標示危險點]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>常見危險點:</strong>高處書櫃、玻璃窗、延長線、瓦斯爐、陽台花盆</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>把家裡畫成一張圖,把危險點圈出來</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>提問:</strong>你家裡最擔心的一個點是什麼?
+    </p>
+  </div>
+</section>
+
+<section class="slide" id="slide-mitigation">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>減災點子大賽</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>固定 / 移除</h4>
+        <ul>
+          <li>固定書櫃、衣櫃</li>
+          <li>移走高處重物</li>
+          <li>窗戶貼防碎膜</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>準備物品</h4>
+        <ul>
+          <li>準備沙袋</li>
+          <li>手電筒放門口</li>
+          <li>延長線不要超載</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>定期檢查</h4>
+        <ul>
+          <li>檢查瓦斯管線</li>
+          <li>檢查電線老化</li>
+          <li>確認逃生路線通暢</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      <strong>回家挑 3 項跟家人一起做。</strong>不需要花很多錢,卻能真的救命!
+    </p>
+  </div>
+  <div class="slide-source">
+    延伸活動:
+    <a href="https://www.stopdisastersgame.org/" target="_blank" rel="noopener">Stop Disasters Game(聯合國減災辦公室)</a>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>應急計畫與警報系統</h2>
+    <p class="subtitle">聽得懂警報,做對的事</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-alerts">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>警報聽得懂</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:手機國家級警報截圖、土石流紅黃警戒圖示]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵警報:</strong>國家級警報 / 豪雨特報 / 土石流紅(撤離)、黃(注意)警戒</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>聽到警報,先保護自己,再確認行動,不是先滑手機看內容</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://246.swcb.gov.tw/" target="_blank" rel="noopener">水保局土石流防災資訊網</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-4responses">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>4 種災害 4 種應對</h2>
+  <div class="slide-body">
+    <table class="ws-table">
+      <thead>
+        <tr><th>災害</th><th>第一動作</th><th>禁忌</th></tr>
+      </thead>
+      <tbody>
+        <tr><th>颱風</th><td>留在室內,遠離窗戶</td><td>不要外出查看災情</td></tr>
+        <tr><th>強降雨淹水</th><td>往高處走</td><td>不走過深於腳踝的積水</td></tr>
+        <tr><th>地震</th><td>蹲下、掩護、穩住</td><td>不往外跑</td></tr>
+        <tr><th>火災</th><td>低姿勢爬行,摸門熱不熱</td><td>不搭電梯</td></tr>
+      </tbody>
+    </table>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>提問:</strong>地震時,你在教室會做什麼?
+    </p>
+  </div>
+</section>
+
+<section class="slide" id="slide-shelter-evac">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>就地掩護 vs 撤離</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">就地掩護</div>
+        <div class="icon">🛡️</div>
+        <h3>地震</h3>
+        <p>來不及跑,而且外面東西會掉<br>蹲下、掩護、穩住</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">盡速撤離</div>
+        <div class="icon">⛰️</div>
+        <h3>洪水 / 土石流</h3>
+        <p>水會越來越高,泥流會掩埋<br>立刻往高處或安全處</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 24px; color: var(--c-accent);">
+      <strong>口訣:地震蹲下、水往高走</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考:
+    <a href="https://unfccc.int/topics/resilience/" target="_blank" rel="noopener">聯合國氣候變化綱要公約 — 韌性與調適</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-empathy">
+  <div class="slide-tag">活動三・步驟 4</div>
+  <h2>同理心時間</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:災民照片 + 對話框]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>常見情緒:</strong>擔心、害怕、想哭、想回家、做惡夢</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>災害不只傷害身體,也傷害心</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      安靜陪伴、分享一包餅乾、一個微笑,有時候比任何話都有力量。<br>
+      <strong style="color: var(--c-accent);">同理心,就是防災最溫柔的那一步。</strong>
+    </p>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>家庭緊急應變計畫書</h2>
+    <p class="subtitle">把學到的帶回家</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-bag">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>緊急避難包 8 大類</h2>
+  <div class="slide-body">
+    <div class="three-col" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="col-card sch"><h4>💧 飲用水</h4><ul><li>每人每天 3 公升</li></ul></div>
+      <div class="col-card sch"><h4>🍪 即食食物</h4><ul><li>餅乾、巧克力</li></ul></div>
+      <div class="col-card sch"><h4>🩹 急救包</h4><ul><li>OK 繃、紗布</li></ul></div>
+      <div class="col-card sch"><h4>🔦 手電筒</h4><ul><li>備用電池</li></ul></div>
+      <div class="col-card com"><h4>📢 口哨</h4><ul><li>沒力氣喊救命時用</li></ul></div>
+      <div class="col-card com"><h4>💴 現金證件</h4><ul><li>影本即可</li></ul></div>
+      <div class="col-card com"><h4>🧥 保暖衣物</h4><ul><li>含雨衣</li></ul></div>
+      <div class="col-card com"><h4>💊 藥品</h4><ul><li>個人常用藥</li></ul></div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      <strong>每 6 個月檢查一次</strong>(食物、電池會過期)。放在門邊,帶了就能走。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.emic.gov.tw/" target="_blank" rel="noopener">內政部消防署 — 防災資訊服務網</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-1991">
+  <div class="slide-tag">活動四・步驟 2</div>
+  <h2>1991 報平安留言平台</h2>
+  <div class="slide-body">
+    <div style="text-align: center; margin: 20px 0;">
+      <div style="font-size: 6rem; font-weight: 800; color: var(--c-accent); letter-spacing: 0.2em;">1991</div>
+      <p style="font-size: 1.1rem; color: var(--c-muted);">全國統一語音留言號碼</p>
+    </div>
+    <div class="three-col">
+      <div class="col-card fam"><h4>1️⃣ 撥打 1991</h4><ul><li>市話、手機、公用電話皆可</li></ul></div>
+      <div class="col-card sch"><h4>2️⃣ 輸入約定電話</h4><ul><li>事先和家人約定的家用電話</li></ul></div>
+      <div class="col-card com"><h4>3️⃣ 錄音留言 / 聽留言</h4><ul><li>家人也撥 1991 聽留言</li></ul></div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      大災害時手機基地台可能壞、電話打不通,1991 是國家級備援工具。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://disaster.moe.edu.tw/" target="_blank" rel="noopener">教育部防災教育資訊網</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-card">
+  <div class="slide-tag">活動四・步驟 2 ・學習單(投影版)</div>
+  <h2>家庭防災卡</h2>
+  <div class="slide-body">
+    <div class="pledge-form">
+      <div class="row"><span class="lbl">家人姓名 / 電話:</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">集合地點 A(近):</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">集合地點 B(遠):</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">最近的避難所:</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">血型 / 過敏 / 慢性病:</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">家庭外聯絡人(他縣市):</span><span class="blank"></span></div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 16px; color: var(--c-muted);">
+      隨身帶(放書包)。電子不一定可靠,紙本永遠可用。
+    </p>
+  </div>
+  <div class="slide-source">
+    參考:
+    <a href="https://disaster.moe.edu.tw/" target="_blank" rel="noopener">教育部防災教育資訊網 — 家庭防災卡線上建卡</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-ws-plan">
+  <div class="slide-tag">活動四・步驟 3 ・學習單(投影版)</div>
+  <h2>家庭緊急應變計畫書</h2>
+  <div class="slide-body">
+    <table class="ws-table">
+      <thead>
+        <tr><th>疏散路線</th><th>通訊方式</th><th>必要物資</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+    <p style="text-align: center; font-size: 1rem; margin-top: 14px;">
+      學生現場草擬,兩兩對讀並補充。
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §4</a></div>
+</section>
+
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>希望行動三步驟</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 步</div>
+        <div class="word">認識</div>
+        <div class="desc">哪些災害<br>我家最怕什麼</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 步</div>
+        <div class="word">準備</div>
+        <div class="desc">避難包<br>家庭卡<br>逃生路線</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 步</div>
+        <div class="word">分享</div>
+        <div class="desc">教家人<br>告訴朋友<br>提案給學校</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      你不是旁觀者,你是<strong style="color: var(--c-accent);">校園防災小主人</strong>。<br>
+      每個步驟都在增加整個社區的韌性。
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">19</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

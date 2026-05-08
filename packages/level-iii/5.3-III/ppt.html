@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候變遷與我們的經濟：極端天氣的代價 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px;
+    border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px;
+    font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .slide.divider .subtitle { font-size: 1.1rem; color: var(--c-muted); margin-top: 8px; }
+  .stat-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin: 24px 0;
+  }
+  .stat-card {
+    background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 12px;
+    padding: 20px; text-align: center;
+  }
+  .stat-card .num { font-size: 2rem; font-weight: 800; color: var(--c-accent); line-height: 1.1; margin: 8px 0; }
+  .stat-card .unit { font-size: 0.85rem; color: var(--c-muted); }
+  .stat-card .label { font-size: 0.95rem; font-weight: 600; }
+  .stat-card.red { border-color: #dc2626; }
+  .stat-card.red .num { color: #dc2626; }
+  .stat-card.orange { border-color: var(--c-warn); }
+  .stat-card.orange .num { color: var(--c-warn); }
+  .chain-row {
+    display: flex; align-items: center; gap: 8px;
+    flex-wrap: wrap; margin: 12px 0; font-size: 1rem;
+  }
+  .chain-item { padding: 10px 16px; border-radius: 8px; font-weight: 600; }
+  .chain-item.cause { background: #fef3c7; color: #92400e; }
+  .chain-item.effect { background: #dbeafe; color: var(--c-cog); }
+  .chain-item.final { background: #fee2e2; color: #991b1b; }
+  .chain-arrow { color: var(--c-muted); font-size: 1.3rem; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 20px; }
+  .compare-card h3 { margin-top: 0; font-size: 1.2rem; }
+  .three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 16px; }
+  .col-card h4 { margin: 0 0 8px; font-size: 1.1rem; color: var(--c-accent); }
+  .summary-keys { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 28px 18px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 10px 0; }
+  .key-card .desc { font-size: 0.9rem; color: var(--c-muted); }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+  .ws-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 1rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 12px 14px; text-align: left; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg,transparent 0,transparent 18px,#d1d5db 18px,#d1d5db 19px); height: 46px; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">氣候變遷與我們的經濟：極端天氣的代價 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content:center;">
+    <h2>那一天，天氣讓我們停擺</h2>
+    <p class="subtitle">氣候變遷 × 極端天氣 × 我們的經濟</p>
+    <p style="margin-top:24px; font-size:1.1rem; color:var(--c-muted);">5.3-III｜國小 9–12 歲</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>你還記得那一天嗎？</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card" style="border-color:var(--c-cog);">
+        <h4>停電</h4>
+        <p>冰箱裡的食物怎麼辦？</p>
+      </div>
+      <div class="col-card" style="border-color:var(--c-warn);">
+        <h4>停課</h4>
+        <p>爸媽還是要去上班嗎？</p>
+      </div>
+      <div class="col-card" style="border-color:var(--c-soc);">
+        <h4>淹水</h4>
+        <p>路上走得出去嗎？</p>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.15rem; margin-top:24px;">
+      這些「停擺」，不只是天氣的事——<br>
+      <strong style="color:var(--c-accent);">它們是氣候變遷對每個家庭的帳單。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動一</div>
+    <h2>那一天，天氣讓我們停擺</h2>
+    <p class="subtitle">從個人記憶出發，感受極端天氣的真實代價</p>
+  </div>
+</section>
+
+<!-- 4. 颱風記憶 -->
+<section class="slide" id="slide-memories">
+  <div class="slide-tag">活動一・步驟 1–2</div>
+  <h2>你的颱風記憶是什麼？</h2>
+  <div class="slide-body">
+    <p style="font-size:1.05rem; color:var(--c-muted); margin:0 0 16px;">拿出便利貼，寫下你經歷過的一次颱風、豪雨或高溫事件。</p>
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-cog);">
+        <h3 style="color:var(--c-cog);">我的記憶</h3>
+        <ul>
+          <li>是哪一次颱風或豪雨？</li>
+          <li>家裡受到什麼影響？</li>
+          <li>當時什麼感覺？</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-warn);">
+        <h3 style="color:var(--c-warn);">家人的記憶</h3>
+        <ul>
+          <li>阿公阿嬤最難忘的颱風？</li>
+          <li>爸媽那天怎麼辦？</li>
+          <li>和你的記憶一樣嗎？</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. 莫拉克颱風數據 -->
+<section class="slide" id="slide-morakot">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>莫拉克颱風 2009：一整年的雨，三天下完</h2>
+  <div class="slide-body">
+    <div class="stat-grid">
+      <div class="stat-card red">
+        <div class="label">阿里山三天雨量</div>
+        <div class="num">2,884</div>
+        <div class="unit">毫米 ≈ 整整一年份</div>
+      </div>
+      <div class="stat-card red">
+        <div class="label">死亡人數</div>
+        <div class="num">681</div>
+        <div class="unit">人</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="label">公共設施與農業損失</div>
+        <div class="num">1,947</div>
+        <div class="unit">億元新台幣</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.05rem; margin-top:16px;">
+      <strong>1,947 億元</strong>——用這筆錢可以蓋幾間學校？
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://tccip.ncdr.nat.gov.tw/" target="_blank" rel="noopener">臺灣氣候變遷推估資訊平台（TCCIP）</a>
+  </div>
+</section>
+
+<!-- 6. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動二</div>
+    <h2>災害帳單怎麼算</h2>
+    <p class="subtitle">從台灣到全球，看懂極端天氣的真實成本</p>
+  </div>
+</section>
+
+<!-- 7. 凱米颱風 -->
+<section class="slide" id="slide-kaemi">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>凱米颱風 2024：你可能正好經歷過</h2>
+  <div class="slide-body">
+    <div class="stat-grid">
+      <div class="stat-card red">
+        <div class="label">全台停電</div>
+        <div class="num">50 萬</div>
+        <div class="unit">戶</div>
+      </div>
+      <div class="stat-card red">
+        <div class="label">死亡人數</div>
+        <div class="num">10</div>
+        <div class="unit">人</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="label">農業損失</div>
+        <div class="num">47</div>
+        <div class="unit">億元新台幣</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.05rem; margin-top:16px;">
+      高雄、屏東多條鐵公路中斷數日——這不只是「天氣」，是公共服務被打斷的樣子。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.emic.gov.tw/" target="_blank" rel="noopener">中央災害應變中心（EMIC）</a>
+  </div>
+</section>
+
+<!-- 8. 骨牌效應 -->
+<section class="slide" id="slide-domino">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>一場颱風的骨牌效應</h2>
+  <div class="slide-body">
+    <div style="display:flex; flex-direction:column; gap:14px; max-width:900px; margin:16px auto;">
+      <div class="chain-row">
+        <div class="chain-item cause">颱風登陸</div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-item effect">市區淹水</div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-item effect">公車停駛</div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-item final">爸媽不能上班</div>
+      </div>
+      <div class="chain-row">
+        <div class="chain-item cause">停電</div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-item effect">冰箱停擺</div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-item effect">便利商店沒貨</div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-item final">菜價大漲</div>
+      </div>
+      <div class="chain-row">
+        <div class="chain-item cause">道路中斷</div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-item effect">農產品無法運出</div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-item effect">農民損失慘重</div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-item final">農損 47 億元</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.05rem; margin-top:16px; color:var(--c-muted);">
+      小組用圖卡連連看，補出你組選的那條骨牌鏈。
+    </p>
+  </div>
+</section>
+
+<!-- 9. 全球規模 -->
+<section class="slide" id="slide-global">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>全球的災害帳單：數字大到很難想像</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-cog);">
+        <h3 style="color:var(--c-cog);">美國 2024 年</h3>
+        <p style="font-size:2rem; font-weight:800; color:#dc2626; margin:8px 0;">27 件</p>
+        <p>十億美元以上災害</p>
+        <p style="font-size:1.3rem; font-weight:700; color:var(--c-warn);">1,827 億美元</p>
+        <p style="font-size:0.9rem; color:var(--c-muted);">≈ 新台幣 5.8 兆元</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-warn);">
+        <h3 style="color:var(--c-warn);">全球 2000–2019 年</h3>
+        <p style="font-size:2rem; font-weight:800; color:#dc2626; margin:8px 0;">7,348 起</p>
+        <p>重大災害</p>
+        <p style="font-size:1.3rem; font-weight:700; color:var(--c-warn);">2.97 兆美元</p>
+        <p style="font-size:0.9rem; color:var(--c-muted);">是前 20 年的近兩倍</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.ncei.noaa.gov/access/billions/" target="_blank" rel="noopener">美國國家海洋暨大氣總署（NOAA）</a>・
+    <a href="https://www.undrr.org/publication/human-cost-disasters-2000-2019" target="_blank" rel="noopener">聯合國減災辦公室（UNDRR）</a>
+  </div>
+</section>
+
+<!-- 10. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三</div>
+    <h2>誰最受傷？氣候正義初探</h2>
+    <p class="subtitle">認識最脆弱的族群，培養同理行動力</p>
+  </div>
+</section>
+
+<!-- 11. 熱浪數據 -->
+<section class="slide" id="slide-heatwave">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>熱浪：看不見的殺手</h2>
+  <div class="slide-body">
+    <div class="stat-grid">
+      <div class="stat-card red">
+        <div class="label">全球熱浪死亡（每年）</div>
+        <div class="num">48.9 萬</div>
+        <div class="unit">人</div>
+      </div>
+      <div class="stat-card red">
+        <div class="label">亞洲佔比</div>
+        <div class="num">45%</div>
+        <div class="unit"></div>
+      </div>
+      <div class="stat-card orange">
+        <div class="label">65 歲以上死亡率 20 年增幅</div>
+        <div class="num">85%</div>
+        <div class="unit"></div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.05rem; margin-top:16px;">
+      <strong>阿公阿嬤是高風險族群。</strong>熱浪不是「很熱而已」——它每年奪走比颱風更多的生命。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.who.int/news-room/fact-sheets/detail/climate-change-heat-and-health" target="_blank" rel="noopener">世界衛生組織（WHO）氣候變遷與高溫健康</a>
+  </div>
+</section>
+
+<!-- 12. 脆弱人口 -->
+<section class="slide" id="slide-vulnerable">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>全球一半人口住在高度脆弱區</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent); border-radius:12px; padding:40px; background:var(--c-accent-soft); text-align:center;">
+        <div style="font-size:0.8rem; color:var(--c-muted); letter-spacing:0.15em; margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem; color:var(--c-accent); font-weight:700; margin-bottom:12px;">[此處放：全球高度脆弱區分布地圖]</div>
+        <div style="font-size:1.1rem; margin:14px 0;"><strong>關鍵數據：</strong>33–36 億人（接近全球一半人口）居住在氣候變遷高度脆弱地區</div>
+        <div style="font-size:0.85rem; color:var(--c-muted); margin-top:12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>包含小島嶼國家、沿海低窪城市與乾旱帶；台灣也在熱帶風暴帶上</figcaption>
+    </figure>
+    <p style="text-align:center; font-size:1.05rem; margin-top:20px;">
+      這不是「別人家的事」——<strong>台灣也是其中一員。</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank" rel="noopener">IPCC AR6 第二工作組摘要</a>
+  </div>
+</section>
+
+<!-- 13. 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動四</div>
+    <h2>小小研究員 × 在地行動提案</h2>
+    <p class="subtitle">深入研究一個案例，提出一項真實行動</p>
+  </div>
+</section>
+
+<!-- 14. 研究員學習單 -->
+<section class="slide" id="slide-research">
+  <div class="slide-tag">活動四・步驟 2・學習單（投影版）</div>
+  <h2>氣候災害研究表</h2>
+  <div class="slide-body">
+    <p style="font-size:1rem; color:var(--c-muted); margin:0 0 10px;">選一個案例（莫拉克 2009 / 凱米 2024 / 2023 南部豪雨），填入各欄。</p>
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th style="width:18%;">項目</th>
+          <th>我的研究紀錄</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>事件名稱</th><td class="fill"></td></tr>
+        <tr><th>時間 / 地點</th><td class="fill"></td></tr>
+        <tr><th>規模（雨量/風速）</th><td class="fill"></td></tr>
+        <tr><th>死亡與損失</th><td class="fill"></td></tr>
+        <tr><th>公共服務受影響</th><td class="fill"></td></tr>
+        <tr><th>復原花多久</th><td class="fill"></td></tr>
+        <tr><th>我們的行動提案</th><td class="fill"></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 15. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">帳單</div>
+        <div class="desc">極端天氣讓每個家庭、每個國家付出龐大代價</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">骨牌</div>
+        <div class="desc">一場災害引發連鎖影響：設施→服務→生計</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">行動</div>
+        <div class="desc">了解誰最脆弱，從關懷前線工作者開始</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.1rem; margin-top:28px;">
+      <strong style="color:var(--c-accent);">氣候變遷不只是天氣——是每個家庭共同承擔的事。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">15</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color:var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+</body>
+</html>

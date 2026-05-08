@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自然環境：生態系與生物多樣性 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e; --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb; --c-soc: #db2777; --c-beh: #16a34a;
+    --c-warn: #ea580c; --c-text: #1f2937; --c-muted: #6b7280;
+    --c-border: #e5e7eb; --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border); display: flex; align-items: center;
+    padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border); display: flex; align-items: center;
+    justify-content: space-between; padding: 0 20px; z-index: 100;
+    font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border);
+    border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em;
+    background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px;
+    display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600;
+    letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none;
+    border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent);
+    letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center;
+    padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .ws-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 12px 14px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px;
+    background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">自然環境：生態系與生物多樣性 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>你，以及你身上的一兆個夥伴</h2>
+    <p class="subtitle">生態系與生物多樣性</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>你是「一個人」嗎？</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 20px;">
+      你身體裡的<strong style="color: var(--c-accent);">細菌細胞</strong>數量，幾乎等同於你自己的細胞數。<br>
+      你是一座<strong style="color: var(--c-warn);">行走的生態系</strong>。
+    </p>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 30px; color: var(--c-muted);">
+      四節課要學會看見「看不見的互動」。
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>一座森林如何「痊癒」？</h2>
+    <p class="subtitle">韌性與物種多樣性</p>
+  </div>
+</section>
+
+<!-- 4. 100 萬 -->
+<section class="slide" id="slide-million">
+  <div class="slide-tag">活動一・步驟 1</div>
+  <h2>震撼數字：100 萬</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：100 萬物種剪影插畫]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>全球約 100 萬種動植物面臨滅絕威脅；地球已知物種約 200 萬（每 50 種就有 1 種在危險）；當前滅絕速率為過去千萬年自然背景的 100–1000 倍</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>這次的驅動者是誰？人類。</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.ipbes.net/global-assessment" target="_blank" rel="noopener">生物多樣性政府間平台 — 2019 全球評估報告</a></div>
+</section>
+
+<!-- 5. LPI -->
+<section class="slide" id="slide-lpi">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>族群悄悄消失：LPI 73%</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：地球生命力指數折線圖 1970→2020]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>全球 5,495 種脊椎動物、35,000+ 族群，1970–2020 平均減少 73%；淡水族群減少 85%</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>「減量」比「清零」更容易被忽略，但同樣危險。</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.worldwildlife.org/publications/living-planet-report-2024" target="_blank" rel="noopener">世界自然基金會 — 2024 地球生命力報告</a></div>
+</section>
+
+<!-- 6. 韌性 -->
+<section class="slide" id="slide-resilience">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>什麼是韌性？</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：三棟積木塔示意圖（單色／兩色／五色）]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>物種冗餘越高，生態系受擾動後恢復力越強</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>韌性 ≠ 不會倒，而是倒了還能重建。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 7. 三層多樣性 -->
+<section class="slide" id="slide-three-layers">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>三層多樣性</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>遺傳多樣性</h4>
+        <ul><li>同物種內基因變異</li><li>例：不同品種稻米</li><li>決定能否適應新病害</li></ul>
+      </div>
+      <div class="col-card sch">
+        <h4>物種多樣性</h4>
+        <ul><li>一個地方有幾種生物</li><li>決定生態系韌性</li></ul>
+      </div>
+      <div class="col-card com">
+        <h4>生態系多樣性</h4>
+        <ul><li>森林、濕地、珊瑚礁、草原</li><li>決定地球整體服務功能</li></ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">參考資料：教育部教材《多樣的生態系》《林農畜漁業生產與生物多樣性》</div>
+</section>
+
+<!-- 8. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>你，就是一座生態系</h2>
+    <p class="subtitle">人體微生物與微觀工具</p>
+  </div>
+</section>
+
+<!-- 9. 微生物 -->
+<section class="slide" id="slide-microbiome">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>你身上的一兆個夥伴</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：人體剪影＋皮膚／口腔／腸道三大微生物熱點圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>細菌細胞約 3.8×10¹³ 個（與自身細胞 1:1）；微生物基因數為人類 100 倍以上</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>幫你消化、合成維生素 K／B、訓練免疫、影響情緒。</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.hmpdacc.org/" target="_blank" rel="noopener">美國國家衛生研究院 — 人類微生物體計畫</a></div>
+</section>
+
+<!-- 10. 工具 -->
+<section class="slide" id="slide-tools">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>微觀工具大集合</h2>
+  <div class="slide-body">
+    <table class="ws-table">
+      <thead><tr><th>工具</th><th>解析度</th><th>能看到</th></tr></thead>
+      <tbody>
+        <tr><th>光學顯微鏡</th><td>0.2 μm</td><td>細菌、矽藻</td></tr>
+        <tr><th>電子顯微鏡</th><td>0.2 nm</td><td>病毒</td></tr>
+        <tr><th>浮游生物濾網</th><td>20–200 μm</td><td>大／微浮游生物</td></tr>
+        <tr><th>環境 DNA（eDNA）</th><td>不需實體</td><td>水中物種 DNA 片段</td></tr>
+      </tbody>
+    </table>
+    <p style="text-align: center; margin-top: 16px;">
+      <strong>工具決定你看到什麼。</strong>偵測稀有魚種不再需要網子，也不會傷害它們。
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://oceanexplorer.noaa.gov/" target="_blank" rel="noopener">美國國家海洋暨大氣總署 — 海洋探索</a></div>
+</section>
+
+<!-- 11. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>授粉、共生與臺灣熱點</h2>
+    <p class="subtitle">生態互動與倫理兩難</p>
+  </div>
+</section>
+
+<!-- 12. 授粉 -->
+<section class="slide" id="slide-pollination">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>早餐的隱形功臣</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：早餐拼盤＋蜜蜂圖示]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>全球 75% 糧食作物仰賴動物授粉；產值 2,350–5,770 億美元／年</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>咖啡、蘋果、草莓、杏仁、可可——全部是授粉作物。</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.fao.org/pollination/en/" target="_blank" rel="noopener">聯合國糧農組織 — 授粉與糧食生產</a></div>
+</section>
+
+<!-- 13. 臺灣熱點 -->
+<section class="slide" id="slide-tw-hotspot">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>臺灣：濃縮的生態大國</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：臺灣立體地形圖＋特有種標記（黑熊／櫻花鉤吻鮭／藍鵲）]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>已紀錄 60,000+ 種；特有種比例約 25%；單位面積物種密度為全球 100 倍以上</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>3,952 公尺海拔落差＋黑潮親潮交會。</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.taibif.tw/" target="_blank" rel="noopener">臺灣生物多樣性資訊機構（TaiBIF）</a>、教育部教材《林農畜漁業生產與生物多樣性》</div>
+</section>
+
+<!-- 14. 森林覆蓋 -->
+<section class="slide" id="slide-forest">
+  <div class="slide-tag">活動三・延伸</div>
+  <h2>森林覆蓋率 60.7%：好？還是有問題？</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：覆蓋率餅圖＋原始天然林／次生林／人工造林分層]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>覆蓋率 60.7%、林地 219 萬公頃；原始天然林只佔少數，多為次生林與人工造林</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>覆蓋率告訴你「有樹」，但不告訴你「生態系健不健康」。</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.forest.gov.tw/" target="_blank" rel="noopener">中華民國農業部林業及自然保育署 第四次國家森林資源調查</a></div>
+</section>
+
+<!-- 15. 倫理兩難 -->
+<section class="slide" id="slide-dilemma">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>倫理兩難：減碳 vs 生態</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">減碳</div>
+        <h3>太陽能板</h3>
+        <p>可減少每年約 2 萬噸碳排放</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">生態</div>
+        <h3>原始林與特有種</h3>
+        <p>砍掉 50 公頃原始林、3 種特有種棲地</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      四個角度：<strong>誰受益、誰受害、短期／長期、可替代性</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 16. 系統思考 -->
+<section class="slide" id="slide-system">
+  <div class="slide-tag">活動三・步驟 4</div>
+  <h2>系統思考：授粉者減少會怎樣？</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：因果鏈與正回饋迴路圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>授粉者↓ → 野花結果↓ → 鳥類食物↓ → 種子傳播↓ → 森林更新↓ → 碳匯↓ → 氣候變遷↑ →（回饋）授粉者↓</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>正回饋迴路 = 放大，不一定是好。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 17. 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>從我做起</h2>
+    <p class="subtitle">校園生物多樣性行動</p>
+  </div>
+</section>
+
+<!-- 18. 行動選單 -->
+<section class="slide" id="slide-action-menu">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>在地行動選單</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>蜜源植物區</h4>
+        <ul><li>馬利筋</li><li>馬纓丹</li><li>紫花藿香薊</li></ul>
+      </div>
+      <div class="col-card sch">
+        <h4>校園堆肥站</h4>
+        <ul><li>廚餘＋落葉</li><li>變土壤有機質</li><li>養出好微生物</li></ul>
+      </div>
+      <div class="col-card com">
+        <h4>外來種移除</h4>
+        <ul><li>定期拔除小花蔓澤蘭</li></ul>
+      </div>
+    </div>
+    <div class="three-col" style="grid-template-columns: 1fr 1fr;">
+      <div class="col-card fam" style="border-color: var(--c-warn);">
+        <h4 style="color: var(--c-warn);">公民科學日</h4>
+        <ul><li>iNaturalist 拍照上傳</li><li>1 天產生百筆資料</li></ul>
+      </div>
+      <div class="col-card sch" style="border-color: var(--c-accent);">
+        <h4 style="color: var(--c-accent);">減光害</h4>
+        <ul><li>夜間部分燈具改暖色</li><li>定時關閉</li><li>保護夜行昆蟲與鳥類</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 19. 專題任務 -->
+<section class="slide" id="slide-task">
+  <div class="slide-tag">活動四・步驟 2</div>
+  <h2>專題任務結構</h2>
+  <div class="slide-body">
+    <table class="ws-table">
+      <thead><tr><th>步驟</th><th>內容</th></tr></thead>
+      <tbody>
+        <tr><th>① 現況盤點</th><td>iNaturalist 10 分鐘統計校園物種</td></tr>
+        <tr><th>② 問題</th><td>看到什麼狀況？（單一草坪、沒有蜜源…）</td></tr>
+        <tr><th>③ CER 論證</th><td>主張、證據、理由</td></tr>
+        <tr><th>④ 四面向行動</th><td>至少涵蓋 3 個：治理／課程／營運／社群</td></tr>
+        <tr><th>⑤ 成效指標</th><td>例：1 學期後物種數 +20%</td></tr>
+      </tbody>
+    </table>
+    <p style="text-align: center; margin-top: 16px;">
+      最高 2 組提案會送學生議會。
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §7</a></div>
+</section>
+
+<!-- 20. 反思提問 -->
+<section class="slide" id="slide-reflection">
+  <div class="slide-tag">活動四・收尾</div>
+  <h2>三題帶回家的反思</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">提問 1</div>
+        <div class="word">未來</div>
+        <div class="desc">活到 80 歲，希望孫子在臺灣看到什麼樣的生態？</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">提問 2</div>
+        <div class="word">校長預算</div>
+        <div class="desc">50 萬＋100 平方公尺，怎麼最大化校園生物多樣性？</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">提問 3</div>
+        <div class="word">改變</div>
+        <div class="desc">這四節課之前，你最直覺的理解是什麼？現在改變了嗎？</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      你不是「客人」，<strong style="color: var(--c-accent);">你是校園的共同設計者</strong>。
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">20</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+
+</body>
+</html>

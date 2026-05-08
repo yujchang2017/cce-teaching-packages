@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>歷史經濟與政治過程 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px;
+    border: 1px solid var(--c-border); border-bottom-width: 2px;
+    border-radius: 4px; font-family: monospace; font-size: 0.8em;
+    background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.4rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.2rem; color: var(--c-accent); }
+  .stat-hero {
+    font-size: 4rem; font-weight: 800; color: var(--c-accent);
+    text-align: center; margin: 20px 0 8px;
+    line-height: 1.1;
+  }
+  .stat-label { text-align: center; font-size: 1.1rem; color: var(--c-muted); margin-bottom: 20px; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 20px; }
+  .compare-card.emitter { border-color: var(--c-warn); }
+  .compare-card.victim { border-color: var(--c-cog); }
+  .compare-card .clabel { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.emitter .clabel { color: var(--c-warn); }
+  .compare-card.victim .clabel { color: var(--c-cog); }
+  .bar-chart { margin: 20px 0; }
+  .bar-row { display: flex; align-items: center; gap: 12px; margin: 8px 0; }
+  .bar-label { width: 80px; font-size: 0.95rem; text-align: right; flex-shrink: 0; }
+  .bar-fill { height: 32px; border-radius: 4px; display: flex; align-items: center; padding: 0 10px; color: #fff; font-weight: 700; font-size: 0.9rem; }
+  .bar-us { background: #dc2626; }
+  .bar-eu { background: #ea580c; }
+  .bar-cn { background: #ca8a04; }
+  .bar-af { background: #16a34a; }
+  .three-facts { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin: 20px 0; }
+  .fact-card { background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 12px; padding: 20px; text-align: center; }
+  .fact-card .num { font-size: 2.4rem; font-weight: 800; color: var(--c-accent); }
+  .fact-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 6px; }
+  .justice-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 20px 0; }
+  .justice-card { border-radius: 10px; padding: 18px; text-align: center; }
+  .justice-card.dist { background: #eff6ff; border: 2px solid var(--c-cog); }
+  .justice-card.proc { background: #f0fdf4; border: 2px solid var(--c-beh); }
+  .justice-card.recog { background: #fdf2f8; border: 2px solid var(--c-soc); }
+  .justice-card h4 { margin: 0 0 8px; font-size: 1rem; }
+  .justice-card.dist h4 { color: var(--c-cog); }
+  .justice-card.proc h4 { color: var(--c-beh); }
+  .justice-card.recog h4 { color: var(--c-soc); }
+  .timeline { margin: 20px 0; }
+  .tl-row { display: flex; gap: 12px; align-items: flex-start; margin: 12px 0; }
+  .tl-year { font-weight: 700; color: var(--c-accent); min-width: 60px; font-size: 0.9rem; }
+  .tl-content { flex: 1; border-left: 2px solid var(--c-border); padding-left: 12px; }
+  .roadblock-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 12px; margin: 20px 0; }
+  .roadblock-card { background: #fff7ed; border: 2px solid #fed7aa; border-radius: 8px; padding: 14px; text-align: center; }
+  .roadblock-card .icon { font-size: 1.8rem; margin-bottom: 6px; }
+  .roadblock-card .rtitle { font-weight: 700; font-size: 0.9rem; color: #9a3412; }
+  .action-options { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 20px 0; }
+  .action-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .action-card .anum { font-size: 0.8rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.1em; margin-bottom: 8px; }
+  .action-card h4 { margin: 0 0 8px; color: var(--c-accent); }
+  .summary-keys { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  .ws-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 1rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 12px 14px; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px);
+    height: 44px;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">歷史經濟與政治過程 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- ===== 1. 封面 ===== -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>歷史經濟與政治過程<br>誰造成氣候變遷？誰在受害？</h2>
+    <p class="subtitle">Level IV｜國中 13–15 歲｜4 個活動</p>
+    <p style="margin-top: 24px; font-size: 1.15rem; color: var(--c-accent); font-weight: 600;">
+      「氣候變遷，真的是所有人一起造成的嗎？」
+    </p>
+  </div>
+</section>
+
+<!-- ===== 2. 三個暖身問句 ===== -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點・不查資料先回答</div>
+  <h2>你的直覺是什麼？</h2>
+  <div class="slide-body">
+    <div class="three-facts">
+      <div class="fact-card">
+        <div class="num">①</div>
+        <div class="desc">全球累積 CO₂ 排放最多的是哪個國家？</div>
+      </div>
+      <div class="fact-card">
+        <div class="num">②</div>
+        <div class="desc">氣候變遷造成最多死亡的國家，是排放最多的嗎？</div>
+      </div>
+      <div class="fact-card">
+        <div class="num">③</div>
+        <div class="desc">全球最富有的 1% 和最貧窮的 50%，誰排碳比較多？</div>
+      </div>
+    </div>
+    <p style="text-align: center; color: var(--c-muted); font-size: 1rem; margin-top: 20px;">把答案寫在學習單最上方——4 個活動後再回來看，你有沒有改變想法。</p>
+  </div>
+</section>
+
+<!-- ===== 3. 活動一過場 ===== -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>你排的 ≠ 你受害的</h2>
+    <p class="subtitle">從數據看歷史責任</p>
+  </div>
+</section>
+
+<!-- ===== 4. 累積排放長條圖 ===== -->
+<section class="slide" id="slide-emissions">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>1751 年以來，誰排了最多？</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：各國累積 CO₂ 排放長條圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>美國 25% ／ 歐盟 22% ／ 中國 12.5% ／ 非洲 &lt;3%（1751–2017）</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>資料來源：Our World in Data（1751 年以來累積 CO₂ 排放）</figcaption>
+    </figure>
+    <p style="text-align: center; margin-top: 16px; font-size: 1.05rem;">
+      1882 年以前，<strong style="color: var(--c-warn);">單單英國一國就超過全球累積排放的一半</strong><br>
+      工業革命的機器與蒸汽火車，都是先進國家為了自身工業化所排。
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://ourworldindata.org/contributed-most-global-co2" target="_blank" rel="noopener">Our World in Data — 各國歷史累積 CO₂ 排放</a></div>
+</section>
+
+<!-- ===== 5. 脆弱地圖 ===== -->
+<section class="slide" id="slide-vulnerability">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>33–36 億人：排最少、受害最多</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：政府間氣候變遷小組 AR6 WG2 脆弱性世界地圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>全球約 33–36 億人住在高度脆弱地區；死亡率是低脆弱區的 <strong>15 倍</strong></div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>高脆弱區集中於非洲、南亞、太平洋小島——他們排放最少，受害最多</figcaption>
+    </figure>
+    <p style="text-align: center; margin-top: 16px; font-size: 1.2rem; font-weight: 700; color: var(--c-accent);">
+      你排的 ≠ 你受害的
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank" rel="noopener">政府間氣候變遷小組 AR6 WG2（2022）</a></div>
+</section>
+
+<!-- ===== 6. 氣候正義三面向 ===== -->
+<section class="slide" id="slide-justice">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>氣候正義的三個面向</h2>
+  <div class="slide-body">
+    <div class="justice-grid">
+      <div class="justice-card dist">
+        <h4>分配正義</h4>
+        <p>誰排多誰付多<br>誰受害誰獲補償</p>
+      </div>
+      <div class="justice-card proc">
+        <h4>程序正義</h4>
+        <p>受影響者要有決策席次<br>原住民族、青年、勞工都要有發言權</p>
+      </div>
+      <div class="justice-card recog">
+        <h4>認可正義</h4>
+        <p>承認不同族群的獨特文化與土地關係<br>不能把原住民族視為單純居民</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      倫理兩難：你願意每年撥 GDP 的 0.5% 給損失與損害基金嗎？<br>
+      COP28 首日承諾 <strong>7.92 億美元</strong>——但開發中國家每年損失估計 <strong>1,000–5,800 億美元</strong>。
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://unfccc.int/news/cop28-agreement-signals-beginning-of-the-end-of-the-fossil-fuel-era" target="_blank" rel="noopener">聯合國氣候變化框架公約 — COP28 成果</a></div>
+</section>
+
+<!-- ===== 7. 活動二過場 ===== -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>系統裡的共犯結構</h2>
+    <p class="subtitle">57 家公司、1 兆補貼、1% 富豪</p>
+  </div>
+</section>
+
+<!-- ===== 8. Carbon Majors ===== -->
+<section class="slide" id="slide-carbon-majors">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>57 家公司 = 全球 80% 工業碳排放</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：Carbon Majors 57 家公司氣泡圖，前 20 名高亮]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>57 家公司 → 80% 工業碳排放；前 20 家 → 近 35%（1854–2022）</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>若能讓這 57 家改變行為，就改變了 80% 的排放結構——這叫「槓桿點思考」</figcaption>
+    </figure>
+    <p style="text-align: center; margin-top: 14px; font-size: 1rem;">
+      <strong>學生任務：</strong>將公司分類為「國營／私營／國家石油公司」，查詢臺灣供應鏈連結
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://carbonmajors.org/" target="_blank" rel="noopener">InfluenceMap — Carbon Majors 資料庫（2024 更新）</a></div>
+</section>
+
+<!-- ===== 9. 1 兆補貼 ===== -->
+<section class="slide" id="slide-subsidy">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>1 兆美元的矛盾</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card emitter">
+        <div class="clabel">化石燃料直接補貼</div>
+        <div style="font-size: 3rem; font-weight: 800; color: var(--c-warn);">~1 兆</div>
+        <div style="color: var(--c-muted);">美元（2022 年全球政府）</div>
+        <div style="margin-top: 10px; font-size: 0.9rem;">= 約 67 萬座陸域風機</div>
+      </div>
+      <div class="compare-card victim">
+        <div class="clabel">氣候融資流向開發中國家</div>
+        <div style="font-size: 3rem; font-weight: 800; color: var(--c-cog);">~890 億</div>
+        <div style="color: var(--c-muted);">美元（同年）</div>
+        <div style="margin-top: 10px; font-size: 0.9rem;">差距超過 <strong>10 倍</strong></div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px; color: var(--c-warn); font-weight: 600;">
+      嘴上說減碳，手上在補貼——這就是「對當權者有利的有害制度」
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.iea.org/reports/fossil-fuels-consumption-subsidies-2022" target="_blank" rel="noopener">國際能源署 — 2022 年化石燃料消費補貼報告</a></div>
+</section>
+
+<!-- ===== 10. 階級碳不平等 ===== -->
+<section class="slide" id="slide-inequality">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>1% vs 66%：階級碳不平等</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：樂施會「99%」報告 — 1% vs 66% 排放對比圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>最富有的 1% 排放量 ＝ 最貧窮 66% 的總和（2019）；一位億萬富豪 = 後段收入者 1,500 年排放</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>氣候不正義不只是「國家 vs 國家」，更是「階級 vs 階級」</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1rem; margin-top: 14px;">
+      臺灣人均碳排 2022 年約 10.96 噸，位居全球前段班——我們不能只指責別國。
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.oxfam.org/en/research/climate-equality-planet-99" target="_blank" rel="noopener">樂施會《氣候平等：屬於 99% 的地球》（2023）</a></div>
+</section>
+
+<!-- ===== 11. 活動三過場 ===== -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>在地化：殖民史與氣候脆弱性</h2>
+    <p class="subtitle">從大航海、日治到原住民族部落的連續性</p>
+  </div>
+</section>
+
+<!-- ===== 12. 歷史時間軸 ===== -->
+<section class="slide" id="slide-history">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>氣候不正義的歷史根源</h2>
+  <div class="slide-body">
+    <div class="timeline">
+      <div class="tl-row">
+        <div class="tl-year">16 世紀</div>
+        <div class="tl-content">大航海時代：殖民列強無差別掠奪資源，奠定不平等的全球分工</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-year">18 世紀</div>
+        <div class="tl-content">工業革命：英國燃煤大量排放，1882 年前超過全球累積排放的一半</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-year">19 世紀</div>
+        <div class="tl-content">殖民化高峰：亞非拉以「原料供給地」身分嵌入全球經濟體系</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-year">1950+ </div>
+        <div class="tl-content">戰後碳排飆升：先進國家工業化完成，開發中國家被要求「不要再排」</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 14px; color: var(--c-accent); font-weight: 600;">
+      歷史結構 → 延續的脆弱性——這不是遙遠的過去，而是今天的現實
+    </p>
+  </div>
+  <div class="slide-source">參考資料：<a href="https://raw.githubusercontent.com/yujchang2017/edurepo/main/docs/0230_GS_%E4%BA%8C%E3%80%81%E5%A4%A7%E8%88%AA%E6%B5%B7%E6%99%82%E4%BB%A3-%E7%84%A1%E5%B7%AE%E5%88%A5%E6%8E%A0%E5%A5%AA.pdf" target="_blank" rel="noopener">大航海時代—無差別掠奪（教學課程資料）</a></div>
+</section>
+
+<!-- ===== 13. 臺灣殖民結構 ===== -->
+<section class="slide" id="slide-taiwan-colonial">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>農業臺灣、工業日本：歷史連續性</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：日治時期農業出口結構圖 + 今日原住民族脆弱地圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>50 年殖民（1895–1945）：稻米、糖、樟腦系統性出口；今日部落仍面臨土地與水資源劣勢</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>分組回應：「誰的土地？誰的水？誰的排放？」</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    <a href="https://ourisland.pts.org.tw/content/1010" target="_blank" rel="noopener">公視《我們的島》— 水稻視界</a>・
+    <a href="https://ourisland.pts.org.tw/content/2067" target="_blank" rel="noopener">在子孫的土地上（布農族潭南部落）</a>
+  </div>
+</section>
+
+<!-- ===== 14. 柬埔寨案例 ===== -->
+<section class="slide" id="slide-cambodia">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>柬埔寨汞汙泥（1998）：誰獲利？誰承擔？</h2>
+  <div class="slide-body">
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>誰獲利？</th>
+          <th>誰承擔？</th>
+          <th>誰發聲？</th>
+          <th>誰沉默？</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td>
+        </tr>
+        <tr>
+          <td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size: 1rem; margin-top: 14px;">
+      臺灣企業把含汞廢棄物以「水泥原料」名義輸往柬埔寨，造成居民中毒——<br>
+      同樣的邏輯今天仍在運作：<strong>舊衣、電子廢棄物、塑膠廢料仍大量從北向南流。</strong>
+    </p>
+  </div>
+  <div class="slide-source"><a href="https://ourisland.pts.org.tw/content/1950" target="_blank" rel="noopener">公視《我們的島》— 柬埔寨台塑汞汙泥案</a></div>
+</section>
+
+<!-- ===== 15. 活動四過場 ===== -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>從憤怒到行動</h2>
+    <p class="subtitle">學生治理與公正轉型</p>
+  </div>
+</section>
+
+<!-- ===== 16. 五大路障 ===== -->
+<section class="slide" id="slide-roadblocks">
+  <div class="slide-tag">活動四・背景知識</div>
+  <h2>為什麼世界轉不動？五大路障</h2>
+  <div class="slide-body">
+    <div class="roadblock-grid">
+      <div class="roadblock-card">
+        <div class="icon">💰</div>
+        <div class="rtitle">補貼結構</div>
+        <p style="font-size: 0.85rem; color: #9a3412; margin: 4px 0 0;">取消補貼易激起民怨（法國黃背心）</p>
+      </div>
+      <div class="roadblock-card">
+        <div class="icon">🏛️</div>
+        <div class="rtitle">遊說力量</div>
+        <p style="font-size: 0.85rem; color: #9a3412; margin: 4px 0 0;">化石燃料業代表人數常多於小島國</p>
+      </div>
+      <div class="roadblock-card">
+        <div class="icon">🗳️</div>
+        <div class="rtitle">選舉週期</div>
+        <p style="font-size: 0.85rem; color: #9a3412; margin: 4px 0 0;">政客只看 4 年，氣候回報要 30 年</p>
+      </div>
+      <div class="roadblock-card">
+        <div class="icon">📈</div>
+        <div class="rtitle">既得利益</div>
+        <p style="font-size: 0.85rem; color: #9a3412; margin: 4px 0 0;">退休基金、主權基金深持石油股</p>
+      </div>
+      <div class="roadblock-card">
+        <div class="icon">🔒</div>
+        <div class="rtitle">資訊壟斷</div>
+        <p style="font-size: 0.85rem; color: #9a3412; margin: 4px 0 0;">一般人難以取得真實排放資料</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 17. 公正轉型工作坊 ===== -->
+<section class="slide" id="slide-just-transition">
+  <div class="slide-tag">活動四・步驟 2</div>
+  <h2>公正轉型：沒人被遺落</h2>
+  <div class="slide-body">
+    <div style="display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin: 16px 0;">
+      <div style="background: #eff6ff; border: 2px solid var(--c-cog); border-radius: 10px; padding: 16px;">
+        <div style="font-weight: 700; color: var(--c-cog); margin-bottom: 6px;">勞工角色</div>
+        <p style="font-size: 0.9rem; margin: 0;">煤礦工、石油工人需要再就業訓練與補償，不能被淨零進程遺棄</p>
+      </div>
+      <div style="background: #fff7ed; border: 2px solid var(--c-warn); border-radius: 10px; padding: 16px;">
+        <div style="font-weight: 700; color: var(--c-warn); margin-bottom: 6px;">企業角色</div>
+        <p style="font-size: 0.9rem; margin: 0;">需通過獨立驗證（如 SBTi），而非靠買碳權的漂綠承諾</p>
+      </div>
+      <div style="background: #f0fdf4; border: 2px solid var(--c-beh); border-radius: 10px; padding: 16px;">
+        <div style="font-weight: 700; color: var(--c-beh); margin-bottom: 6px;">原住民族角色</div>
+        <p style="font-size: 0.9rem; margin: 0;">土地主權、水資源、傳統知識必須被納入政策設計</p>
+      </div>
+      <div style="background: #fdf2f8; border: 2px solid var(--c-soc); border-radius: 10px; padding: 16px;">
+        <div style="font-weight: 700; color: var(--c-soc); margin-bottom: 6px;">學生青年角色</div>
+        <p style="font-size: 0.9rem; margin: 0;">你們不是未來的主人，是現在的利害關係人</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 14px; color: var(--c-accent); font-weight: 600;">
+      任務：協商「臺灣離岸風電開發應如何公正轉型」30 字公報
+    </p>
+  </div>
+  <div class="slide-source"><a href="https://adl.edu.tw/modules_new.php?op=modload&name=assignMission&file=ks_viewskill_new&ind=EDM-II-SD-J4-01-01&mid=99355#video" target="_blank" rel="noopener">公正轉型影片（教育部數位學習平台）</a></div>
+</section>
+
+<!-- ===== 18. 學生倡議三選一 ===== -->
+<section class="slide" id="slide-action-options">
+  <div class="slide-tag">活動四・步驟 3</div>
+  <h2>你的氣候正義行動，三選一</h2>
+  <div class="slide-body">
+    <div class="action-options">
+      <div class="action-card">
+        <div class="anum">選項 ①</div>
+        <h4>致信地方議員</h4>
+        <p style="font-size: 0.9rem; color: var(--c-muted);">用 CER 論證架構撰寫一封有數據支撐的倡議信，要求縣市設立氣候專責單位或提高調適預算</p>
+      </div>
+      <div class="action-card">
+        <div class="anum">選項 ②</div>
+        <h4>設計漂綠檢查表</h4>
+        <p style="font-size: 0.9rem; color: var(--c-muted);">檢核一個你熟悉的品牌：是否通過獨立驗證、是否計入供應鏈排放、碳抵換比例是否過高</p>
+      </div>
+      <div class="action-card">
+        <div class="anum">選項 ③</div>
+        <h4>社群媒體倡議</h4>
+        <p style="font-size: 0.9rem; color: var(--c-muted);">設計一則有資料來源的貼文，說明「你排的 ≠ 你受害的」，附數據標記可信來源</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 0.95rem; margin-top: 14px; color: var(--c-muted);">各組提交任務書：Claim–Evidence–Reasoning + SMART 行動指標</p>
+  </div>
+</section>
+
+<!-- ===== 19. WSA 校園氣候正義委員會 ===== -->
+<section class="slide" id="slide-wsa">
+  <div class="slide-tag">全校取徑</div>
+  <h2>校園氣候正義委員會</h2>
+  <div class="slide-body">
+    <div style="display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin: 16px 0;">
+      <div style="background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 8px; padding: 16px;">
+        <div style="font-weight: 700; color: var(--c-accent); margin-bottom: 6px;">治理</div>
+        <p style="font-size: 0.9rem; margin: 0;">學生議會（過半）+ 教師 2 位 + 家長 1 位 + 在地社區代表 1 位共同組成；提案送校務會議</p>
+      </div>
+      <div style="background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 8px; padding: 16px;">
+        <div style="font-weight: 700; color: var(--c-accent); margin-bottom: 6px;">課程</div>
+        <p style="font-size: 0.9rem; margin: 0;">歷史累積排放、Carbon Majors、公正轉型納入公民與社會跨科統整；資訊素養與媒體識讀</p>
+      </div>
+      <div style="background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 8px; padding: 16px;">
+        <div style="font-weight: 700; color: var(--c-accent); margin-bottom: 6px;">校園營運</div>
+        <p style="font-size: 0.9rem; margin: 0;">盤點制服、午餐供應商供應鏈；公開用電碳排儀表板；建立公正採購清單</p>
+      </div>
+      <div style="background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 8px; padding: 16px;">
+        <div style="font-weight: 700; color: var(--c-accent); margin-bottom: 6px;">社區合作</div>
+        <p style="font-size: 0.9rem; margin: 0;">與環保團體合辦「氣候正義週」；邀請漁民、原住民族耆老進校對話；參與縣市公聽會</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 20. 三關鍵句總結 ===== -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵句，帶走</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 句</div>
+        <div class="word" style="font-size: 1.6rem;">你排的≠你受害的</div>
+        <div class="desc">歷史累積排放集中在少數國家與階級，脆弱者卻付出最大代價</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 句</div>
+        <div class="word" style="font-size: 1.6rem;">57 家 vs 80 億</div>
+        <div class="desc">責任不均勻分布；指認結構，而非只責怪個人行為</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 句</div>
+        <div class="word" style="font-size: 1.6rem;">程序正義從校園開始</div>
+        <div class="desc">學生不是未來的主人，是現在的利害關係人</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      <strong style="color: var(--c-accent);">你的下一步：加入氣候委員會、寫一封倡議信、選一個品牌做漂綠檢查。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">20</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+
+</body>
+</html>

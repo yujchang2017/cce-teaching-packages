@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生物多樣性的演化：過去、現在與未來 投影片</title>
+<style>
+:root{--accent:#0f766e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;background:#1a1a2e;overflow:hidden;height:100vh}
+.topbar{position:fixed;top:0;left:0;right:0;height:44px;background:rgba(15,118,110,.95);backdrop-filter:blur(8px);display:flex;align-items:center;gap:16px;padding:0 20px;z-index:100;border-bottom:1px solid rgba(255,255,255,.15)}
+.topbar a{color:#fff;text-decoration:none;font-size:.85rem;opacity:.85;white-space:nowrap;border-bottom:1px dashed rgba(255,255,255,.4);padding-bottom:1px}
+.topbar a:hover{opacity:1;border-bottom-style:solid}
+.topbar .title{color:#fff;font-size:.95rem;font-weight:600;flex:1;text-align:center}
+.navbar{position:fixed;bottom:0;left:0;right:0;height:38px;background:rgba(15,118,110,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;gap:24px;z-index:100;border-top:1px solid rgba(255,255,255,.15)}
+.navbar .page-num{color:#fff;font-size:.85rem;font-weight:600;min-width:80px;text-align:center}
+.navbar .hint{color:rgba(255,255,255,.7);font-size:.78rem}
+.viewport{height:100vh;padding-top:44px;padding-bottom:38px;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth}
+.slide{height:100%;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:48px 60px;position:relative}
+.slide-cover{background:linear-gradient(135deg,#0f766e 0%,#134e4a 50%,#1a1a2e 100%);color:#fff}
+.slide-question{background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%);color:#fff}
+.slide-divider{background:linear-gradient(135deg,#134e4a 0%,#0f766e 100%);color:#fff}
+.slide-content{background:#fff;color:#1f2937}
+.slide-summary{background:linear-gradient(135deg,#064e3b 0%,#0f766e 100%);color:#fff}
+.cover-tag{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 16px;font-size:.8rem;letter-spacing:.1em;margin-bottom:20px}
+.cover-title{font-size:2.4rem;font-weight:800;line-height:1.3;text-align:center;margin-bottom:16px}
+.cover-sub{font-size:1.1rem;opacity:.8;text-align:center;margin-bottom:32px}
+.cover-meta{display:flex;gap:24px;flex-wrap:wrap;justify-content:center}
+.cover-meta span{background:rgba(255,255,255,.12);padding:6px 16px;border-radius:20px;font-size:.85rem}
+.big-q{font-size:2rem;font-weight:700;text-align:center;line-height:1.5;max-width:700px}
+.big-q-lead{font-size:1rem;opacity:.75;margin-bottom:24px;letter-spacing:.05em}
+.divider-label{background:rgba(255,255,255,.15);border-radius:6px;padding:4px 14px;font-size:.85rem;margin-bottom:16px;letter-spacing:.08em}
+.divider-title{font-size:2rem;font-weight:700;text-align:center;margin-bottom:12px}
+.divider-desc{font-size:1rem;opacity:.78;text-align:center;max-width:500px}
+.slide-inner{width:100%;max-width:760px}
+.slide-heading{font-size:1.5rem;font-weight:700;color:#0f766e;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid #e5e7eb}
+.slide-heading .tag{background:#0f766e;color:#fff;border-radius:4px;padding:2px 10px;font-size:.8rem;margin-right:10px;font-weight:600}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
+.content-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px}
+.content-card h4{font-size:.95rem;font-weight:700;color:#0f766e;margin-bottom:10px}
+.content-card ul{padding-left:1.2em}
+.content-card li{font-size:.9rem;margin:5px 0;line-height:1.5}
+.chart-placeholder{background:#f9fafb;border:2px dashed #9ca3af;border-radius:8px;padding:32px 20px;text-align:center;color:#6b7280;margin:16px 0}
+.chart-placeholder .chart-title{font-size:.9rem;font-weight:600;color:#4b5563;margin-bottom:8px}
+.chart-placeholder .chart-desc{font-size:.82rem;line-height:1.6}
+.data-highlight{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-left:4px solid #059669;border-radius:6px;padding:12px 16px;margin:12px 0}
+.data-highlight .num{font-size:1.8rem;font-weight:800;color:#059669}
+.data-highlight .label{font-size:.85rem;color:#374151;margin-top:4px}
+.data-row{display:flex;gap:16px;margin:12px 0}
+.data-row .data-highlight{flex:1}
+.bullet-list{list-style:none;padding-left:0;margin:12px 0}
+.bullet-list li{padding:8px 0;border-top:1px dashed #e5e7eb;font-size:.92rem;line-height:1.55}
+.bullet-list li:first-child{border-top:none}
+.bullet-list li::before{content:"▸ ";color:#0f766e;font-weight:700}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0}
+.col-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:12px}
+.col-card .col-head{font-size:.82rem;font-weight:700;color:#fff;background:#0f766e;border-radius:4px;padding:3px 8px;margin-bottom:8px;display:inline-block}
+.col-card ul{padding-left:1.2em}
+.col-card li{font-size:.82rem;margin:3px 0}
+.wsa-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.wsa-card{border-radius:8px;padding:12px 14px;border:1px solid #e5e7eb}
+.wsa-card.gov{background:#eff6ff;border-left:4px solid #2563eb}
+.wsa-card.cur{background:#fdf2f8;border-left:4px solid #db2777}
+.wsa-card.ops{background:#ecfdf5;border-left:4px solid #16a34a}
+.wsa-card.com{background:#fff7ed;border-left:4px solid #ea580c}
+.wsa-card h4{font-size:.88rem;font-weight:700;margin-bottom:6px}
+.wsa-card ul{padding-left:1.1em}
+.wsa-card li{font-size:.8rem;margin:3px 0}
+.summary-keywords{display:flex;gap:24px;justify-content:center;margin:32px 0}
+.kw{text-align:center}
+.kw .kw-word{font-size:1.6rem;font-weight:800;margin-bottom:6px}
+.kw .kw-desc{font-size:.85rem;opacity:.8}
+.source-tag{font-size:.75rem;color:#9ca3af;margin-top:6px}
+.timeline-row{display:flex;gap:8px;margin:14px 0;overflow-x:auto;padding-bottom:4px}
+.tl-item{flex:1;min-width:100px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px 8px;text-align:center;font-size:.78rem}
+.tl-item .tl-age{font-weight:700;color:#0f766e;font-size:.85rem;margin-bottom:4px}
+.tl-item .tl-event{color:#374151}
+.iucn-bar{display:flex;gap:6px;margin:12px 0;align-items:flex-end;height:100px}
+.iucn-seg{flex:1;border-radius:4px 4px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-size:.7rem;font-weight:700;color:#fff}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="lesson_plan.html">← 回教案</a>
+  <span class="title">生物多樣性的演化：過去、現在與未來（2.2-V）</span>
+</div>
+
+<div class="navbar">
+  <span class="hint">← →  切換投影片</span>
+  <span class="page-num" id="page-num">1 / 18</span>
+  <span class="hint">PageUp PageDn</span>
+</div>
+
+<div class="viewport" id="viewport">
+
+<!-- slide-cover -->
+<section class="slide slide-cover" id="slide-cover">
+  <div class="cover-tag">Level V ｜ 16–18 歲 ｜ Key ID 2.2-V</div>
+  <div class="cover-title">生命之樹的演化<br>——過去、現在與未來</div>
+  <div class="cover-sub">生物多樣性的演化：過去、現在與未來</div>
+  <div class="cover-meta">
+    <span>4 節課 × 50 分鐘</span>
+    <span>4 大活動</span>
+    <span>38 億年的生命史</span>
+  </div>
+</section>
+
+<!-- slide-question -->
+<section class="slide slide-question" id="slide-question">
+  <div class="big-q-lead">核心思辨問題</div>
+  <div class="big-q">長頸鹿努力伸脖子吃高處的樹葉，<br>下一代的脖子就會更長嗎？</div>
+</section>
+
+<!-- 活動一分隔 -->
+<section class="slide slide-divider" id="slide-a1">
+  <div class="divider-label">活動一</div>
+  <div class="divider-title">演化的時間尺度與機制</div>
+  <div class="divider-desc">天擇、突變、表觀遺傳——演化作用於族群，而非個體</div>
+</section>
+
+<!-- slide-natural-selection -->
+<section class="slide slide-content" id="slide-natural-selection">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">概念</span>天擇機制與突變類型</div>
+    <div class="content-grid">
+      <div class="content-card">
+        <h4>天擇路徑</h4>
+        <ul>
+          <li>突變 → 個體間變異</li>
+          <li>有利變異 → 差異繁殖成功</li>
+          <li>多世代後 → 族群基因頻率改變</li>
+          <li>關鍵：演化作用於族群，個體無法因努力而改變 DNA</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h4>突變類型對比</h4>
+        <ul>
+          <li><strong>點突變</strong>：取代、插入、缺失（單一鹼基層級）</li>
+          <li><strong>染色體突變</strong>：倒位、易位、缺失（染色體結構）</li>
+          <li><strong>基因體突變</strong>：多倍體化（整組染色體加倍）</li>
+          <li><strong>表觀遺傳</strong>：DNA 甲基化等，不改變序列但影響表現，可跨代遺傳</li>
+        </ul>
+      </div>
+    </div>
+    <div class="data-highlight" style="margin-top:12px">
+      <div class="label">案例：荷蘭「飢餓之冬 1944」——母親在孕期饑荒的後代，數十年後仍顯示出糖代謝異常，展示表觀遺傳的跨代效應。</div>
+    </div>
+  </div>
+</section>
+
+<!-- slide-molclock -->
+<section class="slide slide-content" id="slide-molclock">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">資料</span>分子鐘：用 DNA 序列推算演化時間</div>
+    <div class="data-highlight">
+      <div class="num">400–600 萬年前</div>
+      <div class="label">分子鐘推算的人類與黑猩猩共同祖先分歧時間（Sarich &amp; Wilson 1967）——改寫了先前化石估計的 1,500 萬年</div>
+    </div>
+    <ul class="bullet-list">
+      <li>原理：中性突變以相對穩定的速率累積，比較物種間 DNA 序列差異可推算分歧時間</li>
+      <li>由 Zuckerkandl 與 Pauling（1962）提出</li>
+      <li>分子鐘不是精準碼表：世代時間、族群大小、選擇壓力都會影響突變速率，現代方法使用「鬆弛分子鐘模型」校正</li>
+      <li>重要澄清：人類與黑猩猩是「表親」而非直系；現存黑猩猩也經歷了各自的演化</li>
+    </ul>
+    <div class="source-tag">資料來源：Zuckerkandl &amp; Pauling (1962)；Sarich &amp; Wilson (1967)；維基百科分子鐘條目</div>
+  </div>
+</section>
+
+<!-- 活動二分隔 -->
+<section class="slide slide-divider" id="slide-a2">
+  <div class="divider-label">活動二</div>
+  <div class="divider-title">地質變遷與生物多樣性格局</div>
+  <div class="divider-desc">板塊構造、大氧化事件、五次大滅絕——地球 46 億年的生命舞台</div>
+</section>
+
+<!-- slide-tectonics -->
+<section class="slide slide-content" id="slide-tectonics">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">資料</span>板塊構造與物種地理分布</div>
+    <div class="chart-placeholder">
+      <div class="chart-title">【圖表佔位】盤古大陸分裂與華萊士線示意圖</div>
+      <div class="chart-desc">
+        盤古大陸（約 3.35 至 1.75 億年前）→ 板塊分裂 → 地理隔離 → 異域種化<br>
+        華萊士線（印尼群島）：西側亞洲區系（有胎盤哺乳類）↔ 東側澳洲區系（有袋類）<br>
+        板塊年移動速率：1–10 公分
+      </div>
+    </div>
+    <div class="content-grid">
+      <div class="content-card">
+        <h4>盤古大陸時期</h4>
+        <ul>
+          <li>全球生物群系高度相似</li>
+          <li>同一種生物可遍布各大陸</li>
+          <li>化石證據：南美洲東岸與非洲西岸岩層吻合</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h4>板塊分裂後</h4>
+        <ul>
+          <li>地理隔離 → 各大陸生物獨立演化</li>
+          <li>形成今日生物地理分區</li>
+          <li>解釋：為何澳洲以有袋類為主、馬達加斯加多特有種</li>
+        </ul>
+      </div>
+    </div>
+    <div class="source-tag">資料來源：美國地質調查局地震科學中心</div>
+  </div>
+</section>
+
+<!-- slide-atmosphere -->
+<section class="slide slide-content" id="slide-atmosphere">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">資料</span>大氧化事件：生命改變了地球大氣</div>
+    <div class="data-row">
+      <div class="data-highlight"><div class="num">24 億年前</div><div class="label">大氧化事件（GOE）發生時間</div></div>
+      <div class="data-highlight"><div class="num">&lt;0.001% → 數%</div><div class="label">大氣氧氣濃度在 GOE 前後的變化</div></div>
+    </div>
+    <ul class="bullet-list">
+      <li>早期地球大氣以二氧化碳、甲烷、氨為主，幾乎無氧（還原性大氣）</li>
+      <li>藍綠菌進行光合作用大量產氧 → 大氣轉變為氧化性</li>
+      <li>結果一（壞）：大量厭氧生物因「氧氣污染」而滅絕——第一場生物浩劫</li>
+      <li>結果二（好）：有氧代謝效率遠高於無氧代謝 → 為後續複雜動物演化鋪路</li>
+      <li>洞見：生命不只是被動適應環境，還主動改變了環境</li>
+    </ul>
+    <div class="source-tag">資料來源：Lyons et al. (2014) Nature；Holland (2006) Phil. Trans. Royal Soc.</div>
+  </div>
+</section>
+
+<!-- slide-extinction -->
+<section class="slide slide-content" id="slide-extinction">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">資料</span>五次大滅絕與第六次爭論</div>
+    <div class="timeline-row">
+      <div class="tl-item"><div class="tl-age">4.44 億年前</div><div class="tl-event">奧陶紀末<br>85% 物種消失</div></div>
+      <div class="tl-item"><div class="tl-age">3.72 億年前</div><div class="tl-event">泥盆紀末<br>海洋生物大量滅絕</div></div>
+      <div class="tl-item" style="background:#fee2e2;border-color:#ef4444"><div class="tl-age" style="color:#991b1b">2.52 億年前</div><div class="tl-event" style="color:#991b1b"><strong>二疊紀末<br>96% 海洋物種消失<br>史上最嚴重</strong></div></div>
+      <div class="tl-item"><div class="tl-age">2.01 億年前</div><div class="tl-event">三疊紀末<br>爬行類多樣化</div></div>
+      <div class="tl-item"><div class="tl-age">6,600 萬年前</div><div class="tl-event">白堊紀末<br>恐龍滅絕<br>（小行星撞擊）</div></div>
+      <div class="tl-item" style="background:#fef3c7;border-color:#f59e0b"><div class="tl-age" style="color:#92400e">現在？</div><div class="tl-event" style="color:#92400e"><strong>第六次大滅絕<br>爭論中</strong></div></div>
+    </div>
+    <div class="data-highlight">
+      <div class="label">Barnosky et al. (2011) Nature：若當前物種喪失速率持續，未來數百年內可能達到第六次大滅絕門檻——但仍有時間阻止。</div>
+    </div>
+    <div class="source-tag">資料來源：Barnosky et al. (2011) Nature；跨政府生物多樣性與生態系服務平台 2019</div>
+  </div>
+</section>
+
+<!-- 活動三分隔 -->
+<section class="slide slide-divider" id="slide-a3">
+  <div class="divider-label">活動三</div>
+  <div class="divider-title">瀕危物種與生物多樣性數據</div>
+  <div class="divider-desc">國際自然保育聯盟紅色名錄、蜜蜂危機、現今物種適應——數據如何說話？</div>
+</section>
+
+<!-- slide-iucn -->
+<section class="slide slide-content" id="slide-iucn">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">資料</span>國際自然保育聯盟紅色名錄：各類群受威脅比例</div>
+    <div class="data-row">
+      <div class="data-highlight"><div class="num">150,388 種</div><div class="label">已評估物種總數（v2023）</div></div>
+      <div class="data-highlight"><div class="num">42,108 種</div><div class="label">受威脅物種數（極危＋瀕危＋易危）</div></div>
+    </div>
+    <div class="chart-placeholder">
+      <div class="chart-title">【圖表佔位】各類群受威脅比例長條圖</div>
+      <div class="chart-desc">
+        兩棲類 41% ｜ 造礁珊瑚 33% ｜ 針葉樹 30% ｜ 哺乳類 25% ｜ 鳥類 13%<br>
+        臺灣案例：歐亞水獺在臺灣評為「國家極危（NCR）」，但國際自然保育聯盟全球評級僅為「近危（NT）」——同一物種，尺度不同，優先次序不同
+      </div>
+    </div>
+    <div class="source-tag">資料來源：國際自然保育聯盟紅色名錄 v2023；農業部生物多樣性研究所</div>
+  </div>
+</section>
+
+<!-- slide-bees -->
+<section class="slide slide-content" id="slide-bees">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">資料</span>蜜蜂危機：多因素系統思考</div>
+    <div class="data-row">
+      <div class="data-highlight"><div class="num">75%</div><div class="label">全球農作物依賴蜜蜂授粉服務的比例</div></div>
+      <div class="data-highlight"><div class="num">2,350 億美元</div><div class="label">蜜蜂授粉服務每年經濟價值</div></div>
+    </div>
+    <div class="chart-placeholder">
+      <div class="chart-title">【圖表佔位】蜂群衰竭失調（CCD）多因素交互圖</div>
+      <div class="chart-desc">
+        新菸鹼類殺蟲劑 × 棲地喪失 × 蛙壺菌病原 × 營養失調 × 氣候變遷<br>
+        → 工蜂大量消失 → 蜂群崩潰 → 授粉服務中斷 → 農作物減產<br>
+        思考：這五個因素彼此交互作用，移除哪一個最能遏制 CCD？
+      </div>
+    </div>
+    <div class="source-tag">資料來源：跨政府生物多樣性與生態系服務平台 授粉者評估報告（2016）</div>
+  </div>
+</section>
+
+<!-- 活動四分隔 -->
+<section class="slide slide-divider" id="slide-a4">
+  <div class="divider-label">活動四</div>
+  <div class="divider-title">行動、倫理與 Whole School Approach</div>
+  <div class="divider-desc">公民科學實作、學生議會模擬、倫理兩難辯論</div>
+</section>
+
+<!-- slide-ethics -->
+<section class="slide slide-content" id="slide-ethics">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">思辨</span>倫理兩難：保育 vs 生存權</div>
+    <div class="content-grid">
+      <div class="content-card">
+        <h4>情境</h4>
+        <ul>
+          <li>某地區發現極危物種棲地，但當地居民已世代居住</li>
+          <li>保護該棲地需要限制甚至遷移居民</li>
+          <li>問題：物種的生存權 vs 人的生存權，孰輕孰重？</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h4>思考框架</h4>
+        <ul>
+          <li>在地社區的傳統知識可能是保育資源，而非障礙</li>
+          <li>原住民管理的土地，生物多樣性往往高於正式保護區</li>
+          <li>共管模式：社區參與保育，分享保育利益</li>
+          <li>你的論點需要數據支持，不能只靠直覺</li>
+        </ul>
+      </div>
+    </div>
+    <div class="data-highlight" style="margin-top:12px">
+      <div class="label">論證架構要求：正反方各需引用至少 2 項數據資料，說明理由，並針對對方最強論點提出反駁。</div>
+    </div>
+  </div>
+</section>
+
+<!-- slide-wsa-22 -->
+<section class="slide slide-content" id="slide-wsa-22">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">行動</span>Whole School Approach 四面向</div>
+    <div class="wsa-grid">
+      <div class="wsa-card gov">
+        <h4>治理 Governance</h4>
+        <ul>
+          <li>成立「生物多樣性學生議會」</li>
+          <li>學生代表提案送校務會議</li>
+          <li>定期召開校園生態盤點會議</li>
+        </ul>
+      </div>
+      <div class="wsa-card cur">
+        <h4>課程 Curriculum</h4>
+        <ul>
+          <li>生物：演化與遺傳</li>
+          <li>地科：板塊與地質年代</li>
+          <li>公民：國際公約與治理</li>
+          <li>資訊：公民科學數據分析</li>
+        </ul>
+      </div>
+      <div class="wsa-card ops">
+        <h4>校園營運 Operations</h4>
+        <ul>
+          <li>校園生態調查（鳥類/昆蟲/植物物候）</li>
+          <li>原生植栽復育、減少農藥</li>
+          <li>營養午餐食材來源透明化</li>
+        </ul>
+      </div>
+      <div class="wsa-card com">
+        <h4>社群 Community</h4>
+        <ul>
+          <li>與荒野保護協會、特生中心合作</li>
+          <li>參與 eBird、iNaturalist 公民科學</li>
+          <li>社區生態導覽</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- slide-summary -->
+<section class="slide slide-summary" id="slide-summary">
+  <div class="summary-keywords">
+    <div class="kw">
+      <div class="kw-word">漫長</div>
+      <div class="kw-desc">演化需要多世代<br>地質變遷塑造分布</div>
+    </div>
+    <div class="kw">
+      <div class="kw-word">危急</div>
+      <div class="kw-desc">100 萬物種受威脅<br>第六次大滅絕爭論中</div>
+    </div>
+    <div class="kw">
+      <div class="kw-word">行動</div>
+      <div class="kw-desc">公民科學記錄<br>政策倡議改變規則</div>
+    </div>
+  </div>
+  <div style="text-align:center;opacity:.8;font-size:.95rem;max-width:600px">
+    每一種生物都是千百萬年適應與存活的成果。生命之樹的每一根枝椏都值得守護——而守護的行動，從你今天拍下的第一張物種照片開始。
+  </div>
+</section>
+
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const pageNum = document.getElementById('page-num');
+const total = slides.length;
+const viewport = document.getElementById('viewport');
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const idx = Array.from(slides).indexOf(e.target);
+      pageNum.textContent = (idx + 1) + ' / ' + total;
+    }
+  });
+}, { root: viewport, threshold: 0.5 });
+slides.forEach(s => obs.observe(s));
+
+document.addEventListener('keydown', e => {
+  const idx = Array.from(slides).findIndex(s => {
+    const r = s.getBoundingClientRect();
+    return r.top >= -10 && r.top < window.innerHeight / 2;
+  });
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') {
+    e.preventDefault();
+    if (idx < total - 1) slides[idx + 1].scrollIntoView({ behavior: 'smooth' });
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+    e.preventDefault();
+    if (idx > 0) slides[idx - 1].scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+const hash = location.hash.slice(1);
+if (hash) {
+  const target = document.getElementById(hash);
+  if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+}
+</script>
+</body>
+</html>

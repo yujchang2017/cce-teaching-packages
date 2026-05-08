@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>轉型的未來:氣候正義與公正轉型 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text);
+    line-height: 1.6;
+    margin: 0;
+    background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 44px; background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center;
+    padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 36px; background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px;
+    border: 1px solid var(--c-border); border-bottom-width: 2px;
+    border-radius: 4px; font-family: monospace; font-size: 0.8em;
+    background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px);
+    scroll-snap-align: start;
+    padding: 40px 60px;
+    display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .question-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 30px 0; }
+  .question-card {
+    background: var(--c-bg); border: 2px solid var(--c-accent);
+    border-radius: 12px; padding: 24px; font-size: 1.15rem;
+    text-align: center; color: var(--c-text); position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px;
+    background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%;
+    font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+
+  .ws-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1.05rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 14px 16px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px);
+    height: 48px;
+  }
+
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px; background: var(--c-bg); max-width: 720px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+
+  .triangle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 20px 0; }
+  .triangle-card {
+    border: 2px solid var(--c-accent); border-radius: 12px;
+    padding: 22px; text-align: center; background: #fff;
+  }
+  .triangle-card .badge {
+    display: inline-block; background: var(--c-accent); color: #fff;
+    padding: 4px 14px; border-radius: 20px; font-size: 0.85rem;
+    font-weight: 700; margin-bottom: 10px;
+  }
+  .triangle-card h3 { margin: 4px 0; color: var(--c-text); }
+  .triangle-card p { font-size: 0.95rem; color: var(--c-muted); margin: 8px 0 0; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .data-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 20px 0; }
+  .data-card-item {
+    border: 2px solid var(--c-accent); border-radius: 12px;
+    padding: 20px 12px; text-align: center; background: var(--c-bg);
+  }
+  .data-card-item .num { font-size: 1.9rem; font-weight: 800; color: var(--c-accent); }
+  .data-card-item .lbl { font-size: 0.85rem; color: var(--c-muted); margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">轉型的未來:氣候正義與公正轉型 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>轉型的未來:誰的未來?</h2>
+    <p class="subtitle">氣候正義與公正轉型|國中 Level IV</p>
+    <p style="margin-top: 30px; color: var(--c-text); font-size: 1.15rem;">
+      造成氣候變遷的人 ≠ 承擔後果的人
+    </p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>同一場氣候危機,為什麼承受的人不一樣?</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="icon">🛥️</div>
+        <div class="label">高排放群體</div>
+        <h3>豪華消費</h3>
+        <p>排碳多,卻有資源避災</p>
+      </div>
+      <div class="compare-card right">
+        <div class="icon">🏚️</div>
+        <div class="label">低排放群體</div>
+        <h3>受災家庭</h3>
+        <p>排碳少,卻先承受洪水、熱浪</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      這就是<strong style="color: var(--c-warn);">氣候不正義</strong>——責任、分配、程序都失衡。
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>誰造成、誰承受?</h2>
+    <p class="subtitle">看見排放的不正義</p>
+  </div>
+</section>
+
+<!-- 4. 暖身提問 -->
+<section class="slide" id="slide-warmup">
+  <div class="slide-tag">活動一・步驟 1</div>
+  <h2>暖身問答</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>誰排放最多溫室氣體?</div>
+      <div class="question-card"><div class="q-num">2</div>誰最先受到氣候災害衝擊?</div>
+      <div class="question-card"><div class="q-num">3</div>這兩群人是同一群嗎?</div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 30px; color: var(--c-accent);">
+      <strong>把責任「平均分配」,公平嗎?</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 5. 排放不平等對比 -->
+<section class="slide" id="slide-emission-gap">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>最富 10% vs 最貧 50%:誰在排碳?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:排放不平等長條圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>最富 10% 人口貢獻全球約 50% 碳排;最貧 50% 僅貢獻約 12%。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖:全球碳排集中於少數人</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      造成危機的人少,受害的人多——這就是結構性不平等。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.unep.org/resources/emissions-gap-report-2023" target="_blank" rel="noopener">聯合國環境署 — 2023 排放差距報告</a>
+  </div>
+</section>
+
+<!-- 6. 氣候正義三角 -->
+<section class="slide" id="slide-justice-triangle">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>氣候正義:三個核心提問</h2>
+  <div class="slide-body">
+    <div class="triangle-grid">
+      <div class="triangle-card">
+        <div class="badge">責 任</div>
+        <h3>誰造成?</h3>
+        <p>過去誰排碳最多?歷史責任怎麼算?</p>
+      </div>
+      <div class="triangle-card">
+        <div class="badge">分 配</div>
+        <h3>誰受害、誰得利?</h3>
+        <p>轉型成本與好處,公平分配了嗎?</p>
+      </div>
+      <div class="triangle-card">
+        <div class="badge">程 序</div>
+        <h3>誰能參與決策?</h3>
+        <p>受影響最深的人,有沒有被聽見?</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 24px; color: var(--c-muted);">
+      用這三個問題,檢視任何一個「綠色」政策是否真的公正。
+    </p>
+  </div>
+</section>
+
+<!-- 7. 1.32 億人陷貧 -->
+<section class="slide" id="slide-poverty">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>不行動的代價:1.32 億人陷貧</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:災害熱點地圖+人口符號]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>若無氣候行動,2030 年前恐有 1.32 億人被推入貧困。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖:氣候災害的脆弱性加乘效應</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      氣候行動不只是減碳——它是<strong>扶貧、人權、社會安全網</strong>的綜合戰略。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.worldbank.org/en/topic/climatechange/publication/shock-waves-managing-the-impacts-of-climate-change-on-poverty" target="_blank" rel="noopener">世界銀行 — 衝擊波:氣候變遷對貧困的影響</a>
+  </div>
+</section>
+
+<!-- 8. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>原住民的智慧與歷史的集體行動</h2>
+    <p class="subtitle">多元知識與制度改變的力量</p>
+  </div>
+</section>
+
+<!-- 9. 原住民守護力 -->
+<section class="slide" id="slide-indigenous">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>原住民守護全球 80% 生物多樣性</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:5% 土地 vs 80% 生物多樣性 圓餅圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>原住民僅擁有約 5% 陸地面積,卻守護全球約 80% 剩餘生物多樣性。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖:多元認知方式的價值</figcaption>
+    </figure>
+    <div class="three-col" style="margin-top: 24px;">
+      <div class="col-card fam">
+        <h4>布農族</h4>
+        <ul><li>輪耕制——讓土地休息</li></ul>
+      </div>
+      <div class="col-card sch">
+        <h4>排灣族</h4>
+        <ul><li>小米保種——保留作物多樣性</li></ul>
+      </div>
+      <div class="col-card com">
+        <h4>達悟族</h4>
+        <ul><li>海洋禁漁期——資源永續使用</li></ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.fao.org/newsroom/detail/FAO-UN-new-report-forest-governance-indigenous-tribal-peoples-Latin-America-Caribbean/en" target="_blank" rel="noopener">聯合國糧農組織 — 拉美原住民與部落森林治理報告</a>
+  </div>
+</section>
+
+<!-- 10. 歷史的鏡子 -->
+<section class="slide" id="slide-history">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>歷史的鏡子:集體行動如何改變制度</h2>
+  <div class="slide-body">
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>運動</th>
+          <th>時間 / 地點</th>
+          <th>結果</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Chipko 抱樹運動</td><td>1973 印度</td><td>促成森林法改革</td></tr>
+        <tr><td>美國民權運動</td><td>1963 華盛頓大遊行</td><td>推動民權法案</td></tr>
+        <tr><td>反種族隔離運動</td><td>1980-90 年代南非</td><td>建立平等憲政體制</td></tr>
+        <tr><td>RCA 女工集體訴訟</td><td>1990 年代台灣</td><td>歷史性賠償判決</td></tr>
+      </tbody>
+    </table>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      共通條件:<strong>組織・長期抗爭・敘事・跨群體結盟・堅持</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 11. 集體行動三關鍵字 (學習單投影版) -->
+<section class="slide" id="slide-collective-keys">
+  <div class="slide-tag">活動二・步驟 4・學習單(投影版)</div>
+  <h2>三個關鍵字:總結集體行動的力量</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      請寫下你認為「集體行動之所以成功」的三個關鍵字,並在組內輪流分享。
+    </p>
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">__</div>
+        <div class="desc">(自由填寫)</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">__</div>
+        <div class="desc">(自由填寫)</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">__</div>
+        <div class="desc">(自由填寫)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>治標還是治本?</h2>
+    <p class="subtitle">剖析氣候解方的公正性</p>
+  </div>
+</section>
+
+<!-- 13. 治標 vs 治本 樹比喻 -->
+<section class="slide" id="slide-tree">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>治標 vs 治本:一個診斷工具</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:大樹圖——樹葉(症狀)vs 樹根(根源)]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵概念:</strong>空汙發口罩=治標;關閉汙染源=治本。問問自己:這個解方在處理樹葉,還是樹根?</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖:症狀 vs 根本的診斷比喻</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 14. 電動車解剖 -->
+<section class="slide" id="slide-ev">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>案例解剖一:電動車轉型</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:電動車 vs 採礦場 對比照]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵爭點:</strong>駕駛端零排放,但鋰、鈷、鎳開採可能伴隨童工、汙染、原住民土地侵占——代價被外包到全球南方。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖:供應鏈正義的落差</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      問題不是「要不要電動車」,而是「要什麼樣的電動車轉型」?
+    </p>
+  </div>
+</section>
+
+<!-- 15. 碳稅解剖 -->
+<section class="slide" id="slide-carbon-tax">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>案例解剖二:碳稅</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:能源支出佔家庭收入比例 階梯圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵爭點:</strong>窮人能源支出佔收入比例較高,直接課碳稅會傷害弱勢——配合「碳紅利」退稅給低收入家庭才公正。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖:碳稅 + 碳紅利的配套設計</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      好工具需要好設計,否則會加深不平等。
+    </p>
+  </div>
+</section>
+
+<!-- 16. 種樹補償解剖 -->
+<section class="slide" id="slide-trees">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>案例解剖三:大規模種樹/碳補償</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:單一物種人工林 vs 原始森林 對比圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵爭點:</strong>許多碳補償專案在南方種速生單一林,驅趕原住民、傷害生態;讓北方繼續排碳,把責任「外包」南方。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖:種樹補償的公正風險</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      尊重原住民土地權、原生物種恢復、社區共管——才是真正的森林解方。
+    </p>
+  </div>
+</section>
+
+<!-- 17. 台灣公正轉型戰略 -->
+<section class="slide" id="slide-tw-just">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>台灣 2050 淨零:把「公正轉型」寫入戰略</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:12 戰略網格,圈出「公正轉型」]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵政策:</strong>2022 年國發會公布 12 項關鍵戰略,其中「公正轉型」獨立列為一項——明文照顧傳統產業、燃煤電廠員工、偏鄉與原住民社區。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖:台灣淨零路徑中的公正轉型戰略位置</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      政策已經寫了「不遺落任何人」——關鍵是執行,你我能否監督?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.ndc.gov.tw/Content_List.aspx?n=FD76ECBAE77D9811" target="_blank" rel="noopener">國家發展委員會 — 臺灣 2050 淨零排放路徑</a>
+  </div>
+</section>
+
+<!-- 18. 公正轉型價碼 -->
+<section class="slide" id="slide-finance">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>公正轉型的價碼:每年 1.5 兆美元</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:資金缺口示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>全球公正能源轉型每年需 1.5 兆美元,七成需投入新興與發展中國家;但目前發達國家僅提供約 1000 億美元氣候資金,缺口巨大。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖:公正轉型的資金規模與缺口</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      工業革命致富的國家,對受害最深的國家有什麼責任?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.iea.org/reports/world-energy-outlook-2023" target="_blank" rel="noopener">國際能源總署 — 2023 世界能源展望</a>
+  </div>
+</section>
+
+<!-- 19. 個人 vs 集體 -->
+<section class="slide" id="slide-personal-vs-system">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>個人行動 vs 集體行動:都要做</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">個 人 行 動</div>
+        <div class="icon">🧑</div>
+        <h3>道德基礎</h3>
+        <p>關燈、吃素、搭捷運<br>最多減少 30% 個人碳足跡</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">集 體 行 動</div>
+        <div class="icon">🤝</div>
+        <h3>結構槓桿</h3>
+        <p>投票、加入社團、寫信給議員<br>另外 70% 來自結構,需共同改變</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px; color: var(--c-accent);">
+      <strong>不是「個人 or 集體」,而是「個人 + 集體」。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 20. 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>我們的氣候正義行動提案</h2>
+    <p class="subtitle">把分析變成下一步行動</p>
+  </div>
+</section>
+
+<!-- 21. 未來世代 -->
+<section class="slide" id="slide-future-gen">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>未來世代的席位:誰替還沒出生的人發聲?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:空椅子(寫著「2050 出生的孩子」)]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵概念:</strong>所有氣候決策中,最沒有發言權的是還沒出生的人——但今天的選擇直接決定他們的生存條件。1.5°C 路徑要求 2030 年全球淨排放較 2019 年減 43%,時間緊迫。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖:世代正義的核心提問</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.ipcc.ch/report/ar6/syr/" target="_blank" rel="noopener">聯合國政府間氣候變化專門委員會 — 第六次評估綜合報告</a>
+  </div>
+</section>
+
+<!-- 22. 數據回顧 -->
+<section class="slide" id="slide-data-recap">
+  <div class="slide-tag">活動四・步驟 2</div>
+  <h2>四個關鍵數據,當你的論證武器</h2>
+  <div class="slide-body">
+    <div class="data-cards">
+      <div class="data-card-item">
+        <div class="num">50%</div>
+        <div class="lbl">最富 10% 排放占比</div>
+      </div>
+      <div class="data-card-item">
+        <div class="num">1.32 億</div>
+        <div class="lbl">恐陷貧困人數</div>
+      </div>
+      <div class="data-card-item">
+        <div class="num">80%</div>
+        <div class="lbl">原住民守護生物多樣性</div>
+      </div>
+      <div class="data-card-item">
+        <div class="num">1.5 兆</div>
+        <div class="lbl">全球公正轉型 / 年(美元)</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 24px; color: var(--c-muted);">
+      把這四個數字寫進你的 CER 論證,故事會立刻有重量。
+    </p>
+  </div>
+</section>
+
+<!-- 23. CER 論證學習單投影版 -->
+<section class="slide" id="slide-cer">
+  <div class="slide-tag">活動四・步驟 2・學習單(投影版)</div>
+  <h2>CER 行動提案:Claim・Evidence・Reasoning</h2>
+  <div class="slide-body">
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th style="width: 22%;">欄位</th>
+          <th>說明</th>
+          <th>你的提案</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>C 主張</strong></td>
+          <td>你的訴求是什麼?</td>
+          <td class="fill"></td>
+        </tr>
+        <tr>
+          <td><strong>E 證據</strong></td>
+          <td>引用至少 2 個資料卡數據</td>
+          <td class="fill"></td>
+        </tr>
+        <tr>
+          <td><strong>R 推論</strong></td>
+          <td>為何證據支持訴求?如何兼顧弱勢?</td>
+          <td class="fill"></td>
+        </tr>
+        <tr>
+          <td><strong>個人行動</strong></td>
+          <td>你自己可以做的</td>
+          <td class="fill"></td>
+        </tr>
+        <tr>
+          <td><strong>集體行動</strong></td>
+          <td>需要結盟與制度改變的</td>
+          <td class="fill"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §4</a></div>
+</section>
+
+<!-- 24. 台灣在地機會地圖 -->
+<section class="slide" id="slide-tw-map">
+  <div class="slide-tag">活動四・步驟 3</div>
+  <h2>台灣在地機會地圖:你能參與的空間</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:台灣地圖+在地行動標記]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>在地行動範例:</strong>台南公民電廠、新竹尖石部落能源自主、高雄美濃社區共食、全國島嶼青年氣候議會。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖:台灣氣候正義在地實踐熱點</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      問題太大時,找一個在地議題切入——<strong>行動始於腳下。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 25. 承諾牆學習單 -->
+<section class="slide" id="slide-pledge">
+  <div class="slide-tag">活動四・步驟 4・學習單(投影版)</div>
+  <h2>承諾牆:三件事,一年後檢視</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      把承諾寫下來、貼在教室牆上、拍照傳給自己。
+    </p>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">本週要做的一件小事:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">本月要參與的集體行動:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">想寫信表達意見的對象:</span>
+        <span class="blank"></span>
+      </div>
+      <hr style="margin: 18px 0; border: 0; border-top: 1px dashed var(--c-border);">
+      <div class="row">
+        <span class="lbl">我的簽名:</span>
+        <span class="blank"></span>
+        <span class="lbl">夥伴見證簽名:</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §7</a></div>
+</section>
+
+<!-- 26. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字,帶走整堂課</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">看見</div>
+        <div class="desc">看見排放、承擔、決策<br>三層面的不正義</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">診斷</div>
+        <div class="desc">區分治標與治本<br>用三角框架檢視解方</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">行動</div>
+        <div class="desc">個人 + 集體<br>從在地切入,規模化參與</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      改變不必等你長大。<br>
+      <strong style="color: var(--c-accent);">每一張票、每一封信、每一次串連,都是公正轉型的力量。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">26</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

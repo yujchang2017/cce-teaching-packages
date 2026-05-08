@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生物多樣性隨時間的演變與未來 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e; --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb; --c-soc: #db2777; --c-beh: #16a34a;
+    --c-warn: #ea580c; --c-text: #1f2937; --c-muted: #6b7280;
+    --c-border: #e5e7eb; --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 20px; }
+  .compare-card .label { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .compare-card h3 { margin: 8px 0; font-size: 1.2rem; color: var(--c-text); }
+  .compare-card p { color: var(--c-muted); margin: 0; font-size: 0.95rem; }
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap: 16px; margin: 20px 0; }
+  .stat-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 20px; text-align: center; }
+  .stat-card .num { font-size: 2.2rem; font-weight: 800; color: var(--c-warn); }
+  .stat-card .unit { font-size: 0.8rem; color: var(--c-muted); margin-top: 2px; }
+  .stat-card .lbl { font-size: 0.9rem; font-weight: 600; margin-top: 6px; }
+  .hippo-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin: 20px 0; }
+  .hippo-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 14px 8px; text-align: center; }
+  .hippo-card .letter { font-size: 2.2rem; font-weight: 800; color: var(--c-accent); line-height: 1; }
+  .hippo-card .word { font-size: 0.75rem; color: var(--c-muted); margin-top: 3px; }
+  .hippo-card .zh { font-size: 0.9rem; font-weight: 600; margin-top: 4px; }
+  .step-flow { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+  .step-item { display: flex; align-items: flex-start; gap: 14px; background: var(--c-bg); border-radius: 10px; padding: 12px 16px; }
+  .step-num { background: var(--c-accent); color: #fff; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+  .ws-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.95rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 11px 13px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg,transparent 0,transparent 18px,#d1d5db 18px,#d1d5db 19px); height: 48px; }
+  .question-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 14px; margin: 20px 0; }
+  .question-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 18px; font-size: 0.95rem; position: relative; }
+  .question-card .q-num { position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff; width: 26px; height: 26px; border-radius: 50%; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin: 24px 0; }
+  .key-card { text-align: center; padding: 28px 16px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.8rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.6rem; font-weight: 800; margin: 10px 0; }
+  .key-card .desc { font-size: 0.9rem; color: var(--c-muted); }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.88rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">生物多樣性隨時間的演變與未來 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- ===== 1. 封面 ===== -->
+<section class="slide cover" id="slide-darwin">
+  <div class="slide-body" style="justify-content:center;">
+    <div style="font-size:0.9rem;color:var(--c-accent);letter-spacing:0.2em;margin-bottom:10px;">2.2-IV｜國中 13–15 歲</div>
+    <h2>生物多樣性隨時間的演變與未來</h2>
+    <p class="subtitle">從達爾文到第六次大滅絕——我們這一代的選擇</p>
+    <div style="margin-top:28px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
+      <div style="background:#fff;border:2px solid var(--c-accent);border-radius:12px;padding:14px 20px;text-align:center;"><div style="font-size:1.8rem;">🐦</div><div style="font-size:0.85rem;color:var(--c-muted);margin-top:4px;">達爾文雀鳥</div></div>
+      <div style="background:#fff;border:2px solid var(--c-warn);border-radius:12px;padding:14px 20px;text-align:center;"><div style="font-size:1.8rem;">🦤</div><div style="font-size:0.85rem;color:var(--c-muted);margin-top:4px;">已滅絕物種</div></div>
+      <div style="background:#fff;border:2px solid var(--c-beh);border-radius:12px;padding:14px 20px;text-align:center;"><div style="font-size:1.8rem;">🐻</div><div style="font-size:0.85rem;color:var(--c-muted);margin-top:4px;">臺灣黑熊</div></div>
+      <div style="background:#fff;border:2px solid var(--c-soc);border-radius:12px;padding:14px 20px;text-align:center;"><div style="font-size:1.8rem;">🦔</div><div style="font-size:0.85rem;color:var(--c-muted);margin-top:4px;">穿山甲</div></div>
+    </div>
+    <p style="margin-top:20px;font-size:1.05rem;color:var(--c-muted);">前五次大滅絕我們無能為力，<strong style="color:var(--c-accent);">第六次我們是主角，也可能是劇本作者。</strong></p>
+  </div>
+</section>
+
+<!-- ===== 2. 人類世 ===== -->
+<section class="slide" id="slide-anthropocene">
+  <div class="slide-tag">背景概念</div>
+  <h2>人類世（Anthropocene）：我們真的改變了地球嗎？</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-cog);">
+        <div class="label" style="color:var(--c-cog);">2000 年提出</div>
+        <h3>Crutzen 喊出「人類世」</h3>
+        <p>諾貝爾化學獎得主在學術會議上提出：人類活動已主導地球地質、生態、氣候，應稱人類世。</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-warn);">
+        <div class="label" style="color:var(--c-warn);">2024 年 3 月</div>
+        <h3>ICS 投票否決正式化</h3>
+        <p>國際地層委員會 12 反對、4 支持、2 棄權——人類世目前為<strong>描述性概念，非正式地質年代單位</strong>。</p>
+      </div>
+    </div>
+    <div style="background:var(--c-bg);border-left:4px solid var(--c-accent);border-radius:6px;padding:14px 18px;margin-top:12px;">
+      <p style="margin:0;font-size:1rem;"><strong>批判思考：</strong>「廣泛使用」≠「科學正式認可」。討論科學議題時先問：我在哪個脈絡談？</p>
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.nature.com/articles/d41586-024-00675-8" target="_blank" rel="noopener">Nature News — Anthropocene rejected (2024)</a></div>
+</section>
+
+<!-- ===== 3. HIPPO 驅動力 ===== -->
+<section class="slide" id="slide-hippo">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>生物多樣性喪失 HIPPO 五大驅動力</h2>
+  <div class="slide-body">
+    <div class="hippo-grid">
+      <div class="hippo-card"><div class="letter">H</div><div class="word">Habitat loss</div><div class="zh">棲地喪失<br><small style="color:var(--c-muted);">砍伐、都市擴張</small></div></div>
+      <div class="hippo-card"><div class="letter">I</div><div class="word">Invasive species</div><div class="zh">外來入侵種<br><small style="color:var(--c-muted);">福壽螺</small></div></div>
+      <div class="hippo-card"><div class="letter">P</div><div class="word">Pollution</div><div class="zh">污染<br><small style="color:var(--c-muted);">塑膠、農藥</small></div></div>
+      <div class="hippo-card"><div class="letter">P</div><div class="word">Population</div><div class="zh">人口成長<br><small style="color:var(--c-muted);">需求倍增</small></div></div>
+      <div class="hippo-card"><div class="letter">O</div><div class="word">Overharvesting</div><div class="zh">過度採捕<br><small style="color:var(--c-muted);">黑鮪、象牙</small></div></div>
+    </div>
+    <div style="background:#fff7ed;border-left:4px solid var(--c-warn);border-radius:6px;padding:12px 16px;">
+      <p style="margin:0;font-size:0.95rem;">IPBES 2019 確認：<strong>棲地喪失</strong>與<strong>過度採捕</strong>影響最大；<strong style="color:var(--c-warn);">氣候變遷</strong>影響正快速上升。75% 陸地環境已被人類顯著改變。</p>
+    </div>
+    <p style="margin-top:12px;font-size:0.9rem;color:var(--c-muted);">📝 任務：把 HIPPO 五項各對應一個「你身邊」的具體案例。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.ipbes.net/global-assessment" target="_blank" rel="noopener">IPBES Global Assessment (2019)</a></div>
+</section>
+
+<!-- ===== 4. 臺灣熱點 ===== -->
+<section class="slide" id="slide-tw-hotspot">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>臺灣：全球生物多樣性熱點（全球 36 個之一）</h2>
+  <div class="slide-body">
+    <div class="stat-row">
+      <div class="stat-card"><div class="num">62,000+</div><div class="unit">已紀錄物種</div><div class="lbl">面積不到世界 1/1000</div></div>
+      <div class="stat-card"><div class="num">25-30%</div><div class="unit">特有種比例</div><div class="lbl">昆蟲類群達 60%+</div></div>
+      <div class="stat-card"><div class="num">1,000+</div><div class="unit">受威脅維管束植物（種）</div><div class="lbl">2024 紅皮書</div></div>
+    </div>
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:36px;background:var(--c-accent-soft);text-align:center;">
+        <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--c-accent);font-weight:700;margin-bottom:12px;">[此處放：臺灣海拔剖面分層圖]</div>
+        <div style="font-size:1.05rem;margin:12px 0;"><strong>關鍵數據：</strong>海拔 0 m（紅樹林）→ 3,952 m（玉山高山寒原）壓縮多個氣候帶</div>
+        <div style="font-size:0.85rem;color:var(--c-muted);margin-top:12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>臺灣為冰河期避難所，孑遺物種豐富；但 2024 紅皮書顯示威脅持續擴大</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.taibif.tw/zh" target="_blank" rel="noopener">TaiBIF 臺灣生物多樣性資訊網</a> ／ 林業及自然保育署 2024 紅皮書</div>
+</section>
+
+<!-- ===== 5. 大問題 ===== -->
+<section class="slide" id="slide-q1">
+  <div class="slide-tag">思辨起點</div>
+  <h2>長頸鹿的長脖子，是牠「想要」伸長來的嗎？</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:#a21caf;">
+        <div class="label" style="color:#a21caf;">拉馬克（用進廢退）</div>
+        <h3>個體努力 → 遺傳後代</h3>
+        <p>你用到的器官會發達並傳給小孩——個體在一生中主動改變基因</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-beh);">
+        <div class="label" style="color:var(--c-beh);">達爾文（天擇）</div>
+        <h3>族群變異 → 環境篩選</h3>
+        <p>個體間本來就有變異；脖子長的在乾旱缺葉時較能存活繁殖，下一代自然多長脖子</p>
+      </div>
+    </div>
+    <div style="background:var(--c-bg);border:2px solid var(--c-accent);border-radius:10px;padding:16px 20px;margin-top:14px;">
+      <p style="margin:0;font-size:1rem;"><strong>關鍵：</strong>演化作用於<strong style="color:var(--c-accent);">族群世代</strong>。個體不演化，族群才演化。「適應」是當下環境篩選，不是「進步」。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 6. 活動一過場 ===== -->
+<section class="slide divider" id="slide-selection">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動一</div>
+    <h2>演化的舞台：達爾文與天擇</h2>
+    <p style="color:var(--c-muted);font-size:1.1rem;margin-top:8px;">從小獵犬號到天擇四要件</p>
+  </div>
+</section>
+
+<!-- ===== 7. 天擇四要件 ===== -->
+<section class="slide" id="slide-evolution">
+  <div class="slide-tag">活動一・步驟 1</div>
+  <h2>天擇四要件（達爾文 1859 年《物種起源》核心邏輯）</h2>
+  <div class="slide-body">
+    <div class="step-flow">
+      <div class="step-item"><div class="step-num">1</div><div><strong>變異（Variation）</strong>——同種個體間有差異（加拉巴哥雀鳥嘴喙形狀各不同）</div></div>
+      <div class="step-item"><div class="step-num">2</div><div><strong>遺傳（Heredity）</strong>——這些差異能傳給後代</div></div>
+      <div class="step-item"><div class="step-num">3</div><div><strong>過度繁殖（Overproduction）</strong>——生的後代多於環境能容納的數量</div></div>
+      <div class="step-item"><div class="step-num">4</div><div><strong>差異存活率（Differential Survival）</strong>——有些變異在當下環境中更能存活繁殖</div></div>
+    </div>
+    <div style="background:#eff6ff;border-left:4px solid var(--c-cog);border-radius:6px;padding:12px 16px;margin-top:8px;">
+      <p style="margin:0;font-size:0.95rem;"><strong style="color:var(--c-cog);">胡椒蛾經典案例：</strong>工業革命前淺色佔優；煤灰燻黑樹皮後，深色族群比例從 1% → 95%。不到 100 年觀察到的天擇！</p>
+    </div>
+    <p style="font-size:0.9rem;color:var(--c-muted);margin-top:10px;">達爾文 22 歲登小獵犬號（1831），航行 5 年，回家整理 20 多年，1859 年出版《物種起源》。科學不是天才頓悟，是長時間觀察與同儕討論。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.nhm.ac.uk/discover/charles-darwin-and-the-voyage-of-the-beagle.html" target="_blank" rel="noopener">NHM London — Darwin & HMS Beagle</a></div>
+</section>
+
+<!-- ===== 8. 活動二過場 ===== -->
+<section class="slide divider" id="slide-five">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動二</div>
+    <h2>生命的斷層：五次大滅絕</h2>
+    <p style="color:var(--c-muted);font-size:1.1rem;margin-top:8px;">地質尺度上的物種大清空</p>
+  </div>
+</section>
+
+<!-- ===== 9. 五次大滅絕 + 第六次 ===== -->
+<section class="slide" id="slide-sixth">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>五次大滅絕 → 現在第六次？</h2>
+  <div class="slide-body">
+    <div style="overflow-x:auto;">
+      <table class="ws-table" style="font-size:0.88rem;">
+        <thead>
+          <tr><th>事件</th><th>年代（億年前）</th><th>主因</th><th>備注</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>奧陶紀-志留紀</td><td>4.44</td><td>冰期 + 海平面驟降</td><td>—</td></tr>
+          <tr><td>泥盆紀後期</td><td>3.72</td><td>海洋缺氧</td><td>—</td></tr>
+          <tr style="background:#fff7ed;"><td><strong>二疊紀-三疊紀（P-T）</strong></td><td>2.52</td><td>西伯利亞暗色岩火山</td><td style="color:var(--c-warn);font-weight:700;">最大！約 95% 海洋物種消失</td></tr>
+          <tr><td>三疊紀-侏羅紀</td><td>2.01</td><td>火山 + 氣候</td><td>—</td></tr>
+          <tr><td>白堊紀-古近紀（K-Pg）</td><td>0.66</td><td>Chicxulub 隕石撞擊</td><td>恐龍滅絕，唯一隕石事件</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="background:#fee2e2;border-left:4px solid #dc2626;border-radius:6px;padding:12px 16px;margin-top:10px;">
+      <p style="margin:0;font-size:1rem;"><strong style="color:#991b1b;">第六次（現在？）：</strong>IPBES 2019——全球約 <strong>100 萬種</strong>動植物面臨滅絕威脅；滅絕速率是背景速率的<strong>數十到數百倍</strong>；推手：<strong>人類</strong>。</p>
+    </div>
+    <p style="font-size:0.88rem;color:var(--c-muted);margin-top:8px;">⚠️ 迷思糾正：只有 K-Pg 那次主因是隕石，其他四次多為火山與氣候劇變。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://naturalhistory.si.edu/education/teaching-resources/paleontology/mass-extinctions" target="_blank" rel="noopener">Smithsonian NMNH</a> ／ <a href="https://www.ipbes.net/global-assessment" target="_blank" rel="noopener">IPBES Global Assessment (2019)</a></div>
+</section>
+
+<!-- ===== 10. 活動三過場 ===== -->
+<section class="slide divider" id="slide-dilemma">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三</div>
+    <h2>倫理兩難：入侵種，該怎麼辦？</h2>
+    <p style="color:var(--c-muted);font-size:1.1rem;margin-top:8px;">生態系保全 vs 動物福利</p>
+  </div>
+</section>
+
+<!-- ===== 11. 30x30 ===== -->
+<section class="slide" id="slide-30x30">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>國際治理：昆蒙框架 30x30 目標（2022）</h2>
+  <div class="slide-body">
+    <div class="stat-row">
+      <div class="stat-card"><div class="num">30%</div><div class="unit">陸地 + 海洋</div><div class="lbl">2030 年前有效保護</div></div>
+      <div class="stat-card"><div class="num">30%</div><div class="unit">退化生態系</div><div class="lbl">2030 年前進入復育</div></div>
+      <div class="stat-card"><div class="num">23</div><div class="unit">項行動目標</div><div class="lbl">CBD COP15 通過</div></div>
+    </div>
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:36px;background:var(--c-accent-soft);text-align:center;">
+        <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--c-accent);font-weight:700;margin-bottom:12px;">[此處放：全球保護區覆蓋 vs 30x30 目標圓餅圖]</div>
+        <div style="font-size:1.05rem;margin:12px 0;"><strong>關鍵數據：</strong>75% 陸地已被人類顯著改變；66% 海洋也遭受衝擊</div>
+        <div style="font-size:0.85rem;color:var(--c-muted);margin-top:12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>昆明-蒙特婁框架（KM-GBF）：無強制懲罰，靠透明化與同儕壓力推動——與巴黎協定同邏輯</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.cbd.int/gbf/" target="_blank" rel="noopener">CBD KM-GBF 官網</a></div>
+</section>
+
+<!-- ===== 12. 行動任務 ===== -->
+<section class="slide" id="slide-task">
+  <div class="slide-tag">活動四・步驟 1 ・學習單（投影版）</div>
+  <h2>校園生物多樣性行動書（CER + HIPPO 自檢）</h2>
+  <div class="slide-body">
+    <p style="color:var(--c-muted);font-size:0.95rem;margin:0 0 10px;">分組寫一份「校園 / 社區生物多樣性行動書」，用 CER 結構呈現：</p>
+    <table class="ws-table">
+      <thead><tr><th>結構</th><th>你要回答的問題</th><th>填寫區</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:700;color:var(--c-cog);">Claim 主張</td><td>你主張學校做什麼？</td><td class="fill"></td></tr>
+        <tr><td style="font-weight:700;color:var(--c-warn);">Evidence 證據</td><td>引用 data_card 數字 + 校園現況</td><td class="fill"></td></tr>
+        <tr><td style="font-weight:700;color:var(--c-beh);">Reasoning 推理</td><td>為什麼證據能支持主張？</td><td class="fill"></td></tr>
+        <tr><td style="font-weight:700;">HIPPO 對應</td><td>你的提案處理哪一項驅動力？</td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.88rem;color:var(--c-muted);">範例：「移除校園黑板樹、補種原生茄冬」→ 對應 H（棲地），提供授粉昆蟲食草，連結課程 + 校園營運 + 社群。</p>
+  </div>
+</section>
+
+<!-- ===== 13. 反思 + 三關鍵字總結 ===== -->
+<section class="slide" id="slide-reflection">
+  <div class="slide-tag">總結</div>
+  <h2>後設認知 + 三個關鍵字</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1"><div class="num">第 1 個</div><div class="word">天擇</div><div class="desc">族群世代累積<br>個體不演化，族群才演化</div></div>
+      <div class="key-card k2"><div class="num">第 2 個</div><div class="word">HIPPO</div><div class="desc">棲地→入侵→污染<br>→人口→採捕</div></div>
+      <div class="key-card k3"><div class="num">第 3 個</div><div class="word">30x30</div><div class="desc">從校園 CER 行動<br>不等政府</div></div>
+    </div>
+    <div class="question-cards" style="margin-top:16px;">
+      <div class="question-card"><div class="q-num">1</div><strong>論證：</strong>人類世起算點該訂哪年？1610？1800？1950？理由？</div>
+      <div class="question-card"><div class="q-num">2</div><strong>倫理：</strong>科技若能復活猛瑪象，你支持嗎？考量生態系、倫理、資源。</div>
+      <div class="question-card"><div class="q-num">3</div><strong>行動：</strong>餐桌上最該「換掉」的食材是哪個？與過度採捕的關聯？</div>
+    </div>
+    <p style="text-align:center;font-size:1.1rem;margin-top:16px;"><strong style="color:var(--c-accent);">前五次大滅絕我們無能為力，第六次我們是主角，也可能是改變劇本的一代。</strong></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">13</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color:var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      slides[Math.min(current + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      slides[Math.max(current - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const t = document.querySelector(location.hash);
+    if (t) setTimeout(() => t.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候變遷與我們的經濟 — 投影片 5.3-V</title>
+<style>
+  :root{
+    --c-accent:#0f766e;--c-accent-soft:#ccfbf1;
+    --c-cog:#2563eb;--c-cog-soft:#dbeafe;
+    --c-soc:#db2777;--c-soc-soft:#fce7f3;
+    --c-beh:#16a34a;--c-beh-soft:#dcfce7;
+    --c-warn:#ea580c;--c-text:#1f2937;--c-muted:#6b7280;
+    --c-border:#e5e7eb;--c-bg:#f9fafb
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    color:var(--c-text);line-height:1.6;background:#fff}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;
+    background:rgba(255,255,255,.95);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--c-border);
+    display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--c-accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.9rem;font-weight:500;color:var(--c-muted);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;
+    background:rgba(255,255,255,.95);backdrop-filter:blur(8px);
+    border-top:1px solid var(--c-border);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;z-index:100;font-size:.85rem;color:var(--c-muted)}
+  .nav-indicator{font-family:monospace;color:var(--c-text)}
+  .nav-cur{color:var(--c-accent);font-weight:700}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--c-border);
+    border-bottom-width:2px;border-radius:4px;font-family:monospace;
+    font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;
+    padding:48px 64px;display:flex;flex-direction:column;
+    border-bottom:1px dashed var(--c-border);position:relative}
+  .slide-num{position:absolute;top:14px;right:20px;
+    font-size:.8rem;font-family:monospace;color:var(--c-border)}
+  .slide h2{font-size:1.9rem;margin:0 0 20px;color:var(--c-text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;
+    background:linear-gradient(135deg,var(--c-accent-soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.6rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--c-accent);color:#fff;
+    padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--c-accent);
+    letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.2rem;color:var(--c-accent)}
+  .slide.divider .step-chips{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .chip{background:var(--c-accent-soft);color:var(--c-accent);
+    border-radius:20px;padding:4px 14px;font-size:.9rem}
+  .q-box{background:var(--c-accent-soft);border-left:5px solid var(--c-accent);
+    border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;
+    font-size:1.35rem;line-height:1.6;color:var(--c-accent);font-weight:600}
+  .q-sub{font-size:1rem;color:var(--c-muted);font-weight:400;margin-top:10px}
+  .data-card{border:2px solid var(--c-border);border-radius:12px;padding:22px 28px;
+    margin:20px 0;background:var(--c-bg)}
+  .data-card .dc-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;
+    color:var(--c-muted);margin-bottom:8px}
+  .data-card .dc-fact{font-size:1.15rem;font-weight:700;color:var(--c-text);
+    margin-bottom:10px;line-height:1.5}
+  .data-card .dc-src{font-size:.85rem;color:var(--c-muted)}
+  .act-card{border:2px solid var(--c-border);border-radius:12px;padding:22px 28px;margin:20px 0}
+  .act-card .ac-badge{display:inline-block;background:var(--c-accent);color:#fff;
+    font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:4px;
+    margin-bottom:12px;letter-spacing:.08em}
+  .act-card .ac-task{font-size:1.1rem;color:var(--c-text);line-height:1.6}
+  .ws-frame{border:2px dashed var(--c-accent);border-radius:12px;
+    padding:24px 28px;margin:20px 0;background:#fff}
+  .ws-frame .ws-title{font-size:1rem;font-weight:700;color:var(--c-accent);margin-bottom:14px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--c-border);padding:10px 14px}
+  .ws-table th{background:var(--c-accent-soft);color:var(--c-accent);font-weight:700;text-align:center}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,
+    #d1d5db 20px,#d1d5db 21px);height:52px;vertical-align:bottom}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}
+  .compare-card{border:2px solid var(--c-border);border-radius:12px;padding:20px 24px}
+  .compare-card h3{font-size:1rem;font-weight:700;margin-bottom:12px}
+  .compare-card ul{padding-left:18px}
+  .compare-card li{margin-bottom:8px;font-size:.95rem}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:20px 0}
+  .summary-keys{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+  .key-card{border:2px solid var(--c-border);border-radius:10px;
+    padding:16px 20px;max-width:260px;text-align:center}
+  .key-card .kc-id{font-family:monospace;font-weight:700;margin-bottom:8px}
+  .key-card p{margin:0;font-size:.95rem}
+  figure{margin:20px 0}
+  figure figcaption{font-size:.85rem;color:var(--c-muted);margin-top:8px;text-align:center}
+  .big-stat{text-align:center;padding:20px;margin:8px 0}
+  .big-stat .stat-num{font-size:3rem;font-weight:900;color:var(--c-accent);line-height:1}
+  .big-stat .stat-label{font-size:.9rem;color:var(--c-muted);margin-top:6px}
+  .step-list{display:flex;flex-direction:column;gap:14px;margin:16px 0}
+  .step-item{display:flex;align-items:flex-start;gap:14px}
+  .step-num{min-width:32px;height:32px;background:var(--c-accent);color:#fff;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:.9rem;flex-shrink:0;margin-top:2px}
+  .step-text{font-size:1rem;line-height:1.6}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">氣候變遷與我們的經濟 ｜ Level V ・ 5.3-V</span>
+</header>
+
+<main>
+
+<!-- 1. COVER -->
+<section class="slide cover" id="slide-cover">
+  <span class="slide-num">1</span>
+  <div class="slide-body">
+    <div class="level-tag">Level V ・ 5.3-V</div>
+    <h2>氣候變遷與我們的經濟</h2>
+    <p style="font-size:1.1rem;color:var(--c-muted);margin-top:16px">
+      實體風險・轉型風險・氣候融資・損失與損害・青年行動
+    </p>
+  </div>
+</section>
+
+<!-- 2. BIG QUESTION -->
+<section class="slide" id="slide-question">
+  <span class="slide-num">2</span>
+  <div class="slide-body">
+    <div class="q-box">
+      過去 30 年，全球極端天氣造成多少經濟損失？
+      <div class="q-sub">你的直覺猜測是多少？——揭曉後，這個數字如何改變你對氣候變遷的看法？</div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">Germanwatch 全球氣候風險指數 2026</div>
+      <div class="dc-fact">1995–2024 年：全球因極端天氣死亡超過 83.2 萬人，直接經濟損失近 4.5 兆美元，記錄逾 9,700 起事件</div>
+      <div class="dc-src">氣候不只是環境問題——它是重大的經濟風險</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. ACTIVITY 1 DIVIDER -->
+<section class="slide divider" id="slide-a1">
+  <span class="slide-num">3</span>
+  <div class="slide-body">
+    <div class="act-badge">活動一</div>
+    <h2>氣候經濟衝擊：數據、趨勢與衡量</h2>
+    <div class="step-chips">
+      <span class="chip">步驟 1 三大數據來源</span>
+      <span class="chip">步驟 2 資料科學分析</span>
+      <span class="chip">步驟 3 GDP 損失推估</span>
+    </div>
+  </div>
+</section>
+
+<!-- 4. 三大數據來源 -->
+<section class="slide" id="slide-climate-data">
+  <span class="slide-num">4</span>
+  <h2>三大氣候經濟數據來源</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="compare-card" style="border-color:var(--c-cog)">
+        <h3 style="color:var(--c-cog)">Germanwatch CRI</h3>
+        <p style="font-size:.85rem">全球氣候風險指數；追蹤 180+ 國極端事件損失；以死亡人數與經濟損失/GDP 綜合排名</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-soc)">
+        <h3 style="color:var(--c-soc)">EM-DAT</h3>
+        <p style="font-size:.85rem">比利時緊急事件數據庫；1900 年起全球自然災害；涵蓋事件類型、死亡、受災人口、損失</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-beh)">
+        <h3 style="color:var(--c-beh)">政府間氣候變遷小組 WG2</h3>
+        <p style="font-size:.85rem">第六次評估報告；氣候衝擊、調適、脆弱性；GDP 損失情境模擬（1.5°C~4°C）</p>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">比較任務</div>
+      <div class="ac-task">完成三大來源比較表：方法論、優點、局限——哪個來源最適合回答「臺灣的氣候經濟風險」？</div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. 災害數據科學 -->
+<section class="slide" id="slide-disaster-data">
+  <span class="slide-num">5</span>
+  <h2>資料科學：哪種災害最貴？最致命？</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">計算工作單：每事件平均損失分析</div>
+      <table class="ws-table">
+        <thead>
+          <tr><th>災害類型</th><th>經濟損失占比</th><th>受災人口占比</th><th>死亡占比</th><th>每事件平均損失（估算）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-weight:700">風暴</td><td>58%</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td style="font-weight:700">洪災</td><td class="fill"></td><td>48%</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td style="font-weight:700">熱浪</td><td class="fill"></td><td class="fill"></td><td>33%</td><td class="fill"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">深度討論</div>
+      <div class="ac-task">為何「經濟損失最高」的不是「死亡人數最高」的災害？<br>保險覆蓋率、基礎設施、脆弱度如何解釋這個差異？</div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. GDP 損失推估 -->
+<section class="slide" id="slide-gdp-loss">
+  <span class="slide-num">6</span>
+  <h2>不行動的代價：GDP 損失推估</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center">
+        <div style="font-size:.8rem;color:var(--c-muted);margin-bottom:8px">圖表佔位</div>
+        <div style="font-size:1.4rem;font-weight:700;color:var(--c-accent);margin-bottom:12px">[此處放：升溫情境 vs GDP 損失折線圖]</div>
+        <div style="font-size:1.1rem;color:var(--c-text);margin-bottom:8px">
+          <strong>1.5°C：</strong>損失 ~10% GDP ｜ <strong>2°C：</strong>損失 ~15% ｜ <strong>不行動：</strong>損失高達 23%<br>
+          <strong>行動成本：</strong>僅約 1–4% GDP（達 1.5°C 目標）
+        </div>
+        <div style="font-size:.85rem;color:var(--c-muted)">示意圖待補繪</div>
+      </div>
+      <figcaption>現在每投入 1 美元氣候行動，可避免未來 2–10 美元的損失</figcaption>
+    </figure>
+    <div class="data-card">
+      <div class="dc-label">Swiss Re Institute 2021</div>
+      <div class="dc-fact">若不採取行動，至 2048 年氣候變遷將使全球 GDP 減少高達 23%；即使達成巴黎協定目標也將損失 4%</div>
+      <div class="dc-src">來源：Swiss Re Institute；政府間氣候變遷小組 AR6 WGII (2022)</div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. ACTIVITY 2 DIVIDER -->
+<section class="slide divider" id="slide-a2">
+  <span class="slide-num">7</span>
+  <div class="slide-body">
+    <div class="act-badge">活動二</div>
+    <h2>傳輸管道、調適與減緩</h2>
+    <div class="step-chips">
+      <span class="chip">步驟 1 三大傳輸管道</span>
+      <span class="chip">步驟 2 因果循環圖</span>
+      <span class="chip">步驟 3 調適 vs 減緩</span>
+    </div>
+  </div>
+</section>
+
+<!-- 8. 三大傳輸管道 -->
+<section class="slide" id="slide-transmission">
+  <span class="slide-num">8</span>
+  <h2>氣候如何衝擊經濟：三大傳輸管道</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="compare-card" style="border-color:var(--c-warn)">
+        <h3 style="color:var(--c-warn)">實體風險</h3>
+        <p style="font-size:.85rem;margin-bottom:8px">極端事件與慢性氣候變化對資產與營運的直接損害</p>
+        <p style="font-size:.85rem"><strong>例：</strong>颱風毀廠、海平面上升使沿海資產貶值、乾旱衝擊農業供應鏈</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-cog)">
+        <h3 style="color:var(--c-cog)">轉型風險</h3>
+        <p style="font-size:.85rem;margin-bottom:8px">政策、技術、市場轉向低碳，導致碳密集資產大幅貶值</p>
+        <p style="font-size:.85rem"><strong>擱淺資產：</strong>潛在規模 1–4 兆美元（化石燃料儲量若無法開採）</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-soc)">
+        <h3 style="color:var(--c-soc)">責任風險</h3>
+        <p style="font-size:.85rem;margin-bottom:8px">企業或政府因氣候損害面臨法律訴訟求償</p>
+        <p style="font-size:.85rem"><strong>全球氣候訴訟：</strong>已超過 2,000 件，且快速增加</p>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">案例配對</div>
+      <div class="ac-task">將以下事件配對到正確的傳輸管道：<br>① 燃煤電廠股價暴跌 ② 颱風摧毀工廠倉庫 ③ 石油公司被環保組織提告</div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. 因果循環圖 -->
+<section class="slide" id="slide-cld">
+  <span class="slide-num">9</span>
+  <h2>系統思考：氣候經濟因果循環圖</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center">
+        <div style="font-size:.8rem;color:var(--c-muted);margin-bottom:8px">圖表佔位</div>
+        <div style="font-size:1.4rem;font-weight:700;color:var(--c-accent);margin-bottom:12px">[此處放：氣候經濟因果循環圖（CLD）]</div>
+        <div style="font-size:1rem;color:var(--c-text);margin-bottom:8px">
+          升溫 → 實體損失 → 保險成本↑ → 企業成本↑（正反饋）<br>
+          碳定價 → 清潔技術投資 → 排放↓ → 升溫減緩（負反饋）<br>
+          <strong>槓桿點：</strong>碳定價水準、技術研發投資
+        </div>
+        <div style="font-size:.85rem;color:var(--c-muted)">示意圖待補繪</div>
+      </div>
+      <figcaption>標示 ≥2 正反饋、1 負反饋、1 槓桿點</figcaption>
+    </figure>
+    <div class="act-card">
+      <div class="ac-badge">小組任務</div>
+      <div class="ac-task">繪製你的因果循環圖，並說明：你選的槓桿點如何能同時減少實體風險與轉型風險？</div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. 調適 vs 減緩 -->
+<section class="slide" id="slide-adaptation-mitigation">
+  <span class="slide-num">10</span>
+  <h2>調適 vs 減緩：互補的雙軌策略</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-cog)">
+        <h3 style="color:var(--c-cog)">調適（Adaptation）</h3>
+        <p style="font-size:.85rem;margin-bottom:8px">面對已發生或預期的氣候衝擊，降低損害</p>
+        <ul>
+          <li>加強排水/防洪基礎設施</li>
+          <li>氣候風險保險（農業保險）</li>
+          <li>開發耐旱/耐熱作物品種</li>
+          <li>沿海城市退縮或堤防補強</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-beh)">
+        <h3 style="color:var(--c-beh)">減緩（Mitigation）</h3>
+        <p style="font-size:.85rem;margin-bottom:8px">減少溫室氣體排放，降低未來風險規模</p>
+        <ul>
+          <li>再生能源（太陽能、風電）</li>
+          <li>碳定價（碳稅、排放交易）</li>
+          <li>碳捕捉封存（CCS）</li>
+          <li>能源效率提升</li>
+        </ul>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">融資嚴重失衡</div>
+      <div class="dc-fact">全球氣候融資 1.3 兆/年：減緩占 88%（1.15 兆美元），調適僅 5%（630 億美元）——最需要調適資金的脆弱國家卻得到最少</div>
+      <div class="dc-src">來源：氣候政策倡議全球氣候融資概覽 2023</div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. ACTIVITY 3 DIVIDER -->
+<section class="slide divider" id="slide-a3">
+  <span class="slide-num">11</span>
+  <div class="slide-body">
+    <div class="act-badge">活動三</div>
+    <h2>氣候金融、公平性與倫理兩難</h2>
+    <div class="step-chips">
+      <span class="chip">步驟 1 氣候金融工具</span>
+      <span class="chip">步驟 2 氣候正義辯論</span>
+      <span class="chip">步驟 3 CER 論證</span>
+    </div>
+  </div>
+</section>
+
+<!-- 12. 氣候金融工具 -->
+<section class="slide" id="slide-climate-finance">
+  <span class="slide-num">12</span>
+  <h2>氣候金融工具評估</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="big-stat" style="border:2px solid var(--c-beh);border-radius:12px">
+        <div class="stat-num" style="color:var(--c-beh)">2.5兆</div>
+        <div class="stat-label">美元<br>綠色債券累積發行（至2023）</div>
+      </div>
+      <div class="big-stat" style="border:2px solid var(--c-warn);border-radius:12px">
+        <div class="stat-num" style="color:var(--c-warn)">60%</div>
+        <div class="stat-label">氣候損失未受保<br>開發中國家低於5%</div>
+      </div>
+      <div class="big-stat" style="border:2px solid var(--c-soc);border-radius:12px">
+        <div class="stat-num" style="color:var(--c-soc)">7億</div>
+        <div class="stat-label">美元<br>損失與損害基金初始承諾</div>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">臺灣碳定價 vs 歐盟</div>
+      <div class="dc-fact">臺灣碳費約 300 元/噸（~10 美元）；歐盟碳價約 60–80 歐元/噸——差距超過六倍。歐盟 CBAM 影響臺灣出口估計約 200–400 億新臺幣</div>
+      <div class="dc-src">來源：環境部氣候變遷署；中華經濟研究院</div>
+    </div>
+  </div>
+</section>
+
+<!-- 13. 保險缺口地圖 -->
+<section class="slide" id="slide-insurance-gap">
+  <span class="slide-num">13</span>
+  <h2>保險缺口：誰最缺保障卻最需要？</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center">
+        <div style="font-size:.8rem;color:var(--c-muted);margin-bottom:8px">圖表佔位</div>
+        <div style="font-size:1.4rem;font-weight:700;color:var(--c-accent);margin-bottom:12px">[此處放：全球氣候災害保險覆蓋率地圖]</div>
+        <div style="font-size:1.1rem;color:var(--c-text);margin-bottom:8px">
+          <strong>已開發國家：</strong>保險覆蓋 50–60% ｜ <strong>開發中國家：</strong>&lt;5%<br>
+          2023 年全球自然災害保險理賠：1,080 億美元（Swiss Re）
+        </div>
+        <div style="font-size:.85rem;color:var(--c-muted)">示意圖待補繪</div>
+      </div>
+      <figcaption>保險缺口地圖：最需要保障的地區往往保障最少</figcaption>
+    </figure>
+    <div class="act-card">
+      <div class="ac-badge">討論</div>
+      <div class="ac-task">如何縮小保險缺口？<br>① 政府補貼保費 ② 參數型保險（天氣觸發自動理賠）③ 區域風險池（如加勒比海颶風保險池）<br>各有什麼優缺點？</div>
+    </div>
+  </div>
+</section>
+
+<!-- 14. 氣候正義辯論 -->
+<section class="slide" id="slide-justice-debate">
+  <span class="slide-num">14</span>
+  <h2>氣候正義倫理兩難辯論</h2>
+  <div class="slide-body">
+    <div class="q-box">
+      已開發國家是否有義務無償提供氣候融資給脆弱國家？
+      <div class="q-sub">最脆弱地區氣候相關死亡率是高收入國家的 15 倍，但貢獻的累積碳排僅是高收入國的零頭</div>
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-soc)">
+        <h3 style="color:var(--c-soc)">正方：氣候債務觀</h3>
+        <ul>
+          <li>歷史排放責任不對等</li>
+          <li>脆弱國貢獻最少卻受害最深</li>
+          <li>損失與損害基金 7 億 vs 需求 4,500 億+</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-cog)">
+        <h3 style="color:var(--c-cog)">反方：國家自主觀</h3>
+        <ul>
+          <li>主權原則：各國自負調適責任</li>
+          <li>貸款優於贈款（避免依賴）</li>
+          <li>援助效率低落、貪腐風險</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15. ACTIVITY 4 DIVIDER -->
+<section class="slide divider" id="slide-a4">
+  <span class="slide-num">15</span>
+  <div class="slide-body">
+    <div class="act-badge">活動四</div>
+    <h2>青年行動、利害關係人協商與 WSA 整合</h2>
+    <div class="step-chips">
+      <span class="chip">步驟 1 利害關係人協商</span>
+      <span class="chip">步驟 2 跨域整合論文</span>
+      <span class="chip">步驟 3 WSA 承諾</span>
+    </div>
+  </div>
+</section>
+
+<!-- 16. 青年創業 -->
+<section class="slide" id="slide-youth-innovation">
+  <span class="slide-num">16</span>
+  <h2>清潔能源轉型：青年創業的機會</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="big-stat" style="border:2px solid var(--c-beh);border-radius:12px">
+        <div class="stat-num" style="color:var(--c-beh)">1.8兆</div>
+        <div class="stat-label">美元<br>2023 年清潔能源投資<br>（首次超越化石燃料 1.0 兆）</div>
+      </div>
+      <div class="big-stat" style="border:2px solid var(--c-accent);border-radius:12px">
+        <div class="stat-num" style="color:var(--c-accent)">4.5兆</div>
+        <div class="stat-label">美元<br>2030 年循環經濟商業模式<br>潛在創造價值</div>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">創業思考</div>
+      <div class="ac-task">
+        如果你是氣候科技創業者，你會投入哪個領域？<br>
+        氣候保險科技 / 綠色債券平台 / 農業調適技術 / 碳移除服務 / 循環經濟平台<br>
+        說明你的選擇理由與市場機會
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">來源</div>
+      <div class="dc-fact">國際能源總署世界能源投資報告 2024；艾倫麥克阿瑟基金會循環經濟估算</div>
+      <div class="dc-src">清潔能源投資「歷史性交叉點」——市場信號還是政策驅動？</div>
+    </div>
+  </div>
+</section>
+
+<!-- 17. 利害關係人協商 -->
+<section class="slide" id="slide-stakeholder">
+  <span class="slide-num">17</span>
+  <h2>模擬協商：分配 100 億美元氣候融資</h2>
+  <div class="slide-body">
+    <div class="q-box" style="font-size:1.15rem">
+      如果你能分配 100 億美元氣候融資，<br>你如何在減緩、調適與損失補償之間做選擇？
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">利害關係人角色與立場</div>
+      <table class="ws-table">
+        <thead>
+          <tr><th>角色</th><th>優先訴求</th><th>論證重點</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>政府財政部</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>保險公司</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>氣候脆弱社區代表</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>青年創業者</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>國際 NGO</td><td class="fill"></td><td class="fill"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 18. 損失與損害基金 CER -->
+<section class="slide" id="slide-loss-damage">
+  <span class="slide-num">18</span>
+  <h2>CER 論證：損失與損害基金夠嗎？</h2>
+  <div class="slide-body">
+    <div class="data-card">
+      <div class="dc-label">數據對比</div>
+      <div class="dc-fact">損失與損害基金 COP28 初始承諾：7 億美元 vs 全球每年極端天氣損失：4,500 億+ 美元 = 約 0.15%</div>
+      <div class="dc-src">來源：Germanwatch CRI 2026；聯合國氣候變化綱要公約 COP27-28</div>
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">CER 論證：「7 億美元是否足以回應氣候正義需求？」</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div>
+          <strong style="color:var(--c-cog)">Claim（主張）：</strong>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px;margin-top:6px"></div>
+        </div>
+        <div>
+          <strong style="color:var(--c-cog)">Evidence（證據）：</strong>7 億 vs 4,500 億+ / 15 倍死亡率差距 / 調適融資缺口
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px;margin-top:6px"></div>
+        </div>
+        <div>
+          <strong style="color:var(--c-cog)">Reasoning（推理）：</strong>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px;margin-top:6px"></div>
+        </div>
+        <div>
+          <strong style="color:var(--c-warn)">反駁段：</strong>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px;margin-top:6px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 19. WSA 承諾 -->
+<section class="slide" id="slide-wsa">
+  <span class="slide-num">19</span>
+  <h2>WSA 行動承諾</h2>
+  <div class="slide-body">
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">治</div>
+        <div class="step-text">學生議會設「永續金融與氣候韌性委員會」→ 提出校園氣候風險評估報告與 ESG 投資建議 → 送行政會議審議</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">課</div>
+        <div class="step-text">跨科整合：經濟學（碳定價、外部性）+ 數學（風險模型、統計）+ 地球科學（極端事件趨勢分析）</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">營</div>
+        <div class="step-text">學生主導校園氣候風險地圖（淹水潛勢區、高溫熱點）、能源審計成本效益報告、綠色採購提案</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">社</div>
+        <div class="step-text">與在地保險業者、環保局合作推廣氣候保險與綠色金融；與臺灣青年氣候聯盟合作倡議</div>
+      </div>
+    </div>
+    <p style="font-size:.9rem;color:var(--c-muted);margin-top:16px;text-align:center">
+      在上方四個面向中，每個面向勾選 1 項你在本學期內將實際執行的具體行動
+    </p>
+  </div>
+</section>
+
+<!-- 20. 總結 -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <span class="slide-num">20</span>
+  <div class="slide-body">
+    <h2 style="color:var(--c-beh)">今天學到了什麼？</h2>
+    <div class="summary-keys">
+      <div class="key-card" style="border-color:var(--c-cog)">
+        <div class="kc-id" style="color:var(--c-cog)">分析</div>
+        <p>氣候透過實體風險、轉型風險、責任風險三大管道衝擊經濟。不行動成本（10–23% GDP）遠超行動成本（1–4%）</p>
+      </div>
+      <div class="key-card" style="border-color:var(--c-cog)">
+        <div class="kc-id" style="color:var(--c-cog)">批判</div>
+        <p>氣候融資嚴重不平等：調適僅 5%、損失補償 0.15%；最脆弱國家死亡率是高收入國 15 倍卻獲得最少支持</p>
+      </div>
+      <div class="key-card" style="border-color:var(--c-beh)">
+        <div class="kc-id" style="color:var(--c-beh)">行動</div>
+        <p>「氣候行動不只是花錢——而是重新定義什麼才是聰明的投資。」清潔能源 1.8 兆已超越化石燃料，轉型正在發生</p>
+      </div>
+    </div>
+    <p style="margin-top:30px"><a href="lesson_plan.html" style="color:var(--c-accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / 20</span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換・捲動換頁</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  if (!slides.length || !cur) return;
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

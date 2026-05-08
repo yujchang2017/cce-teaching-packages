@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候變遷與我們的經濟 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e; --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb; --c-soc: #db2777; --c-beh: #16a34a;
+    --c-warn: #ea580c; --c-text: #1f2937; --c-muted: #6b7280;
+    --c-border: #e5e7eb; --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .big-stat { text-align: center; padding: 30px 20px; }
+  .big-stat .num { font-size: 4.5rem; font-weight: 900; color: var(--c-accent); line-height: 1; }
+  .big-stat .unit { font-size: 1.1rem; color: var(--c-muted); margin-top: 8px; }
+  .big-stat .desc { font-size: 1rem; margin-top: 14px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+  .info-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 20px; }
+  .info-card.hi { border-color: var(--c-cog); background: #eff6ff; }
+  .info-card.warn { border-color: var(--c-warn); background: #fff7ed; }
+  .info-card.green { border-color: var(--c-beh); background: #f0fdf4; }
+  .info-card .card-label { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 10px; }
+  .info-card.hi .card-label { color: var(--c-cog); }
+  .info-card.warn .card-label { color: var(--c-warn); }
+  .info-card.green .card-label { color: var(--c-beh); }
+
+  .impact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+  .impact-item { background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 10px; padding: 16px; text-align: center; }
+  .impact-item .icon { font-size: 2rem; margin-bottom: 8px; }
+  .impact-item .label { font-weight: 600; font-size: 0.95rem; }
+  .impact-item .sub { font-size: 0.85rem; color: var(--c-muted); margin-top: 4px; }
+
+  .chain { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 20px 0; }
+  .chain-box { padding: 12px 16px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; text-align: center; }
+  .chain-box.cause { background: #fef3c7; color: #92400e; }
+  .chain-box.effect { background: #dbeafe; color: var(--c-cog); }
+  .chain-box.final { background: #fee2e2; color: #991b1b; }
+  .chain-arrow { color: var(--c-muted); font-size: 1.4rem; }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .ws-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 1rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 12px 14px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px); height: 44px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">氣候變遷與我們的經濟 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- ======== 1. 封面 ======== -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content:center;">
+    <h2>當氣候敲動<br>我們的荷包</h2>
+    <p class="subtitle">13-15 歲永續素養課｜5.3-IV</p>
+    <p style="margin-top:24px; font-size:1.1rem; color:var(--c-muted);">2016 年霸王寒流，南部漁民一夜損失 42 億元的虱目魚——<br>這不是遙遠的新聞，而是氣候變遷對<strong>經濟</strong>的直接衝擊。</p>
+  </div>
+</section>
+
+<!-- ======== 2. 大問題 ======== -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>哪些產業最怕氣候變遷？</h2>
+  <div class="slide-body">
+    <div class="impact-grid">
+      <div class="impact-item">
+        <div class="icon">🌾</div>
+        <div class="label">農業</div>
+        <div class="sub">高溫、乾旱、豪雨改變作物生長條件</div>
+      </div>
+      <div class="impact-item">
+        <div class="icon">🐟</div>
+        <div class="label">漁業</div>
+        <div class="sub">海水升溫、酸化、颱風破壞養殖場</div>
+      </div>
+      <div class="impact-item">
+        <div class="icon">🌲</div>
+        <div class="label">林業</div>
+        <div class="sub">病蟲害增、物種帶位移、碳吸存下降</div>
+      </div>
+      <div class="impact-item">
+        <div class="icon">🏖️</div>
+        <div class="label">觀光業</div>
+        <div class="sub">珊瑚白化、極端天氣縮短旅遊季</div>
+      </div>
+      <div class="impact-item">
+        <div class="icon">🏠</div>
+        <div class="label">保險業</div>
+        <div class="sub">理賠暴增、部分地區拒絕承保</div>
+      </div>
+      <div class="impact-item">
+        <div class="icon">🏗️</div>
+        <div class="label">基礎建設</div>
+        <div class="sub">堤防、道路、橋梁反覆修復成本</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.1rem; margin-top:16px;">
+      這些都是<strong style="color:var(--c-warn);">脆弱產業</strong>——承受力低、恢復力差，而且往往是<strong>小型家庭企業</strong>在扛。
+    </p>
+  </div>
+</section>
+
+<!-- ======== 3. 活動一過場 ======== -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動一</div>
+    <h2>脆弱產業：為什麼是農漁林？</h2>
+    <p class="subtitle" style="color:var(--c-muted); font-size:1.1rem;">每種作物都有它的舒適區</p>
+  </div>
+</section>
+
+<!-- ======== 4. FAO 農損數據 ======== -->
+<section class="slide" id="slide-fao">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>全球農業損失：30 年累計 3.8 兆美元</h2>
+  <div class="slide-body">
+    <div class="big-stat">
+      <div class="num">3.8 兆</div>
+      <div class="unit">美元（1991–2021 年全球氣候相關災害造成的農業累計損失）</div>
+      <div class="desc">平均每年 <strong>1,230 億美元</strong>，相當於低度開發國家農業產值的 <strong style="color:var(--c-warn);">5%</strong></div>
+    </div>
+    <p style="text-align:center; font-size:1.05rem; margin-top:20px;">
+      如果你是農民，連續五年每 100 元收入就有 5 元被氣候吃掉——你還會繼續種嗎？
+    </p>
+    <p style="text-align:center; font-size:0.9rem; color:var(--c-muted);">注意：這還沒算「間接成本」！</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.fao.org/policy-support/tools-and-publications/resources-details/en/c/1639268/" target="_blank" rel="noopener">聯合國糧農組織 — 災害對農業與糧食安全的衝擊（2023）</a></div>
+</section>
+
+<!-- ======== 5. 作物舒適區 ======== -->
+<section class="slide" id="slide-crop">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>作物有舒適區，氣候一變就失控</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="info-card hi">
+        <div class="card-label">政府間氣候變遷小組 AR6 預估</div>
+        <p style="margin:0; font-size:1.1rem;">升溫 <strong>2°C</strong> 時：</p>
+        <ul style="margin:8px 0 0; padding-left:1.3em;">
+          <li>全球玉米產量減少 <strong>1.6–5.6%</strong></li>
+          <li>低緯度水稻減幅可達 <strong>10%</strong></li>
+          <li>玉米、水稻、小麥三大主食養活七成人口</li>
+        </ul>
+      </div>
+      <div class="info-card warn">
+        <div class="card-label">臺灣在地案例</div>
+        <ul style="margin:0; padding-left:1.3em;">
+          <li><strong>茶葉</strong>：芽期遇連日高溫就苦澀，品質下滑</li>
+          <li><strong>芒果</strong>：暖冬不授粉，產量大減</li>
+          <li><strong>水稻</strong>：需要 22–28°C 穩定生長區間</li>
+          <li><strong>虱目魚</strong>：寒流水溫驟降直接凍斃</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.05rem; margin-top:16px;">
+      氣候改變了，<strong>舒適區位移</strong>，農民的田卻搬不走——這就是脆弱性的根源。
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.ipcc.ch/report/ar6/wg2/chapter/chapter-5/" target="_blank" rel="noopener">政府間氣候變遷小組 AR6 第二工作組第 5 章</a></div>
+</section>
+
+<!-- ======== 6. 活動二過場 ======== -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動二</div>
+    <h2>藍色經濟與漁業未來</h2>
+    <p class="subtitle" style="color:var(--c-muted); font-size:1.1rem;">永續利用，不是多捕魚</p>
+  </div>
+</section>
+
+<!-- ======== 7. 藍色經濟 ======== -->
+<section class="slide" id="slide-blue">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>藍色經濟：2.5 兆美元、3 億個工作</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div style="text-align:center; padding:20px; background:var(--c-bg); border:2px solid var(--c-border); border-radius:12px;">
+        <div style="font-size:3.5rem; font-weight:900; color:var(--c-cog);">2.5 兆</div>
+        <div style="font-size:1rem; color:var(--c-muted); margin-top:8px;">美元 全球藍色經濟年產值</div>
+      </div>
+      <div style="text-align:center; padding:20px; background:var(--c-bg); border:2px solid var(--c-border); border-radius:12px;">
+        <div style="font-size:3.5rem; font-weight:900; color:var(--c-beh);">3 億</div>
+        <div style="font-size:1rem; color:var(--c-muted); margin-top:8px;">個工作機會（漁業、海運、海洋觀光）</div>
+      </div>
+    </div>
+    <div style="background:#eff6ff; border:2px solid var(--c-cog); border-radius:12px; padding:20px; margin-top:20px;">
+      <strong>藍色經濟的核心是「永續」</strong>，不是大量捕魚賺錢。要兼顧：<br>
+      ① 生態健康（不過度捕撈）　② 漁民長期生計　③ 沿岸社區福祉
+    </div>
+    <p style="text-align:center; font-size:1rem; color:var(--c-muted); margin-top:16px;">
+      若短期過度捕撈發財，長期漁場崩盤，3 億人的生計將一起消失。
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.worldbank.org/en/topic/oceans-fisheries-and-coastal-economies" target="_blank" rel="noopener">世界銀行 — 海洋、漁業與沿岸經濟</a></div>
+</section>
+
+<!-- ======== 8. 2016 霸王寒流 ======== -->
+<section class="slide" id="slide-coldwave">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>2016 霸王寒流：一夜 42 億元農損</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：臺灣近 10 年年均農損與 2016 年霸王寒流單次農損對比柱狀圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>近 10 年年均農損約 110 億元；2016 年霸王寒流單次逾 42 億元，虱目魚、石斑魚養殖戶受創最重</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>資料來源：農業部農業統計年報</figcaption>
+    </figure>
+    <p style="text-align:center; font-size:1.05rem; margin-top:16px;">
+      這些業者多為<strong>小型家庭企業</strong>——沒有大公司的保險與資金緩衝，一次打擊可能永遠爬不起來。
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://agrstat.moa.gov.tw/sdweb/public/book/Book.aspx" target="_blank" rel="noopener">農業部農業統計年報</a></div>
+</section>
+
+<!-- ======== 9. 活動三過場 ======== -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三</div>
+    <h2>隱形的帳單：間接成本</h2>
+    <p class="subtitle" style="color:var(--c-muted); font-size:1.1rem;">你沒有直接受災，但你也在付錢</p>
+  </div>
+</section>
+
+<!-- ======== 10. NOAA 十億災害 ======== -->
+<section class="slide" id="slide-noaa">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>美國十億美元級氣候災害：44 年 403 件</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：1980–2024 年年度十億美元災害件數折線圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>1980–2024 共 403 件；近五年每年平均 20 件（1980 年代的 5 倍）；累計損失逾 2.9 兆美元</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>資料來源：美國國家海洋暨大氣總署 NCEI</figcaption>
+    </figure>
+    <p style="text-align:center; font-size:1.05rem; margin-top:16px;">
+      <strong>提問：</strong>如果這條曲線繼續上升，十年後每年會有幾件？
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.ncei.noaa.gov/access/billions/" target="_blank" rel="noopener">美國國家海洋暨大氣總署 — 十億美元氣候災害統計</a></div>
+</section>
+
+<!-- ======== 11. 保險損失 ======== -->
+<section class="slide" id="slide-insurance">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>全球保險損失：連續四年突破千億美元</h2>
+  <div class="slide-body">
+    <div class="big-stat">
+      <div class="num">1,080 億</div>
+      <div class="unit">美元（2023 年全球天然災害保險損失）</div>
+      <div class="desc" style="color:var(--c-warn); font-weight:600;">連續第四年突破 1,000 億美元</div>
+    </div>
+    <div class="two-col" style="margin-top:20px;">
+      <div class="info-card warn">
+        <div class="card-label">直接影響</div>
+        <ul style="margin:0; padding-left:1.3em; font-size:0.95rem;">
+          <li>佛州、加州部分地區：保險公司拒絕承保</li>
+          <li>臺灣山區車險：颱風附加費調漲</li>
+          <li>沿海農漁業：保費飆升，小農買不起</li>
+        </ul>
+      </div>
+      <div class="info-card hi">
+        <div class="card-label">間接影響（你也在付）</div>
+        <ul style="margin:0; padding-left:1.3em; font-size:0.95rem;">
+          <li>稅金增加（政府補貼救災）</li>
+          <li>物價上漲（供應鏈中斷）</li>
+          <li>健保支出增加（熱浪醫療）</li>
+          <li>房價下跌（高風險區域）</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.swissre.com/institute/research/sigma-research/sigma-2024-01.html" target="_blank" rel="noopener">瑞士再保險集團 — Sigma 01/2024</a></div>
+</section>
+
+<!-- ======== 12. 活動四過場 ======== -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動四</div>
+    <h2>行動：公正轉型與在地調適</h2>
+    <p class="subtitle" style="color:var(--c-muted); font-size:1.1rem;">從因果鏈到校園行動</p>
+  </div>
+</section>
+
+<!-- ======== 13. 因果鏈 ======== -->
+<section class="slide" id="slide-chain">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>因果鏈：極端天氣如何傷害最脆弱的人</h2>
+  <div class="slide-body">
+    <div class="chain">
+      <div class="chain-box cause">極端天氣</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box effect">農損／漁損</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box effect">小農倒閉</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box effect">糧價上漲</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box final">低收入戶受創</div>
+    </div>
+    <div class="chain" style="margin-top:8px;">
+      <div class="chain-box cause">農損增加</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box effect">保險費漲</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box effect">小農更難投保</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box final">農損再增加（回饋循環）</div>
+    </div>
+    <p style="text-align:center; font-size:1rem; color:var(--c-muted); margin-top:20px;">
+      任務：在你的學習單上畫出這條鏈，並標出至少 2 個回饋循環。
+    </p>
+  </div>
+</section>
+
+<!-- ======== 14. 在地調適學習單 ======== -->
+<section class="slide" id="slide-ws-adapt">
+  <div class="slide-tag">活動四・步驟 2 ・學習單（投影版）</div>
+  <h2>在地調適踏查紀錄表</h2>
+  <div class="slide-body">
+    <p style="font-size:1.05rem; color:var(--c-muted); margin:0 0 12px;">踏查校園周邊 1 項調適基礎設施，完成下表。</p>
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>設施名稱</th>
+          <th>位置</th>
+          <th>設計原理</th>
+          <th>能減少什麼風險？</th>
+          <th>可改進之處</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:1rem; margin-top:12px;"><strong>設施範例：</strong>滯洪池、雨水回收桶、屋頂綠化、透水鋪面、防洪閘門</p>
+  </div>
+</section>
+
+<!-- ======== 15. 延遲調適的代價 ======== -->
+<section class="slide" id="slide-delay">
+  <div class="slide-tag">活動四</div>
+  <h2>行動越晚，帳單越貴</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：延遲調適年份 vs 海堤升高成本曲線圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>若晚 10 年才做海堤升級，每公尺成本平均多 30%；臺灣近 110 年均溫升 1.6°C，西部降雨強度增加</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>資料來源：TCCIP 臺灣氣候變遷推估資訊平台（2024）</figcaption>
+    </figure>
+    <p style="text-align:center; font-size:1.05rem; margin-top:16px;">
+      <strong>提問：</strong>如果你是市長，面臨預算有限，你會先升級學校設施還是沿海海堤？
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://tccip.ncdr.nat.gov.tw/" target="_blank" rel="noopener">TCCIP 臺灣氣候變遷推估資訊平台</a></div>
+</section>
+
+<!-- ======== 16. 三關鍵字總結 ======== -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">脆弱</div>
+        <div class="desc">農漁林業承受力低<br>小型家庭企業最先倒</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">隱形</div>
+        <div class="desc">間接成本你也在付<br>保費、稅金、物價都是</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">公正</div>
+        <div class="desc">排碳多的不是受災最重的<br>轉型要顧及每個人</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.1rem; margin-top:24px;">
+      課程到這裡，但你的行動才剛開始。<br>
+      <strong style="color:var(--c-accent);">寫下你願意採取的一個在地行動，帶回家和家人討論。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">16</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color:var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) { setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100); }
+  }
+</script>
+
+</body>
+</html>

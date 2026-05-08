@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>颱風小偵探 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0891b2;
+    --c-accent-soft: #cffafe;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #f59e0b;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .guests-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin: 30px 0; }
+  .guest-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 18px 8px; text-align: center; }
+  .guest-card .emoji { font-size: 2.8rem; display: block; }
+  .guest-card .name { font-size: 1rem; font-weight: 700; margin-top: 8px; color: var(--c-accent); }
+  .guest-card .sound { font-size: 0.9rem; color: var(--c-muted); margin-top: 4px; }
+  .calendar-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin: 24px 0; }
+  .month { padding: 18px 4px; text-align: center; font-weight: 700; border: 2px solid var(--c-border); border-radius: 8px; background: var(--c-bg); font-size: 1rem; }
+  .month.hi { background: var(--c-accent-soft); border-color: var(--c-accent); color: var(--c-accent); }
+  .month .label { font-size: 0.75rem; color: var(--c-muted); display: block; margin-top: 4px; }
+  .month.hi .label { color: var(--c-accent); }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .treasures-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin: 24px 0; }
+  .treasure-card { border: 2px solid var(--c-warn); background: #fffbeb; border-radius: 12px; padding: 20px 8px; text-align: center; }
+  .treasure-card .emoji { font-size: 2.6rem; display: block; }
+  .treasure-card .name { font-size: 1rem; font-weight: 700; margin-top: 6px; color: #92400e; }
+  .treasure-card .num { font-size: 0.85rem; color: var(--c-warn); font-weight: 700; }
+  .item-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 20px 0; }
+  .item-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 14px 8px; text-align: center; font-size: 0.95rem; }
+  .item-card.yes { border-color: var(--c-beh); background: #f0fdf4; }
+  .item-card.no { border-color: var(--c-muted); background: var(--c-bg); opacity: 0.7; }
+  .item-card .emoji { font-size: 2.2rem; display: block; margin-bottom: 4px; }
+  .phone-row { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 24px 0; }
+  .phone-card { border-radius: 16px; padding: 30px; text-align: center; }
+  .phone-card.fire { background: #fee2e2; border: 3px solid #dc2626; }
+  .phone-card.police { background: #dbeafe; border: 3px solid var(--c-cog); }
+  .phone-card .num { font-size: 4rem; font-weight: 800; }
+  .phone-card.fire .num { color: #dc2626; }
+  .phone-card.police .num { color: var(--c-cog); }
+  .phone-card .who { font-size: 1.1rem; margin-top: 6px; }
+  .three-action { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 30px 0; }
+  .action-card { border: 2px solid var(--c-accent); border-radius: 16px; padding: 24px 16px; text-align: center; }
+  .action-card .step { font-size: 0.85rem; color: var(--c-muted); letter-spacing: 0.1em; }
+  .action-card .word { font-size: 2.5rem; font-weight: 800; color: var(--c-accent); margin: 8px 0; }
+  .action-card .icon { font-size: 2.2rem; }
+  .action-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px; background: var(--c-bg); max-width: 700px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">颱風小偵探 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>颱風小偵探</h2>
+    <p class="subtitle">遇到大風大雨,我們事先準備、保持冷靜!</p>
+    <div style="font-size: 6rem; margin: 30px 0;">🦝🌀☂️🔦💧</div>
+    <p style="font-size: 1.1rem; color: var(--c-accent); font-weight: 600;">戴上探險帽,大喊「我準備好!」</p>
+  </div>
+</section>
+
+<!-- 2 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>為什麼天氣有時候特別誇張?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:地球寶寶蓋著太厚的棉被+流汗 圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>地球身上的「棉被」(溫室氣體)變太厚,熱熱的,天氣也跟著變誇張</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>地球寶寶熱熱的,所以雨會變大、熱會變久</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 20px;">
+      用身體做「熱熱」的動作:<strong style="color: var(--c-accent);">搧風、擦汗</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>天氣大客人來啦!</h2>
+    <p class="subtitle">認識 5 位脾氣大的天氣客人</p>
+  </div>
+</section>
+
+<!-- 4 5 位天氣客人 -->
+<section class="slide" id="slide-5guests">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>天氣大家族 — 5 位客人</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.1rem; color: var(--c-muted);">
+      他們有時候會比平常更誇張,只要認得他們,就不會怕!
+    </p>
+    <div class="guests-grid">
+      <div class="guest-card"><span class="emoji">🌀</span><div class="name">颱風</div><div class="sound">呼呼呼</div></div>
+      <div class="guest-card"><span class="emoji">🌊</span><div class="name">洪水</div><div class="sound">淹淹淹</div></div>
+      <div class="guest-card"><span class="emoji">🥵</span><div class="name">熱浪</div><div class="sound">熱熱熱</div></div>
+      <div class="guest-card"><span class="emoji">🔥</span><div class="name">野火</div><div class="sound">紅紅紅</div></div>
+      <div class="guest-card"><span class="emoji">🌧️</span><div class="name">大雨</div><div class="sound">嘩嘩嘩</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 20px;">
+      數 1—2—3—4—5,跟著比 5 根手指數 5 位客人 ✋
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署</a>
+  </div>
+</section>
+
+<!-- 5 颱風什麼時候來 -->
+<section class="slide" id="slide-typhoon-when">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>颱風阿呼呼什麼時候來?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.1rem; color: var(--c-muted);">
+      臺灣每年的這 4 個月,颱風客人比較常來拜訪
+    </p>
+    <div class="calendar-grid">
+      <div class="month">1<span class="label">月</span></div>
+      <div class="month">2<span class="label">月</span></div>
+      <div class="month">3<span class="label">月</span></div>
+      <div class="month">4<span class="label">月</span></div>
+      <div class="month">5<span class="label">月</span></div>
+      <div class="month">6<span class="label">月</span></div>
+      <div class="month hi">7<span class="label">🌀</span></div>
+      <div class="month hi">8<span class="label">🌀</span></div>
+      <div class="month hi">9<span class="label">🌀</span></div>
+      <div class="month hi">10<span class="label">🌀</span></div>
+      <div class="month">11<span class="label">月</span></div>
+      <div class="month">12<span class="label">月</span></div>
+    </div>
+    <p style="text-align: center; font-size: 1.3rem; margin-top: 30px; color: var(--c-accent); font-weight: 700;">
+      7、8、9、10 月 — 颱風季!
+    </p>
+    <p style="text-align: center; color: var(--c-muted);">
+      伸 4 根手指數「7、8、9、10」,像 4 個大風客人輪流來拜訪
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署 — 颱風資訊</a>
+  </div>
+</section>
+
+<!-- 6 颱風來時待在家 -->
+<section class="slide" id="slide-typhoon-stay">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>颱風來的時候會怎樣?</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color: var(--c-warn); background: #fffbeb;">
+        <div class="icon">☀️</div>
+        <h3 style="color: var(--c-warn);">晴天</h3>
+        <p>玩球、跑跳、出去玩</p>
+      </div>
+      <div class="compare-card" style="border-color: var(--c-accent); background: var(--c-accent-soft);">
+        <div class="icon">🏠</div>
+        <h3 style="color: var(--c-accent);">颱風天</h3>
+        <p>關好窗、待在家、不出門</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 20px;">
+      <strong style="color: var(--c-accent);">不出門・不看海・不上山</strong> — 這樣最安全
+    </p>
+    <p style="text-align: center; color: var(--c-muted);">
+      老師喊「颱風天!」→ 雙手抱胸做「待家裡」動作 ・ 喊「晴天!」→ 張開手
+    </p>
+  </div>
+</section>
+
+<!-- 7 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>緊急包小寶貝</h2>
+    <p class="subtitle">水、燈、餅、音、藥 — 5 寶貝出發!</p>
+  </div>
+</section>
+
+<!-- 8 5 寶貝 -->
+<section class="slide" id="slide-5treasures">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>緊急包 5 寶貝</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.1rem; color: var(--c-muted);">
+      聰明的家裡都有一個橘色小背包,裡面有 5 樣救命小寶貝
+    </p>
+    <div class="treasures-grid">
+      <div class="treasure-card"><div class="num">①</div><span class="emoji">💧</span><div class="name">水</div></div>
+      <div class="treasure-card"><div class="num">②</div><span class="emoji">🔦</span><div class="name">手電筒</div></div>
+      <div class="treasure-card"><div class="num">③</div><span class="emoji">🍪</span><div class="name">餅乾</div></div>
+      <div class="treasure-card"><div class="num">④</div><span class="emoji">📻</span><div class="name">收音機</div></div>
+      <div class="treasure-card"><div class="num">⑤</div><span class="emoji">💊</span><div class="name">藥物</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.4rem; margin-top: 30px; color: var(--c-accent); font-weight: 700;">
+      水 — 燈 — 餅 — 音 — 藥!
+    </p>
+    <p style="text-align: center; color: var(--c-muted);">
+      邊數邊伸 5 根手指,跟著念
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.nfa.gov.tw/" target="_blank" rel="noopener">內政部消防署 — 防災用品準備</a>
+  </div>
+</section>
+
+<!-- 9 該帶不該帶 -->
+<section class="slide" id="slide-yes-no">
+  <div class="slide-tag">活動二・步驟 2 ・學習單(投影版)</div>
+  <h2>哪些要帶?哪些可以等等?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      老師舉圖卡,孩子用「✅」(雙手舉高)或「❌」(雙手交叉)回應
+    </p>
+    <div class="item-grid">
+      <div class="item-card yes"><span class="emoji">💧</span>水 ✅</div>
+      <div class="item-card yes"><span class="emoji">🔦</span>手電筒 ✅</div>
+      <div class="item-card yes"><span class="emoji">🍪</span>餅乾 ✅</div>
+      <div class="item-card yes"><span class="emoji">📻</span>收音機 ✅</div>
+      <div class="item-card yes"><span class="emoji">💊</span>藥 ✅</div>
+      <div class="item-card no"><span class="emoji">🧸</span>玩具 ❌</div>
+      <div class="item-card no"><span class="emoji">🍦</span>冰淇淋 ❌</div>
+      <div class="item-card no"><span class="emoji">🎮</span>遊戲機 ❌</div>
+      <div class="item-card no"><span class="emoji">📺</span>電視 ❌</div>
+      <div class="item-card no"><span class="emoji">💰</span>大量錢 ❌</div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      緊急包要裝<strong style="color: var(--c-beh);">真的會救命</strong>的東西,玩具陪你玩的時間在平常 🎈
+    </p>
+  </div>
+</section>
+
+<!-- 10 緊急電話 -->
+<section class="slide" id="slide-phone">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>大人不在時,我可以打 2 個電話</h2>
+  <div class="slide-body">
+    <div class="phone-row">
+      <div class="phone-card fire">
+        <div style="font-size: 2.5rem;">🚒</div>
+        <div class="num">119</div>
+        <div class="who">消防員 / 救護車</div>
+        <div style="margin-top: 8px; font-size: 0.9rem; color: var(--c-muted);">「一—一—救」</div>
+      </div>
+      <div class="phone-card police">
+        <div style="font-size: 2.5rem;">👮</div>
+        <div class="num">110</div>
+        <div class="who">警察叔叔阿姨</div>
+        <div style="margin-top: 8px; font-size: 0.9rem; color: var(--c-muted);">「一—一—找警察」</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      <strong style="color: var(--c-accent);">真的緊急才能打喔!</strong>平常打給警察叔叔,他就不能去救別人 🚨
+    </p>
+    <p style="text-align: center; color: var(--c-muted);">
+      比手勢「1-1-9」和「1-1-0」,邊念邊比
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.nfa.gov.tw/" target="_blank" rel="noopener">內政部消防署</a>
+  </div>
+</section>
+
+<!-- 11 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>演習小英雄</h2>
+    <p class="subtitle">停・蹲・聽 — 三個小動作保護自己</p>
+  </div>
+</section>
+
+<!-- 12 停蹲聽 -->
+<section class="slide" id="slide-stop">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>停・蹲・聽 — 小偵探三動作</h2>
+  <div class="slide-body">
+    <div class="three-action">
+      <div class="action-card">
+        <div class="step">第 1 個</div>
+        <div class="icon">🛑</div>
+        <div class="word">停</div>
+        <div class="desc">站直不亂跑</div>
+      </div>
+      <div class="action-card">
+        <div class="step">第 2 個</div>
+        <div class="icon">🙇</div>
+        <div class="word">蹲</div>
+        <div class="desc">蹲下雙手抱頭</div>
+      </div>
+      <div class="action-card">
+        <div class="step">第 3 個</div>
+        <div class="icon">👂</div>
+        <div class="word">聽</div>
+        <div class="desc">聽大人的話</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px; color: var(--c-accent); font-weight: 700;">
+      聽到警報就做這三個動作!
+    </p>
+    <p style="text-align: center; color: var(--c-muted);">
+      全班做三次「停 → 蹲 → 聽」動作
+    </p>
+  </div>
+</section>
+
+<!-- 13 小夥伴牽手 -->
+<section class="slide" id="slide-buddy">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>我的小夥伴 — 牽好手、不推擠</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:一排小朋友兩兩牽手、老師在前面帶隊 圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>緊急時牽好同學的手、不推不跑、跟緊老師</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>整齊牽手,小夥伴一起走</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 24px;">
+      照顧別人的人,才是真正的<strong style="color: var(--c-accent);">小英雄</strong> 🦸
+    </p>
+    <p style="text-align: center; color: var(--c-muted);">
+      和旁邊同學牽一下手,說「我會牽好你的手!」
+    </p>
+  </div>
+</section>
+
+<!-- 14 我家逃生路線 -->
+<section class="slide" id="slide-route">
+  <div class="slide-tag">活動三・步驟 3 ・學習單(投影版)</div>
+  <h2>我家的逃生路線</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      畫一張我家的平面圖,從房間→大門→集合點,把箭頭畫起來 ➡️
+    </p>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">我的家有幾個房間?</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我的房間在:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">大門在:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">家裡的集合點是:</span>
+        <span class="blank"></span>
+      </div>
+      <hr style="margin: 18px 0; border: 0; border-top: 1px dashed var(--c-border);">
+      <div style="text-align: center; padding: 18px; border: 2px dashed var(--c-accent); border-radius: 8px; color: var(--c-accent); font-size: 1rem;">
+        ✏️ 在這裡用蠟筆畫一張小地圖,把箭頭從房間連到大門
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>小任務:</strong>畫好之後貼在<strong style="color: var(--c-accent);">冰箱上</strong>,讓全家都看得到!
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 15 三件大事總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三件大事,小偵探一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 件</div>
+        <div class="word">5 客人</div>
+        <div class="desc">天氣大家族<br>颱風、洪水、熱浪、野火、大雨</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 件</div>
+        <div class="word">5 寶貝</div>
+        <div class="desc">緊急包要帶<br>水、燈、餅、音、藥</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 件</div>
+        <div class="word">停蹲聽</div>
+        <div class="desc">遇到警報三動作<br>冷靜、牽手、聽大人</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">我是颱風小偵探!</strong> 🦝<br>
+      全班拍手三下,大喊「我是颱風小偵探!」
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">15</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

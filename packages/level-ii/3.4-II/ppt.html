@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小小幫忙家 — 教學投影片（3.4-II）</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border);
+    border-bottom-width: 2px; border-radius: 4px; font-family: monospace;
+    font-size: 0.8em; background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .question-cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; margin: 24px 0;
+  }
+  .question-card {
+    background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px;
+    padding: 24px; font-size: 1.1rem; text-align: center; position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%; font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .icon-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px; margin: 24px 0;
+  }
+  .icon-card {
+    background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 12px;
+    padding: 20px; text-align: center;
+  }
+  .icon-card .icon { font-size: 2.6rem; margin-bottom: 10px; }
+  .icon-card .label { font-size: 1rem; font-weight: 600; color: var(--c-accent); }
+  .icon-card .desc { font-size: 0.9rem; color: var(--c-muted); margin-top: 4px; }
+  .data-highlight {
+    background: #fff7ed; border-left: 4px solid var(--c-warn);
+    border-radius: 0 10px 10px 0; padding: 20px 24px; margin: 20px 0;
+  }
+  .data-highlight .stat { font-size: 2.2rem; font-weight: 800; color: var(--c-warn); }
+  .data-highlight .desc { font-size: 1.05rem; margin-top: 6px; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 22px; text-align: center; }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card .icon { font-size: 2.8rem; margin: 10px 0; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.1rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); color: var(--c-accent); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; font-size: 0.95rem; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 12px 0; }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">小小幫忙家 — 教學投影片（3.4-II）</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <div style="font-size: 3rem; margin-bottom: 16px;">🐰🌍</div>
+    <h2>小小幫忙家俱樂部</h2>
+    <p class="subtitle">每個人都有角色，每個行動都算數</p>
+    <p style="font-size: 1rem; color: var(--c-muted); margin-top: 12px;">Level II｜5–8 歲｜Key ID: 3.4-II</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>地球是我們的好朋友，它現在好嗎？</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>地球每天送我們什麼禮物？</div>
+      <div class="question-card"><div class="q-num">2</div>地球現在有沒有生病？</div>
+      <div class="question-card"><div class="q-num">3</div>我可以幫地球做什麼事？</div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px; color: var(--c-accent);">
+      <strong>今天我們要一起成為小小幫忙家！</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>我是小小幫忙家</h2>
+    <p class="subtitle" style="font-size: 1.1rem; color: var(--c-muted); margin-top: 8px;">發現自己的角色，說出幫忙的小事</p>
+  </div>
+</section>
+
+<!-- 4. 地球現在的樣子 -->
+<section class="slide" id="slide-globe">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>地球現在有一點發燒了</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color: var(--c-cog);">
+        <div class="label" style="color: var(--c-cog);">以前的地球</div>
+        <div class="icon">😊🌍</div>
+        <p>涼涼的、舒舒服服</p>
+      </div>
+      <div class="compare-card" style="border-color: var(--c-warn);">
+        <div class="label" style="color: var(--c-warn);">現在的地球</div>
+        <div class="icon">🥵🌍</div>
+        <p>比以前熱了約 <strong style="font-size: 1.4rem;">1.4°C</strong><br>像寶寶有一點發燒</p>
+      </div>
+    </div>
+    <div class="data-highlight">
+      <div class="desc">住在小島的小朋友，因為地球發燒，海水漲高，他們家裡常被大水淹。<br>我們在這裡<strong>關燈、省水</strong>，就是在幫助遠方的朋友一點點。</div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-accent); margin-top: 10px;">
+      把手放在臉頰，再放到額頭——「稍微熱一點點」就是地球現在的感覺。
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.un.org/en/climatechange/what-is-climate-change" target="_blank" rel="noopener">聯合國 — 什麼是氣候變遷</a></div>
+</section>
+
+<!-- 5. 我的角色 -->
+<section class="slide" id="slide-roles">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>我的角色是什麼？</h2>
+  <div class="slide-body">
+    <div class="icon-grid">
+      <div class="icon-card">
+        <div class="icon">👧👦</div>
+        <div class="label">兒子/女兒</div>
+        <div class="desc">在家幫爸媽</div>
+      </div>
+      <div class="icon-card">
+        <div class="icon">🤝</div>
+        <div class="label">同學</div>
+        <div class="desc">在學校互相幫忙</div>
+      </div>
+      <div class="icon-card">
+        <div class="icon">🏘️</div>
+        <div class="label">鄰居</div>
+        <div class="desc">在社區守望相助</div>
+      </div>
+      <div class="icon-card">
+        <div class="icon">🌍</div>
+        <div class="label">地球人</div>
+        <div class="desc">愛護地球</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px; color: var(--c-accent);">
+      <strong>把角色貼紙貼到海報上，說一件你可以幫忙的小事！</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 6. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>大家一起幫，才公平</h2>
+    <p class="subtitle" style="font-size: 1.1rem; color: var(--c-muted); margin-top: 8px;">感受「大朋友多做一點才公平」</p>
+  </div>
+</section>
+
+<!-- 7. 誰的煙煙多 -->
+<section class="slide" id="slide-fairness">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>誰的煙煙多？誰要多掃一點？</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：大棉花球 vs 小棉花球示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>6 個大國家排放的壞氣體超過全球一半，而 45 個小國家加起來只排了 3 份</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>就像大家一起倒垃圾，大朋友多出力清掉才公平！</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      老師問：「<strong style="color: var(--c-warn);">誰要多掃一點？</strong>」孩子齊聲回答「<strong style="color: var(--c-beh);">大雲朵！</strong>」
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.un.org/en/climatechange/what-is-climate-change" target="_blank" rel="noopener">聯合國 — 什麼是氣候變遷</a></div>
+</section>
+
+<!-- 8. 公平小天平 -->
+<section class="slide" id="slide-balance">
+  <div class="slide-tag">活動二・步驟 3・學習單（投影版）</div>
+  <h2>公平小天平手作</h2>
+  <div class="slide-body">
+    <div style="border: 2px dashed var(--c-accent); border-radius: 16px; padding: 30px; margin: 20px auto; max-width: 640px; background: var(--c-bg); text-align: center;">
+      <div style="font-size: 1.2rem; color: var(--c-accent); font-weight: 700; margin-bottom: 18px;">⚖️ 我的公平天平</div>
+      <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: center;">
+        <div style="border: 2px solid var(--c-soc); border-radius: 10px; padding: 20px; min-height: 100px;">
+          <div style="font-weight: 700; color: var(--c-soc); margin-bottom: 8px;">我的行動</div>
+          <div style="color: var(--c-muted); font-size: 0.9rem;">（貼上行動貼紙）</div>
+        </div>
+        <div style="font-size: 2rem;">⚖️</div>
+        <div style="border: 2px solid var(--c-cog); border-radius: 10px; padding: 20px; min-height: 100px;">
+          <div style="font-weight: 700; color: var(--c-cog); margin-bottom: 8px;">我邀請的人</div>
+          <div style="color: var(--c-muted); font-size: 0.9rem;">（貼上朋友貼紙）</div>
+        </div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-accent);">
+      <strong>比一比！誰的朋友最多？</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 9. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>我來照顧，地球會回禮</h2>
+    <p class="subtitle" style="font-size: 1.1rem; color: var(--c-muted); margin-top: 8px;">感受「照顧別人，別人也會照顧你」</p>
+  </div>
+</section>
+
+<!-- 10. 省水數據 -->
+<section class="slide" id="slide-water">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>刷牙關水龍頭，一次省 10 杯水！</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：10 個小杯子排成一排的示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>地球有 70% 都是水，但刷牙時關水龍頭，一次可以省下約 10 杯水</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>1 次關水 = 省下 10 杯水，幫助缺水的朋友</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      跟著老師做「<strong style="color: var(--c-accent);">擰緊水龍頭</strong>」手勢，數「1、2、3…10 杯！」
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://science.nasa.gov/kids/earth/" target="_blank" rel="noopener">美國太空總署兒童科學館 — 地球</a></div>
+</section>
+
+<!-- 11. 感恩小劇場 -->
+<section class="slide" id="slide-gratitude">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>感恩小劇場：樹、水、人</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card">
+        <h4>🌳 扮演樹</h4>
+        <ul>
+          <li>送人氧氣</li>
+          <li>提供樹蔭</li>
+          <li>幫忙擋風</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <h4>💧 扮演水</h4>
+        <ul>
+          <li>讓人喝水</li>
+          <li>幫花草長大</li>
+          <li>涼涼的好舒服</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <h4>😊 扮演人</h4>
+        <ul>
+          <li>謝謝樹、謝謝水</li>
+          <li>不亂丟垃圾</li>
+          <li>關水龍頭省水</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px; color: var(--c-accent);">
+      <strong>三人一組輪流扮演，每次換角色！</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 12. 家庭小任務 -->
+<section class="slide" id="slide-family">
+  <div class="slide-tag">WSA 家庭連結</div>
+  <h2>帶回家的小任務</h2>
+  <div class="slide-body">
+    <div class="icon-grid">
+      <div class="icon-card">
+        <div class="icon">🌿</div>
+        <div class="label">感謝大自然散步</div>
+        <div class="desc">對樹、花、鳥說「謝謝你」，拍照留念</div>
+      </div>
+      <div class="icon-card">
+        <div class="icon">💧</div>
+        <div class="label">省水大挑戰 7 天</div>
+        <div class="desc">刷牙關水，小孩當小隊長，每天發星星</div>
+      </div>
+      <div class="icon-card">
+        <div class="icon">💌</div>
+        <div class="label">寫信給小島朋友</div>
+        <div class="desc">畫一張卡片，貼在冰箱上</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px; color: var(--c-accent);">
+      和旁邊同學說：「<strong>週末我要___！</strong>」
+    </p>
+  </div>
+</section>
+
+<!-- 13. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">角色</div>
+        <div class="desc">每個人在家庭、學校、社區都有位置可以幫忙</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">公平</div>
+        <div class="desc">大朋友多幫忙，不讓任何朋友被忘記</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">照顧</div>
+        <div class="desc">我照顧地球，地球也會照顧我們</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">你不渺小。每一件幫忙的小事，都讓地球更開心。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">13</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+
+</body>
+</html>

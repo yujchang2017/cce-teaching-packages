@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候衝擊因應：安全與韌性策略 — 投影片</title>
+<style>
+  :root{
+    --c-accent:#0f766e;--c-accent-soft:#ccfbf1;
+    --c-cog:#2563eb;--c-soc:#db2777;--c-beh:#16a34a;
+    --c-warn:#ea580c;--c-text:#1f2937;--c-muted:#6b7280;
+    --c-border:#e5e7eb;--c-bg:#f9fafb
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--c-text);line-height:1.6;margin:0;background:#fff}
+  /* topbar */
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--c-accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.95rem;font-weight:500;color:var(--c-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  /* navbar */
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--c-muted)}
+  .nav-indicator{font-family:monospace;color:var(--c-text)}
+  .nav-cur{color:var(--c-accent);font-weight:700}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--c-border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  /* main layout */
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--c-border);position:relative}
+  .slide-num{position:absolute;top:14px;right:20px;font-size:.8rem;font-family:monospace;color:var(--c-border)}
+  .slide h2{font-size:2rem;margin:0 0 20px;color:var(--c-text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  /* cover & divider */
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--c-accent-soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.8rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--c-accent);color:#fff;padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--c-accent);letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.4rem;color:var(--c-accent)}
+  .slide.divider .act-steps{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .act-step-chip{background:var(--c-accent-soft);color:var(--c-accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  /* question slide */
+  .q-box{background:var(--c-accent-soft);border-left:5px solid var(--c-accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.4rem;line-height:1.6;color:var(--c-accent);font-weight:600}
+  .q-sub{font-size:1.05rem;color:var(--c-muted);font-weight:400;margin-top:10px}
+  /* data card */
+  .data-card{border:2px solid var(--c-border);border-radius:12px;padding:22px 28px;margin:16px 0;background:var(--c-bg)}
+  .data-card .dc-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;color:var(--c-muted);margin-bottom:8px}
+  .data-card .dc-fact{font-size:1.15rem;font-weight:700;color:var(--c-text);margin-bottom:10px;line-height:1.5}
+  .data-card .dc-src{font-size:.85rem;color:var(--c-muted)}
+  .data-card .dc-src a{color:var(--c-accent);text-decoration:none;border-bottom:1px dashed var(--c-accent)}
+  /* stat row */
+  .stat-row{display:flex;gap:16px;flex-wrap:wrap;margin:16px 0}
+  .stat-box{flex:1;min-width:160px;border:2px solid var(--c-border);border-radius:12px;padding:18px 20px;text-align:center;background:var(--c-bg)}
+  .stat-box .sv{font-size:2rem;font-weight:800;color:var(--c-accent);line-height:1.1}
+  .stat-box .sl{font-size:.85rem;color:var(--c-muted);margin-top:4px}
+  /* activity card */
+  .act-card{border:2px solid var(--c-border);border-radius:12px;padding:20px 26px;margin:14px 0}
+  .act-card .ac-badge{display:inline-block;background:var(--c-accent);color:#fff;font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:4px;margin-bottom:10px;letter-spacing:.08em}
+  .act-card .ac-task{font-size:1.1rem;color:var(--c-text);line-height:1.6}
+  /* worksheet */
+  .ws-frame{border:2px dashed var(--c-accent);border-radius:12px;padding:24px 28px;margin:16px 0;background:#fff}
+  .ws-frame .ws-title{font-size:1rem;font-weight:700;color:var(--c-accent);margin-bottom:12px}
+  .ws-lines{display:flex;flex-direction:column;gap:14px}
+  .ws-line{border-bottom:1.5px solid #d1d5db;height:28px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--c-border);padding:10px 14px;text-align:center}
+  .ws-table th{background:var(--c-accent-soft);color:var(--c-accent);font-weight:700}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:52px}
+  /* lo chips */
+  .lo-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .lo-chip{font-size:.8rem;padding:3px 10px;border-radius:12px;font-weight:700}
+  .lo-chip.cog{background:#dbeafe;color:var(--c-cog)}
+  .lo-chip.soc{background:#fce7f3;color:var(--c-soc)}
+  .lo-chip.beh{background:#dcfce7;color:var(--c-beh)}
+  /* summary keys */
+  .summary-keys{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin:24px 0}
+  .key-card{border-radius:12px;padding:20px 24px;max-width:240px;text-align:center;flex:1;min-width:180px}
+  .key-card .kc-term{font-size:1.1rem;font-weight:800;margin-bottom:8px}
+  .key-card .kc-def{font-size:.9rem;line-height:1.5}
+  /* source */
+  .slide-src{margin-top:auto;padding-top:12px;border-top:1px dashed var(--c-border);font-size:.8rem;color:var(--c-muted)}
+  .slide-src a{color:var(--c-accent);text-decoration:none;border-bottom:1px dashed var(--c-accent)}
+  a.ext::after{content:" ↗";font-size:.8em;opacity:.7}
+  ul.content-list{margin:12px 0;padding-left:1.4em}
+  ul.content-list li{margin-bottom:8px;line-height:1.55}
+  .highlight-box{background:var(--c-accent-soft);border-radius:10px;padding:16px 20px;margin:14px 0;font-size:1rem;line-height:1.6}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0}
+  .col-box{border:2px solid var(--c-border);border-radius:10px;padding:16px 18px;background:var(--c-bg)}
+  .col-box h4{margin:0 0 10px;font-size:.95rem;color:var(--c-accent)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">氣候衝擊因應：安全與韌性策略 ｜ Level V</span>
+</header>
+
+<main>
+
+<!-- SLIDE 1: Cover -->
+<section class="slide cover" id="slide-cover">
+  <span class="slide-num">1 / 20</span>
+  <div class="slide-body">
+    <div class="level-tag">Level V ｜ 高中 16–18 歲</div>
+    <h2>氣候衝擊因應：安全與韌性策略</h2>
+    <p style="color:var(--c-muted);font-size:1.05rem;margin-top:16px">4.2-V ｜ UNESCO ESD ｜ 繁體中文</p>
+  </div>
+</section>
+
+<!-- SLIDE 2: Big Question -->
+<section class="slide" id="slide-question">
+  <span class="slide-num">2 / 20</span>
+  <div class="slide-body">
+    <div class="q-box">
+      「沒有天然災害——只有天然危害加上人為脆弱度。」<br>你同意嗎？
+      <div class="q-sub">Think → Pair → Share ｜ 獨立寫 3 句立場，再兩兩交換</div>
+    </div>
+    <div class="highlight-box">
+      <strong>核心問題：</strong>誰最脆弱？為什麼？我們能做什麼？
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: A1 Divider -->
+<section class="slide divider" id="slide-a1">
+  <span class="slide-num">3 / 20</span>
+  <div class="act-badge">活動一</div>
+  <h2>氣候風險地景：脆弱度、暴露度與災害的真相</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">步驟 1：開場論證</span>
+    <span class="act-step-chip">步驟 2：全球數據深讀</span>
+    <span class="act-step-chip">步驟 3：脆弱度公式計算</span>
+    <span class="act-step-chip">步驟 4：四層模型預告</span>
+  </div>
+</section>
+
+<!-- SLIDE 4: Risk Data -->
+<section class="slide" id="slide-risk-data">
+  <span class="slide-num">4 / 20</span>
+  <h2>全球氣候風險：關鍵數據</h2>
+  <div class="slide-body">
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="sv">33–36 億</div>
+        <div class="sl">人生活在氣候變遷高度脆弱的環境中</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv">約 400 起 / 年</div>
+        <div class="sl">氣候相關災害事件（較 1980-1999 年增加 1.7 倍）</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv">2.97 兆美元</div>
+        <div class="sl">2000–2019 年氣候災害經濟損失，占所有災害損失 76%</div>
+      </div>
+    </div>
+    <div class="highlight-box">
+      <strong>思考：</strong>在世界地圖上，高脆弱區與高排放區的分布一致嗎？這是什麼意思？
+    </div>
+    <div class="slide-src">資料來源：<a href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank">政府間氣候變遷小組 IPCC AR6 WGII（2022）</a>；<a href="https://www.undrr.org/publication/sendai-framework-disaster-risk-reduction-2015-2030" target="_blank">聯合國減災辦公室 UNDRR（2020）</a></div>
+  </div>
+</section>
+
+<!-- SLIDE 5: Vulnerability -->
+<section class="slide" id="slide-vulnerability">
+  <span class="slide-num">5 / 20</span>
+  <h2>脆弱度公式：Risk = Hazard × Exposure × Vulnerability / Adaptive Capacity</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="col-box">
+        <h4>公式拆解</h4>
+        <ul class="content-list">
+          <li><strong>Hazard（危害）</strong>：颱風、地震、洪水等自然事件</li>
+          <li><strong>Exposure（暴露度）</strong>：人口、資產暴露在危害影響範圍內的程度</li>
+          <li><strong>Vulnerability（脆弱度）</strong>：受到傷害的傾向與易感性</li>
+          <li><strong>Adaptive Capacity（調適能力）</strong>：有效因應與復原的能力</li>
+        </ul>
+      </div>
+      <div class="col-box">
+        <h4>臺灣案例：2024 花蓮地震</h4>
+        <ul class="content-list">
+          <li>ML 7.2 地震（2024年）</li>
+          <li>造成 18 死、逾千傷</li>
+          <li>臺灣多重災害疊加：地震＋颱風＋坡地</li>
+          <li>三級應變體系：中央→縣市→鄉鎮</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">學習單 §2 — 脆弱度分析</div>
+      <table class="ws-table">
+        <tr><th>因子</th><th>花蓮地震評估</th><th>你所在社區評估</th></tr>
+        <tr><td>Hazard</td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>Exposure</td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>Vulnerability</td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>Adaptive Capacity</td><td class="fill"></td><td class="fill"></td></tr>
+      </table>
+    </div>
+    <div class="slide-src">資料來源：<a href="https://www.ncdr.nat.gov.tw/" target="_blank">國家災害防救科技中心 NCDR</a></div>
+  </div>
+</section>
+
+<!-- SLIDE 6: Four Layers -->
+<section class="slide" id="slide-four-layers">
+  <span class="slide-num">6 / 20</span>
+  <h2>四層洋蔥模型：從應變到減緩</h2>
+  <div class="slide-body">
+    <div class="highlight-box" style="font-size:1.1rem;text-align:center">
+      外層 →→ 核心<br>
+      <strong>緊急應變</strong> → <strong>災害風險降低（DRR）</strong> → <strong>調適</strong> → <strong>減緩</strong>
+    </div>
+    <div class="stat-row">
+      <div class="stat-box" style="border-color:var(--c-warn)">
+        <div class="sv" style="font-size:1.2rem;color:var(--c-warn)">緊急應變</div>
+        <div class="sl">即時救援、搜救、疏散、物資配送</div>
+      </div>
+      <div class="stat-box" style="border-color:var(--c-soc)">
+        <div class="sv" style="font-size:1.2rem;color:var(--c-soc)">DRR</div>
+        <div class="sl">降低暴露度與脆弱度、仙台綱領七大目標</div>
+      </div>
+      <div class="stat-box" style="border-color:var(--c-cog)">
+        <div class="sv" style="font-size:1.2rem;color:var(--c-cog)">調適</div>
+        <div class="sl">提升系統耐受力、NbS、維生設施升級</div>
+      </div>
+      <div class="stat-box" style="border-color:var(--c-accent)">
+        <div class="sv" style="font-size:1.2rem;color:var(--c-accent)">減緩</div>
+        <div class="sl">減少排放、增加碳匯、處理根本原因</div>
+      </div>
+    </div>
+    <div class="highlight-box">
+      <strong>核心概念：</strong>減緩不足 → 調適需求增加 → DRR 壓力上升 → 應變資源耗竭（惡性循環）<br>
+      臺灣《氣候變遷因應法》（2023）首度將調適與減緩並列為法定義務
+    </div>
+    <div class="slide-src">資料來源：<a href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank">政府間氣候變遷小組 IPCC AR6 WGII</a></div>
+  </div>
+</section>
+
+<!-- SLIDE 7: A2 Divider -->
+<section class="slide divider" id="slide-a2">
+  <span class="slide-num">7 / 20</span>
+  <div class="act-badge">活動二</div>
+  <h2>四層策略：緊急應變、DRR、調適與減緩</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">步驟 1：快測回顧</span>
+    <span class="act-step-chip">步驟 2：四層策略深解</span>
+    <span class="act-step-chip">步驟 3：系統思考 CLD</span>
+    <span class="act-step-chip">步驟 4：NbS 效益分析</span>
+  </div>
+</section>
+
+<!-- SLIDE 8: CLD -->
+<section class="slide" id="slide-cld">
+  <span class="slide-num">8 / 20</span>
+  <h2>系統思考：氣候衝擊因果循環圖（CLD）</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center">
+        <div style="font-size:.8rem;color:var(--c-muted);letter-spacing:.15em;margin-bottom:8px">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--c-accent);font-weight:700;margin-bottom:12px">[此處放：氣候衝擊-回應因果循環圖]</div>
+        <div style="font-size:1.1rem;margin:14px 0"><strong>關鍵數據：</strong>全球調適行動約 70% 仍在規劃階段；調適資金缺口年達 1940–3660 億美元</div>
+        <div style="font-size:.85rem;color:var(--c-muted);margin-top:12px">📌 示意圖待補繪</div>
+      </div>
+      <figcaption style="font-size:.85rem;color:var(--c-muted);margin-top:8px">CLD 應包含惡性循環（減緩不足→調適需求增加→DRR壓力上升）與 NbS 槓桿介入點</figcaption>
+    </figure>
+    <div class="ws-frame">
+      <div class="ws-title">學習單 §4 — 因果循環圖（小組完成）</div>
+      <ul class="content-list">
+        <li>標示 ≥2 個回饋迴路（正回饋／負回饋）</li>
+        <li>標示 ≥1 個槓桿介入點（建議：以自然為本的解方 NbS）</li>
+        <li>箭頭標示方向與正負號</li>
+      </ul>
+    </div>
+    <div class="slide-src">資料來源：<a href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank">政府間氣候變遷小組 IPCC AR6 WGII Chapter 16</a></div>
+  </div>
+</section>
+
+<!-- SLIDE 9: NbS -->
+<section class="slide" id="slide-nbs">
+  <span class="slide-num">9 / 20</span>
+  <h2>以自然為本的解方（NbS）效益分析</h2>
+  <div class="slide-body">
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="sv">109.3 億</div>
+        <div class="sl">美元｜世界銀行 FY2025 DRM 投資總額</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv">1.36 億人</div>
+        <div class="sl">透過資助計畫改善氣候風險韌性</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv">3–8 萬</div>
+        <div class="sl">美元/公頃/年｜紅樹林復育每公頃年防災效益</div>
+      </div>
+    </div>
+    <div class="highlight-box">
+      <strong>成本效益計算：</strong><br>
+      紅樹林種植成本：約 1,000–5,000 美元／公頃<br>
+      年防災效益：約 30,000–80,000 美元／公頃<br>
+      投資報酬率：<strong>600%–8,000%</strong>
+    </div>
+    <div class="highlight-box">
+      臺灣每年颱風與豪雨造成直接經濟損失約 <strong>200–500 億元新台幣</strong>，NbS 投資可大幅降低此損失
+    </div>
+    <div class="slide-src">資料來源：<a href="https://www.worldbank.org/en/topic/disasterriskmanagement/overview" target="_blank">世界銀行 World Bank DRM FY2025</a>；<a href="https://www.ncdr.nat.gov.tw/" target="_blank">國家災害防救科技中心 NCDR</a></div>
+  </div>
+</section>
+
+<!-- SLIDE 10: A3 Divider -->
+<section class="slide divider" id="slide-a3">
+  <span class="slide-num">10 / 20</span>
+  <div class="act-badge">活動三</div>
+  <h2>青年領導力、案例研究與利害關係人分析</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">步驟 1：青年數據衝擊</span>
+    <span class="act-step-chip">步驟 2：DRR 角色 SWOT</span>
+    <span class="act-step-chip">步驟 3：案例研究辯論</span>
+    <span class="act-step-chip">步驟 4：CER 論證撰寫</span>
+  </div>
+</section>
+
+<!-- SLIDE 11: Youth DRR -->
+<section class="slide" id="slide-youth-drr">
+  <span class="slide-num">11 / 20</span>
+  <h2>青年在 DRR 中的角色</h2>
+  <div class="slide-body">
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="sv">18 億</div>
+        <div class="sl">全球 18–29 歲青年人口（占全球 23%）</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv">70%</div>
+        <div class="sl">全球調適行動仍在規劃或早期實施階段</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv">1,940–3,660 億</div>
+        <div class="sl">美元/年｜開發中國家調適資金缺口</div>
+      </div>
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">學習單 §5 — 青年 DRR SWOT 分析</div>
+      <table class="ws-table">
+        <tr><th>優勢（Strengths）</th><th>劣勢（Weaknesses）</th></tr>
+        <tr><td class="fill">數位能力、社群動員能力<br>跨文化溝通、創新思維</td><td class="fill">資源不足、決策權有限<br>經驗缺乏、機構信任度低</td></tr>
+        <tr><th>機會（Opportunities）</th><th>挑戰（Threats）</th></tr>
+        <tr><td class="fill"></td><td class="fill"></td></tr>
+      </table>
+    </div>
+    <div class="slide-src">資料來源：<a href="https://www.unyouth2030.com/" target="_blank">聯合國青年策略 UN Youth2030</a>；<a href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank">政府間氣候變遷小組 IPCC AR6 WGII</a></div>
+  </div>
+</section>
+
+<!-- SLIDE 12: Cuba vs Haiti Case Study -->
+<section class="slide" id="slide-cuba-haiti">
+  <span class="slide-num">12 / 20</span>
+  <h2>案例研究辯論：古巴 vs 海地颶風死亡率</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="col-box" style="border-color:var(--c-cog)">
+        <h4 style="color:var(--c-cog)">正方：制度品質更關鍵</h4>
+        <ul class="content-list">
+          <li>古巴建立完善的社區防災體系與疏散演練制度</li>
+          <li>即使 GDP 遠低於美國，颶風死亡率遠低於海地等鄰國</li>
+          <li>早期預警系統覆蓋率決定生存率</li>
+          <li>仙台綱領強調制度能力建構</li>
+        </ul>
+      </div>
+      <div class="col-box" style="border-color:var(--c-soc)">
+        <h4 style="color:var(--c-soc)">反方：經濟實力更關鍵</h4>
+        <ul class="content-list">
+          <li>海地長期貧困導致基礎設施脆弱</li>
+          <li>缺乏資金無法建設抗震建築與洪水防護</li>
+          <li>2010 年海地地震（7.0 級）造成逾 20 萬人死亡</li>
+          <li>重建需要大量外部資金援助</li>
+        </ul>
+      </div>
+    </div>
+    <div class="highlight-box">
+      <strong>辯論任務：</strong>各方 4 分鐘陳述 + 3 分鐘交互質詢 ｜ 引用資料 ≥2 筆<br>
+      <strong>思考：</strong>制度品質與經濟實力真的是對立的嗎？
+    </div>
+    <div class="slide-src">資料來源：<a href="https://www.undrr.org/publication/sendai-framework-disaster-risk-reduction-2015-2030" target="_blank">聯合國減災辦公室 UNDRR</a>；<a href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank">政府間氣候變遷小組 IPCC AR6 WGII</a></div>
+  </div>
+</section>
+
+<!-- SLIDE 13: CER Writing -->
+<section class="slide" id="slide-cer">
+  <span class="slide-num">13 / 20</span>
+  <h2>CER 論證撰寫</h2>
+  <div class="slide-body">
+    <div class="q-box" style="font-size:1.2rem">
+      「臺灣每年 200–500 億元風災損失，是否可透過以自然為本的解方（NbS）大幅降低？」
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">學習單 §7 — CER 論證框架</div>
+      <table class="ws-table">
+        <tr><th style="width:25%">論證要素</th><th>你的撰寫</th></tr>
+        <tr><td><strong>Claim（主張）</strong></td><td class="fill"></td></tr>
+        <tr><td><strong>Evidence（證據）</strong><br><span style="font-size:.8rem">引用 NbS 效益數據與臺灣風災損失</span></td><td class="fill"></td></tr>
+        <tr><td><strong>Reasoning（理據）</strong></td><td class="fill"></td></tr>
+        <tr><td><strong>反駁段（Counter-argument）</strong></td><td class="fill"></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 14: A4 Divider -->
+<section class="slide divider" id="slide-a4">
+  <span class="slide-num">14 / 20</span>
+  <div class="act-badge">活動四</div>
+  <h2>學生治理行動、跨域整合與行動計畫</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">步驟 1：WSA 框架導入</span>
+    <span class="act-step-chip">步驟 2：模擬議會聽證</span>
+    <span class="act-step-chip">步驟 3：跨域行動計畫</span>
+    <span class="act-step-chip">步驟 4：後設認知反思</span>
+  </div>
+</section>
+
+<!-- SLIDE 15: Stakeholders -->
+<section class="slide" id="slide-stakeholders">
+  <span class="slide-num">15 / 20</span>
+  <h2>模擬議會聽證：多元利害關係人分析</h2>
+  <div class="slide-body">
+    <div class="q-box" style="font-size:1.15rem">
+      議題：「社區是否應優先投資早期預警系統，還是強化避難場所？」
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">學習單 §8 — 利害關係人分析</div>
+      <table class="ws-table">
+        <tr><th>角色</th><th>核心立場</th><th>主要訴求</th><th>可能顧慮</th></tr>
+        <tr><td>區公所代表</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>消防局長</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>社區長者</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>青年代表</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>企業 CSR 主管</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </table>
+    </div>
+    <div class="lo-chips">
+      <span class="lo-chip beh">B3 倡議青年納入 DRR 決策</span>
+      <span class="lo-chip beh">B4 組織社區防災培訓</span>
+      <span class="lo-chip beh">B5 向地方當局表達解方</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 16: Action Plan -->
+<section class="slide" id="slide-action-plan">
+  <span class="slide-num">16 / 20</span>
+  <h2>跨域整合行動計畫（500+ 字）</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">學習單 §9 — 學校／社區氣候災害減緩與調適計畫</div>
+      <ul class="content-list">
+        <li><strong>背景分析</strong>：在地氣候風險（引用 IPCC、仙台綱領數據）</li>
+        <li><strong>目標設定</strong>：對應仙台綱領七大全球目標</li>
+        <li><strong>行動策略</strong>：NbS 效益（紅樹林、濕地、校園綠地）；早期預警覆蓋</li>
+        <li><strong>青年角色</strong>：防災委員會、跨校 DRR 聯盟、數位工具運用</li>
+        <li><strong>時程規劃</strong>：短期（3 個月）→ 中期（1 年）→ 長期（3 年）</li>
+        <li><strong>預算估計</strong>：NbS 種植成本 vs 年均防災效益</li>
+        <li><strong>評估指標</strong>：可量化的成效指標（如：疏散演練參與率、綠地面積增加）</li>
+      </ul>
+    </div>
+    <div class="highlight-box">
+      <strong>WSA 四面向整合：</strong>治理（防災委員會）｜ 課程（跨科整合）｜ 營運（校園防災地圖）｜ 社群（里辦合作工作坊）
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 17: WSA Commitment -->
+<section class="slide" id="slide-wsa">
+  <span class="slide-num">17 / 20</span>
+  <h2>全校取徑（WSA）行動承諾</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">WSA 四面向各選 1 項具體行動</div>
+      <table class="ws-table">
+        <tr><th>面向</th><th>具體行動承諾（寫下你的選擇）</th></tr>
+        <tr><td><strong>治理</strong></td><td class="fill">□ 學生議會設防災韌性委員會<br>□ 聯合倡議早期預警覆蓋</td></tr>
+        <tr><td><strong>課程</strong></td><td class="fill">□ 跨科整合防災主題<br>□ GIS 脆弱度製圖</td></tr>
+        <tr><td><strong>校園營運</strong></td><td class="fill">□ 更新防災地圖與避難路線<br>□ 校園雨水蒐集系統設計</td></tr>
+        <tr><td><strong>社群</strong></td><td class="fill">□ 與里辦合辦社區防災工作坊<br>□ 弱勢族群疏散支援計畫</td></tr>
+      </table>
+    </div>
+    <div class="lo-chips">
+      <span class="lo-chip beh">B1 發展災害減緩調適計畫</span>
+      <span class="lo-chip beh">B4 參與社區防災培訓</span>
+      <span class="lo-chip beh">B6 整合風險降低至個人生活</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 18: Metacognition -->
+<section class="slide" id="slide-metacog">
+  <span class="slide-num">18 / 20</span>
+  <h2>後設認知反思</h2>
+  <div class="slide-body">
+    <div class="q-box">
+      四節課前後，你對「災害」的理解框架有何改變？<br>
+      從被動受災者到主動行動者的轉變點是什麼？
+      <div class="q-sub">學習單 §10（100+ 字後設認知）+ §11（100+ 字開放式反思）</div>
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">§10 後設認知</div>
+      <div class="ws-lines">
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+      </div>
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">§11 開放式反思：我接下來要做的一件事</div>
+      <div class="ws-lines">
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 19: Misconceptions -->
+<section class="slide" id="slide-misconceptions">
+  <span class="slide-num">19 / 20</span>
+  <h2>釐清常見迷思</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="col-box" style="border-color:#fecaca">
+        <h4 style="color:#dc2626">❌ 迷思</h4>
+        <ul class="content-list" style="font-size:.95rem">
+          <li>「災害是天災，人類無法預防」</li>
+          <li>「調適代表放棄減緩」</li>
+          <li>「青年只是被保護對象，在 DRR 中沒有實質角色」</li>
+          <li>「只要有錢就能防災，窮國注定受災」</li>
+        </ul>
+      </div>
+      <div class="col-box" style="border-color:#bbf7d0">
+        <h4 style="color:var(--c-beh)">✓ 正確理解</h4>
+        <ul class="content-list" style="font-size:.95rem">
+          <li>有的是「天然危害」，災害嚴重程度取決於人為脆弱度</li>
+          <li>IPCC AR6：調適與減緩互補，缺一不可</li>
+          <li>青年是「創新者-橋接者」，具數位能力與社群動員優勢</li>
+          <li>古巴案例證明：制度品質比單純經濟實力更關鍵</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 20: Summary -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <span class="slide-num">20 / 20</span>
+  <div class="slide-body">
+    <h2 style="color:var(--c-beh)">今天學到了什麼？</h2>
+    <div class="summary-keys">
+      <div class="key-card" style="border:2px solid var(--c-cog);background:#eff6ff">
+        <div class="kc-term" style="color:var(--c-cog)">脆弱度</div>
+        <div class="kc-def">Risk = Hazard × Exposure × Vulnerability / Adaptive Capacity<br>33–36 億人處於高脆弱環境；調適能力是關鍵</div>
+      </div>
+      <div class="key-card" style="border:2px solid var(--c-soc);background:#fdf2f8">
+        <div class="kc-term" style="color:var(--c-soc)">四層策略</div>
+        <div class="kc-def">緊急應變 → DRR → 調適 → 減緩<br>四者互補，不能替代；NbS 是高效槓桿點</div>
+      </div>
+      <div class="key-card" style="border:2px solid var(--c-beh);background:#f0fdf4">
+        <div class="kc-term" style="color:var(--c-beh)">青年行動力</div>
+        <div class="kc-def">18 億青年是 DRR 的「創新者-橋接者」<br>韌性不是天生的——它是社區每個人共同建構的</div>
+      </div>
+    </div>
+    <p style="font-size:1.1rem;color:var(--c-muted);margin-top:20px">「韌性不是天生的——它是社區每個人共同建構的。你的參與就是這座城市的防護罩。」</p>
+    <p style="margin-top:16px"><a href="lesson_plan.html" style="color:var(--c-accent);font-weight:700;font-size:1rem">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / 20</span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換投影片</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  if (!slides.length || !cur) return;
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

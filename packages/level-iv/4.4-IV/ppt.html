@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>互聯互通的力量 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e; --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb; --c-soc: #db2777; --c-beh: #16a34a;
+    --c-warn: #ea580c; --c-text: #1f2937; --c-muted: #6b7280;
+    --c-border: #e5e7eb; --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  /* 七特徵圖卡 */
+  .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+  .feature-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 18px; }
+  .feature-card .f-num { font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.1em; font-weight: 700; }
+  .feature-card .f-name { font-size: 1.15rem; font-weight: 700; color: var(--c-accent); margin: 6px 0; }
+  .feature-card .f-ex { font-size: 0.9rem; color: var(--c-muted); }
+  /* 圓形比較 */
+  .circle-compare { display: flex; gap: 40px; justify-content: center; align-items: center; margin: 30px 0; flex-wrap: wrap; }
+  .circle-box { text-align: center; }
+  .circle-box .circle { width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; color: #fff; margin: 0 auto 12px; }
+  .circle-box .c-label { font-size: 1rem; color: var(--c-muted); }
+  /* 三角矩陣 */
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.05rem; text-align: center; }
+  .col-card ul { margin: 0; padding-left: 18px; }
+  .col-card li { margin: 6px 0; font-size: 0.9rem; }
+  /* 佔位圖 */
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  /* 三關鍵字 */
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  /* WSA 四象限 */
+  .wsa-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0; }
+  .wsa-cell { border: 2px solid var(--c-border); border-radius: 10px; padding: 16px; }
+  .wsa-cell h4 { margin: 0 0 8px; color: var(--c-accent); font-size: 1rem; }
+  .wsa-cell ul { margin: 0; padding-left: 18px; }
+  .wsa-cell li { font-size: 0.9rem; margin: 4px 0; }
+  /* 提案書模板 */
+  .proposal-steps { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+  .p-step { display: flex; align-items: flex-start; gap: 12px; background: var(--c-bg); border-radius: 8px; padding: 12px 16px; }
+  .p-step .p-num { background: var(--c-accent); color: #fff; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+  .p-step .p-text { font-size: 0.95rem; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">互聯互通的力量 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content:center;">
+    <h2>互聯互通的力量<br>韌性、多樣、共生</h2>
+    <p class="subtitle">4.4-IV｜國中 13–15 歲</p>
+    <p style="margin-top:20px; font-size:1.05rem; color:var(--c-muted);">不是單一英雄救世界，<br>而是不同的人、不同的知識、不同的制度連在一起，<br>系統才撐得住。</p>
+  </div>
+</section>
+
+<!-- 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>效率 vs 韌性：一樣嗎？</h2>
+  <div class="slide-body">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px; margin:20px 0;">
+      <div style="border:2px solid var(--c-cog); border-radius:12px; padding:24px; text-align:center;">
+        <div style="font-size:2.5rem; margin-bottom:12px;">🏗️</div>
+        <div style="font-weight:700; color:var(--c-cog); font-size:1.1rem;">精簡高效</div>
+        <p style="color:var(--c-muted); margin:8px 0 0;">一條進出道路<br>省成本、快速<br>但橋被沖斷→全鎮斷炊</p>
+      </div>
+      <div style="border:2px solid var(--c-beh); border-radius:12px; padding:24px; text-align:center;">
+        <div style="font-size:2.5rem; margin-bottom:12px;">🌾</div>
+        <div style="font-weight:700; color:var(--c-beh); font-size:1.1rem;">看似「沒效率」的傳統梯田</div>
+        <p style="color:var(--c-muted); margin:8px 0 0;">多條水圳、多種作物<br>多戶共管<br>千年抵禦無數災難</p>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.1rem; margin-top:20px; color:var(--c-accent);">
+      <strong>這四節課的核心矛盾：效率優先，還是韌性優先？</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動一</div>
+    <h2>什麼是韌性？七大特徵的解剖</h2>
+    <p class="subtitle" style="color:var(--c-muted);">從定義到日常情境，認識韌性的七張面孔</p>
+  </div>
+</section>
+
+<!-- 韌性七大特徵 -->
+<section class="slide" id="slide-seven-features">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>韌性七大特徵</h2>
+  <div class="slide-body">
+    <div class="feature-grid">
+      <div class="feature-card"><div class="f-num">01</div><div class="f-name">適應能力</div><div class="f-ex">高溫時段調整體育課</div></div>
+      <div class="feature-card"><div class="f-num">02</div><div class="f-name">穩健性</div><div class="f-ex">校舍結構耐七級地震</div></div>
+      <div class="feature-card"><div class="f-num">03</div><div class="f-name">冗餘性</div><div class="f-ex">雙電源、兩條逃生路線</div></div>
+      <div class="feature-card"><div class="f-num">04</div><div class="f-name">靈活性</div><div class="f-ex">教室兼避難所、兼投票所</div></div>
+      <div class="feature-card"><div class="f-num">05</div><div class="f-name">反應能力</div><div class="f-ex">警報響起 3 分鐘完成疏散</div></div>
+      <div class="feature-card"><div class="f-num">06</div><div class="f-name">足智多謀</div><div class="f-ex">雨水桶、太陽能板、在地食材</div></div>
+      <div class="feature-card"><div class="f-num">07</div><div class="f-name">整合性</div><div class="f-ex">學校、里辦、醫療所資訊共享</div></div>
+    </div>
+    <p style="text-align:center; font-size:1rem; margin-top:16px; color:var(--c-muted);">
+      你的學校哪一項最強？哪一項最弱？
+    </p>
+  </div>
+  <div class="slide-source">來源：<a href="https://www.undrr.org/terminology" target="_blank" rel="noopener">聯合國減災辦公室術語（2017，2024再確認）</a></div>
+</section>
+
+<!-- 全球脆弱度 -->
+<section class="slide" id="slide-vulnerability">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>全球有多少人生活在高脆弱環境中？</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent); border-radius:12px; padding:40px; background:var(--c-accent-soft); text-align:center;">
+        <div style="font-size:0.8rem; color:var(--c-muted); letter-spacing:0.15em; margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem; color:var(--c-accent); font-weight:700; margin-bottom:12px;">[此處放：全球脆弱度世界地圖]</div>
+        <div style="font-size:1.5rem; font-weight:800; color:#dc2626; margin:14px 0;">33–36 億人</div>
+        <div style="font-size:1.1rem; margin:14px 0;"><strong>關鍵數據：</strong>占全球人口約 40–45%，也就是每兩人就有一人生活在「高度脆弱」環境中</div>
+        <div style="font-size:0.85rem; color:var(--c-muted); margin-top:12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>脆弱度三因子：暴露度 × 敏感度 × 適應能力</figcaption>
+    </figure>
+    <p style="text-align:center; font-size:1rem; margin-top:16px;">
+      <strong>「脆弱」≠「貧窮」</strong>：有些財富豐厚的濱海城市暴露度極高。
+    </p>
+  </div>
+  <div class="slide-source">來源：<a href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank" rel="noopener">政府間氣候變遷小組 AR6 WG2（2022）</a></div>
+</section>
+
+<!-- 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動二</div>
+    <h2>把韌性套用到真實系統</h2>
+    <p class="subtitle" style="color:var(--c-muted);">森林、學校、城市基礎設施、農場——各組實作</p>
+  </div>
+</section>
+
+<!-- 四場景實作 -->
+<section class="slide" id="slide-four-scenes">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>四場景：套用七大特徵</h2>
+  <div class="slide-body">
+    <div class="three-col" style="grid-template-columns:repeat(2,1fr);">
+      <div class="col-card" style="border-color:var(--c-beh);">
+        <h4 style="color:var(--c-beh);">🌲 森林</h4>
+        <ul>
+          <li>多樹種混合（冗餘性）</li>
+          <li>野火走廊緩衝帶（靈活性）</li>
+          <li>原民傳統管理（足智多謀）</li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-color:var(--c-cog);">
+        <h4 style="color:var(--c-cog);">🏫 學校</h4>
+        <ul>
+          <li>雙電源備援（冗餘性）</li>
+          <li>雨水回收系統（足智多謀）</li>
+          <li>心理輔導備援機制（整合性）</li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-color:var(--c-warn);">
+        <h4 style="color:var(--c-warn);">🏙️ 城市基礎設施</h4>
+        <ul>
+          <li>海綿城市設計（適應能力）</li>
+          <li>防洪閘門（穩健性）</li>
+          <li>高架道路替代方案（冗餘性）</li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-color:var(--c-soc);">
+        <h4 style="color:var(--c-soc);">🌾 農場</h4>
+        <ul>
+          <li>多品種輪作（冗餘性）</li>
+          <li>灌溉備援系統（足智多謀）</li>
+          <li>在地種原保存（整合性）</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1rem; margin-top:16px; color:var(--c-muted);">每個例子背後都是七特徵之一或多。你的組抽到哪個場景？</p>
+  </div>
+  <div class="slide-source">來源：<a href="https://www.cca.gov.tw/" target="_blank" rel="noopener">環境部氣候變遷署——國家氣候變遷調適行動方案（2023）</a></div>
+</section>
+
+<!-- 強颱比例趨勢 -->
+<section class="slide" id="slide-extreme-rain">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>臺灣強颱比例：15% → 35%，極端化的挑戰</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent); border-radius:12px; padding:40px; background:var(--c-accent-soft); text-align:center;">
+        <div style="font-size:0.8rem; color:var(--c-muted); letter-spacing:0.15em; margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem; color:var(--c-accent); font-weight:700; margin-bottom:12px;">[此處放：臺灣強颱比例曲線圖]</div>
+        <div style="font-size:1.1rem; margin:14px 0;"><strong>關鍵數據：</strong>強颱占比從 1961–1990 年約 15%，上升至 1991–2020 年約 35%；2024 年凱米颱風單日降雨超過 900 毫米</div>
+        <div style="font-size:0.85rem; color:var(--c-muted); margin-top:12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>韌性設計面對的是「極端化」而非「頻率化」</figcaption>
+    </figure>
+    <p style="text-align:center; font-size:1rem; margin-top:16px;">
+      農場面對這種極端化，該優先強化七特徵中的哪幾項？
+    </p>
+  </div>
+  <div class="slide-source">來源：<a href="https://tccip.ncdr.nat.gov.tw/" target="_blank" rel="noopener">臺灣氣候變遷推估資訊平台（TCCIP）</a></div>
+</section>
+
+<!-- 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三</div>
+    <h2>文化多樣性作為韌性資產</h2>
+    <p class="subtitle" style="color:var(--c-muted);">原住民生態知識與氣候正義</p>
+  </div>
+</section>
+
+<!-- 80% vs 6% -->
+<section class="slide" id="slide-ilk-stats">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>震撼數字：80% vs 6%</h2>
+  <div class="slide-body">
+    <div class="circle-compare">
+      <div class="circle-box">
+        <div class="circle" style="background:var(--c-beh);">80%</div>
+        <div class="c-label">陸地生物多樣性熱點<br>位於原住民族傳統領域</div>
+      </div>
+      <div style="font-size:2rem; color:var(--c-muted);">vs</div>
+      <div class="circle-box">
+        <div class="circle" style="background:var(--c-soc);">6%</div>
+        <div class="c-label">原住民族人口<br>占全球人口比例</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.05rem; margin-top:20px;">
+      原住民族用其生態知識體系守護了全球大部分關鍵生態系。<br>
+      政府間氣候變遷小組（IPCC）AR6 已正式將<strong>原住民與在地知識（ILK）</strong>納入氣候評估章節。<br>
+      <em style="color:var(--c-muted);">這不是慈善話語，而是科學界的承認。</em>
+    </p>
+  </div>
+  <div class="slide-source">來源：<a href="https://www.unep.org/resources/state-finance-nature" target="_blank" rel="noopener">聯合國環境規劃署——自然財政現況（2022）</a></div>
+</section>
+
+<!-- 多元視角 -->
+<section class="slide" id="slide-diversity-solutions">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>多元視角如何擴展解方</h2>
+  <div class="slide-body">
+    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin:20px 0;">
+      <div style="background:#eff6ff; border-left:4px solid var(--c-cog); border-radius:8px; padding:16px;">
+        <div style="font-weight:700; color:var(--c-cog); margin-bottom:8px;">單一方案（排水問題）</div>
+        <p style="margin:0; font-size:0.95rem;">只想混凝土排水管→遇極端暴雨仍潰堤</p>
+      </div>
+      <div style="background:#f0fdf4; border-left:4px solid var(--c-beh); border-radius:8px; padding:16px;">
+        <div style="font-weight:700; color:var(--c-beh); margin-bottom:8px;">多元方案（同一問題）</div>
+        <p style="margin:0; font-size:0.95rem;">混凝土+原民水圳智慧+社工預警社群+學生監測App→互補共生</p>
+      </div>
+    </div>
+    <div class="three-col" style="margin-top:16px;">
+      <div style="text-align:center; padding:16px; background:var(--c-bg); border-radius:8px;">
+        <div style="font-size:1.4rem;">🔭</div>
+        <div style="font-weight:700; font-size:0.95rem; margin:6px 0;">解方空間更大</div>
+        <div style="font-size:0.85rem; color:var(--c-muted);">不同知識碰撞長出新組合</div>
+      </div>
+      <div style="text-align:center; padding:16px; background:var(--c-bg); border-radius:8px;">
+        <div style="font-size:1.4rem;">🎯</div>
+        <div style="font-weight:700; font-size:0.95rem; margin:6px 0;">打破團體思維</div>
+        <div style="font-size:0.85rem; color:var(--c-muted);">同質背景容易漏掉相同盲點</div>
+      </div>
+      <div style="text-align:center; padding:16px; background:var(--c-bg); border-radius:8px;">
+        <div style="font-size:1.4rem;">🤝</div>
+        <div style="font-weight:700; font-size:0.95rem; margin:6px 0;">信任即韌性</div>
+        <div style="font-size:0.85rem; color:var(--c-muted);">社會資本本身就是韌性資產</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動四</div>
+    <h2>從我做起：學生治理與提案</h2>
+    <p class="subtitle" style="color:var(--c-muted);">全校取徑四面向×學校韌性提案書</p>
+  </div>
+</section>
+
+<!-- WSA四面向 -->
+<section class="slide" id="slide-proposal-template">
+  <div class="slide-tag">活動四・步驟 2</div>
+  <h2>全校取徑四面向 × 學校韌性提案書</h2>
+  <div class="slide-body">
+    <div class="wsa-grid" style="margin-bottom:20px;">
+      <div class="wsa-cell">
+        <h4>治理</h4>
+        <ul><li>啟動「學生氣候委員會」</li><li>班聯會提案→校務會議審議</li><li>建立學生災害應變隊</li></ul>
+      </div>
+      <div class="wsa-cell">
+        <h4>課程</h4>
+        <ul><li>自然、社會、綜合、英文跨科整合</li><li>專題式學習</li><li>連結氣候正義與原住民知識</li></ul>
+      </div>
+      <div class="wsa-cell">
+        <h4>校園營運</h4>
+        <ul><li>避難動線冗餘檢核</li><li>雙電源備援</li><li>雨水回收、積水監測</li></ul>
+      </div>
+      <div class="wsa-cell">
+        <h4>社群</h4>
+        <ul><li>與在地里辦、原民文健站合辦「文化韌性工作坊」</li><li>原住民長者為共同設計夥伴</li></ul>
+      </div>
+    </div>
+    <div class="proposal-steps">
+      <div class="p-step"><div class="p-num">1</div><div class="p-text">現況盤點：學校現有韌性設計有哪些？</div></div>
+      <div class="p-step"><div class="p-num">2</div><div class="p-text">脆弱點分析：哪一項特徵最弱？為什麼？</div></div>
+      <div class="p-step"><div class="p-num">3</div><div class="p-text">七特徵對應策略 + 主張-證據-推論論證</div></div>
+      <div class="p-step"><div class="p-num">4</div><div class="p-text">可行步驟、成效指標、社群夥伴</div></div>
+    </div>
+  </div>
+  <div class="slide-source">來源：<a href="https://unfccc.int/topics/adaptation-and-resilience" target="_blank" rel="noopener">聯合國氣候變化綱要公約——UAE調適框架（COP28，2023）</a></div>
+</section>
+
+<!-- 互評量表（學習單版） -->
+<section class="slide" id="slide-peer-review">
+  <div class="slide-tag">活動四・步驟 3 ・評估學習單</div>
+  <h2>組間互評：四格核對清單</h2>
+  <div class="slide-body">
+    <table style="width:100%; border-collapse:collapse; font-size:1.05rem; margin:20px 0;">
+      <thead>
+        <tr style="background:var(--c-accent-soft);">
+          <th style="border:2px solid var(--c-border); padding:12px; color:var(--c-accent);">評項</th>
+          <th style="border:2px solid var(--c-border); padding:12px; color:var(--c-accent);">分數</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="border:2px solid var(--c-border); padding:12px;">覆蓋全校取徑至少 2 個面向？</td><td style="border:2px solid var(--c-border); padding:12px; text-align:center; font-size:1.2rem; background:repeating-linear-gradient(0deg,transparent 0,transparent 18px,#d1d5db 18px,#d1d5db 19px); height:48px;"></td></tr>
+        <tr><td style="border:2px solid var(--c-border); padding:12px;">使用至少 3 項韌性特徵並點名？</td><td style="border:2px solid var(--c-border); padding:12px; text-align:center; background:repeating-linear-gradient(0deg,transparent 0,transparent 18px,#d1d5db 18px,#d1d5db 19px); height:48px;"></td></tr>
+        <tr><td style="border:2px solid var(--c-border); padding:12px;">論證結構（主張-證據-推論）完整？</td><td style="border:2px solid var(--c-border); padding:12px; text-align:center; background:repeating-linear-gradient(0deg,transparent 0,transparent 18px,#d1d5db 18px,#d1d5db 19px); height:48px;"></td></tr>
+        <tr><td style="border:2px solid var(--c-border); padding:12px;">具體可行（有步驟、有指標）？</td><td style="border:2px solid var(--c-border); padding:12px; text-align:center; background:repeating-linear-gradient(0deg,transparent 0,transparent 18px,#d1d5db 18px,#d1d5db 19px); height:48px;"></td></tr>
+      </tbody>
+    </table>
+    <p style="text-align:center; color:var(--c-muted); font-size:0.95rem;">每項 1 分，共 4 分。滿分兩組送「學生氣候委員會」繼續推進。</p>
+  </div>
+</section>
+
+<!-- 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，帶走這堂課</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">韌性</div>
+        <div class="desc">不是「不受傷」<br>而是「被打擊後<br>以更好方式站起來」</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">多樣</div>
+        <div class="desc">文化多樣性＝解方多樣性<br>80% 生物多樣性熱點<br>靠 6% 原民守護</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">提案</div>
+        <div class="desc">從七特徵分析<br>到全校取徑四面向<br>學生就是行動主體</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.1rem; margin-top:24px;">
+      <strong style="color:var(--c-accent);">互聯互通，從對話開始。每一個提案，都是讓系統更強的一顆螺絲。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">12</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color:var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+</body>
+</html>

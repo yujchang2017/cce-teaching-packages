@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生物多樣性的演化 — 教學投影片</title>
+<style>
+  :root { --c-accent: #0f766e; --c-accent-soft: #ccfbf1; --c-cog: #2563eb; --c-soc: #db2777; --c-beh: #16a34a; --c-warn: #ea580c; --c-text: #1f2937; --c-muted: #6b7280; --c-border: #e5e7eb; --c-bg: #f9fafb; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .question-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 30px 0; }
+  .question-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px; font-size: 1.15rem; text-align: center; color: var(--c-text); position: relative; }
+  .question-card .q-num { position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+  .ws-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1.05rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 14px 16px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px); height: 48px; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">生物多樣性的演化 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>生命的大旅行</h2>
+    <p class="subtitle">演化、適應與我們的未來</p>
+    <div style="font-size: 4.5rem; margin: 30px 0;">🦠 → 🐟 → 🦖 → 🦣 → 🦅 → 👧</div>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>今天的四個大問</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>演化怎麼運作?</div>
+      <div class="question-card"><div class="q-num">2</div>天擇是什麼?</div>
+      <div class="question-card"><div class="q-num">3</div>適應 ≠ 演化?</div>
+      <div class="question-card"><div class="q-num">4</div>臺灣為何特有種多?</div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 30px; color: var(--c-accent);">
+      <strong>提問:如果你是一種生物,你想活在哪個時代?</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>從一顆細胞到萬種生命</h2>
+    <p class="subtitle">38 億年的時間旅行</p>
+  </div>
+</section>
+
+<!-- 4. 步驟2 時間尺度 -->
+<section class="slide" id="slide-timeline">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>地球的 4 公尺時間繩</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:地球 46 億年時間繩示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>第一個細胞 38 億年前、恐龍 2.3 億–0.66 億年前、人類 30 萬年前。人類只佔最後 3 毫米。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>每 1 公尺 = 10 億年</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      <strong>體會:</strong>我們真的只是演化劇本最後一頁的最後一行。
+    </p>
+  </div>
+</section>
+
+<!-- 5. 步驟2 五次大滅絕 dp3 -->
+<section class="slide" id="slide-extinction">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>五次大滅絕,每次 80–90% 物種消失</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:5 次大滅絕事件時間軸]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>地球至少 5 次大滅絕,每次讓 80–90% 物種消失;6,600 萬年前最有名的那次,讓非鳥類恐龍全滅。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>恐龍消失不是結束,是哺乳類祖先的章節開始</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      <strong>提問:</strong>如果沒有第五次大滅絕,現在地球會長什麼樣?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:教育部教案 0205_CCE《蓋亞傳奇—話說從頭》
+  </div>
+</section>
+
+<!-- 6. 步驟3 活化石 dp5 -->
+<section class="slide" id="slide-fossil">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>活化石:時間旅人</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">銀 杏</div>
+        <div class="icon">🍃</div>
+        <h3>3 億年前已出現</h3>
+        <p>葉子形狀幾乎沒變</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">腔 棘 魚</div>
+        <div class="icon">🐟</div>
+        <h3>1938 年重新發現</h3>
+        <p>以為 6,600 萬年前滅絕,卻在南非還活著</p>
+      </div>
+    </div>
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 30px; background: var(--c-accent-soft); text-align: center; margin-top: 20px;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.3rem; color: var(--c-accent); font-weight: 700; margin-bottom: 8px;">[此處放:銀杏化石 vs 現代葉、腔棘魚化石 vs 1938 活體照片]</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 8px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>選擇「不太改變」也是一種成功策略</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:教育部教案 0205_CCE《蓋亞傳奇—話說從頭》
+  </div>
+</section>
+
+<!-- 7. 步驟4 演化樹學習單 -->
+<section class="slide" id="slide-ws-tree">
+  <div class="slide-tag">活動一・步驟 4 ・學習單(投影版)</div>
+  <h2>我的第一棵演化樹</h2>
+  <div class="slide-body">
+    <p style="font-size: 1.05rem; color: var(--c-muted); margin: 0 0 8px;">
+      請按演化順序,把下列生物排到正確的位置。
+    </p>
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>順序</th>
+          <th>植物路線</th>
+          <th>動物路線</th>
+          <th>關鍵特徵</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>1</th><td class="fill">藻類</td><td class="fill">魚</td><td class="fill"></td></tr>
+        <tr><th>2</th><td class="fill">苔蘚</td><td class="fill">兩棲</td><td class="fill"></td></tr>
+        <tr><th>3</th><td class="fill">蕨類</td><td class="fill">爬蟲</td><td class="fill"></td></tr>
+        <tr><th>4</th><td class="fill">裸子</td><td class="fill">鳥</td><td class="fill"></td></tr>
+        <tr><th>5</th><td class="fill">被子</td><td class="fill">哺乳</td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §1</a></div>
+</section>
+
+<!-- 8. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>天擇的遊戲:誰活下來?</h2>
+    <p class="subtitle">變異 + 生存差異 + 世代累積</p>
+  </div>
+</section>
+
+<!-- 9. 步驟1 達爾文 dp1 -->
+<section class="slide" id="slide-darwin">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>1859 年:達爾文與《物種起源》</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:達爾文肖像 + 加拉巴哥群島地圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>1859 年達爾文出版《物種起源》,提出天擇是演化主要機制。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>不同島上的雀鳥嘴巴形狀不同,啟發了天擇理論</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://en.wikipedia.org/wiki/Natural_selection" target="_blank" rel="noopener">維基百科 — 天擇</a>
+  </div>
+</section>
+
+<!-- 10. 步驟1 天擇三要素 -->
+<section class="slide" id="slide-three">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>天擇 = 三個齒輪</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card" style="border-color: var(--c-cog);"><div class="q-num">1</div>變 異<br><span style="font-size: 0.95rem; color: var(--c-muted);">族群裡每隻都不一樣</span></div>
+      <div class="question-card" style="border-color: var(--c-warn);"><div class="q-num">2</div>生存繁殖差異<br><span style="font-size: 0.95rem; color: var(--c-muted);">跑得快的不會被吃</span></div>
+      <div class="question-card" style="border-color: var(--c-beh);"><div class="q-num">3</div>世代累積<br><span style="font-size: 0.95rem; color: var(--c-muted);">優勢代代傳下去</span></div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong>三個齒輪一起轉,演化就發生了。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 11. 步驟2 樺尺蛾 dp2 -->
+<section class="slide" id="slide-moth">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>樺尺蛾:50 年內翻轉的真實故事</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:工業革命前後樺尺蛾顏色比例對照圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>曼徹斯特 1850–1900 年間,蛾由淺色為主翻轉成深色為主,僅約 50 年。1956 年清潔空氣法後,淺色蛾又回來。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>煤灰染黑樹幹 → 淺色蛾被鳥抓走 → 深色基因勝出</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      <strong>下一節活動:</strong>「樺尺蛾大逃殺」角色扮演!
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://en.wikipedia.org/wiki/Natural_selection" target="_blank" rel="noopener">維基百科 — 天擇</a>
+  </div>
+</section>
+
+<!-- 12. 步驟3 臺灣 dp4 -->
+<section class="slide" id="slide-taiwan">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>臺灣:演化的實驗室</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:臺灣特有種九宮格圖鑑]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>4,000+ 種原生植物、1,000+ 特有種、65 種螢火蟲(密度全球第三)。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>臺灣藍鵲、帝雉、臺灣黑熊、臺灣水鹿……都是演化實驗室成果</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://en.wikipedia.org/wiki/Wildlife_of_Taiwan" target="_blank" rel="noopener">維基百科 — 臺灣野生動物</a>
+  </div>
+</section>
+
+<!-- 13. 步驟3 為什麼特有種多 -->
+<section class="slide" id="slide-endemic">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>為什麼臺灣特有種這麼多?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:臺灣地形剖面圖,海岸→平原→中海拔森林→高山寒原]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵原因:</strong>海島隔離 + 3,000 公尺高山落差 → 不同高度被「困住」幾萬年 → 演化出新種。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>玉山山頂氣候接近北極,海邊則溫暖潮濕</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      <strong>提問:</strong>你家附近見過哪些只有臺灣才有的生物?
+    </p>
+  </div>
+</section>
+
+<!-- 14. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>適應 vs 演化 + 大遷徙</h2>
+    <p class="subtitle">關鍵差別與氣候變遷下的動員令</p>
+  </div>
+</section>
+
+<!-- 15. 步驟1 適應 vs 演化 dp6 -->
+<section class="slide" id="slide-adapt">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>適應 vs 演化:關鍵差別</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">適 應 / Adaptation</div>
+        <div class="icon">🏃</div>
+        <h3>個體一生</h3>
+        <p>曬黑、長肌肉、動物換季毛<br>(不會遺傳給小孩)</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">演 化 / Evolution</div>
+        <div class="icon">🧬</div>
+        <h3>族群世代</h3>
+        <p>北極熊白毛基因變多<br>(整個族群基因組成改變)</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 24px; color: var(--c-muted);">
+      情境分類練習:登山時呼吸變快、長頸鹿脖子變長、仙人掌葉退化成刺……分到適應或演化?
+    </p>
+  </div>
+</section>
+
+<!-- 16. 步驟1 時間尺度 -->
+<section class="slide" id="slide-scale">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>時間尺度對比</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:時間軸 — 秒、天、年、萬年、百萬年]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>呼吸變快(秒) / 曬黑(天) / 一生(100 年) / 演化(數千–數百萬年)。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>達爾文雀的喙幾十年乾旱可有可測量改變,但要成新物種要幾十萬年起跳</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 17. 步驟2 趨同演化 -->
+<section class="slide" id="slide-converge">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>趨同演化:殊途同歸</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">穿 山 甲(亞洲)</div>
+        <div class="icon">🦔</div>
+        <h3>有鱗甲、會捲曲</h3>
+        <p>挖蟻穴、防天敵</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">犰 狳(美洲)</div>
+        <div class="icon">🦔</div>
+        <h3>有鱗甲、會捲曲</h3>
+        <p>挖蟻穴、防天敵</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 30px;">
+      <strong>血緣很遠,但天擇各自挑出類似解法。</strong><br>
+      <span style="color: var(--c-muted);">這叫「趨同演化」。</span>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:教育部教案 0205_CCE《蓋亞傳奇—話說從頭》
+  </div>
+</section>
+
+<!-- 18. 步驟3 大遷徙 -->
+<section class="slide" id="slide-migrate">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>氣候變遷:大型遷徙動員令</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:世界地圖 + 物種往極地與高海拔遷徙箭頭]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>海洋生物平均每 10 年向極地移動約 70 公里;山區生物往更高海拔爬。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>臺灣高山物種爬到山頂就沒地方去了 — 山頂困境</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      <strong>提問:</strong>臺灣山區物種還能往哪裡移?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://michelaleonardi.netsons.org/climate-change-board-game/" target="_blank" rel="noopener">氣候變遷桌遊</a>
+  </div>
+</section>
+
+<!-- 19. 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>我是小小演化學家</h2>
+    <p class="subtitle">行動與分享</p>
+  </div>
+</section>
+
+<!-- 20. 步驟1 鳥就是恐龍 -->
+<section class="slide" id="slide-bird">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>恐龍沒有全部消失:鳥類就是活恐龍</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:霸王龍骨架 → 漸變 → 現代麻雀]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵事實:</strong>現代鳥類是獸腳類恐龍的後代。陽台上的麻雀就是迷你恐龍。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>下次看到鴿子,請說:「嗨,小恐龍。」</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      <strong>家庭演化樹任務:</strong>畫一棵「我家附近 6 種生物」的演化樹,標出共同祖先分支。
+    </p>
+  </div>
+</section>
+
+<!-- 21. 步驟2 自然觀察計畫書 -->
+<section class="slide" id="slide-ws-observe">
+  <div class="slide-tag">活動四・步驟 2 ・學習單(投影版)</div>
+  <h2>自然觀察計畫書</h2>
+  <div class="slide-body">
+    <p style="font-size: 1.05rem; color: var(--c-muted); margin: 0 0 8px;">
+      選校園一個角落,承諾一學期每月觀察一次。
+    </p>
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>觀察次</th>
+          <th>日期</th>
+          <th>氣溫 / 天氣</th>
+          <th>看到的生物</th>
+          <th>科學繪圖 / 備註</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>第 1 次</th><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><th>第 2 次</th><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><th>第 3 次</th><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §4</a></div>
+</section>
+
+<!-- 22. 步驟3 倖存者 -->
+<section class="slide" id="slide-survivor">
+  <div class="slide-tag">活動四・步驟 3</div>
+  <h2>我們都是倖存者</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.2rem; line-height: 2;">
+      你的祖先熬過了 <strong style="color: var(--c-warn);">5 次大滅絕</strong>,<br>
+      從海裡游到陸地、從恐龍腳下鑽過、從冰河時期走出來——<br>
+      <strong style="color: var(--c-accent);">才有今天的你。</strong>
+    </p>
+    <div style="border: 3px dashed var(--c-soc); border-radius: 16px; padding: 30px; margin: 30px auto; max-width: 700px; background: #fff5f7;">
+      <div style="font-size: 1.2rem; color: var(--c-soc); font-weight: 700; margin-bottom: 18px; text-align: center;">用一首三行詩或水彩速寫,表達你對「倖存者」的感受</div>
+      <div style="background: repeating-linear-gradient(0deg, transparent 0, transparent 30px, #f3a3bc 30px, #f3a3bc 31px); height: 120px; border-radius: 6px;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 23. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字,一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">變異</div>
+        <div class="desc">族群裡每個個體都不一樣<br>是演化的原料</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">挑選</div>
+        <div class="desc">天擇 = 環境挑誰活下來<br>不是「想變」就能變</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">累積</div>
+        <div class="desc">世代傳遞改變<br>百萬年的小變化 → 新物種</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">適應 ≠ 演化;我們都是倖存者。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">21</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

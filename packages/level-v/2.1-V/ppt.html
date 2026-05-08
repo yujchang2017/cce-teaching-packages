@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自然環境：生態系與生物多樣性 投影片</title>
+<style>
+:root{--accent:#0f766e;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--soft:#f9fafb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;background:#1a1a2e;overflow:hidden;height:100vh}
+.topbar{position:fixed;top:0;left:0;right:0;height:44px;background:rgba(15,118,110,.95);backdrop-filter:blur(8px);display:flex;align-items:center;gap:16px;padding:0 20px;z-index:100;border-bottom:1px solid rgba(255,255,255,.15)}
+.topbar a{color:#fff;text-decoration:none;font-size:.85rem;opacity:.85;white-space:nowrap;border-bottom:1px dashed rgba(255,255,255,.4);padding-bottom:1px}
+.topbar a:hover{opacity:1;border-bottom-style:solid}
+.topbar .title{color:#fff;font-size:.95rem;font-weight:600;flex:1;text-align:center}
+.navbar{position:fixed;bottom:0;left:0;right:0;height:38px;background:rgba(15,118,110,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;gap:24px;z-index:100;border-top:1px solid rgba(255,255,255,.15)}
+.navbar .page-num{color:#fff;font-size:.85rem;font-weight:600;min-width:80px;text-align:center}
+.navbar .hint{color:rgba(255,255,255,.7);font-size:.78rem}
+.viewport{height:100vh;padding-top:44px;padding-bottom:38px;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth}
+.slide{height:100%;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:48px 60px;position:relative}
+.slide-cover{background:linear-gradient(135deg,#0f766e 0%,#134e4a 50%,#1a1a2e 100%);color:#fff}
+.slide-question{background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%);color:#fff}
+.slide-divider{background:linear-gradient(135deg,#134e4a 0%,#0f766e 100%);color:#fff}
+.slide-content{background:#fff;color:#1f2937}
+.slide-summary{background:linear-gradient(135deg,#064e3b 0%,#0f766e 100%);color:#fff}
+.cover-tag{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 16px;font-size:.8rem;letter-spacing:.1em;margin-bottom:20px}
+.cover-title{font-size:2.4rem;font-weight:800;line-height:1.3;text-align:center;margin-bottom:16px}
+.cover-sub{font-size:1.1rem;opacity:.8;text-align:center;margin-bottom:32px}
+.cover-meta{display:flex;gap:24px;flex-wrap:wrap;justify-content:center}
+.cover-meta span{background:rgba(255,255,255,.12);padding:6px 16px;border-radius:20px;font-size:.85rem}
+.big-q{font-size:2rem;font-weight:700;text-align:center;line-height:1.5;max-width:700px}
+.big-q-lead{font-size:1rem;opacity:.75;margin-bottom:24px;letter-spacing:.05em}
+.divider-label{background:rgba(255,255,255,.15);border-radius:6px;padding:4px 14px;font-size:.85rem;margin-bottom:16px;letter-spacing:.08em}
+.divider-title{font-size:2rem;font-weight:700;text-align:center;margin-bottom:12px}
+.divider-desc{font-size:1rem;opacity:.78;text-align:center;max-width:500px}
+.slide-inner{width:100%;max-width:760px}
+.slide-heading{font-size:1.5rem;font-weight:700;color:#0f766e;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid #e5e7eb}
+.slide-heading .tag{background:#0f766e;color:#fff;border-radius:4px;padding:2px 10px;font-size:.8rem;margin-right:10px;font-weight:600}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
+.content-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px}
+.content-card h4{font-size:.95rem;font-weight:700;color:#0f766e;margin-bottom:10px}
+.content-card ul{padding-left:1.2em}
+.content-card li{font-size:.9rem;margin:5px 0;line-height:1.5}
+.chart-placeholder{background:#f9fafb;border:2px dashed #9ca3af;border-radius:8px;padding:32px 20px;text-align:center;color:#6b7280;margin:16px 0}
+.chart-placeholder .chart-title{font-size:.9rem;font-weight:600;color:#4b5563;margin-bottom:8px}
+.chart-placeholder .chart-desc{font-size:.82rem}
+.data-highlight{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-left:4px solid #059669;border-radius:6px;padding:12px 16px;margin:12px 0}
+.data-highlight .num{font-size:1.8rem;font-weight:800;color:#059669}
+.data-highlight .label{font-size:.85rem;color:#374151;margin-top:4px}
+.data-row{display:flex;gap:16px;margin:12px 0}
+.data-row .data-highlight{flex:1}
+.bullet-list{list-style:none;padding-left:0;margin:12px 0}
+.bullet-list li{padding:8px 0;border-top:1px dashed #e5e7eb;font-size:.92rem;line-height:1.55}
+.bullet-list li:first-child{border-top:none}
+.bullet-list li::before{content:"▸ ";color:#0f766e;font-weight:700}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0}
+.col-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:12px}
+.col-card .col-head{font-size:.82rem;font-weight:700;color:#fff;background:#0f766e;border-radius:4px;padding:3px 8px;margin-bottom:8px;display:inline-block}
+.col-card ul{padding-left:1.2em}
+.col-card li{font-size:.82rem;margin:3px 0}
+.wsa-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.wsa-card{border-radius:8px;padding:12px 14px;border:1px solid #e5e7eb}
+.wsa-card.gov{background:#eff6ff;border-left:4px solid #2563eb}
+.wsa-card.cur{background:#fdf2f8;border-left:4px solid #db2777}
+.wsa-card.ops{background:#ecfdf5;border-left:4px solid #16a34a}
+.wsa-card.com{background:#fff7ed;border-left:4px solid #ea580c}
+.wsa-card h4{font-size:.88rem;font-weight:700;margin-bottom:6px}
+.wsa-card ul{padding-left:1.1em}
+.wsa-card li{font-size:.8rem;margin:3px 0}
+.summary-keywords{display:flex;gap:24px;justify-content:center;margin:32px 0}
+.kw{text-align:center}
+.kw .kw-word{font-size:1.6rem;font-weight:800;margin-bottom:6px}
+.kw .kw-desc{font-size:.85rem;opacity:.8}
+.source-tag{font-size:.75rem;color:#9ca3af;margin-top:6px}
+.pb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.pb-item{border-radius:8px;padding:10px 12px;font-size:.82rem;text-align:center}
+.pb-item.exceeded{background:#fee2e2;border:1px solid #ef4444;color:#991b1b}
+.pb-item.safe{background:#ecfdf5;border:1px solid #16a34a;color:#14532d}
+.pb-item .pb-name{font-weight:700;margin-bottom:4px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="lesson_plan.html">← 回教案</a>
+  <span class="title">自然環境：生態系與生物多樣性（2.1-V）</span>
+</div>
+
+<div class="navbar">
+  <span class="hint">← →  切換投影片</span>
+  <span class="page-num" id="page-num">1 / 18</span>
+  <span class="hint">PageUp PageDn</span>
+</div>
+
+<div class="viewport" id="viewport">
+
+<!-- slide-cover -->
+<section class="slide slide-cover" id="slide-cover">
+  <div class="cover-tag">Level V ｜ 16–18 歲 ｜ Key ID 2.1-V</div>
+  <div class="cover-title">生態系與生物多樣性<br>——物質、能量與萬物互依</div>
+  <div class="cover-sub">自然環境：生態系與生物多樣性（陸地與海洋）</div>
+  <div class="cover-meta">
+    <span>4 節課 × 50 分鐘</span>
+    <span>4 大活動</span>
+    <span>臺灣 6 萬種物種</span>
+  </div>
+</section>
+
+<!-- slide-question -->
+<section class="slide slide-question" id="slide-question">
+  <div class="big-q-lead">核心思辨問題</div>
+  <div class="big-q">你今天呼出的一個 CO₂ 分子，<br>十年後最可能在哪裡？</div>
+</section>
+
+<!-- 活動一分隔 -->
+<section class="slide slide-divider" id="slide-a1">
+  <div class="divider-label">活動一</div>
+  <div class="divider-title">物質的大旅行</div>
+  <div class="divider-desc">碳、氮、磷如何在生物圈、大氣圈、岩石圈之間循環——以及人類如何打破這些循環</div>
+</section>
+
+<!-- slide-carbon -->
+<section class="slide slide-content" id="slide-carbon">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">資料</span>全球碳循環：各碳庫存量與年通量</div>
+    <div class="chart-placeholder">
+      <div class="chart-title">【圖表佔位】全球碳循環系統圖</div>
+      <div class="chart-desc">
+        碳庫存量：大氣 880 億噸碳（2023）｜陸地植被 450 億噸碳｜土壤有機碳 1,500 億噸碳｜海洋 38,000 億噸碳<br>
+        年通量：光合固碳 120 億噸碳/年（陸地）+ 50 億噸碳/年（海洋）<br>
+        人為排放 ~11.5 億噸碳/年 → 海洋吸收 2.5 + 陸地碳匯 3 + 留在大氣 ~5
+      </div>
+    </div>
+    <div class="data-row">
+      <div class="data-highlight"><div class="num">38,000 億噸碳</div><div class="label">海洋碳庫——全球最大，是大氣的 43 倍</div></div>
+      <div class="data-highlight"><div class="num">120 億噸碳/年</div><div class="label">全球陸地植物光合固碳量（淨初級生產力）</div></div>
+    </div>
+    <div class="source-tag">資料來源：全球碳計畫 / 聯合國氣候變遷政府間專家委員會第六次評估報告</div>
+  </div>
+</section>
+
+<!-- slide-nitrogen -->
+<section class="slide slide-content" id="slide-nitrogen">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">資料</span>氮與磷：人類已超越的行星邊界</div>
+    <div class="content-grid">
+      <div class="content-card">
+        <h4>氮循環超載</h4>
+        <ul>
+          <li>自然生物固氮：約每年 140 百萬噸氮</li>
+          <li>人為固氮（哈柏-博施製程＋豆科）：約每年 150 百萬噸氮</li>
+          <li>後果：硝酸鹽逕流 → 水體優養化 → 死區；一氧化二氮逸散（溫室效應為二氧化碳的 273 倍）</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h4>磷循環超載</h4>
+        <ul>
+          <li>磷沒有大氣儲庫，只能靠岩石風化釋放</li>
+          <li>全球每年開採磷礦約 4,800 萬噸</li>
+          <li>後果：逕流進入水體 → 優養化 → 溶氧下降 → 淡水死區</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pb-grid">
+      <div class="pb-item exceeded"><div class="pb-name">氮磷循環</div>已超越安全邊界</div>
+      <div class="pb-item exceeded"><div class="pb-name">生物多樣性</div>已超越安全邊界</div>
+      <div class="pb-item exceeded"><div class="pb-name">氣候變遷</div>已超越安全邊界</div>
+      <div class="pb-item exceeded"><div class="pb-name">土地利用</div>已超越安全邊界</div>
+      <div class="pb-item exceeded"><div class="pb-name">新型化學物</div>已超越安全邊界</div>
+      <div class="pb-item safe"><div class="pb-name">臭氧層</div>安全邊界內</div>
+    </div>
+    <div class="source-tag">資料來源：斯德哥爾摩復原力中心 行星邊界（2023 更新）；美國地質調查局</div>
+  </div>
+</section>
+
+<!-- 活動二分隔 -->
+<section class="slide slide-divider" id="slide-a2">
+  <div class="divider-label">活動二</div>
+  <div class="divider-title">能量的單行道</div>
+  <div class="divider-desc">光合作用、細胞呼吸、十分之一法則——能量只能從高品質流向低品質，無法循環</div>
+</section>
+
+<!-- slide-npp -->
+<section class="slide slide-content" id="slide-npp">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">資料</span>能量金字塔與十分之一法則</div>
+    <div class="chart-placeholder">
+      <div class="chart-title">【圖表佔位】能量金字塔圖</div>
+      <div class="chart-desc">
+        初級生產者（植物）：10,000 kcal<br>
+        初級消費者（草食動物）：1,000 kcal（傳遞效率 10%）<br>
+        次級消費者（肉食動物）：100 kcal<br>
+        三級消費者（頂級掠食者）：10 kcal<br>
+        ※ 其餘 90% 以熱能散失——食物鏈通常不超過 4–5 個營養級
+      </div>
+    </div>
+    <ul class="bullet-list">
+      <li>全球植物每年光合固碳約 120 億噸碳（總初級生產力）；扣除自身呼吸後的淨初級生產力才是其他生物可用的能量</li>
+      <li>計算任務：1 公斤牛肉約需 10 公斤飼料穀物，飼料穀物又需更多水、土地、肥料</li>
+      <li>永續飲食連結：減少肉食可降低土地利用壓力，間接保護生物多樣性</li>
+    </ul>
+    <div class="source-tag">資料來源：聯合國氣候變遷政府間專家委員會第六次評估報告；生態學經典文獻</div>
+  </div>
+</section>
+
+<!-- slide-ecosystems -->
+<section class="slide slide-content" id="slide-ecosystems">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">比較</span>不同生態系淨初級生產力比較</div>
+    <div class="chart-placeholder">
+      <div class="chart-title">【圖表佔位】各生態系淨初級生產力長條圖（gC/m²/yr）</div>
+      <div class="chart-desc">
+        珊瑚礁 2,500 ｜熱帶雨林 2,200 ｜溫帶森林 1,000 ｜草原 500 ｜農田 300 ｜開放海洋 125 ｜沙漠 90<br>
+        面積加權：開放海洋面積大（佔地球 65%），總貢獻量仍高達約 50 億噸碳/年
+      </div>
+    </div>
+    <div class="data-row">
+      <div class="data-highlight"><div class="num">300+ 種</div><div class="label">臺灣石珊瑚種數，約佔全球三分之一</div></div>
+      <div class="data-highlight"><div class="num">30%</div><div class="label">臺灣珊瑚礁近年出現白化現象的比例</div></div>
+    </div>
+    <p style="font-size:.85rem;color:#6b7280;margin-top:8px">珊瑚礁淨初級生產力最高，但面積不到海洋 0.1%——面積小、生產力高、脆弱性最大。</p>
+    <div class="source-tag">資料來源：農業部海洋保育署珊瑚礁監測計畫</div>
+  </div>
+</section>
+
+<!-- 活動三分隔 -->
+<section class="slide slide-divider" id="slide-a3">
+  <div class="divider-label">活動三</div>
+  <div class="divider-title">生物多樣性的三層次與人類衝擊</div>
+  <div class="divider-desc">從基因到生態系——100 萬物種正面臨滅絕威脅，五大驅動力是什麼？</div>
+</section>
+
+<!-- slide-biodiversity -->
+<section class="slide slide-content" id="slide-biodiversity">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">概念</span>生物多樣性三層次：臺灣案例</div>
+    <div class="three-col">
+      <div class="col-card">
+        <span class="col-head">基因多樣性</span>
+        <ul>
+          <li>同物種內的遺傳變異</li>
+          <li>案例：臺灣黑熊因棲地破碎化，族群間基因流動受阻，遺傳多樣性下降</li>
+          <li>低基因多樣性 → 抗病力弱、適應力降低</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <span class="col-head">物種多樣性</span>
+        <ul>
+          <li>豐富度（種數）＋均勻度（數量分布）</li>
+          <li>臺灣已記錄物種約 6 萬種，特有率超過 30%</li>
+          <li>原因：垂直氣候帶跨度大、黑潮暖流交匯、冰河避難所效應</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <span class="col-head">生態系多樣性</span>
+        <ul>
+          <li>棲地類型：珊瑚礁→熱帶林→亞熱帶林→溫帶林→高山寒原</li>
+          <li>臺灣海拔 0–3,952 公尺，400 公里內跨越熱帶到寒帶</li>
+          <li>面積僅佔全球 0.025%，物種密度名列全球前茅</li>
+        </ul>
+      </div>
+    </div>
+    <div class="source-tag">資料來源：農業部林業及自然保育署 TaiBIF（2023–2024）</div>
+  </div>
+</section>
+
+<!-- slide-ipbes -->
+<section class="slide slide-content" id="slide-ipbes">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">資料</span>跨政府生物多樣性與生態系服務平台 2019 年全球評估</div>
+    <div class="data-row">
+      <div class="data-highlight"><div class="num">100 萬</div><div class="label">面臨滅絕威脅的動植物物種數</div></div>
+      <div class="data-highlight"><div class="num">10–100 倍</div><div class="label">當前滅絕速率超過自然背景值的倍數</div></div>
+      <div class="data-highlight"><div class="num">47%</div><div class="label">過去 50 年全球自然生態系平均退化比例</div></div>
+    </div>
+    <div class="chart-placeholder">
+      <div class="chart-title">【圖表佔位】五大直接驅動力相對影響力柱狀圖</div>
+      <div class="chart-desc">
+        ① 土地和海洋利用變化（最大）→ ② 直接過度利用 → ③ 氣候變遷（快速上升中）<br>
+        → ④ 汙染 → ⑤ 入侵種<br>
+        注意：氣候變遷目前排第三，但其影響曲線陡升，預計本世紀中後期將超越其他驅動力
+      </div>
+    </div>
+    <div class="source-tag">資料來源：跨政府生物多樣性與生態系服務平台（IPBES）全球評估報告（2019）</div>
+  </div>
+</section>
+
+<!-- slide-gbf -->
+<section class="slide slide-content" id="slide-gbf">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">政策</span>全球生物多樣性框架 30×30 目標</div>
+    <div class="data-row">
+      <div class="data-highlight"><div class="num">30%</div><div class="label">2030 年前保護陸地面積目標</div></div>
+      <div class="data-highlight"><div class="num">30%</div><div class="label">2030 年前保護海洋面積目標</div></div>
+      <div class="data-highlight"><div class="num">2,000 億美元</div><div class="label">每年最低生物多樣性資金目標</div></div>
+    </div>
+    <ul class="bullet-list">
+      <li>2022 年昆明-蒙特婁 COP15 通過，設定 4 項 2050 願景目標與 23 項 2030 行動目標</li>
+      <li>目前全球陸地保護區約 17%、海洋約 8%——距 30×30 差距明顯</li>
+      <li>臺灣陸域保護區約佔國土 19.2%，農業部國土生態綠網規劃 44 條生態廊道串聯保護區</li>
+      <li>保護區品質比面積重要：有效管理的保護區才能發揮保育功能</li>
+    </ul>
+    <div class="source-tag">資料來源：聯合國生物多樣性公約（CBD）；農業部林業及自然保育署</div>
+  </div>
+</section>
+
+<!-- 活動四分隔 -->
+<section class="slide slide-divider" id="slide-a4">
+  <div class="divider-label">活動四</div>
+  <div class="divider-title">公民科學、生態廊道與全校行動</div>
+  <div class="divider-desc">iNaturalist 實作、國土生態綠網、WSA 四面向整合</div>
+</section>
+
+<!-- slide-citizen -->
+<section class="slide slide-content" id="slide-citizen">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">行動</span>公民科學實作：iNaturalist 與國土生態綠網</div>
+    <div class="data-row">
+      <div class="data-highlight"><div class="num">400 萬+</div><div class="label">iNaturalist 臺灣觀察紀錄筆數（2023 至今）</div></div>
+      <div class="data-highlight"><div class="num">44 條</div><div class="label">農業部國土生態綠網規劃的生態廊道數量</div></div>
+    </div>
+    <ul class="bullet-list">
+      <li>iNaturalist 操作：開啟 App → 拍照 → 人工智慧辨識 → 上傳 → 社群驗證達「研究級」</li>
+      <li>每一筆紀錄都被用在生態綠網規劃與保護區劃設決策中</li>
+      <li>代表案例：苗栗-臺中石虎廊道——高速公路下方動物通道、路殺熱點警示</li>
+      <li>你的學校旁邊可能就有生態斷裂點——找到它，提出改善方案</li>
+    </ul>
+    <div class="source-tag">資料來源：農業部林業及自然保育署（2024）；iNaturalist Taiwan</div>
+  </div>
+</section>
+
+<!-- slide-wsa -->
+<section class="slide slide-content" id="slide-wsa">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">行動</span>Whole School Approach 四面向</div>
+    <div class="wsa-grid">
+      <div class="wsa-card gov">
+        <h4>治理 Governance</h4>
+        <ul>
+          <li>成立「學生生物多樣性委員會」</li>
+          <li>透過學生議會提案校園棲地保育方案</li>
+          <li>定期向校務會議報告進度</li>
+        </ul>
+      </div>
+      <div class="wsa-card cur">
+        <h4>課程 Curriculum</h4>
+        <ul>
+          <li>生物：食物網、生態學</li>
+          <li>地科：碳循環、氣候</li>
+          <li>化學：氮磷循環反應</li>
+          <li>數學：Shannon 多樣性指數</li>
+          <li>英文：IPBES 報告閱讀</li>
+        </ul>
+      </div>
+      <div class="wsa-card ops">
+        <h4>校園營運 Operations</h4>
+        <ul>
+          <li>用 iNaturalist 建立物種基線</li>
+          <li>種原生食草植物、設鳥巢箱</li>
+          <li>保留落葉堆肥區</li>
+          <li>減少農藥除草劑</li>
+        </ul>
+      </div>
+      <div class="wsa-card com">
+        <h4>社群 Community</h4>
+        <ul>
+          <li>與在地社區合作里山倡議</li>
+          <li>協助特有生物研究保育中心路殺社</li>
+          <li>社區生態導覽</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- slide-summary -->
+<section class="slide slide-summary" id="slide-summary">
+  <div class="summary-keywords">
+    <div class="kw">
+      <div class="kw-word">循環</div>
+      <div class="kw-desc">物質在圈層間循環<br>能量只能單向流動</div>
+    </div>
+    <div class="kw">
+      <div class="kw-word">複雜</div>
+      <div class="kw-desc">三層次生物多樣性<br>反饋循環與臨界點</div>
+    </div>
+    <div class="kw">
+      <div class="kw-word">行動</div>
+      <div class="kw-desc">公民科學參與<br>從數據到政策倡議</div>
+    </div>
+  </div>
+  <div style="text-align:center;opacity:.8;font-size:.95rem;max-width:600px">
+    生態系不是課本上的圖，而是你此刻正在呼吸的系統。每一筆公民科學紀錄、每一個政策提案，都是你參與這個系統的方式。
+  </div>
+</section>
+
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const pageNum = document.getElementById('page-num');
+const total = slides.length;
+const viewport = document.getElementById('viewport');
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const idx = Array.from(slides).indexOf(e.target);
+      pageNum.textContent = (idx + 1) + ' / ' + total;
+    }
+  });
+}, { root: viewport, threshold: 0.5 });
+slides.forEach(s => obs.observe(s));
+
+document.addEventListener('keydown', e => {
+  const idx = Array.from(slides).findIndex(s => {
+    const r = s.getBoundingClientRect();
+    return r.top >= -10 && r.top < window.innerHeight / 2;
+  });
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') {
+    e.preventDefault();
+    if (idx < total - 1) slides[idx + 1].scrollIntoView({ behavior: 'smooth' });
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+    e.preventDefault();
+    if (idx > 0) slides[idx - 1].scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+const hash = location.hash.slice(1);
+if (hash) {
+  const target = document.getElementById(hash);
+  if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+}
+</script>
+</body>
+</html>

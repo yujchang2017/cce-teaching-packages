@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>碳循環與碳中和 — 投影片</title>
+<style>
+  :root{--accent:#0f766e;--soft:#ccfbf1;--cog:#2563eb;--soc:#db2777;--beh:#16a34a;--warn:#ea580c;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--text);line-height:1.6;margin:0;background:#fff}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.95rem;font-weight:500;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--muted)}
+  .nav-indicator{font-family:monospace;color:var(--text)} .nav-cur{color:var(--accent);font-weight:700}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--border);position:relative}
+  .slide-num{position:absolute;top:14px;right:20px;font-size:.8rem;font-family:monospace;color:var(--border)}
+  .slide h2{font-size:2rem;margin:0 0 20px;color:var(--text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.8rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--accent);color:#fff;padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--accent);letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.4rem;color:var(--accent)}
+  .slide.divider .act-steps{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .act-step-chip{background:var(--soft);color:var(--accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  .q-box{background:var(--soft);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.4rem;line-height:1.6;color:var(--accent);font-weight:600}
+  .q-sub{font-size:1.05rem;color:var(--muted);font-weight:400;margin-top:10px}
+  .data-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0;background:var(--bg)}
+  .data-card .dc-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;color:var(--muted);margin-bottom:8px}
+  .data-card .dc-fact{font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.5}
+  .data-card .dc-src{font-size:.85rem;color:var(--muted)}
+  .data-card .dc-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  .compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:20px 0}
+  .compare-cell{border:2px solid var(--border);border-radius:10px;padding:16px 18px;text-align:center}
+  .compare-cell .cc-label{font-size:.8rem;color:var(--muted);font-weight:700;letter-spacing:.12em;margin-bottom:8px}
+  .compare-cell .cc-val{font-size:1.5rem;font-weight:800;color:var(--accent)}
+  .compare-cell .cc-desc{font-size:.88rem;margin-top:6px;color:var(--text)}
+  .ws-frame{border:2px dashed var(--accent);border-radius:12px;padding:28px 32px;margin:20px 0;background:#fff}
+  .ws-frame .ws-title{font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:14px}
+  .ws-lines{display:flex;flex-direction:column;gap:14px}
+  .ws-line{border-bottom:1.5px solid #d1d5db;height:28px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--border);padding:12px 14px;text-align:center}
+  .ws-table th{background:var(--soft);color:var(--accent);font-weight:700}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:52px}
+  .impact-chain{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:20px 0}
+  .ic-node{background:var(--soft);border:2px solid var(--accent);border-radius:8px;padding:10px 16px;font-weight:600;font-size:.95rem;color:var(--accent)}
+  .ic-arrow{font-size:1.4rem;color:var(--muted)}
+  .slide-src{margin-top:auto;padding-top:12px;border-top:1px dashed var(--border);font-size:.8rem;color:var(--muted)}
+  .slide-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  a.ext{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  a.ext::after{content:" ↗";font-size:.8em;opacity:.7}
+  figure{margin:16px 0} figcaption{font-size:.85rem;color:var(--muted);margin-top:8px;text-align:center}
+  .summary-keys{display:flex;gap:24px;flex-wrap:wrap;justify-content:center;margin:24px 0}
+  .sk-item{background:var(--accent);color:#fff;border-radius:12px;padding:20px 28px;text-align:center;min-width:160px}
+  .sk-item .sk-word{font-size:2rem;font-weight:800;margin-bottom:6px}
+  .sk-item .sk-desc{font-size:.9rem;opacity:.9}
+  .timeline{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+  .tl-row{display:flex;align-items:center;gap:12px}
+  .tl-time{min-width:100px;font-size:.85rem;font-weight:700;color:var(--muted);text-align:right}
+  .tl-bar{height:28px;background:var(--soft);border:1px solid var(--accent);border-radius:4px;display:flex;align-items:center;padding:0 10px;font-size:.88rem;color:var(--accent);font-weight:600}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">碳循環與碳中和 ｜ Level V</span>
+</header>
+
+<main>
+
+<!-- slide-cover -->
+<section class="slide cover" id="slide-cover">
+  <span class="slide-num">1/18</span>
+  <div class="slide-body">
+    <div class="level-tag">Level V</div>
+    <h2>碳循環與碳中和</h2>
+    <p style="color:var(--muted);max-width:700px;font-size:1.05rem">碳在五大圈層間流動——收支平衡決定氣候；人類加速釋放億年封存的碳，從量化到行動</p>
+    <p style="margin-top:24px;color:var(--muted);font-size:.9rem">高中 10–12 年級 ｜ 4 節 × 50 分鐘</p>
+  </div>
+</section>
+
+<!-- slide-question -->
+<section class="slide" id="slide-question">
+  <span class="slide-num">2/18</span>
+  <h2>核心問題</h2>
+  <div class="slide-body">
+    <div class="q-box">
+      地球上的碳總量有改變嗎？<br>
+      <span class="q-sub">為什麼大氣 CO₂ 還是一直上升？誰該負責讓它停下來？</span>
+    </div>
+    <p style="color:var(--muted);font-size:1rem;margin-top:12px">Think-Pair-Share：先獨立思考 1 分鐘，再和同桌交換。</p>
+  </div>
+</section>
+
+<!-- 活動一 divider -->
+<section class="slide divider" id="slide-a1">
+  <span class="slide-num">3/18</span>
+  <div class="act-badge">ACTIVITY 1</div>
+  <h2>碳在哪裡？碳循環的時間尺度</h2>
+  <p style="color:var(--muted)">五大碳庫 + 通量 + Keeling Curve</p>
+  <div class="act-steps">
+    <span class="act-step-chip">開場思辨</span>
+    <span class="act-step-chip">碳庫系統圖</span>
+    <span class="act-step-chip">時間尺度排序</span>
+    <span class="act-step-chip">Keeling Curve 讀圖</span>
+  </div>
+</section>
+
+<!-- slide-carbon-pools -->
+<section class="slide" id="slide-carbon-pools">
+  <span class="slide-num">4/18</span>
+  <h2>五大碳庫與主要通量</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-cell">
+        <div class="cc-label">大氣</div>
+        <div class="cc-val">880</div>
+        <div class="cc-desc">GtC｜CO₂ 持續上升中</div>
+      </div>
+      <div class="compare-cell">
+        <div class="cc-label">海洋</div>
+        <div class="cc-val">38,000</div>
+        <div class="cc-desc">GtC｜最大活躍碳庫</div>
+      </div>
+      <div class="compare-cell">
+        <div class="cc-label">土壤+永凍土</div>
+        <div class="cc-val">1,500–2,400</div>
+        <div class="cc-desc">GtC｜暖化後易釋放</div>
+      </div>
+      <div class="compare-cell">
+        <div class="cc-label">陸地生物圈</div>
+        <div class="cc-val">450–650</div>
+        <div class="cc-desc">GtC｜森林為主</div>
+      </div>
+      <div class="compare-cell">
+        <div class="cc-label">人為年排放</div>
+        <div class="cc-val">~10</div>
+        <div class="cc-desc">GtC/年（化石）<br>佔大氣庫 1.1%/年</div>
+      </div>
+    </div>
+    <p style="font-size:.9rem;color:var(--muted);margin-top:8px">光合作用固定 120 GtC/年；呼吸+分解釋放 120 GtC/年；海洋交換約 90 GtC/年。</p>
+    <div class="slide-src">來源：<a href="https://www.ipcc.ch/report/ar6/wg1/chapter/chapter-5/" target="_blank" rel="noopener">政府間氣候變遷小組 AR6 WG1 第 5 章</a></div>
+  </div>
+</section>
+
+<!-- slide-keeling -->
+<section class="slide" id="slide-keeling">
+  <span class="slide-num">5/18</span>
+  <h2>Keeling Curve：大氣 CO₂ 的故事</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--accent);border-radius:12px;padding:40px;background:var(--soft);text-align:center">
+        <div style="font-size:.8rem;color:var(--muted);letter-spacing:.15em;margin-bottom:8px">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--accent);font-weight:700;margin-bottom:12px">[此處放：Keeling Curve 1958–2024 鋸齒上升圖]</div>
+        <div style="font-size:1.1rem;margin:14px 0"><strong>關鍵數據：</strong>280 ppm（工業革命前）→ 421 ppm（2023）｜200 萬年來最高</div>
+        <div style="font-size:.85rem;color:var(--muted);margin-top:12px">示意圖待補繪</div>
+      </div>
+      <figcaption>政府間氣候變遷小組 AR6 WG1 | 大氣 CO₂ 濃度長期變化（1750–2023）</figcaption>
+    </figure>
+    <div class="q-box" style="font-size:1.1rem;margin-top:16px">
+      為什麼曲線每年有鋸齒高低起伏？
+      <span class="q-sub">→ 北半球植物春夏光合旺盛吸碳、秋冬分解釋碳，形成「地球呼吸」</span>
+    </div>
+    <div class="slide-src">來源：<a href="https://www.ipcc.ch/report/ar6/wg1/" target="_blank" rel="noopener">政府間氣候變遷小組 AR6 WG1</a>；美國國家海洋暨大氣總署 GML 2024</div>
+  </div>
+</section>
+
+<!-- 活動二 divider -->
+<section class="slide divider" id="slide-a2">
+  <span class="slide-num">6/18</span>
+  <div class="act-badge">ACTIVITY 2</div>
+  <h2>化石燃料、甲烷與碳足跡</h2>
+  <p style="color:var(--muted)">排放結構 + GWP 分析 + 個人碳足跡計算</p>
+  <div class="act-steps">
+    <span class="act-step-chip">化石燃料有限性</span>
+    <span class="act-step-chip">甲烷解析</span>
+    <span class="act-step-chip">碳足跡計算</span>
+    <span class="act-step-chip">產業責任辯論</span>
+  </div>
+</section>
+
+<!-- slide-fossil -->
+<section class="slide" id="slide-fossil">
+  <span class="slide-num">7/18</span>
+  <h2>化石燃料：億年封存，200 年釋放</h2>
+  <div class="slide-body">
+    <div class="data-card">
+      <div class="dc-label">全球化石燃料 CO₂ 排放</div>
+      <div class="dc-fact">37.4 GtCO₂（2024）｜再創歷史新高｜+1.1% 預估（2025）</div>
+      <div class="dc-src">來源：<a href="https://globalcarbonbudget.org/" target="_blank" rel="noopener">Global Carbon Budget 2025</a></div>
+    </div>
+    <div class="timeline">
+      <div class="tl-row"><span class="tl-time">秒→分鐘</span><div class="tl-bar" style="width:60px">呼吸 / 光合作用</div></div>
+      <div class="tl-row"><span class="tl-time">月→年</span><div class="tl-bar" style="width:100px">分解 / 腐植質形成</div></div>
+      <div class="tl-row"><span class="tl-time">百年→千年</span><div class="tl-bar" style="width:160px">土壤碳積累 / 泥炭</div></div>
+      <div class="tl-row"><span class="tl-time">萬→百萬年</span><div class="tl-bar" style="width:220px">海洋沉積 / 岩石風化</div></div>
+      <div class="tl-row"><span class="tl-time">億年封存</span><div class="tl-bar" style="width:280px;background:#fee2e2;border-color:var(--warn);color:var(--warn)">化石燃料形成 → 200 年人類釋放</div></div>
+    </div>
+    <p style="font-size:.9rem;color:var(--muted)">自 1850 年以來，人類累計排放約 2,790±200 GtCO₂。</p>
+  </div>
+</section>
+
+<!-- slide-methane -->
+<section class="slide" id="slide-methane">
+  <span class="slide-num">8/18</span>
+  <h2>甲烷：短命但強效的溫室氣體</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-cell">
+        <div class="cc-label">全球甲烷排放</div>
+        <div class="cc-val">580 Mt/yr</div>
+        <div class="cc-desc">2020–2022 平均<br>60% 為人為排放</div>
+      </div>
+      <div class="compare-cell">
+        <div class="cc-label">GWP₁₀₀</div>
+        <div class="cc-val">28×</div>
+        <div class="cc-desc">百年尺度<br>相對 CO₂ 暖化力</div>
+      </div>
+      <div class="compare-cell">
+        <div class="cc-label">GWP₂₀</div>
+        <div class="cc-val">80×</div>
+        <div class="cc-desc">20 年尺度<br>短期更危險</div>
+      </div>
+    </div>
+    <figure>
+      <div style="border:2px dashed var(--accent);border-radius:12px;padding:40px;background:var(--soft);text-align:center">
+        <div style="font-size:.8rem;color:var(--muted);letter-spacing:.15em;margin-bottom:8px">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--accent);font-weight:700;margin-bottom:12px">[此處放：甲烷來源圓餅圖]</div>
+        <div style="font-size:1.1rem;margin:14px 0"><strong>關鍵數據：</strong>畜牧 27% ｜ 化石開採 23% ｜ 廢棄物 11% ｜ 水稻 8%</div>
+        <div style="font-size:.85rem;color:var(--muted);margin-top:12px">示意圖待補繪</div>
+      </div>
+      <figcaption>全球甲烷預算 2024（Saunois et al.）</figcaption>
+    </figure>
+    <p style="font-size:.9rem;color:var(--muted)">辯論：用 GWP₂₀ vs GWP₁₀₀ 評估甲烷政策，結論有何不同？</p>
+    <div class="slide-src">來源：<a href="https://www.globalcarbonproject.org/methanebudget/" target="_blank" rel="noopener">全球甲烷預算 2024</a></div>
+  </div>
+</section>
+
+<!-- slide-footprint -->
+<section class="slide" id="slide-footprint">
+  <span class="slide-num">9/18</span>
+  <h2>個人碳足跡計算</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-cell">
+        <div class="cc-label">臺灣人均排放</div>
+        <div class="cc-val">11.5 t</div>
+        <div class="cc-desc">tCO₂e/年<br>高於全球均值 6.5 t</div>
+      </div>
+      <div class="compare-cell">
+        <div class="cc-label">全球均值</div>
+        <div class="cc-val">6.5 t</div>
+        <div class="cc-desc">tCO₂e/年</div>
+      </div>
+      <div class="compare-cell">
+        <div class="cc-label">1.5°C 相容目標</div>
+        <div class="cc-val">&lt;2 t</div>
+        <div class="cc-desc">tCO₂e/年<br>2050 淨零需達到</div>
+      </div>
+    </div>
+    <div class="ws-frame" style="margin-top:16px">
+      <div class="ws-title">學習單 §4：個人碳足跡四面向</div>
+      <table class="ws-table">
+        <thead><tr><th>面向</th><th>主要排放源</th><th>你的估算（t/年）</th></tr></thead>
+        <tbody>
+          <tr><td>交通</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>飲食</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>居住</td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>消費</td><td class="fill"></td><td class="fill"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="slide-src">來源：<a href="https://www.cca.gov.tw/" target="_blank" rel="noopener">環境部氣候變遷署 國家溫室氣體排放清冊</a></div>
+  </div>
+</section>
+
+<!-- 活動三 divider -->
+<section class="slide divider" id="slide-a3">
+  <span class="slide-num">10/18</span>
+  <div class="act-badge">ACTIVITY 3</div>
+  <h2>碳捕獲、傳統智慧與公正轉型</h2>
+  <p style="color:var(--muted)">技術成本光譜 + 原住民保育 + 倫理兩難</p>
+  <div class="act-steps">
+    <span class="act-step-chip">技術光譜</span>
+    <span class="act-step-chip">傳統智慧</span>
+    <span class="act-step-chip">碳補償辯論</span>
+    <span class="act-step-chip">公正轉型</span>
+  </div>
+</section>
+
+<!-- slide-ccs -->
+<section class="slide" id="slide-ccs">
+  <span class="slide-num">11/18</span>
+  <h2>碳捕獲技術光譜：成本 vs 規模</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--accent);border-radius:12px;padding:40px;background:var(--soft);text-align:center">
+        <div style="font-size:.8rem;color:var(--muted);letter-spacing:.15em;margin-bottom:8px">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--accent);font-weight:700;margin-bottom:12px">[此處放：碳捕獲成本 vs 規模對比圖]</div>
+        <div style="font-size:1.1rem;margin:14px 0"><strong>關鍵數據：</strong>造林 5–50 USD/t ｜ CCS 45 Mt/yr（0.1%）｜ DAC 600–1,000 USD/t</div>
+        <div style="font-size:.85rem;color:var(--muted);margin-top:12px">示意圖待補繪</div>
+      </div>
+      <figcaption>全球 CCS 機構狀態報告 2024 ＋ IEA CCUS</figcaption>
+    </figure>
+    <div class="data-card">
+      <div class="dc-label">規模差距</div>
+      <div class="dc-fact">全球 CCS 年捕獲 45 MtCO₂，僅佔排放 0.1%；DAC Mammoth 年捕獲 36,000 tCO₂</div>
+      <div class="dc-src">來源：<a href="https://www.globalccsinstitute.com/" target="_blank" rel="noopener">全球 CCS 機構 2024</a></div>
+    </div>
+    <p style="font-size:.9rem;color:var(--muted)">討論：DAC 每噸 600+ USD vs 造林 5–50 USD，為什麼不全部種樹？（土地限制、永久性、規模化）</p>
+  </div>
+</section>
+
+<!-- slide-indigenous -->
+<section class="slide" id="slide-indigenous">
+  <span class="slide-num">12/18</span>
+  <h2>原住民傳統智慧與碳循環</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-cell">
+        <div class="cc-label">魯凱族輪耕週期</div>
+        <div class="cc-val">5–8 年</div>
+        <div class="cc-desc">休耕期讓土壤碳恢復<br>小米—芋頭—森林輪作</div>
+      </div>
+      <div class="compare-cell">
+        <div class="cc-label">阿美族水梯田</div>
+        <div class="cc-val">高多樣性</div>
+        <div class="cc-desc">河岸生態系統<br>土壤碳庫穩定</div>
+      </div>
+      <div class="compare-cell">
+        <div class="cc-label">森林碳吸存比</div>
+        <div class="cc-val">1.6:1.2</div>
+        <div class="cc-desc">tCO₂ 吸收 : tO₂ 釋放<br>每增 1 t 生物量</div>
+      </div>
+    </div>
+    <div class="q-box" style="font-size:1.1rem;margin-top:16px">
+      傳統輪耕如何維持碳平衡？
+      <span class="q-sub">→ 休耕讓土壤微生物活動恢復、有機質分解與積累達到新平衡，避免單一作物持續耗竭土壤碳庫</span>
+    </div>
+    <div class="slide-src">來源：<a href="https://www.forest.gov.tw/" target="_blank" rel="noopener">林業及自然保育署 里山倡議</a></div>
+  </div>
+</section>
+
+<!-- 活動四 divider -->
+<section class="slide divider" id="slide-a4">
+  <span class="slide-num">13/18</span>
+  <div class="act-badge">ACTIVITY 4</div>
+  <h2>從倡議到行動：學生議會與碳中和提案</h2>
+  <p style="color:var(--muted)">倡議書撰寫 + 模擬議會 + 後設反思</p>
+  <div class="act-steps">
+    <span class="act-step-chip">臺灣現狀</span>
+    <span class="act-step-chip">碳中和倡議書</span>
+    <span class="act-step-chip">學生議會</span>
+    <span class="act-step-chip">後設認知</span>
+  </div>
+</section>
+
+<!-- slide-proposal -->
+<section class="slide" id="slide-proposal">
+  <span class="slide-num">14/18</span>
+  <h2>校園碳中和倡議書框架</h2>
+  <div class="slide-body">
+    <div class="impact-chain">
+      <span class="ic-node">現況碳排盤點</span>
+      <span class="ic-arrow">→</span>
+      <span class="ic-node">減排策略</span>
+      <span class="ic-arrow">→</span>
+      <span class="ic-node">CER 論證</span>
+      <span class="ic-arrow">→</span>
+      <span class="ic-node">反駁反對意見</span>
+      <span class="ic-arrow">→</span>
+      <span class="ic-node">成效指標</span>
+    </div>
+    <div class="compare-grid" style="margin-top:16px">
+      <div class="compare-cell"><div class="cc-label">治理</div><div style="font-size:.9rem;margin-top:6px">永續委員會提案<br>追蹤機制設計</div></div>
+      <div class="compare-cell"><div class="cc-label">課程</div><div style="font-size:.9rem;margin-top:6px">跨科整合方式<br>地科/化學/公民</div></div>
+      <div class="compare-cell"><div class="cc-label">營運</div><div style="font-size:.9rem;margin-top:6px">能源稽核<br>低碳餐廳設計</div></div>
+      <div class="compare-cell"><div class="cc-label">社群</div><div style="font-size:.9rem;margin-top:6px">農會合作<br>TWYCC 連結</div></div>
+    </div>
+    <p style="font-size:.9rem;color:var(--muted);margin-top:12px">最終產出：致議員／校長的政策建議信</p>
+  </div>
+</section>
+
+<!-- slide-council -->
+<section class="slide" id="slide-council">
+  <span class="slide-num">15/18</span>
+  <h2>學生議會模擬：碳中和提案發表</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">碳中和可行性評分表</div>
+      <table class="ws-table">
+        <thead><tr><th>評分面向</th><th>提案A</th><th>提案B</th><th>提案C</th></tr></thead>
+        <tbody>
+          <tr><td>數據引用品質</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>WSA 四面向涵蓋</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>公正轉型考量</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>可行性 / 成效指標</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.9rem;color:var(--muted)">各組 2 分鐘提案 + 1 分鐘質詢。最佳提案送學校永續委員會。</p>
+  </div>
+</section>
+
+<!-- slide-wsa -->
+<section class="slide" id="slide-wsa">
+  <span class="slide-num">16/18</span>
+  <h2>Whole School Approach：碳中和版</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-cell"><div class="cc-label">治理</div><div style="font-size:.9rem;margin-top:6px">永續委員會<br>碳盤查→校務會議報告</div></div>
+      <div class="compare-cell"><div class="cc-label">課程</div><div style="font-size:.9rem;margin-top:6px">地科 + 化學 + 公民 + 地理 + 英文<br>跨科碳循環整合</div></div>
+      <div class="compare-cell"><div class="cc-label">營運</div><div style="font-size:.9rem;margin-top:6px">電力帳單碳換算<br>紅外線熱像儀巡檢<br>低碳餐廳食物碳里程</div></div>
+      <div class="compare-cell"><div class="cc-label">社群</div><div style="font-size:.9rem;margin-top:6px">農會再生農業<br>碳中和市集<br>TWYCC 連結</div></div>
+    </div>
+    <div class="ws-frame" style="margin-top:16px">
+      <div class="ws-title">學習單 §10：我的碳素養成長軌跡（≥100 字）</div>
+      <p style="font-size:.9rem;color:var(--muted)">四節課前後認知對比 + 最關鍵改變點 + 持續追問的問題</p>
+      <div class="ws-lines">
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- slide-ws-reflect (anchor for lesson_plan ppt-link) -->
+<section class="slide" id="slide-ws-reflect">
+  <span class="slide-num">17/18</span>
+  <h2>臺灣碳排現狀 + 淨零 12 戰略</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-cell">
+        <div class="cc-label">臺灣年排放</div>
+        <div class="cc-val">275 MtCO₂e</div>
+        <div class="cc-desc">2022 年｜全球約第 21 名</div>
+      </div>
+      <div class="compare-cell">
+        <div class="cc-label">能源部門佔比</div>
+        <div class="cc-val">88%</div>
+        <div class="cc-desc">電力 + 工業用能為主</div>
+      </div>
+      <div class="compare-cell">
+        <div class="cc-label">淨零目標年</div>
+        <div class="cc-val">2050</div>
+        <div class="cc-desc">《氣候變遷因應法》2023</div>
+      </div>
+    </div>
+    <p style="font-size:.95rem;margin-top:16px">12 項關鍵戰略：能源轉型（風光電、氫能）、產業轉型（CCS、循環經濟）、生活轉型（運具電動化）、社會轉型（公正轉型、綠色金融）</p>
+    <p style="color:var(--muted);font-size:.9rem">學生任務：選出最與自身相關的 3 項戰略，說明你能在哪個面向採取行動。</p>
+    <div class="slide-src">來源：<a href="https://www.cca.gov.tw/" target="_blank" rel="noopener">環境部氣候變遷署</a></div>
+  </div>
+</section>
+
+<!-- slide-summary -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <span class="slide-num">18/18</span>
+  <div class="slide-body">
+    <h2 style="color:var(--beh)">三個關鍵字</h2>
+    <div class="summary-keys">
+      <div class="sk-item">
+        <div class="sk-word">通量</div>
+        <div class="sk-desc">碳在五大圈層間流動<br>收支不平衡是問題根源</div>
+      </div>
+      <div class="sk-item">
+        <div class="sk-word">封存</div>
+        <div class="sk-desc">億年化石碳在 200 年釋出<br>自然 + 技術共同補救</div>
+      </div>
+      <div class="sk-item">
+        <div class="sk-word">倡議</div>
+        <div class="sk-desc">從計算到行動<br>學生提案改變系統</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:28px">
+      <div style="border:2px solid var(--cog);border-radius:10px;padding:14px 18px;max-width:240px;text-align:center"><span style="font-family:monospace;font-weight:700;color:var(--cog)">C1–C9</span><p style="margin:8px 0 0;font-size:.88rem">碳庫通量、化石燃料有限性、甲烷 GWP、碳足跡計算、CCS/DAC、傳統保育、公正轉型</p></div>
+      <div style="border:2px solid var(--soc);border-radius:10px;padding:14px 18px;max-width:240px;text-align:center"><span style="font-family:monospace;font-weight:700;color:var(--soc)">S1–S5</span><p style="margin:8px 0 0;font-size:.88rem">生態關懷、資源公平共享、極端天氣同理、減排動機、傳統智慧讚賞</p></div>
+      <div style="border:2px solid var(--beh);border-radius:10px;padding:14px 18px;max-width:240px;text-align:center"><span style="font-family:monospace;font-weight:700;color:var(--beh)">B1–B5</span><p style="margin:8px 0 0;font-size:.88rem">減少碳消耗、帶動家人、倡導碳中和、引入節能方法、參與減碳宣傳</p></div>
+    </div>
+    <p style="margin-top:28px"><a href="lesson_plan.html" style="color:var(--accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / 18</span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換・捲動換頁</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  if (!slides.length || !cur) return;
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

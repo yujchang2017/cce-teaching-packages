@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人類與自然的關係：馴化與農業 — 投影片</title>
+<style>
+  :root{
+    --c-accent:#0f766e;--c-accent-soft:#ccfbf1;
+    --c-cog:#2563eb;--c-soc:#db2777;--c-beh:#16a34a;
+    --c-warn:#ea580c;--c-text:#1f2937;--c-muted:#6b7280;
+    --c-border:#e5e7eb;--c-bg:#f9fafb
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--c-text);line-height:1.6;margin:0;background:#fff}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--c-accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.95rem;font-weight:500;color:var(--c-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--c-muted)}
+  .nav-indicator{font-family:monospace;color:var(--c-text)}
+  .nav-cur{color:var(--c-accent);font-weight:700}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--c-border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--c-border);position:relative}
+  .slide-num{position:absolute;top:14px;right:20px;font-size:.8rem;font-family:monospace;color:var(--c-border)}
+  .slide h2{font-size:2rem;margin:0 0 20px;color:var(--c-text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  /* cover & divider */
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--c-accent-soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.8rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--c-accent);color:#fff;padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--c-accent);letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.4rem;color:var(--c-accent)}
+  .slide.divider .act-steps{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .act-step-chip{background:var(--c-accent-soft);color:var(--c-accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  /* question slide */
+  .q-box{background:var(--c-accent-soft);border-left:5px solid var(--c-accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.4rem;line-height:1.6;color:var(--c-accent);font-weight:600}
+  .q-sub{font-size:1.05rem;color:var(--c-muted);font-weight:400;margin-top:10px}
+  /* compare table */
+  .compare-table{width:100%;border-collapse:collapse;margin:20px 0}
+  .compare-table th{background:var(--c-accent);color:#fff;padding:12px 16px;text-align:left;font-size:.95rem}
+  .compare-table td{border:1px solid var(--c-border);padding:12px 16px;font-size:.95rem;vertical-align:top}
+  .compare-table tr:nth-child(even) td{background:var(--c-bg)}
+  /* data stat */
+  .stat-row{display:flex;gap:20px;flex-wrap:wrap;margin:20px 0}
+  .stat-box{flex:1;min-width:180px;border:2px solid var(--c-border);border-radius:12px;padding:20px;text-align:center;background:var(--c-bg)}
+  .stat-num{font-size:2.2rem;font-weight:800;color:var(--c-accent)}
+  .stat-unit{font-size:.85rem;color:var(--c-muted);margin-top:4px}
+  .stat-label{font-size:.9rem;color:var(--c-text);margin-top:8px}
+  /* bullet list */
+  .bullet-list{list-style:none;padding:0;margin:16px 0}
+  .bullet-list li{padding:10px 0 10px 28px;position:relative;border-bottom:1px solid var(--c-border);font-size:1.05rem}
+  .bullet-list li::before{content:"▸";position:absolute;left:0;color:var(--c-accent)}
+  /* role cards */
+  .role-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:20px 0}
+  .role-card{border:2px solid var(--c-border);border-radius:12px;padding:18px;background:var(--c-bg)}
+  .role-card .role-name{font-weight:700;color:var(--c-accent);margin-bottom:8px;font-size:1rem}
+  .role-card .role-stance{font-size:.9rem;color:var(--c-muted)}
+  /* worksheet */
+  .ws-frame{border:2px dashed var(--c-accent);border-radius:12px;padding:28px 32px;margin:20px 0;background:#fff}
+  .ws-title{font-size:1rem;font-weight:700;color:var(--c-accent);margin-bottom:14px}
+  .ws-lines{display:flex;flex-direction:column;gap:14px}
+  .ws-line{border-bottom:1.5px solid #d1d5db;height:28px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--c-border);padding:12px 14px;text-align:center}
+  .ws-table th{background:var(--c-accent-soft);color:var(--c-accent);font-weight:700}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:52px}
+  /* figure/chart placeholder */
+  figure{margin:20px 0}
+  figcaption{font-size:.85rem;color:var(--c-muted);margin-top:8px;text-align:center}
+  /* summary keys */
+  .summary-keys{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin:24px 0}
+  .key-card{border:2px solid var(--c-border);border-radius:12px;padding:20px 24px;max-width:260px;text-align:center;background:var(--c-bg)}
+  .key-card .key-word{font-size:1.5rem;font-weight:800;color:var(--c-accent);margin-bottom:8px}
+  .key-card .key-desc{font-size:.9rem;color:var(--c-text)}
+  /* source */
+  .slide-src{margin-top:auto;padding-top:12px;border-top:1px dashed var(--c-border);font-size:.8rem;color:var(--c-muted)}
+  .slide-src a{color:var(--c-accent);text-decoration:none;border-bottom:1px dashed var(--c-accent)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">人類與自然的關係：馴化與農業 ｜ Level V ｜ 2.4-V</span>
+</header>
+
+<main>
+
+<!-- Slide 1: Cover -->
+<section class="slide cover" id="slide-cover">
+  <span class="slide-num">1/15</span>
+  <div class="slide-body">
+    <div class="level-tag">Level V ｜ 2.4-V</div>
+    <h2>人類與自然的關係：馴化與農業</h2>
+    <p style="color:var(--c-muted);max-width:700px;font-size:1.1rem">農業科技的兩面刃——94% 的哺乳類是人養的，農業養活了 80 億人，也改寫了整個地球的生態面貌</p>
+    <p style="margin-top:24px;font-size:.95rem;color:var(--c-muted)">共 4 節 · 200 分鐘</p>
+  </div>
+</section>
+
+<!-- Slide 2: Big Question -->
+<section class="slide" id="slide-question">
+  <span class="slide-num">2/15</span>
+  <h2>核心思辨問題</h2>
+  <div class="slide-body">
+    <div class="q-box">
+      你吃的番茄跟一萬年前的野生番茄還是同一種東西嗎？
+      <div class="q-sub">人工選種、基因改造、複製——三種技術如何改變農業？對遺傳多樣性有何影響？</div>
+    </div>
+    <div class="q-box" style="margin-top:16px">
+      農業科技的效率提升，是進步還是陷阱？
+      <div class="q-sub">工業化農業養活了 80 億人，也佔全球 26% 碳排——你如何評估這個代價？</div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 3: Activity 1 Divider -->
+<section class="slide divider" id="slide-a1">
+  <span class="slide-num">3/15</span>
+  <div class="slide-body">
+    <div class="act-badge">第 1 節</div>
+    <h2>從馴化到基改：農業科技的演進</h2>
+    <div class="act-steps">
+      <span class="act-step-chip">農業科技三比較</span>
+      <span class="act-step-chip">IPBES 衝擊數據</span>
+      <span class="act-step-chip">學習單分析</span>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 4: Tech Compare -->
+<section class="slide" id="slide-tech-compare">
+  <span class="slide-num">4/15</span>
+  <h2>農業科技三比較</h2>
+  <div class="slide-body">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>技術</th>
+          <th>機制</th>
+          <th>時間尺度</th>
+          <th>遺傳多樣性影響</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>人工選種</strong></td>
+          <td>選出優良性狀後代，數代累積</td>
+          <td>數十至數百年</td>
+          <td>逐漸縮窄，仍在物種內</td>
+        </tr>
+        <tr>
+          <td><strong>基因改造（GMO）</strong></td>
+          <td>導入外源基因（如 Bt 殺蟲蛋白）</td>
+          <td>數年即可</td>
+          <td>引入新基因；單一品系種植降低田間多樣性</td>
+        </tr>
+        <tr>
+          <td><strong>複製</strong></td>
+          <td>體細胞核轉移，產生完全相同個體</td>
+          <td>單一世代</td>
+          <td>最低——所有個體基因完全相同，極度脆弱</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:.9rem;color:var(--c-muted)">遺傳多樣性是品種改良的基石，也是應對氣候變遷的保險。1845 年愛爾蘭大飢荒：全國只種一品系馬鈴薯，真菌一來全軍覆沒。</p>
+  </div>
+</section>
+
+<!-- Slide 5: IPBES -->
+<section class="slide" id="slide-ipbes">
+  <span class="slide-num">5/15</span>
+  <h2>IPBES 數據衝擊</h2>
+  <div class="slide-body">
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-num">75%</div>
+        <div class="stat-unit">全球陸地</div>
+        <div class="stat-label">自 1970 年以來已被人類顯著改變，農業擴張是主要驅動力</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">100 萬</div>
+        <div class="stat-unit">個物種</div>
+        <div class="stat-label">面臨滅絕威脅，速度是自然背景值的數十至數百倍</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">15 倍</div>
+        <div class="stat-unit">生物量比例</div>
+        <div class="stat-label">人類畜養哺乳類生物量是野生哺乳類的 15 倍</div>
+      </div>
+    </div>
+    <p style="font-size:.9rem;color:var(--c-muted)">來源：IPBES 全球評估報告（2019），聯合國生物多樣性科學政策平台</p>
+    <div class="ws-frame" style="margin-top:16px">
+      <div class="ws-title">學習單任務：這個數據對你最大的衝擊是什麼？你還想追問什麼？</div>
+      <div class="ws-lines">
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 6: Activity 2 Divider -->
+<section class="slide divider" id="slide-a2">
+  <span class="slide-num">6/15</span>
+  <div class="slide-body">
+    <div class="act-badge">第 2 節</div>
+    <h2>工業化農業的碳帳本</h2>
+    <div class="act-steps">
+      <span class="act-step-chip">食物系統碳排</span>
+      <span class="act-step-chip">農地效率悖論</span>
+      <span class="act-step-chip">精準農業解方</span>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 7: Carbon -->
+<section class="slide" id="slide-carbon">
+  <span class="slide-num">7/15</span>
+  <h2>全球食物系統碳排</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center;">
+        <div style="font-size:.8rem;color:var(--c-muted);letter-spacing:.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--c-accent);font-weight:700;margin-bottom:12px;">[此處放：食物系統 26% 碳排組成圓餅圖]</div>
+        <div style="font-size:1.1rem;margin:14px 0;"><strong>關鍵數據：</strong>畜牧 30% ／作物 27% ／土地變遷 24% ／供應鏈 18%</div>
+        <div style="font-size:.85rem;color:var(--c-muted);margin-top:12px;">示意圖待補繪</div>
+      </div>
+      <figcaption>全球食物系統佔全球溫室氣體排放 26%，比所有交通工具合計（約 16%）還多。來源：Poore & Nemecek, Science 2018</figcaption>
+    </figure>
+    <div class="slide-src">Poore & Nemecek (2018). <em>Science</em>, 360(6392), 987-992. <a href="https://www.science.org/doi/10.1126/science.aaq0216" target="_blank">連結</a></div>
+  </div>
+</section>
+
+<!-- Slide 8: Land -->
+<section class="slide" id="slide-land">
+  <span class="slide-num">8/15</span>
+  <h2>農地與畜牧的效率悖論</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center;">
+        <div style="font-size:.8rem;color:var(--c-muted);letter-spacing:.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--c-accent);font-weight:700;margin-bottom:12px;">[此處放：土地使用面積 vs 熱量產出長條比較圖]</div>
+        <div style="font-size:1.1rem;margin:14px 0;"><strong>關鍵數據：</strong>畜牧佔農地 75%，僅提供全球 18% 熱量；農業佔可居住土地 50%；農業用水佔全球淡水 70%</div>
+        <div style="font-size:.85rem;color:var(--c-muted);margin-top:12px;">示意圖待補繪</div>
+      </div>
+      <figcaption>畜牧業佔地大、產熱量少：每公頃畜牧用地產出的熱量遠低於種植穀物。來源：Our World in Data / Poore & Nemecek 2018</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- Slide 9: Activity 3 Divider -->
+<section class="slide divider" id="slide-a3">
+  <span class="slide-num">9/15</span>
+  <div class="slide-body">
+    <div class="act-badge">第 3 節</div>
+    <h2>餐桌上的政治學</h2>
+    <div class="act-steps">
+      <span class="act-step-chip">飲食碳排比較</span>
+      <span class="act-step-chip">農藥政策辯論</span>
+      <span class="act-step-chip">利害關係人角色扮演</span>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 10: Diet Carbon -->
+<section class="slide" id="slide-diet-carbon">
+  <span class="slide-num">10/15</span>
+  <h2>飲食碳排比較</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center;">
+        <div style="font-size:.8rem;color:var(--c-muted);letter-spacing:.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--c-accent);font-weight:700;margin-bottom:12px;">[此處放：不同飲食型態每日碳排長條圖]</div>
+        <div style="font-size:1.1rem;margin:14px 0;"><strong>關鍵數據：</strong>多肉 10.24 kg CO₂/日 → 少肉 5.37 → 魚素 4.74 → 素食 4.16 → 純素 2.47</div>
+        <div style="font-size:.85rem;color:var(--c-muted);margin-top:12px;">示意圖待補繪</div>
+      </div>
+      <figcaption>牛津大學 55,000 人研究：多肉飲食碳排為純素的 4 倍以上。來源：Scarborough et al. (2023)</figcaption>
+    </figure>
+    <p style="font-size:.9rem;color:var(--c-muted)">政策思維：不是「禁止吃肉」，而是「讓永續選擇更容易、更便宜、更好吃」——行為經濟學的「推力」理論。</p>
+  </div>
+</section>
+
+<!-- Slide 11: Activity 4 Divider -->
+<section class="slide divider" id="slide-a4">
+  <span class="slide-num">11/15</span>
+  <div class="slide-body">
+    <div class="act-badge">第 4 節</div>
+    <h2>從餐桌到議場</h2>
+    <div class="act-steps">
+      <span class="act-step-chip">跨域短論文</span>
+      <span class="act-step-chip">學生議會提案</span>
+      <span class="act-step-chip">WSA 整合</span>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 12: Essay Structure -->
+<section class="slide" id="slide-essay">
+  <span class="slide-num">12/15</span>
+  <h2>跨域短論文結構</h2>
+  <div class="slide-body">
+    <p style="margin-bottom:8px;color:var(--c-muted)">題目：「農業科技的兩面刃：以一項技術為例，論證其對永續發展的機會與風險」</p>
+    <table class="compare-table">
+      <thead>
+        <tr><th>段落</th><th>內容要求</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>第一段：主張</td><td>明確立場（例如：精準農業是解決農業碳排的最佳短期策略）</td></tr>
+        <tr><td>第二段：科學證據</td><td>引用至少 2 項數據（如 26% 食物系統碳排、多肉 vs 純素 4 倍差距）</td></tr>
+        <tr><td>第三段：跨域分析</td><td>跨越科學×經濟 / 倫理 / 政治其中兩個領域</td></tr>
+        <tr><td>第四段：反駁</td><td>承認對方最有力的論點並回應</td></tr>
+        <tr><td>第五段：結論</td><td>附帶條件的主張（在什麼條件下，什麼方案最合理）</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:.9rem;color:var(--c-muted)">要求：500 字以上 · CER 結構 + 反駁段 · 引用 ≥2 筆數據 · 跨越 ≥2 個領域</p>
+  </div>
+</section>
+
+<!-- Slide 13: Parliament Proposal -->
+<section class="slide" id="slide-parliament">
+  <span class="slide-num">13/15</span>
+  <h2>學生議會提案</h2>
+  <div class="slide-body">
+    <p style="color:var(--c-muted);margin-bottom:16px">為學校設計一個永續飲食政策，確保覆蓋 WSA 四面向</p>
+    <div class="ws-frame">
+      <div class="ws-title">提案格式（每組 1 分鐘閃電發表）</div>
+      <ul class="bullet-list">
+        <li>問題陳述：用數據描述現況（如：學校午餐每週肉品消耗量）</li>
+        <li>政策主張：具體可執行（如：每週一天無肉午餐）</li>
+        <li>證據與理由：引用數據（每人每週減少多少 kg CO₂）</li>
+        <li>行動步驟：誰做什麼、何時完成</li>
+        <li>成效指標：可量化的目標</li>
+        <li>WSA 檢核：治理／課程／營運／社群各如何連結</li>
+      </ul>
+    </div>
+    <p style="font-size:.9rem;color:var(--c-muted)">得票最高的提案可真的送交學生議會——改變世界，從改變你的學校午餐開始。</p>
+  </div>
+</section>
+
+<!-- Slide 14: WSA -->
+<section class="slide" id="slide-wsa">
+  <span class="slide-num">14/15</span>
+  <h2>全校方法（WSA）整合</h2>
+  <div class="slide-body">
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-name">治理 Governance</div>
+        <div class="role-stance">設校園永續飲食委員會；學生議會提案推動午餐使用在地食材、設立無肉日、標示食材產地</div>
+      </div>
+      <div class="role-card">
+        <div class="role-name">課程 Curriculum</div>
+        <div class="role-stance">跨六科：生物（遺傳演化）、地理（全球農業地圖）、公民（政策分析）、家政（飲食設計）、英文（FAO 報告）、數學（碳排計算）</div>
+      </div>
+      <div class="role-card">
+        <div class="role-name">校園營運 Operations</div>
+        <div class="role-stance">午餐採購優先在地有機食材；設廚餘堆肥區；校園闢菜園；減少一次性餐具</div>
+      </div>
+      <div class="role-card">
+        <div class="role-name">社群 Community</div>
+        <div class="role-stance">與在地農友合作「從產地到校園」；辦社區食農教育工作坊；發起家庭無肉日挑戰</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 15: Summary -->
+<section class="slide" id="slide-summary">
+  <span class="slide-num">15/15</span>
+  <h2>三個關鍵概念</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card">
+        <div class="key-word">遺傳多樣性</div>
+        <div class="key-desc">農業品種改良的基石；農業科技縮窄遺傳多樣性，是長期風險</div>
+      </div>
+      <div class="key-card">
+        <div class="key-word">系統效率</div>
+        <div class="key-desc">畜牧佔 75% 農地卻只提供 18% 熱量——土地、水、碳排的效率悖論</div>
+      </div>
+      <div class="key-card">
+        <div class="key-word">飲食政治</div>
+        <div class="key-desc">吃什麼、怎麼種、誰決定——餐桌是農藥政策、跨國遊說與公民選擇的交叉點</div>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:24px"><a href="lesson_plan.html" style="color:var(--c-accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / 15</span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換・捲動換頁</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  if (!slides.length || !cur) return;
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候不正義與弱勢群體 — 教學投影片</title>
+<style>
+  :root { --c-accent: #0f766e; --c-accent-soft: #ccfbf1; --c-cog: #2563eb; --c-soc: #db2777; --c-beh: #16a34a; --c-warn: #ea580c; --c-text: #1f2937; --c-muted: #6b7280; --c-border: #e5e7eb; --c-bg: #f9fafb; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .question-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 30px 0; }
+  .question-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px; font-size: 1.15rem; text-align: center; color: var(--c-text); position: relative; }
+  .question-card .q-num { position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px; background: var(--c-bg); max-width: 700px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+  .hope-frame { border: 3px dashed var(--c-soc); border-radius: 16px; padding: 30px; margin: 20px auto; max-width: 700px; background: #fff5f7; }
+  .hope-frame .prompt { font-size: 1.4rem; color: var(--c-soc); font-weight: 700; margin-bottom: 18px; text-align: center; }
+  .hope-frame .text-area { background: repeating-linear-gradient(0deg, transparent 0, transparent 30px, #f3a3bc 30px, #f3a3bc 31px); height: 120px; border-radius: 6px; margin-bottom: 14px; }
+  .hope-frame .draw-area { border: 2px dashed #f9a8d4; height: 140px; border-radius: 6px; text-align: center; color: #f9a8d4; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">氣候不正義與弱勢群體 — 教學投影片</span>
+</header>
+
+<main>
+
+<section class="slide cover" id="slide-cover-rain">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>同一場雨，不一樣的世界</h2>
+    <p class="subtitle">氣候正義是什麼？誰最受傷？我們能怎麼辦？</p>
+    <div style="font-size: 4rem; margin: 20px 0;">⛈️ 🏠 🏚️</div>
+    <p style="color: var(--c-muted); font-size: 0.95rem;">3.2-III｜國小 9–12 歲</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>同一場颱風，為什麼有人只是停課，有人卻失去家？</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>誰最受傷？</div>
+      <div class="question-card"><div class="q-num">2</div>為什麼是他們，是運氣不好嗎？</div>
+      <div class="question-card"><div class="q-num">3</div>我們還是國小生，能做什麼？</div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px; color: var(--c-accent);">
+      <strong>下課前我們會回到這三個問題。</strong>
+    </p>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>不一樣的暴風雨</h2>
+    <p class="subtitle">從台灣案例認識結構性不平等</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-morakot">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>2009 莫拉克風災：集體記憶</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：莫拉克風災受災部落分佈地圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>2009 年莫拉克風災造成台灣 699 人罹難，高雄小林村被土石流滅村，474 位鄉親在一夜之間失去生命，多數受災部落為南部原住民聚落。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖：氣候衝擊分布與地形、貧富、族群緊密相關</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 18px;">
+      <strong>記住這件事，是為了讓下一次不再發生。</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：
+    <a href="https://www.ncdr.nat.gov.tw/" target="_blank" rel="noopener">國家災害防救科技中心</a>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>世界地圖上的不公平</h2>
+    <p class="subtitle">數字背後的人</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-1bn-kids">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>10 億兒童：全球兒童的一半</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：全球兒童氣候風險指數熱區地圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>聯合國兒童基金會 2021 年估全球約 10 億兒童（近一半）住在氣候風險「極高」的國家；IPCC 估全球 33–36 億人住在氣候高度脆弱地區。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖：每 2 個小孩就有 1 個面對熱浪、空污、洪水、颱風</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源：
+    <a href="https://www.unicef.org/reports/climate-crisis-child-rights-crisis" target="_blank" rel="noopener">聯合國兒童基金會 — 兒童氣候風險指數</a> ・
+    <a href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank" rel="noopener">IPCC AR6 第二工作組</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-seesaw">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>翹翹板：誰排放？誰受害？</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">最富 1% 人口</div>
+        <div class="icon">🛩️</div>
+        <h3>排放 ≈ 最貧 66%</h3>
+        <p>1 個富人 = 66 個窮人的碳足跡<br>前 10% 高所得族群貢獻全球 50% 排放</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">最貧 66% 人口</div>
+        <div class="icon">🚶</div>
+        <h3>受害最深</h3>
+        <p>住在高風險地區<br>沒有資源調適</p>
+      </div>
+    </div>
+    <figure style="margin-top: 24px;">
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 30px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：碳排放 vs 受害分布翹翹板]</div>
+        <div style="font-size: 1.05rem; margin: 12px 0;"><strong>關鍵數據：</strong>WHO 估 2030–2050 氣候變遷每年額外造成 25 萬人死亡，主要為兒童、長者、低收入族群。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 10px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖：排放最少的人受害最深</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源：
+    <a href="https://www.oxfam.org/en/research/climate-equality-planet-99" target="_blank" rel="noopener">樂施會 — 氣候平等：99% 的星球</a> ・
+    <a href="https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health" target="_blank" rel="noopener">世界衛生組織 — 氣候與健康</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-girl-water">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>女童走更遠的路：80% 流離失所為女性</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：撒赫爾女童取水插畫]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>聯合國婦女署資料顯示氣候災害造成的流離失所者中約 80% 為女性與女童。乾旱讓水源變遠，女童走路時間加倍，許多人因此無法上學。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖：性別不平等加上氣候變遷，傷害是疊加的</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源：
+    <a href="https://www.unwomen.org/en/news-stories/explainer/2022/02/explainer-how-gender-inequality-and-climate-change-are-interconnected" target="_blank" rel="noopener">聯合國婦女署 — 性別不平等與氣候變遷</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-refugee">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>氣候難民：3,260 萬人被迫離家</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：2022 年氣候流離失所地圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>2022 年因天氣相關災害造成國內流離失所人次達 3,260 萬，是戰爭衝突的兩倍以上。孟加拉、薩赫爾、太平洋小島承受最高比例。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖：氣候難民會是 21 世紀最大的人道挑戰</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源：
+    <a href="https://www.internal-displacement.org/global-report/grid2023/" target="_blank" rel="noopener">內部流離失所監測中心 — 全球流離失所報告</a>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>權力、決策與問責</h2>
+    <p class="subtitle">誰坐在桌邊？誰被擋在門外？</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-power">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>什麼是「權力」？</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card sch">
+        <h4>👥 做決定</h4>
+        <ul><li>誰能拍板？</li><li>誰被告知？</li></ul>
+      </div>
+      <div class="col-card com">
+        <h4>📢 影響別人</h4>
+        <ul><li>聲音被聽見？</li><li>還是被忽略？</li></ul>
+      </div>
+      <div class="col-card fam">
+        <h4>💰 分配資源</h4>
+        <ul><li>錢花在哪？</li><li>誰先得到幫助？</li></ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px; color: var(--c-accent);">
+      <strong>提問：</strong>當政府決定蓋掩埋場時，誰被問意見？有錢社區還是偏鄉部落？
+    </p>
+  </div>
+</section>
+
+<section class="slide" id="slide-tw-cases">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>台灣的氣候不正義</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>原住民族</h4>
+        <ul><li>59.5 萬 / 2.5%</li><li>多居山區與沿海</li><li>豪雨斷路斷電風險最高</li></ul>
+      </div>
+      <div class="col-card sch">
+        <h4>低收入家庭</h4>
+        <ul><li>31 萬戶 / 69 萬人</li><li>夏季不敢開冷氣</li><li>獨居長者熱傷害風險最高</li></ul>
+      </div>
+      <div class="col-card com">
+        <h4>原住民是專家</h4>
+        <ul><li>全球 6% 人口</li><li>守護 80% 生物多樣性</li><li>傳統生態智慧 TEK</li></ul>
+      </div>
+    </div>
+    <figure style="margin-top: 26px;">
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 30px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：台灣原住民族與低收入戶分佈地圖]</div>
+        <div style="font-size: 1.05rem; margin: 12px 0;"><strong>關鍵數據：</strong>原住民承受不成比例的氣候衝擊；國健署指出室內每升 1°C 熱傷害急診明顯增加。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 10px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖：氣候衝擊在台灣也分布不均</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源：
+    <a href="https://www.cip.gov.tw/" target="_blank" rel="noopener">原住民族委員會</a> ・
+    <a href="https://www.mohw.gov.tw/" target="_blank" rel="noopener">衛生福利部</a> ・
+    <a href="https://www.worldbank.org/en/topic/indigenouspeoples" target="_blank" rel="noopener">世界銀行 — 原住民族議題</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-indigenous">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>翻轉：原住民不是受害者，是地球專家</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">人口比例</div>
+        <h3>6%</h3>
+        <p>全球原住民族人口占比</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">守護比例</div>
+        <h3>80%</h3>
+        <p>全球生物多樣性</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      布農族懂山林、達悟族懂飛魚與海洋、泰雅族知道什麼時候該讓田休息。<br>
+      <strong style="color: var(--c-accent);">傳統生態智慧（TEK）必須納入氣候決策。</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料：
+    <a href="https://adl.edu.tw/" target="_blank" rel="noopener">教育部因材網 — 氣候正義 / 原住民族權益</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-checklist">
+  <div class="slide-tag">活動三・步驟 4</div>
+  <h2>問責三原則</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card sch">
+        <h4>① 資訊公開</h4>
+        <ul><li>大家都知道在做什麼</li><li>不能黑箱</li></ul>
+      </div>
+      <div class="col-card com">
+        <h4>② 受影響者參與</h4>
+        <ul><li>他們坐在桌旁</li><li>不是「為弱勢好」</li><li>是「和弱勢一起」</li></ul>
+      </div>
+      <div class="col-card fam">
+        <h4>③ 弱勢優先</h4>
+        <ul><li>資源優先給最需要的</li><li>做錯要負責</li></ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px; color: var(--c-accent);">
+      下次看到政策，試著用這三條問問看。
+    </p>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>我們有力量讓這件事變對</h2>
+    <p class="subtitle">行動把擔心變成希望</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-actions">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>校園公平行動清單</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 12px;">
+      五個班級馬上可以開始的行動。選一個最有興趣的開始。
+    </p>
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>家 庭</h4>
+        <ul>
+          <li>主動關心沒冷氣的鄰居長輩</li>
+          <li>家庭討論「我們夠幸運嗎？」</li>
+          <li>分享多餘食物給有需要的人</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>學 校</h4>
+        <ul>
+          <li>製作熱浪小卡送獨居長輩</li>
+          <li>校園無障礙與遮蔭調查</li>
+          <li>原住民文化週 / 涼伴教室</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>社 區</h4>
+        <ul>
+          <li>邀請部落耆老到校分享</li>
+          <li>二手文具 / 衣物分享站</li>
+          <li>跨校氣候正義論壇</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="slide-card">
+  <div class="slide-tag">活動四・步驟 2 ・學習單(投影版)</div>
+  <h2>給決策者的一句話</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      寫一張倡議小卡，兩兩互讀並簽名承諾投遞。
+    </p>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">我寫給：</span>
+        <span class="blank"></span>
+        <span class="lbl">（校長 / 里長 / 立委）</span>
+      </div>
+      <div class="row">
+        <span class="lbl">我關心的弱勢群體：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我的具體請求：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我引用的數據：</span>
+        <span class="blank"></span>
+      </div>
+      <hr style="margin: 18px 0; border: 0; border-top: 1px dashed var(--c-border);">
+      <div class="row">
+        <span class="lbl">承諾人簽名：</span>
+        <span class="blank"></span>
+        <span class="lbl">見證夥伴：</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §5</a></div>
+</section>
+
+<section class="slide" id="slide-hope">
+  <div class="slide-tag">活動四・步驟 3 ・學習單(投影版)</div>
+  <h2>希望牆：寫給 2035 年</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      用一句話加一幅小圖，寫給 10 年後最受影響的人。
+    </p>
+    <div class="hope-frame">
+      <div class="prompt">「2035 年我希望最受影響的人……」</div>
+      <div class="text-area"></div>
+      <div class="draw-area">✏️ 在這裡畫一幅圖</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">不公平</div>
+        <div class="desc">排放最少的人<br>受害最深</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">權力</div>
+        <div class="desc">誰坐在決策桌前？<br>誰被排在門外？</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">行動</div>
+        <div class="desc">認識、發聲、行動<br>從班級到社區</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">氣候正義，每個人都重要。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">17</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

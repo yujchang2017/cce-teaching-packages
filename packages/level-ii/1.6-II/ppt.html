@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小小能源偵探 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #ca8a04;
+    --c-accent-soft: #fef3c7;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px;
+    z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border);
+    border-bottom-width: 2px; border-radius: 4px;
+    font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px;
+  }
+
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .cover-svg, .divider-svg { margin: 20px 0; max-width: 100%; }
+
+  .question-cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px; margin: 30px 0;
+  }
+  .question-card {
+    background: var(--c-bg); border: 2px solid var(--c-accent);
+    border-radius: 12px; padding: 24px; font-size: 1.15rem;
+    text-align: center; color: var(--c-text); position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px;
+    background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%;
+    font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+
+  .ws-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1.05rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 14px 16px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px);
+    height: 48px;
+  }
+
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+
+  .impact-chain {
+    display: grid; grid-template-columns: repeat(5, auto);
+    gap: 8px; align-items: center; margin: 16px 0; font-size: 1rem;
+  }
+  .impact-chain .cause, .impact-chain .effect, .impact-chain .final {
+    padding: 12px 16px; border-radius: 8px; text-align: center; font-weight: 600;
+  }
+  .impact-chain .cause { background: #fef3c7; color: #92400e; }
+  .impact-chain .effect { background: #dbeafe; color: var(--c-cog); }
+  .impact-chain .final { background: #dcfce7; color: var(--c-beh); }
+  .impact-chain .arrow { color: var(--c-muted); font-size: 1.4rem; }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px; background: var(--c-bg); max-width: 700px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+
+  .checklist { list-style: none; padding: 0; margin: 12px 0; }
+  .checklist li { padding: 10px 0; border-bottom: 1px dashed var(--c-border); font-size: 1rem; }
+  .checklist li::before { content: "☐ "; margin-right: 6px; color: var(--c-accent); font-size: 1.1em; }
+
+  figure { margin: 0; text-align: center; }
+  figure svg { max-width: 100%; height: auto; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">小小能源偵探 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>小小能源偵探</h2>
+    <p class="subtitle">電和光,到底是從哪裡來的呢?</p>
+    <svg class="cover-svg" viewBox="0 0 500 220" width="500">
+      <circle cx="120" cy="110" r="50" fill="#fbbf24"/>
+      <g stroke="#fbbf24" stroke-width="3" stroke-linecap="round">
+        <line x1="120" y1="40" x2="120" y2="20"/>
+        <line x1="120" y1="180" x2="120" y2="200"/>
+        <line x1="50" y1="110" x2="30" y2="110"/>
+        <line x1="190" y1="110" x2="210" y2="110"/>
+        <line x1="70" y1="60" x2="56" y2="46"/>
+        <line x1="170" y1="60" x2="184" y2="46"/>
+      </g>
+      <text x="120" y="120" font-size="40" text-anchor="middle">😊</text>
+      <g>
+        <line x1="280" y1="180" x2="280" y2="80" stroke="#475569" stroke-width="4"/>
+        <ellipse cx="280" cy="60" rx="6" ry="6" fill="#475569"/>
+        <g transform="translate(280,60)">
+          <ellipse cx="0" cy="-30" rx="8" ry="28" fill="#94a3b8"/>
+          <ellipse cx="26" cy="15" rx="28" ry="8" fill="#94a3b8"/>
+          <ellipse cx="-26" cy="15" rx="28" ry="8" fill="#94a3b8"/>
+        </g>
+      </g>
+      <g transform="translate(380,80)">
+        <rect x="0" y="0" width="80" height="60" fill="#1e293b" stroke="#0f172a" stroke-width="2" rx="3"/>
+        <line x1="0" y1="20" x2="80" y2="20" stroke="#475569" stroke-width="1"/>
+        <line x1="0" y1="40" x2="80" y2="40" stroke="#475569" stroke-width="1"/>
+        <line x1="20" y1="0" x2="20" y2="60" stroke="#475569" stroke-width="1"/>
+        <line x1="40" y1="0" x2="40" y2="60" stroke="#475569" stroke-width="1"/>
+        <line x1="60" y1="0" x2="60" y2="60" stroke="#475569" stroke-width="1"/>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>家裡的電,是哪裡來的呢?</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>燈為什麼會亮?</div>
+      <div class="question-card"><div class="q-num">2</div>冷氣為什麼會涼?</div>
+      <div class="question-card"><div class="q-num">3</div>卡通為什麼會動?</div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      它們都需要 <strong style="color: var(--c-accent);">能量</strong>!<br>
+      今天我們當小偵探,一起找出能量是從哪裡來。
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>誰偷偷給我們電?</h2>
+    <p class="subtitle">認識太陽能與風能兩種好朋友</p>
+  </div>
+</section>
+
+<!-- 4. 太陽:地球的大電池 -->
+<section class="slide" id="slide-sun">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>太陽:地球的大電池</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:太陽能板「吸陽光餅乾」示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>1 片太陽,許多太陽能板;陽光 → 太陽能板 → 電 → 開燈</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪(笑臉太陽 + 黑色太陽能板 + 亮燈泡,箭頭串連)</div>
+      </div>
+      <figcaption>太陽每天上班,把光光送給我們;太陽能板像「吸陽光餅乾」,把陽光吃進去變成電。</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      <strong>動動看:</strong>把手伸向陽光,模仿「吸陽光」;再把手往後甩,變成「電出來啦!」
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://www.moeaea.gov.tw/" target="_blank" rel="noopener">經濟部能源署</a>
+  </div>
+</section>
+
+<!-- 5. 風:海上的大風車 -->
+<section class="slide" id="slide-wind">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>風:海上的大風車</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:臺灣西邊海上離岸風機群示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>2024 年臺灣西邊海上已有大風車運轉,把風變成電</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪(海邊一排高高的大風車,底下小人仰頭看,「呼—轉!」)</div>
+      </div>
+      <figcaption>大風車像一把大風扇倒過來,讓風來吹它就會轉,把風變成電。</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      <strong>動動看:</strong>兩手臂張開旋轉,發「呼—呼—」風聲。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://www.taipower.com.tw/" target="_blank" rel="noopener">台灣電力公司</a>
+  </div>
+</section>
+
+<!-- 6. 天氣和能源是朋友 -->
+<section class="slide" id="slide-weather">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>天氣和能源是好朋友</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">晴 天</div>
+        <div class="icon">☀️</div>
+        <h3>太陽能板最開心</h3>
+        <p>陽光多 → 發電多</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">有 風 天</div>
+        <div class="icon">💨</div>
+        <h3>大風車最開心</h3>
+        <p>風大 → 轉得快 → 發電多</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 30px;">
+      <strong>遊戲:</strong>老師說「晴天」孩子做太陽;說「風天」孩子做風車。
+    </p>
+  </div>
+</section>
+
+<!-- 7. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>用完就沒的 vs 用不完的</h2>
+    <p class="subtitle">為什麼要愛護地球?</p>
+  </div>
+</section>
+
+<!-- 8. 餅乾 vs 果樹 -->
+<section class="slide" id="slide-cookie">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>餅乾 vs 果樹大 PK</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card right">
+        <div class="label">化 石 燃 料</div>
+        <div class="icon">🍪</div>
+        <h3>像一盒餅乾</h3>
+        <p>吃完就沒了<br>(煤、石油、瓦斯)</p>
+      </div>
+      <div class="compare-card" style="border-color: var(--c-beh);">
+        <div class="label" style="color: var(--c-beh);">再 生 能 源</div>
+        <div class="icon">🌳</div>
+        <h3>像一棵果樹</h3>
+        <p>會一直結果<br>(太陽、風、水)</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong style="color: var(--c-warn);">用完就沒的?</strong> 指左邊! &nbsp;&nbsp;&nbsp;
+      <strong style="color: var(--c-beh);">會一直有的?</strong> 指右邊!
+    </p>
+  </div>
+</section>
+
+<!-- 9. 什麼是化石燃料 -->
+<section class="slide" id="slide-fossil">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>什麼是「化石燃料」?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:地下剖面圖 — 古代生物 → 變成煤、油、瓦斯]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>好久好久以前的植物動物 → 經過很多很多年 → 才變成化石燃料 → 用完就沒</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪(地下分層、古代大樹倒下、加油機示意)</div>
+      </div>
+      <figcaption>煤、石油、天然氣是好久好久以前的植物動物變成的;用完就沒了,還會讓地球變熱。</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      <strong>動動看:</strong>做「好久好久—」的手勢(雙手慢慢拉長)。
+    </p>
+  </div>
+</section>
+
+<!-- 10. 地球熱熱怎麼辦? -->
+<section class="slide" id="slide-earth-hot">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>地球熱熱怎麼辦?</h2>
+  <div class="slide-body">
+    <div style="display: flex; flex-direction: column; gap: 18px; max-width: 900px; margin: 20px auto;">
+      <div class="impact-chain">
+        <div class="cause">⛽ 用太多化石燃料</div>
+        <div class="arrow">→</div>
+        <div class="effect">🌡️ 地球變熱</div>
+        <div class="arrow">→</div>
+        <div class="final">🐻‍❄️ 北極熊的家融化</div>
+      </div>
+      <div class="impact-chain">
+        <div class="cause">☀️ 用再生能源</div>
+        <div class="arrow">→</div>
+        <div class="effect">🌍 地球涼快</div>
+        <div class="arrow">→</div>
+        <div class="final">🐻‍❄️ 北極熊家安全</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong>對北極熊說:</strong>「北極熊,我會 ___ 來幫你。」
+    </p>
+  </div>
+</section>
+
+<!-- 11. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>我是省電小超人</h2>
+    <p class="subtitle">回家也能做的 3 個小動作</p>
+  </div>
+</section>
+
+<!-- 12. 省電三大絕招 -->
+<section class="slide" id="slide-three-tricks">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>省電三大絕招</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>絕招 1</h4>
+        <p style="text-align: center; font-size: 3rem; margin: 8px 0;">💡</p>
+        <p style="text-align: center; font-size: 1.2rem; font-weight: 700;">啪!關燈</p>
+        <p style="text-align: center;">離開房間隨手關</p>
+      </div>
+      <div class="col-card sch">
+        <h4>絕招 2</h4>
+        <p style="text-align: center; font-size: 3rem; margin: 8px 0;">🔌</p>
+        <p style="text-align: center; font-size: 1.2rem; font-weight: 700;">啵!拔插頭</p>
+        <p style="text-align: center;">電器不用就拔</p>
+      </div>
+      <div class="col-card com">
+        <h4>絕招 3</h4>
+        <p style="text-align: center; font-size: 3rem; margin: 8px 0;">👕</p>
+        <p style="text-align: center; font-size: 1.2rem; font-weight: 700;">穿合適衣服</p>
+        <p style="text-align: center;">夏涼冬暖少冷氣</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px; color: var(--c-accent);">
+      <strong>三動作一起做:啪、啵、擁抱衣服!</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 13. 家中找吃電的東西 學習單 -->
+<section class="slide" id="slide-ws-home">
+  <div class="slide-tag">活動三・步驟 2 ・學習單(投影版)</div>
+  <h2>家裡尋寶:找 5 個吃電的東西</h2>
+  <div class="slide-body">
+    <p style="font-size: 1.05rem; color: var(--c-muted); margin: 0 0 8px;">
+      在你家平面圖上,圈出會「吃電」的東西。
+    </p>
+    <ul class="checklist" style="max-width: 600px; margin: 16px auto;">
+      <li>客廳的 ____________(例如:燈、電視)</li>
+      <li>廚房的 ____________(例如:冰箱、電鍋)</li>
+      <li>房間的 ____________(例如:冷氣、檯燈)</li>
+      <li>浴室的 ____________(例如:熱水器)</li>
+      <li>還有一個是 ____________</li>
+    </ul>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>觀察題:</strong>你覺得家裡哪一樣最吃電?
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 14. 省電小超人海報 -->
+<section class="slide" id="slide-ws-poster">
+  <div class="slide-tag">活動三・步驟 3 ・學習單(投影版)</div>
+  <h2>我家的省電小超人</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      畫出「我家的省電超人」,並至少畫出 1 個節能動作。
+    </p>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">超人的名字:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">超人最厲害的招式是:</span>
+        <span class="blank"></span>
+      </div>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 8px; height: 180px; margin: 16px 0; display: flex; align-items: center; justify-content: center; color: var(--c-muted);">
+        ✏️ 在這裡畫出你的省電小超人
+      </div>
+      <div class="row">
+        <span class="lbl">我這週要做的省電小事:</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字,小偵探一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">禮物</div>
+        <div class="desc">太陽、風、水<br>都是地球免費送的禮物</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">餅乾</div>
+        <div class="desc">化石燃料像餅乾<br>用完就沒了</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">關燈</div>
+        <div class="desc">關一盞燈,就在幫地球<br>從個人到社區都能做</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">我是能源小偵探!我做得到!</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">15</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>歷史經濟與政治歷程：殖民、工業化與氣候不正義 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text);
+    line-height: 1.6;
+    margin: 0;
+    background: #fff;
+  }
+
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 44px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 36px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    border: 1px solid var(--c-border);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    font-family: monospace; font-size: 0.8em;
+    background: #fff;
+    margin: 0 2px;
+  }
+
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px);
+    scroll-snap-align: start;
+    padding: 40px 60px;
+    display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  /* 大哉問 */
+  .question-box {
+    background: var(--c-accent-soft);
+    border-left: 6px solid var(--c-accent);
+    border-radius: 10px;
+    padding: 28px 32px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin: 20px 0;
+  }
+
+  /* 數據卡 */
+  .stat-row { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+  .stat-card {
+    flex: 1; min-width: 150px;
+    background: var(--c-bg);
+    border: 1px solid var(--c-border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    text-align: center;
+  }
+  .stat-card .num { font-size: 1.8rem; font-weight: 700; color: var(--c-accent); line-height: 1.2; }
+  .stat-card .unit { font-size: 0.8rem; color: var(--c-muted); margin-top: 4px; }
+  .stat-card .label { font-size: 0.88rem; margin-top: 6px; }
+  .stat-card.warn .num { color: var(--c-warn); }
+
+  /* 比較格 */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .compare-col { background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 8px; padding: 16px; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 1rem; color: var(--c-accent); }
+
+  /* 圖表佔位 */
+  figure { margin: 16px 0; }
+  figcaption { font-size: 0.82rem; color: var(--c-muted); text-align: center; margin-top: 8px; }
+
+  /* 時間軸 */
+  .timeline { list-style: none; padding-left: 0; margin: 16px 0; position: relative; }
+  .timeline::before { content: ''; position: absolute; left: 90px; top: 0; bottom: 0; width: 2px; background: var(--c-border); }
+  .timeline li { display: flex; gap: 16px; margin: 12px 0; align-items: flex-start; }
+  .timeline .year { min-width: 80px; text-align: right; font-family: "JetBrains Mono", monospace; font-weight: 700; color: var(--c-accent); font-size: 0.9rem; padding-top: 2px; }
+  .timeline .event { background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 6px; padding: 8px 12px; flex: 1; font-size: 0.9rem; }
+
+  /* 不等式視覺 */
+  .inequality-bar { display: flex; gap: 8px; margin: 16px 0; align-items: stretch; }
+  .ineq-col { border-radius: 8px; padding: 14px 16px; }
+  .ineq-col.high { background: #fee2e2; border: 1px solid #fca5a5; flex: 3; }
+  .ineq-col.low { background: #dcfce7; border: 1px solid #86efac; flex: 1; }
+  .ineq-col .ineq-label { font-size: 0.8rem; color: var(--c-muted); margin-bottom: 4px; }
+  .ineq-col .ineq-val { font-size: 1.4rem; font-weight: 700; }
+  .ineq-col.high .ineq-val { color: var(--c-warn); }
+  .ineq-col.low .ineq-val { color: var(--c-beh); }
+
+  /* 倡議卡 */
+  .pledge-frame {
+    background: linear-gradient(135deg, #eff6ff 0%, #fdf2f8 100%);
+    border: 2px solid var(--c-cog);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 16px 0;
+  }
+  .pledge-frame h4 { color: var(--c-cog); font-size: 1.1rem; margin: 0 0 16px; }
+  .pledge-row { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
+  .pledge-label { font-weight: 600; min-width: 100px; font-size: 0.9rem; }
+  .pledge-line { flex: 1; border-bottom: 1px solid var(--c-border); height: 24px; }
+
+  /* 三關鍵字 */
+  .summary-keys { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin: 24px 0; }
+  .key-chip { padding: 14px 24px; border-radius: 50px; font-size: 1.2rem; font-weight: 700; color: #fff; }
+  .key-chip.cog { background: var(--c-cog); }
+  .key-chip.soc { background: var(--c-soc); }
+  .key-chip.beh { background: var(--c-beh); }
+
+  /* WSA 行動格 */
+  .wsa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .wsa-card { background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 8px; padding: 12px 14px; }
+  .wsa-card h5 { margin: 0 0 6px; color: var(--c-accent); font-size: 0.95rem; }
+  .wsa-card .action-line { border-bottom: 1px dashed var(--c-border); height: 20px; margin: 6px 0; }
+
+  ul, ol { padding-left: 1.4em; }
+  li { margin: 4px 0; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back" href="lesson_plan.html">← 回教案</a>
+  <span class="topbar-title">3.3-III 歷史經濟與政治歷程：殖民、工業化與氣候不正義</span>
+</div>
+
+<div class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total"></span></span>
+  <span class="hint"><kbd>←</kbd><kbd>→</kbd> 換頁</span>
+</div>
+
+<main>
+
+<!-- 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-tag">3.3-III｜Level III</div>
+  <h2>歷史經濟與政治歷程<br>殖民、工業化與氣候不正義</h2>
+  <p class="subtitle">國小 9–12 歲｜4 節 × 40 分鐘</p>
+</section>
+
+<!-- 大哉問 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">大哉問</div>
+  <div class="slide-body">
+    <div class="question-box">
+      誰排了最多碳？誰承受最重的後果？<br>
+      歷史的選擇，如何決定了今天的不公平？
+    </div>
+    <ul>
+      <li>排放是從什麼時候、由誰開始的？</li>
+      <li>台灣也在這段歷史裡嗎？</li>
+      <li>全世界看見這件事了嗎？</li>
+      <li>我們現在能做什麼讓事情變對？</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="activity-num">活動一</div>
+  <h2>時光機排放<br>排放是從什麼時候開始的？</h2>
+  <p style="color: var(--c-muted); margin-top: 12px;">對應學習目標：C1｜C2｜C3｜C4｜S3</p>
+</section>
+
+<!-- 活動一：歷史排放數據 -->
+<section class="slide" id="slide-a1-emissions">
+  <div class="slide-tag">活動一｜步驟 2</div>
+  <h2>誰先排？誰排最多？</h2>
+  <div class="slide-body">
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="num">25%</div>
+        <div class="unit">全球歷史累計 CO2</div>
+        <div class="label">美國（1751 至今）</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">22%</div>
+        <div class="unit">全球歷史累計 CO2</div>
+        <div class="label">歐盟（EU-28）</div>
+      </div>
+      <div class="stat-card warn">
+        <div class="num">&lt;3%</div>
+        <div class="unit">全球歷史累計 CO2</div>
+        <div class="label">非洲 54 國合計</div>
+      </div>
+    </div>
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 32px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.3rem; color: var(--c-accent); font-weight: 700; margin-bottom: 10px;">[此處放：全球歷史累計 CO2 排放國家比例圖]</div>
+        <div style="font-size: 1rem; margin: 8px 0;"><strong>震撼數據：</strong>1882 年以前，英國一個島國的排放超過全球累計 50%</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 10px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>資料來源：Our World in Data / Global Carbon Project</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：Our World in Data — Who has contributed most to global CO2 emissions?</div>
+</section>
+
+<!-- 活動一：童工與工業革命 -->
+<section class="slide" id="slide-a1-childlabor">
+  <div class="slide-tag">活動一｜步驟 3</div>
+  <h2>工業革命的兩個秘密</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-col">
+        <h4>秘密一：被剝削的勞工</h4>
+        <ul>
+          <li>礦場與紡織廠僱用 <strong>5–10 歲</strong>童工</li>
+          <li>每天工時 <strong>12–16 小時</strong></li>
+          <li>無安全設備、隨時可能受傷</li>
+          <li>工資極低，家庭別無選擇</li>
+        </ul>
+      </div>
+      <div class="compare-col">
+        <h4>秘密二：被榨取的殖民地</h4>
+        <ul>
+          <li>印度：棉花、茶葉</li>
+          <li>加勒比海：甘蔗、奴役勞動</li>
+          <li>非洲：礦產、人力</li>
+          <li>「剝削—排放—致富」連鎖</li>
+        </ul>
+      </div>
+    </div>
+    <div style="padding: 12px 16px; background: #fef3c7; border-radius: 8px; margin-top: 12px;">
+      <strong>角色卡任務：</strong>我是 1820 年的 7 歲童工，今天在紡織廠工作了 14 小時。我想說……
+    </div>
+  </div>
+  <div class="slide-source">資料來源：UK National Archives — 1833 Factory Act</div>
+</section>
+
+<!-- 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="activity-num">活動二</div>
+  <h2>台灣不在歷史之外</h2>
+  <p style="color: var(--c-muted); margin-top: 12px;">對應學習目標：C1｜C3｜C4｜S2｜S3｜B3</p>
+</section>
+
+<!-- 活動二：台灣時間軸 -->
+<section class="slide" id="slide-a2-taiwan">
+  <div class="slide-tag">活動二｜步驟 1</div>
+  <h2>台灣的殖民與工業化時間軸</h2>
+  <div class="slide-body">
+    <ul class="timeline">
+      <li>
+        <span class="year">1895</span>
+        <div class="event">日本殖民開始：「工業日本、農業台灣」政策——台灣提供糖業、樟腦等原料輸日</div>
+      </li>
+      <li>
+        <span class="year">1930s</span>
+        <div class="event">殖民政府「集團移住」：原住民族被迫遷離祖先山林，土地資源遭奪取</div>
+      </li>
+      <li>
+        <span class="year">1945</span>
+        <div class="event">日本殖民結束，中華民國政府接收，高碳排的工農業基礎結構延續</div>
+      </li>
+      <li>
+        <span class="year">1960–80s</span>
+        <div class="event">以石化、紡織等高耗能產業為基礎的「經濟奇蹟」，塑造今日高碳排結構</div>
+      </li>
+      <li>
+        <span class="year">今日</span>
+        <div class="event">台灣中南部仍承受嚴重空污；原鄉交通中斷；歷史選擇決定今日不平等</div>
+      </li>
+    </ul>
+  </div>
+  <div class="slide-source">資料來源：國家發展委員會；公視《我們的島》石化產業報導</div>
+</section>
+
+<!-- 活動二：原住民族遷徙 -->
+<section class="slide" id="slide-a2-indigenous">
+  <div class="slide-tag">活動二｜步驟 2</div>
+  <h2>被迫遷徙的山林 — 部落家庭會議</h2>
+  <div class="slide-body">
+    <div style="background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 16px 20px; margin-bottom: 16px;">
+      <strong>情境：</strong>1930 年代，日本殖民政府通知你的部落：「你們必須在一個月內搬離祖先居住的山林，移到政府指定的地方。」
+    </div>
+    <div class="compare-grid">
+      <div class="compare-col">
+        <h4>搬走</h4>
+        <ul>
+          <li>政府提供土地（品質較差）</li>
+          <li>失去祖先土地、狩獵場、農地</li>
+          <li>文化傳承斷裂</li>
+          <li>氣候災害調適能力削弱</li>
+        </ul>
+      </div>
+      <div class="compare-col">
+        <h4>不搬</h4>
+        <ul>
+          <li>政府以武力強制執行</li>
+          <li>家庭安危受威脅</li>
+          <li>仍然失去土地</li>
+          <li>這是「選擇」嗎？</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-style: italic; color: var(--c-muted); margin-top: 8px;">「脆弱」不是天生的，是歷史造成的。</p>
+  </div>
+  <div class="slide-source">資料來源：中央研究院民族學研究所；原住民族委員會</div>
+</section>
+
+<!-- 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="activity-num">活動三</div>
+  <h2>世界看見這件事了嗎？</h2>
+  <p style="color: var(--c-muted); margin-top: 12px;">對應學習目標：C1｜C4｜S1｜S3｜S4｜B1</p>
+</section>
+
+<!-- 活動三：IPCC 承認殖民 -->
+<section class="slide" id="slide-a3-ipcc">
+  <div class="slide-tag">活動三｜步驟 1</div>
+  <h2>2022 年：IPCC 正式承認殖民</h2>
+  <div class="slide-body">
+    <div style="background: #eff6ff; border: 2px solid var(--c-cog); border-radius: 10px; padding: 20px 24px; margin-bottom: 16px;">
+      <div style="font-size: 0.85rem; color: var(--c-cog); font-weight: 600; margin-bottom: 8px;">歷史里程碑</div>
+      <div style="font-size: 1.15rem; font-weight: 600; line-height: 1.5;">IPCC AR6（2022）首次在正式報告中將<br>「<strong>殖民主義</strong>」列為氣候脆弱度的系統性驅動力</div>
+    </div>
+    <p>IPCC 是聯合國氣候變化政府間專家委員會——全世界最權威的氣候科學機構。這代表：</p>
+    <ul>
+      <li>科學界正式確認「殖民歷史 → 今日脆弱度」有直接因果</li>
+      <li>歷史不公不再只是政治爭論，而是科學事實</li>
+      <li>國際社會必須面對這個不舒服的真相</li>
+    </ul>
+  </div>
+  <div class="slide-source">資料來源：IPCC AR6 WGII Chapter 6（2022）</div>
+</section>
+
+<!-- 活動三：最不公平的數字 -->
+<section class="slide" id="slide-a3-inequality">
+  <div class="slide-tag">活動三｜步驟 2</div>
+  <h2>最不公平的數字</h2>
+  <div class="slide-body">
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="num">33–36億</div>
+        <div class="unit">人</div>
+        <div class="label">生活在高度脆弱地區（IPCC AR6）</div>
+      </div>
+    </div>
+    <h3>最低度開發國家（LDCs）46 國</h3>
+    <div class="inequality-bar">
+      <div class="ineq-col high">
+        <div class="ineq-label">承受</div>
+        <div class="ineq-val">15 倍</div>
+        <div style="font-size: 0.85rem; margin-top: 4px;">氣候災害死亡率（相對其他國家）</div>
+      </div>
+      <div class="ineq-col low">
+        <div class="ineq-label">排放</div>
+        <div class="ineq-val">1%</div>
+        <div style="font-size: 0.85rem; margin-top: 4px;">全球年排放量</div>
+      </div>
+    </div>
+    <p style="font-style: italic; font-size: 1.05rem; margin-top: 12px; color: var(--c-text);">14% 的世界人口，排放 1% 的碳，承受 15 倍的死亡率。<br>這是公平的嗎？</p>
+  </div>
+  <div class="slide-source">資料來源：UN OHRLLS；IPCC AR6 WGII（2022）</div>
+</section>
+
+<!-- 活動三：損失與損害基金 -->
+<section class="slide" id="slide-a3-cop27">
+  <div class="slide-tag">活動三｜步驟 3</div>
+  <h2>COP27 損失與損害基金（2022）</h2>
+  <div class="slide-body">
+    <div style="background: #f0fdf4; border: 2px solid var(--c-beh); border-radius: 10px; padding: 20px 24px; margin-bottom: 16px;">
+      <div style="font-size: 0.85rem; color: var(--c-beh); font-weight: 600; margin-bottom: 8px;">歷史性突破</div>
+      <div style="font-size: 1.1rem; font-weight: 600; line-height: 1.5;">由富裕排放國出資，協助受害最重、排放最少的開發中國家<br>——這是國際社會第一次正式承認「歷史氣候責任」</div>
+    </div>
+    <h3>設計「給台灣政府的一張小卡」</h3>
+    <div style="background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 8px; padding: 16px 20px;">
+      <p style="margin: 0 0 12px; font-weight: 600;">我們（台灣）應該出多少？為什麼？</p>
+      <div style="border-bottom: 1px dashed var(--c-border); height: 28px; margin: 8px 0;"></div>
+      <div style="border-bottom: 1px dashed var(--c-border); height: 28px; margin: 8px 0;"></div>
+      <div style="border-bottom: 1px dashed var(--c-border); height: 28px; margin: 8px 0;"></div>
+    </div>
+  </div>
+  <div class="slide-source">資料來源：UNFCCC COP27 官方決議（2022）</div>
+</section>
+
+<!-- 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="activity-num">活動四</div>
+  <h2>讓事情變對<br>我們的行動</h2>
+  <p style="color: var(--c-muted); margin-top: 12px;">對應學習目標：S1｜S2｜S4｜B1｜B2｜B3</p>
+</section>
+
+<!-- 活動四：全校英雄行動 -->
+<section class="slide" id="slide-a4-action">
+  <div class="slide-tag">活動四｜步驟 2</div>
+  <h2>全校英雄行動設計</h2>
+  <div class="slide-body">
+    <p>四小組對應全校取徑（WSA）四面向，每組設計一個可執行的校園氣候正義行動：</p>
+    <div class="wsa-grid">
+      <div class="wsa-card">
+        <h5>治理（Governance）</h5>
+        <p style="font-size: 0.85rem; color: var(--c-muted); margin: 0 0 6px;">例：班費節能活動優先補助需要的同學</p>
+        <div class="action-line"></div>
+        <div class="action-line"></div>
+      </div>
+      <div class="wsa-card">
+        <h5>教學與學習</h5>
+        <p style="font-size: 0.85rem; color: var(--c-muted); margin: 0 0 6px;">例：邀請原住民耆老分享歷史與土地故事</p>
+        <div class="action-line"></div>
+        <div class="action-line"></div>
+      </div>
+      <div class="wsa-card">
+        <h5>校園營運</h5>
+        <p style="font-size: 0.85rem; color: var(--c-muted); margin: 0 0 6px;">例：節能改造說明加入「歷史碳排」小故事</p>
+        <div class="action-line"></div>
+        <div class="action-line"></div>
+      </div>
+      <div class="wsa-card">
+        <h5>社區夥伴</h5>
+        <p style="font-size: 0.85rem; color: var(--c-muted); margin: 0 0 6px;">例：氣候正義倡議書送達地方議員</p>
+        <div class="action-line"></div>
+        <div class="action-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 活動四：倡議小卡 -->
+<section class="slide" id="slide-a4-pledge">
+  <div class="slide-tag">活動四｜步驟 3–4</div>
+  <h2>倡議小卡 × 希望宣言</h2>
+  <div class="slide-body">
+    <div class="pledge-frame">
+      <h4>我的倡議小卡（擇一）</h4>
+      <div class="pledge-row">
+        <span class="pledge-label">給台灣決策者</span>
+        <div class="pledge-line"></div>
+      </div>
+      <div class="pledge-row">
+        <span class="pledge-label">或給未來自己</span>
+        <div class="pledge-line"></div>
+      </div>
+      <div class="pledge-row">
+        <span class="pledge-label">具體呼籲</span>
+        <div class="pledge-line"></div>
+      </div>
+      <div class="pledge-row">
+        <span class="pledge-label">簽名</span>
+        <div class="pledge-line"></div>
+      </div>
+    </div>
+    <div style="text-align: center; padding: 16px; background: var(--c-accent-soft); border-radius: 8px; font-size: 1.2rem; font-weight: 600; color: var(--c-accent); margin-top: 12px;">
+      「我們不為過去負責，但為未來負責。」
+    </div>
+  </div>
+</section>
+
+<!-- 總結 -->
+<section class="slide cover" id="slide-summary">
+  <div class="slide-tag">課程總結｜三個關鍵詞</div>
+  <div class="summary-keys">
+    <span class="key-chip cog">歷史責任</span>
+    <span class="key-chip soc">不是罪，是責任</span>
+    <span class="key-chip beh">讓事情變對</span>
+  </div>
+  <p style="color: var(--c-muted); max-width: 520px; margin: 0 auto; line-height: 1.7;">
+    「損失與損害基金」在 2022 年成立，<br>
+    是從倡議開始的。兒童氣候訴訟、Fridays for Future，<br>
+    都由年輕人發起。<br>
+    你的理解與發聲，就是改變。
+  </p>
+</section>
+
+</main>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      slides[Math.min(current + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      slides[Math.max(current - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const t = document.querySelector(location.hash);
+    if (t) setTimeout(() => t.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+</body>
+</html>

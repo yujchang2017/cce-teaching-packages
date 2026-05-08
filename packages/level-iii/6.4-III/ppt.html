@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>永續的生活空間 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text);
+    line-height: 1.6;
+    margin: 0;
+    background: #fff;
+  }
+
+  /* 頂部回教案列 */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 44px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.9rem;
+  }
+  .topbar a.back {
+    color: var(--c-accent); text-decoration: none; font-weight: 600;
+  }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title {
+    margin: 0 0 0 24px;
+    font-size: 0.95rem; font-weight: 500; color: var(--c-muted);
+  }
+
+  /* 底部頁碼列 */
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 36px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator {
+    font-family: "JetBrains Mono", "Consolas", monospace;
+    color: var(--c-text);
+  }
+  .navbar .page-indicator .nav-current {
+    color: var(--c-accent); font-weight: 700;
+  }
+  .navbar .hint kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    border: 1px solid var(--c-border);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    font-family: monospace; font-size: 0.8em;
+    background: #fff;
+    margin: 0 2px;
+  }
+
+  /* 投影片基本框架 */
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px);
+    scroll-snap-align: start;
+    padding: 40px 60px;
+    display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag {
+    font-size: 0.85rem;
+    color: var(--c-accent);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .slide h2 {
+    font-size: 1.9rem;
+    margin: 0 0 16px;
+    color: var(--c-text);
+  }
+  .slide h3 {
+    font-size: 1.15rem;
+    color: var(--c-accent);
+    margin-top: 18px;
+  }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem;
+    color: var(--c-muted);
+  }
+  .slide-source a {
+    color: var(--c-accent); text-decoration: none;
+    border-bottom: 1px dashed var(--c-accent);
+  }
+  .slide-source a:hover { border-bottom-style: solid; }
+
+  /* 封面與過場 */
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 {
+    font-size: 2.6rem;
+    line-height: 1.3;
+  }
+  .slide.cover .subtitle {
+    font-size: 1.2rem;
+    color: var(--c-muted);
+    margin-top: 8px;
+  }
+  .slide.divider .activity-num {
+    font-size: 0.9rem;
+    color: var(--c-accent);
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+  }
+  .slide.divider h2 {
+    font-size: 2.4rem;
+    color: var(--c-accent);
+  }
+  .slide.divider .subtitle {
+    font-size: 1.1rem;
+    color: var(--c-muted);
+    margin-top: 8px;
+  }
+
+  /* 共用元件 */
+  .question-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 30px 0;
+  }
+  .question-card {
+    background: var(--c-bg);
+    border: 2px solid var(--c-accent);
+    border-radius: 12px;
+    padding: 24px;
+    font-size: 1.15rem;
+    text-align: center;
+    color: var(--c-text);
+    position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px;
+    background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%;
+    font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 20px 0;
+  }
+  .compare-card {
+    border: 2px solid var(--c-border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+  .compare-card .label {
+    font-size: 0.9rem; font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+
+  /* 三欄 */
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 20px 0;
+  }
+  .col-card {
+    border: 2px solid var(--c-border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .col-card h4 {
+    margin: 0 0 10px;
+    font-size: 1.15rem;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+
+  /* 九宮格 EEWH */
+  .nine-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+  }
+  .nine-card {
+    background: var(--c-bg);
+    border: 2px solid var(--c-accent);
+    border-radius: 8px;
+    padding: 14px 10px;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+  .nine-card .icon { font-size: 1.8rem; margin-bottom: 6px; }
+  .nine-card .name { font-weight: 700; color: var(--c-accent); }
+  .nine-card .pillar { font-size: 0.8rem; color: var(--c-muted); margin-top: 4px; }
+
+  /* 四欄策略 */
+  .four-col {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .strategy-card {
+    background: var(--c-bg);
+    border: 2px solid var(--c-accent);
+    border-radius: 10px;
+    padding: 20px 12px;
+    text-align: center;
+  }
+  .strategy-card .icon { font-size: 2.5rem; margin-bottom: 10px; }
+  .strategy-card .name { font-weight: 700; color: var(--c-accent); font-size: 1.05rem; }
+  .strategy-card .effect { font-size: 0.88rem; color: var(--c-muted); margin-top: 6px; }
+
+  /* 大數字 */
+  .big-stat {
+    text-align: center;
+    padding: 20px;
+  }
+  .big-stat .num {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--c-warn);
+    line-height: 1;
+  }
+  .big-stat .unit {
+    font-size: 1.1rem;
+    color: var(--c-muted);
+    margin-top: 6px;
+  }
+  .big-stat .note {
+    font-size: 0.9rem;
+    color: var(--c-muted);
+    margin-top: 4px;
+  }
+
+  /* 數字回顧排 */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 24px 0;
+  }
+  .stat-card {
+    background: var(--c-bg);
+    border: 2px solid var(--c-border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-card .val {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--c-accent);
+    line-height: 1;
+  }
+  .stat-card .lbl {
+    font-size: 0.9rem;
+    color: var(--c-muted);
+    margin-top: 6px;
+  }
+
+  /* 圖表佔位 */
+  .chart-placeholder {
+    border: 3px dashed var(--c-border);
+    border-radius: 12px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--c-muted);
+    font-size: 1rem;
+    text-align: center;
+    padding: 20px;
+    background: var(--c-bg);
+    margin: 16px 0;
+  }
+  .chart-placeholder .ph-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: var(--c-text);
+  }
+
+  /* 學習單表格 */
+  .ws-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 1.05rem;
+  }
+  .ws-table th, .ws-table td {
+    border: 2px solid var(--c-border);
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .ws-table th {
+    background: var(--c-accent-soft);
+    color: var(--c-accent);
+    font-weight: 700;
+  }
+  .ws-table td.fill {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px);
+    height: 48px;
+  }
+
+  /* 承諾框 */
+  .pledge-form {
+    border: 2px solid var(--c-accent);
+    border-radius: 12px;
+    padding: 24px 30px;
+    background: var(--c-bg);
+    max-width: 700px;
+    margin: 20px auto;
+  }
+  .pledge-form .row {
+    display: flex; align-items: baseline;
+    gap: 12px; margin: 16px 0;
+    font-size: 1.05rem;
+  }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank {
+    flex: 1;
+    border-bottom: 2px solid var(--c-text);
+    height: 28px;
+  }
+  .checklist {
+    list-style: none; padding: 0;
+    margin: 12px 0;
+  }
+  .checklist li {
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--c-border);
+    font-size: 1rem;
+  }
+  .checklist li::before {
+    content: "☐ ";
+    margin-right: 6px;
+    color: var(--c-accent); font-size: 1.1em;
+  }
+
+  /* T型對照表 */
+  .t-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1rem;
+  }
+  .t-table th, .t-table td {
+    border: 2px solid var(--c-border);
+    padding: 12px 16px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .t-table .toxic-head { background: #fee2e2; color: #991b1b; font-weight: 700; }
+  .t-table .clean-head { background: #dcfce7; color: #166534; font-weight: 700; }
+
+  /* WSA 卡 */
+  .wsa-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .wsa-card {
+    background: var(--c-bg);
+    border: 2px solid var(--c-accent);
+    border-radius: 10px;
+    padding: 16px 20px;
+  }
+  .wsa-card h4 {
+    margin: 0 0 10px;
+    color: var(--c-accent);
+    font-size: 1.05rem;
+    border-bottom: 1px dashed var(--c-border);
+    padding-bottom: 8px;
+  }
+  .wsa-card ul { margin: 0; padding-left: 18px; }
+  .wsa-card li { font-size: 0.95rem; margin: 5px 0; }
+
+  /* 三關鍵字總結 */
+  .summary-keys {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin: 30px 0;
+  }
+  .key-card {
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: 16px;
+    background: var(--c-bg);
+    border: 3px solid;
+  }
+  .key-card .num {
+    font-size: 0.85rem; font-weight: 700;
+    color: var(--c-muted);
+    letter-spacing: 0.2em;
+  }
+  .key-card .word {
+    font-size: 3rem; font-weight: 800;
+    margin: 12px 0;
+  }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc {
+    font-size: 0.95rem; color: var(--c-muted);
+    margin-top: 8px;
+  }
+
+  figure { margin: 0; text-align: center; }
+  figcaption {
+    font-size: 0.9rem;
+    color: var(--c-muted);
+    margin-top: 8px;
+  }
+  .chart-note {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--c-muted);
+    margin-top: 8px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">永續的生活空間 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- ============ 1. 封面 ============ -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>我的空間，我的地球</h2>
+    <p class="subtitle">EEWH 超級改造王</p>
+    <p style="margin-top: 16px; font-size: 1.1rem; color: var(--c-muted);">永續的生活空間｜Level III · 9–12 歲</p>
+  </div>
+</section>
+
+<!-- ============ 2. 大問題 ============ -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>哪一種房子最永續？</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card" style="border-color: var(--c-warn);">
+        <h4 style="color: var(--c-warn);">鐵皮屋加蓋</h4>
+        <ul>
+          <li>夏天極熱</li>
+          <li>通風差</li>
+          <li>隔熱差</li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-color: var(--c-cog);">
+        <h4 style="color: var(--c-cog);">玻璃帷幕豪宅</h4>
+        <ul>
+          <li>耗電量大</li>
+          <li>建材隱含碳高</li>
+          <li>反射熱加劇熱島</li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-color: var(--c-beh);">
+        <h4 style="color: var(--c-beh);">北投圖書館</h4>
+        <ul>
+          <li>自然通風採光</li>
+          <li>屋頂集雨板</li>
+          <li>全球認證綠建築</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 20px;">
+      答案可能出乎你的意料：<strong style="color: var(--c-accent);">不是最貴的，而是最會「呼吸」的。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ============ 3. 活動一過場 ============ -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>你住在什麼樣的空間？</h2>
+    <p class="subtitle">認識永續生活空間的三支柱</p>
+  </div>
+</section>
+
+<!-- ============ 4. 建築 34% 秘密 ============ -->
+<section class="slide" id="slide-building-co2">
+  <div class="slide-tag">活動一・步驟 1</div>
+  <h2>建築部門的碳排放秘密</h2>
+  <div class="slide-body">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 24px 0;">
+      <div class="stat-card">
+        <div class="val">34%</div>
+        <div class="lbl">全球能源相關 CO₂（建築）</div>
+      </div>
+      <div class="stat-card">
+        <div class="val">32%</div>
+        <div class="lbl">最終能源消費（建築）</div>
+      </div>
+      <div class="stat-card">
+        <div class="val" style="color: var(--c-warn);">1/3</div>
+        <div class="lbl">每三口 CO₂，一口從建築排出</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 10px;">
+      教室也是一棟小建築。<br>
+      <strong style="color: var(--c-accent);">我們現在坐的這個地方，也有碳足跡！</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.iea.org/energy-system/buildings" target="_blank" rel="noopener">國際能源總署 — 全球建築與建設狀況報告 2024</a>
+  </div>
+</section>
+
+<!-- ============ 5. 生活品質 vs 豪華 ============ -->
+<section class="slide" id="slide-quality-vs-luxury">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>生活品質 ≠ 豪華</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color: var(--c-cog);">
+        <div class="label" style="color: var(--c-cog);">奢華飯店</div>
+        <div class="icon">🏨</div>
+        <h3>24 小時強冷氣</h3>
+        <p>耗電量高、建材耗碳<br>對自然不友善</p>
+      </div>
+      <div class="compare-card" style="border-color: var(--c-beh);">
+        <div class="label" style="color: var(--c-beh);">北投圖書館</div>
+        <div class="icon">🌿</div>
+        <h3>自然通風 + 採光</h3>
+        <p>靠自然通風採光<br>全球認證綠建築・已運作 20 年</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. 三支柱 ============ -->
+<section class="slide" id="slide-three-pillars">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>永續生活空間的三支柱</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card" style="border-color: var(--c-soc);">
+        <h4 style="color: var(--c-soc);">生活品質</h4>
+        <ul>
+          <li>安全、健康</li>
+          <li>採光、通風好</li>
+          <li>噪音少、綠意多</li>
+          <li>社交與心理舒適</li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-color: var(--c-cog);">
+        <h4 style="color: var(--c-cog);">功能性</h4>
+        <ul>
+          <li>滿足居住需求</li>
+          <li>動線順暢</li>
+          <li>充足收納</li>
+          <li>無障礙設計</li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-color: var(--c-beh);">
+        <h4 style="color: var(--c-beh);">自然友善</h4>
+        <ul>
+          <li>透水鋪面</li>
+          <li>原生植栽</li>
+          <li>屋頂花園</li>
+          <li>鳥類友善窗</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px; color: var(--c-accent);">
+      <strong>缺一不可！</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ============ 7. EEWH 九大指標 ============ -->
+<section class="slide" id="slide-eewh">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>EEWH 九大指標</h2>
+  <div class="slide-body">
+    <div class="nine-grid">
+      <div class="nine-card">
+        <div class="icon">🦋</div>
+        <div class="name">生物多樣性</div>
+        <div class="pillar">自然友善</div>
+      </div>
+      <div class="nine-card">
+        <div class="icon">🌳</div>
+        <div class="name">綠化量</div>
+        <div class="pillar">自然友善</div>
+      </div>
+      <div class="nine-card">
+        <div class="icon">💧</div>
+        <div class="name">基地保水</div>
+        <div class="pillar">自然友善</div>
+      </div>
+      <div class="nine-card">
+        <div class="icon">💡</div>
+        <div class="name">日常節能</div>
+        <div class="pillar">功能性</div>
+      </div>
+      <div class="nine-card">
+        <div class="icon">🌿</div>
+        <div class="name">CO₂ 減量</div>
+        <div class="pillar">功能性</div>
+      </div>
+      <div class="nine-card">
+        <div class="icon">♻️</div>
+        <div class="name">廢棄物減量</div>
+        <div class="pillar">功能性</div>
+      </div>
+      <div class="nine-card">
+        <div class="icon">🚿</div>
+        <div class="name">水資源</div>
+        <div class="pillar">功能性</div>
+      </div>
+      <div class="nine-card">
+        <div class="icon">🗑️</div>
+        <div class="name">污水垃圾改善</div>
+        <div class="pillar">功能性</div>
+      </div>
+      <div class="nine-card">
+        <div class="icon">🫁</div>
+        <div class="name">室內健康與環境</div>
+        <div class="pillar">生活品質</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 10px; color: var(--c-muted);">
+      配對挑戰：每項指標屬於哪個支柱？
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.abri.gov.tw/" target="_blank" rel="noopener">內政部建築研究所 EEWH 綠建築標章</a>
+  </div>
+</section>
+
+<!-- ============ 8. 活動二過場 ============ -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>有毒？無毒？我的空氣偵探日</h2>
+    <p class="subtitle">比較有毒與無毒環境對人、動物與植物的影響</p>
+  </div>
+</section>
+
+<!-- ============ 9. 有毒環境警報 ============ -->
+<section class="slide" id="slide-toxic-alert">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>有毒環境警報</h2>
+  <div class="slide-body">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 24px 0;">
+      <div class="stat-card">
+        <div class="val" style="color: #dc2626;">290 萬</div>
+        <div class="lbl">每年因家戶空污死亡人數</div>
+      </div>
+      <div class="stat-card">
+        <div class="val" style="color: #dc2626;">30.9 萬</div>
+        <div class="lbl">其中 5 歲以下兒童</div>
+      </div>
+      <div class="stat-card">
+        <div class="val" style="color: var(--c-warn);">21 億</div>
+        <div class="lbl">仍以污染燃料取暖的人</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 10px;">
+      有些空氣，<strong style="color: #dc2626;">看不見卻會致命。</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.who.int/news-room/fact-sheets/detail/household-air-pollution-and-health" target="_blank" rel="noopener">世界衛生組織 — 家戶空氣污染事實頁</a>
+  </div>
+</section>
+
+<!-- ============ 10. PM2.5 超標 ============ -->
+<section class="slide" id="slide-pm25">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>PM2.5：我們呼吸的空氣有多髒？</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color: var(--c-beh);">
+        <div class="label" style="color: var(--c-beh);">世界衛生組織 建議上限</div>
+        <div class="icon">✅</div>
+        <h3 style="font-size: 2.5rem; color: var(--c-beh);">5</h3>
+        <p>µg/m³（每日長期暴露上限）</p>
+      </div>
+      <div class="compare-card" style="border-color: #dc2626;">
+        <div class="label" style="color: #dc2626;">臺灣 2023 年均</div>
+        <div class="icon">⚠️</div>
+        <h3 style="font-size: 2.5rem; color: #dc2626;">13.7</h3>
+        <p>µg/m³（超標 2.7 倍）</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      兒童呼吸頻率比大人高，<strong style="color: #dc2626;">吸入量是大人的兩倍</strong>。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.who.int/publications/i/item/9789240034228" target="_blank" rel="noopener">世界衛生組織 — 全球空氣品質指引 2021</a>
+  </div>
+</section>
+
+<!-- ============ 11. 動物也受害 ============ -->
+<section class="slide" id="slide-animals">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>有毒環境不只害人</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card" style="border-color: var(--c-warn);">
+        <h4 style="color: var(--c-warn);">鳥類</h4>
+        <ul>
+          <li>玻璃帷幕大樓</li>
+          <li>每年數十億隻鳥<br>撞玻璃死亡</li>
+          <li>失去覓食空間</li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-color: var(--c-cog);">
+        <h4 style="color: var(--c-cog);">蝙蝠 · 昆蟲</h4>
+        <ul>
+          <li>水泥覆蓋土壤</li>
+          <li>失去棲地與食物</li>
+          <li>光污染干擾活動</li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-color: var(--c-beh);">
+        <h4 style="color: var(--c-beh);">植物</h4>
+        <ul>
+          <li>透水鋪面減少<br>無法吸收雨水</li>
+          <li>熱島效應傷根</li>
+          <li>空氣汙染影響光合</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      EEWH 第一項指標就是「<strong style="color: var(--c-accent);">生物多樣性</strong>」，提醒我們<strong>牠們也要家</strong>。
+    </p>
+  </div>
+</section>
+
+<!-- ============ 12. 熱島效應 ============ -->
+<section class="slide" id="slide-heatisland">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>熱島效應：冷氣越強，城市越熱</h2>
+  <div class="slide-body">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0;">
+      <div class="stat-card">
+        <div class="val" style="color: #dc2626;">+3.5°C</div>
+        <div class="lbl">台北夏季市中心比近郊高</div>
+      </div>
+      <div class="stat-card">
+        <div class="val" style="color: var(--c-beh);">1–3°C</div>
+        <div class="lbl">屋頂綠化可降溫幅度</div>
+      </div>
+    </div>
+    <div class="chart-placeholder">
+      <div class="ph-title">台北市熱島分布地圖</div>
+      <p>市中心 +3.5°C 熱區示意<br>可對照 TCCIP 平台實際熱島圖</p>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem;">
+      <strong>討論：</strong>冷氣開越強，熱島越熱，誰最受害？
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://tccip.ncdr.nat.gov.tw/" target="_blank" rel="noopener">TCCIP 臺灣氣候變遷推估資訊平台</a>
+  </div>
+</section>
+
+<!-- ============ 13. 有毒 vs 無毒對照 ============ -->
+<section class="slide" id="slide-toxic-vs-clean">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>有毒 vs 無毒對照表</h2>
+  <div class="slide-body">
+    <table class="t-table">
+      <thead>
+        <tr>
+          <th class="toxic-head" style="width: 50%;">有毒項目 ⚠️</th>
+          <th class="clean-head" style="width: 50%;">無毒項目 ✅</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>PM2.5（細懸浮微粒）</td>
+          <td>充足採光（自然日照）</td>
+        </tr>
+        <tr>
+          <td>甲醛（新裝潢揮發）</td>
+          <td>自然通風（對流換氣）</td>
+        </tr>
+        <tr>
+          <td>噪音（交通、鄰居）</td>
+          <td>室內綠植（淨化空氣）</td>
+        </tr>
+        <tr>
+          <td>霉菌（潮濕、漏水）</td>
+          <td>靜音空間（低噪音設計）</td>
+        </tr>
+        <tr>
+          <td>VOCs（油漆、清潔劑）</td>
+          <td>低毒建材（天然木、塗料）</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="text-align: center; font-size: 1.05rem;">
+      對照你的房間：每少一項有毒、多一項無毒，你就是家裡的英雄！
+    </p>
+  </div>
+</section>
+
+<!-- ============ 14. 活動三過場 ============ -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>我的 EEWH 校園改造提案</h2>
+    <p class="subtitle">被動式設計 × WSA 四面向行動</p>
+  </div>
+</section>
+
+<!-- ============ 15. 被動式設計 ============ -->
+<section class="slide" id="slide-passive-design">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>四招讓冷氣少用 30–90%</h2>
+  <div class="slide-body">
+    <div class="four-col">
+      <div class="strategy-card">
+        <div class="icon">🧱</div>
+        <div class="name">隔熱</div>
+        <div class="effect">牆壁、屋頂鋪<br>隔熱材，阻擋熱</div>
+      </div>
+      <div class="strategy-card">
+        <div class="icon">⛱️</div>
+        <div class="name">遮陽</div>
+        <div class="effect">外遮陽板、深挑簷<br>阻擋日射</div>
+      </div>
+      <div class="strategy-card">
+        <div class="icon">🌀</div>
+        <div class="name">通風</div>
+        <div class="effect">對流窗、高低窗<br>引導穿堂風</div>
+      </div>
+      <div class="strategy-card">
+        <div class="icon">🌱</div>
+        <div class="name">綠化</div>
+        <div class="effect">屋頂花園降溫<br><strong>2–5°C</strong></div>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0;">
+      <div class="stat-card">
+        <div class="val">30–90%</div>
+        <div class="lbl">被動式設計可減少空調耗能（IPCC AR6）</div>
+      </div>
+      <div class="stat-card">
+        <div class="val">2–5°C</div>
+        <div class="lbl">屋頂綠化讓夏季室溫下降幅度</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.ipcc.ch/report/ar6/wg3/chapter/chapter-9/" target="_blank" rel="noopener">IPCC AR6 WG3 Chapter 9 — Buildings</a>
+  </div>
+</section>
+
+<!-- ============ 16. 北投圖書館案例 ============ -->
+<section class="slide" id="slide-beitou">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>北投圖書館：臺灣第一座公共綠建築</h2>
+  <div class="slide-body">
+    <div class="four-col">
+      <div class="strategy-card" style="border-color: var(--c-beh);">
+        <div class="icon">☔</div>
+        <div class="name">收雨水</div>
+        <div class="effect">屋頂集水再利用<br>沖廁、澆花</div>
+      </div>
+      <div class="strategy-card" style="border-color: var(--c-cog);">
+        <div class="icon">🌞</div>
+        <div class="name">自動遮陽</div>
+        <div class="effect">感應日照調節<br>木百葉遮陽板</div>
+      </div>
+      <div class="strategy-card" style="border-color: var(--c-warn);">
+        <div class="icon">⚡</div>
+        <div class="name">屋頂發電</div>
+        <div class="effect">太陽能板供電<br>自給自足</div>
+      </div>
+      <div class="strategy-card" style="border-color: var(--c-soc);">
+        <div class="icon">🌿</div>
+        <div class="name">自然通風</div>
+        <div class="effect">木構架 + 穿透設計<br>不靠 24 小時冷氣</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      <strong style="color: var(--c-accent);">已運作 20 年，是人人都能參觀的真實綠建築！</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ============ 17. WSA 校園營運 + 社區 ============ -->
+<section class="slide" id="slide-wsa-campus">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>WSA 行動：校園與社區</h2>
+  <div class="slide-body">
+    <div class="wsa-grid">
+      <div class="wsa-card">
+        <h4>校園營運</h4>
+        <ul>
+          <li>教室換 LED 節能燈</li>
+          <li>屋頂種菜・綠化示範</li>
+          <li>合作社安裝集雨桶</li>
+          <li>節能儀表板公布用電</li>
+        </ul>
+      </div>
+      <div class="wsa-card">
+        <h4>社區夥伴</h4>
+        <ul>
+          <li>與里辦合作畫「遮蔭地圖」</li>
+          <li>夏天人人能走綠蔭路線</li>
+          <li>邀請建築師入校分享</li>
+          <li>鄰里綠屋頂共學工作坊</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 18. WSA 學生治理 + 課程 ============ -->
+<section class="slide" id="slide-wsa-student">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>WSA 行動：學生治理與課程</h2>
+  <div class="slide-body">
+    <div class="wsa-grid">
+      <div class="wsa-card">
+        <h4>學生治理</h4>
+        <ul>
+          <li>成立「EEWH 九指標小隊」</li>
+          <li>向校長提「室內健康改造提案」</li>
+          <li>學生代表進校務會議報告</li>
+          <li>製作永續空間行動成果展</li>
+        </ul>
+      </div>
+      <div class="wsa-card">
+        <h4>課程與學習</h4>
+        <ul>
+          <li>美術課設計節能標章</li>
+          <li>自然課量教室 CO₂ / PM2.5</li>
+          <li>數學課算 LED 投資回收期</li>
+          <li>社會課研究都市熱島弱勢</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 20px; color: var(--c-accent);">
+      <strong>你們才是主角！</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ============ 19. 活動四過場 ============ -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>守護我們的家：發聲與行動</h2>
+    <p class="subtitle">在地盤點 × 角色扮演 × 30 天承諾</p>
+  </div>
+</section>
+
+<!-- ============ 20. 都市議程 ============ -->
+<section class="slide" id="slide-urban-agenda">
+  <div class="slide-tag">活動四・步驟 4</div>
+  <h2>都市：地球最小 3% 的地，最大的責任</h2>
+  <div class="slide-body">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 24px 0;">
+      <div class="stat-card">
+        <div class="val" style="color: var(--c-warn);">3%</div>
+        <div class="lbl">都市只占全球土地</div>
+      </div>
+      <div class="stat-card">
+        <div class="val" style="color: #dc2626;">75%</div>
+        <div class="lbl">但消耗全球 75% 能源</div>
+      </div>
+      <div class="stat-card">
+        <div class="val" style="color: var(--c-beh);">21 kg</div>
+        <div class="lbl">一棵行道樹每年吸 CO₂</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 16px;">
+      種一棵樹，周邊降溫 2°C。<br>
+      <strong style="color: var(--c-accent);">小小行動，大大影響！</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://unhabitat.org/about-us/new-urban-agenda" target="_blank" rel="noopener">聯合國人居署 — 新都市議程</a>
+  </div>
+</section>
+
+<!-- ============ 21. 30 天承諾 ============ -->
+<section class="slide" id="slide-pledge">
+  <div class="slide-tag">活動四・步驟 4 ・承諾卡</div>
+  <h2>30 天永續生活空間承諾</h2>
+  <div class="slide-body">
+    <div class="pledge-form">
+      <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted); margin: 0 0 16px;">
+        選一個你能做的小行動，投入「綠屋頂承諾箱」
+      </p>
+      <ul class="checklist">
+        <li>每天開窗通風至少 10 分鐘</li>
+        <li>家裡換一顆 LED 燈泡</li>
+        <li>陽台或教室角落種一盆植物</li>
+        <li>夏天冷氣設定 26°C 以上</li>
+        <li>出門前關所有電器插頭</li>
+      </ul>
+      <div class="row">
+        <span class="lbl">我的承諾是：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">承諾人：</span>
+        <span class="blank"></span>
+        <span class="lbl">見證夥伴：</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 22. 三關鍵字總結 ============ -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">三支柱</div>
+        <div class="desc">生活品質 × 功能性 × 自然友善<br>缺一不可</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">無毒</div>
+        <div class="desc">PM2.5 × 甲醛 × 熱島<br>看不見也有毒</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">改造</div>
+        <div class="desc">隔熱 × 遮陽 × 通風 × 綠化<br>今天就能做</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">我的空間，我的地球，一起呼吸！</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">22</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

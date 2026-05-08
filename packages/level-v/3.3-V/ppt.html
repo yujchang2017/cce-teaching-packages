@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>碳債、權力與正義 — 歷史經濟政治過程與氣候不公 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #7c3aed;
+    --c-accent-soft: #ede9fe;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border);
+    border-bottom-width: 2px; border-radius: 4px; font-family: monospace;
+    font-size: 0.8em; background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.4rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.1rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.2rem; color: var(--c-accent); }
+  .slide.divider .subtitle { font-size: 1.05rem; color: var(--c-muted); margin-top: 8px; }
+
+  .stat-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap: 16px; margin: 16px 0; }
+  .stat-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 20px 16px; text-align: center; }
+  .stat-card .big-num { font-size: 2.6rem; font-weight: 900; color: var(--c-accent); line-height: 1.1; }
+  .stat-card .unit { font-size: 0.82rem; color: var(--c-muted); margin-top: 4px; }
+  .stat-card .label { font-size: 0.92rem; font-weight: 600; margin-top: 8px; }
+
+  .debate-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 16px 0; }
+  .debate-card { border-radius: 12px; padding: 18px; }
+  .debate-card.pro { background: #dcfce7; border: 2px solid var(--c-beh); }
+  .debate-card.con { background: #fef9c3; border: 2px solid #ca8a04; }
+  .debate-card.neu { background: #ede9fe; border: 2px solid var(--c-accent); }
+  .debate-card h4 { margin: 0 0 10px; font-size: 1rem; }
+  .debate-card.pro h4 { color: var(--c-beh); }
+  .debate-card.con h4 { color: #92400e; }
+  .debate-card.neu h4 { color: var(--c-accent); }
+  .debate-card ul { margin: 0; padding-left: 18px; font-size: 0.92rem; }
+  .debate-card li { margin: 5px 0; }
+
+  .model-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 14px; margin: 16px 0; }
+  .model-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 16px; }
+  .model-card h4 { margin: 0 0 8px; font-size: 1rem; color: var(--c-accent); }
+  .model-card p { margin: 0; font-size: 0.88rem; color: var(--c-muted); }
+
+  .timeline { display: flex; flex-direction: column; gap: 0; margin: 14px 0; }
+  .tl-item { display: flex; gap: 16px; padding: 10px 0; border-left: 3px solid var(--c-accent); margin-left: 20px; padding-left: 20px; position: relative; }
+  .tl-item::before { content: ''; position: absolute; left: -8px; top: 14px; width: 14px; height: 14px; border-radius: 50%; background: var(--c-accent); }
+  .tl-year { font-weight: 800; color: var(--c-accent); min-width: 60px; font-size: 0.95rem; }
+  .tl-desc { font-size: 0.92rem; }
+
+  .ws-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.95rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 11px 13px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg,transparent 0,transparent 18px,#d1d5db 18px,#d1d5db 19px); height: 42px; }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin: 24px 0; }
+  .key-card { text-align: center; padding: 26px 16px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.6rem; font-weight: 800; margin: 10px 0; }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.88rem; color: var(--c-muted); margin-top: 8px; }
+
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 20px 26px; background: var(--c-bg); max-width: 660px; margin: 14px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 10px; margin: 12px 0; font-size: 1rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 26px; }
+
+  .wsa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+  .wsa-card { background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 10px; padding: 16px; }
+  .wsa-card h4 { margin: 0 0 8px; font-size: 1rem; color: var(--c-accent); }
+  .wsa-card ul { margin: 0; padding-left: 16px; font-size: 0.88rem; }
+  .wsa-card li { margin: 4px 0; }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .tag { background: var(--c-accent-soft); color: var(--c-accent); border-radius: 20px; padding: 4px 14px; font-size: 0.88rem; font-weight: 600; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.88rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">碳債、權力與正義 — 歷史經濟政治過程與氣候不公 教學投影片</span>
+</header>
+
+<main>
+
+<!-- ===== 封面 ===== -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content:center;">
+    <div style="font-size:0.88rem;color:var(--c-accent);letter-spacing:0.15em;margin-bottom:12px;">UNESCO 3.3-V ｜ 16-18 歲 ｜ 四節課</div>
+    <h2>碳債、權力與正義<br><span style="font-size:1.8rem;">歷史經濟政治過程如何塑造氣候不公</span></h2>
+    <p class="subtitle">氣候變遷不只是科學問題，更是權力、歷史與正義的問題</p>
+  </div>
+</section>
+
+<!-- ===== 活動一過場 ===== -->
+<section class="slide divider" id="slide-a1-intro">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動一・第一節課</div>
+    <h2>碳債與歷史責任</h2>
+    <p class="subtitle">數據與事實：誰排的碳？誰受的害？</p>
+  </div>
+</section>
+
+<!-- ===== 碳債投影片 ===== -->
+<section class="slide" id="slide-a1-carbon-debt">
+  <div class="slide-tag">活動一・數據 dp1・dp3</div>
+  <h2>全球累積碳排放：誰欠了最多碳債？</h2>
+  <div class="slide-body">
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="big-num">20.3<span style="font-size:1.5rem;">%</span></div>
+        <div class="unit">美國（1850-2021）</div>
+        <div class="label">累積排放全球第一</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div class="big-num" style="color:var(--c-warn);">39<span style="font-size:1.5rem;">%</span></div>
+        <div class="unit">北美＋歐洲</div>
+        <div class="label">合計累積排放<br>人口僅占全球 22%</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div class="big-num" style="color:var(--c-beh);">3<span style="font-size:1.5rem;">%</span></div>
+        <div class="unit">整個非洲大陸</div>
+        <div class="label">累積排放<br>卻是氣候脆弱度最高地區</div>
+      </div>
+    </div>
+    <p style="font-size:1rem;margin-top:14px;">衡量標準不同，責任歸屬也不同——<strong>累積排放 vs 人均排放 vs 現行年排放 vs 消費側排放</strong>，各有其政治意涵。</p>
+    <div style="font-size:1rem;background:var(--c-accent-soft);border-radius:8px;padding:12px 16px;margin-top:10px;">
+      <strong style="color:var(--c-accent);">思辨任務：</strong>你認為哪種衡量標準最公平？寫下你的理由。
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.carbonbrief.org/analysis-which-countries-are-historically-responsible-for-climate-change/" target="_blank" rel="noopener">Carbon Brief 累積碳排分析</a> ／ <a href="https://www.ipcc.ch/report/ar6/wg3/" target="_blank" rel="noopener">IPCC AR6 WGIII Ch.2</a></div>
+</section>
+
+<!-- ===== 榨取主義 ===== -->
+<section class="slide" id="slide-a1-extractivism">
+  <div class="slide-tag">活動一・數據 dp4・dp5</div>
+  <h2>殖民主義、榨取主義與碳排的歷史根源</h2>
+  <div class="slide-body">
+    <div class="debate-cards">
+      <div class="debate-card pro">
+        <h4>🌍 殖民時期的榨取邏輯</h4>
+        <ul>
+          <li>棉花、橡膠、礦產從殖民地流向宗主國</li>
+          <li>供應鏈利潤 80%+ 流向北方跨國企業</li>
+          <li>生產國工人僅獲終端價格 1-3%</li>
+          <li>環境成本由生產國承擔，利潤留在消費國</li>
+        </ul>
+      </div>
+      <div class="debate-card con">
+        <h4>🏭 化石燃料產業的集中權力</h4>
+        <ul>
+          <li>全球 71% 排放可追溯至 100 家企業</li>
+          <li>前 20 大化石燃料公司貢獻 1965-2017 年全球 35% 碳排</li>
+          <li>企業早在 1980 年代已知氣候風險</li>
+          <li>卻資助氣候否認主義研究長達數十年</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:1rem;margin-top:12px;color:var(--c-muted);">BP 在 2005 年推廣「個人碳足跡」概念——這是企業社會責任，還是將結構性問題個人化的公關操作？</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://unctad.org/tdr2023" target="_blank" rel="noopener">UNCTAD 2023</a> ／ <a href="https://www.cdp.net/en/articles/media/new-report-shows-just-100-companies-are-source-of-over-70-of-emissions" target="_blank" rel="noopener">CDP Carbon Majors Report 2017</a></div>
+</section>
+
+<!-- ===== 財富不平等 ===== -->
+<section class="slide" id="slide-a1-wealth-inequality">
+  <div class="slide-tag">活動一・數據 dp2</div>
+  <h2>碳排不平等：不只是國家間的問題</h2>
+  <div class="slide-body">
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="big-num">50<span style="font-size:1.5rem;">%</span></div>
+        <div class="unit">最富 10% 人口碳排占比</div>
+        <div class="label">人均 31 噸 CO₂</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-soc);">
+        <div class="big-num" style="color:var(--c-soc);">16.8<span style="font-size:1.5rem;">%</span></div>
+        <div class="unit">最富 1% 人口碳排占比</div>
+        <div class="label">人均 110 噸 CO₂</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div class="big-num" style="color:var(--c-beh);">12<span style="font-size:1.5rem;">%</span></div>
+        <div class="unit">最窮 50% 人口碳排占比</div>
+        <div class="label">人均僅 1.6 噸 CO₂</div>
+      </div>
+    </div>
+    <p style="font-size:1rem;margin-top:14px;">這打破「國家 vs 國家」的簡單框架——氣候不平等不只是北方 vs 南方，更是<strong>全球富人 vs 全球窮人</strong>。</p>
+    <p style="font-size:1rem;color:var(--c-muted);margin-top:8px;">全球底層 50% 的人均排放，已接近 2030 年減碳目標。所有減量壓力應落在哪裡？</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://wir2022.wid.world/chapter-6/" target="_blank" rel="noopener">世界不平等報告 2022 Chapter 6</a></div>
+</section>
+
+<!-- ===== 活動二過場 ===== -->
+<section class="slide divider" id="slide-a2-intro">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動二・第二節課</div>
+    <h2>國際氣候治理與 CBDR 辯論</h2>
+    <p class="subtitle">共同但有區別的責任——是否足夠？</p>
+  </div>
+</section>
+
+<!-- ===== CBDR ===== -->
+<section class="slide" id="slide-a2-cbdr">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>CBDR 原則：從京都到巴黎</h2>
+  <div class="slide-body">
+    <div class="timeline">
+      <div class="tl-item">
+        <span class="tl-year">1992</span>
+        <span class="tl-desc"><strong>UNFCCC</strong> 提出「共同但有區別的責任」（CBDR）原則</span>
+      </div>
+      <div class="tl-item">
+        <span class="tl-year">1997</span>
+        <span class="tl-desc"><strong>京都議定書</strong>：已開發國家有法律減量義務，開發中國家沒有 → 美國退出，實效有限</span>
+      </div>
+      <div class="tl-item">
+        <span class="tl-year">2015</span>
+        <span class="tl-desc"><strong>巴黎協定</strong>：改為全員自主承諾（NDC），但「區別」如何體現仍有爭議</span>
+      </div>
+      <div class="tl-item">
+        <span class="tl-year">2022</span>
+        <span class="tl-desc"><strong>COP27</strong>：首次設立「損失與損害基金」，承認氣候不公需要賠償機制</span>
+      </div>
+    </div>
+    <p style="font-size:1rem;margin-top:12px;color:var(--c-muted);">已開發國家承諾每年提供 1,000 億美元氣候融資——至今未完全兌現。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://unfccc.int/process-and-meetings/the-paris-agreement" target="_blank" rel="noopener">UNFCCC Paris Agreement</a></div>
+</section>
+
+<!-- ===== CDP 辯論 ===== -->
+<section class="slide" id="slide-a2-cdp-debate">
+  <div class="slide-tag">活動二・步驟 2・論證延伸</div>
+  <h2>論證辯題：CBDR 是否足夠保障氣候正義？</h2>
+  <div class="slide-body">
+    <div class="debate-cards">
+      <div class="debate-card pro">
+        <h4>✅ CBDR 不足以保障正義</h4>
+        <ul>
+          <li>歷史排放格局未變，但中國已成最大年排放國</li>
+          <li>國家框架無法處理「國內不平等」問題</li>
+          <li>自主承諾（NDC）缺乏強制力</li>
+          <li>氣候融資承諾長期未兌現</li>
+        </ul>
+      </div>
+      <div class="debate-card con">
+        <h4>🤔 CBDR 是必要的多邊架構</h4>
+        <ul>
+          <li>至少維持了多邊合作框架</li>
+          <li>沒有它，開發中國家可能完全退出</li>
+          <li>損失與損害基金是重要突破</li>
+          <li>漸進式改革優於系統崩潰</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:1rem;margin-top:12px;color:var(--c-muted);">CER 論證任務：選擇立場，用數據建構論證，並回應對方最強的反駁。</p>
+  </div>
+</section>
+
+<!-- ===== 台灣與 CBDR ===== -->
+<section class="slide" id="slide-a2-taiwan-cbdr">
+  <div class="slide-tag">活動二・步驟 3・台灣在地連結</div>
+  <h2>台灣在全球碳排不平等中的位置</h2>
+  <div class="slide-body">
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="big-num">11</div>
+        <div class="unit">噸 人均碳排放</div>
+        <div class="label">高於全球平均（6.6 噸）</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-soc);">
+        <div class="big-num" style="font-size:2rem;color:var(--c-soc);">受害者<br>也是加害者</div>
+        <div class="label">台灣的「中間位置」</div>
+      </div>
+    </div>
+    <p style="font-size:1.05rem;margin-top:14px;">台灣雖非 UNFCCC 會員國，仍有責任「呼應全球減碳行動，分攤地球村責任」。</p>
+    <p style="font-size:1rem;color:var(--c-muted);">但責任的計算方式（人均？累積？消費側？）直接決定台灣應承擔多少——這是政策分析的核心技術。</p>
+    <div style="font-size:1rem;background:var(--c-accent-soft);border-radius:8px;padding:12px 16px;margin-top:10px;">
+      <strong style="color:var(--c-accent);">討論：</strong>台灣最適合用哪種衡量標準來計算自己的氣候責任？
+    </div>
+  </div>
+</section>
+
+<!-- ===== 活動三過場 ===== -->
+<section class="slide divider" id="slide-a3-intro">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三・第三節課</div>
+    <h2>替代經濟模型</h2>
+    <p class="subtitle">超越 GDP：甜甜圈、去成長與循環經濟</p>
+  </div>
+</section>
+
+<!-- ===== 甜甜圈 ===== -->
+<section class="slide" id="slide-a3-doughnut">
+  <div class="slide-tag">活動三・數據 dp7</div>
+  <h2>甜甜圈經濟學：安全且公正的空間</h2>
+  <div class="slide-body">
+    <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;margin:14px 0;">
+      <div style="min-width:200px;">
+        <figure>
+          <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:32px 20px;background:var(--c-accent-soft);text-align:center;">
+            <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+            <div style="font-size:1.1rem;color:var(--c-accent);font-weight:700;margin-bottom:8px;">[此處放：甜甜圈經濟學模型圖]</div>
+            <div style="font-size:0.85rem;margin:10px 0;"><strong>內環：</strong>社會基底（12 項基本需求）<br><strong>外環：</strong>生態天花板（9 項地球邊界）</div>
+            <div style="font-size:0.85rem;color:var(--c-muted);">📌 示意圖待補繪</div>
+          </div>
+          <figcaption>Kate Raworth, 2017 ／ 阿姆斯特丹 2020 年率先採用</figcaption>
+        </figure>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <p style="font-size:1.05rem;"><strong>內環（社會基底）：</strong>沒有人應該落入之下——健康、教育、收入、政治發聲等 12 項基本需求。</p>
+        <p style="font-size:1.05rem;margin-top:10px;"><strong>外環（生態天花板）：</strong>人類活動不應突破——氣候、生物多樣性、氮磷循環等 9 項地球邊界。</p>
+        <div class="stat-cards" style="margin-top:14px;grid-template-columns:1fr 1fr;">
+          <div class="stat-card" style="border-color:var(--c-beh);">
+            <div class="big-num" style="color:var(--c-beh);">39<span style="font-size:1.3rem;">%</span></div>
+            <div class="unit">GHG 可減少</div>
+            <div class="label">循環經濟轉型潛力<br>（至 2030 年）</div>
+          </div>
+          <div class="stat-card" style="border-color:var(--c-cog);">
+            <div class="big-num" style="color:var(--c-cog);">700<span style="font-size:1.3rem;">萬</span></div>
+            <div class="unit">個</div>
+            <div class="label">循環經濟帶來的<br>淨就業機會</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.kateraworth.com/doughnut/" target="_blank" rel="noopener">Kate Raworth Doughnut Economics</a> ／ UNEP Circularity Gap Report 2023</div>
+</section>
+
+<!-- ===== 去成長 ===== -->
+<section class="slide" id="slide-a3-degrowth">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>替代模型比較：新自由主義 vs 甜甜圈 vs 去成長 vs 循環經濟</h2>
+  <div class="slide-body">
+    <div class="model-cards">
+      <div class="model-card" style="border-color:var(--c-warn);">
+        <h4 style="color:var(--c-warn);">新自由主義</h4>
+        <p>市場自由化、私有化、GDP 成長為核心。問題：外部化環境成本，加劇不平等。</p>
+      </div>
+      <div class="model-card" style="border-color:var(--c-accent);">
+        <h4>甜甜圈經濟學</h4>
+        <p>社會基底＋生態天花板框架。阿姆斯特丹已採用。強調「安全且公正的空間」。</p>
+      </div>
+      <div class="model-card" style="border-color:var(--c-soc);">
+        <h4 style="color:var(--c-soc);">去成長（Degrowth）</h4>
+        <p>高收入國家有計畫縮減物質生產。激進，但直面消費主義根源。</p>
+      </div>
+      <div class="model-card" style="border-color:var(--c-beh);">
+        <h4 style="color:var(--c-beh);">循環經濟</h4>
+        <p>技術面：減少廢棄物、延長產品壽命。UNEP 估計 2030 年減排 39%、新增 700 萬就業。</p>
+      </div>
+    </div>
+    <p style="font-size:1rem;margin-top:12px;color:var(--c-muted);">學習單任務：比較四種模型的優勢與局限，分析哪種最適合台灣當前情境。</p>
+  </div>
+</section>
+
+<!-- ===== TEK ===== -->
+<section class="slide" id="slide-a3-tek">
+  <div class="slide-tag">活動三・數據 dp8・台灣在地連結</div>
+  <h2>傳統生態知識（TEK）：資產還是被浪漫化？</h2>
+  <div class="slide-body">
+    <div class="stat-cards" style="margin-bottom:14px;">
+      <div class="stat-card">
+        <div class="big-num">58<span style="font-size:1.5rem;">萬</span></div>
+        <div class="unit">人</div>
+        <div class="label">台灣原住民族 16 族<br>傳統領域多在高風險區</div>
+      </div>
+      <div class="stat-card" style="border-color:#dc2626;">
+        <div class="big-num" style="color:#dc2626;">474</div>
+        <div class="unit">人</div>
+        <div class="label">2009 莫拉克<br>小林村罹難者</div>
+      </div>
+    </div>
+    <div class="debate-cards">
+      <div class="debate-card pro">
+        <h4>✅ TEK 是氣候調適資產</h4>
+        <ul>
+          <li>IPCC & IPBES 認定 TEK 為重要知識體系</li>
+          <li>澳洲「文化燃燒」優於現代消防方法</li>
+          <li>台灣里山倡議整合原住民永續農林</li>
+        </ul>
+      </div>
+      <div class="debate-card con">
+        <h4>⚠️ 警惕「綠色圈地」風險</h4>
+        <ul>
+          <li>部分碳抵換項目限制原住民資源使用權</li>
+          <li>不應把原住民當「生態博物館」</li>
+          <li>任何涉及 TEK 的政策須以自決權為前提</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.cip.gov.tw/" target="_blank" rel="noopener">原住民族委員會</a> ／ IPBES / IPCC</div>
+</section>
+
+<!-- ===== 活動四過場 ===== -->
+<section class="slide divider" id="slide-a4-intro">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動四・第四節課</div>
+    <h2>矯正正義與學生行動</h2>
+    <p class="subtitle">脆弱度分析・倫理論證・WSA 承諾</p>
+  </div>
+</section>
+
+<!-- ===== 矯正正義 ===== -->
+<section class="slide" id="slide-a4-corrective-justice">
+  <div class="slide-tag">活動四・步驟 1・倫理兩難</div>
+  <h2>全球北方有道德義務賠償嗎？</h2>
+  <div class="slide-body">
+    <div class="debate-cards">
+      <div class="debate-card pro">
+        <h4>✅ 歷史債務論（支持賠償）</h4>
+        <ul>
+          <li>已開發國家累積排放占 39%，人口僅 22%</li>
+          <li>殖民榨取為北方工業化提供資源基礎</li>
+          <li>「汙染者付費原則」在國內環境法已普遍適用</li>
+          <li>COP27 損失與損害基金：國際社會首次承認賠償義務</li>
+        </ul>
+      </div>
+      <div class="debate-card con">
+        <h4>🤔 前瞻合作論（反對賠償框架）</h4>
+        <ul>
+          <li>追溯歷史責任在法理上困難（當時無人知道後果）</li>
+          <li>糾纏過去不如聚焦未來共同減排</li>
+          <li>過度強調賠償可能破壞多邊合作意願</li>
+        </ul>
+      </div>
+    </div>
+    <div class="debate-card neu" style="margin-top:14px;">
+      <h4>第三條路：矯正正義的多元形式</h4>
+      <p style="font-size:0.92rem;margin:0;">不一定等於現金賠償——技術轉移、債務減免、貿易公平化也是形式。學習單任務：選擇立場、引用數據、寫出回應對方最強論點的反駁段（§6）。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 氣候脆弱度圖表 ===== -->
+<section class="slide" id="slide-a4-vulnerability-chart">
+  <div class="slide-tag">活動四・數據 dp6・步驟 2</div>
+  <h2>氣候脆弱度：誰排最多？誰受害最深？</h2>
+  <div class="slide-body">
+    <div class="stat-cards" style="margin-bottom:14px;">
+      <div class="stat-card" style="border-color:#dc2626;">
+        <div class="big-num" style="color:#dc2626;">33-36<span style="font-size:1.3rem;">億</span></div>
+        <div class="unit">人居住在高度脆弱地區</div>
+        <div class="label">IPCC AR6 WGII 2022</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div class="big-num" style="color:var(--c-warn);">&lt;1<span style="font-size:1.5rem;">%</span></div>
+        <div class="unit">受災最嚴重前十國</div>
+        <div class="label">累積碳排占比<br>（波多黎各、緬甸、海地、菲律賓……）</div>
+      </div>
+    </div>
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:32px 20px;background:var(--c-accent-soft);text-align:center;max-width:640px;margin:0 auto;">
+        <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.1rem;color:var(--c-accent);font-weight:700;margin-bottom:8px;">[此處放：累積排放 vs 人均 GDP vs 氣候脆弱度 三維散布圖]</div>
+        <div style="font-size:0.9rem;margin:10px 0;">右上角：高排放高收入低脆弱（美、歐）｜左下角：低排放低收入高脆弱（非洲、南亞）</div>
+        <div style="font-size:0.85rem;color:var(--c-muted);">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>氣候脆弱度不是自然決定的——它是政治經濟結構的產物（Germanwatch GCR Index 2000-2019）</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.germanwatch.org/en/cri" target="_blank" rel="noopener">Germanwatch Global Climate Risk Index</a> ／ IPCC AR6 WGII SPM</div>
+</section>
+
+<!-- ===== WSA 承諾 ===== -->
+<section class="slide" id="slide-a4-pledge">
+  <div class="slide-tag">活動四・步驟 3・WSA 行動承諾</div>
+  <h2>WSA 四面向：氣候正義從校園開始</h2>
+  <div class="slide-body">
+    <div class="wsa-grid">
+      <div class="wsa-card">
+        <h4>🏛️ 治理面</h4>
+        <ul>
+          <li>學生議會設「氣候正義委員會」</li>
+          <li>審視校園供應鏈倫理採購</li>
+          <li>永續預算提案含成本效益分析</li>
+        </ul>
+      </div>
+      <div class="wsa-card">
+        <h4>📚 課程面</h4>
+        <ul>
+          <li>歷史課分析殖民主義</li>
+          <li>公民課討論人權與國際治理</li>
+          <li>經濟課探討替代模型</li>
+        </ul>
+      </div>
+      <div class="wsa-card">
+        <h4>🏫 營運面</h4>
+        <ul>
+          <li>主導校園供應鏈倫理審查</li>
+          <li>校園碳盤查（Scope 1/2）</li>
+          <li>公正轉型：確保弱勢學生不因轉型受害</li>
+        </ul>
+      </div>
+      <div class="wsa-card">
+        <h4>🤝 社群面</h4>
+        <ul>
+          <li>與 TWYCC、原住民部落、NGO 合作</li>
+          <li>辦「氣候正義論壇」</li>
+          <li>跨校青年氣候議會，向地方政府提案</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pledge-form" style="margin-top:12px;">
+      <div class="row"><span class="lbl">我的行動面向：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">具體行動：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">承諾人簽名：</span><span class="blank"></span></div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- ===== 三關鍵字總結 ===== -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，貫穿四節課</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">碳債</div>
+        <div class="desc">1850-2021 累積排放<br>美國 20.3%、北美+歐洲 39%<br>但人口僅占全球 22%</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">結構</div>
+        <div class="desc">殖民主義→依附型經濟<br>100 家企業排 71% GHG<br>脆弱度是政治經濟的產物</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">行動</div>
+        <div class="desc">甜甜圈・去成長・循環經濟<br>矯正正義不只是賠錢<br>從校園供應鏈開始追問</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.05rem;margin-top:20px;">
+      <strong style="color:var(--c-accent);">氣候正義不是遙遠的國際議題——它從你身邊的每一個權力關係開始。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">12</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+</body>
+</html>

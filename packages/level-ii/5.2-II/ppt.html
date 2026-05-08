@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>不要的東西怎麼辦? — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #ea580c;
+    --c-accent-soft: #ffedd5;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #dc2626;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .five-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin: 24px 0; }
+  .five-card { background: var(--c-bg); border: 2px solid; border-radius: 12px; padding: 18px 8px; text-align: center; }
+  .five-card .icon { font-size: 3rem; }
+  .five-card .label { font-weight: 700; margin-top: 6px; font-size: 1rem; }
+  .five-card.c1 { border-color: #16a34a; background: #f0fdf4; }
+  .five-card.c1 .label { color: #166534; }
+  .five-card.c2 { border-color: #db2777; background: #fdf2f8; }
+  .five-card.c2 .label { color: #9d174d; }
+  .five-card.c3 { border-color: #f59e0b; background: #fffbeb; }
+  .five-card.c3 .label { color: #92400e; }
+  .five-card.c4 { border-color: #2563eb; background: #eff6ff; }
+  .five-card.c4 .label { color: #1e40af; }
+  .five-card.c5 { border-color: #6b7280; background: #f3f4f6; }
+  .five-card.c5 .label { color: #4b5563; }
+
+  .four-tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 24px 0; }
+  .tool-card { background: var(--c-accent-soft); border: 2px solid var(--c-accent); border-radius: 14px; padding: 24px 12px; text-align: center; }
+  .tool-card .num { font-size: 2.4rem; font-weight: 800; color: var(--c-accent); }
+  .tool-card .word { font-size: 1.4rem; font-weight: 700; margin-top: 8px; }
+  .tool-card .sub { font-size: 0.9rem; color: var(--c-muted); margin-top: 4px; }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.6rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .bag-row { display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; margin: 24px 0; }
+  .bag-item { background: #f3f4f6; border: 2px dashed #9ca3af; border-radius: 8px; padding: 14px 4px; text-align: center; font-size: 1.6rem; }
+  .bag-item.treasure { background: var(--c-accent-soft); border-color: var(--c-accent); border-style: solid; }
+
+  .recycle-bin { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 22px 0; }
+  .bin-card { border: 3px solid; border-radius: 12px; padding: 20px; text-align: center; }
+  .bin-card.paper { border-color: #16a34a; background: #f0fdf4; }
+  .bin-card.bottle { border-color: #f59e0b; background: #fffbeb; }
+  .bin-card.plastic { border-color: #2563eb; background: #eff6ff; }
+  .bin-card .icon { font-size: 4rem; }
+  .bin-card .label { font-weight: 700; margin-top: 6px; font-size: 1.2rem; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">不要的東西怎麼辦? — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>寶物大旅行</h2>
+    <p class="subtitle">不要的東西,還有什麼選擇?</p>
+    <div style="font-size: 7rem; margin: 24px 0;">🐿️🎒</div>
+    <p style="font-size: 1.1rem; color: var(--c-muted);">和小松鼠抱抱一起救救舊寶物!</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-have">
+  <div class="slide-tag">起點</div>
+  <h2>你有「不要的東西」嗎?</h2>
+  <div class="slide-body">
+    <div style="text-align: center; font-size: 5rem; margin: 20px 0;">📦❓</div>
+    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 20px 0;">
+      <div style="text-align: center;"><div style="font-size: 3rem;">🧸</div><p>舊玩具</p></div>
+      <div style="text-align: center;"><div style="font-size: 3rem;">👕</div><p>不合的衣服</p></div>
+      <div style="text-align: center;"><div style="font-size: 3rem;">🍼</div><p>空瓶</p></div>
+      <div style="text-align: center;"><div style="font-size: 3rem;">✏️</div><p>斷的鉛筆</p></div>
+      <div style="text-align: center;"><div style="font-size: 3rem;">📕</div><p>看過的繪本</p></div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 16px;">
+      你家裡也有嗎?想一想是<strong style="color: var(--c-accent);">什麼?</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>不要的東西,還有什麼選擇?</h2>
+    <p class="subtitle">5 個彩色箱:再用・送人・修修・回收・丟掉</p>
+  </div>
+</section>
+
+<!-- 4. 數據:一半都是寶 -->
+<section class="slide" id="slide-half">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>原來一半都是寶!</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.2rem; margin: 0;">
+      每 10 袋垃圾裡,大概有 <strong style="color: var(--c-accent);">4–5 袋</strong> 是寶物!
+    </p>
+    <div class="bag-row">
+      <div class="bag-item treasure">✨</div>
+      <div class="bag-item treasure">✨</div>
+      <div class="bag-item treasure">✨</div>
+      <div class="bag-item treasure">✨</div>
+      <div class="bag-item treasure">✨</div>
+      <div class="bag-item">🗑️</div>
+      <div class="bag-item">🗑️</div>
+      <div class="bag-item">🗑️</div>
+      <div class="bag-item">🗑️</div>
+      <div class="bag-item">🗑️</div>
+    </div>
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 24px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.3rem; color: var(--c-accent); font-weight: 700; margin-bottom: 8px;">[此處放:46% 可回收圓餅圖]</div>
+        <div style="font-size: 1.05rem;"><strong>關鍵數據:</strong>家裡垃圾約 46% 是可再用的資源(紙、玻璃、塑膠、鐵鋁罐)</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 8px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>排成一排的 10 顆球,有 4–5 顆還可以變成新朋友</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://recycle.moenv.gov.tw/" target="_blank" rel="noopener">臺灣資源回收網</a>
+  </div>
+</section>
+
+<!-- 5. 4 個小法寶 -->
+<section class="slide" id="slide-4tools">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>4 個小法寶 — 丟掉之前要先想!</h2>
+  <div class="slide-body">
+    <div class="four-tools">
+      <div class="tool-card">
+        <div class="num">1</div>
+        <div class="word">減少</div>
+        <div class="sub">不要買太多</div>
+      </div>
+      <div class="tool-card">
+        <div class="num">2</div>
+        <div class="word">再用</div>
+        <div class="sub">東西再用一次</div>
+      </div>
+      <div class="tool-card">
+        <div class="num">3</div>
+        <div class="word">修好</div>
+        <div class="sub">壞了想辦法修</div>
+      </div>
+      <div class="tool-card">
+        <div class="num">4</div>
+        <div class="word">送人</div>
+        <div class="sub">送給需要的人</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem;">
+      最後才是<strong style="color: var(--c-warn);">回收</strong>,丟掉是<strong>最最最後</strong>一個選擇!
+    </p>
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      全班舉 4 根手指一起唸:<strong>「減!用!修!送!」</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.moenv.gov.tw/" target="_blank" rel="noopener">臺灣環境部</a> 環境教育 5R 原則
+  </div>
+</section>
+
+<!-- 6. 五寶箱大點名 -->
+<section class="slide" id="slide-fivebox">
+  <div class="slide-tag">活動一・步驟 3 ・五寶箱</div>
+  <h2>把物品放進對的箱子!</h2>
+  <div class="slide-body">
+    <div class="five-grid">
+      <div class="five-card c1"><div class="icon">♻️</div><div class="label">再用</div></div>
+      <div class="five-card c2"><div class="icon">🎁</div><div class="label">送人</div></div>
+      <div class="five-card c3"><div class="icon">🔧</div><div class="label">修修</div></div>
+      <div class="five-card c4"><div class="icon">🗑️</div><div class="label">回收</div></div>
+      <div class="five-card c5"><div class="icon">❌</div><div class="label">丟掉</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      老師擺出 5 個彩色箱,小朋友把 10 張物品圖卡放入對應的箱子!
+    </p>
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      口訣:<strong>「再用 → 送人 → 修修 → 回收 → 丟掉」</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 7. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>舊玩具的新旅行</h2>
+    <p class="subtitle">體驗「再用」與「送人」的溫暖感</p>
+  </div>
+</section>
+
+<!-- 8. 再用一次 -->
+<section class="slide" id="slide-reuse">
+  <div class="slide-tag">活動二・步驟 2 ・手作</div>
+  <h2>再用一次是什麼?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 30px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.3rem; color: var(--c-accent); font-weight: 700; margin-bottom: 8px;">[此處放:飲料瓶 → 洗乾淨 → 變筆筒/水瓶 連環圖]</div>
+        <div style="font-size: 1.05rem;"><strong>關鍵數據:</strong>同一個東西可以「再用一次」,例如飲料瓶洗乾淨變筆筒</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 8px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>舊牛奶盒 + 色紙 + 貼紙 = 我的小書包!</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 18px;">
+      閉上眼睛想一想:「我的水瓶還可以變成 ___?」
+    </p>
+  </div>
+</section>
+
+<!-- 9. 送人的好事 -->
+<section class="slide" id="slide-give">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>送人的好事</h2>
+  <div class="slide-body">
+    <div style="text-align: center; font-size: 6rem; margin: 16px 0;">🎁❤️</div>
+    <p style="text-align: center; font-size: 1.2rem;">
+      舊玩具對你<strong>玩膩了</strong>,但對別的小朋友是<strong style="color: var(--c-accent);">全新的驚喜</strong>!
+    </p>
+    <div style="background: var(--c-accent-soft); border-radius: 14px; padding: 24px; margin: 20px auto; max-width: 700px; text-align: center;">
+      <p style="font-size: 1.3rem; font-weight: 700; color: var(--c-accent);">分享圈練習</p>
+      <p style="font-size: 1.1rem;">
+        「我有一件 _________________,<br>
+        我想送給 _________________。」
+      </p>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem;">
+      和旁邊的同學擊掌一下,說:<strong>「分享最快樂!」</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.moenv.gov.tw/" target="_blank" rel="noopener">臺灣環境部</a> 環境教育教案 — 舊衣回收與分享捐贈
+  </div>
+</section>
+
+<!-- 10. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>家裡的寶物回收站</h2>
+    <p class="subtitle">把學到的行動帶回家,做出真的動作</p>
+  </div>
+</section>
+
+<!-- 11. 修修看 -->
+<section class="slide" id="slide-fix">
+  <div class="slide-tag">活動三・步驟 2 ・角色扮演</div>
+  <h2>修修看也是魔法</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 30px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.3rem; color: var(--c-accent); font-weight: 700; margin-bottom: 8px;">[此處放:破娃娃 → 媽媽縫好 → 笑咪咪 連環圖]</div>
+        <div style="font-size: 1.05rem;"><strong>關鍵數據:</strong>破洞縫一縫、壞了找大人修,東西就能繼續用</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 8px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>娃娃破了一個小洞,縫一縫就好!修修看是一種很棒的方法</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 18px;">
+      <strong>超級寶物救援隊出動!</strong>把壞玩具、衣服、空瓶救起來!
+    </p>
+  </div>
+</section>
+
+<!-- 12. 10 個寶特瓶的大力量 -->
+<section class="slide" id="slide-power">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>10 個寶特瓶的大力量</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:10 個寶特瓶 → 電池 → 點亮筆電 25 小時 示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>10 個寶特瓶好好回收 ≈ 一臺筆電工作 25 小時以上!</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>一個小動作,力量超大!</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 20px;">
+      老師喊「<strong>10 個瓶子!</strong>」全班拍手 10 下 👏
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.epa.gov/recycle/recycling-basics-and-benefits" target="_blank" rel="noopener">美國環保署 — 回收基礎與益處</a>
+  </div>
+</section>
+
+<!-- 13. 回收小常識 -->
+<section class="slide" id="slide-bins">
+  <div class="slide-tag">活動三 ・補充</div>
+  <h2>回收小常識:3 色桶</h2>
+  <div class="slide-body">
+    <div class="recycle-bin">
+      <div class="bin-card paper"><div class="icon">📄</div><div class="label">紙</div><p style="margin-top: 8px;">報紙、紙箱、紙袋</p></div>
+      <div class="bin-card bottle"><div class="icon">🥫</div><div class="label">瓶罐</div><p style="margin-top: 8px;">玻璃瓶、鐵鋁罐</p></div>
+      <div class="bin-card plastic"><div class="icon">🍼</div><div class="label">塑膠</div><p style="margin-top: 8px;">寶特瓶、塑膠袋</p></div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 20px;">
+      不同的東西要放到不同的桶子,就像每個人有自己的房間!
+    </p>
+  </div>
+</section>
+
+<!-- 14. 家庭小任務 -->
+<section class="slide" id="slide-family">
+  <div class="slide-tag">活動三・步驟 4 ・家庭延伸</div>
+  <h2>家庭小任務</h2>
+  <div class="slide-body">
+    <div style="text-align: center; font-size: 5rem;">🏠🐿️</div>
+    <div style="background: var(--c-accent-soft); border-radius: 16px; padding: 24px; margin: 20px auto; max-width: 700px;">
+      <h3 style="margin-top: 0; text-align: center; color: var(--c-accent);">回家三件事</h3>
+      <ol style="font-size: 1.1rem; line-height: 2;">
+        <li>找爸媽一起找 5 件「還能再用」的寶物 📦</li>
+        <li>幫它們找新的用途或送給需要的人 🎁</li>
+        <li>明天回來告訴老師你找到什麼 ✋</li>
+      </ol>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      和旁邊同學說:「我要回家找寶物!」
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 15. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字,一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">再用</div>
+        <div class="desc">同一個東西<br>再用一次</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">送人</div>
+        <div class="desc">舊物去旅行<br>變成別人的新寶物</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">回收</div>
+        <div class="desc">真的不能用<br>才放對的桶子</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">你就是抱抱的好夥伴!</strong><br>
+      地球會呼吸得比較順喔。
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">15</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      slides[Math.min(current + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      slides[Math.max(current - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+
+</body>
+</html>

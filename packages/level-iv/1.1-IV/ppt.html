@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天氣、氣候與氣候變遷 — 教學投影片（國中）</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .question-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 30px 0; }
+  .question-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px; font-size: 1.1rem; text-align: center; color: var(--c-text); position: relative; }
+  .question-card .q-num { position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card.k1 { border-color: var(--c-cog); }
+  .col-card.k1 h4 { color: var(--c-cog); }
+  .col-card.k2 { border-color: var(--c-warn); }
+  .col-card.k2 h4 { color: var(--c-warn); }
+  .col-card.k3 { border-color: var(--c-beh); }
+  .col-card.k3 h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; font-size: 0.95rem; }
+  .ws-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 12px 14px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px); height: 48px; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  .timeline { display: flex; align-items: stretch; gap: 0; margin: 28px 0; }
+  .tl-step { flex: 1; padding: 16px; border-radius: 8px; background: var(--c-bg); border: 2px solid var(--c-border); position: relative; text-align: center; }
+  .tl-step.active { border-color: var(--c-accent); background: var(--c-accent-soft); }
+  .tl-step .yr { font-weight: 800; font-size: 1.3rem; color: var(--c-accent); }
+  .tl-step .ev { font-size: 0.95rem; margin-top: 6px; }
+  .tl-arrow { display: flex; align-items: center; padding: 0 6px; color: var(--c-muted); font-size: 1.4rem; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 20px; }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card h3 { margin: 0 0 8px; }
+  .ssp-bars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 24px 0; }
+  .ssp-bar { border-radius: 10px; padding: 14px; color: #fff; text-align: center; }
+  .ssp-bar .label { font-weight: 700; font-size: 0.9rem; letter-spacing: 0.05em; }
+  .ssp-bar .val { font-size: 1.8rem; font-weight: 800; margin: 8px 0 4px; }
+  .ssp-bar .desc { font-size: 0.85rem; opacity: 0.95; }
+  .ssp-bar.ok { background: #16a34a; }
+  .ssp-bar.mid { background: #f59e0b; }
+  .ssp-bar.bad { background: #ea580c; }
+  .ssp-bar.worst { background: #dc2626; }
+  .cer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .cer-card { border-top: 6px solid; border-radius: 8px; padding: 16px; background: var(--c-bg); border: 1px solid var(--c-border); }
+  .cer-card.c { border-top-color: var(--c-cog); }
+  .cer-card.e { border-top-color: var(--c-warn); }
+  .cer-card.r { border-top-color: var(--c-beh); }
+  .cer-card h4 { margin: 0 0 8px; }
+  .cer-card.c h4 { color: var(--c-cog); }
+  .cer-card.e h4 { color: var(--c-warn); }
+  .cer-card.r h4 { color: var(--c-beh); }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">天氣、氣候與氣候變遷 — 教學投影片（國中）</span>
+</header>
+
+<main>
+
+<!-- 1 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>1.5°C 的抉擇</h2>
+    <p class="subtitle">地球、科學與我們</p>
+    <p style="color: var(--c-muted); margin-top: 18px;">Level IV｜國中 13–15 歲</p>
+  </div>
+</section>
+
+<!-- 2 大問題 -->
+<section class="slide" id="slide-bigq">
+  <div class="slide-tag">起點</div>
+  <h2>我們怎麼知道地球真的在變熱？</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>一支溫度計能代表全球平均溫度嗎？</div>
+      <div class="question-card"><div class="q-num">2</div>科學家如何知道一百多年前的氣溫？</div>
+      <div class="question-card"><div class="q-num">3</div>誰來統整這些資料、做出共識？</div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 30px; color: var(--c-accent);">
+      <strong>四節課，從觀測 → 推估 → 治理 → 行動，一步步釐清。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>我們怎麼知道地球在變熱？</h2>
+    <p class="subtitle">科學監測與資料</p>
+  </div>
+</section>
+
+<!-- 4 思辨問題① -->
+<section class="slide" id="slide-question1">
+  <div class="slide-tag">活動一・步驟 1</div>
+  <h2>思辨問題：一支溫度計能代表全球嗎？</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <h3 style="color: var(--c-cog);">家門口的溫度計</h3>
+        <p>單點、單時、單站</p>
+        <p style="color: var(--c-muted); font-size: 0.95rem;">會被牆面反射、樹蔭、午後日照影響</p>
+      </div>
+      <div class="compare-card right">
+        <h3 style="color: var(--c-warn);">全球觀測網</h3>
+        <p>陸、海、空、太空多層整合</p>
+        <p style="color: var(--c-muted); font-size: 0.95rem;">交叉驗證才有「全球平均」的代表性</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 18px;">
+      <strong>關鍵詞：代表性。</strong>先獨立寫下答案 30 秒，再表決。
+    </p>
+  </div>
+</section>
+
+<!-- 5 全球觀測網 -->
+<section class="slide" id="slide-network">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>全球氣象觀測網（四層整合）</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：四層觀測網示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>地面氣象站超過 1 萬個、海洋浮標約 3,800 個、探空氣球每天約 1,800 次升空、再加上極軌與同步衛星。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>四層觀測：陸地、海洋、大氣、太空</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1rem; margin-top: 14px;">
+      最關鍵的一步：<strong>資料同化</strong> — 用超級電腦把不同來源的資料整合進數值模型，產出每 6 小時更新的全球氣象場。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://argo.ucsd.edu/" target="_blank" rel="noopener">世界氣象組織整合全球觀測系統與 Argo 海洋浮標計畫</a>
+  </div>
+</section>
+
+<!-- 6 衛星雲圖 -->
+<section class="slide" id="slide-satellite">
+  <div class="slide-tag">活動一・步驟 3 ・ 教育部教材</div>
+  <h2>衛星雲圖：可見光、紅外線、水氣三頻道</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：可見光 vs 紅外線雲圖對照]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>中央氣象署每 10 分鐘更新一次葵花九號衛星資料，支援颱風與豪雨預警。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>紅外線雲圖可在夜間使用，能辨識颱風眼與鋒面</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>小組討論：</strong>為什麼要有多層觀測？只靠衛星會漏掉什麼？
+    </p>
+  </div>
+  <div class="slide-source">
+    教育部 RAG 教材：0303_KEE_III_認識衛星雲圖（純文字索引）
+  </div>
+</section>
+
+<!-- 7 NASA 全球升溫曲線 -->
+<section class="slide" id="slide-nasa-trend">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>全球溫度距平圖：1880 → 2024</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：1880–2024 全球溫度距平折線圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>2011–2020 比工業革命前升溫約 1.1°C；1970 年代起明顯加速；最熱 10 年集中在最近 10 年。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>科學確定度：政府間氣候變化專門委員會用「毋庸置疑」描述人類成因</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 14px;">
+      <strong>學生練習：</strong>找出升溫最快的期間、辨識短期起伏與長期趨勢的差別。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://climate.nasa.gov/vital-signs/global-temperature/" target="_blank" rel="noopener">美國太空總署 — 氣候關鍵指標（全球溫度）</a>
+  </div>
+</section>
+
+<!-- 8 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>政府間氣候變化專門委員會怎麼說？</h2>
+    <p class="subtitle">1.5°C 是什麼？</p>
+  </div>
+</section>
+
+<!-- 9 IPCC 組織 -->
+<section class="slide" id="slide-ipcc-org">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>政府間氣候變化專門委員會：三個工作小組</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card k1">
+        <h4>第一工作小組</h4>
+        <ul>
+          <li>科學基礎</li>
+          <li>大氣、海洋、冰凍圈觀測</li>
+          <li>氣候模式與物理機制</li>
+        </ul>
+      </div>
+      <div class="col-card k2">
+        <h4>第二工作小組</h4>
+        <ul>
+          <li>衝擊、調適與脆弱度</li>
+          <li>糧食、健康、生態系</li>
+          <li>地區與弱勢族群</li>
+        </ul>
+      </div>
+      <div class="col-card k3">
+        <h4>第三工作小組</h4>
+        <ul>
+          <li>減緩氣候變遷</li>
+          <li>能源、產業、城市</li>
+          <li>政策、經濟與技術</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>關鍵數字：</strong>第六次評估綜合報告（2023）— 2011–2020 全球升溫約 <strong>1.1°C</strong>，科學確定度：<strong>毋庸置疑</strong>。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.ipcc.ch/report/ar6/syr/" target="_blank" rel="noopener">政府間氣候變化專門委員會 — 第六次評估綜合報告</a>
+  </div>
+</section>
+
+<!-- 10 SSP 四情境 -->
+<section class="slide" id="slide-ssp">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>四種未來情境：本世紀末會升溫多少？</h2>
+  <div class="slide-body">
+    <div class="ssp-bars">
+      <div class="ssp-bar ok">
+        <div class="label">最積極減碳</div>
+        <div class="val">1.4°C</div>
+        <div class="desc">2030 排放減半、2050 淨零</div>
+      </div>
+      <div class="ssp-bar mid">
+        <div class="label">溫和減碳</div>
+        <div class="val">2.7°C</div>
+        <div class="desc">中等政策力度</div>
+      </div>
+      <div class="ssp-bar bad">
+        <div class="label">區域衝突</div>
+        <div class="val">3.6°C</div>
+        <div class="desc">合作失敗、各自為政</div>
+      </div>
+      <div class="ssp-bar worst">
+        <div class="label">化石全力發展</div>
+        <div class="val">4.4°C</div>
+        <div class="desc">無減碳行動</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 14px;">
+      <strong>學習單任務：</strong>哪個情境符合 1.5°C 目標？需要什麼條件？
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.ipcc.ch/report/ar6/syr/" target="_blank" rel="noopener">政府間氣候變化專門委員會 — 第六次評估綜合報告</a>
+  </div>
+</section>
+
+<!-- 11 排放差距 -->
+<section class="slide" id="slide-gap">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>承諾與執行：排放差距有多大？</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：排放差距三條路徑圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>政策延續走 2.7–3.1°C；國家自主貢獻全達成只有 2.1–2.8°C；距 1.5°C 路徑 2030 年差約 140–240 億噸二氧化碳當量。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>承諾不等於達成 — 這是我們這一代要補上的差距</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 14px;">
+      <strong>小組討論：</strong>差距最大的時間點？這個差距代表什麼？
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.unep.org/resources/emissions-gap-report-2023" target="_blank" rel="noopener">聯合國環境規劃署 — 排放差距報告 2023</a>
+  </div>
+</section>
+
+<!-- 12 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>國際行動與臺灣路徑</h2>
+    <p class="subtitle">治理與協議</p>
+  </div>
+</section>
+
+<!-- 13 國際協定時間軸 -->
+<section class="slide" id="slide-treaty">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>三十年國際協定時間軸</h2>
+  <div class="slide-body">
+    <div class="timeline">
+      <div class="tl-step">
+        <div class="yr">1992</div>
+        <div class="ev">聯合國氣候變化綱要公約</div>
+      </div>
+      <div class="tl-arrow">→</div>
+      <div class="tl-step">
+        <div class="yr">1997</div>
+        <div class="ev">京都議定書<br>已開發國家強制減量</div>
+      </div>
+      <div class="tl-arrow">→</div>
+      <div class="tl-step active">
+        <div class="yr">2015</div>
+        <div class="ev">巴黎協定<br>由下而上、自主承諾</div>
+      </div>
+      <div class="tl-arrow">→</div>
+      <div class="tl-step">
+        <div class="yr">2023</div>
+        <div class="ev">第一次全球盤點<br>「我們走得太慢」</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 14px;">
+      重大轉折：<strong>從「強制」轉為「透明化加同儕壓力」</strong>。讓所有國家都能參與。
+    </p>
+  </div>
+  <div class="slide-source">
+    教育部 RAG 教材：0177_CCE_氣候變遷（純文字索引）
+  </div>
+</section>
+
+<!-- 14 巴黎三大機制 -->
+<section class="slide" id="slide-paris">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>巴黎協定三大機制</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card k1">
+        <h4>1.5°C 努力目標</h4>
+        <ul>
+          <li>遠低於 2°C</li>
+          <li>努力限制在 1.5°C</li>
+          <li>具法律效力的條約</li>
+        </ul>
+      </div>
+      <div class="col-card k2">
+        <h4>國家自主貢獻</h4>
+        <ul>
+          <li>每 5 年更新一次</li>
+          <li>棘輪原則：只能更嚴</li>
+          <li>各國自定減量目標</li>
+        </ul>
+      </div>
+      <div class="col-card k3">
+        <h4>全球盤點</h4>
+        <ul>
+          <li>每 5 年總體檢</li>
+          <li>第一次：2023 年</li>
+          <li>檢視整體進度</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>核心問題：</strong>沒有強制懲罰，國際合作靠什麼維繫？<br>
+      <span style="color: var(--c-muted);">（國際聲譽、貿易壓力、金融市場、公民壓力）</span>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://unfccc.int/process-and-meetings/the-paris-agreement" target="_blank" rel="noopener">聯合國氣候變化綱要公約 — 巴黎協定</a>
+  </div>
+</section>
+
+<!-- 15 臺灣淨零 -->
+<section class="slide" id="slide-tw-netzero">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>臺灣 2050 淨零路徑：12 項關鍵戰略</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：12 項關鍵戰略矩陣圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>2030 年較基準年（2005）減量 23±2%；2050 年達淨零。風電光電、氫能、儲能、運具電動化、自然碳匯、公正轉型等 12 項戰略。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>淨零不等於零排放：殘留排放靠碳匯與直接空氣捕集抵銷</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 14px;">
+      <strong>學習單任務：</strong>標示「我最有感的戰略」並說明理由。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.cca.gov.tw/" target="_blank" rel="noopener">中華民國環境部氣候變遷署</a><br>
+    教育部 RAG 教材：0296_KEE_III_臺灣產電結構轉轉轉、0301_KEE_III_臺灣能源轉型方向（純文字索引）
+  </div>
+</section>
+
+<!-- 16 倫理辯論 -->
+<section class="slide" id="slide-debate">
+  <div class="slide-tag">活動三・步驟 4</div>
+  <h2>倫理兩難辯論</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.2rem; color: var(--c-accent); font-weight: 700; margin: 10px 0 24px;">
+      「先進國家工業化兩百年才富有，現在要求開發中國家減碳，公平嗎？」
+    </p>
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <h3 style="color: var(--c-cog);">正方主張</h3>
+        <ul>
+          <li>氣候危機已到，沒人能豁免</li>
+          <li>未來世代承擔最重</li>
+          <li>科技與資金可由先進國家提供</li>
+        </ul>
+      </div>
+      <div class="compare-card right">
+        <h3 style="color: var(--c-warn);">反方主張</h3>
+        <ul>
+          <li>歷史排放責任應由先進國承擔</li>
+          <li>開發中國家有發展權</li>
+          <li>強加減碳會加劇貧窮</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 14px; color: var(--c-muted);">
+      <strong>背景原則：</strong>共同但有差別責任 — 各國責任有別，但共同行動不可少。
+    </p>
+  </div>
+</section>
+
+<!-- 17 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>從我做起</h2>
+    <p class="subtitle">學生治理與校園減碳提案</p>
+  </div>
+</section>
+
+<!-- 18 臺灣升溫在地 -->
+<section class="slide" id="slide-tw-warming">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>臺灣升溫：在地有感</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：臺灣百年升溫曲線 + 高溫日對照圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>臺灣 110 年升溫約 1.6°C，是全球的 2 倍；高溫日（≥36°C）多個測站約倍增；強降雨事件增加。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>為什麼臺灣升得更快？都市熱島、海島效應、觀測站分布的多重因素</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 14px;">
+      <strong>分享：</strong>今年夏天你最有感的極端天氣是什麼？
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://tccip.ncdr.nat.gov.tw/" target="_blank" rel="noopener">臺灣氣候變遷推估資訊與調適知識平台</a>
+  </div>
+</section>
+
+<!-- 19 CER 結構 -->
+<section class="slide" id="slide-cer">
+  <div class="slide-tag">活動四・步驟 2</div>
+  <h2>提案書結構：主張 – 證據 – 理由</h2>
+  <div class="slide-body">
+    <div class="cer-grid">
+      <div class="cer-card c">
+        <h4>主張（C）</h4>
+        <p>你要學校做什麼具體改變？</p>
+        <p style="color: var(--c-muted); font-size: 0.9rem;">範例：教室裝感應燈</p>
+      </div>
+      <div class="cer-card e">
+        <h4>證據（E）</h4>
+        <p>引用哪些資料支持？</p>
+        <p style="color: var(--c-muted); font-size: 0.9rem;">範例：學校電費單照明佔 30%、下課未關燈率 60%</p>
+      </div>
+      <div class="cer-card r">
+        <h4>理由（R）</h4>
+        <p>為什麼證據能支持主張？</p>
+        <p style="color: var(--c-muted); font-size: 0.9rem;">範例：感應燈可估算減 X% 用電、折算 Y 公斤二氧化碳</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 14px;">
+      可從<strong>節能、食物、交通、採購</strong>任一面向切入。
+    </p>
+  </div>
+  <div class="slide-source">
+    完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §7</a>
+  </div>
+</section>
+
+<!-- 20 WSA 全校方法 -->
+<section class="slide" id="slide-wsa">
+  <div class="slide-tag">活動四・步驟 3</div>
+  <h2>全校方法：四面向檢核</h2>
+  <div class="slide-body">
+    <div class="three-col" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="col-card k1">
+        <h4>治理</h4>
+        <ul>
+          <li>學生氣候委員會</li>
+          <li>提案送校務會議</li>
+        </ul>
+      </div>
+      <div class="col-card k2">
+        <h4>課程</h4>
+        <ul>
+          <li>跨科專題</li>
+          <li>專題式學習</li>
+        </ul>
+      </div>
+      <div class="col-card k3">
+        <h4>校園營運</h4>
+        <ul>
+          <li>能源稽核</li>
+          <li>節水節電</li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-color: var(--c-soc);">
+        <h4 style="color: var(--c-soc);">社群</h4>
+        <ul>
+          <li>家長會合作</li>
+          <li>在地非政府組織連結</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 16px; color: var(--c-muted);">
+      <strong>互評規則：</strong>每組 1 分鐘閃電提案，全班用 4 格檢核表評分。
+    </p>
+  </div>
+</section>
+
+<!-- 21 後設認知 -->
+<section class="slide" id="slide-meta">
+  <div class="slide-tag">活動四・步驟 4</div>
+  <h2>後設認知：想想自己怎麼想</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>四節課前，你對氣候變遷的看法是什麼？</div>
+      <div class="question-card"><div class="q-num">2</div>現在是什麼？最關鍵讓你改變的是哪個資料或哪個討論？</div>
+      <div class="question-card"><div class="q-num">3</div>還有什麼你想繼續追問的？</div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 22px; color: var(--c-muted);">
+      請於學習單書寫至少 50 字反思。這不是為了打分，是為了訓練你成為「會監控自己學習」的學習者。
+    </p>
+  </div>
+</section>
+
+<!-- 22 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">證據</div>
+        <div class="desc">用全球觀測網與資料同化看見地球發燒</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">治理</div>
+        <div class="desc">巴黎協定、國家自主貢獻、臺灣淨零路徑</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">行動</div>
+        <div class="desc">主張 – 證據 – 理由，校園就能起步</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      世界還沒給你們答案，<br>
+      <strong style="color: var(--c-accent);">因為答案還沒被寫出來——它正在你們手上。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">22</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

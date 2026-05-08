@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大自然的禮物 — 教學投影片（4.4-II）</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border);
+    border-bottom-width: 2px; border-radius: 4px; font-family: monospace;
+    font-size: 0.8em; background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, #f0fdf4 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .gift-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 24px 0;
+  }
+  .gift-card {
+    background: var(--c-bg); border: 2px solid var(--c-beh); border-radius: 12px;
+    padding: 24px 16px; text-align: center;
+  }
+  .gift-card .icon { font-size: 2.8rem; margin-bottom: 10px; }
+  .gift-card .name { font-size: 1.1rem; font-weight: 700; color: var(--c-beh); }
+  .gift-card .from { font-size: 0.9rem; color: var(--c-muted); margin-top: 4px; }
+  .icon-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px; margin: 24px 0;
+  }
+  .icon-card {
+    background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 12px;
+    padding: 20px; text-align: center;
+  }
+  .icon-card .icon { font-size: 2.4rem; margin-bottom: 10px; }
+  .icon-card .label { font-size: 1rem; font-weight: 600; color: var(--c-accent); }
+  .icon-card .desc { font-size: 0.9rem; color: var(--c-muted); margin-top: 4px; }
+  .data-highlight {
+    background: #f0fdf4; border-left: 4px solid var(--c-beh);
+    border-radius: 0 10px 10px 0; padding: 20px 24px; margin: 20px 0;
+  }
+  .data-highlight .stat { font-size: 2.4rem; font-weight: 800; color: var(--c-beh); }
+  .data-highlight .desc { font-size: 1.05rem; margin-top: 6px; }
+  .question-cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; margin: 24px 0;
+  }
+  .question-card {
+    background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px;
+    padding: 24px; font-size: 1.1rem; text-align: center; position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%; font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ws-table {
+    width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1.05rem;
+  }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 14px 16px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px);
+    height: 48px;
+  }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 12px 0; }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-soc); } .key-card.k2 .word { color: var(--c-soc); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">大自然的禮物 — 教學投影片（4.4-II）</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <div style="font-size: 3rem; margin-bottom: 16px;">🦌🌿</div>
+    <h2>大自然的禮物</h2>
+    <p class="subtitle">小鹿茸茸帶你認識大自然的神奇禮物</p>
+    <p style="font-size: 1rem; color: var(--c-muted); margin-top: 12px;">Level II｜5–8 歲｜Key ID: 4.4-II</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>你今天吃了什麼？那些食物從哪裡來？</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>早上吃了什麼？那是從哪裡來的？</div>
+      <div class="question-card"><div class="q-num">2</div>你今天呼吸的空氣，是誰給你的？</div>
+      <div class="question-card"><div class="q-num">3</div>你最喜歡大自然的哪個禮物？</div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px; color: var(--c-accent);">
+      <strong>其實都是大自然每天默默送給我們的！</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>大自然送禮物給我</h2>
+    <p style="font-size: 1.1rem; color: var(--c-muted); margin-top: 8px;">認識大自然每天送我們的 4 份禮物</p>
+  </div>
+</section>
+
+<!-- 4. 4 份大禮物 -->
+<section class="slide" id="slide-gifts">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>大自然每天送我們 4 份大禮物</h2>
+  <div class="slide-body">
+    <div class="gift-grid">
+      <div class="gift-card">
+        <div class="icon">🍎</div>
+        <div class="name">食物</div>
+        <div class="from">蔬菜水果</div>
+      </div>
+      <div class="gift-card">
+        <div class="icon">💧</div>
+        <div class="name">水</div>
+        <div class="from">雨、河水</div>
+      </div>
+      <div class="gift-card">
+        <div class="icon">🌬️</div>
+        <div class="name">空氣</div>
+        <div class="from">可以呼吸</div>
+      </div>
+      <div class="gift-card">
+        <div class="icon">🪵</div>
+        <div class="name">材料</div>
+        <div class="from">木頭石頭蓋房子</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      用手指數「<strong style="color: var(--c-beh);">一（吃）、二（喝）、三（呼吸）、四（家）！</strong>」每數一個就說「謝謝！」
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.fao.org/forestry/en/" target="_blank" rel="noopener">聯合國糧農組織 — 林業</a></div>
+</section>
+
+<!-- 5. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>小鹿茸茸的家</h2>
+    <p style="font-size: 1.1rem; color: var(--c-muted); margin-top: 8px;">感受人和大自然是互相依賴的好朋友</p>
+  </div>
+</section>
+
+<!-- 6. 深深吸一口氣 -->
+<section class="slide" id="slide-breath">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>深深吸一口氣——謝謝樹朋友！</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-beh); border-radius: 12px; padding: 40px; background: #f0fdf4; text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-beh); font-weight: 700; margin-bottom: 12px;">[此處放：一棵大樹 + 2 個小朋友深呼吸的示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>一棵大樹一天呼出的氧氣，差不多夠 2 個小朋友用一整天</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>兩人一組，手牽手做 3 次深呼吸，一起說「謝謝樹朋友！」</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.forest.gov.tw/" target="_blank" rel="noopener">臺灣林業保育署教育資源</a></div>
+</section>
+
+<!-- 7. 臺灣是森林國 -->
+<section class="slide" id="slide-forest">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>臺灣 10 個大操場，有 6 個都是森林！</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：10 個操場，6 個綠色（森林）4 個其他的示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>臺灣超過 60% 土地是森林，幫我們保護水源、淨化空氣、提供動物的家</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>全班伸雙手，彎下 4 根，立起 6 根，喊「樹樹樹樹樹樹！」</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.forest.gov.tw/" target="_blank" rel="noopener">臺灣林業保育署</a></div>
+</section>
+
+<!-- 8. 26 億人靠森林 -->
+<section class="slide" id="slide-billions">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>全世界 26 億人靠森林煮飯取暖</h2>
+  <div class="slide-body">
+    <div class="data-highlight">
+      <div class="stat">26 億人</div>
+      <div class="desc">差不多是 <strong>8 個臺灣人口</strong>加起來那麼多的人，他們煮飯和冬天取暖，都需要森林送的木頭和柴火。大自然真的很重要！</div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      跟老師比「<strong style="color: var(--c-accent);">8</strong>」的手勢，說「8 個臺灣那麼多人！」
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.fao.org/forestry/en/" target="_blank" rel="noopener">聯合國糧農組織（2024）</a></div>
+</section>
+
+<!-- 9. 葉子拼貼學習單 -->
+<section class="slide" id="slide-leaf">
+  <div class="slide-tag">活動二・步驟 3・學習單（投影版）</div>
+  <h2>葉子拼貼畫：我送給大自然的禮物</h2>
+  <div class="slide-body">
+    <div style="border: 2px dashed var(--c-beh); border-radius: 16px; padding: 30px; margin: 16px auto; max-width: 640px; background: #f0fdf4; text-align: center;">
+      <div style="font-size: 1.1rem; color: var(--c-beh); font-weight: 700; margin-bottom: 16px;">🍃 用落葉拼出你想送給大自然的禮物</div>
+      <div style="border: 2px dashed #86efac; border-radius: 12px; height: 200px; display: flex; align-items: center; justify-content: center; background: #fff; color: var(--c-muted);">
+        在這裡貼上你的葉子作品（太陽☀️、愛心❤️、家🏠……）
+      </div>
+      <div style="margin-top: 16px; font-size: 1.05rem;">
+        <strong>說一句話：</strong>「我做了一個____，送給____。」
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>我是大自然的小小幫手</h2>
+    <p style="font-size: 1.1rem; color: var(--c-muted); margin-top: 8px;">用種子觀察學會具體照顧大自然的行動</p>
+  </div>
+</section>
+
+<!-- 11. 種子行動卡 -->
+<section class="slide" id="slide-seeds">
+  <div class="slide-tag">活動三・步驟 2 & 3</div>
+  <h2>小小幫手做什麼？選一件你最想做的！</h2>
+  <div class="slide-body">
+    <div class="icon-grid">
+      <div class="icon-card">
+        <div class="icon">🌱</div>
+        <div class="label">種一顆種子</div>
+        <div class="desc">每天澆一次水</div>
+      </div>
+      <div class="icon-card">
+        <div class="icon">🍂</div>
+        <div class="label">撿葉子不摘花</div>
+        <div class="desc">保護植物的家</div>
+      </div>
+      <div class="icon-card">
+        <div class="icon">💧</div>
+        <div class="label">刷牙關水龍頭</div>
+        <div class="desc">節省用水</div>
+      </div>
+      <div class="icon-card">
+        <div class="icon">📣</div>
+        <div class="label">告訴家人</div>
+        <div class="desc">一起愛護大自然</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px; color: var(--c-accent);">
+      選好之後，把任務卡貼在自己的種子杯上，帶回家執行！
+    </p>
+  </div>
+</section>
+
+<!-- 12. 家庭小任務 -->
+<section class="slide" id="slide-family">
+  <div class="slide-tag">WSA 家庭連結</div>
+  <h2>帶回家的小任務：週末去找大自然的禮物</h2>
+  <div class="slide-body">
+    <div style="border: 2px solid var(--c-beh); border-radius: 12px; padding: 28px; margin: 16px 0; background: #f0fdf4;">
+      <div style="font-size: 1.1rem; font-weight: 700; color: var(--c-beh); margin-bottom: 16px;">🌿 週末戶外小任務</div>
+      <ol style="font-size: 1.05rem; line-height: 2;">
+        <li>和爸爸媽媽去公園或溪邊走走</li>
+        <li>找 <strong>3 樣</strong>大自然送你的禮物（葉、花、石、羽毛……）</li>
+        <li>帶回家做一個小展覽</li>
+        <li>記得告訴老師你找到了什麼！</li>
+      </ol>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-accent);">
+      和旁邊同學說：「我要找____和____給爸媽看！」
+    </p>
+  </div>
+</section>
+
+<!-- 13. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">禮物</div>
+        <div class="desc">大自然每天送我們食物、水、空氣、材料 4 份禮物</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">依賴</div>
+        <div class="desc">人、動物和大自然是好朋友，互相幫忙、互相需要</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">幫手</div>
+        <div class="desc">種種子、說謝謝、節省水電，每一件都是在照顧地球</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">茸茸說：謝謝你們，我們一起照顧大自然！</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">13</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+
+</body>
+</html>

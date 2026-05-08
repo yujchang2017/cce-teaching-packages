@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生物多樣性、氣候與糧食生產 — 投影片</title>
+<style>
+  :root{--accent:#0f766e;--soft:#ccfbf1;--cog:#2563eb;--soc:#db2777;--beh:#16a34a;--warn:#ea580c;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--text);line-height:1.6;margin:0;background:#fff}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.95rem;font-weight:500;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--muted)}
+  .nav-indicator{font-family:monospace;color:var(--text)}
+  .nav-cur{color:var(--accent);font-weight:700}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--border);position:relative}
+  .slide h2{font-size:2rem;margin:0 0 20px;color:var(--text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.8rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--accent);color:#fff;padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--accent);letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.4rem;color:var(--accent)}
+  .slide.divider .act-steps{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .act-step-chip{background:var(--soft);color:var(--accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  .q-box{background:var(--soft);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.4rem;line-height:1.6;color:var(--accent);font-weight:600}
+  .q-sub{font-size:1.05rem;color:var(--muted);font-weight:400;margin-top:10px}
+  .data-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0;background:var(--bg)}
+  .data-card .dc-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;color:var(--muted);margin-bottom:8px}
+  .data-card .dc-fact{font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.5}
+  .data-card .dc-src{font-size:.85rem;color:var(--muted)}
+  .data-card .dc-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  .act-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0}
+  .act-card .ac-badge{display:inline-block;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:4px;margin-bottom:12px;letter-spacing:.08em}
+  .act-card .ac-task{font-size:1.15rem;color:var(--text);line-height:1.6}
+  .ws-frame{border:2px dashed var(--accent);border-radius:12px;padding:28px 32px;margin:20px 0;background:#fff}
+  .ws-frame .ws-title{font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:14px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--border);padding:12px 14px;text-align:center}
+  .ws-table th{background:var(--soft);color:var(--accent);font-weight:700}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:52px}
+  .ws-frame .ws-lines{display:flex;flex-direction:column;gap:14px}
+  .ws-frame .ws-line{border-bottom:1.5px solid #d1d5db;height:28px}
+  .chart-placeholder{border:2px dashed var(--accent);border-radius:12px;padding:40px;background:var(--soft);text-align:center;margin:20px 0}
+  .chart-placeholder .cp-label{font-size:.8rem;color:var(--muted);letter-spacing:.15em;margin-bottom:8px}
+  .chart-placeholder .cp-title{font-size:1.4rem;color:var(--accent);font-weight:700;margin-bottom:12px}
+  .chart-placeholder .cp-data{font-size:1.1rem;margin:14px 0}
+  .chart-placeholder .cp-note{font-size:.85rem;color:var(--muted);margin-top:12px}
+  .hl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:20px 0}
+  .hl-card{background:var(--soft);border-radius:10px;padding:18px 20px;text-align:center}
+  .hl-card .hc-num{font-size:2rem;font-weight:800;color:var(--accent);line-height:1}
+  .hl-card .hc-desc{font-size:.9rem;color:var(--text);margin-top:8px}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+  .compare-col{border-radius:10px;padding:18px 20px}
+  .compare-col.left{background:#fff7ed;border:2px solid #fb923c}
+  .compare-col.right{background:#f0fdf4;border:2px solid var(--beh)}
+  .compare-col h3{margin:0 0 12px;font-size:1rem}
+  .compare-col.left h3{color:#c2410c}
+  .compare-col.right h3{color:var(--beh)}
+  .compare-col ul{margin:0;padding-left:1.3em}
+  .compare-col li{font-size:.9rem;margin:6px 0}
+  .summary-keys{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:28px}
+  .sk-chip{background:var(--soft);border:2px solid var(--accent);color:var(--accent);border-radius:24px;padding:10px 24px;font-size:1.1rem;font-weight:700}
+  .slide-src{margin-top:auto;padding-top:12px;border-top:1px dashed var(--border);font-size:.8rem;color:var(--muted)}
+  .slide-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  a.ext{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  a.ext::after{content:" ↗";font-size:.8em;opacity:.7}
+  ul.bullet{padding-left:1.4em;margin:12px 0}
+  ul.bullet li{margin:8px 0;font-size:1.05rem}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">生物多樣性、氣候與糧食生產 ｜ Level IV</span>
+</header>
+
+<main>
+
+<!-- SLIDE 1: COVER -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body">
+    <div class="level-tag">Level IV</div>
+    <h2>生物多樣性、氣候<br>與糧食生產</h2>
+    <p style="color:var(--muted);max-width:680px;font-size:1.05rem;margin-top:12px">當授粉者消失、氣候異常、土壤枯竭，我們的餐盤會剩下什麼？</p>
+  </div>
+</section>
+
+<!-- SLIDE 2: BIG QUESTION -->
+<section class="slide" id="slide-question">
+  <div class="slide-body">
+    <h2>大問題</h2>
+    <div class="q-box">
+      如果明天所有蜜蜂都消失，你的早餐還剩什麼？
+      <div class="q-sub">——授粉者的消失是糧食危機的前奏；而氣候變遷正在加速這一切。</div>
+    </div>
+    <ul class="bullet">
+      <li>全球 <strong>75%</strong> 的糧食作物仰賴授粉者才能結實</li>
+      <li>農業同時是氣候問題的製造者（<strong>21–37%</strong> 全球排放）也是受害者</li>
+      <li>臺灣熱量糧食自給率僅 <strong>30–32%</strong>——我們有多脆弱？</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SLIDE 3: ACTIVITY 1 DIVIDER -->
+<section class="slide divider" id="slide-a1">
+  <div class="act-badge">活動一</div>
+  <h2>授粉者危機</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">沒有蜜蜂的早餐</span>
+    <span class="act-step-chip">CCD 成因分析</span>
+    <span class="act-step-chip">行動連結</span>
+  </div>
+</section>
+
+<!-- SLIDE 4: A1 — Pollinator Data -->
+<section class="slide" id="slide-a1-data">
+  <div class="slide-body">
+    <h2>授粉服務：看不見的農業支柱</h2>
+    <div class="hl-grid">
+      <div class="hl-card">
+        <div class="hc-num">75%</div>
+        <div class="hc-desc">全球糧食作物<br>依賴授粉者結實</div>
+      </div>
+      <div class="hl-card">
+        <div class="hc-num">2,350–<br>5,770 億</div>
+        <div class="hc-desc">授粉服務年經濟價值（美元）<br>聯合國糧農組織 2016</div>
+      </div>
+      <div class="hl-card">
+        <div class="hc-num">30–50%</div>
+        <div class="hc-desc">歐美商業蜂群<br>過去 20 年縮減比例</div>
+      </div>
+    </div>
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：依賴授粉者的作物種類佔比圖]</div>
+        <div class="cp-data"><strong>關鍵數據：</strong>水果、蔬菜、堅果、咖啡、可可等作物高度依賴昆蟲授粉；穀物（小麥、玉米）靠風媒，但蛋白質來源高度集中在依賴授粉者的作物</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+      <figcaption style="font-size:.85rem;color:var(--muted);text-align:center;margin-top:6px">資料來源：聯合國糧農組織</figcaption>
+    </figure>
+  </div>
+  <div class="slide-src">資料：<a href="https://www.fao.org/pollination/en/" target="_blank">聯合國糧農組織 — 授粉服務</a></div>
+</section>
+
+<!-- SLIDE 5: A1 — CCD Causes -->
+<section class="slide" id="slide-a1-ccd">
+  <div class="slide-body">
+    <h2>蜂群崩潰症候群（CCD）的成因</h2>
+    <div class="hl-grid">
+      <div class="hl-card" style="background:#fff7ed">
+        <div class="hc-num" style="font-size:1.1rem;color:#c2410c">農藥</div>
+        <div class="hc-desc">菸鹼素類殺蟲劑損害蜜蜂神經與導航能力</div>
+      </div>
+      <div class="hl-card" style="background:#fdf2f8">
+        <div class="hc-num" style="font-size:1.1rem;color:var(--soc)">棲地喪失</div>
+        <div class="hc-desc">單一栽培農業取代多樣蜜源植物</div>
+      </div>
+      <div class="hl-card" style="background:#eff6ff">
+        <div class="hc-num" style="font-size:1.1rem;color:var(--cog)">病蟲害</div>
+        <div class="hc-desc">蜂蟎（Varroa）與病毒削弱蜂群免疫力</div>
+      </div>
+      <div class="hl-card" style="background:#f0fdf4">
+        <div class="hc-num" style="font-size:1.1rem;color:var(--beh)">氣候異常</div>
+        <div class="hc-desc">花期與授粉者出沒時間錯位</div>
+      </div>
+    </div>
+    <div class="act-card" style="margin-top:8px">
+      <div class="ac-badge">小組討論</div>
+      <div class="ac-task">哪個成因最容易透過政策介入？哪個最難？各組提出一個具體建議。</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: ACTIVITY 2 DIVIDER -->
+<section class="slide divider" id="slide-a2">
+  <div class="act-badge">活動二</div>
+  <h2>工業農業的隱藏帳單</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">單一栽培 vs. 生態農業</span>
+    <span class="act-step-chip">飲食碳足跡計算</span>
+    <span class="act-step-chip">土壤碳匯辯論</span>
+  </div>
+</section>
+
+<!-- SLIDE 7: A2 — Compare -->
+<section class="slide" id="slide-a2-compare">
+  <div class="slide-body">
+    <h2>單一栽培 vs. 生態農業</h2>
+    <div class="compare-grid">
+      <div class="compare-col left">
+        <h3>單一栽培（工業農業）</h3>
+        <ul>
+          <li>高產量，短期效益明顯</li>
+          <li>大量使用化學肥料與農藥</li>
+          <li>土壤有機質持續下降</li>
+          <li>生物多樣性極低</li>
+          <li>N₂O 與 CH₄ 排放量高</li>
+        </ul>
+      </div>
+      <div class="compare-col right">
+        <h3>生態農業（多樣種植）</h3>
+        <ul>
+          <li>產量稍低，但長期韌性強</li>
+          <li>依靠輪作、綠肥、堆肥</li>
+          <li>土壤有機碳持續累積</li>
+          <li>提供棲地，授粉者多樣</li>
+          <li>碳排放顯著較低</li>
+        </ul>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">關鍵數據</div>
+      <div class="dc-fact">農業、林業與土地利用合計占全球溫室氣體排放 21–37%；牛肉每公斤蛋白質碳排約為豆類的 60 倍；N₂O 暖化效力是 CO₂ 的 273 倍。</div>
+      <div class="dc-src">資料：<a href="https://www.ipcc.ch/report/ar6/wg3/" target="_blank">聯合國跨政府氣候變遷專門委員會 AR6 WG3</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: A2 — Diet Carbon Worksheet -->
+<section class="slide" id="slide-a2-ws">
+  <div class="slide-body">
+    <h2>飲食碳足跡工作單</h2>
+    <div class="ws-frame">
+      <div class="ws-title">📋 我的昨日餐盤碳帳本</div>
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th>餐次</th>
+            <th>主要食材（列出 3 項）</th>
+            <th>估計碳排（kg CO₂e）</th>
+            <th>低碳替代方案</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>早餐</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>午餐</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>晚餐</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td style="font-weight:700;background:var(--soft)">日合計</td><td class="fill" colspan="2"></td><td class="fill"></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:.85rem;color:var(--muted);margin-top:8px">參考：牛肉 ≈ 27 kg CO₂e/kg ｜豬肉 ≈ 12 ｜雞肉 ≈ 6 ｜豆腐 ≈ 2 ｜蔬菜 ≈ 0.5–2</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9: ACTIVITY 3 DIVIDER -->
+<section class="slide divider" id="slide-a3">
+  <div class="act-badge">活動三</div>
+  <h2>臺灣的糧食安全警報</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">糧食自給率解讀</span>
+    <span class="act-step-chip">稻作氣候風險</span>
+    <span class="act-step-chip">韌性方案設計</span>
+  </div>
+</section>
+
+<!-- SLIDE 10: A3 — Taiwan Food Security Data -->
+<section class="slide" id="slide-a3-data">
+  <div class="slide-body">
+    <h2>臺灣糧食自給率現況</h2>
+    <div class="hl-grid">
+      <div class="hl-card">
+        <div class="hc-num">30–32%</div>
+        <div class="hc-desc">臺灣熱量糧食自給率（2022）<br>近七成食物仰賴進口</div>
+      </div>
+      <div class="hl-card">
+        <div class="hc-num">≈100%</div>
+        <div class="hc-desc">稻米自給率<br>（但小麥大豆玉米幾乎全數進口）</div>
+      </div>
+    </div>
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：臺灣主要作物自給率長條圖]</div>
+        <div class="cp-data"><strong>關鍵數據：</strong>稻米≈100%、蔬菜≈88%、水果≈83%、小麥≈1%、大豆≈6%、玉米≈2%——蛋白質與油脂來源高度依賴進口</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+      <figcaption style="font-size:.85rem;color:var(--muted);text-align:center;margin-top:6px">資料來源：農業部</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- SLIDE 11: A3 — Climate Risk for Rice -->
+<section class="slide" id="slide-a3-climate">
+  <div class="slide-body">
+    <h2>升溫 2°C：臺灣稻作的未來</h2>
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：TCCIP 稻作產量預測情境圖]</div>
+        <div class="cp-data"><strong>關鍵數據：</strong>全球升溫 2°C 情境下，臺灣一期稻作產量預估下降 13–20%；高溫導致花期結實率下降是主要機制</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+      <figcaption style="font-size:.85rem;color:var(--muted);text-align:center;margin-top:6px">資料來源：臺灣氣候變遷推估資訊平台（TCCIP）</figcaption>
+    </figure>
+    <div class="act-card" style="margin-top:8px">
+      <div class="ac-badge">討論</div>
+      <div class="ac-task">農民可採取哪些調適策略（品種選育、調整播種期、用水管理）？政府應扮演什麼角色？</div>
+    </div>
+  </div>
+  <div class="slide-src">資料：<a href="https://www.climatechange.tw" target="_blank">臺灣氣候變遷推估資訊平台（TCCIP）</a></div>
+</section>
+
+<!-- SLIDE 12: ACTIVITY 4 DIVIDER -->
+<section class="slide divider" id="slide-a4">
+  <div class="act-badge">活動四</div>
+  <h2>永續飲食倡議書</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">倡議書框架</span>
+    <span class="act-step-chip">草稿撰寫</span>
+    <span class="act-step-chip">同儕回饋</span>
+  </div>
+</section>
+
+<!-- SLIDE 13: A4 — Advocacy Guide -->
+<section class="slide" id="slide-a4-guide">
+  <div class="slide-body">
+    <h2>永續飲食倡議書：寫作框架</h2>
+    <div class="hl-grid">
+      <div class="hl-card" style="background:#eff6ff">
+        <div class="hc-num" style="font-size:1.2rem;color:var(--cog)">① 開場</div>
+        <div class="hc-desc">為何這個議題重要？<br>用一個具體畫面切入</div>
+      </div>
+      <div class="hl-card" style="background:#f0fdf4">
+        <div class="hc-num" style="font-size:1.2rem;color:var(--beh)">② 數據</div>
+        <div class="hc-desc">至少引用 2 項數據<br>說明問題的規模</div>
+      </div>
+      <div class="hl-card" style="background:#fff7ed">
+        <div class="hc-num" style="font-size:1.2rem;color:#c2410c">③ 行動</div>
+        <div class="hc-desc">提出具體可執行的<br>飲食改變建議</div>
+      </div>
+      <div class="hl-card" style="background:#fdf2f8">
+        <div class="hc-num" style="font-size:1.2rem;color:var(--soc)">④ 結語</div>
+        <div class="hc-desc">情感連結：邀請改變<br>而非批判對方選擇</div>
+      </div>
+    </div>
+    <p style="color:var(--muted);font-size:.95rem;margin-top:12px">目標字數：250–350 字 ｜語氣：友善、有說服力，非說教</p>
+  </div>
+</section>
+
+<!-- SLIDE 14: A4 — Advocacy Worksheet -->
+<section class="slide" id="slide-a4-ws">
+  <div class="slide-body">
+    <h2>倡議書草稿工作單</h2>
+    <div class="ws-frame">
+      <div class="ws-title">✏️ 永續飲食倡議書（250–350 字）</div>
+      <div class="ws-lines">
+        <div style="font-size:.9rem;color:var(--muted);margin-bottom:4px">開場（2–3 句）</div>
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--muted);margin:8px 0 4px">數據段（引用 2 項）</div>
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--muted);margin:8px 0 4px">行動呼籲</div>
+        <div class="ws-line"></div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--muted);margin:8px 0 4px">結語</div>
+        <div class="ws-line"></div>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:24px;font-size:.85rem;color:var(--muted)">
+        <span>評分標準：數據準確 30 ｜論點清晰 30 ｜行動可執行 20 ｜語氣友善 20</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 15: SUMMARY -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <div class="slide-body">
+    <h2 style="color:var(--beh)">今天學到了什麼？</h2>
+    <div class="summary-keys">
+      <div class="sk-chip">授粉者</div>
+      <div class="sk-chip">農業碳排</div>
+      <div class="sk-chip">糧食自給率</div>
+      <div class="sk-chip">氣候風險</div>
+      <div class="sk-chip">永續飲食</div>
+    </div>
+    <p style="color:var(--muted);max-width:600px;margin:24px auto 0;font-size:1rem">每一個飲食選擇都是一張選票——投給你想要的農業系統、你想要的生態系、你想要的氣候未來。</p>
+    <p style="margin-top:30px"><a href="lesson_plan.html" style="color:var(--accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / <span id="navTotal"></span></span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換・捲動換頁</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  const tot    = document.getElementById('navTotal');
+  if (!slides.length || !cur) return;
+  if (tot) tot.textContent = slides.length;
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.4-IV 能源消耗和碳排放｜簡報</title>
+<style>
+:root{
+  --c-accent:#F59E0B;--c-accent-soft:#FFFBEB;
+  --c-cog:#3B82F6;--c-cog-soft:#EFF6FF;
+  --c-soc:#EC4899;--c-soc-soft:#FDF2F8;
+  --c-beh:#22C55E;--c-beh-soft:#F0FDF4;
+  --c-dark:#1e3a5f;--c-mid:#2d5986;
+  --c-text:#1F2937;--c-muted:#6B7280;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:"Noto Sans TC",sans-serif;background:#0f172a;color:var(--c-text)}
+#topbar{position:fixed;top:0;left:0;right:0;height:44px;background:var(--c-dark);display:flex;align-items:center;gap:12px;padding:0 16px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+#topbar a{color:#fff;font-size:.85rem;text-decoration:none;opacity:.85}
+#topbar a:hover{opacity:1;text-decoration:underline}
+#topbar .title{color:#fff;font-size:.9rem;font-weight:700;flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#navbar{position:fixed;bottom:0;left:0;right:0;height:36px;background:rgba(30,58,95,.95);display:flex;align-items:center;justify-content:center;gap:8px;z-index:100}
+#navbar span{color:#fff;font-size:.78rem;opacity:.75}
+#slide-counter{color:#fff;font-size:.82rem;font-weight:600}
+#container{height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;padding-top:44px;padding-bottom:36px;scrollbar-width:none}
+#container::-webkit-scrollbar{display:none}
+.slide{height:calc(100vh - 80px);scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:32px 24px;position:relative;text-align:center}
+/* cover */
+.slide.cover{background:linear-gradient(160deg,#0f172a 0%,#1e3a5f 50%,#0f3460 100%)}
+.slide.cover h1{font-size:clamp(1.6rem,4vw,2.6rem);font-weight:900;color:#fff;line-height:1.2;margin-bottom:16px}
+.slide.cover .sub{color:rgba(255,255,255,.7);font-size:1rem;margin-bottom:24px}
+.slide.cover .badge{display:inline-block;background:var(--c-accent);color:#1e3a5f;font-weight:800;font-size:.85rem;padding:6px 18px;border-radius:20px}
+/* question */
+.slide.question{background:linear-gradient(135deg,#1e3a5f,#0f3460)}
+.slide.question .q-label{color:var(--c-accent);font-size:.9rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+.slide.question h2{font-size:clamp(1.4rem,3.5vw,2.2rem);font-weight:900;color:#fff;line-height:1.35;max-width:700px}
+/* divider */
+.slide.divider{background:linear-gradient(135deg,#1e3a5f 0%,var(--c-mid) 100%)}
+.slide.divider .act-num{font-size:1rem;font-weight:700;color:var(--c-accent);letter-spacing:.1em;margin-bottom:8px}
+.slide.divider h2{font-size:clamp(1.3rem,3vw,2rem);font-weight:900;color:#fff;max-width:640px;margin-bottom:12px}
+.slide.divider .act-desc{color:rgba(255,255,255,.75);font-size:.9rem;max-width:540px}
+/* content slides */
+.slide.content{background:#fff;align-items:flex-start;text-align:left}
+.slide.content .slide-title{font-size:1.2rem;font-weight:800;color:var(--c-dark);margin-bottom:20px;padding-bottom:10px;border-bottom:3px solid var(--c-accent);align-self:stretch}
+/* summary */
+.slide.summary{background:linear-gradient(160deg,#0f172a,#1e3a5f)}
+.slide.summary h2{font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:28px}
+.summary-keys{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:700px}
+.key-chip{background:rgba(255,255,255,.08);border:2px solid var(--c-accent);border-radius:12px;padding:14px 20px;color:#fff;font-size:1rem;font-weight:700;min-width:160px}
+.key-chip .kc-label{font-size:.72rem;color:var(--c-accent);font-weight:600;display:block;margin-bottom:4px;letter-spacing:.06em}
+/* chart placeholder */
+.chart-box{border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;min-height:160px}
+.chart-box .chart-title{font-weight:700;font-size:.9rem;color:var(--c-dark)}
+.chart-box .chart-src{font-size:.72rem;color:var(--c-muted);margin-top:4px}
+/* ws-table */
+.ws-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.ws-table th{background:var(--c-dark);color:#fff;padding:8px 10px;text-align:left}
+.ws-table td{padding:8px 10px;border-bottom:1px solid #E5E7EB;vertical-align:top}
+.ws-table tr:last-child td{border-bottom:none}
+.ws-table tr:nth-child(even) td{background:#F9FAFB}
+/* stat row */
+.stat-row{display:flex;gap:16px;flex-wrap:wrap;width:100%;margin-bottom:16px}
+.stat-box{flex:1;min-width:120px;background:var(--c-accent-soft);border-left:4px solid var(--c-accent);border-radius:0 8px 8px 0;padding:12px}
+.stat-box .sv{font-size:1.4rem;font-weight:900;color:var(--c-dark)}
+.stat-box .sl{font-size:.75rem;color:var(--c-muted);margin-top:2px}
+/* triangle */
+.triangle-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;width:100%;margin-top:8px}
+.tri-node{background:#EFF6FF;border:2px solid var(--c-cog);border-radius:8px;padding:12px;text-align:center;font-weight:700;font-size:.88rem;color:var(--c-dark)}
+.tri-arrow{display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--c-accent)}
+/* pie chart */
+.pie-list{list-style:none;padding:0;width:100%;font-size:.85rem}
+.pie-list li{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #F3F4F6}
+.pie-list li:last-child{border-bottom:none}
+.pie-bar{height:10px;border-radius:5px;background:var(--c-accent)}
+.pie-label{flex:1}
+.pie-val{font-weight:700;color:var(--c-dark);min-width:36px;text-align:right}
+/* compare grid */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
+.cg-card{border-radius:8px;padding:12px;font-size:.82rem}
+.cg-card.renew{background:#F0FDF4;border-left:4px solid #22C55E}
+.cg-card.nonrenew{background:#FFF1F2;border-left:4px solid #F43F5E}
+.cg-card strong{display:block;margin-bottom:6px;font-size:.88rem}
+/* ethics card */
+.ethics-box{background:#FEF3C7;border:2px solid var(--c-accent);border-radius:12px;padding:16px;text-align:left;width:100%;font-size:.88rem}
+.ethics-box .side{font-weight:700;margin-top:8px;color:var(--c-dark)}
+/* pledge form */
+.pledge-form{width:100%;background:#F0FDF4;border:2px solid #22C55E;border-radius:12px;padding:16px}
+.pledge-form .pf-title{font-weight:700;color:#166534;margin-bottom:10px;font-size:.95rem}
+.pledge-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid #D1FAE5;font-size:.83rem}
+.pledge-row:last-child{border-bottom:none}
+.pledge-row .pr-tag{background:#22C55E;color:#fff;border-radius:4px;padding:2px 6px;font-size:.72rem;font-weight:700;white-space:nowrap;margin-top:1px}
+.pledge-row .pr-line{flex:1;border:none;border-bottom:1px dashed #6EE7B7;background:transparent;color:var(--c-text);font-size:.83rem}
+/* map placeholder */
+.map-placeholder{border:2px dashed #3B82F6;border-radius:12px;padding:24px;background:#EFF6FF;width:100%;min-height:160px;display:flex;flex-direction:column;gap:8px}
+.map-pin{display:flex;align-items:flex-start;gap:8px;font-size:.83rem}
+.map-pin .pin-icon{color:var(--c-accent);font-size:1rem;margin-top:1px}
+.map-pin .pin-label{font-weight:700;color:var(--c-dark)}
+/* lo tags */
+.lo-badge{display:inline-block;border-radius:4px;padding:2px 7px;font-size:.72rem;font-weight:700;margin-right:4px}
+.lo-badge.c{background:var(--c-cog);color:#fff}
+.lo-badge.s{background:var(--c-soc);color:#fff}
+.lo-badge.b{background:var(--c-beh);color:#fff}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a href="lesson_plan.html">← 回教案</a>
+  <span class="title">5.4-IV 能源消耗和碳排放</span>
+</div>
+
+<div id="container">
+
+  <!-- slide-cover -->
+  <div class="slide cover" id="slide-cover">
+    <h1>誰吃掉了地球的電？</h1>
+    <p class="sub">能源消耗和碳排放｜5.4-IV</p>
+    <span class="badge">國中 7-9 年級｜4 個活動</span>
+  </div>
+
+  <!-- slide-question -->
+  <div class="slide question" id="slide-question">
+    <div class="q-label">核心問題</div>
+    <h2>全球能源消耗為什麼持續增加？<br>技術創新能讓我們同時發展又不排碳嗎？</h2>
+  </div>
+
+  <!-- 活動一分隔 -->
+  <div class="slide divider" id="slide-a1">
+    <div class="act-num">活動一</div>
+    <h2>誰吃掉了地球的電？——全球能源消耗全景</h2>
+    <p class="act-desc">從破除迷思出發，認識全球一次能源趨勢、化石燃料佔比，以及能源 × 經濟 × 碳排放的三角關係。</p>
+  </div>
+
+  <!-- slide-energy-overview -->
+  <div class="slide content" id="slide-energy-overview">
+    <div class="slide-title">全球一次能源趨勢（1990-2023）<span class="lo-badge c" style="margin-left:8px">C1</span></div>
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="sv">620 EJ</div>
+        <div class="sl">2023 年全球一次能源總需求</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv">～80%</div>
+        <div class="sl">化石燃料佔供應比例</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv">+70%</div>
+        <div class="sl">較 1990 年的成長幅度</div>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">1990-2023 全球一次能源供應堆疊圖</div>
+      <div style="color:var(--c-muted);font-size:.82rem">化石能源（煤＋石油＋天然氣）／再生能源／核能 分層比較</div>
+      <div class="chart-src">資料來源：國際能源署《世界能源展望 2024》</div>
+    </div>
+    <p style="font-size:.83rem;color:var(--c-muted);margin-top:10px">提問：再生能源成長很快，為什麼化石能源絕對量卻沒有減少？</p>
+  </div>
+
+  <!-- slide-carbon-emissions -->
+  <div class="slide content" id="slide-carbon-emissions">
+    <div class="slide-title">全球 CO₂ 排放仍在上升<span class="lo-badge c" style="margin-left:8px">C2</span></div>
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="sv">37.4 GtCO₂</div>
+        <div class="sl">2024 年全球化石燃料排放預估</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv">+0.8%</div>
+        <div class="sl">較前一年再增</div>
+      </div>
+    </div>
+    <table class="ws-table" style="margin-bottom:12px">
+      <tr><th>燃料類型</th><th>佔比</th><th>特點</th></tr>
+      <tr><td>煤</td><td>約 41%</td><td>電力與工業用途為主</td></tr>
+      <tr><td>石油</td><td>約 32%</td><td>交通運輸為主</td></tr>
+      <tr><td>天然氣</td><td>約 21%</td><td>發電與供暖</td></tr>
+      <tr><td>水泥</td><td>約 4%</td><td>過程排放</td></tr>
+    </table>
+    <p style="font-size:.83rem;color:var(--c-muted)">資料來源：全球碳計畫（Global Carbon Project）2024</p>
+  </div>
+
+  <!-- slide-energy-triangle -->
+  <div class="slide content" id="slide-energy-triangle">
+    <div class="slide-title">能源 × 經濟 × 碳排放三角<span class="lo-badge c" style="margin-left:8px">C3</span></div>
+    <div class="triangle-grid">
+      <div class="tri-node" style="background:#EFF6FF;border-color:var(--c-cog)">⚡ 能源取得<br><span style="font-size:.72rem;font-weight:400">支撐經濟成長</span></div>
+      <div class="tri-arrow">↔</div>
+      <div class="tri-node" style="background:#F0FDF4;border-color:#22C55E">💰 經濟成長<br><span style="font-size:.72rem;font-weight:400">拉動能源需求</span></div>
+      <div style="grid-column:span 3;text-align:center;font-size:.82rem;color:var(--c-muted);padding:4px 0">↕ 目前仍正相關（能源↑ → 碳排↑）</div>
+      <div class="tri-node" style="grid-column:2;background:#FFF1F2;border-color:#F43F5E">🌡 碳排放<br><span style="font-size:.72rem;font-weight:400">氣候暖化驅動力</span></div>
+    </div>
+    <p style="font-size:.85rem;color:var(--c-text);margin-top:14px;max-width:580px">
+      打斷三角的關鍵：讓「用能源」與「排碳」脫鉤（decouple）。<br>
+      目前已有約 30 國做到：GDP 上升，排放卻下降。
+    </p>
+    <div style="font-size:.75rem;color:var(--c-muted);margin-top:8px">全球約 7.6 億人仍無電可用，集中於撒哈拉以南非洲（Our World in Data）</div>
+  </div>
+
+  <!-- 活動二分隔 -->
+  <div class="slide divider" id="slide-a2">
+    <div class="act-num">活動二</div>
+    <h2>從電表走回餐桌——家庭能源足跡與行為反思</h2>
+    <p class="act-desc">解讀臺灣家庭用電結構，進行個人能源消耗自評，並練習與家人的節能對話。</p>
+  </div>
+
+  <!-- slide-home-energy -->
+  <div class="slide content" id="slide-home-energy">
+    <div class="slide-title">臺灣家庭用電結構<span class="lo-badge s" style="margin-left:8px">S1</span></div>
+    <ul class="pie-list">
+      <li>
+        <div class="pie-bar" style="width:27%;background:#F59E0B"></div>
+        <span class="pie-label">冷氣、空調</span>
+        <span class="pie-val">27%</span>
+      </li>
+      <li>
+        <div class="pie-bar" style="width:16%;background:#3B82F6"></div>
+        <span class="pie-label">冰箱</span>
+        <span class="pie-val">16%</span>
+      </li>
+      <li>
+        <div class="pie-bar" style="width:12%;background:#22C55E"></div>
+        <span class="pie-label">照明</span>
+        <span class="pie-val">12%</span>
+      </li>
+      <li>
+        <div class="pie-bar" style="width:11%;background:#EC4899"></div>
+        <span class="pie-label">熱水</span>
+        <span class="pie-val">11%</span>
+      </li>
+      <li>
+        <div class="pie-bar" style="width:9%;background:#F87171"></div>
+        <span class="pie-label">待機電力（吸血鬼負載）</span>
+        <span class="pie-val">7-10%</span>
+      </li>
+      <li>
+        <div class="pie-bar" style="width:25%;background:#D1D5DB"></div>
+        <span class="pie-label">其他</span>
+        <span class="pie-val">其餘</span>
+      </li>
+    </ul>
+    <p style="font-size:.78rem;color:var(--c-muted);margin-top:8px">資料來源：經濟部能源署節能標章網</p>
+    <p style="font-size:.83rem;color:var(--c-text);margin-top:6px">計算挑戰：拔掉 3 個待機插頭，一年可少排多少 CO₂？（台灣電力排放係數 0.494 kg/度）</p>
+  </div>
+
+  <!-- slide-self-assess -->
+  <div class="slide content" id="slide-self-assess">
+    <div class="slide-title">能源消耗自評表<span class="lo-badge s" style="margin-left:8px">S1</span><span class="lo-badge b" style="margin-left:4px">B1</span></div>
+    <table class="ws-table">
+      <tr><th>生活情境</th><th>我的頻率</th><th>我覺得有必要嗎？</th><th>家人可能怎麼看？</th></tr>
+      <tr><td>冷氣設定 24°C 以下</td><td></td><td></td><td></td></tr>
+      <tr><td>電視遙控關機（未拔插頭）</td><td></td><td></td><td></td></tr>
+      <tr><td>淋浴超過 10 分鐘</td><td></td><td></td><td></td></tr>
+      <tr><td>搭電梯（即使只差 1-2 層）</td><td></td><td></td><td></td></tr>
+      <tr><td>充電完成後繼續插著充電線</td><td></td><td></td><td></td></tr>
+      <tr><td>打開冰箱後猶豫超過 30 秒</td><td></td><td></td><td></td></tr>
+      <tr><td>把機上盒整夜開著</td><td></td><td></td><td></td></tr>
+    </table>
+    <p style="font-size:.78rem;color:var(--c-muted);margin-top:8px">完成後書寫 150 字個人反思</p>
+  </div>
+
+  <!-- 活動三分隔 -->
+  <div class="slide divider" id="slide-a3">
+    <div class="act-num">活動三</div>
+    <h2>從實驗室到屋頂——再生能源與技術創新</h2>
+    <p class="act-desc">解讀 LCOE 成本降幅、認識四大技術創新路徑，並透過倫理兩難辯論建立批判性視角。</p>
+  </div>
+
+  <!-- slide-lcoe -->
+  <div class="slide content" id="slide-lcoe">
+    <div class="slide-title">LCOE 均化能源成本降幅（2010-2023）<span class="lo-badge c" style="margin-left:8px">C5</span></div>
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="sv">-89%</div>
+        <div class="sl">太陽光電 LCOE 降幅</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv">-63%</div>
+        <div class="sl">陸域風力 LCOE 降幅</div>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">2010-2023 再生能源均化能源成本趨勢圖</div>
+      <div style="color:var(--c-muted);font-size:.82rem">太陽光電 / 陸域風力 / 離岸風力 LCOE（美元/度）歷年曲線</div>
+      <div class="chart-src">資料來源：國際再生能源機構《再生能源發電成本 2023》</div>
+    </div>
+    <p style="font-size:.83rem;color:var(--c-text);margin-top:10px">
+      關鍵機制：技術學習曲線——累積產量每翻倍，成本下降固定比例（太陽光電學習率約 20%）
+    </p>
+  </div>
+
+  <!-- slide-tech-stations -->
+  <div class="slide content" id="slide-tech-stations">
+    <div class="slide-title">四大技術創新路徑<span class="lo-badge c" style="margin-left:8px">C4</span><span class="lo-badge c" style="margin-left:4px">C6</span></div>
+    <div class="compare-grid">
+      <div class="cg-card renew">
+        <strong>① 太陽光電</strong>
+        矽晶→鈣鈦礦<br>
+        效率：可突破 30%<br>
+        碳強度：40-50 gCO₂/kWh<br>
+        能源回收期：1-3 年
+      </div>
+      <div class="cg-card renew">
+        <strong>② 風力發電</strong>
+        陸域→離岸漂浮式<br>
+        適用深水海域<br>
+        臺灣西部海峽風場世界級<br>
+        碳強度：7-15 gCO₂/kWh
+      </div>
+      <div class="cg-card renew">
+        <strong>③ 儲能技術</strong>
+        鋰電→鈉離子電池<br>
+        不依賴鋰礦<br>
+        解決間歇性問題<br>
+        成本仍在下降中
+      </div>
+      <div class="cg-card nonrenew">
+        <strong>④ 不可再生能源創新</strong>
+        超超臨界燃煤（效率更高）<br>
+        碳捕捉與封存（CCUS）<br>
+        技術存在，成本仍高<br>
+        規模仍小，爭議性強
+      </div>
+    </div>
+    <p style="font-size:.78rem;color:var(--c-muted);margin-top:8px">2023 年全球再生能源累計裝置容量 3,870 GW，單年新增 473 GW（其中太陽光電 346 GW）<br>資料來源：國際再生能源機構</p>
+  </div>
+
+  <!-- slide-ethics-debate -->
+  <div class="slide content" id="slide-ethics-debate">
+    <div class="slide-title">倫理兩難辯論<span class="lo-badge c" style="margin-left:8px">C7</span></div>
+    <div class="ethics-box">
+      <p><strong>情境：</strong>某偏鄉計畫興建 100 百萬瓦地面型太陽光電場，可供三萬戶用電，但需砍除 20 公頃生態敏感林地。</p>
+      <div class="side">🟩 支持方論點</div>
+      <p style="margin-top:4px;font-size:.83rem">① 減少碳排放遠大於林地損失<br>② 可取代燃煤發電，改善地區空品<br>③ 為社區帶來再生能源收益</p>
+      <div class="side">🟥 反對方論點</div>
+      <p style="margin-top:4px;font-size:.83rem">① 林地是碳匯與生物多樣性棲地<br>② 破壞後難以復原<br>③ 應優先考慮屋頂型或廢棄池塘</p>
+      <div class="side">💬 引導問題</div>
+      <p style="margin-top:4px;font-size:.83rem">誰有權決定？誰承擔後果？有沒有第三選項？</p>
+    </div>
+  </div>
+
+  <!-- 活動四分隔 -->
+  <div class="slide divider" id="slide-a4">
+    <div class="act-num">活動四</div>
+    <h2>打造我們的後碳生活——社區行動與治理參與</h2>
+    <p class="act-desc">分享能源創新新聞、反思文化規範的影響，發表社區能源創新地圖，並共構班級轉型宣言。</p>
+  </div>
+
+  <!-- slide-taiwan-energy -->
+  <div class="slide content" id="slide-taiwan-energy">
+    <div class="slide-title">臺灣能源現況與目標落差<span class="lo-badge s" style="margin-left:8px">S3</span></div>
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="sv">9.9%</div>
+        <div class="sl">2023 年台灣再生能源發電佔比</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv">20%</div>
+        <div class="sl">2025 年政策目標（目前落後）</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv">2,822 億度</div>
+        <div class="sl">2023 年台灣電力消費總量</div>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">2023 年臺灣電力來源組合</div>
+      <div style="color:var(--c-muted);font-size:.82rem">再生 9.9%｜核能 ～6%｜天然氣 ～40%｜燃煤 ～42%</div>
+      <div class="chart-src">資料來源：經濟部能源署能源統計資訊網</div>
+    </div>
+    <p style="font-size:.83rem;color:var(--c-muted);margin-top:8px">討論：承諾與執行之間的落差，誰來監督？學生可以扮演什麼角色？</p>
+  </div>
+
+  <!-- slide-community-map -->
+  <div class="slide content" id="slide-community-map">
+    <div class="slide-title">社區能源創新地圖<span class="lo-badge b" style="margin-left:8px">B2</span></div>
+    <div class="map-placeholder">
+      <div style="font-weight:700;color:var(--c-cog);margin-bottom:8px;font-size:.9rem">我們社區 / 臺灣 的能源創新</div>
+      <div class="map-pin">
+        <span class="pin-icon">📍</span>
+        <div>
+          <span class="pin-label">創新一：____________</span><br>
+          <span style="color:var(--c-muted);font-size:.78rem">技術原理：__ ｜預期減碳：__ 噸/年 ｜服務人數：__ 人</span>
+        </div>
+      </div>
+      <div class="map-pin">
+        <span class="pin-icon">📍</span>
+        <div>
+          <span class="pin-label">創新二：____________</span><br>
+          <span style="color:var(--c-muted);font-size:.78rem">技術原理：__ ｜預期減碳：__ 噸/年 ｜服務人數：__ 人</span>
+        </div>
+      </div>
+      <div class="map-pin">
+        <span class="pin-icon">📍</span>
+        <div>
+          <span class="pin-label">創新三：____________</span><br>
+          <span style="color:var(--c-muted);font-size:.78rem">技術原理：__ ｜預期減碳：__ 噸/年 ｜服務人數：__ 人</span>
+        </div>
+      </div>
+      <div style="font-size:.75rem;color:var(--c-muted);margin-top:4px">可包含：離岸風電、地熱、儲能場、綠建築、社區共享太陽能等</div>
+    </div>
+  </div>
+
+  <!-- slide-pledge -->
+  <div class="slide content" id="slide-pledge">
+    <div class="slide-title">班級能源轉型宣言<span class="lo-badge b" style="margin-left:8px">B2</span><span class="lo-badge s" style="margin-left:4px">S3</span></div>
+    <div class="pledge-form">
+      <div class="pf-title">我們班的能源轉型承諾</div>
+      <div class="pledge-row"><span class="pr-tag">個人 1</span><span class="pr-line">每次離開教室關閉所有電源</span></div>
+      <div class="pledge-row"><span class="pr-tag">個人 2</span><input class="pr-line" type="text" placeholder="我的個人承諾 2"></div>
+      <div class="pledge-row"><span class="pr-tag">個人 3</span><input class="pr-line" type="text" placeholder="我的個人承諾 3"></div>
+      <div class="pledge-row"><span class="pr-tag">家庭 1</span><input class="pr-line" type="text" placeholder="家庭行動 1"></div>
+      <div class="pledge-row"><span class="pr-tag">家庭 2</span><input class="pr-line" type="text" placeholder="家庭行動 2"></div>
+      <div class="pledge-row"><span class="pr-tag">學校/社區</span><input class="pr-line" type="text" placeholder="向學校或社區提出的建議"></div>
+    </div>
+    <p style="font-size:.78rem;color:var(--c-muted);margin-top:8px">班級代表將宣言帶至學生自治會議｜月月追蹤：每月第一週班會回報家庭電表數據</p>
+  </div>
+
+  <!-- slide-summary -->
+  <div class="slide summary" id="slide-summary">
+    <h2>三個關鍵詞</h2>
+    <div class="summary-keys">
+      <div class="key-chip">
+        <span class="kc-label">能源趨勢</span>
+        化石燃料仍佔 80%<br>排放持續攀升
+      </div>
+      <div class="key-chip">
+        <span class="kc-label">技術創新</span>
+        LCOE 降幅 89%<br>再生能源已比燃煤便宜
+      </div>
+      <div class="key-chip">
+        <span class="kc-label">行動轉型</span>
+        從家庭對話<br>到社區治理參與
+      </div>
+    </div>
+  </div>
+
+</div><!-- end #container -->
+
+<div id="navbar">
+  <span id="slide-counter">1 / 14</span>
+  <span>｜</span>
+  <span>← → 換頁</span>
+</div>
+
+<script>
+const container = document.getElementById('container');
+const slides = container.querySelectorAll('.slide');
+const counter = document.getElementById('slide-counter');
+const total = slides.length;
+let current = 0;
+
+function updateCounter(idx){
+  counter.textContent = (idx+1) + ' / ' + total;
+}
+
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      current = Array.from(slides).indexOf(e.target);
+      updateCounter(current);
+    }
+  });
+},{root:container,threshold:0.5});
+
+slides.forEach(s=>obs.observe(s));
+updateCounter(0);
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'){
+    e.preventDefault();
+    if(current<total-1)slides[current+1].scrollIntoView({behavior:'smooth'});
+  }else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){
+    e.preventDefault();
+    if(current>0)slides[current-1].scrollIntoView({behavior:'smooth'});
+  }
+});
+</script>
+</body>
+</html>

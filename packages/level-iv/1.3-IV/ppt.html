@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>碳去哪了？—碳循環、海洋與我們｜1.3-IV 簡報</title>
+<style>
+  :root {
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-accent: #0e7490;
+    --c-dark: #1e293b;
+    --c-mid: #475569;
+    --c-light: #f1f5f9;
+    --c-white: #ffffff;
+    --topbar-h: 48px;
+    --navbar-h: 44px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: var(--c-dark);
+    color: var(--c-white);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── top bar ── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--topbar-h);
+    background: var(--c-dark);
+    border-bottom: 1px solid #334155;
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 20px;
+    z-index: 100;
+  }
+  .topbar a {
+    color: #94a3b8; text-decoration: none; font-size: .85rem;
+    display: flex; align-items: center; gap: 4px;
+    white-space: nowrap;
+    transition: color .15s;
+  }
+  .topbar a:hover { color: var(--c-white); }
+  .topbar-sep { color: #475569; }
+  .topbar-title {
+    font-size: .9rem; font-weight: 600; color: var(--c-white);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .topbar-key {
+    margin-left: auto;
+    font-size: .75rem; color: #64748b;
+    white-space: nowrap;
+  }
+
+  /* ── slide container ── */
+  .slides-wrap {
+    margin-top: var(--topbar-h);
+    margin-bottom: var(--navbar-h);
+    height: calc(100vh - var(--topbar-h) - var(--navbar-h));
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+  }
+
+  /* ── individual slide ── */
+  .slide {
+    height: calc(100vh - var(--topbar-h) - var(--navbar-h));
+    scroll-snap-align: start;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 48px 60px;
+    position: relative;
+    text-align: center;
+  }
+
+  /* slide themes */
+  .slide.cover       { background: linear-gradient(145deg, #0f172a 0%, #164e63 60%, #1e3a5f 100%); }
+  .slide.question    { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); }
+  .slide.divider     { background: linear-gradient(135deg, #0c4a6e 0%, var(--c-accent) 100%); }
+  .slide.content     { background: var(--c-dark); }
+  .slide.wsa-slide   { background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); }
+  .slide.hero-slide  { background: linear-gradient(135deg, #1c1917 0%, #292524 100%); }
+  .slide.summary     { background: linear-gradient(145deg, #0f172a 0%, #0c4a6e 60%, #164e63 100%); }
+
+  /* cover */
+  .slide.cover .cover-kicker {
+    font-size: .8rem; letter-spacing: .15em; text-transform: uppercase;
+    color: #7dd3fc; margin-bottom: 16px;
+  }
+  .slide.cover h1 {
+    font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; line-height: 1.2;
+    margin-bottom: 20px;
+  }
+  .slide.cover h1 em { color: #7dd3fc; font-style: normal; }
+  .slide.cover .cover-sub { font-size: 1rem; color: #cbd5e1; margin-bottom: 8px; }
+  .slide.cover .cover-meta { font-size: .85rem; color: #64748b; }
+
+  /* question slide */
+  .slide.question .q-label {
+    font-size: .8rem; letter-spacing: .12em; color: #a5b4fc; margin-bottom: 12px;
+  }
+  .slide.question .q-text {
+    font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 700; line-height: 1.4;
+    color: var(--c-white); max-width: 700px;
+  }
+  .slide.question .q-hint {
+    margin-top: 24px; font-size: .95rem; color: #c7d2fe;
+    max-width: 540px; line-height: 1.6;
+  }
+
+  /* divider */
+  .slide.divider .act-num {
+    font-size: .8rem; letter-spacing: .15em; color: #7dd3fc; margin-bottom: 10px;
+  }
+  .slide.divider h2 {
+    font-size: clamp(1.5rem, 3.5vw, 2.4rem); font-weight: 800;
+    margin-bottom: 14px; line-height: 1.3;
+  }
+  .slide.divider .act-sub {
+    font-size: 1rem; color: #bae6fd; max-width: 500px; line-height: 1.5;
+  }
+  .slide.divider .lo-pills {
+    margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+  }
+  .slide.divider .lo-pill {
+    padding: 4px 12px; border-radius: 20px; font-size: .8rem; font-weight: 600;
+    border: 1.5px solid rgba(255,255,255,.3); color: var(--c-white);
+  }
+
+  /* content slides */
+  .slide-inner { width: 100%; max-width: 900px; text-align: left; }
+  .slide-label {
+    font-size: .75rem; letter-spacing: .1em; color: var(--c-accent);
+    margin-bottom: 10px; text-transform: uppercase;
+  }
+  .slide-inner h2 { font-size: clamp(1.2rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 18px; }
+  .slide-inner h3 { font-size: 1.1rem; font-weight: 600; color: #cbd5e1; margin-bottom: 14px; }
+
+  /* key-data callout */
+  .key-data {
+    background: rgba(14,116,144,.15);
+    border-left: 4px solid var(--c-accent);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .key-data .kd-num { font-size: 2rem; font-weight: 800; color: #7dd3fc; }
+  .key-data .kd-label { font-size: .9rem; color: #cbd5e1; margin-top: 2px; }
+
+  /* grid layouts */
+  .data-grid { display: grid; gap: 16px; margin-bottom: 16px; }
+  .data-grid.col2 { grid-template-columns: 1fr 1fr; }
+  .data-grid.col3 { grid-template-columns: 1fr 1fr 1fr; }
+  .data-card {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 16px;
+  }
+  .data-card .dc-num { font-size: 1.5rem; font-weight: 800; color: #7dd3fc; margin-bottom: 4px; }
+  .data-card .dc-label { font-size: .85rem; color: #94a3b8; line-height: 1.4; }
+
+  /* bullet list */
+  .point-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .point-list li {
+    display: flex; gap: 12px; align-items: flex-start;
+    font-size: .95rem; line-height: 1.5; color: #e2e8f0;
+  }
+  .point-list li::before {
+    content: "▸"; color: var(--c-accent); flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* chart placeholder */
+  .chart-placeholder {
+    border: 2px dashed #475569;
+    border-radius: 10px;
+    background: rgba(255,255,255,.03);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 8px;
+    padding: 32px 20px;
+    color: #64748b;
+    font-size: .85rem;
+    margin-bottom: 16px;
+    min-height: 160px;
+  }
+  .chart-placeholder .cp-icon { font-size: 2rem; }
+  .chart-placeholder .cp-title { font-size: .95rem; color: #94a3b8; font-weight: 600; }
+
+  /* LO tags */
+  .lo-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+  .lo-tag {
+    font-size: .75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  }
+  .lo-tag.cog { background: rgba(37,99,235,.2); color: #93c5fd; border: 1px solid rgba(37,99,235,.4); }
+  .lo-tag.soc { background: rgba(219,39,119,.2); color: #f9a8d4; border: 1px solid rgba(219,39,119,.4); }
+  .lo-tag.beh { background: rgba(22,163,74,.2); color: #86efac; border: 1px solid rgba(22,163,74,.4); }
+
+  /* highlight box */
+  .highlight-box {
+    background: rgba(245,158,11,.08);
+    border: 1px solid rgba(245,158,11,.3);
+    border-radius: 8px; padding: 14px 18px;
+    font-size: .9rem; color: #fde68a; line-height: 1.5;
+    margin-top: 14px;
+  }
+
+  /* WSA grid */
+  .wsa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .wsa-card {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 10px; padding: 14px;
+  }
+  .wsa-card .wsa-title { font-size: .85rem; font-weight: 700; color: #86efac; margin-bottom: 6px; }
+  .wsa-card .wsa-body { font-size: .82rem; color: #cbd5e1; line-height: 1.4; }
+
+  /* summary keywords */
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 12px; }
+  .summary-kw {
+    background: rgba(255,255,255,.06);
+    border-radius: 12px; padding: 20px 14px;
+    text-align: center;
+  }
+  .summary-kw .sk-icon { font-size: 2rem; margin-bottom: 8px; }
+  .summary-kw .sk-word { font-size: 1.1rem; font-weight: 700; color: var(--c-white); margin-bottom: 6px; }
+  .summary-kw .sk-desc { font-size: .8rem; color: #94a3b8; line-height: 1.4; }
+
+  /* activity task box */
+  .task-box {
+    background: rgba(14,116,144,.1);
+    border: 1px solid rgba(14,116,144,.4);
+    border-radius: 10px; padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+  .task-box .tb-title { font-size: .85rem; font-weight: 700; color: #7dd3fc; margin-bottom: 8px; }
+  .task-box .tb-body { font-size: .88rem; color: #e2e8f0; line-height: 1.5; }
+
+  /* bottom nav */
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: var(--navbar-h);
+    background: #0f172a;
+    border-top: 1px solid #1e293b;
+    display: flex; align-items: center; justify-content: center;
+    gap: 16px;
+    z-index: 100;
+  }
+  .navbar .page-info { font-size: .8rem; color: #64748b; min-width: 80px; text-align: center; }
+  .navbar .nav-hint { font-size: .78rem; color: #475569; }
+
+  /* responsive */
+  @media (max-width: 640px) {
+    .slide { padding: 32px 24px; }
+    .data-grid.col3 { grid-template-columns: 1fr; }
+    .data-grid.col2 { grid-template-columns: 1fr; }
+    .summary-grid { grid-template-columns: 1fr; }
+    .wsa-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- top bar -->
+<header class="topbar">
+  <a href="lesson_plan.html">← 回教案</a>
+  <span class="topbar-sep">|</span>
+  <span class="topbar-title">碳去哪了？— 碳循環、海洋與我們</span>
+  <span class="topbar-key">1.3-IV</span>
+</header>
+
+<!-- slides -->
+<div class="slides-wrap" id="slidesWrap">
+
+  <!-- COVER -->
+  <section class="slide cover" id="slide-cover">
+    <div class="cover-kicker">1.3-IV ｜ 國中 13–15 歲 ｜ 4 個活動</div>
+    <h1>碳去哪了？<br><em>碳循環、海洋與我們</em></h1>
+    <p class="cover-sub">追蹤碳在大氣、森林、海洋、地層間的旅程</p>
+    <p class="cover-meta">UNESCO ESD ｜ 繁體中文</p>
+  </section>
+
+  <!-- BIG QUESTION -->
+  <section class="slide question" id="slide-question">
+    <div class="q-label">思辨問題</div>
+    <p class="q-text">你現在呼出的二氧化碳，<br>十年後可能在哪裡？</p>
+    <p class="q-hint">寫下三個猜測——可能在旁邊同學的肺裡、在操場大樹的葉子裡、溶在太平洋海水裡，甚至沉到海底變成貝殼碎片。</p>
+  </section>
+
+  <!-- ACTIVITY 1 DIVIDER -->
+  <section class="slide divider" id="slide-a1">
+    <div class="act-num">活動 1</div>
+    <h2>碳的四個家</h2>
+    <p class="act-sub">認識碳循環四大碳庫：大氣、生物圈、水圈、岩石圈，以及人類活動打破平衡的方式。</p>
+    <div class="lo-pills">
+      <span class="lo-pill">C1 碳庫識別</span>
+      <span class="lo-pill">C2 Keeling 曲線</span>
+    </div>
+  </section>
+
+  <!-- carbon cycle four reservoirs -->
+  <section class="slide content" id="slide-carbon-cycle">
+    <div class="slide-inner">
+      <div class="slide-label">活動 1 — 步驟 1</div>
+      <h2>地球碳的四個家</h2>
+      <div class="data-grid col2">
+        <div class="data-card">
+          <div class="dc-num">大氣</div>
+          <div class="dc-label">主要以 CO₂ 形式存在；工業革命前約 280 ppm，2024 年約 422.7 ppm。</div>
+        </div>
+        <div class="data-card">
+          <div class="dc-num">生物圈</div>
+          <div class="dc-label">所有生命體內的有機碳；森林是最主要的陸地碳匯。</div>
+        </div>
+        <div class="data-card">
+          <div class="dc-num">水圈</div>
+          <div class="dc-label">海洋儲存地表最多可流動的碳；每年淨吸收約 26% 人為 CO₂。</div>
+        </div>
+        <div class="data-card">
+          <div class="dc-num">岩石圈</div>
+          <div class="dc-label">石灰岩、泥炭、煤層油氣；存放數億年的碳被人類快速開採燃燒。</div>
+        </div>
+      </div>
+      <div class="highlight-box">IPCC AR6 關鍵比例：人類每排 100 單位 CO₂，海洋吸 26、陸地吸 29、剩下 <strong>46 留在大氣</strong>。</div>
+      <div class="lo-tags">
+        <span class="lo-tag cog">C1</span>
+        <span class="lo-tag cog">C3</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Keeling curve -->
+  <section class="slide content" id="slide-keeling">
+    <div class="slide-inner">
+      <div class="slide-label">活動 1 — 步驟 2</div>
+      <h2>Keeling 曲線：地球的呼吸心電圖</h2>
+      <div class="chart-placeholder">
+        <div class="cp-icon">📈</div>
+        <div class="cp-title">圖表佔位 — Mauna Loa 大氣 CO₂ 濃度（1958–2024）</div>
+        <div>橫軸：年份 ｜ 縱軸：CO₂ 濃度（ppm）｜ 出處：美國國家海洋暨大氣總署全球監測實驗室</div>
+      </div>
+      <ul class="point-list">
+        <li>1958 年：315 ppm → 2024 年：約 422.7 ppm，增加約 34%。</li>
+        <li>鋸齒振盪：北半球春夏光合作用吸 CO₂，秋冬落葉分解 CO₂ 釋回——等於「地球在呼吸」。</li>
+        <li>長期趨勢持續上揚，說明自然碳匯無法完全抵消人為排放。</li>
+      </ul>
+      <div class="lo-tags"><span class="lo-tag cog">C2</span></div>
+    </div>
+  </section>
+
+  <!-- ACTIVITY 2 DIVIDER -->
+  <section class="slide divider" id="slide-a2">
+    <div class="act-num">活動 2</div>
+    <h2>化石燃料與全球碳預算</h2>
+    <p class="act-sub">從 IPCC AR6 碳預算了解排放與吸收的缺口，並連結臺灣森林的貢獻與限制。</p>
+    <div class="lo-pills">
+      <span class="lo-pill">C3 碳預算</span>
+      <span class="lo-pill">C4 在地資料</span>
+    </div>
+  </section>
+
+  <!-- carbon budget pie -->
+  <section class="slide content" id="slide-carbon-budget">
+    <div class="slide-inner">
+      <div class="slide-label">活動 2 — 步驟 1</div>
+      <h2>全球碳預算：每 100 單位的去向</h2>
+      <div class="chart-placeholder">
+        <div class="cp-icon">🥧</div>
+        <div class="cp-title">圖表佔位 — 圓餅圖：46% 大氣／29% 陸地／26% 海洋</div>
+        <div>出處：IPCC AR6 WG1 第 5 章 全球碳預算</div>
+      </div>
+      <div class="data-grid col3">
+        <div class="data-card">
+          <div class="dc-num">46%</div>
+          <div class="dc-label">留在大氣，持續累積</div>
+        </div>
+        <div class="data-card">
+          <div class="dc-num">29%</div>
+          <div class="dc-label">陸地生態系（森林、土壤）吸收</div>
+        </div>
+        <div class="data-card">
+          <div class="dc-num">26%</div>
+          <div class="dc-label">海洋吸收（但伴隨酸化代價）</div>
+        </div>
+      </div>
+      <div class="lo-tags"><span class="lo-tag cog">C3</span></div>
+    </div>
+  </section>
+
+  <!-- Taiwan forest -->
+  <section class="slide content" id="slide-taiwan-forest">
+    <div class="slide-inner">
+      <div class="slide-label">活動 2 — 步驟 2</div>
+      <h2>臺灣：森林能頂多少？</h2>
+      <div class="data-grid col2">
+        <div class="data-card">
+          <div class="dc-num">60.7%</div>
+          <div class="dc-label">臺灣森林覆蓋率，約 219 萬公頃，東亞前段班</div>
+        </div>
+        <div class="data-card">
+          <div class="dc-num">7.7%</div>
+          <div class="dc-label">森林每年吸存 2,150 萬公噸 CO₂e，僅能抵銷全國排放的 7.7%</div>
+        </div>
+      </div>
+      <ul class="point-list">
+        <li>臺灣年溫室氣體排放約 2.8 億公噸 CO₂e。</li>
+        <li>環境部 2050 淨零路徑：自然碳匯目標 2050 年達 2,500 萬公噸 CO₂e/年。</li>
+        <li>結論：光靠種樹不夠，必須同時「大減排」。</li>
+      </ul>
+      <div class="lo-tags"><span class="lo-tag cog">C4</span><span class="lo-tag cog">C5</span></div>
+    </div>
+  </section>
+
+  <!-- ACTIVITY 3 DIVIDER -->
+  <section class="slide divider" id="slide-a3">
+    <div class="act-num">活動 3</div>
+    <h2>海洋的隱形角色</h2>
+    <p class="act-sub">探索海洋酸化機制、pH 對數尺度的意義，以及珊瑚礁面臨的雙重壓力。</p>
+    <div class="lo-pills">
+      <span class="lo-pill">C5 海洋吸碳</span>
+      <span class="lo-pill">C6 珊瑚威脅</span>
+    </div>
+  </section>
+
+  <!-- ocean carbon chemistry -->
+  <section class="slide content" id="slide-ocean-carbon">
+    <div class="slide-inner">
+      <div class="slide-label">活動 3 — 步驟 1</div>
+      <h2>CO₂ 溶入海水：化學式追蹤</h2>
+      <div class="key-data">
+        <div class="kd-num">CO₂ + H₂O ⇌ H₂CO₃ → H⁺ + HCO₃⁻</div>
+        <div class="kd-label">碳酸解離產生更多 H⁺，即「酸化」——pH 下降，H⁺ 濃度上升。</div>
+      </div>
+      <ul class="point-list">
+        <li>海洋表層 pH 從工業革命前的約 8.2 下降至今約 8.1。</li>
+        <li>pH 是對數尺度：下降 0.1 代表 H⁺ 濃度增加約 10⁰·¹ ≈ 26–30%。</li>
+        <li>海洋每年淨吸收約 26% 人為 CO₂，是最大液態碳庫。</li>
+        <li>碳酸鈣飽和度下降，生物建造殼體、骨骼的能力受損。</li>
+      </ul>
+      <div class="lo-tags"><span class="lo-tag cog">C5</span></div>
+    </div>
+  </section>
+
+  <!-- ocean acidification -->
+  <section class="slide content" id="slide-ocean-acid">
+    <div class="slide-inner">
+      <div class="slide-label">活動 3 — 步驟 2</div>
+      <h2>海洋酸化：數字與衝擊</h2>
+      <div class="data-grid col2">
+        <div class="data-card">
+          <div class="dc-num">−0.1 pH</div>
+          <div class="dc-label">工業革命以來海洋表層 pH 下降量，等於 H⁺ 增加約 30%</div>
+        </div>
+        <div class="data-card">
+          <div class="dc-num">25%</div>
+          <div class="dc-label">珊瑚礁雖佔海洋面積不到 1%，卻是約 25% 海洋物種的棲地</div>
+        </div>
+      </div>
+      <div class="task-box">
+        <div class="tb-title">資料詮釋任務（CER）</div>
+        <div class="tb-body">觀察珊瑚白化面積 vs 海表溫度（SST）時序圖：<br>
+        ① 找出白化最嚴重的兩年；② 這兩年 SST 有什麼特徵？<br>
+        ③ 用一句話寫出 SST 與白化的關係（主張 + 證據 + 理由）。</div>
+      </div>
+      <div class="lo-tags"><span class="lo-tag cog">C5</span><span class="lo-tag soc">S2</span></div>
+    </div>
+  </section>
+
+  <!-- coral -->
+  <section class="slide content" id="slide-coral">
+    <div class="slide-inner">
+      <div class="slide-label">活動 3 — 步驟 3</div>
+      <h2>珊瑚：氣候煤礦坑的金絲雀</h2>
+      <ul class="point-list">
+        <li>造礁珊瑚最適溫度 18–30°C；夏季水溫再升 1–2°C 持續數週，即可能引發大規模白化。</li>
+        <li>2016–2017 年澳洲大堡礁連續兩年大規模白化，損失近 50% 的珊瑚。</li>
+        <li>酸化 + 升溫雙重壓力：酸化使珊瑚鈣化殼體更困難，升溫使共生藻離開，珊瑚失去食物來源。</li>
+        <li>臺灣墾丁、小琉球、綠島也曾觀測到白化事件。</li>
+      </ul>
+      <div class="highlight-box">
+        <strong>熱鹽環流補充</strong>：IPCC AR6 評估，AMOC（大西洋經向翻轉環流）本世紀「極可能」持續減弱；完成一圈約 1,000 年的環流一旦崩潰，將造成西歐遽冷、亞洲季風受衝擊，碳也無法下沉封存。
+      </div>
+      <div class="lo-tags"><span class="lo-tag cog">C6</span><span class="lo-tag soc">S3</span></div>
+    </div>
+  </section>
+
+  <!-- ACTIVITY 4 DIVIDER -->
+  <section class="slide divider" id="slide-a4">
+    <div class="act-num">活動 4</div>
+    <h2>全校途徑與學生治理</h2>
+    <p class="act-sub">將碳循環知識轉為行動：從WSA 四面向到學校碳循環提案書。</p>
+    <div class="lo-pills">
+      <span class="lo-pill">S1 S4 英雄觀察</span>
+      <span class="lo-pill">B1 B2 提案行動</span>
+    </div>
+  </section>
+
+  <!-- environment heroes -->
+  <section class="slide hero-slide" id="slide-heroes">
+    <div class="slide-inner">
+      <div class="slide-label">活動 4 — 步驟 1</div>
+      <h2>環境英雄：耐心的行動者</h2>
+      <div class="data-grid col3">
+        <div class="data-card">
+          <div class="dc-num">Wangari Maathai</div>
+          <div class="dc-label">肯亞，2004 年諾貝爾和平獎，帶領綠帶運動種下 5,100 萬棵樹</div>
+        </div>
+        <div class="data-card">
+          <div class="dc-num">Chipko 運動</div>
+          <div class="dc-label">1970 年代印度婦女以身體擁抱樹木阻止砍伐，讓森林權利成為國際議題</div>
+        </div>
+        <div class="data-card">
+          <div class="dc-num">賴倍元</div>
+          <div class="dc-label">「種樹的男人」，臺灣大雪山，三十多年逾 30 萬棵原生樹</div>
+        </div>
+      </div>
+      <div class="highlight-box">共通點：看到不對就行動，而且行動有長期的耐心。</div>
+      <div class="lo-tags"><span class="lo-tag soc">S1</span><span class="lo-tag soc">S4</span></div>
+    </div>
+  </section>
+
+  <!-- WSA -->
+  <section class="slide wsa-slide" id="slide-wsa">
+    <div class="slide-inner">
+      <div class="slide-label">活動 4 — 步驟 2｜全校途徑（WSA）</div>
+      <h2>把知識變成行動的地圖</h2>
+      <div class="wsa-grid">
+        <div class="wsa-card">
+          <div class="wsa-title">治理 Governance</div>
+          <div class="wsa-body">學校有沒有學生氣候委員會？學生提案能不能進校務會議？申請設立「學生碳盤查委員會」，每學期公布校園碳盤查報告。</div>
+        </div>
+        <div class="wsa-card">
+          <div class="wsa-title">課程 Curriculum</div>
+          <div class="wsa-body">理化課學燃燒、生物課學光合、地理課學氣候——跨科整合，讓碳循環在每個科目都現身。</div>
+        </div>
+        <div class="wsa-card">
+          <div class="wsa-title">校園運作 Operations</div>
+          <div class="wsa-body">校園種原生樹、節電、零廢棄食材、記錄各項活動碳排——把校園本身當作碳循環的實驗室。</div>
+        </div>
+        <div class="wsa-card">
+          <div class="wsa-title">社群 Community</div>
+          <div class="wsa-body">與在地 NGO、家長會、里辦公室合作；推動每班選派氣候代表，進入跨校聯盟。</div>
+        </div>
+      </div>
+      <div class="lo-tags"><span class="lo-tag beh">B1</span><span class="lo-tag beh">B2</span></div>
+    </div>
+  </section>
+
+  <!-- project proposal -->
+  <section class="slide content" id="slide-project">
+    <div class="slide-inner">
+      <div class="slide-label">活動 4 — 步驟 3｜專題任務</div>
+      <h2>學校碳循環提案書</h2>
+      <div class="task-box">
+        <div class="tb-title">五個必備欄位</div>
+        <div class="tb-body">
+          ① <strong>現況盤點</strong>：校園哪些活動是碳源？哪些是碳匯？（餐廳食材、交通、冷氣、紙張、樹木）<br>
+          ② <strong>問題定義</strong>：鎖定一個最可行的切入點<br>
+          ③ <strong>CER 論證</strong>：主張、證據（需含數字）、理由<br>
+          ④ <strong>行動步驟</strong>：具體可執行（誰、做什麼、何時）<br>
+          ⑤ <strong>KPI 指標</strong>：怎麼測量成效？
+        </div>
+      </div>
+      <ul class="point-list">
+        <li>提案必須覆蓋 WSA 四面向（治理、課程、校園運作、社群）。</li>
+        <li>每組 8 分鐘設計，互評選出 2 組，送「學生碳盤查委員會」實作。</li>
+        <li>聯合國兒童權利公約第 12 條：兒童有權對影響自己的事發表意見並受重視。</li>
+      </ul>
+      <div class="lo-tags"><span class="lo-tag beh">B1</span><span class="lo-tag beh">B2</span></div>
+    </div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section class="slide summary" id="slide-summary">
+    <div class="slide-inner" style="text-align:center; max-width:800px;">
+      <div class="slide-label" style="text-align:center;">四節課的核心洞見</div>
+      <h2 style="font-size:1.6rem; margin-bottom:24px;">三個關鍵詞帶走</h2>
+      <div class="summary-grid">
+        <div class="summary-kw">
+          <div class="sk-icon">🔄</div>
+          <div class="sk-word">碳循環</div>
+          <div class="sk-desc">四大碳庫與人為排放打破的平衡；森林與海洋是地球「免費清潔工」。</div>
+        </div>
+        <div class="summary-kw">
+          <div class="sk-icon">🌊</div>
+          <div class="sk-word">海洋酸化</div>
+          <div class="sk-desc">pH 下降 0.1 = H⁺ 增加 30%；珊瑚是最早發出警報的「金絲雀」。</div>
+        </div>
+        <div class="summary-kw">
+          <div class="sk-icon">🏫</div>
+          <div class="sk-word">學生 Agency</div>
+          <div class="sk-desc">WSA 四面向讓行動從教室延伸至校園、社區、治理；你的提案真的有用。</div>
+        </div>
+      </div>
+      <div class="highlight-box" style="margin-top:24px; text-align:left;">
+        三個帶回家的問題：① 已開發國家累積排放佔 79%，全球一起減碳公平嗎？② 個人行動和系統改變，哪個更重要？③ 如果你有一票決定未來 100 年能源政策，你投什麼？
+      </div>
+    </div>
+  </section>
+
+</div><!-- /slides-wrap -->
+
+<!-- bottom nav -->
+<nav class="navbar">
+  <span class="nav-hint">← →</span>
+  <span class="page-info" id="pageInfo">1 / 16</span>
+  <span class="nav-hint">切換投影片</span>
+</nav>
+
+<script>
+  const wrap = document.getElementById('slidesWrap');
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const pageInfo = document.getElementById('pageInfo');
+  const total = slides.length;
+
+  function getCurrentIndex() {
+    const scrollTop = wrap.scrollTop;
+    const h = wrap.clientHeight;
+    return Math.round(scrollTop / h);
+  }
+
+  function goTo(idx) {
+    idx = Math.max(0, Math.min(total - 1, idx));
+    wrap.scrollTo({ top: idx * wrap.clientHeight, behavior: 'smooth' });
+  }
+
+  function updatePage() {
+    pageInfo.textContent = (getCurrentIndex() + 1) + ' / ' + total;
+  }
+
+  wrap.addEventListener('scroll', updatePage, { passive: true });
+
+  document.addEventListener('keydown', e => {
+    const cur = getCurrentIndex();
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault(); goTo(cur + 1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault(); goTo(cur - 1);
+    }
+  });
+
+  // hash navigation
+  function scrollToHash() {
+    const hash = location.hash.slice(1);
+    if (!hash) return;
+    const el = document.getElementById(hash);
+    if (!el) return;
+    const idx = slides.indexOf(el);
+    if (idx >= 0) goTo(idx);
+  }
+  window.addEventListener('load', scrollToHash);
+  window.addEventListener('hashchange', scrollToHash);
+
+  updatePage();
+</script>
+</body>
+</html>

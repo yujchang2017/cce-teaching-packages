@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候衝擊的不平等 — 投影片</title>
+<style>
+  :root{--accent:#0f766e;--soft:#ccfbf1;--cog:#2563eb;--soc:#db2777;--beh:#16a34a;--warn:#ea580c;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--text);line-height:1.6;margin:0;background:#fff}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.95rem;font-weight:500;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--muted)}
+  .nav-indicator{font-family:monospace;color:var(--text)}
+  .nav-cur{color:var(--accent);font-weight:700}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--border);position:relative}
+  .slide h2{font-size:2rem;margin:0 0 20px;color:var(--text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.8rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--accent);color:#fff;padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--accent);letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.4rem;color:var(--accent)}
+  .slide.divider .act-steps{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .act-step-chip{background:var(--soft);color:var(--accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  .q-box{background:var(--soft);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.4rem;line-height:1.6;color:var(--accent);font-weight:600}
+  .q-sub{font-size:1.05rem;color:var(--muted);font-weight:400;margin-top:10px}
+  .data-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0;background:var(--bg)}
+  .data-card .dc-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;color:var(--muted);margin-bottom:8px}
+  .data-card .dc-fact{font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.5}
+  .data-card .dc-src{font-size:.85rem;color:var(--muted)}
+  .data-card .dc-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  .act-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0}
+  .act-card .ac-badge{display:inline-block;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:4px;margin-bottom:12px;letter-spacing:.08em}
+  .act-card .ac-task{font-size:1.15rem;color:var(--text);line-height:1.6}
+  .ws-frame{border:2px dashed var(--accent);border-radius:12px;padding:28px 32px;margin:20px 0;background:#fff}
+  .ws-frame .ws-title{font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:14px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--border);padding:12px 14px;text-align:center}
+  .ws-table th{background:var(--soft);color:var(--accent);font-weight:700}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:52px}
+  .ws-lines{display:flex;flex-direction:column;gap:14px}
+  .ws-line{border-bottom:1.5px solid #d1d5db;height:28px}
+  .chart-placeholder{border:2px dashed var(--accent);border-radius:12px;padding:40px;background:var(--soft);text-align:center;margin:20px 0}
+  .chart-placeholder .cp-label{font-size:.8rem;color:var(--muted);letter-spacing:.15em;margin-bottom:8px}
+  .chart-placeholder .cp-title{font-size:1.4rem;color:var(--accent);font-weight:700;margin-bottom:12px}
+  .chart-placeholder .cp-data{font-size:1.1rem;margin:14px 0}
+  .chart-placeholder .cp-note{font-size:.85rem;color:var(--muted);margin-top:12px}
+  .hl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:20px 0}
+  .hl-card{background:var(--soft);border-radius:10px;padding:18px 20px;text-align:center}
+  .hl-card .hc-num{font-size:2rem;font-weight:800;color:var(--accent);line-height:1}
+  .hl-card .hc-desc{font-size:.9rem;color:var(--text);margin-top:8px}
+  .identity-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:20px 0}
+  .id-card{border-radius:10px;padding:16px 18px;border:2px solid var(--border)}
+  .id-card .id-label{font-size:.8rem;font-weight:700;letter-spacing:.1em;color:var(--muted);margin-bottom:6px}
+  .id-card .id-name{font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:8px}
+  .id-card .id-desc{font-size:.9rem;color:var(--muted)}
+  .vuln-table{width:100%;border-collapse:collapse;margin:16px 0}
+  .vuln-table th,.vuln-table td{border:2px solid var(--border);padding:12px 16px;text-align:left}
+  .vuln-table th{background:var(--soft);color:var(--accent);font-weight:700}
+  .vuln-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:44px}
+  .summary-keys{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:28px}
+  .sk-chip{background:var(--soft);border:2px solid var(--accent);color:var(--accent);border-radius:24px;padding:10px 24px;font-size:1.1rem;font-weight:700}
+  .slide-src{margin-top:auto;padding-top:12px;border-top:1px dashed var(--border);font-size:.8rem;color:var(--muted)}
+  .slide-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  a.ext{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  a.ext::after{content:" ↗";font-size:.8em;opacity:.7}
+  ul.bullet{padding-left:1.4em;margin:12px 0}
+  ul.bullet li{margin:8px 0;font-size:1.05rem}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">氣候衝擊的不平等 ｜ Level IV</span>
+</header>
+
+<main>
+
+<!-- SLIDE 1: COVER -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body">
+    <div class="level-tag">Level IV</div>
+    <h2>氣候衝擊的不平等</h2>
+    <p style="color:var(--muted);max-width:680px;font-size:1.05rem;margin-top:12px">同一場颱風、同一次熱浪——但並非所有人都承受相同的風險。誰最先倒下，為什麼？</p>
+  </div>
+</section>
+
+<!-- SLIDE 2: BIG QUESTION -->
+<section class="slide" id="slide-question">
+  <div class="slide-body">
+    <h2>大問題</h2>
+    <div class="q-box">
+      同一個颱風夜，為什麼有人躲在鋼筋大廈裡，有人卻在違建鐵皮屋中死去？
+      <div class="q-sub">——氣候風險從來都不是平等的；「脆弱」是被製造出來的，不是天生的。</div>
+    </div>
+    <ul class="bullet">
+      <li>自然災害死亡人數中，<strong>女性占比高達 80%</strong></li>
+      <li>全球 <strong>36 億人</strong>居住在高度氣候脆弱地區</li>
+      <li>高脆弱群體的氣候相關死亡風險是低脆弱群體的 <strong>15 倍</strong></li>
+    </ul>
+  </div>
+</section>
+
+<!-- SLIDE 3: ACTIVITY 1 DIVIDER -->
+<section class="slide divider" id="slide-a1">
+  <div class="act-badge">活動一</div>
+  <h2>誰最先感受到氣候危機？</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">情境比較</span>
+    <span class="act-step-chip">脆弱度三維分析</span>
+    <span class="act-step-chip">數據解讀</span>
+  </div>
+</section>
+
+<!-- SLIDE 4: A1 — Vulnerability Framework -->
+<section class="slide" id="slide-a1-vuln">
+  <div class="slide-body">
+    <h2>脆弱度的三個維度</h2>
+    <div class="hl-grid">
+      <div class="hl-card" style="background:#fff7ed">
+        <div class="hc-num" style="font-size:1.3rem;color:#c2410c">暴露度</div>
+        <div class="hc-desc">住在哪裡？從事什麼工作？<br>接觸到多少氣候威脅？</div>
+      </div>
+      <div class="hl-card" style="background:#fdf2f8">
+        <div class="hc-num" style="font-size:1.3rem;color:var(--soc)">敏感度</div>
+        <div class="hc-desc">身體健康狀況如何？<br>有多依賴自然資源維生？</div>
+      </div>
+      <div class="hl-card" style="background:#f0fdf4">
+        <div class="hc-num" style="font-size:1.3rem;color:var(--beh)">調適能力</div>
+        <div class="hc-desc">有沒有資源應對衝擊？<br>能否快速恢復、遷移或改變？</div>
+      </div>
+    </div>
+    <div class="ws-frame" style="margin-top:16px">
+      <div class="ws-title">小組填寫：在地脆弱度例子</div>
+      <table class="vuln-table">
+        <thead>
+          <tr><th>群體</th><th>暴露度</th><th>敏感度</th><th>調適能力</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>（例：獨居老人）</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>（例：外籍移工）</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+          <tr><td>（你的例子）</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: A1 — Global Data -->
+<section class="slide" id="slide-a1-data">
+  <div class="slide-body">
+    <h2>數字背後的不平等</h2>
+    <div class="hl-grid">
+      <div class="hl-card">
+        <div class="hc-num">80%</div>
+        <div class="hc-desc">自然災害死亡人數<br>中女性占比<br><span style="font-size:.8rem;color:var(--muted)">聯合國婦女署</span></div>
+      </div>
+      <div class="hl-card">
+        <div class="hc-num">36 億</div>
+        <div class="hc-desc">居住在高度氣候<br>脆弱地區的人口數<br><span style="font-size:.8rem;color:var(--muted)">世界衛生組織</span></div>
+      </div>
+      <div class="hl-card">
+        <div class="hc-num">15 倍</div>
+        <div class="hc-desc">高脆弱群體與低脆弱群體<br>氣候死亡風險比<br><span style="font-size:.8rem;color:var(--muted)">聯合國跨政府氣候變遷專門委員會</span></div>
+      </div>
+      <div class="hl-card">
+        <div class="hc-num">25 萬</div>
+        <div class="hc-desc">2030–2050 年間<br>氣候每年預估額外死亡人數<br><span style="font-size:.8rem;color:var(--muted)">世界衛生組織</span></div>
+      </div>
+    </div>
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：氣候脆弱度與碳排放對比地圖]</div>
+        <div class="cp-data"><strong>關鍵數據：</strong>碳排放最高的國家（美國、中國、歐盟）與氣候脆弱度最高的地區（撒哈拉以南非洲、南亞小島）幾乎完全不重疊</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+    </figure>
+  </div>
+  <div class="slide-src">資料：<a href="https://www.unwomen.org" target="_blank">聯合國婦女署</a> ／ <a href="https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health" target="_blank">世界衛生組織</a> ／ <a href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank">聯合國跨政府氣候變遷專門委員會 AR6 WG2</a></div>
+</section>
+
+<!-- SLIDE 6: ACTIVITY 2 DIVIDER -->
+<section class="slide divider" id="slide-a2">
+  <div class="act-badge">活動二</div>
+  <h2>交叉性：多重弱勢的疊加</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">身份卡角色扮演</span>
+    <span class="act-step-chip">交叉性分析圖</span>
+    <span class="act-step-chip">個人反思</span>
+  </div>
+</section>
+
+<!-- SLIDE 7: A2 — Role Cards -->
+<section class="slide" id="slide-a2-role">
+  <div class="slide-body">
+    <h2>身份卡：進入不同的處境</h2>
+    <p style="color:var(--muted);margin-bottom:4px">每組抽取一張，代入角色討論：在嚴重熱浪中，這個人面對什麼具體困難？</p>
+    <div class="identity-grid">
+      <div class="id-card" style="border-color:#fb923c">
+        <div class="id-label">身份卡 A</div>
+        <div class="id-name">70 歲獨居女性農民</div>
+        <div class="id-desc">居住在南部平原，種植蔬菜維生，無智慧手機，行動略有不便</div>
+      </div>
+      <div class="id-card" style="border-color:var(--soc)">
+        <div class="id-label">身份卡 B</div>
+        <div class="id-name">城市低收入外籍移工</div>
+        <div class="id-desc">居住在頂樓加蓋，從事戶外建築工作，語言障礙，缺乏法律保障</div>
+      </div>
+      <div class="id-card" style="border-color:var(--beh)">
+        <div class="id-label">身份卡 C</div>
+        <div class="id-name">原住民部落青年</div>
+        <div class="id-desc">居住在山區，部落面臨土石流風險，傳統農耕受氣候影響，就業機會有限</div>
+      </div>
+      <div class="id-card" style="border-color:var(--cog)">
+        <div class="id-label">身份卡 D</div>
+        <div class="id-name">身障者（輪椅使用者）</div>
+        <div class="id-desc">居住在無電梯老舊公寓二樓，颱風來時無法自行疏散，依賴家人協助</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: A2 — Intersectionality -->
+<section class="slide" id="slide-a2-intersect">
+  <div class="slide-body">
+    <h2>交叉性：弱勢如何相互疊加</h2>
+    <div class="q-box" style="font-size:1.1rem">
+      當一個人同時是「老年 + 女性 + 貧窮 + 原住民」，不同的不平等不是相加，而是相乘——脆弱度遠超過各項單獨加總。
+    </div>
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：交叉性脆弱度示意圖（Venn 圖或輪軸圖）]</div>
+        <div class="cp-data"><strong>關鍵概念：</strong>性別 × 貧窮 × 族裔 × 年齡 × 地理位置 = 複合脆弱度；政策若只針對單一維度，往往遺漏最脆弱的人</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+    </figure>
+    <div class="act-card" style="margin-top:8px">
+      <div class="ac-badge">小組任務</div>
+      <div class="ac-task">在白板上為你的身份卡人物畫出「脆弱度交叉圖」，標示各維度如何相互影響，並找出一個政策介入點。</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9: ACTIVITY 3 DIVIDER -->
+<section class="slide divider" id="slide-a3">
+  <div class="act-badge">活動三</div>
+  <h2>倫理兩難：誰應該先被保護？</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">預算分配辯論</span>
+    <span class="act-step-chip">損失與損害機制</span>
+    <span class="act-step-chip">共識原則</span>
+  </div>
+</section>
+
+<!-- SLIDE 10: A3 — Dilemma -->
+<section class="slide" id="slide-a3-dilemma">
+  <div class="slide-body">
+    <h2>倫理兩難情境</h2>
+    <div class="q-box" style="font-size:1.1rem">
+      政府氣候調適預算有限，只能優先選擇其中一個方案：
+      <div class="q-sub" style="margin-top:16px">
+        <strong>方案 A</strong>：補貼沿海低窪區農村遷村<br>
+        <strong>方案 B</strong>：強化城市醫院的熱浪應急系統<br>
+        <strong>方案 C</strong>：協助原住民部落建立傳統知識型調適計畫
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">CER 辯論</div>
+      <div class="ac-task">
+        <strong>主張（C）</strong>：我支持方案___，因為___<br>
+        <strong>證據（E）</strong>：根據___數據顯示___<br>
+        <strong>推理（R）</strong>：這代表___，所以___比其他方案更優先
+      </div>
+    </div>
+    <p style="color:var(--muted);font-size:.9rem">💡 倫理原則參考：最脆弱者優先 / 預防勝於補救 / 不加重既有不平等</p>
+  </div>
+</section>
+
+<!-- SLIDE 11: ACTIVITY 4 DIVIDER -->
+<section class="slide divider" id="slide-a4">
+  <div class="act-badge">活動四</div>
+  <h2>社區氣候脆弱度地圖</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">脆弱點標示</span>
+    <span class="act-step-chip">行動計畫撰寫</span>
+    <span class="act-step-chip">展示與回饋</span>
+  </div>
+</section>
+
+<!-- SLIDE 12: A4 — Map Activity -->
+<section class="slide" id="slide-a4-map">
+  <div class="slide-body">
+    <h2>社區氣候脆弱度地圖</h2>
+    <div class="act-card">
+      <div class="ac-badge">小組任務</div>
+      <div class="ac-task">
+        <ol style="padding-left:1.4em;margin:0">
+          <li>選定學校所在社區的地圖（可用 Google Maps 截圖或手繪）</li>
+          <li>在地圖上標示至少 <strong>3 個高脆弱點</strong>：低窪區、老舊無電梯公寓、無遮蔭公共空間、獨居長者聚集街區⋯⋯</li>
+          <li>每個點標注：<strong>誰最脆弱 / 面對什麼風險 / 目前資源缺口</strong></li>
+          <li>用不同顏色標示不同類型的脆弱點（如：紅色 = 熱浪風險、藍色 = 水患風險）</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 13: A4 — Action Plan Worksheet -->
+<section class="slide" id="slide-a4-plan">
+  <div class="slide-body">
+    <h2>氣候支持行動計畫</h2>
+    <div class="ws-frame">
+      <div class="ws-title">📋 行動計畫（針對地圖上的一個高脆弱點）</div>
+      <table class="ws-table">
+        <thead>
+          <tr><th>項目</th><th>填寫內容</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="white-space:nowrap">目標群體</td><td class="fill"></td></tr>
+          <tr><td>問題描述</td><td class="fill"></td></tr>
+          <tr><td>行動方案 1</td><td class="fill"></td></tr>
+          <tr><td>行動方案 2</td><td class="fill"></td></tr>
+          <tr><td>行動方案 3</td><td class="fill"></td></tr>
+          <tr><td>第一步執行時間</td><td class="fill"></td></tr>
+          <tr><td>評估成效方式</td><td class="fill"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 14: SUMMARY -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <div class="slide-body">
+    <h2 style="color:var(--beh)">今天學到了什麼？</h2>
+    <div class="summary-keys">
+      <div class="sk-chip">脆弱度</div>
+      <div class="sk-chip">交叉性</div>
+      <div class="sk-chip">氣候不平等</div>
+      <div class="sk-chip">損失與損害</div>
+      <div class="sk-chip">社區行動</div>
+    </div>
+    <p style="color:var(--muted);max-width:600px;margin:24px auto 0;font-size:1rem">「脆弱」不是天生的，而是被製造的。當我們看見結構，我們才能改變它；當我們採取行動，我們就是在抵抗不平等。</p>
+    <p style="margin-top:30px"><a href="lesson_plan.html" style="color:var(--accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / <span id="navTotal"></span></span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換・捲動換頁</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  const tot    = document.getElementById('navTotal');
+  if (!slides.length || !cur) return;
+  if (tot) tot.textContent = slides.length;
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

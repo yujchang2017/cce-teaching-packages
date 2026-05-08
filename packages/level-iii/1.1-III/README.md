@@ -46,6 +46,8 @@
 |---|---|
 | [`lesson_plan.md`](lesson_plan.md) | 4 節教案全文（含師生互動、時間分配、對應 LO） |
 | [`ppt_script.md`](ppt_script.md) | 投影片講述稿，逐張對應教案流程 |
+| [`lesson_plan.html`](lesson_plan.html) | 互動式教案全文，可在瀏覽器直接檢視 |
+| [`ppt.html`](ppt.html) | 投影片簡報，可在瀏覽器直接呈現 |
 | [`worksheet.html`](worksheet.html) | 互動學習單，可離線用瀏覽器開啟 |
 | [`data_card.json`](data_card.json) | 關鍵數據卡片（含 TCCIP、NASA 等來源） |
 | [`resources.md`](resources.md) | 延伸閱讀、影片、MOE 教案連結清單 |
@@ -53,6 +55,8 @@
 
 ## 快速操作
 
+- **教案線上預覽**：[lesson_plan.html（GitHub Pages）](https://yujchang2017.github.io/cce-teaching-packages/packages/level-iii/1.1-III/lesson_plan.html)
+- **簡報線上預覽**：[ppt.html（GitHub Pages）](https://yujchang2017.github.io/cce-teaching-packages/packages/level-iii/1.1-III/ppt.html)
 - **線上互動預覽**（推薦）：[worksheet.html（GitHub Pages）](https://yujchang2017.github.io/cce-teaching-packages/packages/level-iii/1.1-III/worksheet.html) — 點開即可直接與學習單互動（拖放、答題、回饋動畫皆可用）
 - **下載整包**：點 [此連結](https://downgit.github.io/#/home?url=https://github.com/yujchang2017/cce-teaching-packages/tree/main/packages/level-iii/1.1-III) 用 DownGit 打包下載
 - **離線使用**：將 `worksheet.html` 下載後雙擊用瀏覽器開啟即可（需連網載入 Tailwind CDN）

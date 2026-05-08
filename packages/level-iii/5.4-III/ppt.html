@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>能源消耗與碳排放：再生 vs 非再生能源 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px;
+    border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px;
+    font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .slide.divider .subtitle { font-size: 1.1rem; color: var(--c-muted); margin-top: 8px; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 16px; margin: 20px 0; }
+  .stat-card {
+    background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 12px;
+    padding: 20px; text-align: center;
+  }
+  .stat-card .num { font-size: 2rem; font-weight: 800; color: var(--c-accent); line-height: 1.1; margin: 8px 0; }
+  .stat-card .unit { font-size: 0.82rem; color: var(--c-muted); }
+  .stat-card .label { font-size: 0.9rem; font-weight: 600; }
+  .stat-card.coal { border-color: #374151; } .stat-card.coal .num { color: #374151; }
+  .stat-card.solar { border-color: #f59e0b; } .stat-card.solar .num { color: #d97706; }
+  .stat-card.wind { border-color: var(--c-beh); } .stat-card.wind .num { color: var(--c-beh); }
+  .stat-card.red { border-color: #dc2626; } .stat-card.red .num { color: #dc2626; }
+
+  .energy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+  .energy-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 20px; }
+  .energy-card h3 { margin-top: 0; font-size: 1.2rem; }
+  .energy-card ul { margin: 8px 0; padding-left: 1.2em; }
+  .energy-card.nonrenew { border-color: #374151; background: #f9fafb; }
+  .energy-card.nonrenew h3 { color: #374151; }
+  .energy-card.renew { border-color: var(--c-beh); background: #f0fdf4; }
+  .energy-card.renew h3 { color: var(--c-beh); }
+
+  .pie-visual {
+    display: flex; align-items: center; gap: 32px; margin: 20px 0; flex-wrap: wrap;
+  }
+  .pie-legend { display: flex; flex-direction: column; gap: 8px; }
+  .pie-item { display: flex; align-items: center; gap: 10px; font-size: 1rem; }
+  .pie-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
+
+  .compare-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 20px 0; }
+  .c3-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 16px; text-align: center; }
+  .c3-card h4 { margin: 0 0 8px; font-size: 1rem; }
+
+  .pledge-form {
+    border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px;
+    background: var(--c-bg); max-width: 700px; margin: 20px auto;
+  }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 14px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+  .checklist { list-style: none; padding: 0; margin: 12px 0; }
+  .checklist li { padding: 10px 0; border-bottom: 1px dashed var(--c-border); font-size: 1rem; }
+  .checklist li::before { content: "☐ "; margin-right: 6px; color: var(--c-accent); font-size: 1.1em; }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 28px 18px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.2rem; font-weight: 800; margin: 10px 0; }
+  .key-card .desc { font-size: 0.9rem; color: var(--c-muted); }
+  .key-card.k1 { border-color: #374151; } .key-card.k1 .word { color: #374151; }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">能源消耗與碳排放：再生 vs 非再生能源 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content:center;">
+    <h2>能源小偵探：再生 vs 非再生能源</h2>
+    <p class="subtitle">我們用的每一度電，地球會記得！</p>
+    <p style="margin-top:24px; font-size:1.1rem; color:var(--c-muted);">5.4-III｜國小 9–12 歲</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>你今天用了多少電？這些電從哪裡來？</h2>
+  <div class="slide-body">
+    <p style="font-size:1.1rem; text-align:center; margin:24px 0;">
+      每一度電背後，都有一個<strong>碳排放的故事</strong>。<br>
+      有的故事很沉重，有的卻幾乎沒有重量——<br>
+      <strong style="color:var(--c-accent);">今天我們一起解謎。</strong>
+    </p>
+    <div class="compare-3">
+      <div class="c3-card" style="border-color:#374151; background:#f3f4f6;">
+        <h4 style="color:#374151;">燃煤發電</h4>
+        <p style="font-size:1.6rem; font-weight:800; color:#374151;">820 g</p>
+        <p style="font-size:0.85rem; color:var(--c-muted);">CO₂ / 每度電</p>
+      </div>
+      <div class="c3-card" style="border-color:#f59e0b; background:#fffbeb;">
+        <h4 style="color:#d97706;">太陽光電</h4>
+        <p style="font-size:1.6rem; font-weight:800; color:#d97706;">48 g</p>
+        <p style="font-size:0.85rem; color:var(--c-muted);">CO₂ / 每度電</p>
+      </div>
+      <div class="c3-card" style="border-color:var(--c-beh); background:#f0fdf4;">
+        <h4 style="color:var(--c-beh);">風力發電</h4>
+        <p style="font-size:1.6rem; font-weight:800; color:var(--c-beh);">11 g</p>
+        <p style="font-size:0.85rem; color:var(--c-muted);">CO₂ / 每度電</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動一</div>
+    <h2>能源家族大點名</h2>
+    <p class="subtitle">認識再生與非再生能源的差別</p>
+  </div>
+</section>
+
+<!-- 4. 停電情境 -->
+<section class="slide" id="slide-blackout">
+  <div class="slide-tag">活動一・步驟 1</div>
+  <h2>全校停電 24 小時——你最想恢復哪 3 樣？</h2>
+  <div class="slide-body">
+    <div class="compare-3">
+      <div class="c3-card"><h4>❄️ 冷氣</h4><p>夏天 35°C 教室</p></div>
+      <div class="c3-card"><h4>💡 電燈</h4><p>教室黑漆漆</p></div>
+      <div class="c3-card"><h4>📱 手機充電</h4><p>聯絡不到家人</p></div>
+      <div class="c3-card"><h4>🚰 電動水泵</h4><p>沒水可以喝</p></div>
+      <div class="c3-card"><h4>🖥️ 電腦</h4><p>無法上課學習</p></div>
+      <div class="c3-card"><h4>🔌 電梯</h4><p>輪椅族怎麼辦？</p></div>
+    </div>
+    <p style="text-align:center; font-size:1.05rem; margin-top:16px; color:var(--c-muted);">
+      能源不只是「電費」的事——它和每個人的生活緊緊相連。
+    </p>
+  </div>
+</section>
+
+<!-- 5. 能源家族樹 -->
+<section class="slide" id="slide-energy-family">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>能源家族：會用完 vs 用不完</h2>
+  <div class="slide-body">
+    <div class="energy-grid">
+      <div class="energy-card nonrenew">
+        <h3>非再生能源（會用完）</h3>
+        <ul>
+          <li>煤炭（化石燃料）</li>
+          <li>石油（化石燃料）</li>
+          <li>天然氣（化石燃料）</li>
+          <li>核能（鈾礦有限）</li>
+        </ul>
+        <p style="font-size:0.9rem; color:var(--c-muted); margin:8px 0 0;">燒掉就沒了，且燃燒釋放大量 CO₂</p>
+      </div>
+      <div class="energy-card renew">
+        <h3>再生能源（用不完）</h3>
+        <ul>
+          <li>太陽能</li>
+          <li>風力</li>
+          <li>水力</li>
+          <li>地熱・生質能</li>
+        </ul>
+        <p style="font-size:0.9rem; color:var(--c-muted); margin:8px 0 0;">地球一直補充，發電幾乎不排 CO₂</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. 碳腳印比較 -->
+<section class="slide" id="slide-carbon-footprint">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>每度電的碳腳印：差了 75 倍！</h2>
+  <div class="slide-body">
+    <div class="stat-grid">
+      <div class="stat-card coal">
+        <div class="label">燃煤發電</div>
+        <div class="num">820</div>
+        <div class="unit">公克 CO₂ / 每度電<br>≈ 一杯珍奶的重量</div>
+      </div>
+      <div class="stat-card solar">
+        <div class="label">太陽光電</div>
+        <div class="num">48</div>
+        <div class="unit">公克 CO₂ / 每度電</div>
+      </div>
+      <div class="stat-card wind">
+        <div class="label">風力發電</div>
+        <div class="num">11</div>
+        <div class="unit">公克 CO₂ / 每度電</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.15rem; font-weight:700; margin-top:16px; color:#374151;">
+      燃煤 = 風電的 <span style="color:#dc2626; font-size:1.5em;">75 倍</span> 碳排！
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.ipcc.ch/report/ar6/wg3/chapter/chapter-6/" target="_blank" rel="noopener">IPCC AR6 第三工作組第 6 章（2022）</a>
+  </div>
+</section>
+
+<!-- 7. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動二</div>
+    <h2>臺灣的電從哪裡來？</h2>
+    <p class="subtitle">認識本地發電結構與能源進口焦慮</p>
+  </div>
+</section>
+
+<!-- 8. 台灣發電圓餅 -->
+<section class="slide" id="slide-tw-power">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>臺灣 2023 發電結構：八成是化石燃料！</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent); border-radius:12px; padding:40px; background:var(--c-accent-soft); text-align:center;">
+        <div style="font-size:0.8rem; color:var(--c-muted); letter-spacing:0.15em; margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem; color:var(--c-accent); font-weight:700; margin-bottom:12px;">[此處放：臺灣發電結構圓餅圖]</div>
+        <div style="font-size:1.1rem; margin:14px 0;">
+          <strong>關鍵數據：</strong>燃煤 42%・燃氣 40%・核能 6%・再生能源 10%
+        </div>
+        <div style="font-size:0.85rem; color:var(--c-muted); margin-top:12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>2023 年臺灣發電結構，化石燃料合計約 82%</figcaption>
+    </figure>
+    <p style="text-align:center; font-size:1.05rem; margin-top:16px;">
+      <strong>學生活動：</strong>用色紙剪出四種比例，拼成一個圓。感受「我們每天用的電，大多還是化石燃料」。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.esist.org.tw/" target="_blank" rel="noopener">經濟部能源署能源統計月報</a>
+  </div>
+</section>
+
+<!-- 9. 進口依存 -->
+<section class="slide" id="slide-import">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>臺灣能源進口依存度：98%</h2>
+  <div class="slide-body">
+    <div style="text-align:center; margin:20px 0;">
+      <div style="font-size:5rem; font-weight:900; color:#dc2626; line-height:1;">98%</div>
+      <p style="font-size:1.1rem; color:var(--c-muted); margin:8px 0;">臺灣的初級能源靠進口——煤、石油、天然氣漂洋過海來</p>
+    </div>
+    <div style="background:#fff7ed; border-left:4px solid var(--c-warn); padding:14px 18px; border-radius:6px; margin:16px 0;">
+      <strong>「雞蛋不要放同一個籃子裡」</strong><br>
+      如果國際能源價格暴漲，或船運中斷，台灣會怎樣？<br>
+      發展再生能源 = 在台灣自己的土地上生產電力，提高能源自主率。
+    </div>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.moeaea.gov.tw/" target="_blank" rel="noopener">經濟部能源署能源統計手冊</a>
+  </div>
+</section>
+
+<!-- 10. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三</div>
+    <h2>綠電正在追上來</h2>
+    <p class="subtitle">全球與在地的再生能源革命</p>
+  </div>
+</section>
+
+<!-- 11. 全球綠電 -->
+<section class="slide" id="slide-global-green">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>2023 年：全球綠電首破 30%！</h2>
+  <div class="slide-body">
+    <div class="stat-grid">
+      <div class="stat-card" style="border-color:#f59e0b;">
+        <div class="label">全球再生能源發電占比</div>
+        <div class="num" style="color:#d97706;">30%</div>
+        <div class="unit">2023 年首次突破三成</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div class="label">太陽光電新增裝置容量</div>
+        <div class="num" style="color:var(--c-beh);">425 GW</div>
+        <div class="unit">吉瓦（史上最高）</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.1rem; margin-top:20px;">
+      你們正活在<strong style="color:var(--c-accent);">能源轉型的關鍵十年</strong>！<br>
+      全世界一起踩油門發展綠電——這是歷史上最大的一次能源轉型。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.iea.org/reports/electricity-2024" target="_blank" rel="noopener">國際能源總署（IEA）Electricity 2024</a>
+  </div>
+</section>
+
+<!-- 12. 屋頂太陽能 = 30 棵樹 -->
+<section class="slide" id="slide-solar-tree">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>1 塊屋頂太陽能板 = 30 棵樹</h2>
+  <div class="slide-body">
+    <div class="stat-grid">
+      <div class="stat-card" style="border-color:#f59e0b;">
+        <div class="label">1 kW 太陽能年發電</div>
+        <div class="num" style="color:#d97706;">1,250</div>
+        <div class="unit">度 / 年</div>
+      </div>
+      <div class="stat-card" style="border-color:#dc2626;">
+        <div class="label">每年減少 CO₂</div>
+        <div class="num" style="color:#dc2626;">625</div>
+        <div class="unit">公斤</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div class="label">等於種幾棵樹</div>
+        <div class="num" style="color:var(--c-beh);">30</div>
+        <div class="unit">棵樹一年的吸碳量</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.05rem; margin-top:16px;">
+      把抽象的「千瓦」換算成「樹」——<strong>一片屋頂就是一座小森林。</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.energypark.org.tw/" target="_blank" rel="noopener">經濟部能源署太陽光電推動資訊</a>
+  </div>
+</section>
+
+<!-- 13. 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動四</div>
+    <h2>我就是能源小管家</h2>
+    <p class="subtitle">從省電換算到全校挑戰</p>
+  </div>
+</section>
+
+<!-- 14. 省電換算 -->
+<section class="slide" id="slide-save-power">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>省 1 度電 = 少 0.5 公斤 CO₂</h2>
+  <div class="slide-body">
+    <div class="stat-grid">
+      <div class="stat-card" style="border-color:var(--c-accent);">
+        <div class="label">省 1 度電</div>
+        <div class="num">0.5 kg</div>
+        <div class="unit">CO₂ 減排</div>
+      </div>
+      <div class="stat-card red">
+        <div class="label">全班 30 人 × 每天省 1 度 × 365 天</div>
+        <div class="num">5.5</div>
+        <div class="unit">公噸 CO₂／年</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div class="label">等同</div>
+        <div class="num">250</div>
+        <div class="unit">棵樹一年吸碳量</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.05rem; margin-top:16px; color:var(--c-muted);">
+      你的一度電也算！省電是最快、最便宜、每個人今天就能做到的減碳行動。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.cca.gov.tw/" target="_blank" rel="noopener">環境部氣候變遷署（台電電力排放係數）</a>
+  </div>
+</section>
+
+<!-- 15. 節能承諾卡 -->
+<section class="slide" id="slide-pledge">
+  <div class="slide-tag">活動四・步驟 3・學習單（投影版）</div>
+  <h2>我的節能 5 選 1 承諾卡</h2>
+  <div class="slide-body">
+    <p style="text-align:center; font-size:1.05rem; color:var(--c-muted);">選 1 項行動，寫下你的承諾。</p>
+    <div class="pledge-form">
+      <ul class="checklist">
+        <li>隨手關燈（每次省約 0.04 度）</li>
+        <li>冷氣設定 27°C（每調高 1°C 省 6% 電費）</li>
+        <li>走樓梯不搭電梯</li>
+        <li>隨手拔插頭（待機耗電佔家庭用電 10%）</li>
+        <li>吃當季在地蔬食（減少食物里程碳排）</li>
+      </ul>
+      <div class="row">
+        <span class="lbl">我選擇的行動：</span><span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">預期每週減少 CO₂：</span><span class="blank"></span>
+        <span class="lbl">公斤</span>
+      </div>
+      <div class="row">
+        <span class="lbl">承諾人簽名：</span><span class="blank"></span>
+        <span class="lbl">見證夥伴：</span><span class="blank"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>六個關鍵數字，記住能源的故事</h2>
+  <div class="slide-body">
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:20px 0;">
+      <div class="stat-card coal"><div class="label">燃煤碳排</div><div class="num">820 g</div><div class="unit">CO₂ / 度</div></div>
+      <div class="stat-card solar"><div class="label">太陽光電</div><div class="num">48 g</div><div class="unit">CO₂ / 度</div></div>
+      <div class="stat-card wind"><div class="label">風力發電</div><div class="num">11 g</div><div class="unit">CO₂ / 度</div></div>
+      <div class="stat-card"><div class="label">臺灣化石燃料占比</div><div class="num">82%</div><div class="unit">（煤 42% + 氣 40%）</div></div>
+      <div class="stat-card red"><div class="label">能源進口依存</div><div class="num">98%</div><div class="unit"></div></div>
+      <div class="stat-card" style="border-color:var(--c-beh);"><div class="label">1 kW 太陽能</div><div class="num" style="color:var(--c-beh);">30 棵樹</div><div class="unit">等效吸碳</div></div>
+    </div>
+    <p style="text-align:center; font-size:1.1rem; margin-top:16px;">
+      <strong style="color:var(--c-accent);">你的每一度電，都是給地球的一張選票。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">16</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color:var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+</body>
+</html>

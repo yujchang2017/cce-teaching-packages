@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>避免污染、節約資源｜1.5-IV 教案</title>
+<style>
+  :root {
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-accent: #0e7490;
+    --c-surface: #f8fafc;
+    --c-border: #e2e8f0;
+    --c-text: #1e293b;
+    --c-mid: #475569;
+    --c-light: #f1f5f9;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    color: var(--c-text); background: var(--c-surface);
+    line-height: 1.6; font-size: 15px;
+  }
+  .page { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .doc-header {
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 60%, #0e7490 100%);
+    color: #fff; border-radius: 14px; padding: 32px 36px; margin-bottom: 32px;
+  }
+  .doc-header .key-id { font-size: .75rem; letter-spacing: .15em; opacity: .75; margin-bottom: 8px; text-transform: uppercase; }
+  .doc-header h1 { font-size: 1.7rem; font-weight: 800; line-height: 1.25; margin-bottom: 8px; }
+  .doc-header .subtitle { font-size: .95rem; opacity: .85; }
+
+  .meta-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 32px; }
+  .meta-item { background: #fff; border: 1px solid var(--c-border); border-radius: 10px; padding: 14px 16px; }
+  .meta-item .mi-label { font-size: .7rem; color: var(--c-mid); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+  .meta-item .mi-value { font-size: .95rem; font-weight: 600; }
+
+  h2.section-title {
+    font-size: 1.1rem; font-weight: 700; border-left: 4px solid var(--c-accent);
+    padding-left: 12px; margin: 32px 0 16px;
+  }
+
+  .lo-section { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
+  .lo-block { border-radius: 10px; padding: 16px 18px; border: 1px solid transparent; }
+  .lo-block.cog { background: #eff6ff; border-color: #bfdbfe; }
+  .lo-block.soc { background: #fdf2f8; border-color: #fbcfe8; }
+  .lo-block.beh { background: #f0fdf4; border-color: #bbf7d0; }
+  .lo-block .lb-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .lo-block .lb-badge { font-size: .72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; color: #fff; }
+  .lo-block.cog .lb-badge { background: var(--c-cog); }
+  .lo-block.soc .lb-badge { background: var(--c-soc); }
+  .lo-block.beh .lb-badge { background: var(--c-beh); }
+  .lo-block .lb-title { font-size: .85rem; font-weight: 700; }
+  .lo-block.cog .lb-title { color: var(--c-cog); }
+  .lo-block.soc .lb-title { color: var(--c-soc); }
+  .lo-block.beh .lb-title { color: var(--c-beh); }
+  .lo-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .lo-list li { font-size: .88rem; padding-left: 20px; position: relative; line-height: 1.5; }
+  .lo-list li::before { content: "▸"; position: absolute; left: 0; color: var(--c-mid); }
+
+  .activity { background: #fff; border: 1px solid var(--c-border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+  .activity-header {
+    background: linear-gradient(90deg, #064e3b 0%, #065f46 60%, #0e7490 100%);
+    color: #fff; padding: 14px 20px; display: flex; align-items: center; gap: 12px;
+  }
+  .act-num-badge { background: rgba(255,255,255,.2); border-radius: 8px; padding: 4px 10px; font-size: .8rem; font-weight: 700; white-space: nowrap; }
+  .act-title { font-size: 1rem; font-weight: 700; }
+  .act-lo-tags { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; }
+  .act-lo-tag { font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; background: rgba(255,255,255,.2); color: #fff; white-space: nowrap; }
+  .activity-body { padding: 16px 20px; }
+
+  .step { border-left: 3px solid var(--c-border); padding: 12px 0 12px 16px; margin-bottom: 12px; }
+  .step:last-child { margin-bottom: 0; }
+  .step-num { font-size: .78rem; font-weight: 700; color: var(--c-accent); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+  .step-title { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
+  .step-body { font-size: .88rem; color: var(--c-mid); line-height: 1.55; margin-bottom: 8px; }
+  .step-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; align-items: center; }
+  .lo-ref { font-size: .73rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; color: #fff; text-decoration: none; }
+  .lo-ref.cog { background: var(--c-cog); }
+  .lo-ref.soc { background: var(--c-soc); }
+  .lo-ref.beh { background: var(--c-beh); }
+  .ext { font-size: .73rem; padding: 2px 8px; border-radius: 12px; background: #f1f5f9; color: var(--c-accent); text-decoration: none; border: 1px solid var(--c-border); }
+  .ext:hover { background: var(--c-accent); color: #fff; }
+  .ppt-link { font-size: .73rem; padding: 2px 8px; border-radius: 12px; background: #fef9c3; color: #92400e; text-decoration: none; border: 1px solid #fde68a; }
+  .ppt-link:hover { background: #fde68a; }
+
+  .data-embed { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 14px; margin: 8px 0; font-size: .85rem; color: #064e3b; line-height: 1.5; }
+
+  .wsa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+  .wsa-card { background: var(--c-light); border: 1px solid var(--c-border); border-radius: 8px; padding: 12px 14px; }
+  .wsa-card .wc-title { font-size: .8rem; font-weight: 700; color: var(--c-beh); margin-bottom: 4px; }
+  .wsa-card .wc-body { font-size: .82rem; color: var(--c-mid); line-height: 1.4; }
+
+  .assessment { background: #fff; border: 1px solid var(--c-border); border-radius: 10px; padding: 14px 18px; margin-top: 12px; }
+  .assessment .asmt-title { font-size: .8rem; font-weight: 700; color: var(--c-mid); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .06em; }
+  .assessment ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .assessment ul li { font-size: .84rem; color: var(--c-mid); padding-left: 16px; position: relative; }
+  .assessment ul li::before { content: "✓"; position: absolute; left: 0; color: var(--c-beh); font-weight: 700; }
+
+  .resource-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .resource-item { display: flex; gap: 10px; align-items: flex-start; font-size: .85rem; background: #fff; border: 1px solid var(--c-border); border-radius: 8px; padding: 10px 14px; }
+  .resource-item .ri-label { font-weight: 600; white-space: nowrap; }
+  .resource-item a { color: var(--c-accent); text-decoration: none; }
+  .resource-item a:hover { text-decoration: underline; }
+  .ri-sep { color: var(--c-border); }
+
+  @media (max-width: 600px) {
+    .wsa-grid { grid-template-columns: 1fr; }
+    .meta-grid { grid-template-columns: 1fr 1fr; }
+    .activity-header { flex-wrap: wrap; }
+    .act-lo-tags { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="doc-header">
+    <div class="key-id">1.5-IV ｜ UNESCO ESD 教案</div>
+    <h1>避免污染、節約資源</h1>
+    <div class="subtitle">臭氧層、氮循環與 RRRR——從平流層 30 公里到田間 15 公分</div>
+  </header>
+
+  <div class="meta-grid">
+    <div class="meta-item"><div class="mi-label">Key ID</div><div class="mi-value">1.5-IV</div></div>
+    <div class="meta-item"><div class="mi-label">主題</div><div class="mi-value">避免污染、節約資源</div></div>
+    <div class="meta-item"><div class="mi-label">核心概念</div><div class="mi-value">臭氧層、氮循環、N₂O、RRRR</div></div>
+    <div class="meta-item"><div class="mi-label">年段</div><div class="mi-value">國中 7–9 年級（13–15 歲）</div></div>
+    <div class="meta-item"><div class="mi-label">活動數</div><div class="mi-value">4 個活動</div></div>
+    <div class="meta-item"><div class="mi-label">授課語言</div><div class="mi-value">繁體中文</div></div>
+  </div>
+
+  <h2 class="section-title">學習目標</h2>
+  <div class="lo-section">
+
+    <div class="lo-block cog" id="C1">
+      <div class="lb-header">
+        <span class="lb-badge">認知</span>
+        <span class="lb-title">臭氧層、氮循環與 N₂O 機制</span>
+      </div>
+      <ul class="lo-list">
+        <li><strong>C1</strong>：描述平流層臭氧層及其吸收太陽紫外線、保護地球生命的功能。</li>
+        <li><strong>C2</strong>：區辨「平流層臭氧層被 CFC 類氟化合物破壞」與「低層大氣 GHG（含臭氧、氟化合物）吸收紅外線造成暖化」之差異。</li>
+        <li><strong>C3</strong>：解釋氮循環（含細菌固氮），並描述肥料流入河川的不利影響，以在地案例舉例。</li>
+        <li><strong>C4</strong>：解釋細菌將硝酸鹽轉為 N₂O（溫室氣體）導致空氣顆粒物增加與臭氧層潛在破壞。</li>
+        <li><strong>C5</strong>：思考減少氮相關污染的方法（例如尿素肥料深施以減少徑流）。</li>
+      </ul>
+    </div>
+
+    <div class="lo-block soc" id="S1">
+      <div class="lb-header">
+        <span class="lb-badge">社會情緒</span>
+        <span class="lb-title">國際合作、責任感與同理心</span>
+      </div>
+      <ul class="lo-list">
+        <li><strong>S1</strong>：讚賞國際合作（蒙特婁議定書）限制破壞臭氧層氣體的價值。</li>
+        <li><strong>S2</strong>：認識人類活動與環境福祉之間的相互關聯。</li>
+        <li><strong>S3</strong>：培養減少污染的責任感。</li>
+        <li><strong>S4</strong>：對氮污染對水生生態系的影響表示同情。</li>
+      </ul>
+    </div>
+
+    <div class="lo-block beh" id="B1">
+      <div class="lb-header">
+        <span class="lb-badge">行為</span>
+        <span class="lb-title">倡議、評估在地影響與社區參與</span>
+      </div>
+      <ul class="lo-list">
+        <li><strong>B1</strong>：提高家人與朋友對 GHG 與臭氧層破壞化學物質的有害影響認識。</li>
+        <li><strong>B2</strong>：支持學校或青年團體評估在地硝酸鹽與 N₂O 的有害影響，並採取後續行動。</li>
+        <li><strong>B3</strong>：參與社區環境項目（永續農業、在地流域保護）。</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <h2 class="section-title">教學流程</h2>
+
+  <!-- Activity 1 -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num-badge">活動 1</span>
+      <span class="act-title">平流層的防護罩：臭氧層與紫外線</span>
+      <div class="act-lo-tags">
+        <span class="act-lo-tag">C1</span>
+        <span class="act-lo-tag">C2</span>
+        <span class="act-lo-tag">S1</span>
+      </div>
+    </div>
+    <div class="activity-body">
+
+      <div class="step">
+        <div class="step-num">步驟 1</div>
+        <div class="step-title">開場謎題：南極臭氧洞為何不在工廠林立的北半球？</div>
+        <div class="step-body">學生先個人預測 30 秒，再舉手表決答案。引導學生思考：CFC 分子在對流層穩定不分解，慢慢飄到平流層後才被強烈紫外線打斷；南極極渦讓 CFC 濃縮，加上極地平流層雲提供反應介面，使臭氧破壞格外嚴重。「不同樓層、不同身分」是本節核心觀念。</div>
+        <div class="step-meta">
+          <a class="lo-ref cog" href="#C1">C1</a>
+          <a class="ppt-link" href="ppt.html#slide-ozone-mystery">說明</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">步驟 2</div>
+        <div class="step-title">臭氧層解剖：高度與 UV 吸收率</div>
+        <div class="step-body">臭氧層位於平流層，距地表約 15–35 公里，能吸收太陽輻射中約 97–99% 的紫外線（UV-B、UV-C），為地球生命的天然防護罩。若臭氧層變薄 1%，地表 UV-B 約增加 2%，皮膚癌與白內障風險隨之上升。學生於學習單 §1 標示「對流層 vs 平流層」並填寫 UV 吸收率。</div>
+        <div class="data-embed">UNEP/WMO 2022 年臭氧層科學評估：臭氧層位於平流層 15–35 公里，吸收約 97–99% UV-B 與 UV-C；臭氧層減薄 1% → 地表 UV-B 增加 2%。</div>
+        <div class="step-meta">
+          <a class="lo-ref cog" href="#C1">C1</a>
+          <a class="ext" href="https://ozone.unep.org/science/assessment/sap" target="_blank">聯合國環境署/世界氣象組織 臭氧層科學評估 2022</a>
+          <a class="ppt-link" href="ppt.html#slide-ozone-function">說明</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">步驟 3</div>
+        <div class="step-title">兩層樓的故事（C2 核心）：同一物質、不同位置、不同危害</div>
+        <div class="step-body">同樣是 CFC 分子，在對流層（一樓）吸收紅外線、造成溫室效應；飄到平流層（二樓）則被紫外線裂解出氯原子，一個氯原子可連鎖破壞約 10 萬個臭氧分子。學生於學習單 §2 連線配對：汙染物 ↔ 發生位置 ↔ 後果。</div>
+        <div class="step-meta">
+          <a class="lo-ref cog" href="#C1">C2</a>
+          <a class="ppt-link" href="ppt.html#slide-two-floors">說明</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">步驟 4</div>
+        <div class="step-title">國際合作讚歎：蒙特婁議定書</div>
+        <div class="step-body">1987 年通過的蒙特婁議定書是歷史上唯一獲得全球 198 個締約方普遍加入的環境條約。已開發國家於 1996 年、開發中國家於 2010 年完成 CFC 全面停用。依 UNEP/WMO 2022 年評估，若各國維持議定書執行，南極臭氧層預計 2066 年前後恢復至 1980 年水準，北極 2045 年、中緯度地區 2040 年恢復。延遲效應：CFC-12 大氣壽命約 100 年，停止排放不等於立刻恢復。提問：「為什麼蒙特婁議定書比巴黎協定成功？」引出科學共識、替代品可行、責任歸屬清楚三個關鍵。</div>
+        <div class="step-meta">
+          <a class="lo-ref soc" href="#S1">S1</a>
+          <a class="ext" href="https://ozone.unep.org/treaties/montreal-protocol" target="_blank">聯合國環境署 蒙特婁議定書</a>
+          <a class="ppt-link" href="ppt.html#slide-montreal">說明</a>
+        </div>
+      </div>
+
+      <div class="assessment">
+        <div class="asmt-title">形成性評量</div>
+        <ul>
+          <li>學習單 §2 連線題（6 題，≥5/6 正確）</li>
+          <li>口頭回答「臭氧洞 ≠ 全球暖化」差異，≥2 個差異點</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Activity 2 -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num-badge">活動 2</span>
+      <span class="act-title">氮的雙面人生：從固氮到水污染</span>
+      <div class="act-lo-tags">
+        <span class="act-lo-tag">C3</span>
+        <span class="act-lo-tag">S2</span>
+        <span class="act-lo-tag">S4</span>
+      </div>
+    </div>
+    <div class="activity-body">
+
+      <div class="step">
+        <div class="step-num">步驟 1</div>
+        <div class="step-title">氮循環圖解：固氮、硝化、同化、氨化、脫氮</div>
+        <div class="step-body">大氣 N₂ 透過根瘤菌固氮（自然）或哈伯法（工業）轉為 NH₃/NH₄⁺，植物吸收後合成蛋白質，動物取食，生物死亡後氨化釋出 NH₄⁺，細菌硝化成 NO₃⁻，再由脫氮菌還原回 N₂ 返回大氣。哈伯法讓人工氮肥量產，養活全球約 50% 人口，但每年額外注入的氮量超過自然固氮量的一半，打亂了億萬年的平衡。學生於學習單 §3 用箭頭標示循環並填空。</div>
+        <div class="step-meta">
+          <a class="lo-ref cog" href="#C1">C3</a>
+          <a class="ppt-link" href="ppt.html#slide-nitrogen-cycle">說明</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">步驟 2</div>
+        <div class="step-title">在地案例：臺灣河川水質與農業廢水</div>
+        <div class="step-body">根據環境部 2023 年河川水質評鑑：未受污染河段占 65.5%、輕度污染 16.4%、中度污染 15.7%、嚴重污染 2.4%。主要污染源：事業廢水 39%、生活污水 47%、畜牧廢水 14%，氨氮與生化需氧量（BOD）為關鍵指標。小組查詢自家鄉最近河段等級，於學習單 §4 記錄。把抽象數字變成具體的在地水域。</div>
+        <div class="data-embed">環境部 2023 年河川水質年度評鑑：65.5% 未受污染、中度+嚴重污染合計 18.1%；畜牧廢水佔污染源 14%，氨氮與 BOD 為主要指標。</div>
+        <div class="step-meta">
+          <a class="lo-ref cog" href="#C1">C3</a>
+          <a class="lo-ref soc" href="#S1">S4</a>
+          <a class="ext" href="https://data.moenv.gov.tw/" target="_blank">環境部環境資料開放平台</a>
+          <a class="ppt-link" href="ppt.html#slide-river-quality">說明</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">步驟 3</div>
+        <div class="step-title">優養化連鎖：藻華→缺氧→魚死→生態崩潰</div>
+        <div class="step-body">水體氮磷過剩時，第一步藻類暴增（水變綠或紅色）；第二步藻類死亡後分解菌耗光水中氧氣；第三步魚蝦缺氧大量死亡；第四步生態系崩潰、漁業受損。學生於學習單 §5 繪出四步驟因果鏈（系統思考）。播放魚類缺氧短片 30 秒，學生寫一句話情緒反應（S4）。</div>
+        <div class="step-meta">
+          <a class="lo-ref cog" href="#C1">C3</a>
+          <a class="lo-ref soc" href="#S1">S2</a>
+          <a class="lo-ref soc" href="#S1">S4</a>
+        </div>
+      </div>
+
+      <div class="assessment">
+        <div class="asmt-title">形成性評量</div>
+        <ul>
+          <li>學習單 §3 氮循環箭頭圖（≥5/6 箭頭方向正確）</li>
+          <li>學習單 §5 優養化因果鏈（四步驟邏輯連貫）</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Activity 3 -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num-badge">活動 3</span>
+      <span class="act-title">一顆氮肥的旅程：N₂O、PM 與臭氧破壞</span>
+      <div class="act-lo-tags">
+        <span class="act-lo-tag">C4</span>
+        <span class="act-lo-tag">C5</span>
+        <span class="act-lo-tag">S3</span>
+        <span class="act-lo-tag">B2</span>
+      </div>
+    </div>
+    <div class="activity-body">
+
+      <div class="step">
+        <div class="step-num">步驟 1</div>
+        <div class="step-title">衝擊數字：N₂O 的三重危害</div>
+        <div class="step-body">一氧化二氮（N₂O）的 100 年全球暖化潛勢（GWP-100）約為 CO₂ 的 273 倍，且目前是消耗平流層臭氧的首要人為排放物（CFC 受管制後）。全球 N₂O 約 40% 來自農業活動（氮肥、畜牧糞尿），大氣濃度從工業前 270 ppb 升至 2023 年的約 336 ppb。一肥三害：水污染、暖化、臭氧破壞，N₂O 逸散後進入平流層還形成 NOx，成為 PM2.5 前驅物。</div>
+        <div class="data-embed">N₂O GWP-100 ≈ CO₂ × 273（IPCC AR6 WG1 Ch.7）；農業占全球 N₂O 排放約 40%；大氣濃度 336 ppb（2023，美國國家海洋暨大氣總署 GML 全球監測）。</div>
+        <div class="step-meta">
+          <a class="lo-ref cog" href="#C1">C4</a>
+          <a class="ext" href="https://gml.noaa.gov/ccgg/trends_n2o/" target="_blank">美國國家海洋暨大氣總署 GML — N₂O 濃度趨勢</a>
+          <a class="ppt-link" href="ppt.html#slide-n2o-triple">說明</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">步驟 2</div>
+        <div class="step-title">一肥三害：機制追蹤流程圖</div>
+        <div class="step-body">施肥 → 土壤細菌（硝化、脫氮）→ N₂O 逸散 → 平流層分解破壞 O₃；同時形成 NOx → PM2.5 前驅物；硝酸鹽流入河川 → 優養化。學生於學習單 §6 補完「一肥三害」流程圖，需標示三條危害路徑。臺灣 2022 年農業僅占總排放 1.2%，但 N₂O × 273 倍 GWP 使其系統性危害遠超百分比數字。</div>
+        <div class="step-meta">
+          <a class="lo-ref cog" href="#C1">C4</a>
+          <a class="ppt-link" href="ppt.html#slide-n2o-triple">說明</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">步驟 3</div>
+        <div class="step-title">問題解決工作坊：減氮方法工具箱（C5）</div>
+        <div class="step-body">分組討論「如果你是農委會顧問，推薦三項減少氮流失的措施」。提供選項卡：深施尿素（10–15 公分可使 N₂O 排放減少約 30–50%、水體硝酸鹽流失減少約 20–40%）、硝化抑制劑、緩釋肥料、精準施肥、覆蓋作物、有機輪作。每組選三項並說明理由，考量在地適用性。</div>
+        <div class="step-meta">
+          <a class="lo-ref cog" href="#C1">C5</a>
+          <a class="lo-ref soc" href="#S1">S3</a>
+          <a class="ext" href="https://www.fao.org/" target="_blank">聯合國糧農組織 — 永續氮管理</a>
+          <a class="ppt-link" href="ppt.html#slide-reduce-nitrogen">說明</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">步驟 4</div>
+        <div class="step-title">臺灣比例思辨：小比例 × 大威力</div>
+        <div class="step-body">農業僅佔臺灣 2022 年溫室氣體總排放 2.67 億公噸 CO₂e 的 1.2%，能源部門占 90.6%。辯題：「農業占比才 1.2%，改善它划算嗎？」正反各 2 分鐘陳述。引導思考：N₂O 每公噸暖化力等同 273 公噸 CO₂；農業改善同時帶來水質改善、健康效益、生態效益，多準則決策不能只看百分比。</div>
+        <div class="step-meta">
+          <a class="lo-ref cog" href="#C1">C4</a>
+          <a class="lo-ref cog" href="#C1">C5</a>
+          <a class="lo-ref soc" href="#S1">S3</a>
+          <a class="ext" href="https://www.cca.gov.tw/" target="_blank">環境部氣候變遷署 — 溫室氣體排放清冊</a>
+        </div>
+      </div>
+
+      <div class="assessment">
+        <div class="asmt-title">形成性評量</div>
+        <ul>
+          <li>學習單 §6 一肥三害流程圖（≥3 個正確步驟）</li>
+          <li>小組措施海報（引用 N₂O 或深施法數據 ≥1 次、措施可行性說明）</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Activity 4 -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num-badge">活動 4</span>
+      <span class="act-title">RRRR、蒙特婁精神與我的承諾：WSA 整合行動</span>
+      <div class="act-lo-tags">
+        <span class="act-lo-tag">S1</span>
+        <span class="act-lo-tag">S3</span>
+        <span class="act-lo-tag">B1</span>
+        <span class="act-lo-tag">B2</span>
+        <span class="act-lo-tag">B3</span>
+      </div>
+    </div>
+    <div class="activity-body">
+
+      <div class="step">
+        <div class="step-num">全校途徑（WSA）</div>
+        <div class="step-title">UNESCO Whole School Approach 四面向</div>
+        <div class="wsa-grid">
+          <div class="wsa-card">
+            <div class="wc-title">治理 Governance</div>
+            <div class="wc-body">成立「學生永續委員會」氮污染與減塑分組；向學生議會或校務會議提案（禁用一次性塑膠、化學實驗室廢液分流）。</div>
+          </div>
+          <div class="wsa-card">
+            <div class="wc-title">課程 Curriculum</div>
+            <div class="wc-body">跨自然（氮循環）、社會（國際治理）、綜合活動（行動提案）、健康教育（UV 防曬）整合。</div>
+          </div>
+          <div class="wsa-card">
+            <div class="wc-title">校園運作 Campus</div>
+            <div class="wc-body">學校菜圃改用有機堆肥（減氮肥）、實驗室廢液分流；採購指南納入「避免含 CFC/HFC 製品」。</div>
+          </div>
+          <div class="wsa-card">
+            <div class="wc-title">社群 Community</div>
+            <div class="wc-body">與在地農會、河川巡守隊、環保局合作，進行「我家鄉的河」水質採樣（BOD、氨氮）。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">步驟 1</div>
+        <div class="step-title">RRRR 真正的優先順序</div>
+        <div class="step-body">RRRR 的正確順序：Refuse（拒絕不必要購買）> Reuse（重複使用）> Repair（修復延命）> Recycle（回收）。回收耗能且有殘餘污染，應是最後手段。學生用自己的一週垃圾盤點（前置作業）應用 RRRR 四個層次，於學習單 §7 填寫。應用到氮污染：Refuse 過量肥料（精準施肥）> Reuse 廚餘堆肥 > Repair 土壤（綠肥輪作）> Recycle 是最後手段。</div>
+        <div class="step-meta">
+          <a class="lo-ref soc" href="#S1">S3</a>
+          <a class="lo-ref beh" href="#B1">B1</a>
+          <a class="ppt-link" href="ppt.html#slide-rrrr">說明</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">步驟 2</div>
+        <div class="step-title">學生治理工作坊：模擬「學生永續委員會會議」</div>
+        <div class="step-body">分組角色扮演（主席、委員、家長代表、行政代表），撰寫三項提案：① 校園堆肥取代化肥；② 禁用實驗室 CFC/HFC 罐裝噴劑；③ 家長共學夜「氮肥加優養化」。每組完成提案書學習單 §8，評分標準：問題定義、資料引用（數據 ≥2）、可行性、影響範圍（各 5 分）。</div>
+        <div class="step-meta">
+          <a class="lo-ref beh" href="#B1">B1</a>
+          <a class="lo-ref beh" href="#B1">B2</a>
+          <a class="ppt-link" href="ppt.html#slide-ws-pledge">說明</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">步驟 3</div>
+        <div class="step-title">社區行動設計（B3）</div>
+        <div class="step-body">設計「社區氮污染行動」：河段採樣地圖、里民電子報（500 字科普短文）、國小宣講。小組填寫「行動卡」：目標、對象、步驟、預期成效、風險評估（學習單 §9）。</div>
+        <div class="step-meta">
+          <a class="lo-ref beh" href="#B1">B2</a>
+          <a class="lo-ref beh" href="#B1">B3</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">步驟 4</div>
+        <div class="step-title">倫理兩難與個人承諾（公開宣示）</div>
+        <div class="step-body">倫理兩難：「家裡菜園阿公習慣多施肥保豐收，你怎麼說服他改變？」兩分鐘自由寫，3–4 位學生口頭分享，教師提示「科學、情感、尊重」三軸。收尾：每位學生寫一張「我的 30 天承諾卡」（RRRR 各一項具體行動 + 分享對象），朗讀後貼於教室承諾牆。</div>
+        <div class="step-meta">
+          <a class="lo-ref soc" href="#S1">S3</a>
+          <a class="lo-ref soc" href="#S1">S4</a>
+          <a class="lo-ref beh" href="#B1">B1</a>
+          <a class="ppt-link" href="ppt.html#slide-ws-pledge">說明</a>
+        </div>
+      </div>
+
+      <div class="assessment">
+        <div class="asmt-title">總結性評量</div>
+        <ul>
+          <li>提案書（§8）：問題定義、資料引用（數據 ≥2）、可行性、影響範圍（各 5 分，共 20 分）</li>
+          <li>30 天承諾卡 + 第 30 天回報（行為延續性觀察）</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <h2 class="section-title">教學資源</h2>
+  <div class="resource-list">
+    <div class="resource-item">
+      <span class="ri-label">UNEP 臭氧秘書處</span>
+      <span class="ri-sep">—</span>
+      <a href="https://ozone.unep.org/science/assessment/sap" target="_blank">聯合國環境署/世界氣象組織 臭氧層科學評估 2022</a>
+    </div>
+    <div class="resource-item">
+      <span class="ri-label">蒙特婁議定書</span>
+      <span class="ri-sep">—</span>
+      <a href="https://ozone.unep.org/treaties/montreal-protocol" target="_blank">聯合國環境署 蒙特婁議定書官方文件</a>
+    </div>
+    <div class="resource-item">
+      <span class="ri-label">NOAA GML</span>
+      <span class="ri-sep">—</span>
+      <a href="https://gml.noaa.gov/ccgg/trends_n2o/" target="_blank">美國國家海洋暨大氣總署 全球監測實驗室 — N₂O 大氣濃度趨勢</a>
+    </div>
+    <div class="resource-item">
+      <span class="ri-label">FAO</span>
+      <span class="ri-sep">—</span>
+      <a href="https://www.fao.org/" target="_blank">聯合國糧農組織 — 永續氮管理</a>
+    </div>
+    <div class="resource-item">
+      <span class="ri-label">環境部氣候署</span>
+      <span class="ri-sep">—</span>
+      <a href="https://www.cca.gov.tw/" target="_blank">中華民國環境部氣候變遷署 — 國家溫室氣體排放清冊</a>
+    </div>
+    <div class="resource-item">
+      <span class="ri-label">環境部資料平台</span>
+      <span class="ri-sep">—</span>
+      <a href="https://data.moenv.gov.tw/" target="_blank">中華民國環境部環境資料開放平台 — 河川水質</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

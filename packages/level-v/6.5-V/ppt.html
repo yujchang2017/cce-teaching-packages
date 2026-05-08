@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.5-V 永續移動力 — 教學投影片</title>
+<style>
+  :root{--c-accent:#0f766e;--c-soft:#ccfbf1;--c-accent-soft:#f0fdfa;--c-cog:#2563eb;--c-soc:#db2777;--c-beh:#16a34a;--c-text:#1f2937;--c-muted:#6b7280;--c-border:#e5e7eb;--c-bg:#f9fafb}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--c-text);background:#fff;line-height:1.65}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--c-accent);text-decoration:none;font-weight:600;font-size:.95rem;white-space:nowrap}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.9rem;font-weight:500;color:var(--c-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--c-muted)}
+  .page-indicator{font-family:monospace;color:var(--c-text)}.nav-current{color:var(--c-accent);font-weight:700}
+  .hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--c-border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--c-border);position:relative}
+  @media(max-width:700px){.slide{padding:32px 24px}}
+  .slide-num{position:absolute;top:14px;right:20px;font-size:.75rem;font-family:monospace;color:var(--c-border)}
+  .slide h2{font-size:1.9rem;margin-bottom:20px;color:var(--c-text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--c-soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.6rem;line-height:1.2;max-width:800px}
+  .level-tag{display:inline-block;background:var(--c-accent);color:#fff;padding:4px 16px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.85rem;color:var(--c-accent);letter-spacing:.2em;font-weight:700;margin-bottom:12px}
+  .slide.divider h2{font-size:2.2rem;color:var(--c-accent);max-width:700px}
+  .slide.divider .chips{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .chip{background:var(--c-soft);color:var(--c-accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  .q-box{background:var(--c-soft);border-left:5px solid var(--c-accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.35rem;line-height:1.6;color:var(--c-accent);font-weight:600;max-width:750px}
+  .q-sub{font-size:1rem;color:var(--c-muted);font-weight:400;margin-top:10px;line-height:1.6}
+  .data-card{border:2px solid var(--c-border);border-radius:12px;padding:22px 28px;margin:16px 0;background:var(--c-bg)}
+  .dc-label{font-size:.78rem;font-weight:700;letter-spacing:.15em;color:var(--c-muted);margin-bottom:8px}
+  .dc-fact{font-size:1.15rem;font-weight:700;color:var(--c-text);margin-bottom:10px;line-height:1.5}
+  .dc-src{font-size:.83rem;color:var(--c-muted)}.dc-src a{color:var(--c-accent);text-decoration:none;border-bottom:1px dashed var(--c-accent)}
+  .chart-placeholder{border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center;margin:16px 0}
+  .cp-label{font-size:.78rem;color:var(--c-muted);letter-spacing:.15em;margin-bottom:8px}
+  .cp-title{font-size:1.35rem;color:var(--c-accent);font-weight:700;margin-bottom:12px}
+  .cp-data{font-size:1.05rem;margin:14px 0}
+  .cp-note{font-size:.83rem;color:var(--c-muted);margin-top:12px}
+  figcaption{font-size:.85rem;color:var(--c-muted);text-align:center;margin-top:8px}
+  .act-card{border:2px solid var(--c-border);border-radius:12px;padding:20px 26px;margin:16px 0}
+  .ac-badge{display:inline-block;background:var(--c-accent);color:#fff;font-size:.78rem;font-weight:700;padding:2px 10px;border-radius:4px;margin-bottom:10px;letter-spacing:.08em}
+  .ac-task{font-size:1.1rem;color:var(--c-text);line-height:1.65}
+  .ws-frame{border:2px dashed var(--c-accent);border-radius:12px;padding:28px 32px;margin:16px 0;background:#fff}
+  .ws-title{font-size:1rem;font-weight:700;color:var(--c-accent);margin-bottom:14px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--c-border);padding:12px 14px;text-align:center;font-size:.9rem}
+  .ws-table th{background:var(--c-soft);color:var(--c-accent);font-weight:700}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:56px}
+  .ws-lines{display:flex;flex-direction:column;gap:14px;margin-top:10px}
+  .ws-line{border-bottom:1.5px solid #d1d5db;height:28px}
+  .compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:16px 0}
+  .compare-card{border:1px solid var(--c-border);border-radius:10px;padding:14px 16px;background:var(--c-bg)}
+  .compare-card h4{font-size:.9rem;color:var(--c-accent);margin-bottom:8px}
+  .compare-card ul{padding-left:1.2em;font-size:.88rem}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0}
+  @media(max-width:600px){.two-col{grid-template-columns:1fr}}
+  .col-card{border:1px solid var(--c-border);border-radius:10px;padding:16px 18px;background:var(--c-bg)}
+  .col-card h4{font-size:.95rem;margin-bottom:8px;color:var(--c-accent)}
+  .summary-keys{display:flex;flex-direction:column;gap:14px;margin:16px 0;max-width:720px}
+  .key-card{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--c-border);border-radius:10px;padding:14px 18px;background:var(--c-bg)}
+  .key-num{font-size:1.4rem;font-weight:700;color:var(--c-accent);font-family:monospace;min-width:2rem}
+  .key-text{font-size:.98rem;line-height:1.6}
+  .pledge-form{border:2px solid var(--c-beh);border-radius:12px;padding:24px 28px;margin:16px 0;background:#f0fdf4;max-width:680px}
+  .pledge-form h4{color:var(--c-beh);font-size:1rem;margin-bottom:14px}
+  .pledge-row{display:flex;align-items:center;gap:10px;margin:10px 0}
+  .pledge-box{width:18px;height:18px;border:2px solid var(--c-beh);border-radius:4px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">永續移動力：交通政策、數位轉型與氣候行動 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- SLIDE 1: COVER -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-num">1 / 21</div>
+  <div class="slide-body">
+    <div class="level-tag">Level V｜高中 10–12 年級</div>
+    <h2>永續移動力<br>交通政策、數位轉型與氣候行動</h2>
+    <p style="color:var(--c-muted);max-width:640px;font-size:1.05rem;margin-top:16px">Key ID: 6.5-V｜4 節課 × 50 分鐘</p>
+    <p style="color:var(--c-muted);font-size:.9rem;margin-top:8px">SDG 11：永續城市與社區｜SDG 13：氣候行動</p>
+  </div>
+</section>
+
+<!-- SLIDE 2: QUESTION -->
+<section class="slide" id="slide-question">
+  <div class="slide-num">2 / 21</div>
+  <div class="slide-body">
+    <div class="q-box">
+      你今天怎麼來學校的？計算你的通勤碳足跡。
+      <div class="q-sub">每公里碳排參考值：機車 ≈ 80g　汽車 ≈ 180g　公車 ≈ 30g　捷運 ≈ 15g　自行車 ≈ 0g</div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">思考問題</div>
+      <div class="ac-task">如果全班同學都改騎 YouBike 上學，一年可以減少多少碳排放？</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: DIVIDER — 活動一 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-num">3 / 21</div>
+  <div class="slide-body">
+    <div class="act-badge">活動一</div>
+    <h2>全球交通碳排全景<br>數據、政策與模態轉移</h2>
+    <div class="chips">
+      <span class="chip">步驟 1 通勤碳足跡</span>
+      <span class="chip">步驟 2 全球排放全景</span>
+      <span class="chip">步驟 3 政策光譜</span>
+      <span class="chip">步驟 4 臺灣交通數據</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: transport emissions -->
+<section class="slide" id="slide-transport-emissions">
+  <div class="slide-num">4 / 21</div>
+  <h2>全球交通排放結構</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：全球交通排放子部門圓餅圖]</div>
+        <div class="cp-data"><strong>關鍵數據：</strong>交通占全球能源 CO₂ 約 23%（7.7 Gt，2022 年）<br>公路 75%　航空 12%　航運 11%　其他 2%</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>資料來源：國際能源署世界能源展望 2023</figcaption>
+    </figure>
+    <div class="data-card">
+      <div class="dc-label">驚人事實</div>
+      <div class="dc-fact">交通排放自 1990 年增長約 70%——為所有部門中增速最快者之一</div>
+      <div class="dc-src"><a href="https://www.iea.org/reports/world-energy-outlook-2023" target="_blank" rel="noopener">國際能源署世界能源展望 2023</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: policy spectrum -->
+<section class="slide" id="slide-policy-spectrum">
+  <div class="slide-num">5 / 21</div>
+  <h2>永續移動政策四大策略</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h4>模態轉移</h4>
+        <ul><li>由私人汽車轉向鐵路、公車</li><li>歐盟 2050 鐵路客運倍增目標</li><li>YouBike、eBike 推廣</li></ul>
+      </div>
+      <div class="compare-card">
+        <h4>電氣化</h4>
+        <ul><li>電動車銷售禁止燃油車時間表</li><li>充電基礎設施投資</li><li>永續航空燃料（SAF）</li></ul>
+      </div>
+      <div class="compare-card">
+        <h4>共享移動</h4>
+        <ul><li>共乘（carpooling）媒合</li><li>整合運輸平臺（臺北 TPASS）</li><li>共享汽車（car-sharing）</li></ul>
+      </div>
+      <div class="compare-card">
+        <h4>需求管理</h4>
+        <ul><li>擁車稅、碳稅、里程計費</li><li>城市核心區低排放區</li><li>停車費差別訂價</li></ul>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">聯合國行動</div>
+      <div class="dc-fact">2026–2035 為「永續交通十年」；全球每年需投資 1.2–1.5 兆美元於永續交通基礎設施</div>
+      <div class="dc-src"><a href="https://sdgs.un.org/topics/sustainable-transport" target="_blank" rel="noopener">聯合國永續交通</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: taiwan transport -->
+<section class="slide" id="slide-taiwan-transport">
+  <div class="slide-num">6 / 21</div>
+  <h2>臺灣交通困境與轉型機會</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="text-align:center">
+        <h4>機動車輛總數</h4>
+        <p style="font-size:1.6rem;font-weight:700;color:#dc2626">2,240 萬輛</p>
+        <p style="font-size:.85rem;color:var(--c-muted)">每百人約 96 輛，全球名列前茅</p>
+      </div>
+      <div class="compare-card" style="text-align:center">
+        <h4>運輸占溫室氣體</h4>
+        <p style="font-size:1.6rem;font-weight:700;color:#dc2626">14%</p>
+        <p style="font-size:.85rem;color:var(--c-muted)">約 3,700 萬噸 CO₂e（2023）</p>
+      </div>
+      <div class="compare-card" style="text-align:center">
+        <h4>電動機車累計</h4>
+        <p style="font-size:1.6rem;font-weight:700;color:var(--c-beh)">64 萬輛</p>
+        <p style="font-size:.85rem;color:var(--c-muted)">YouBike 突破 3 億次使用</p>
+      </div>
+    </div>
+    <div class="q-box" style="font-size:1.05rem">
+      臺灣的高機車密度是問題，還是電動移動轉型的機會？
+    </div>
+    <div class="dc-src" style="margin-top:8px;font-size:.82rem;color:var(--c-muted)">來源：<a href="https://stat.motc.gov.tw/" target="_blank" rel="noopener" style="color:var(--c-accent);border-bottom:1px dashed var(--c-accent)">交通部統計查詢網</a>　<a href="https://www.cca.gov.tw/" target="_blank" rel="noopener" style="color:var(--c-accent);border-bottom:1px dashed var(--c-accent)">環境部溫室氣體排放清冊</a></div>
+  </div>
+</section>
+
+<!-- SLIDE 7: DIVIDER — 活動二 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-num">7 / 21</div>
+  <div class="slide-body">
+    <div class="act-badge">活動二</div>
+    <h2>航空、觀光與永續旅遊<br>碳排不平等與替代方案</h2>
+    <div class="chips">
+      <span class="chip">步驟 1 航空碳排解析</span>
+      <span class="chip">步驟 2 觀光碳足跡</span>
+      <span class="chip">步驟 3 雙情境曲線</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: aviation -->
+<section class="slide" id="slide-aviation">
+  <div class="slide-num">8 / 21</div>
+  <h2>航空碳排：被低估的貢獻</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="col-card" style="text-align:center">
+        <h4>純 CO₂ 排放占比</h4>
+        <p style="font-size:2rem;font-weight:700;color:var(--c-cog)">2.5%</p>
+        <p style="font-size:.85rem;color:var(--c-muted)">占全球 CO₂ 排放</p>
+      </div>
+      <div class="col-card" style="text-align:center">
+        <h4>含非 CO₂ 效應的暖化貢獻</h4>
+        <p style="font-size:2rem;font-weight:700;color:#dc2626">4%</p>
+        <p style="font-size:.85rem;color:var(--c-muted)">凝結尾跡、NOx、卷雲效應加乘</p>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">非 CO₂ 效應機制</div>
+      <div class="dc-fact">高空飛行產生凝結尾跡（像人造雲）→ 反射地球輻射減弱 → 暖化效果是 CO₂ 本身的 1.5–2 倍</div>
+      <div class="dc-src"><a href="https://ourworldindata.org/co2-emissions-from-aviation" target="_blank" rel="noopener">Our World in Data：航空排放</a></div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">思考問題</div>
+      <div class="ac-task">只有約 10% 的全球人口曾搭過飛機——航空碳排的不平等，誰在製造，誰在承受？</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9: tourism carbon -->
+<section class="slide" id="slide-tourism-carbon">
+  <div class="slide-num">9 / 21</div>
+  <h2>觀光碳足跡：設計低碳旅行</h2>
+  <div class="slide-body">
+    <div class="data-card">
+      <div class="dc-label">全球觀光業碳足跡（2023）</div>
+      <div class="dc-fact">占全球溫室氣體 8%　其中交通占觀光碳足跡 49%　2024 年國際旅客恢復至約 14 億人次</div>
+      <div class="dc-src"><a href="https://www.unwto.org/tourism-and-climate-change" target="_blank" rel="noopener">聯合國世界旅遊組織：觀光與氣候變遷</a></div>
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">低碳旅行方案設計：臺北→花蓮</div>
+      <table class="ws-table">
+        <tr><th>交通方式</th><th>時間</th><th>人均 CO₂</th><th>票價</th><th>便利性評分</th></tr>
+        <tr><td>飛機</td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>火車（太魯閣）</td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>客運巴士</td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>自行車（蘇花改）</td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10: scenario curves -->
+<section class="slide" id="slide-scenario-curves">
+  <div class="slide-num">10 / 21</div>
+  <h2>2050 年交通排放雙情境</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：2019–2050 全球交通排放雙情境曲線圖]</div>
+        <div class="cp-data"><strong>現行政策情境：</strong>2050 年較 2019 年增加 +16%（持續成長曲線）<br><strong>野心路徑情境：</strong>2050 年較 2019 年減少 -80%（急降曲線）<br><strong>共享+電氣化：</strong>可額外再減排 20–30%</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>資料來源：國際交通論壇交通展望 2023</figcaption>
+    </figure>
+    <div class="act-card">
+      <div class="ac-badge">繪圖任務</div>
+      <div class="ac-task">在坐標圖上畫出兩條曲線，標示關鍵假設（技術突破、政策強度、行為改變），說明達成野心路徑需要什麼條件</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 11: DIVIDER — 活動三 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-num">11 / 21</div>
+  <div class="slide-body">
+    <div class="act-badge">活動三</div>
+    <h2>共享移動、電氣化與數位轉型<br>科技驅動的永續交通</h2>
+    <div class="chips">
+      <span class="chip">步驟 1 電動車現況</span>
+      <span class="chip">步驟 2 共享移動與整合平臺</span>
+      <span class="chip">步驟 3 AI 與智慧交通</span>
+      <span class="chip">步驟 4 性別與公平</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 12: EV global -->
+<section class="slide" id="slide-ev-global">
+  <div class="slide-num">12 / 21</div>
+  <h2>電動車全球現況</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="text-align:center">
+        <h4>2023 年 EV 銷量</h4>
+        <p style="font-size:1.6rem;font-weight:700;color:var(--c-beh)">1,400 萬輛</p>
+        <p style="font-size:.85rem;color:var(--c-muted)">全球市占率達 18%（2022 年為 14%）</p>
+      </div>
+      <div class="compare-card" style="text-align:center">
+        <h4>路上電動車總數</h4>
+        <p style="font-size:1.6rem;font-weight:700;color:var(--c-cog)">4,000 萬輛</p>
+        <p style="font-size:.85rem;color:var(--c-muted)">較 2018 年的 500 萬輛增長 8 倍</p>
+      </div>
+      <div class="compare-card" style="text-align:center">
+        <h4>年減碳效益</h4>
+        <p style="font-size:1.6rem;font-weight:700;color:var(--c-accent)">1.2 億噸</p>
+        <p style="font-size:.85rem;color:var(--c-muted)">CO₂ 年減排量（全球電動車）</p>
+      </div>
+    </div>
+    <div class="q-box" style="font-size:1.05rem">
+      電動車是最終解答嗎？
+      <div class="q-sub">若電力來源仍為燃煤——全生命週期碳排會大幅縮水。真正的解法是電動車 × 再生能源 × 共享模式三合一。</div>
+    </div>
+    <div class="dc-src" style="margin-top:4px;font-size:.82rem;color:var(--c-muted)">來源：<a href="https://www.iea.org/reports/global-ev-outlook-2024" target="_blank" rel="noopener" style="color:var(--c-accent);border-bottom:1px dashed var(--c-accent)">國際能源署全球電動車展望 2024</a></div>
+  </div>
+</section>
+
+<!-- SLIDE 13: shared mobility -->
+<section class="slide" id="slide-shared-mobility">
+  <div class="slide-num">13 / 21</div>
+  <h2>共享移動與整合運輸平臺</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="col-card">
+        <h4>共享移動類型</h4>
+        <ul style="font-size:.9rem">
+          <li>共乘（carpooling）：同路徑共用私家車</li>
+          <li>共享單車：YouBike、oBike</li>
+          <li>共享汽車（car-sharing）：按小時租用</li>
+          <li>隨需運輸（ride-hailing）：Uber、DiDi</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <h4>整合運輸平臺（MaaS）</h4>
+        <ul style="font-size:.9rem">
+          <li>數位平臺整合多種運具為單一支付</li>
+          <li>赫爾辛基 Whim：月訂閱無限次使用</li>
+          <li>臺北 TPASS：通勤月票整合捷運+公車</li>
+          <li>共享+電氣化可再減排 20–30%</li>
+        </ul>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">系統思考任務</div>
+      <div class="ac-task">繪製共享移動因果循環圖（≥2 正反饋 + 1 負反饋 + 1 槓桿點）——包含反彈效應的挑戰</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 14: AI ITS -->
+<section class="slide" id="slide-ai-its">
+  <div class="slide-num">14 / 21</div>
+  <h2>人工智慧與智慧交通</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="text-align:center">
+        <h4>壅塞減少</h4>
+        <p style="font-size:1.6rem;font-weight:700;color:var(--c-beh)">15–25%</p>
+        <p style="font-size:.85rem">智慧交通管理系統效益</p>
+      </div>
+      <div class="compare-card" style="text-align:center">
+        <h4>排放降低</h4>
+        <p style="font-size:1.6rem;font-weight:700;color:var(--c-accent)">10–15%</p>
+        <p style="font-size:.85rem">相關交通排放減少量</p>
+      </div>
+      <div class="compare-card" style="text-align:center">
+        <h4>效率提升</h4>
+        <p style="font-size:1.6rem;font-weight:700;color:var(--c-cog)">3–5 倍</p>
+        <p style="font-size:.85rem">自駕+共享模式的車輛使用效率</p>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">倫理兩難</div>
+      <div class="dc-fact">自駕車應優先服務「效率」（讓整體系統最快）還是「公平」（確保弱勢族群可及性）？<br>若自駕車讓出行過於便利，是否反而誘發更多出行——「反彈效應」的風險</div>
+      <div class="dc-src"><a href="https://www.iea.org/reports/digitalisation-and-energy" target="_blank" rel="noopener">國際能源署數位化與能源</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 15: gender equity -->
+<section class="slide" id="slide-gender-equity">
+  <div class="slide-num">15 / 21</div>
+  <h2>性別、公平與永續移動</h2>
+  <div class="slide-body">
+    <div class="q-box">
+      誰的移動需求在交通政策中被看見？
+      <div class="q-sub">女性夜間安全・偏鄉居民可及性・身障者無障礙設計・低收入族群的交通貧窮</div>
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card"><h4>女性安全</h4><ul><li>夜間路線照明不足</li><li>站牌位置偏遠</li><li>騷擾風險影響出行意願</li></ul></div>
+      <div class="compare-card"><h4>偏鄉可及性</h4><ul><li>班次稀少、末班車早</li><li>「交通貧窮」加劇就業不平等</li><li>幸福巴士、AI 預約公車</li></ul></div>
+      <div class="compare-card"><h4>身障者需求</h4><ul><li>低地板公車覆蓋率</li><li>無障礙月臺設計</li><li>復康巴士預約困難</li></ul></div>
+    </div>
+    <p style="font-size:.88rem;color:var(--c-muted);margin-top:12px">聯合國永續發展目標 11.2：確保所有人——特別關注弱勢族群——都能享有安全、可負擔且可持續的交通</p>
+  </div>
+</section>
+
+<!-- SLIDE 16: DIVIDER — 活動四 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-num">16 / 21</div>
+  <div class="slide-body">
+    <div class="act-badge">活動四</div>
+    <h2>學生治理行動<br>跨域整合與後設反思</h2>
+    <div class="chips">
+      <span class="chip">步驟 1 全校永續框架</span>
+      <span class="chip">步驟 2 模擬聽證</span>
+      <span class="chip">步驟 3 跨域短論文</span>
+      <span class="chip">步驟 4 後設認知</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 17: mock hearing -->
+<section class="slide" id="slide-mock-hearing">
+  <div class="slide-num">17 / 21</div>
+  <h2>模擬議會聽證</h2>
+  <div class="slide-body">
+    <div class="q-box" style="font-size:1.05rem">
+      議題：校園周邊是否應實施機車限行區並增設公共自行車站？
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card"><h4>交通局</h4><p style="font-size:.85rem">在減碳目標與民眾便利性之間取得平衡</p></div>
+      <div class="compare-card"><h4>學校行政</h4><p style="font-size:.85rem">考量師生通勤需求與校園安全</p></div>
+      <div class="compare-card"><h4>家長會</h4><p style="font-size:.85rem">擔心學生雨天通勤安全與接送不便</p></div>
+      <div class="compare-card"><h4>共享運具業者</h4><p style="font-size:.85rem">評估增設站點的商業可行性</p></div>
+      <div class="compare-card"><h4>環保團體</h4><p style="font-size:.85rem">主張機車限行是減碳關鍵第一步</p></div>
+      <div class="compare-card"><h4>學生代表</h4><p style="font-size:.85rem">在同學需求、環保理念與現實之間協調</p></div>
+    </div>
+    <p style="font-size:.88rem;color:var(--c-muted);margin-top:10px">各組 3 分鐘陳述 + 2 分鐘被質詢｜完成利害關係人分析表（權力、立場、結盟）</p>
+  </div>
+</section>
+
+<!-- SLIDE 18: essay guide -->
+<section class="slide" id="slide-essay-guide">
+  <div class="slide-num">18 / 21</div>
+  <h2>跨域整合短論文</h2>
+  <div class="slide-body">
+    <div class="q-box" style="font-size:1.05rem">
+      從碳足跡到整合運輸平臺：永續移動的科技、經濟與公平三維分析
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">500 字以上｜整合科技・經濟・公平三維度</div>
+      <div class="ws-lines">
+        <div style="font-size:.9rem;color:var(--c-muted)">① 問題界定：全球交通排放現況（引用 23%、7.7 Gt 數據）</div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--c-muted)">② 科技分析：電動車、智慧交通系統、整合運輸平臺的減碳潛力與侷限</div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--c-muted)">③ 經濟分析：投資規模（1.2–1.5 兆美元/年）、外部性與政策工具</div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--c-muted)">④ 公平分析：臺灣交通公平性（引用 2,240 萬輛機動車、電動機車 64 萬輛、每百人 96 輛）</div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--c-muted)">⑤ 結論：三維整合的政策建議</div>
+        <div class="ws-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 19: WSA -->
+<section class="slide" id="slide-wsa">
+  <div class="slide-num">19 / 21</div>
+  <h2>全校性永續行動（WSA）</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h4>治理</h4>
+        <ul><li>學生議會「永續交通委員會」</li><li>校園交通改善預算提案</li><li>跨校青年永續移動聯盟</li></ul>
+      </div>
+      <div class="compare-card">
+        <h4>課程</h4>
+        <ul><li>地理：都市規劃與交通</li><li>公民：交通政策與公共參與</li><li>資訊：大數據與人工智慧應用</li></ul>
+      </div>
+      <div class="compare-card">
+        <h4>校園營運</h4>
+        <ul><li>全校通勤碳盤查</li><li>共乘媒合平臺</li><li>校園無怠速區</li></ul>
+      </div>
+      <div class="compare-card">
+        <h4>社群</h4>
+        <ul><li>與交通局、客運業者合作</li><li>社區永續交通工作坊</li><li>通勤碳足跡挑戰賽</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 20: summary key points -->
+<section class="slide" id="slide-summary-keys">
+  <div class="slide-num">20 / 21</div>
+  <h2>三個核心洞見</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card">
+        <div class="key-num">1</div>
+        <div class="key-text">交通碳排需要系統性策略：電動化 × 共享化 × 模態轉移缺一不可——單靠電動車不足以達成氣候目標</div>
+      </div>
+      <div class="key-card">
+        <div class="key-num">2</div>
+        <div class="key-text">數位轉型是雙面刃：智慧交通系統能減少壅塞與排放，但也可能誘發反彈效應——政策設計至關重要</div>
+      </div>
+      <div class="key-card">
+        <div class="key-num">3</div>
+        <div class="key-text">永續移動是公平議題：誰能享受低碳交通、誰承擔交通污染，取決於政策的優先選擇與資源分配</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 21: FINAL SUMMARY -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <div class="slide-num">21 / 21</div>
+  <div class="slide-body">
+    <h2 style="color:var(--c-accent);font-size:2rem;margin-bottom:24px">每一次出行選擇都是一張氣候選票</h2>
+    <div class="pledge-form">
+      <h4>我的永續移動承諾</h4>
+      <div class="pledge-row"><div class="pledge-box"></div><span>治理：</span><div style="flex:1;border-bottom:1px solid var(--c-beh);margin-left:4px"></div></div>
+      <div class="pledge-row"><div class="pledge-box"></div><span>課程：</span><div style="flex:1;border-bottom:1px solid var(--c-beh);margin-left:4px"></div></div>
+      <div class="pledge-row"><div class="pledge-box"></div><span>營運：</span><div style="flex:1;border-bottom:1px solid var(--c-beh);margin-left:4px"></div></div>
+      <div class="pledge-row"><div class="pledge-box"></div><span>社群：</span><div style="flex:1;border-bottom:1px solid var(--c-beh);margin-left:4px"></div></div>
+    </div>
+    <p style="margin-top:20px"><a href="lesson_plan.html" style="color:var(--c-accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator">投影片 <span class="nav-current" id="navCur">1</span> / 21</span>
+  <span class="hint"><kbd>←</kbd><kbd>→</kbd> 切換投影片</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur = document.getElementById('navCur');
+  if (!slides.length || !cur) return;
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => io.observe(s));
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -10 && r.top < window.innerHeight * 0.5;
+    });
+    const ci = i >= 0 ? i : 0;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = slides[Math.min(ci + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(ci - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>污染 — Level III 投影片</title>
+<style>
+  :root{--accent:#0f766e;--soft:#ccfbf1;--cog:#2563eb;--soc:#db2777;--beh:#16a34a;--warn:#ea580c;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--text);line-height:1.6;margin:0;background:#fff}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.95rem;font-weight:500;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--muted)}
+  .nav-indicator{font-family:monospace;color:var(--text)} .nav-cur{color:var(--accent);font-weight:700}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--border);position:relative}
+  .slide-num{position:absolute;top:14px;right:20px;font-size:.8rem;font-family:monospace;color:var(--border)}
+  .slide h2{font-size:2rem;margin:0 0 20px;color:var(--text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  /* cover & divider */
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.8rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--accent);color:#fff;padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--accent);letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.4rem;color:var(--accent)}
+  .slide.divider .act-steps{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .act-step-chip{background:var(--soft);color:var(--accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  /* question slide */
+  .q-box{background:var(--soft);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.35rem;line-height:1.6;color:var(--accent);font-weight:600}
+  .q-sub{font-size:1.05rem;color:var(--muted);font-weight:400;margin-top:10px}
+  /* data card */
+  .data-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0;background:var(--bg)}
+  .data-card .dc-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;color:var(--muted);margin-bottom:8px}
+  .data-card .dc-fact{font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.5}
+  .data-card .dc-src{font-size:.85rem;color:var(--muted)}
+  .data-card .dc-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  /* big stat */
+  .big-stat{text-align:center;padding:32px 20px;margin:20px 0}
+  .big-stat .bs-num{font-size:4.5rem;font-weight:900;color:var(--accent);line-height:1;display:block}
+  .big-stat .bs-unit{font-size:1.15rem;color:var(--muted);margin-top:6px;display:block}
+  .big-stat .bs-label{font-size:1rem;color:var(--text);margin-top:12px;display:block}
+  /* icon grid */
+  .icon-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:20px 0}
+  .icon-cell{background:var(--soft);border-radius:12px;padding:18px 12px;text-align:center;border:1px solid var(--border)}
+  .icon-cell .ic-emoji{font-size:2.4rem;margin-bottom:8px;display:block}
+  .icon-cell .ic-label{font-size:.95rem;font-weight:600;color:var(--text)}
+  .icon-cell .ic-sub{font-size:.82rem;color:var(--muted);margin-top:4px}
+  /* RRRR cards */
+  .rrrr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
+  .rrrr-card{border-radius:12px;padding:20px 14px;text-align:center;border:2px solid var(--border)}
+  .rrrr-card .r-num{font-size:2.2rem;font-weight:900;display:block;margin-bottom:8px}
+  .rrrr-card .r-en{font-size:.85rem;font-weight:700;letter-spacing:.1em;color:var(--muted);margin-bottom:4px;display:block}
+  .rrrr-card .r-zh{font-size:1.1rem;font-weight:600;color:var(--text)}
+  .rrrr-card:nth-child(1){background:#eff6ff;border-color:var(--cog)} .rrrr-card:nth-child(1) .r-num{color:var(--cog)}
+  .rrrr-card:nth-child(2){background:#f0fdf4;border-color:var(--beh)} .rrrr-card:nth-child(2) .r-num{color:var(--beh)}
+  .rrrr-card:nth-child(3){background:#fff7ed;border-color:var(--warn)} .rrrr-card:nth-child(3) .r-num{color:var(--warn)}
+  .rrrr-card:nth-child(4){background:var(--soft);border-color:var(--accent)} .rrrr-card:nth-child(4) .r-num{color:var(--accent)}
+  /* food chain */
+  .food-chain{display:flex;align-items:center;gap:8px;margin:20px 0;flex-wrap:wrap;justify-content:center}
+  .fc-item{background:var(--soft);border:1px solid var(--border);border-radius:10px;padding:14px 18px;text-align:center;font-size:.95rem;font-weight:600}
+  .fc-arrow{font-size:1.4rem;color:var(--muted)}
+  /* figure placeholder */
+  .fig-placeholder{border:2px dashed var(--border);border-radius:12px;min-height:160px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.95rem;margin:20px 0;background:var(--bg);text-align:center;padding:20px}
+  /* action card / pledge */
+  .action-card{border:2px dashed var(--accent);border-radius:12px;padding:28px 32px;margin:20px 0;background:#fff}
+  .action-card .ac-title{font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:16px}
+  .action-lines{display:flex;flex-direction:column;gap:16px}
+  .action-line{border-bottom:1.5px solid #d1d5db;height:30px;display:flex;align-items:flex-end;padding-bottom:4px;font-size:.9rem;color:var(--muted)}
+  /* WSA grid */
+  .wsa-slide-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:20px 0}
+  .wsa-slide-card{background:var(--soft);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+  .wsa-slide-card h4{margin:0 0 8px;color:var(--accent);font-size:.95rem}
+  .wsa-slide-card ul{margin:0;padding-left:1.2em;font-size:.9rem}
+  /* myth card */
+  .myth-card{margin:20px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+  .myth-wrong{background:#fef2f2;padding:16px 20px;border-left:4px solid #ef4444}
+  .myth-wrong .mw-label{font-size:.8rem;font-weight:700;color:#ef4444;letter-spacing:.1em;margin-bottom:4px}
+  .myth-wrong .mw-text{font-size:1.05rem;color:#7f1d1d}
+  .myth-right{background:#f0fdf4;padding:16px 20px;border-left:4px solid var(--beh)}
+  .myth-right .mr-label{font-size:.8rem;font-weight:700;color:var(--beh);letter-spacing:.1em;margin-bottom:4px}
+  .myth-right .mr-text{font-size:1.05rem;color:#14532d}
+  /* two col */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;margin:16px 0}
+  /* summary keywords */
+  .kw-row{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+  .kw-badge{background:var(--soft);border:2px solid var(--accent);border-radius:12px;padding:14px 22px;font-size:1.15rem;font-weight:700;color:var(--accent)}
+  /* source */
+  .slide-src{margin-top:auto;padding-top:12px;border-top:1px dashed var(--border);font-size:.8rem;color:var(--muted)}
+  .slide-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  a.ext{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  a.ext::after{content:" ↗";font-size:.8em;opacity:.7}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">污染 — Level III ｜ 1.5-III</span>
+</header>
+
+<main>
+
+<!-- Slide 1: Cover -->
+<section class="slide cover" id="slide-cover">
+  <span class="slide-num">1 / 23</span>
+  <div class="slide-body">
+    <div class="level-tag">Level III・9–12 歲</div>
+    <h2>看不見的敵人</h2>
+    <p style="font-size:1.2rem;color:var(--muted);margin:0 0 12px">空氣、水、垃圾的秘密</p>
+    <div class="fig-placeholder">［封面插圖：左邊乾淨公園，右邊堆滿塑膠垃圾的沙灘，中間一個小孩拿著問號］</div>
+    <p style="color:var(--accent);font-weight:600;font-size:1.05rem">SDG 3 良好健康・SDG 12 負責任消費・SDG 14 海洋生態</p>
+  </div>
+</section>
+
+<!-- Slide 2: Three big questions -->
+<section class="slide" id="slide-questions">
+  <span class="slide-num">2 / 23</span>
+  <div class="slide-body">
+    <h2>今天的三大問題</h2>
+    <div class="icon-grid">
+      <div class="icon-cell"><span class="ic-emoji">🔍</span><div class="ic-label">污染長什麼樣？</div><div class="ic-sub">幾種？看不看得見？</div></div>
+      <div class="icon-cell"><span class="ic-emoji">😢</span><div class="ic-label">誰在受苦？</div><div class="ic-sub">人、動物、地球</div></div>
+      <div class="icon-cell"><span class="ic-emoji">💪</span><div class="ic-label">我可以做什麼？</div><div class="ic-sub">RRRR 行動計畫</div></div>
+    </div>
+    <div class="q-box">
+      你覺得「污染」是什麼？<br>講一個你看過或聞過的污染例子。
+    </div>
+  </div>
+</section>
+
+<!-- Slide 3: Activity 1 divider -->
+<section class="slide divider" id="slide-a1">
+  <span class="slide-num">3 / 23</span>
+  <div class="slide-body">
+    <div class="act-badge">活動一</div>
+    <h2>污染看得見，也看不見</h2>
+    <div class="act-steps">
+      <span class="act-step-chip">暖身照片討論</span>
+      <span class="act-step-chip">三種面孔</span>
+      <span class="act-step-chip">數據震撼</span>
+      <span class="act-step-chip">查 AQI</span>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 4: Three faces of pollution -->
+<section class="slide" id="slide-three-faces">
+  <span class="slide-num">4 / 23</span>
+  <div class="slide-body">
+    <h2>污染的三種面孔</h2>
+    <div class="icon-grid">
+      <div class="icon-cell">
+        <span class="ic-emoji">💨</span>
+        <div class="ic-label">空氣污染</div>
+        <div class="ic-sub">工廠煙・汽機車・燒烤・焚燒垃圾</div>
+      </div>
+      <div class="icon-cell">
+        <span class="ic-emoji">💧</span>
+        <div class="ic-label">水污染</div>
+        <div class="ic-sub">工廠廢水・農藥・垃圾</div>
+      </div>
+      <div class="icon-cell">
+        <span class="ic-emoji">🌱</span>
+        <div class="ic-label">土壤污染</div>
+        <div class="ic-sub">有毒重金屬・塑膠・農藥</div>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">三者的連鎖關係</div>
+      <div class="dc-fact">空氣中的污染物下雨後進入土壤與河流，再進入農作物與魚類——<strong>繞了一圈，回到我們的餐桌</strong>。</div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 5: PM2.5 -->
+<section class="slide" id="slide-pm25">
+  <span class="slide-num">5 / 23</span>
+  <div class="slide-body">
+    <h2>看不見的小兇手：PM2.5</h2>
+    <div class="two-col">
+      <div>
+        <div class="big-stat">
+          <span class="bs-num">1/30</span>
+          <span class="bs-unit">一根頭髮直徑的 1/30</span>
+          <span class="bs-label">PM2.5 直徑小於 2.5 微米</span>
+        </div>
+      </div>
+      <div>
+        <div class="data-card">
+          <div class="dc-label">世界衛生組織（WHO）2021</div>
+          <div class="dc-fact">PM2.5 年均建議值：<strong>15 µg/m³</strong><br>臺灣冬天常超標</div>
+          <div class="dc-src">來源：<a href="https://www.who.int/news-room/fact-sheets/detail/ambient-(outdoor)-air-quality-and-health" target="_blank" rel="noopener">WHO 戶外空氣品質</a></div>
+        </div>
+        <p style="font-size:.95rem;color:var(--muted)">PM2.5 能鑽進肺深處，甚至進入血液，引發氣喘、心臟病。開車、燃煤、燒烤都會產生 PM2.5。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 6: 420 萬人 -->
+<section class="slide" id="slide-420">
+  <span class="slide-num">6 / 23</span>
+  <div class="slide-body">
+    <h2>數據震撼：420 萬人</h2>
+    <div class="big-stat">
+      <span class="bs-num">420 萬</span>
+      <span class="bs-unit">人 / 年（2019 年）</span>
+      <span class="bs-label">因戶外空氣污染提早死亡</span>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">世界衛生組織（WHO）</div>
+      <div class="dc-fact">420 萬人 ≈ <strong>台北市人口的 1.7 倍</strong>——每年因空氣污染消失的生命</div>
+      <div class="dc-src">來源：<a href="https://www.who.int/news-room/fact-sheets/detail/ambient-(outdoor)-air-quality-and-health" target="_blank" rel="noopener">WHO Ambient Air Quality Fact Sheet</a></div>
+    </div>
+    <div class="q-box" style="font-size:1.1rem">
+      這個數字比你想的大還是小？跟你的組員說說看。
+    </div>
+  </div>
+</section>
+
+<!-- Slide 7: 99% -->
+<section class="slide" id="slide-99">
+  <span class="slide-num">7 / 23</span>
+  <div class="slide-body">
+    <h2>99% 的我們</h2>
+    <div class="big-stat">
+      <span class="bs-num">99%</span>
+      <span class="bs-unit">全球人口</span>
+      <span class="bs-label">呼吸的空氣超過 WHO 健康建議標準</span>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">世界衛生組織（WHO）2019</div>
+      <div class="dc-fact">幾乎<strong>每一個人</strong>——包括你我——都活在空氣污染之中。這不是別人的事。</div>
+      <div class="dc-src">來源：<a href="https://www.who.int/news-room/fact-sheets/detail/ambient-(outdoor)-air-quality-and-health" target="_blank" rel="noopener">WHO</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 8: AQI -->
+<section class="slide" id="slide-aqi">
+  <span class="slide-num">8 / 23</span>
+  <div class="slide-body">
+    <h2>AQI 查查看</h2>
+    <div class="icon-grid">
+      <div class="icon-cell" style="background:#d1fae5;border-color:#059669"><span class="ic-emoji">🟢</span><div class="ic-label">綠</div><div class="ic-sub">良好</div></div>
+      <div class="icon-cell" style="background:#fef9c3;border-color:#ca8a04"><span class="ic-emoji">🟡</span><div class="ic-label">黃</div><div class="ic-sub">普通</div></div>
+      <div class="icon-cell" style="background:#ffedd5;border-color:#ea580c"><span class="ic-emoji">🟠</span><div class="ic-label">橘</div><div class="ic-sub">敏感族群注意</div></div>
+      <div class="icon-cell" style="background:#fee2e2;border-color:#dc2626"><span class="ic-emoji">🔴</span><div class="ic-label">紅</div><div class="ic-sub">所有人受影響</div></div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">WHO 建議 PM2.5 年均值</div>
+      <div class="dc-fact">不超過 <strong>15 µg/m³</strong>——臺灣冬天常超標，要查數據才知道，藍天白雲不等於空氣乾淨！</div>
+      <div class="dc-src">即時查詢：<a href="https://airtw.moenv.gov.tw/" target="_blank" rel="noopener">臺灣環境部空氣品質監測網 airtw.moenv.gov.tw</a></div>
+    </div>
+    <p style="color:var(--accent);font-weight:600">請一位同學查今天你家附近的 AQI，大家討論今天適不適合戶外活動。</p>
+  </div>
+</section>
+
+<!-- Slide 9: Activity 2 divider -->
+<section class="slide divider" id="slide-a2">
+  <span class="slide-num">9 / 23</span>
+  <div class="slide-body">
+    <div class="act-badge">活動二</div>
+    <h2>海洋的尖叫：塑膠風暴</h2>
+    <div class="act-steps">
+      <span class="act-step-chip">救救海龜影片</span>
+      <span class="act-step-chip">數據衝擊</span>
+      <span class="act-step-chip">微塑膠食物鏈</span>
+      <span class="act-step-chip">感受盤點</span>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 10: Ocean plastic -->
+<section class="slide" id="slide-ocean">
+  <span class="slide-num">10 / 23</span>
+  <div class="slide-body">
+    <h2>海洋的尖叫</h2>
+    <div class="data-card">
+      <div class="dc-label">聯合國環境規劃署（UNEP）2024</div>
+      <div class="dc-fact"><strong>一次性塑膠</strong>（吸管・塑膠袋・寶特瓶・免洗杯）是海洋污染最大的來源。</div>
+      <div class="dc-src">來源：<a href="https://www.unep.org/plastic-pollution" target="_blank" rel="noopener">UNEP Beat Plastic Pollution</a></div>
+    </div>
+    <div class="fig-placeholder">［插圖：海龜被塑膠袋纏住；一根吸管旁邊對比一隻海龜］</div>
+    <p style="color:var(--muted)">這些東西可能只用幾分鐘，卻要在海洋漂流幾百年。</p>
+  </div>
+</section>
+
+<!-- Slide 11: Every minute one truck -->
+<section class="slide" id="slide-truck">
+  <span class="slide-num">11 / 23</span>
+  <div class="slide-body">
+    <h2>每分鐘一卡車</h2>
+    <div class="two-col">
+      <div class="big-stat">
+        <span class="bs-num">800 萬</span>
+        <span class="bs-unit">公噸 / 年</span>
+        <span class="bs-label">塑膠流入海洋</span>
+      </div>
+      <div class="big-stat">
+        <span class="bs-num">450 年</span>
+        <span class="bs-unit"></span>
+        <span class="bs-label">寶特瓶在自然中分解所需時間</span>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">Ocean Conservancy 2017 / MOE《我是校園環保尖兵》</div>
+      <div class="dc-fact">換算下來，每 <strong>1 分鐘</strong>就有一整輛垃圾車把塑膠倒進海裡。<br>請閉上眼睛，想像這個畫面 60 秒……</div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 12: Microplastic food chain -->
+<section class="slide" id="slide-microplastic">
+  <span class="slide-num">12 / 23</span>
+  <div class="slide-body">
+    <h2>微塑膠回到我們的餐桌</h2>
+    <div class="food-chain">
+      <div class="fc-item">🦠<br>浮游生物</div>
+      <div class="fc-arrow">→</div>
+      <div class="fc-item">🐟<br>小魚</div>
+      <div class="fc-arrow">→</div>
+      <div class="fc-item">🐠<br>大魚</div>
+      <div class="fc-arrow">→</div>
+      <div class="fc-item">🍽️<br>人類</div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">微塑膠（Microplastics）</div>
+      <div class="dc-fact">塑膠在海裡碎成<strong>小於 5mm</strong> 的碎片，會吸附毒物並逐層累積——你吃的可能就是自己丟掉的那根吸管！</div>
+    </div>
+    <div class="q-box" style="font-size:1.05rem">
+      我們家餐桌上可能有微塑膠嗎？跟組員討論。
+    </div>
+  </div>
+</section>
+
+<!-- Slide 13: Soil pollution -->
+<section class="slide" id="slide-soil">
+  <span class="slide-num">13 / 23</span>
+  <div class="slide-body">
+    <h2>土壤也在哭泣</h2>
+    <div class="fig-placeholder">［插圖：農田與工廠廢水排放示意圖；土壤截面顯示重金屬滲透］</div>
+    <div class="data-card">
+      <div class="dc-label">臺灣案例</div>
+      <div class="dc-fact">臺灣曾有工廠將<strong>重金屬廢水</strong>排入灌溉溝渠，種出了「鎘米」。土壤污染難以清除，可能需要幾十年甚至上百年才能恢復。</div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 14: Activity 3 divider -->
+<section class="slide divider" id="slide-a3">
+  <span class="slide-num">14 / 23</span>
+  <div class="slide-body">
+    <div class="act-badge">活動三</div>
+    <h2>RRRR 魔法與資源循環</h2>
+    <div class="act-steps">
+      <span class="act-step-chip">RRRR 四字訣</span>
+      <span class="act-step-chip">鋁罐節能計算</span>
+      <span class="act-step-chip">回收闖關遊戲</span>
+      <span class="act-step-chip">感謝時刻</span>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 15: RRRR -->
+<section class="slide" id="slide-rrrr">
+  <span class="slide-num">15 / 23</span>
+  <div class="slide-body">
+    <h2>RRRR 魔法登場</h2>
+    <div class="rrrr-grid">
+      <div class="rrrr-card">
+        <span class="r-num">①</span>
+        <span class="r-en">REFUSE</span>
+        <span class="r-zh">拒用</span>
+        <p style="font-size:.82rem;color:var(--muted);margin:8px 0 0">少一根吸管勝過回收一根</p>
+      </div>
+      <div class="rrrr-card">
+        <span class="r-num">②</span>
+        <span class="r-en">REUSE</span>
+        <span class="r-zh">重複使用</span>
+        <p style="font-size:.82rem;color:var(--muted);margin:8px 0 0">自備水壺・購物袋</p>
+      </div>
+      <div class="rrrr-card">
+        <span class="r-num">③</span>
+        <span class="r-en">REPAIR</span>
+        <span class="r-zh">修理</span>
+        <p style="font-size:.82rem;color:var(--muted);margin:8px 0 0">能修就別買新的</p>
+      </div>
+      <div class="rrrr-card">
+        <span class="r-num">④</span>
+        <span class="r-en">RECYCLE</span>
+        <span class="r-zh">回收</span>
+        <p style="font-size:.82rem;color:var(--muted);margin:8px 0 0">最後一步，不是第一步</p>
+      </div>
+    </div>
+    <p style="color:var(--warn);font-weight:600;text-align:center;font-size:1.05rem">順序超重要！「拒用」的力量遠大於「回收」。</p>
+  </div>
+</section>
+
+<!-- Slide 16: Mining hidden cost -->
+<section class="slide" id="slide-mining">
+  <span class="slide-num">16 / 23</span>
+  <div class="slide-body">
+    <h2>採礦的隱形成本</h2>
+    <div class="fig-placeholder">［插圖：露天礦場衛星圖；一支新手機對比一片被挖空的山］</div>
+    <div class="data-card">
+      <div class="dc-label">為什麼減少買東西很重要？</div>
+      <div class="dc-fact">從地下挖出鐵、鋁、銅、水泥原料，會<strong>破壞山林、產生廢水、直接排放大量 CO₂</strong>。<br>水泥業是全球暖化的第三大排放來源。每一支新手機、每一個新鋁罐，背後都是山與河的代價。</div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 17: Aluminum can = 3 hours TV -->
+<section class="slide" id="slide-aluminum">
+  <span class="slide-num">17 / 23</span>
+  <div class="slide-body">
+    <h2>1 個鋁罐 = 3 小時電視</h2>
+    <div class="two-col">
+      <div class="big-stat">
+        <span class="bs-num">🥤</span>
+        <span class="bs-unit">回收 1 個鋁罐</span>
+        <span class="bs-label">≈ 省下 3 小時電視的電力</span>
+      </div>
+      <div class="big-stat">
+        <span class="bs-num">📺</span>
+        <span class="bs-unit">全班一週 30 罐全回收</span>
+        <span class="bs-label">= 省下 90 小時電視時光的電！</span>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">MOE《生活創意家》0046 號教材</div>
+      <div class="dc-fact">鋁罐可 <strong>100% 回收再製</strong>，是最容易落實 RRRR 的例子。</div>
+    </div>
+    <div class="q-box" style="font-size:1.05rem">
+      我們全班一週大概會丟多少個鋁罐？大家算算！
+    </div>
+  </div>
+</section>
+
+<!-- Slide 18: What can be recycled -->
+<section class="slide" id="slide-recycle-what">
+  <span class="slide-num">18 / 23</span>
+  <div class="slide-body">
+    <h2>什麼能回收？</h2>
+    <div class="icon-grid">
+      <div class="icon-cell"><span class="ic-emoji">📰</span><div class="ic-label">紙類</div></div>
+      <div class="icon-cell"><span class="ic-emoji">🥤</span><div class="ic-label">鐵鋁罐</div></div>
+      <div class="icon-cell"><span class="ic-emoji">🍶</span><div class="ic-label">寶特瓶</div></div>
+      <div class="icon-cell"><span class="ic-emoji">🫙</span><div class="ic-label">玻璃</div></div>
+      <div class="icon-cell"><span class="ic-emoji">🔋</span><div class="ic-label">廢電池</div></div>
+      <div class="icon-cell"><span class="ic-emoji">📱</span><div class="ic-label">舊 3C</div></div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">不確定？查這裡</div>
+      <div class="dc-fact">撥打 <strong>0800-085717</strong>（你幫我清一清），或查臺灣環境部資源回收網</div>
+      <div class="dc-src">來源：<a href="https://recycle.moenv.gov.tw/" target="_blank" rel="noopener">recycle.moenv.gov.tw</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 19: Myth 1 -->
+<section class="slide" id="slide-myth1">
+  <span class="slide-num">19 / 23</span>
+  <div class="slide-body">
+    <h2>迷思解析①</h2>
+    <div class="myth-card">
+      <div class="myth-wrong">
+        <div class="mw-label">✗ 常見誤解</div>
+        <div class="mw-text">「塑膠丟進垃圾桶就不會造成污染。」</div>
+      </div>
+      <div class="myth-right">
+        <div class="mr-label">✓ 事實</div>
+        <div class="mr-text">沒有正確分類回收的塑膠會進入掩埋場，或隨風漂流入海。在自然中碎裂成微塑膠，回到你的餐桌。<br><strong>丟之前想一下：這個要進哪一桶？</strong></div>
+      </div>
+    </div>
+    <div class="myth-card" style="margin-top:16px">
+      <div class="myth-wrong">
+        <div class="mw-label">✗ 常見誤解</div>
+        <div class="mw-text">「藍天白雲就代表空氣很乾淨。」</div>
+      </div>
+      <div class="myth-right">
+        <div class="mr-label">✓ 事實</div>
+        <div class="mr-text">PM2.5 是肉眼看不見的！即使晴天也可能超過 WHO 建議值。<strong>要看 AQI 數據才準。</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 20: Emotion check + gratitude -->
+<section class="slide" id="slide-emotion">
+  <span class="slide-num">20 / 23</span>
+  <div class="slide-body">
+    <h2>情緒盤點時刻</h2>
+    <div class="icon-grid">
+      <div class="icon-cell" style="border-color:#ef4444;background:#fef2f2"><span class="ic-emoji">😢</span><div class="ic-label">1 難過</div></div>
+      <div class="icon-cell" style="border-color:#f97316;background:#fff7ed"><span class="ic-emoji">😤</span><div class="ic-label">2 生氣</div></div>
+      <div class="icon-cell" style="border-color:#eab308;background:#fefce8"><span class="ic-emoji">😰</span><div class="ic-label">3 擔心</div></div>
+      <div class="icon-cell" style="border-color:var(--beh);background:#f0fdf4"><span class="ic-emoji">🤔</span><div class="ic-label">4 想做</div></div>
+      <div class="icon-cell" style="border-color:var(--accent);background:var(--soft)"><span class="ic-emoji">💪</span><div class="ic-label">5 出發！</div></div>
+    </div>
+    <p style="color:var(--accent);font-weight:600;text-align:center;font-size:1.1rem">感受是行動的開始，不要壓抑它。誰願意分享你的感覺？</p>
+    <div class="data-card" style="margin-top:16px;background:#fdf2f8;border-color:var(--soc)">
+      <div class="dc-label" style="color:var(--soc)">感謝環境守護者</div>
+      <div class="dc-fact">清潔隊員凌晨 4 點掃街・志工下海淨灘・巡山員上山巡護・原住民守護祖靈之地——掌聲送給他們！</div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 21: Activity 4 divider -->
+<section class="slide divider" id="slide-a4">
+  <span class="slide-num">21 / 23</span>
+  <div class="slide-body">
+    <div class="act-badge">活動四</div>
+    <h2>我的環保行動計畫</h2>
+    <div class="act-steps">
+      <span class="act-step-chip">一週無塑膠挑戰</span>
+      <span class="act-step-chip">社區行動企劃</span>
+      <span class="act-step-chip">WSA 全校行動</span>
+      <span class="act-step-chip">總結宣誓</span>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 22: WSA -->
+<section class="slide" id="slide-wsa">
+  <span class="slide-num">22 / 23</span>
+  <div class="slide-body">
+    <h2>全校一起做！</h2>
+    <div class="wsa-slide-grid">
+      <div class="wsa-slide-card">
+        <h4>📚 課程整合</h4>
+        <ul>
+          <li>自然課：測校園附近水質</li>
+          <li>藝術課：回收物裝置藝術</li>
+          <li>英文課：Refuse / Reuse 句型</li>
+        </ul>
+      </div>
+      <div class="wsa-slide-card">
+        <h4>🏫 校園營運</h4>
+        <ul>
+          <li>午餐自備餐具推動</li>
+          <li>每班輪值垃圾分類督察</li>
+          <li>川堂每日 AQI 色卡看板</li>
+        </ul>
+      </div>
+      <div class="wsa-slide-card">
+        <h4>🏘️ 社區連結</h4>
+        <ul>
+          <li>里辦「親子淨街日」</li>
+          <li>邀 NGO 到校分享</li>
+          <li>自備杯 9 折宣導</li>
+        </ul>
+      </div>
+      <div class="wsa-slide-card">
+        <h4>🗳️ 學生治理</h4>
+        <ul>
+          <li>學生會制定校園減塑公約</li>
+          <li>每班環保小組長</li>
+          <li>校務會議報告成果</li>
+        </ul>
+      </div>
+    </div>
+    <p style="color:var(--accent);font-weight:600;text-align:center">如果全校 600 人都自備水壺，一年可以少用多少個寶特瓶？（600 × 365 = 21.9 萬個！）</p>
+  </div>
+</section>
+
+<!-- Slide 23: Action card + summary -->
+<section class="slide" id="slide-action-card">
+  <span class="slide-num">23 / 23</span>
+  <div class="slide-body">
+    <h2>我的行動承諾</h2>
+    <div class="action-card">
+      <div class="ac-title">這一週，我願意做到：</div>
+      <div class="action-lines">
+        <div class="action-line">① _______________________________________________</div>
+        <div class="action-line">② _______________________________________________</div>
+        <div class="action-line">③ _______________________________________________</div>
+      </div>
+    </div>
+    <div class="kw-row">
+      <div class="kw-badge">Refuse first</div>
+      <div class="kw-badge">Reuse often</div>
+      <div class="kw-badge">Repair smart</div>
+      <div class="kw-badge">Recycle right</div>
+    </div>
+    <p style="color:var(--accent);font-weight:700;text-align:center;margin-top:20px;font-size:1.05rem">全班齊誦三遍，加油！</p>
+    <p style="text-align:center;margin-top:12px"><a href="lesson_plan.html" style="color:var(--accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / 23</span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換・捲動換頁</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  if (!slides.length || !cur) return;
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

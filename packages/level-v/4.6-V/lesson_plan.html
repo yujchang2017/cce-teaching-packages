@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>破解氣候錯誤資訊 教案（Level V, 16–18 歲）</title>
+<style>
+  :root {
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg-soft: #f9fafb;
+    --c-accent: #0f766e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.7;
+    max-width: 960px; margin: 0 auto; padding: 32px 24px 80px; background: #fff;
+  }
+  h1 { font-size: 1.9rem; border-bottom: 3px solid var(--c-accent); padding-bottom: 12px; margin-bottom: 8px; }
+  h2 { font-size: 1.35rem; margin-top: 2.2rem; padding-left: 12px; border-left: 5px solid var(--c-accent); }
+  h3 { font-size: 1.1rem; margin-top: 1.6rem; color: var(--c-accent); }
+  .meta-grid {
+    display: grid; grid-template-columns: max-content 1fr;
+    gap: 8px 20px; background: var(--c-bg-soft);
+    border: 1px solid var(--c-border); border-radius: 8px; padding: 16px 20px; margin: 16px 0 24px;
+  }
+  .meta-grid dt { font-weight: 600; color: var(--c-muted); }
+  .meta-grid dd { margin: 0; }
+  .lo-section { margin: 16px 0; padding: 14px 18px; border-radius: 8px; border: 1px solid var(--c-border); }
+  .lo-section.cog { border-left: 5px solid var(--c-cog); background: #eff6ff; }
+  .lo-section.soc { border-left: 5px solid var(--c-soc); background: #fdf2f8; }
+  .lo-section.beh { border-left: 5px solid var(--c-beh); background: #f0fdf4; }
+  .lo-section h3 { margin-top: 0; }
+  .lo-section.cog h3 { color: var(--c-cog); }
+  .lo-section.soc h3 { color: var(--c-soc); }
+  .lo-section.beh h3 { color: var(--c-beh); }
+  .lo-section ul { list-style: none; padding-left: 0; margin: 8px 0 0; }
+  .lo-section li { padding: 6px 0; border-top: 1px dashed var(--c-border); }
+  .lo-section li:first-child { border-top: none; }
+  .lo-tag {
+    display: inline-block; min-width: 2.2em; text-align: center;
+    font-weight: 700; font-family: "JetBrains Mono","Consolas", monospace;
+    padding: 1px 8px; border-radius: 4px; margin-right: 8px; color: #fff; font-size: 0.85em;
+  }
+  .lo-tag.cog { background: var(--c-cog); }
+  .lo-tag.soc { background: var(--c-soc); }
+  .lo-tag.beh { background: var(--c-beh); }
+  .activity { border: 1px solid var(--c-border); border-radius: 10px; margin: 20px 0; overflow: hidden; }
+  .activity-header {
+    background: var(--c-accent); color: #fff; padding: 10px 18px;
+    font-weight: 600; display: flex; align-items: baseline; gap: 12px;
+  }
+  .activity-header .label { font-size: 0.85em; opacity: 0.85; }
+  .activity-header .title { font-size: 1.1em; }
+  .activity-body { padding: 4px 18px 14px; }
+  .step { margin: 14px 0; padding-left: 12px; border-left: 3px solid var(--c-border); }
+  .step-head { font-weight: 600; color: var(--c-accent); margin-bottom: 4px; }
+  .step-meta { font-size: 0.88em; color: var(--c-muted); margin-top: 4px; }
+  .step-meta .label { font-weight: 600; color: #4b5563; }
+  a.lo-ref {
+    text-decoration: none; font-family: "JetBrains Mono","Consolas", monospace;
+    padding: 1px 6px; border-radius: 4px; font-size: 0.88em; font-weight: 600;
+  }
+  a.lo-ref.cog { background: #dbeafe; color: var(--c-cog); }
+  a.lo-ref.soc { background: #fce7f3; color: var(--c-soc); }
+  a.lo-ref.beh { background: #dcfce7; color: var(--c-beh); }
+  a.lo-ref:hover { text-decoration: underline; }
+  a.ext { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  a.ext:hover { border-bottom-style: solid; }
+  a.ext::after { content: " ↗"; font-size: 0.85em; opacity: 0.7; }
+  a.ppt-link {
+    display: inline-block; font-size: 0.82em; font-weight: 600;
+    background: #fef9c3; color: #92400e; border: 1px solid #fcd34d;
+    border-radius: 4px; padding: 1px 7px; text-decoration: none; margin-left: 4px;
+  }
+  a.ppt-link:hover { background: #fef08a; }
+  a.ppt-link::before { content: "▶ "; }
+  ul, ol { padding-left: 1.4em; }
+  li { margin: 4px 0; }
+  .resource-list { background: var(--c-bg-soft); border-radius: 8px; padding: 12px 20px; }
+  .data-list { list-style: none; padding-left: 0; }
+  .data-list li { padding: 8px 0; border-top: 1px dashed var(--c-border); }
+  .data-list li:first-child { border-top: none; }
+  .data-list strong { color: var(--c-accent); }
+  .wsa-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 12px; }
+  .wsa-card { background: var(--c-bg-soft); border: 1px solid var(--c-border); border-radius: 8px; padding: 12px 16px; }
+  .wsa-card h4 { margin: 0 0 8px; color: var(--c-accent); font-size: 1rem; }
+  .wsa-card ul { margin: 0; padding-left: 1.2em; }
+  .wsa-card li { font-size: 0.95em; }
+  .assessment { background: #fff7ed; border-left: 4px solid #ea580c; padding: 10px 16px; border-radius: 6px; margin: 12px 0; }
+  hr { border: 0; border-top: 1px solid var(--c-border); margin: 32px 0; }
+  :target { background: #fef3c7; transition: background 0.4s ease-in; }
+</style>
+</head>
+<body>
+
+<h1>破解氣候錯誤資訊</h1>
+<p style="color: var(--c-muted); margin-top: 0;">Level V｜高中 16–18 歲</p>
+
+<h2>教學資訊</h2>
+<dl class="meta-grid">
+  <dt>Key ID</dt><dd>4.6-V</dd>
+  <dt>主題</dt><dd>破解氣候錯誤資訊：科學否認策略、認知偏誤與延遲行動的歷史</dd>
+  <dt>核心概念</dt><dd>辨識並反擊氣候錯誤資訊，理解認知偏誤與企業否認歷史，培養有效的氣候溝通與行動能力。</dd>
+  <dt>年段</dt><dd>高中 10–12 年級（16–18 歲）</dd>
+  <dt>建議活動數</dt><dd>4 個活動</dd>
+  <dt>授課語言</dt><dd>繁體中文</dd>
+</dl>
+
+<h2>學習目標</h2>
+
+<div class="lo-section cog">
+  <h3>認知層</h3>
+  <ul>
+    <li id="C1"><span class="lo-tag cog">C1</span>說明氣候錯誤、惡意及假資訊如何被不同行動者用來混淆公眾、延遲有效氣候行動。</li>
+    <li id="C2"><span class="lo-tag cog">C2</span>辨識科學否認五大策略：偽專家、邏輯謬誤、不可能的期望、陰謀論、選擇性引用數據（FLICC 架構）。</li>
+    <li id="C3"><span class="lo-tag cog">C3</span>辨識有效的氣候訊息傳播策略——框架、敘事、數據視覺化與情感投入的角色。</li>
+    <li id="C4"><span class="lo-tag cog">C4</span>理解確認偏誤、框架效應等認知偏誤如何限制氣候行動。</li>
+    <li id="C5"><span class="lo-tag cog">C5</span>檢視不同區域對氣候變遷的回應差異，辨識成功案例與挑戰原因。</li>
+    <li id="C6"><span class="lo-tag cog">C6</span>分析氣候政策的歷史延遲及其社會政治原因。</li>
+    <li id="C7"><span class="lo-tag cog">C7</span>調查化石燃料產業在形塑與延遲氣候政策中的角色。</li>
+    <li id="C8"><span class="lo-tag cog">C8</span>調查有組織地對氣候科學散布懷疑的歷史行動。</li>
+  </ul>
+</div>
+
+<div class="lo-section soc">
+  <h3>社會情緒層</h3>
+  <ul>
+    <li id="S1"><span class="lo-tag soc">S1</span>辨識氣候錯誤、惡意及假資訊對自身感受的影響。</li>
+    <li id="S2"><span class="lo-tag soc">S2</span>反思社會信念與態度如何影響自身對氣候變遷的認知。</li>
+    <li id="S3"><span class="lo-tag soc">S3</span>體認科學在驅動政策決策中的潛力，以及公民行動確保科學被採納的重要性。</li>
+  </ul>
+</div>
+
+<div class="lo-section beh">
+  <h3>行為層</h3>
+  <ul>
+    <li id="B1"><span class="lo-tag beh">B1</span>推廣準確且以證據為基礎的氣候變遷資訊。</li>
+    <li id="B2"><span class="lo-tag beh">B2</span>教導他人辨識氣候錯誤資訊中常見的科學否認策略。</li>
+    <li id="B3"><span class="lo-tag beh">B3</span>在氣候行動中運用有效溝通策略，確保不含錯誤或假資訊。</li>
+    <li id="B4"><span class="lo-tag beh">B4</span>在日常工作與生活中應用辨識與揭穿氣候錯誤資訊的技術。</li>
+  </ul>
+</div>
+
+<h2>活動流程</h2>
+
+<div class="activity">
+  <div class="activity-header">
+    <span class="label">活動一</span>
+    <span class="title">氣候錯誤資訊的樣貌：FLICC 否認策略解碼</span>
+  </div>
+  <div class="activity-body">
+
+    <div class="step">
+      <div class="step-head">步驟 1 ・ 開場投票與共識揭示</div>
+      <div>匿名投票：「你認為氣候科學家對氣候變遷是人類造成的，有共識嗎？」揭示數據——超過 97% 的氣候科學家同意人為暖化為真（Cook et al. 2013 同儕審查研究），協助學生覺察社會大眾低估科學共識的現象，以及這個「認知落差」本身就是長期錯誤資訊影響的結果。
+        <a class="ppt-link" href="ppt.html#slide-consensus">97% 共識圖表</a>
+      </div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#C1" class="lo-ref cog">C1</a> <a href="#C2" class="lo-ref cog">C2</a></div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">步驟 2 ・ FLICC 架構教學</div>
+      <div>系統講解 FLICC 五大科學否認策略，每策略搭配一則真實氣候否認案例：<strong>偽專家</strong>（非氣候科學家背書）、<strong>邏輯謬誤</strong>（推論跳躍）、<strong>不可能的期望</strong>（要求科學提供 100% 確定性）、<strong>陰謀論</strong>（全球數萬科學家串謀說）、<strong>選擇性引用數據</strong>（刻意選取升溫「停滯期」的起止點）。預先接種教學法可使辨識能力提升約 20–30%。
+        <a class="ppt-link" href="ppt.html#slide-flicc">FLICC 五角架構圖</a>
+      </div>
+      <div class="step-meta">
+        <span class="label">參考資料：</span>
+        <a class="ext" href="https://crankyuncle.com/" target="_blank" rel="noopener">Cranky Uncle — FLICC 科學否認架構（Cook 等學者）</a>
+      </div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#C2" class="lo-ref cog">C2</a> <a href="#B2" class="lo-ref beh">B2</a></div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">步驟 3 ・ 小組 FLICC 診斷任務</div>
+      <div>每組獲得三則真實社群媒體氣候貼文（混合正確與錯誤資訊），用 FLICC 架構診斷並書面說明理由，至少引用一筆具體數據支持判斷。一則貼文可能同時使用多種否認策略。
+        <a class="ppt-link" href="ppt.html#slide-flicc-activity">診斷任務說明</a>
+      </div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#C1" class="lo-ref cog">C1</a> <a href="#C2" class="lo-ref cog">C2</a> <a href="#B4" class="lo-ref beh">B4</a></div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">步驟 4 ・ 全班分享與小結</div>
+      <div>各組報告最具挑戰性的案例；討論「為何某些否認策略特別有說服力？」引入確認偏誤概念。小結：FLICC 是工具箱，不是武器——目的是辨識而非攻擊，有些人傳播錯誤資訊出於無知而非惡意，溝通與教育比對抗更有效。</div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#C2" class="lo-ref cog">C2</a> <a href="#C4" class="lo-ref cog">C4</a> <a href="#S2" class="lo-ref soc">S2</a></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="activity">
+  <div class="activity-header">
+    <span class="label">活動二</span>
+    <span class="title">認知偏誤與氣候溝通：你的大腦如何被操縱</span>
+  </div>
+  <div class="activity-body">
+
+    <div class="step">
+      <div class="step-head">步驟 1 ・ 框架效應體驗</div>
+      <div>展示同一組氣候數據的兩種框架：「損失框架（不行動將失去什麼）」vs「獲得框架（行動將獲得什麼）」。研究顯示損失框架比獲得框架更能促進行為改變約 20%（Kahneman &amp; Tversky 研究）。學生誠實記錄哪個版本更有說服力——這是認識自己大腦如何運作的起點。
+        <a class="ppt-link" href="ppt.html#slide-framing">框架效應體驗投影片</a>
+      </div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#C3" class="lo-ref cog">C3</a> <a href="#C4" class="lo-ref cog">C4</a></div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">步驟 2 ・ 認知偏誤講座</div>
+      <div>講解三大認知偏誤：<strong>確認偏誤</strong>（大腦自動篩選符合既有信念的資訊，社群媒體演算法強化同溫層）；<strong>框架效應</strong>（呈現方式決定判斷）；<strong>假平衡報導</strong>（媒體給 97% vs 3% 的科學家各 50% 版面，造成公眾誤以為「有爭議」）。接觸陰謀論式否認內容後，支持氣候行動意願下降約 10–15%。</div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#C3" class="lo-ref cog">C3</a> <a href="#C4" class="lo-ref cog">C4</a> <a href="#S2" class="lo-ref soc">S2</a></div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">步驟 3 ・ 角色扮演辯論</div>
+      <div>辯題：「媒體應該給氣候否認者與科學家同等發言時間嗎？」正方可從言論自由、公眾知情權出發；反方從科學共識比例（97 比 3）、假平衡的危害論述。各方 5 分鐘準備、辯論 10 分鐘，論述須引用至少兩筆具體數據。</div>
+      <div class="step-meta">
+        <span class="label">參考資料：</span>
+        <a class="ext" href="https://history.barnard.edu/sites/default/files/inline-files/HIST%20BC2366%20Climate%20%26%20History_0.pdf" target="_blank" rel="noopener">Climate &amp; History Syllabus（Barnard College）</a> ・
+        <a class="ext" href="https://australiainstitute.org.au/initiative/teaching-climate-change/" target="_blank" rel="noopener">Teaching Climate Change（Australia Institute）</a>
+      </div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#C3" class="lo-ref cog">C3</a> <a href="#S2" class="lo-ref soc">S2</a> <a href="#S3" class="lo-ref soc">S3</a></div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">步驟 4 ・ 個人反思寫作</div>
+      <div>「今天學到的認知偏誤中，哪一個你覺得最可能影響你自己？為什麼？」個人書寫 50 字以上，自願分享。承認自己有偏誤不是弱點，是批判思考的起點。</div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#S1" class="lo-ref soc">S1</a> <a href="#S2" class="lo-ref soc">S2</a></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="activity">
+  <div class="activity-header">
+    <span class="label">活動三</span>
+    <span class="title">延遲行動的歷史：從企業否認到政策阻礙</span>
+  </div>
+  <div class="activity-body">
+
+    <div class="step">
+      <div class="step-head">步驟 1 ・ 歷史偵探入口</div>
+      <div>「化石燃料公司什麼時候知道自己的產品造成全球暖化？」學生猜測年份。揭示：部分化石燃料企業自 1977 年代末即有內部研究預測全球暖化，其升溫幅度預測與後來政府間氣候變遷小組的評估高度吻合——否認並非無知，而是刻意為之。政府間氣候變遷小組報告指出 2000–2016 年間化石燃料產業共投入逾 10 億美元用於氣候政策遊說。
+        <a class="ppt-link" href="ppt.html#slide-history">1977 年時間線</a>
+      </div>
+      <div class="step-meta">
+        <span class="label">參考資料：</span>
+        <a class="ext" href="https://www.ipcc.ch/report/ar6/wg3/" target="_blank" rel="noopener">政府間氣候變遷小組第六次評估報告第三工作組</a>
+      </div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#C7" class="lo-ref cog">C7</a> <a href="#C8" class="lo-ref cog">C8</a></div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">步驟 2 ・ 時間線標註任務</div>
+      <div>教師提供簡化版時間線（1977 企業內部研究 → 1989 全球氣候聯盟成立 → 1998–2006 否認運動高峰 → 2015 巴黎協定 → 2023 首次全球盤點）。學生在學習單上標註每個節點「已知事實 vs 公開聲明」的矛盾，至少找出 4 個矛盾點。
+        <a class="ppt-link" href="ppt.html#slide-timeline-detail">企業否認時間線圖</a>
+      </div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#C6" class="lo-ref cog">C6</a> <a href="#C7" class="lo-ref cog">C7</a> <a href="#C8" class="lo-ref cog">C8</a></div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">步驟 3 ・ 區域氣候政策比較</div>
+      <div>分組比較歐盟（碳排放交易系統 2005 年起）、美國（退出/重返巴黎協定的政策波折）、臺灣（2023 年氣候法修訂、2024 年碳費上路）三地政策路徑。臺灣近 110 年升溫約 1.6°C，約為全球平均的 1.5 倍；然而 2024 年民調仍有約 25% 民眾認為氣候嚴重性被誇大，顯示錯誤資訊的在地影響。各組以 2 分鐘報告延遲原因。</div>
+      <div class="step-meta">
+        <span class="label">參考資料：</span>
+        <a class="ext" href="https://tccip.ncdr.nat.gov.tw/" target="_blank" rel="noopener">臺灣氣候變遷推估資訊與調適知識平台（TCCIP）</a> ・
+        <a class="ext" href="https://www.greenschool.moe.edu.tw/_userinfo/Course/3.%E7%92%B0%E5%A2%83%E6%99%82%E4%BA%8B.pdf" target="_blank" rel="noopener">環境時事教案（臺師大綠色學校）</a>
+      </div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#C5" class="lo-ref cog">C5</a> <a href="#C6" class="lo-ref cog">C6</a> <a href="#S3" class="lo-ref soc">S3</a></div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">步驟 4 ・ 全班彙報與比較</div>
+      <div>各區域組報告 + 交叉提問。教師引導：「哪些延遲原因跨區域共通（如化石燃料遊說）？哪些具在地特殊性（如政黨輪替、能源依賴結構）？」</div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#C5" class="lo-ref cog">C5</a> <a href="#C6" class="lo-ref cog">C6</a> <a href="#C7" class="lo-ref cog">C7</a></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="activity">
+  <div class="activity-header">
+    <span class="label">活動四</span>
+    <span class="title">行動者的工具箱：溝通、揭穿與全校行動</span>
+  </div>
+  <div class="activity-body">
+
+    <div class="step">
+      <div class="step-head">步驟 1 ・ 預先接種教學法實作</div>
+      <div>如同疫苗用弱化病毒讓免疫系統預先學習，「預先接種」教學法讓學生接觸弱化版否認論述並學習反駁技巧，可提升辨識能力約 20–30%。教師示範後學生兩兩配對練習：一人扮演否認者唸出弱化版論述、一人用事實反駁，再互換角色。重點是練習辨識策略與組織論據，而非「贏」辯論。
+        <a class="ppt-link" href="ppt.html#slide-inoculation">預先接種流程圖</a>
+      </div>
+      <div class="step-meta">
+        <span class="label">參考資料：</span>
+        <a class="ext" href="https://crankyuncle.com/" target="_blank" rel="noopener">Cranky Uncle — 預先接種教學資源</a>
+      </div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#B2" class="lo-ref beh">B2</a> <a href="#B4" class="lo-ref beh">B4</a></div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">步驟 2 ・ CER 論證寫作</div>
+      <div>題目：「氣候錯誤資訊是否應受法律規範？」用主張—證據—推理（CER）架構撰寫 150 字論述。可引用：全球僅 53% 國家課綱提及氣候變遷、不到 30% 課綱涵蓋氣候媒體素養（聯合國教科文組織 2023 年報告）；或世界衛生組織預估 2030–2050 年間氣候相關因素每年新增約 25 萬人死亡。完成後同儕互評。</div>
+      <div class="step-meta">
+        <span class="label">參考資料：</span>
+        <a class="ext" href="https://www.unesco.org/en/education-sustainable-development/greening-future" target="_blank" rel="noopener">聯合國教科文組織綠化教育夥伴關係報告（2023）</a> ・
+        <a class="ext" href="https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health" target="_blank" rel="noopener">世界衛生組織氣候與健康資訊頁</a>
+      </div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#B1" class="lo-ref beh">B1</a> <a href="#B3" class="lo-ref beh">B3</a> <a href="#S3" class="lo-ref soc">S3</a></div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">步驟 3 ・ 有效溝通策略工作坊</div>
+      <div>為「向不相信氣候變遷的家人解釋」設計 3 分鐘談話腳本。運用三項溝通策略：<strong>損失框架</strong>（比獲得框架多促進約 20% 行為改變）；<strong>在地數據</strong>（臺灣升溫 1.6°C 是全球 1.5 倍，比說「全球升溫 1.1°C」更有感）；<strong>同理心開場</strong>（「我理解你的擔心」比「你錯了」更能開啟對話）。
+        <a class="ppt-link" href="ppt.html#slide-communication">溝通腳本情境卡</a>
+      </div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#C3" class="lo-ref cog">C3</a> <a href="#B1" class="lo-ref beh">B1</a> <a href="#B3" class="lo-ref beh">B3</a></div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">步驟 4 ・ 全校行動承諾與成果分享</div>
+      <div>學生填寫四面向行動承諾卡（課程整合、校園查核站、社區工作坊、學生議會提案），選擇至少一件本學期內可實際完成的事。各組分享溝通腳本；教師回扣三層學習目標。</div>
+      <div class="step-meta"><span class="label">學習目標檢核點：</span> <a href="#B1" class="lo-ref beh">B1</a> <a href="#B2" class="lo-ref beh">B2</a> <a href="#B3" class="lo-ref beh">B3</a> <a href="#B4" class="lo-ref beh">B4</a></div>
+    </div>
+
+  </div>
+</div>
+
+<h2>教學資源</h2>
+
+<h3>國際教學資源</h3>
+<div class="resource-list">
+  <ul>
+    <li><a class="ext" href="https://crankyuncle.com/" target="_blank" rel="noopener">Cranky Uncle — FLICC 科學否認架構與預先接種教學法</a>（Cook 等學者開發，免費互動遊戲與課程資源）</li>
+    <li><a class="ext" href="https://history.barnard.edu/sites/default/files/inline-files/HIST%20BC2366%20Climate%20%26%20History_0.pdf" target="_blank" rel="noopener">Climate &amp; History Syllabus（Barnard College）</a>——氣候科學史與否認運動歷史課程綱要，辯論教學參考</li>
+    <li><a class="ext" href="https://australiainstitute.org.au/initiative/teaching-climate-change/" target="_blank" rel="noopener">Teaching Climate Change（Australia Institute）</a>——氣候傳播辯論教學資源</li>
+    <li><a class="ext" href="https://www.greenschool.moe.edu.tw/_userinfo/Course/3.%E7%92%B0%E5%A2%83%E6%99%82%E4%BA%8B.pdf" target="_blank" rel="noopener">環境時事教案（臺師大綠色學校）</a>——臺灣在地氣候政策比較教案，供區域分析活動使用</li>
+  </ul>
+</div>
+
+<h3>數據引用</h3>
+<div class="resource-list">
+  <ul class="data-list">
+    <li><strong>超過 97% 氣候科學家同意人為暖化為真</strong>；政府間氣候變遷小組第六次評估報告定性人類影響「毋庸置疑」；大氣二氧化碳 2019 年達 410 ppm，為 200 萬年來最高——來源：<a class="ext" href="https://www.ipcc.ch/report/ar6/wg1/" target="_blank" rel="noopener">政府間氣候變遷小組第六次評估報告第一工作組</a></li>
+    <li><strong>化石燃料產業 2000–2016 年投入逾 10 億美元遊說</strong>，系統性延遲減碳行動——來源：<a class="ext" href="https://www.ipcc.ch/report/ar6/wg3/" target="_blank" rel="noopener">政府間氣候變遷小組第六次評估報告第三工作組</a></li>
+    <li><strong>預先接種教學法提升辨識能力約 20–30%</strong>；FLICC 五大否認策略分類——來源：<a class="ext" href="https://crankyuncle.com/" target="_blank" rel="noopener">Cranky Uncle / Skeptical Science</a></li>
+    <li><strong>損失框架比獲得框架多促進約 20% 行為改變</strong>；接觸陰謀論後支持氣候行動意願下降約 10–15%——來源：<a class="ext" href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank" rel="noopener">政府間氣候變遷小組第六次評估報告第二工作組（Lewandowsky 等研究）</a></li>
+    <li><strong>全球僅 53% 國家課綱提及氣候變遷</strong>，不到 30% 涵蓋氣候媒體素養——來源：<a class="ext" href="https://www.unesco.org/en/education-sustainable-development/greening-future" target="_blank" rel="noopener">聯合國教科文組織綠化教育夥伴關係報告（2023）</a></li>
+    <li><strong>世界衛生組織預估 2030–2050 年每年新增約 25 萬人氣候相關死亡</strong>；36 億人生活在高度脆弱地區——來源：<a class="ext" href="https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health" target="_blank" rel="noopener">世界衛生組織氣候與健康</a></li>
+    <li><strong>臺灣近 110 年升溫約 1.6°C</strong>，約為全球均值的 1.5 倍；2024 年民調約 25% 民眾認為氣候嚴重性被誇大——來源：<a class="ext" href="https://tccip.ncdr.nat.gov.tw/" target="_blank" rel="noopener">臺灣氣候變遷推估資訊與調適知識平台（TCCIP）</a></li>
+  </ul>
+</div>
+
+<h2>評量方式</h2>
+<div class="assessment">
+  <strong>形成性評量</strong>
+  <ol style="margin: 6px 0 0;">
+    <li>FLICC 配對練習（活動一）：正確率達 80% 以上，檢核 <a href="#C2" class="lo-ref cog">C2</a>。</li>
+    <li>框架效應體驗記錄（活動二）：含個人反思，檢核 <a href="#C4" class="lo-ref cog">C4</a> <a href="#S2" class="lo-ref soc">S2</a>。</li>
+    <li>時間線矛盾標註（活動三）：至少 4 個矛盾點，檢核 <a href="#C7" class="lo-ref cog">C7</a> <a href="#C8" class="lo-ref cog">C8</a>。</li>
+    <li>區域比較口頭報告（活動三）：引用至少 2 筆數據，檢核 <a href="#C5" class="lo-ref cog">C5</a> <a href="#C6" class="lo-ref cog">C6</a>。</li>
+    <li>CER 論證（活動四）：結構完整含反駁段，檢核 <a href="#B1" class="lo-ref beh">B1</a> <a href="#B3" class="lo-ref beh">B3</a>。</li>
+  </ol>
+</div>
+<div class="assessment">
+  <strong>總結性評量</strong>
+  <ol style="margin: 6px 0 0;">
+    <li>FLICC 診斷報告（個人）：自選 5 則社群媒體氣候貼文，逐一分類並撰寫反駁理由（CER 格式），附來源查核紀錄，檢核 <a href="#C1" class="lo-ref cog">C1</a> <a href="#C2" class="lo-ref cog">C2</a> <a href="#B2" class="lo-ref beh">B2</a> <a href="#B4" class="lo-ref beh">B4</a>。</li>
+    <li>氣候溝通行動方案（小組）：為校園設計「氣候資訊查核站」，含海報/短影音/互動攤位，須含至少 3 筆數據、FLICC 架構應用、認知偏誤提醒，檢核 <a href="#C3" class="lo-ref cog">C3</a> <a href="#C7" class="lo-ref cog">C7</a> <a href="#B1" class="lo-ref beh">B1</a> <a href="#B3" class="lo-ref beh">B3</a> <a href="#S3" class="lo-ref soc">S3</a>。</li>
+  </ol>
+</div>
+
+<h2>Whole School Approach 延伸</h2>
+<div class="wsa-grid">
+  <div class="wsa-card">
+    <h4>課程整合</h4>
+    <ul>
+      <li>國文科：媒體識讀結合氣候新聞分析，訓練批判閱讀與 CER 論證寫作</li>
+      <li>公民科：資訊素養與假新聞防治，以氣候錯誤資訊為延伸案例</li>
+      <li>英文科：閱讀 Skeptical Science 英文原文，練習學術英文摘要與反駁寫作</li>
+    </ul>
+  </div>
+  <div class="wsa-card">
+    <h4>校園營運</h4>
+    <ul>
+      <li>設立「校園氣候資訊查核站」：公告欄/數位螢幕輪播 FLICC 海報與每週一則「氣候事實 vs 迷思」</li>
+      <li>圖書館增設「氣候傳播」書展，含《販賣懷疑的商人》等書籍</li>
+      <li>數位看板每日顯示中央氣象署即時氣象數據，培養數據查核習慣</li>
+    </ul>
+  </div>
+  <div class="wsa-card">
+    <h4>社區連結</h4>
+    <ul>
+      <li>與社區大學合辦「長輩氣候資訊素養工作坊」，由學生擔任講師教長者辨識 LINE 群組氣候謠言</li>
+      <li>聯繫在地媒體記者分享氣候報導的編輯決策過程，理解假平衡報導的產生機制</li>
+      <li>與地方環保局合作取得在地氣溫數據供學生查核練習</li>
+    </ul>
+  </div>
+  <div class="wsa-card">
+    <h4>學生治理</h4>
+    <ul>
+      <li>學生議會提案建立「假新聞通報機制」，可匿名提交疑似氣候錯誤資訊</li>
+      <li>學生議會成員輪流整理校園社群氣候討論，每月發布查核結果報告</li>
+      <li>學生代表參與校務會議，提議將氣候媒體素養納入新生訓練必修</li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>

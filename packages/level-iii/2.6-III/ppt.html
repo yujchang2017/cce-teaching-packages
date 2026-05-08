@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>與自然重新連結並保護自然 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e; --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb; --c-soc: #db2777; --c-beh: #16a34a; --c-warn: #ea580c;
+    --c-text: #1f2937; --c-muted: #6b7280; --c-border: #e5e7eb; --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .question-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 30px 0; }
+  .question-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px; font-size: 1.15rem; text-align: center; color: var(--c-text); position: relative; }
+  .question-card .q-num { position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+  .ws-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1.05rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 14px 16px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px); height: 48px; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px; background: var(--c-bg); max-width: 700px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  .iucn-ladder { display: flex; gap: 4px; justify-content: center; align-items: flex-end; margin: 20px 0; }
+  .iucn-step { padding: 10px 14px; border-radius: 6px 6px 0 0; color: #fff; font-weight: 700; text-align: center; font-size: 0.95rem; }
+  .iucn-step .full { display: block; font-size: 0.7rem; opacity: 0.85; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">與自然重新連結並保護自然 — 教學投影片</span>
+</header>
+
+<main>
+
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>祖靈的山，我們的家</h2>
+    <p class="subtitle">認識與保護瀕危鄰居：原住民智慧、動物溝通與物種復育</p>
+    <div style="font-size: 4rem; margin: 20px 0;">🐻 🐈 🐟 🦅</div>
+    <p style="color: var(--c-muted); font-size: 0.95rem;">2.6-III｜國小 9–12 歲</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>你想過家裡附近的山或海，曾經是誰的家嗎？</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>為什麼原住民把山、樹、動物當神？</div>
+      <div class="question-card"><div class="q-num">2</div>動物彼此怎麼說話？我們把牠們吵到了嗎？</div>
+      <div class="question-card"><div class="q-num">3</div>瀕危物種真的能救回來嗎？</div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px; color: var(--c-accent);">
+      <strong>把這三個問題記在心裡，下課前一起回答。</strong>
+    </p>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>神聖的山與我們的祖靈</h2>
+    <p class="subtitle">原住民文化中的自然連結</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-sacred">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>布農族的黑熊禁忌：最古老的保育法</h2>
+  <div class="slide-body">
+    <div class="compare-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="compare-card" style="border-color: var(--c-accent);">
+        <div class="icon">⛰️</div>
+        <h3>玉山「Saviah」</h3>
+        <p>布農族稱玉山為太陽升起的地方，視為祖靈的家。</p>
+      </div>
+      <div class="compare-card" style="border-color: #92400e;">
+        <div class="icon">🐻</div>
+        <h3>台灣黑熊野外僅約 200–600 隻</h3>
+        <p>胸前白色 V 紋被視為祖靈記號，傳統「禁獵黑熊」(Samu)。</p>
+      </div>
+    </div>
+    <figure style="margin-top: 30px;">
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：玉山日出與布農族黑熊圖騰]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>台灣黑熊野外僅 200–600 隻；布農族「禁獵黑熊」就是最古老的保育法律。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖：傳統禁忌與現代保育不約而同保護黑熊</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源：
+    <a href="https://conservation.forest.gov.tw/" target="_blank" rel="noopener">林業及自然保育署 — 台灣黑熊保育</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-world-sacred">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>世界各地的神聖自然</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>印度・聖牛</h4>
+        <ul><li>視牛為神聖</li><li>禁殺、敬重</li></ul>
+      </div>
+      <div class="col-card sch">
+        <h4>紐西蘭・kauri 神木</h4>
+        <ul><li>毛利人守護的巨木</li><li>幾千年生命</li></ul>
+      </div>
+      <div class="col-card com">
+        <h4>日本・鎮守の森</h4>
+        <ul><li>神社周圍禁伐</li><li>形成原始森林</li></ul>
+      </div>
+    </div>
+    <figure style="margin-top: 24px;">
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 36px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：世界各地神聖自然分佈圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>原住民僅管理地球 22% 土地，卻保護了全球約 80% 的生物多樣性。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖：原住民傳統土地與全球生物多樣性熱點高度重疊</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>動物也有語言：傾聽與被傾聽</h2>
+    <p class="subtitle">鳥、鯨、蜜蜂、螞蟻的四種說話方式</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-language">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>動物的四種語言</h2>
+  <div class="slide-body">
+    <div class="three-col" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="col-card sch">
+        <h4>🐦 鳥</h4>
+        <ul><li>歌聲</li><li>畫眉可唱上百首</li><li>求偶與宣示領域</li></ul>
+      </div>
+      <div class="col-card com">
+        <h4>🐋 鯨豚</h4>
+        <ul><li>低頻聲</li><li>跨越數千公里</li><li>呼喊家人</li></ul>
+      </div>
+      <div class="col-card fam">
+        <h4>🐝 蜜蜂</h4>
+        <ul><li>8 字舞</li><li>指示花源方向</li><li>跳舞地圖</li></ul>
+      </div>
+      <div class="col-card sch">
+        <h4>🐜 螞蟻</h4>
+        <ul><li>費洛蒙氣味</li><li>留下行進路線</li><li>群體合作</li></ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 26px; color: var(--c-accent);">
+      <strong>每一種，都是大自然的發明。</strong>
+    </p>
+  </div>
+</section>
+
+<section class="slide" id="slide-noise">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>海洋噪音 50 年增加 10–100 倍</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：1960 vs 2020 海洋低頻噪音長條圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>過去 50 年海洋低頻背景噪音增加 10–100 倍；座頭鯨被迫提高音量才能被同伴聽見。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖：商船、聲納、海底工程讓海底變成吵鬧的演唱會</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 18px;">
+      <strong>提問：</strong>如果你在演唱會裡找朋友，會不會也聽不見？
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：
+    <a href="https://www.fisheries.noaa.gov/national/science-data/ocean-noise" target="_blank" rel="noopener">美國國家海洋暨大氣總署 — 海洋噪音策略</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-quiet-action">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>我們能降噪的三件事</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>🎧 耳機 60%</h4>
+        <ul><li>音量不超過 60%</li><li>保護自己也少外漏</li></ul>
+      </div>
+      <div class="col-card sch">
+        <h4>🤫 自然區降音</h4>
+        <ul><li>進入山林、海邊輕聲</li><li>不大聲喧嘩</li></ul>
+      </div>
+      <div class="col-card com">
+        <h4>🚫 不放煙火</h4>
+        <ul><li>河口、濕地不放煙火鞭炮</li><li>守護鳥類與魚類</li></ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px; color: var(--c-accent);">
+      <strong>這些小事，其實是動物耳朵的大事。</strong>
+    </p>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>紅皮書偵探：誰需要幫忙？</h2>
+    <p class="subtitle">用 IUCN 等級為每種生物打分數</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-iucn">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>IUCN 紅皮書七階梯</h2>
+  <div class="slide-body">
+    <div class="iucn-ladder">
+      <div class="iucn-step" style="background: #16a34a; height: 70px;">LC<span class="full">無危</span></div>
+      <div class="iucn-step" style="background: #65a30d; height: 90px;">NT<span class="full">近危</span></div>
+      <div class="iucn-step" style="background: #facc15; color:#1f2937; height: 110px;">VU<span class="full">易危</span></div>
+      <div class="iucn-step" style="background: #f97316; height: 130px;">EN<span class="full">瀕危</span></div>
+      <div class="iucn-step" style="background: #dc2626; height: 150px;">CR<span class="full">極危</span></div>
+      <div class="iucn-step" style="background: #7c2d12; height: 170px;">EW<span class="full">野外滅絕</span></div>
+      <div class="iucn-step" style="background: #1f2937; height: 190px;">EX<span class="full">滅絕</span></div>
+    </div>
+    <figure style="margin-top: 26px;">
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 36px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：IUCN 紅皮書 2024 受脅物種圓餅圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>2024 年全球評估超過 16 萬種生物，其中約 4 萬 6 千種受脅，佔已評估物種 28%（史上最高比例）。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖：地球生物的健康檢查表</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源：
+    <a href="https://www.iucnredlist.org/resources/summary-statistics" target="_blank" rel="noopener">國際自然保護聯盟紅皮書摘要統計</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-tw-stars">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>台灣瀕危明星隊</h2>
+  <div class="slide-body">
+    <div class="three-col" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="col-card sch">
+        <h4>🐈 石虎 (EN)</h4>
+        <ul><li>野外約 500 隻</li><li>2024 路殺約 90 起</li><li>生態廊道 10+ 座</li></ul>
+      </div>
+      <div class="col-card com">
+        <h4>🐻 黑熊 (VU)</h4>
+        <ul><li>200–600 隻</li><li>布農族祖靈使者</li><li>誤觸獸夾威脅</li></ul>
+      </div>
+      <div class="col-card fam">
+        <h4>🐟 櫻花鉤吻鮭 (CR)</h4>
+        <ul><li>1984 年僅 200 尾</li><li>2023 年破 15,000 尾</li><li>復育典範</li></ul>
+      </div>
+      <div class="col-card sch">
+        <h4>🦅 黑面琵鷺 (EN)</h4>
+        <ul><li>全球 6,988 隻</li><li>台灣度冬 4,135 隻</li><li>佔全球 59%</li></ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 22px;">
+      <strong>提問：</strong>台灣超過 300 種動植物列入 IUCN 等級，你的家鄉附近住著哪一位？
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：
+    <a href="https://www.tbri.gov.tw/" target="_blank" rel="noopener">農業部生物多樣性研究所</a> ・
+    <a href="https://www.hkbws.org.hk/" target="_blank" rel="noopener">香港觀鳥會 — 黑面琵鷺普查</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-detective">
+  <div class="slide-tag">活動三・步驟 3 ・學習單(投影版)</div>
+  <h2>紅皮書偵探任務卡</h2>
+  <div class="slide-body">
+    <p style="font-size: 1.05rem; color: var(--c-muted); margin: 0 0 8px;">
+      每組挑 1 種台灣物種，用平板查 IUCN 網站或農業部資料完成下表。
+    </p>
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th style="width: 22%;">物種</th>
+          <th style="width: 18%;">IUCN 等級</th>
+          <th style="width: 30%;">主要威脅</th>
+          <th style="width: 30%;">目前的保育行動</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>石虎</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><th>台灣黑熊</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><th>櫻花鉤吻鮭</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><th>黑面琵鷺</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §3</a></div>
+</section>
+
+<section class="slide" id="slide-story">
+  <div class="slide-tag">活動三・步驟 4</div>
+  <h2>我的瀕危故事</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      挑一種台灣瀕危動物，幫牠寫一個 150 字短故事或畫成三格漫畫。
+    </p>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">我選的物種：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">牠早上醒來看到什麼：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">牠遇到什麼危險：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">誰救了牠：</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 16px; color: var(--c-accent);">
+      故事寫完，請帶回家唸給家人聽，並學習用 iNaturalist、路殺社 App 通報觀察紀錄。
+    </p>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>迎接回家：復育的奇蹟</h2>
+    <p class="subtitle">從 200 尾到 15,000 尾的希望</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-salmon">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>櫻花鉤吻鮭復育奇蹟：1984 → 2023</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：櫻花鉤吻鮭族群數量 40 年成長曲線]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>1984 年僅剩 200 多尾 → 2023 年突破 15,000 尾，雪霸國家公園與科學家用 40 年讓瀕危回到希望。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖：圈養繁殖再野放的全球成功典範</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 18px; color: var(--c-accent);">
+      <strong>只要人類願意行動，瀕危真的能變回希望。</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：
+    <a href="https://www.spnp.gov.tw/" target="_blank" rel="noopener">雪霸國家公園管理處</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-restore">
+  <div class="slide-tag">活動四・步驟 2</div>
+  <h2>復育三部曲</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>① 棲地整理</h4>
+        <ul><li>清理污染與獸夾</li><li>架設生態廊道</li><li>先把家整理好</li></ul>
+      </div>
+      <div class="col-card sch">
+        <h4>② 圈養繁殖</h4>
+        <ul><li>專業團隊照顧</li><li>確保基因多樣</li><li>逐步擴大族群</li></ul>
+      </div>
+      <div class="col-card com">
+        <h4>③ 野放追蹤</h4>
+        <ul><li>分批放回原棲地</li><li>長期追蹤監測</li><li>確認自然繁衍</li></ul>
+      </div>
+    </div>
+    <figure style="margin-top: 24px;">
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 30px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：IPBES 100 萬種絕種風險地圖]</div>
+        <div style="font-size: 1.05rem; margin: 12px 0;"><strong>關鍵數據：</strong>聯合國 IPBES 指出全球約 100 萬種動植物面臨絕種，是自然背景值的數十到上百倍。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 10px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>示意圖：先做棲地準備，再迎接動物回家</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源：
+    <a href="https://www.ipbes.net/global-assessment" target="_blank" rel="noopener">聯合國生物多樣性政府間平台 — 全球評估</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-debate">
+  <div class="slide-tag">活動四・步驟 3</div>
+  <h2>利害關係人圓桌：淺山要不要蓋公路？</h2>
+  <div class="slide-body">
+    <div class="three-col" style="grid-template-columns: repeat(5, 1fr);">
+      <div class="col-card fam"><h4>🦺 保育員</h4><ul><li>路殺風險</li><li>棲地切割</li></ul></div>
+      <div class="col-card sch"><h4>🌾 農夫</h4><ul><li>運輸方便</li><li>農產上市</li></ul></div>
+      <div class="col-card com"><h4>👷 工程師</h4><ul><li>生態通道設計</li><li>友善工法</li></ul></div>
+      <div class="col-card fam"><h4>🏹 原民獵人</h4><ul><li>傳統領域</li><li>祖靈禁地</li></ul></div>
+      <div class="col-card sch"><h4>🎒 學生</h4><ul><li>下一代視角</li><li>未來繼承</li></ul></div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 24px;">
+      <strong>提醒：</strong>「好心放生」綠鬣蜥、巴西龜會引入入侵種，反而傷害原生物種。<br>
+      想做公民科學，從 iNaturalist 或路殺社通報開始。
+    </p>
+  </div>
+</section>
+
+<section class="slide" id="slide-actions">
+  <div class="slide-tag">活動四・步驟 4</div>
+  <h2>我們可以做什麼？</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 12px;">
+      從個人到社群，每個面向都有行動。
+    </p>
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>家 庭</h4>
+        <ul>
+          <li>耳機音量 60% 以下</li>
+          <li>不買瀕危動物製品</li>
+          <li>用路殺社 App 通報</li>
+          <li>陪家人去自然觀察</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>學 校</h4>
+        <ul>
+          <li>校園種台灣原生種</li>
+          <li>降低廣播音量</li>
+          <li>夜間採向下暖色燈</li>
+          <li>選瀕危物種大使</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>社 區</h4>
+        <ul>
+          <li>邀請耆老分享禁忌</li>
+          <li>路殺通報志工</li>
+          <li>訪生多所、國家公園</li>
+          <li>不在自然區大聲喧嘩</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="slide-pledge">
+  <div class="slide-tag">活動四・步驟 4 ・學習單(投影版)</div>
+  <h2>全校英雄承諾卡</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      寫下你這個月要做的物種守護行動，兩兩互相承諾並簽名。
+    </p>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">我守護的物種是：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我這個月要做的行動：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我會邀請一起做的人：</span>
+        <span class="blank"></span>
+      </div>
+      <hr style="margin: 18px 0; border: 0; border-top: 1px dashed var(--c-border);">
+      <div class="row">
+        <span class="lbl">承諾人簽名：</span>
+        <span class="blank"></span>
+        <span class="lbl">見證夥伴：</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §6</a></div>
+</section>
+
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">尊敬</div>
+        <div class="desc">原住民禁忌<br>就是最古老的保育法</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">傾聽</div>
+        <div class="desc">動物有語言<br>降噪就是保護溝通</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">復育</div>
+        <div class="desc">200 → 15,000 尾<br>瀕危能變回希望</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">山裡有祖靈、海裡有朋友，地球上的每一個生命都是我們的鄰居。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">19</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

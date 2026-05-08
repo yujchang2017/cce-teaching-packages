@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小小問號偵探 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #7c3aed;
+    --c-accent-soft: #ede9fe;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .question-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 30px 0; }
+  .question-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px; font-size: 1.15rem; text-align: center; color: var(--c-text); position: relative; }
+  .question-card .q-num { position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 4rem; margin: 10px 0; }
+
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; text-align: center; }
+  .col-card.book { border-color: var(--c-cog); }
+  .col-card.teacher { border-color: var(--c-soc); }
+  .col-card.screen { border-color: var(--c-beh); }
+  .col-card .icon { font-size: 4rem; margin: 8px 0; }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.3rem; }
+  .col-card.book h4 { color: var(--c-cog); }
+  .col-card.teacher h4 { color: var(--c-soc); }
+  .col-card.screen h4 { color: var(--c-beh); }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.6rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  /* 問號小拳頭 */
+  .fist-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 24px 0; }
+  .finger-card { background: var(--c-accent-soft); border: 2px solid var(--c-accent); border-radius: 14px; padding: 24px 12px; text-align: center; }
+  .finger-card .finger-num { font-size: 2.4rem; font-weight: 800; color: var(--c-accent); }
+  .finger-card .finger-q { font-size: 1.25rem; font-weight: 700; margin-top: 10px; color: var(--c-text); }
+
+  /* 來源圓盤 */
+  .source-disc-svg { display: block; margin: 20px auto; max-width: 100%; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  /* 行動圖 */
+  .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin: 24px 0; }
+  .action-card { border: 2px solid var(--c-beh); border-radius: 12px; padding: 20px 12px; text-align: center; background: #f0fdf4; }
+  .action-card .icon { font-size: 3.4rem; }
+  .action-card h4 { margin: 10px 0 0; color: var(--c-beh); font-size: 1.1rem; }
+
+  /* 信賴大人圖 */
+  .trust-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin: 20px 0; }
+  .trust-card { background: #fdf2f8; border: 2px dashed var(--c-soc); border-radius: 12px; padding: 18px 10px; text-align: center; }
+  .trust-card .icon { font-size: 3rem; }
+  .trust-card .label { color: var(--c-soc); font-weight: 700; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">小小問號偵探 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>小小問號偵探</h2>
+    <p class="subtitle">消息那麼多,你會問問題嗎?</p>
+    <div style="font-size: 7rem; margin: 24px 0;">🦉❓</div>
+    <p style="font-size: 1.1rem; color: var(--c-muted);">和咕咕貓頭鷹一起戴上偵探帽!</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>咕咕的大問題:這些消息,要相信哪一個?</h2>
+  <div class="slide-body">
+    <div class="compare-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+      <div class="compare-card" style="border-color: #fbbf24;">
+        <div class="icon">📖</div>
+        <h3>書本說</h3>
+        <p>「會下雨」</p>
+      </div>
+      <div class="compare-card" style="border-color: #3b82f6;">
+        <div class="icon">👩‍🏫</div>
+        <h3>老師說</h3>
+        <p>「不會下雨」</p>
+      </div>
+      <div class="compare-card" style="border-color: #ec4899;">
+        <div class="icon">📱</div>
+        <h3>螢幕說</h3>
+        <p>「不知道」</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      消息有「<strong style="color: var(--c-cog);">3 個大來源</strong>」,但<strong>不是每個都對</strong>!<br>
+      要怎麼變成小偵探,問出真相?
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>消息從哪裡來?</h2>
+    <p class="subtitle">認識 3 大來源:書本、老師、螢幕</p>
+  </div>
+</section>
+
+<!-- 4. 咕咕的大煩惱 -->
+<section class="slide" id="slide-trouble">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>咕咕問了 3 個朋友,卻聽到 3 種答案!</h2>
+  <div class="slide-body">
+    <div style="text-align: center; font-size: 6rem; margin: 20px 0;">🦉💭</div>
+    <p style="text-align: center; font-size: 1.3rem;">
+      「今天會下雨嗎?」<br>
+      <span style="color: var(--c-cog);">A 朋友:會!</span>
+      <span style="color: var(--c-warn);">B 朋友:不會!</span>
+      <span style="color: var(--c-muted);">C 朋友:不知道...</span>
+    </p>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px; color: var(--c-accent); font-weight: 700;">
+      咕咕好煩惱!該怎麼辦才好?
+    </p>
+  </div>
+</section>
+
+<!-- 5. 3 大來源 -->
+<section class="slide" id="slide-sources">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>消息的 3 個大來源</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card book">
+        <div class="icon">📖</div>
+        <h4>書 本</h4>
+        <p>故事書、百科書、課本</p>
+      </div>
+      <div class="col-card teacher">
+        <div class="icon">👩‍🏫</div>
+        <h4>老師 / 大人</h4>
+        <p>老師、爸媽、爺爺奶奶</p>
+      </div>
+      <div class="col-card screen">
+        <div class="icon">📱</div>
+        <h4>螢 幕</h4>
+        <p>電視、平板、手機、電腦</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 24px;">
+      <strong style="color: var(--c-accent);">3 大來源,就像 3 隻小狗</strong>,都想告訴我們消息,<br>
+      但是<strong>不是每隻都說對</strong>!
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.unesco.org/en/climate-change/education" target="_blank" rel="noopener">聯合國教科文組織 — 氣候變遷教育</a>
+  </div>
+</section>
+
+<!-- 6. 來源小圓盤 -->
+<section class="slide" id="slide-disc">
+  <div class="slide-tag">活動一・步驟 4 ・手作</div>
+  <h2>我的來源小圓盤</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:來源小圓盤示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>一個紙盤分成 3 格,各代表一個來源(📖 書、👩‍🏫 老師、📱 螢幕)</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>每人領一個紙盤,畫 3 格貼貼紙,完成後帶回家當道具</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      <strong>玩法:</strong>回家轉一轉,問家人「這個消息是從哪一格來的?」
+    </p>
+  </div>
+</section>
+
+<!-- 7. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>真的假的?問一問!</h2>
+    <p class="subtitle">事實 vs 意見,還有 4 個查核小問題</p>
+  </div>
+</section>
+
+<!-- 8. 問號小拳頭 -->
+<section class="slide" id="slide-fist">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>厲害法寶:問號小拳頭!</h2>
+  <div class="slide-body">
+    <div style="text-align: center; font-size: 5rem;">✊</div>
+    <div class="fist-grid">
+      <div class="finger-card">
+        <div class="finger-num">1</div>
+        <div class="finger-q">誰說的?</div>
+      </div>
+      <div class="finger-card">
+        <div class="finger-num">2</div>
+        <div class="finger-q">怎麼知道?</div>
+      </div>
+      <div class="finger-card">
+        <div class="finger-num">3</div>
+        <div class="finger-q">真的嗎?</div>
+      </div>
+      <div class="finger-card">
+        <div class="finger-num">4</div>
+        <div class="finger-q">問大人!</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem;">
+      4 根手指頭 = <strong style="color: var(--c-accent);">4 個好問題</strong>,握起來就是「咕咕的小拳頭」!
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://tfc-taiwan.org.tw/" target="_blank" rel="noopener">台灣事實查核中心</a>
+  </div>
+</section>
+
+<!-- 9. 事實 vs 意見 -->
+<section class="slide" id="slide-fact">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>事實 vs 意見:看得到 vs 心裡想</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">事 實 / FACT</div>
+        <div class="icon">🌡️</div>
+        <h3>「今天 25 度」</h3>
+        <p>看得到、量得到<br>大家看了都一樣</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">意 見 / OPINION</div>
+        <div class="icon">😅</div>
+        <h3>「今天好熱」</h3>
+        <p>每個人心裡想的<br>不一定每個人一樣</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 24px; color: var(--c-muted);">
+      老師念卡片(共 10 張),小朋友舉「📊 事實牌」或「💭 意見牌」
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.commonsensemedia.org/articles/how-to-teach-your-kids-media-literacy" target="_blank" rel="noopener">常識媒體 — 兒童媒體素養教學</a>
+  </div>
+</section>
+
+<!-- 10. 練習:咕咕聽到 -->
+<section class="slide" id="slide-practice">
+  <div class="slide-tag">活動二・步驟 3 ・小劇場</div>
+  <h2>練習:咕咕聽到「北極熊都不見了!」</h2>
+  <div class="slide-body">
+    <div style="background: var(--c-accent-soft); border-radius: 16px; padding: 30px; text-align: center; margin: 20px 0;">
+      <div style="font-size: 4rem;">🦉</div>
+      <p style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700;">「聽說北極熊都不見了!」</p>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem;">小偵探,我們一起拿出問號小拳頭!</p>
+    <div class="fist-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="finger-card"><div class="finger-num">1</div><div class="finger-q" style="font-size: 1rem;">誰說的?</div></div>
+      <div class="finger-card"><div class="finger-num">2</div><div class="finger-q" style="font-size: 1rem;">怎麼知道?</div></div>
+      <div class="finger-card"><div class="finger-num">3</div><div class="finger-q" style="font-size: 1rem;">真的嗎?</div></div>
+      <div class="finger-card"><div class="finger-num">4</div><div class="finger-q" style="font-size: 1rem;">問大人!</div></div>
+    </div>
+    <figure style="margin-top: 20px;">
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 24px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.3rem; color: var(--c-accent); font-weight: 700; margin-bottom: 8px;">[此處放:10 個大人 8–9 個皺眉圖]</div>
+        <div style="font-size: 1.05rem;"><strong>關鍵數據:</strong>每 10 個大人就有約 8–9 個會擔心螢幕上的假訊息(約 85%)</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 8px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>連大人都在擔心,所以我們小偵探一起來幫忙!</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.unesco.org/en/media-information-literacy" target="_blank" rel="noopener">聯合國教科文組織 — 媒體與資訊素養</a>
+  </div>
+</section>
+
+<!-- 11. 值得信賴的大人 -->
+<section class="slide" id="slide-trusted">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>值得信賴的大人,有誰?</h2>
+  <div class="slide-body">
+    <div style="text-align: center; font-size: 5rem;">💗</div>
+    <div class="trust-grid">
+      <div class="trust-card"><div class="icon">👩</div><div class="label">媽媽</div></div>
+      <div class="trust-card"><div class="icon">👨</div><div class="label">爸爸</div></div>
+      <div class="trust-card"><div class="icon">👵</div><div class="label">奶奶</div></div>
+      <div class="trust-card"><div class="icon">👴</div><div class="label">爺爺</div></div>
+      <div class="trust-card"><div class="icon">👩‍🏫</div><div class="label">老師</div></div>
+      <div class="trust-card"><div class="icon">📚</div><div class="label">圖書館阿姨</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 20px;">
+      <strong style="color: var(--c-soc);">「我有我的大人」</strong>:有疑問的時候,先問你的信賴大人!
+    </p>
+  </div>
+</section>
+
+<!-- 12. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>小偵探出任務!</h2>
+    <p class="subtitle">把問問題的習慣用在好行動上</p>
+  </div>
+</section>
+
+<!-- 13. 環境好行動 -->
+<section class="slide" id="slide-actions">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>學了就要做:環境好行動</h2>
+  <div class="slide-body">
+    <div class="action-grid">
+      <div class="action-card"><div class="icon">💡</div><h4>關燈省電</h4></div>
+      <div class="action-card"><div class="icon">♻️</div><h4>分類回收</h4></div>
+      <div class="action-card"><div class="icon">🗑️</div><h4>撿垃圾</h4></div>
+      <div class="action-card"><div class="icon">📖</div><h4>查書找答案</h4></div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 24px;">
+      <strong style="color: var(--c-beh);">行動卡分類:</strong>「我會做」 vs 「我想學」
+    </p>
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      問完問題、找到對的消息以後,就去做對的事!地球會開心喔。
+    </p>
+  </div>
+</section>
+
+<!-- 14. 不是所有螢幕都對 -->
+<section class="slide" id="slide-screen">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>螢幕上的消息,不一定都是真的</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">✅ 可以相信</div>
+        <div class="icon">📺✓</div>
+        <h3>中央氣象署</h3>
+        <p>權威單位、有科學根據</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">⚠️ 要小心</div>
+        <div class="icon">📺✗</div>
+        <h3>陌生人傳的訊息</h3>
+        <p>不知道誰說的、無法驗證</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 24px;">
+      遇到氣候、天氣、動物的消息,要問自己:<strong style="color: var(--c-accent);">這是真的嗎?</strong>並且<strong>問大人!</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署</a>
+  </div>
+</section>
+
+<!-- 15. 家庭小任務 -->
+<section class="slide" id="slide-family">
+  <div class="slide-tag">活動三・步驟 4 ・家庭延伸</div>
+  <h2>家庭小任務:一起當問號偵探</h2>
+  <div class="slide-body">
+    <div style="text-align: center; font-size: 5rem;">🏠❤️</div>
+    <div style="background: var(--c-accent-soft); border-radius: 16px; padding: 24px; margin: 20px auto; max-width: 700px;">
+      <h3 style="margin-top: 0; text-align: center;">回家三件事</h3>
+      <ol style="font-size: 1.1rem; line-height: 2;">
+        <li>和爸媽一起看一則氣候新聞 📺</li>
+        <li>用問號小拳頭問 4 個問題 ✊</li>
+        <li>明天帶 1 個問題回來分享 ✋</li>
+      </ol>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      和旁邊的同學說:「我要回家當問號偵探!」
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 16. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字,一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">來源</div>
+        <div class="desc">3 大來源:<br>書本・老師・螢幕</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">問</div>
+        <div class="desc">問號小拳頭<br>4 個查核小問題</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">做</div>
+        <div class="desc">問完就去做好事<br>關燈・回收・撿垃圾</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      你不是小,<br>
+      <strong style="color: var(--c-accent);">你是會問問題、會做好事的小偵探!</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">16</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      slides[Math.min(current + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      slides[Math.max(current - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+
+</body>
+</html>

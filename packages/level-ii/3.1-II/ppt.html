@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>公平小天使 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #ea580c;
+    --c-accent-soft: #fed7aa;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #dc2626;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px; background: var(--c-bg); max-width: 700px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  .placeholder { border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center; }
+  .placeholder .ph-tag { font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px; }
+  .placeholder .ph-title { font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px; }
+  .placeholder .ph-data { font-size: 1.1rem; margin: 14px 0; }
+  .placeholder .ph-note { font-size: 0.85rem; color: var(--c-muted); margin-top: 12px; }
+  .emoji-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 18px; margin: 24px 0; }
+  .emoji-card { background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 12px; padding: 18px 12px; text-align: center; }
+  .emoji-card .icon { font-size: 3rem; }
+  .emoji-card .label { margin-top: 8px; font-weight: 600; color: var(--c-text); }
+  .emoji-card .desc { font-size: 0.85rem; color: var(--c-muted); margin-top: 4px; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card.left { border-color: var(--c-warn); background: #fef2f2; }
+  .compare-card.right { border-color: var(--c-beh); background: #f0fdf4; }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.left .label { color: var(--c-warn); }
+  .compare-card.right .label { color: var(--c-beh); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">公平小天使 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>公平小天使</h2>
+    <p class="subtitle">同一個天氣,大家遇到的事情不一樣</p>
+    <svg viewBox="0 0 500 220" width="500" style="margin: 20px 0;">
+      <ellipse cx="250" cy="200" rx="220" ry="14" fill="#fed7aa"/>
+      <circle cx="250" cy="100" r="40" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>
+      <circle cx="240" cy="95" r="3" fill="#1f2937"/>
+      <circle cx="260" cy="95" r="3" fill="#1f2937"/>
+      <path d="M240 110 Q250 118 260 110" fill="none" stroke="#1f2937" stroke-width="2"/>
+      <ellipse cx="190" cy="100" rx="40" ry="20" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
+      <ellipse cx="310" cy="100" rx="40" ry="20" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
+      <ellipse cx="250" cy="65" rx="55" ry="14" fill="none" stroke="#fbbf24" stroke-width="2"/>
+      <text x="80" y="180" font-size="22">🏖️</text>
+      <text x="240" y="180" font-size="22">⛰️</text>
+      <text x="400" y="180" font-size="22">🏙️</text>
+    </svg>
+  </div>
+</section>
+
+<!-- 2. 一個颱風三個家 -->
+<section class="slide" id="slide-typhoon">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>一個颱風,三個家,不一樣的事</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="placeholder">
+        <div class="ph-tag">圖表佔位</div>
+        <div class="ph-title">[此處放:颱風旋渦連到三個家插畫]</div>
+        <div class="ph-data"><strong>關鍵數據:</strong>1 個颱風 → 3 種不一樣的事(海邊淹水、山上倒樹、城市停電)</div>
+        <div class="ph-note">📌 示意圖待補繪 — 中間大颱風旋渦,三條線連到海邊浪花、山上倒樹、城市熄燈</div>
+      </div>
+      <figcaption>同一個颱風,大家遇到的事情卻不一樣</figcaption>
+    </figure>
+    <div class="emoji-grid" style="margin-top: 20px;">
+      <div class="emoji-card"><div class="icon">🌊</div><div class="label">海邊家</div><div class="desc">會淹水</div></div>
+      <div class="emoji-card"><div class="icon">🌲</div><div class="label">山上家</div><div class="desc">大風大樹倒</div></div>
+      <div class="emoji-card"><div class="icon">🏙️</div><div class="label">城市家</div><div class="desc">會停電</div></div>
+    </div>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署 — 颱風資訊</a>
+  </div>
+</section>
+
+<!-- 3. 你住哪一個家 -->
+<section class="slide" id="slide-three-homes">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>你住哪一個家?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 12px;">
+      選一個你想像的家,跟旁邊同學說一句「我家會……」
+    </p>
+    <div class="emoji-grid">
+      <div class="emoji-card" style="border-color: #3b82f6;"><div class="icon">🏖️</div><div class="label">海邊</div><div class="desc">浪很大、會淹水</div></div>
+      <div class="emoji-card" style="border-color: #16a34a;"><div class="icon">⛰️</div><div class="label">山上</div><div class="desc">風很大、樹會倒</div></div>
+      <div class="emoji-card" style="border-color: #6366f1;"><div class="icon">🏙️</div><div class="label">城市</div><div class="desc">可能停電</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      <strong style="color: var(--c-accent);">同一個颱風,我們的故事都不一樣!</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 4. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>阿公阿嬤怕熱熱</h2>
+    <p class="subtitle">用同理心關心容易熱傷害的人</p>
+  </div>
+</section>
+
+<!-- 5. 阿公阿嬤更怕熱 -->
+<section class="slide" id="slide-elderly">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>阿公阿嬤更怕熱</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="placeholder">
+        <div class="ph-tag">圖表佔位</div>
+        <div class="ph-title">[此處放:溫度計 + 阿嬤流汗插畫]</div>
+        <div class="ph-data"><strong>關鍵數據:</strong>20 年來,65 歲以上熱不舒服的情況多了大約 7 成(+70%)</div>
+        <div class="ph-note">📌 示意圖待補繪 — 一支大溫度計,旁邊一位阿嬤流汗擦臉,大字「+70%」</div>
+      </div>
+      <figcaption>天氣一熱,阿公阿嬤辛苦更多 — 我們要記得他們</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      <strong style="color: var(--c-accent);">全班一起做扇風動作,幫想像中的阿嬤扇 5 下~</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health" target="_blank" rel="noopener">世界衛生組織 — 氣候變遷與健康</a>
+  </div>
+</section>
+
+<!-- 6. 小朋友也一樣嗎 -->
+<section class="slide" id="slide-children">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>世界這麼大,小朋友也一樣嗎?</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="placeholder">
+        <div class="ph-tag">圖表佔位</div>
+        <div class="ph-title">[此處放:世界地圖 + 20 個小孩圖標,10 個亮 10 個暗]</div>
+        <div class="ph-data"><strong>關鍵數據:</strong>每 2 個小朋友,就有 1 個住在「天氣容易影響」的地方(約 1/2)</div>
+        <div class="ph-note">📌 示意圖待補繪 — 世界地球圖背景,20 個小小孩排成兩排,10 個亮色站立、10 個灰色坐著</div>
+      </div>
+      <figcaption>地球上一半的小朋友,也在擔心天氣 — 我們可以為他們加油</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px; color: var(--c-accent);">
+      <strong>互動:老師請前排 10 位站起來,大家互相揮手喊「加油!」</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.unicef.org/environment-and-climate-change/climate-change" target="_blank" rel="noopener">聯合國兒童基金會 — 兒童氣候風險指數</a>
+  </div>
+</section>
+
+<!-- 7. 家庭小任務 -->
+<section class="slide" id="slide-family-card">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>給阿公阿嬤的熱熱卡</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      畫一張小卡,提醒阿公阿嬤天氣熱要記得喝水。
+    </p>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">送給:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我想說的話:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">提醒事項(喝水 / 開電風扇 / 別出門):</span>
+        <span class="blank"></span>
+      </div>
+      <hr style="margin: 18px 0; border: 0; border-top: 1px dashed var(--c-border);">
+      <div class="row">
+        <span class="lbl">畫一個小愛心:</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 8. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>乾淨手、髒髒手</h2>
+    <p class="subtitle">分辨高污染與低污染行為</p>
+  </div>
+</section>
+
+<!-- 9. 髒髒手 vs 乾淨小手 -->
+<section class="slide" id="slide-clean-hands">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>髒髒手 vs 乾淨小手</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">髒 髒 手 ✊</div>
+        <div class="icon">🚗💨</div>
+        <h3>會把空氣弄髒</h3>
+        <p style="margin: 0;">開很多車、冷氣整天<br>工廠排煙、亂丟垃圾</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">乾 淨 小 手 ✋</div>
+        <div class="icon">🚲🌸</div>
+        <h3>讓空氣乾乾淨淨</h3>
+        <p style="margin: 0;">走路、騎腳踏車<br>關燈、用環保袋</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px; color: var(--c-accent);">
+      <strong>掌心朝上 = 乾淨;握拳 = 髒髒</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://adl.edu.tw/" target="_blank" rel="noopener">教育部因材網 — 氣候正義單元</a>
+  </div>
+</section>
+
+<!-- 10. 老師出題小搶答 -->
+<section class="slide" id="slide-quiz">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>老師出題小搶答</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 12px;">
+      老師唸一個行為,你快快做出對應的手勢!
+    </p>
+    <div class="emoji-grid">
+      <div class="emoji-card" style="border-color: var(--c-warn);"><div class="icon">🚙</div><div class="label">開大車</div><div class="desc">髒髒手</div></div>
+      <div class="emoji-card" style="border-color: var(--c-beh);"><div class="icon">💡</div><div class="label">關電燈</div><div class="desc">乾淨小手</div></div>
+      <div class="emoji-card" style="border-color: var(--c-beh);"><div class="icon">🚶</div><div class="label">走路上學</div><div class="desc">乾淨小手</div></div>
+      <div class="emoji-card" style="border-color: var(--c-warn);"><div class="icon">❄️</div><div class="label">冷氣整天</div><div class="desc">髒髒手</div></div>
+      <div class="emoji-card" style="border-color: var(--c-beh);"><div class="icon">🚲</div><div class="label">騎腳踏車</div><div class="desc">乾淨小手</div></div>
+      <div class="emoji-card" style="border-color: var(--c-beh);"><div class="icon">🛍️</div><div class="label">環保袋</div><div class="desc">乾淨小手</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. 公平小天使手作 -->
+<section class="slide" id="slide-craft">
+  <div class="slide-tag">活動三・步驟 3 ・學習單(投影版)</div>
+  <h2>公平小天使手作</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="placeholder">
+        <div class="ph-tag">圖表佔位</div>
+        <div class="ph-title">[此處放:紙杯小天使手偶範本插畫]</div>
+        <div class="ph-data"><strong>製作步驟:</strong>紙杯做身體 + 色紙做翅膀 + 畫笑臉</div>
+        <div class="ph-note">📌 示意圖待補繪 — 紙杯小天使,翅膀上寫一個乾淨小行為</div>
+      </div>
+      <figcaption>在翅膀上畫一個你要做的乾淨行為</figcaption>
+    </figure>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">我的小天使叫:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我會做的乾淨行為是:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我要幫忙的人是:</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 12. 我可以做什麼 三欄 -->
+<section class="slide" id="slide-actions">
+  <div class="slide-tag">活動三・延伸</div>
+  <h2>我可以幫忙什麼?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 12px;">
+      在家、在學校、在社區,公平小天使都能出力!
+    </p>
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>家 庭</h4>
+        <ul>
+          <li>關燈、自備水壺</li>
+          <li>不開冷氣換電風扇</li>
+          <li>打電話給阿公阿嬤</li>
+          <li>提醒長輩多喝水</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>學 校</h4>
+        <ul>
+          <li>走路上學</li>
+          <li>不亂丟垃圾</li>
+          <li>「公平小天使」貼星星</li>
+          <li>跟同學分享乾淨行為</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>社 區</h4>
+        <ul>
+          <li>颱風前問鄉下親戚</li>
+          <li>給街友一句加油</li>
+          <li>關心熱天的長者</li>
+          <li>家庭乾淨日</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>我們學到了三件大事</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 件</div>
+        <div class="word">不一樣</div>
+        <div class="desc">同一個天氣<br>每個人遇到的不一樣</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 件</div>
+        <div class="word">關心</div>
+        <div class="desc">有些人受影響更多<br>我們要關心他們</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 件</div>
+        <div class="word">行動</div>
+        <div class="desc">乾淨小手<br>幫地球也幫別人</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      你們都是公平小天使,真棒!<br>
+      <strong style="color: var(--c-accent);">舉起小天使,大聲說:「我是公平小天使,我會 ___!」</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">13</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

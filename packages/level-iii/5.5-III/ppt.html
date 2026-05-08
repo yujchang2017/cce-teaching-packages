@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我們在後碳經濟中的角色 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px;
+    border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px;
+    font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .slide.divider .subtitle { font-size: 1.1rem; color: var(--c-muted); margin-top: 8px; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 16px; margin: 20px 0; }
+  .stat-card {
+    background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 12px;
+    padding: 20px; text-align: center;
+  }
+  .stat-card .num { font-size: 2rem; font-weight: 800; color: var(--c-accent); line-height: 1.1; margin: 8px 0; }
+  .stat-card .unit { font-size: 0.82rem; color: var(--c-muted); }
+  .stat-card .label { font-size: 0.9rem; font-weight: 600; }
+
+  .three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 20px 0; }
+  .c3-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 16px; text-align: center; }
+  .c3-card h4 { margin: 0 0 6px; font-size: 1.05rem; }
+
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 20px; }
+  .compare-card h3 { margin-top: 0; }
+
+  .r6-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin: 20px 0; }
+  .r6-card {
+    border: 2px solid var(--c-accent); border-radius: 10px; padding: 16px; text-align: center;
+    background: var(--c-accent-soft);
+  }
+  .r6-card .r-letter { font-size: 2rem; font-weight: 900; color: var(--c-accent); }
+  .r6-card .r-name { font-size: 1rem; font-weight: 700; color: var(--c-text); margin: 4px 0; }
+  .r6-card .r-desc { font-size: 0.85rem; color: var(--c-muted); }
+
+  .ws-station { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; margin: 20px 0; }
+  .station-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 16px; }
+  .station-card .num { font-size: 1.4rem; font-weight: 800; color: var(--c-accent); margin-bottom: 6px; }
+  .station-card h4 { margin: 0 0 6px; font-size: 1.05rem; color: var(--c-accent); }
+
+  .pledge-form {
+    border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px;
+    background: var(--c-bg); max-width: 700px; margin: 20px auto;
+  }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 14px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+  .checklist { list-style: none; padding: 0; margin: 12px 0; }
+  .checklist li { padding: 10px 0; border-bottom: 1px dashed var(--c-border); font-size: 1rem; }
+  .checklist li::before { content: "☐ "; margin-right: 6px; color: var(--c-accent); font-size: 1.1em; }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 28px 18px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.2rem; font-weight: 800; margin: 10px 0; }
+  .key-card .desc { font-size: 0.9rem; color: var(--c-muted); }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">我們在後碳經濟中的角色 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content:center;">
+    <h2>我是後碳經濟小公民</h2>
+    <p class="subtitle">負責任消費 × 延長物品壽命</p>
+    <p style="margin-top:24px; font-size:1.1rem; color:var(--c-muted);">5.5-III｜國小 9–12 歲</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>你每天都是「消費者」——你知道嗎？</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="c3-card" style="border-color:var(--c-cog);">
+        <h4>👕 衣服</h4>
+        <p>買新的還是舊的穿？</p>
+      </div>
+      <div class="c3-card" style="border-color:var(--c-warn);">
+        <h4>🍱 便當</h4>
+        <p>吃完了嗎？廚餘倒了多少？</p>
+      </div>
+      <div class="c3-card" style="border-color:var(--c-beh);">
+        <h4>✏️ 文具</h4>
+        <p>鉛筆用到剩幾公分才換？</p>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.1rem; margin-top:24px;">
+      使用物品的方式，就是消費行為——<br>
+      <strong style="color:var(--c-accent);">它直接影響地球的碳排放。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動一</div>
+    <h2>身上穿多少碳？</h2>
+    <p class="subtitle">從衣服開始認識負責任消費</p>
+  </div>
+</section>
+
+<!-- 4. 衣物碳足跡 -->
+<section class="slide" id="slide-clothing-carbon">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>一件 T 恤的碳足跡：比你想像的重</h2>
+  <div class="slide-body">
+    <div class="stat-grid">
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div class="label">紡織品每公斤碳排</div>
+        <div class="num" style="color:var(--c-warn);">17 kg</div>
+        <div class="unit">CO₂e / 每公斤紡織品</div>
+      </div>
+      <div class="stat-card" style="border-color:#374151;">
+        <div class="label">一件牛仔褲碳足跡</div>
+        <div class="num" style="color:#374151;">~33 kg</div>
+        <div class="unit">CO₂e（從棉花到運送）</div>
+      </div>
+    </div>
+    <div style="background:#fff7ed; border-left:4px solid var(--c-warn); padding:14px 18px; border-radius:6px; margin:20px 0;">
+      <strong>課堂活動：</strong>秤一件 T 恤的重量（約 200 公克），乘以 17，算出「這件衣服的碳足跡」。<br>
+      → 約 <strong>3.4 公斤 CO₂e</strong>——穿衣服也在排碳！
+    </div>
+    <p style="text-align:center; font-size:1.05rem; color:var(--c-muted);">
+      延長衣服壽命、買二手或修補，是減碳效果最立竿見影的個人行動之一。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.un.org/en/actnow/ten-actions" target="_blank" rel="noopener">聯合國 ActNow — 氣候行動十大行動</a>
+  </div>
+</section>
+
+<!-- 5. 環保標章賓果 -->
+<section class="slide" id="slide-labels">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>環保標章賓果：你認識幾個？</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="c3-card" style="border-color:var(--c-beh); background:#f0fdf4;">
+        <h4 style="color:var(--c-beh);">環保標章</h4>
+        <p style="font-size:0.9rem;">低污染、省資源、可回收</p>
+      </div>
+      <div class="c3-card" style="border-color:#f59e0b; background:#fffbeb;">
+        <h4 style="color:#d97706;">節能標章</h4>
+        <p style="font-size:0.9rem;">比一般同類電器省 10–50% 電</p>
+      </div>
+      <div class="c3-card" style="border-color:var(--c-cog); background:#eff6ff;">
+        <h4 style="color:var(--c-cog);">省水標章</h4>
+        <p style="font-size:0.9rem;">比一般同類產品省水 20% 以上</p>
+      </div>
+      <div class="c3-card" style="border-color:#8b5cf6; background:#f5f3ff;">
+        <h4 style="color:#7c3aed;">碳足跡標章</h4>
+        <p style="font-size:0.9rem;">標示產品全生命週期碳排量</p>
+      </div>
+      <div class="c3-card" style="border-color:var(--c-warn); background:#fff7ed;">
+        <h4 style="color:var(--c-warn);">綠能標章</h4>
+        <p style="font-size:0.9rem;">再生能源電力認證</p>
+      </div>
+      <div class="c3-card" style="border-color:var(--c-soc); background:#fdf2f8;">
+        <h4 style="color:var(--c-soc);">MIT 微笑標章</h4>
+        <p style="font-size:0.9rem;">台灣製造，減少運輸碳排</p>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1rem; margin-top:16px; color:var(--c-muted);">
+      小組配對：6 張標章 × 6 個功能說明。答對 ≥5 張得分！
+    </p>
+  </div>
+</section>
+
+<!-- 6. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動二</div>
+    <h2>12 個瓶子的旅程</h2>
+    <p class="subtitle">塑膠真相 × 循環經濟</p>
+  </div>
+</section>
+
+<!-- 7. 塑膠真相 -->
+<section class="slide" id="slide-plastic">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>你以為你「回收」了——但只有不到 10% 真的被回收</h2>
+  <div class="slide-body">
+    <div class="stat-grid">
+      <div class="stat-card" style="border-color:#dc2626;">
+        <div class="label">2019 年全球塑膠溫室氣體排放</div>
+        <div class="num" style="color:#dc2626;">18 億</div>
+        <div class="unit">噸 CO₂e（佔全球 3.4%）</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div class="label">全球塑膠實際回收率</div>
+        <div class="num" style="color:var(--c-warn);">&lt;10%</div>
+        <div class="unit">其餘掩埋、焚化或流入海洋</div>
+      </div>
+    </div>
+    <figure style="margin:20px 0;">
+      <div style="border:2px dashed var(--c-accent); border-radius:12px; padding:36px; background:var(--c-accent-soft); text-align:center;">
+        <div style="font-size:0.8rem; color:var(--c-muted); letter-spacing:0.15em; margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem; color:var(--c-accent); font-weight:700; margin-bottom:12px;">[此處放：10 個寶特瓶示意圖]</div>
+        <div style="font-size:1.1rem; margin:14px 0;"><strong>關鍵數據：</strong>10 個寶特瓶中，不到 1 個真正被回收再製</div>
+        <div style="font-size:0.85rem; color:var(--c-muted); margin-top:12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>班級實驗：拿出 10 個寶特瓶，只留 1 個，其餘 9 個「去哪了？」</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.un.org/en/actnow/ten-actions" target="_blank" rel="noopener">聯合國環境署（UNEP）/ 聯合國 ActNow</a>
+  </div>
+</section>
+
+<!-- 8. 12 瓶變 T 恤 -->
+<section class="slide" id="slide-bottle-shirt">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>12 個寶特瓶 = 1 件環保衣</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:#3b82f6; background:#eff6ff;">
+        <h3 style="color:#3b82f6;">傳統生產</h3>
+        <p>從石油萃取原料 → 紡絲 → 染整<br>每公斤排放約 <strong>17 公斤 CO₂e</strong></p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-beh); background:#f0fdf4;">
+        <h3 style="color:var(--c-beh);">循環再製</h3>
+        <p>回收 12 個 600ml 寶特瓶<br>→ 再製成 1 件 POLO 衫<br>延長材料壽命，減少原油使用</p>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.1rem; margin-top:20px;">
+      <strong>記住順序：</strong><br>
+      減少用塑膠 &gt; 回收塑膠 &gt; 丟棄塑膠
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://greenlifestyle.moenv.gov.tw/" target="_blank" rel="noopener">環境部淨零綠生活平台《環保衣起 GO》</a>
+  </div>
+</section>
+
+<!-- 9. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三</div>
+    <h2>延長壽命大作戰</h2>
+    <p class="subtitle">6R 原則 × 動手延壽工作坊</p>
+  </div>
+</section>
+
+<!-- 10. 6R 原則 -->
+<section class="slide" id="slide-6r">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>6R 原則：讓地球喘口氣</h2>
+  <div class="slide-body">
+    <div class="r6-grid">
+      <div class="r6-card">
+        <div class="r-letter">R1</div>
+        <div class="r-name">Reduce 減量</div>
+        <div class="r-desc">買之前問：真的需要嗎？</div>
+      </div>
+      <div class="r6-card">
+        <div class="r-letter">R2</div>
+        <div class="r-name">Reuse 重複使用</div>
+        <div class="r-desc">自備水壺、環保袋、餐具</div>
+      </div>
+      <div class="r6-card">
+        <div class="r-letter">R3</div>
+        <div class="r-name">Repair 維修</div>
+        <div class="r-desc">壞了先修，不急著換新</div>
+      </div>
+      <div class="r6-card">
+        <div class="r-letter">R4</div>
+        <div class="r-name">Refuse 拒用</div>
+        <div class="r-desc">拒絕不環保的一次性產品</div>
+      </div>
+      <div class="r6-card">
+        <div class="r-letter">R5</div>
+        <div class="r-name">Recycle 回收</div>
+        <div class="r-desc">用完正確分類，送進回收</div>
+      </div>
+      <div class="r6-card">
+        <div class="r-letter">R6</div>
+        <div class="r-name">Recovery 再生</div>
+        <div class="r-desc">廢棄物再製成新材料</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1rem; margin-top:16px; color:var(--c-muted);">
+      家庭落實 3R 以上 → 每戶每年減少 <strong>500–1,000 公斤 CO₂e</strong>（≈ 4–8 棵樹年吸碳）
+    </p>
+  </div>
+</section>
+
+<!-- 11. 延壽工作坊 -->
+<section class="slide" id="slide-workshop">
+  <div class="slide-tag">活動三・步驟 3・分站體驗</div>
+  <h2>延壽工作坊：動手讓物品再活久一點</h2>
+  <div class="slide-body">
+    <div class="ws-station">
+      <div class="station-card">
+        <div class="num">站 1</div>
+        <h4>鉛筆加長器</h4>
+        <p>短到快握不住的鉛筆，裝上加長器繼續用</p>
+      </div>
+      <div class="station-card">
+        <div class="num">站 2</div>
+        <h4>舊衣改購物袋</h4>
+        <p>一件不穿的 T 恤，剪剪縫縫變環保袋</p>
+      </div>
+      <div class="station-card">
+        <div class="num">站 3</div>
+        <h4>紙箱變文具盒</h4>
+        <p>包裝紙箱切割重組，成為桌面收納</p>
+      </div>
+      <div class="station-card">
+        <div class="num">站 4</div>
+        <h4>便當盒清潔延壽</h4>
+        <p>正確清潔保養，讓便當盒用更久</p>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1rem; margin-top:16px; color:var(--c-muted);">
+      每人完成至少 1 件延壽改造，拍照留存。
+    </p>
+  </div>
+</section>
+
+<!-- 12. 光碟行動 -->
+<section class="slide" id="slide-food-waste">
+  <div class="slide-tag">活動三・步驟 4</div>
+  <h2>把午餐吃完，就是減碳行動</h2>
+  <div class="slide-body">
+    <div class="stat-grid">
+      <div class="stat-card" style="border-color:var(--c-beh);">
+        <div class="label">每人每年減少食物浪費</div>
+        <div class="num" style="color:var(--c-beh);">300 kg</div>
+        <div class="unit">CO₂e 可減少</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-accent);">
+        <div class="label">相當於</div>
+        <div class="num">1 棵</div>
+        <div class="unit">成年樹一整年的吸碳量</div>
+      </div>
+    </div>
+    <figure style="margin:20px 0;">
+      <div style="border:2px dashed var(--c-accent); border-radius:12px; padding:36px; background:var(--c-accent-soft); text-align:center;">
+        <div style="font-size:0.8rem; color:var(--c-muted); letter-spacing:0.15em; margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem; color:var(--c-accent); font-weight:700; margin-bottom:12px;">[此處放：午餐廚餘秤重紀錄表]</div>
+        <div style="font-size:1.1rem; margin:14px 0;"><strong>關鍵數據：</strong>今日班級廚餘 __ 公克 → 換算 CO₂e：__ 公克</div>
+        <div style="font-size:0.85rem; color:var(--c-muted); margin-top:12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>秤出今日午餐廚餘，換算班級碳帳</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://www.un.org/en/actnow/ten-actions" target="_blank" rel="noopener">聯合國 ActNow — 減少食物浪費</a>
+  </div>
+</section>
+
+<!-- 13. 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動四</div>
+    <h2>我是後碳經濟小公民</h2>
+    <p class="subtitle">淨零綠生活 7 面向 × 全校行動提案</p>
+  </div>
+</section>
+
+<!-- 14. 淨零綠生活 7 面向 -->
+<section class="slide" id="slide-green-life">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>淨零綠生活：食衣住行育樂購</h2>
+  <div class="slide-body">
+    <div class="r6-grid" style="grid-template-columns:repeat(4,1fr);">
+      <div class="r6-card" style="background:#fff7ed; border-color:var(--c-warn);">
+        <div class="r-letter" style="color:var(--c-warn);">食</div>
+        <div class="r-desc">吃在地、少肉、光碟行動</div>
+      </div>
+      <div class="r6-card" style="background:#fdf2f8; border-color:var(--c-soc);">
+        <div class="r-letter" style="color:var(--c-soc);">衣</div>
+        <div class="r-desc">舊衣再穿、買二手</div>
+      </div>
+      <div class="r6-card">
+        <div class="r-letter">住</div>
+        <div class="r-desc">節能燈具、綠建材</div>
+      </div>
+      <div class="r6-card" style="background:#eff6ff; border-color:var(--c-cog);">
+        <div class="r-letter" style="color:var(--c-cog);">行</div>
+        <div class="r-desc">走路、騎車、搭大眾運輸</div>
+      </div>
+      <div class="r6-card" style="background:#f0fdf4; border-color:var(--c-beh);">
+        <div class="r-letter" style="color:var(--c-beh);">育</div>
+        <div class="r-desc">氣候教育、分享知識</div>
+      </div>
+      <div class="r6-card">
+        <div class="r-letter">樂</div>
+        <div class="r-desc">低碳休閒、少搭飛機</div>
+      </div>
+      <div class="r6-card" style="background:#fef9c3; border-color:#ca8a04;">
+        <div class="r-letter" style="color:#ca8a04;">購</div>
+        <div class="r-desc">環保標章、少買不需要的</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1rem; margin-top:16px;">
+      目標：<strong>2050 年</strong>淨零排放——每個面向都需要你我一起行動。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源：<a href="https://greenlifestyle.moenv.gov.tw/" target="_blank" rel="noopener">環境部淨零綠生活資訊平台</a>
+  </div>
+</section>
+
+<!-- 15. 承諾卡 -->
+<section class="slide" id="slide-pledge">
+  <div class="slide-tag">活動四・步驟 3・學習單（投影版）</div>
+  <h2>本月 3 個負責任消費承諾</h2>
+  <div class="slide-body">
+    <p style="text-align:center; font-size:1.05rem; color:var(--c-muted);">台灣每人每年產生約 77 公斤家戶垃圾。全班 30 人合計約 <strong>2,310 公斤</strong>！減量就是減碳。</p>
+    <div class="pledge-form">
+      <ul class="checklist">
+        <li>自備水壺（食）——不買瓶裝水</li>
+        <li>舊衣再穿一季（衣）——延長壽命</li>
+        <li>走路或大眾運輸上學（行）</li>
+      </ul>
+      <div class="row"><span class="lbl">我另外的承諾：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">預期減少垃圾：</span><span class="blank"></span><span class="lbl">公斤 / 月</span></div>
+      <div class="row"><span class="lbl">承諾人簽名：</span><span class="blank"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 16. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，記住後碳小公民的使命</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">減量</div>
+        <div class="desc">買之前先想：需要嗎？<br>不買是最大的減碳</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">延壽</div>
+        <div class="desc">修、改、轉贈<br>讓物品活得更久</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">行動</div>
+        <div class="desc">7 面向綠生活<br>每個選擇都是地球的票</div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.1rem; margin-top:28px;">
+      <strong style="color:var(--c-accent);">你不只是消費者——你是後碳經濟的共同建造者。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">16</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color:var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+</body>
+</html>

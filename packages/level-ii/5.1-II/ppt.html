@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小豆苗的成長日記 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #65a30d;
+    --c-accent-soft: #ecfccb;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 24px 18px; text-align: center; }
+  .col-card.air { border-color: #60a5fa; background: #eff6ff; }
+  .col-card.water { border-color: #06b6d4; background: #ecfeff; }
+  .col-card.food { border-color: #f97316; background: #fff7ed; }
+  .col-card .icon { font-size: 5rem; }
+  .col-card h4 { margin: 10px 0 6px; font-size: 1.4rem; }
+  .col-card.air h4 { color: #2563eb; }
+  .col-card.water h4 { color: #0891b2; }
+  .col-card.food h4 { color: #ea580c; }
+
+  .water-cups { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 30px 0; }
+  .cup { font-size: 4rem; }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.6rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  .grow-stages { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 24px 0; }
+  .stage-card { background: var(--c-accent-soft); border: 2px solid var(--c-accent); border-radius: 12px; padding: 18px 10px; text-align: center; }
+  .stage-card .icon { font-size: 3rem; }
+  .stage-card .day { font-weight: 700; color: var(--c-accent); margin-top: 6px; }
+  .stage-card .desc { font-size: 0.9rem; color: var(--c-muted); }
+
+  .magic-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .magic-card { border: 3px solid var(--c-accent); border-radius: 14px; padding: 24px; text-align: center; background: #fff; }
+  .magic-card .icon { font-size: 4.5rem; }
+  .magic-card .label { font-size: 1.4rem; font-weight: 700; color: var(--c-accent); margin-top: 8px; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .nogo { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 20px 0; }
+  .nogo-item { background: #fef2f2; border: 2px dashed #ef4444; border-radius: 10px; padding: 16px; text-align: center; }
+  .nogo-item .icon { font-size: 2.6rem; }
+  .nogo-item .label { color: #b91c1c; font-weight: 700; margin-top: 6px; }
+
+  .save-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 22px 0; }
+  .save-card { background: #f0fdf4; border: 2px solid var(--c-beh); border-radius: 12px; padding: 18px 10px; text-align: center; }
+  .save-card .icon { font-size: 3rem; }
+  .save-card .label { color: var(--c-beh); font-weight: 700; margin-top: 6px; }
+
+  .mood-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .mood-card { border-radius: 14px; padding: 22px; text-align: center; border: 2px solid; }
+  .mood-card.happy { border-color: #16a34a; background: #f0fdf4; color: #166534; }
+  .mood-card.sad { border-color: #ea580c; background: #fff7ed; color: #9a3412; }
+  .mood-card.touched { border-color: #db2777; background: #fdf2f8; color: #9d174d; }
+  .mood-card .icon { font-size: 4rem; }
+  .mood-card .label { font-weight: 700; margin-top: 8px; font-size: 1.15rem; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">小豆苗的成長日記 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>小豆苗的成長日記</h2>
+    <p class="subtitle">資源那麼多,要怎麼珍惜?</p>
+    <div style="font-size: 7rem; margin: 24px 0;">🌱☀️</div>
+    <p style="font-size: 1.1rem; color: var(--c-muted);">和小豆苗豆豆一起認識資源、看著它長大!</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>沒了它們,我們會怎樣?</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card air"><div class="icon">🌬️</div><h4>空氣</h4><p>用來呼吸</p></div>
+      <div class="col-card water"><div class="icon">💧</div><h4>水</h4><p>用來喝、洗</p></div>
+      <div class="col-card food"><div class="icon">🍎</div><h4>食物</h4><p>用來吃</p></div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 20px;">
+      這 3 個叫做「<strong style="color: var(--c-accent);">資源</strong>」,少了一個都不行!
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>資源寶藏大發現</h2>
+    <p class="subtitle">三個寶藏朋友:空氣、水、食物</p>
+  </div>
+</section>
+
+<!-- 4. 三個寶藏朋友 -->
+<section class="slide" id="slide-treasure">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>三個寶藏朋友</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card air"><div class="icon">🌬️</div><h4>空氣</h4><p>呼吸寶寶</p></div>
+      <div class="col-card water"><div class="icon">💧</div><h4>水</h4><p>喝水寶寶</p></div>
+      <div class="col-card food"><div class="icon">🍎</div><h4>食物</h4><p>吃飯寶寶</p></div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 24px;">
+      <strong style="color: var(--c-accent);">用 3 個愛心比一比:</strong>「我愛空氣 ❤️、我愛水 ❤️、我愛食物 ❤️」
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://unesdoc.unesco.org/" target="_blank" rel="noopener">聯合國教科文組織 ESD 5–8 歲核心概念</a>
+  </div>
+</section>
+
+<!-- 5. 每天 6-8 杯水 -->
+<section class="slide" id="slide-water">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>每天大約要喝 6–8 杯水</h2>
+  <div class="slide-body">
+    <div class="water-cups">
+      <span class="cup">🥛</span><span class="cup">🥛</span><span class="cup">🥛</span>
+      <span class="cup">🥛</span><span class="cup">🥛</span><span class="cup">🥛</span>
+    </div>
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 30px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.3rem; color: var(--c-accent); font-weight: 700; margin-bottom: 8px;">[此處放:身體小水箱補水示意圖]</div>
+        <div style="font-size: 1.05rem;"><strong>關鍵數據:</strong>5–8 歲每天約喝 6–8 杯水 (約 1000–1500 mL),像幫身體小水箱加滿</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 8px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>小水箱滿滿,才有力氣跑跑跳跳</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 18px;">
+      用兩隻手比 6 個小圈圈,一起數:1、2、3、4、5、6!
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.hpa.gov.tw/" target="_blank" rel="noopener">衛生福利部國民健康署</a>
+  </div>
+</section>
+
+<!-- 6. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>不夠用了怎麼辦?</h2>
+    <p class="subtitle">感受「稀少」的心情,學 1 個節約小動作</p>
+  </div>
+</section>
+
+<!-- 7. 假裝停水 -->
+<section class="slide" id="slide-nowater">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>嗚嗚~水龍頭壞了!</h2>
+  <div class="slide-body">
+    <div style="text-align: center; font-size: 6rem;">🚱❌</div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 16px;">
+      停水 1 天,有 <strong style="color: var(--c-warn);">4 件事</strong> 不能做:
+    </p>
+    <div class="nogo">
+      <div class="nogo-item"><div class="icon">🛁</div><div class="label">不能洗澡</div></div>
+      <div class="nogo-item"><div class="icon">🚽</div><div class="label">不能沖馬桶</div></div>
+      <div class="nogo-item"><div class="icon">🪥</div><div class="label">不能刷牙</div></div>
+      <div class="nogo-item"><div class="icon">💧</div><div class="label">不能喝水</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 18px; color: var(--c-muted);">
+      這就是「<strong style="color: var(--c-warn);">稀少</strong>」:資源不夠用,生活就不方便。
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.wra.gov.tw/" target="_blank" rel="noopener">經濟部水利署</a>
+  </div>
+</section>
+
+<!-- 8. 豆豆心情 -->
+<section class="slide" id="slide-mood">
+  <div class="slide-tag">活動二・步驟 2 ・小劇場</div>
+  <h2>豆豆的心情</h2>
+  <div class="slide-body">
+    <div class="mood-row">
+      <div class="mood-card happy">
+        <div class="icon">😊🌱</div>
+        <div class="label">有水時</div>
+        <p style="font-size: 0.95rem; margin-top: 6px;">葉子挺挺、很開心</p>
+      </div>
+      <div class="mood-card sad">
+        <div class="icon">😢🥀</div>
+        <div class="label">沒水時</div>
+        <p style="font-size: 0.95rem; margin-top: 6px;">葉子垂垂、好難過</p>
+      </div>
+      <div class="mood-card touched">
+        <div class="icon">🥺💧</div>
+        <div class="label">被澆水時</div>
+        <p style="font-size: 0.95rem; margin-top: 6px;">活過來了,好感動!</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      人也一樣:資源不夠時會不舒服,擁有的時候要記得感謝!
+    </p>
+  </div>
+</section>
+
+<!-- 9. 怎樣保護寶藏朋友 -->
+<section class="slide" id="slide-save">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>怎樣保護寶藏朋友?</h2>
+  <div class="slide-body">
+    <div class="save-grid">
+      <div class="save-card"><div class="icon">🚿</div><div class="label">關水龍頭</div></div>
+      <div class="save-card"><div class="icon">💡</div><div class="label">離開關燈</div></div>
+      <div class="save-card"><div class="icon">🍽️</div><div class="label">吃光光不浪費</div></div>
+      <div class="save-card"><div class="icon">♻️</div><div class="label">瓶罐要回收</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 24px;">
+      4 個神奇小動作,你想從哪一個<strong style="color: var(--c-beh);">今天</strong>開始做?
+    </p>
+  </div>
+</section>
+
+<!-- 10. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>長大的魔法</h2>
+    <p class="subtitle">小豆苗與小豬撲滿一起長大</p>
+  </div>
+</section>
+
+<!-- 11. 豆豆生長秘密 -->
+<section class="slide" id="slide-grow">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>豆豆的生長秘密</h2>
+  <div class="slide-body">
+    <div class="grow-stages">
+      <div class="stage-card">
+        <div class="icon">🫘</div>
+        <div class="day">第 1 天</div>
+        <div class="desc">種下種子</div>
+      </div>
+      <div class="stage-card">
+        <div class="icon">🌱</div>
+        <div class="day">第 7 天</div>
+        <div class="desc">冒出小芽</div>
+      </div>
+      <div class="stage-card">
+        <div class="icon">🌿</div>
+        <div class="day">第 14 天</div>
+        <div class="desc">長葉子</div>
+      </div>
+      <div class="stage-card">
+        <div class="icon">🪴</div>
+        <div class="day">第 30 天</div>
+        <div class="desc">變小苗</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 16px;">
+      成長需要 <strong style="color: var(--c-accent);">3 個魔法</strong>:
+    </p>
+    <div class="magic-row">
+      <div class="magic-card"><div class="icon">☀️</div><div class="label">陽光</div></div>
+      <div class="magic-card"><div class="icon">💧</div><div class="label">水</div></div>
+      <div class="magic-card"><div class="icon">⏰</div><div class="label">時間</div></div>
+    </div>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.moe.gov.tw/" target="_blank" rel="noopener">教育部</a> 生活課程綠豆觀察教案
+  </div>
+</section>
+
+<!-- 12. 我的綠豆種植計畫 -->
+<section class="slide" id="slide-plant">
+  <div class="slide-tag">活動三・步驟 1 ・手作</div>
+  <h2>我的綠豆種植計畫</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:透明杯 + 棉花 + 綠豆種植步驟示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>3 步驟:① 棉花鋪底 ② 放 3 顆綠豆 ③ 倒一點水放窗邊</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>每天上學就來看看:豆豆長大了嗎?</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      <strong>豆豆日記:</strong>幫你的豆豆取個名字吧!(小狗?小花?都可以)
+    </p>
+  </div>
+</section>
+
+<!-- 13. 存錢也會長大 -->
+<section class="slide" id="slide-piggy">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>存錢也會長大!</h2>
+  <div class="slide-body">
+    <div style="text-align: center; font-size: 6rem; margin: 16px 0;">🐷💰</div>
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 30px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.3rem; color: var(--c-accent); font-weight: 700; margin-bottom: 8px;">[此處放:小豬撲滿從瘦變胖示意圖]</div>
+        <div style="font-size: 1.1rem;"><strong>關鍵數據:</strong>每天存 1 元 × 30 天 = 30 元!撲滿越吃越飽,越長越大</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 8px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>錢也會「成長」喔!</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 18px;">
+      老師假裝投錢,小朋友做「<strong style="color: var(--c-accent);">咕咕咕</strong>」吃錢聲~
+    </p>
+  </div>
+</section>
+
+<!-- 14. 家庭小任務 -->
+<section class="slide" id="slide-family">
+  <div class="slide-tag">活動三・步驟 4 ・家庭延伸</div>
+  <h2>家庭小任務</h2>
+  <div class="slide-body">
+    <div style="text-align: center; font-size: 5rem;">🏠❤️</div>
+    <div style="background: var(--c-accent-soft); border-radius: 16px; padding: 24px; margin: 20px auto; max-width: 700px;">
+      <h3 style="margin-top: 0; text-align: center; color: var(--c-accent);">回家三件事</h3>
+      <ol style="font-size: 1.1rem; line-height: 2;">
+        <li>帶綠豆給爸媽看,一起每天觀察 🌱</li>
+        <li>從今天開始一天存 1 元 🪙</li>
+        <li>一個月後比賽看誰的撲滿最飽 🐷</li>
+      </ol>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      和旁邊同學約定:「我們都來存錢、種豆!」
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 15. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字,一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">寶藏</div>
+        <div class="desc">空氣・水・食物<br>3 個寶藏朋友</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">珍惜</div>
+        <div class="desc">資源不夠用會稀少<br>節約 4 個小動作</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">耐心</div>
+        <div class="desc">陽光 + 水 + 時間<br>長大需要等待</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      豆豆要長大,<br>
+      <strong style="color: var(--c-accent);">你也要慢慢長大,變成厲害的大人!</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">15</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      slides[Math.min(current + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      slides[Math.max(current - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+
+</body>
+</html>

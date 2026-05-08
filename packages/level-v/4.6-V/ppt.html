@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>破解氣候錯誤資訊 — 投影片</title>
+<style>
+  :root{
+    --c-accent:#0f766e;--c-accent-soft:#ccfbf1;
+    --c-cog:#2563eb;--c-cog-soft:#dbeafe;
+    --c-soc:#db2777;--c-soc-soft:#fce7f3;
+    --c-beh:#16a34a;--c-beh-soft:#dcfce7;
+    --c-warn:#ea580c;--c-text:#1f2937;--c-muted:#6b7280;
+    --c-border:#e5e7eb;--c-bg:#f9fafb
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    color:var(--c-text);line-height:1.6;background:#fff}
+
+  /* ── fixed bars ── */
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;
+    background:rgba(255,255,255,.95);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--c-border);
+    display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--c-accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.9rem;font-weight:500;color:var(--c-muted);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;
+    background:rgba(255,255,255,.95);backdrop-filter:blur(8px);
+    border-top:1px solid var(--c-border);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;z-index:100;font-size:.85rem;color:var(--c-muted)}
+  .nav-indicator{font-family:monospace;color:var(--c-text)}
+  .nav-cur{color:var(--c-accent);font-weight:700}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--c-border);
+    border-bottom-width:2px;border-radius:4px;font-family:monospace;
+    font-size:.8em;background:#fff;margin:0 2px}
+
+  /* ── slides ── */
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;
+    padding:48px 64px;display:flex;flex-direction:column;
+    border-bottom:1px dashed var(--c-border);position:relative}
+  .slide-num{position:absolute;top:14px;right:20px;
+    font-size:.8rem;font-family:monospace;color:var(--c-border)}
+  .slide h2{font-size:1.9rem;margin:0 0 20px;color:var(--c-text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+
+  /* cover / divider */
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;
+    background:linear-gradient(135deg,var(--c-accent-soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.6rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--c-accent);color:#fff;
+    padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--c-accent);
+    letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.2rem;color:var(--c-accent)}
+  .slide.divider .step-chips{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .chip{background:var(--c-accent-soft);color:var(--c-accent);
+    border-radius:20px;padding:4px 14px;font-size:.9rem}
+
+  /* question box */
+  .q-box{background:var(--c-accent-soft);border-left:5px solid var(--c-accent);
+    border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;
+    font-size:1.4rem;line-height:1.6;color:var(--c-accent);font-weight:600}
+  .q-sub{font-size:1.05rem;color:var(--c-muted);font-weight:400;margin-top:10px}
+
+  /* data card */
+  .data-card{border:2px solid var(--c-border);border-radius:12px;padding:22px 28px;
+    margin:20px 0;background:var(--c-bg)}
+  .data-card .dc-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;
+    color:var(--c-muted);margin-bottom:8px}
+  .data-card .dc-fact{font-size:1.2rem;font-weight:700;color:var(--c-text);
+    margin-bottom:10px;line-height:1.5}
+  .data-card .dc-src{font-size:.85rem;color:var(--c-muted)}
+
+  /* activity card */
+  .act-card{border:2px solid var(--c-border);border-radius:12px;padding:22px 28px;margin:20px 0}
+  .act-card .ac-badge{display:inline-block;background:var(--c-accent);color:#fff;
+    font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:4px;
+    margin-bottom:12px;letter-spacing:.08em}
+  .act-card .ac-task{font-size:1.15rem;color:var(--c-text);line-height:1.6}
+
+  /* worksheet */
+  .ws-frame{border:2px dashed var(--c-accent);border-radius:12px;
+    padding:28px 32px;margin:20px 0;background:#fff}
+  .ws-frame .ws-title{font-size:1rem;font-weight:700;color:var(--c-accent);margin-bottom:14px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--c-border);padding:10px 14px}
+  .ws-table th{background:var(--c-accent-soft);color:var(--c-accent);font-weight:700;text-align:center}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,
+    #d1d5db 20px,#d1d5db 21px);height:52px;vertical-align:bottom}
+
+  /* compare grid */
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}
+  .compare-card{border:2px solid var(--c-border);border-radius:12px;padding:20px 24px}
+  .compare-card h3{font-size:1rem;font-weight:700;margin-bottom:12px}
+  .compare-card ul{padding-left:18px}
+  .compare-card li{margin-bottom:8px;font-size:.95rem}
+
+  /* tag pill */
+  .tag{display:inline-block;padding:2px 10px;border-radius:20px;
+    font-size:.82rem;font-weight:600;margin:3px 2px}
+  .tag-cog{background:var(--c-cog-soft);color:var(--c-cog)}
+  .tag-soc{background:var(--c-soc-soft);color:var(--c-soc)}
+  .tag-beh{background:var(--c-beh-soft);color:var(--c-beh)}
+
+  /* summary keys */
+  .summary-keys{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+  .key-card{border:2px solid var(--c-border);border-radius:10px;
+    padding:16px 20px;max-width:260px;text-align:center}
+  .key-card .kc-id{font-family:monospace;font-weight:700;margin-bottom:8px}
+  .key-card p{margin:0;font-size:.95rem}
+
+  /* figure / chart placeholder */
+  figure{margin:20px 0}
+  figure figcaption{font-size:.85rem;color:var(--c-muted);margin-top:8px;text-align:center}
+
+  /* pill list */
+  .pill-list{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+  .pill{background:var(--c-accent-soft);color:var(--c-accent);
+    border-radius:20px;padding:6px 16px;font-size:.95rem;font-weight:600}
+  .pill-warn{background:#fff7ed;color:var(--c-warn);border:1.5px solid var(--c-warn)}
+
+  /* numbered steps */
+  .step-list{display:flex;flex-direction:column;gap:14px;margin:16px 0}
+  .step-item{display:flex;align-items:flex-start;gap:14px}
+  .step-num{min-width:32px;height:32px;background:var(--c-accent);color:#fff;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:.9rem;flex-shrink:0;margin-top:2px}
+  .step-text{font-size:1rem;line-height:1.6}
+
+  /* slide source */
+  .slide-src{margin-top:auto;padding-top:12px;border-top:1px dashed var(--c-border);
+    font-size:.8rem;color:var(--c-muted)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">破解氣候錯誤資訊：科學否認策略、認知偏誤與延遲行動的歷史 ｜ Level V</span>
+</header>
+
+<main>
+
+<!-- 1. COVER -->
+<section class="slide cover" id="slide-cover">
+  <span class="slide-num">1</span>
+  <div class="slide-body">
+    <div class="level-tag">Level V ・ 4.6-V</div>
+    <h2>破解氣候錯誤資訊</h2>
+    <p style="font-size:1.1rem;color:var(--c-muted);margin-top:16px">
+      科學否認策略、認知偏誤<br>與延遲行動的歷史
+    </p>
+  </div>
+</section>
+
+<!-- 2. BIG QUESTION -->
+<section class="slide" id="slide-question">
+  <span class="slide-num">2</span>
+  <div class="slide-body">
+    <div class="q-box">
+      為什麼氣候科學已有壓倒性共識，<br>
+      社會卻仍遲遲無法採取足夠行動？
+      <div class="q-sub">
+        是資訊不足？還是有人故意散播混亂？我們的大腦又在哪裡幫了倒忙？
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">關鍵數據</div>
+      <div class="dc-fact">科學家中約 97% 同意氣候變遷主要由人類活動導致；全球平均氣溫已較工業化前升高約 1.1°C，大氣 CO₂ 濃度超過 410ppm</div>
+      <div class="dc-src">來源：政府間氣候變遷小組 第六次評估報告 WGI (2021)</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. ACTIVITY 1 DIVIDER -->
+<section class="slide divider" id="slide-a1">
+  <span class="slide-num">3</span>
+  <div class="slide-body">
+    <div class="act-badge">活動一</div>
+    <h2>FLICC：辨識科學否認五策略</h2>
+    <div class="step-chips">
+      <span class="chip">步驟 1 共識鑑定</span>
+      <span class="chip">步驟 2 FLICC 解碼</span>
+      <span class="chip">步驟 3 案例實戰</span>
+    </div>
+  </div>
+</section>
+
+<!-- 4. 科學共識 -->
+<section class="slide" id="slide-consensus">
+  <span class="slide-num">4</span>
+  <h2>氣候科學共識是什麼？</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h3 style="color:var(--c-cog)">科學界的共識</h3>
+        <ul>
+          <li>97% 的氣候科學家同意人為原因</li>
+          <li>IPCC 代表 195 個國家政府與數千位科學家</li>
+          <li>每一份新研究都進一步鞏固結論</li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <h3 style="color:var(--c-warn)">公眾的誤解</h3>
+        <ul>
+          <li>許多人以為科學家「意見分歧」</li>
+          <li>媒體「兩面報導」製造假平衡</li>
+          <li>錯誤資訊刻意放大少數異見聲音</li>
+        </ul>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">暖身討論</div>
+      <div class="ac-task">
+        你曾看過哪些關於氣候的「另一種說法」？<br>
+        當時你是否懷疑過科學結論？
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. FLICC 五策略 -->
+<section class="slide" id="slide-flicc">
+  <span class="slide-num">5</span>
+  <h2>FLICC：科學否認的五種策略</h2>
+  <div class="slide-body">
+    <div class="pill-list">
+      <span class="pill">F — 偽專家 Fake Experts</span>
+      <span class="pill">L — 邏輯謬誤 Logical Fallacies</span>
+      <span class="pill">I — 不可能期望 Impossible Expectations</span>
+      <span class="pill">C — 陰謀論 Conspiracy Theories</span>
+      <span class="pill">C — 選擇性引用 Cherry Picking</span>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">研究發現</div>
+      <div class="dc-fact">學習辨識否認策略（預先接種）後，受試者抵禦錯誤資訊的能力可提升 20–30%</div>
+      <div class="dc-src">來源：Cranky Uncle / Skeptical Science 研究</div>
+    </div>
+    <p style="font-size:.9rem;color:var(--c-muted);margin-top:12px">
+      這五種策略不只用於氣候議題——菸草業、反疫苗運動都使用相同框架。
+    </p>
+  </div>
+</section>
+
+<!-- 6. FLICC 活動 -->
+<section class="slide" id="slide-flicc-activity">
+  <span class="slide-num">6</span>
+  <h2>FLICC 解碼練習</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">工作單：找出哪一個 F-L-I-C-C</div>
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th>錯誤資訊範例</th>
+            <th>FLICC 類型</th>
+            <th>破解方式</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>「某退休氣象學家說氣候變遷是騙局」</td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td>「模型預測不準，整個科學都不可信」</td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td>「1998 年很熱，但之後沒有繼續暖化」</td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td>「氣候科學家聯合起來騙政府補助」</td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td>「除非中國先減，否則我們減了也沒用」</td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">小組活動</div>
+      <div class="ac-task">每組分配 1–2 題，辨識策略並提出破解話術，全班分享</div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. ACTIVITY 2 DIVIDER -->
+<section class="slide divider" id="slide-a2">
+  <span class="slide-num">7</span>
+  <div class="slide-body">
+    <div class="act-badge">活動二</div>
+    <h2>認知偏誤如何讓錯誤資訊更容易入侵？</h2>
+    <div class="step-chips">
+      <span class="chip">步驟 1 確認偏誤</span>
+      <span class="chip">步驟 2 現狀偏誤</span>
+      <span class="chip">步驟 3 自我偵測</span>
+    </div>
+  </div>
+</section>
+
+<!-- 8. 偏誤地圖 -->
+<section class="slide" id="slide-bias-map">
+  <span class="slide-num">8</span>
+  <h2>三大認知偏誤</h2>
+  <div class="slide-body">
+    <div class="compare-grid" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="compare-card" style="border-color:var(--c-cog)">
+        <h3 style="color:var(--c-cog)">確認偏誤</h3>
+        <p style="font-size:.95rem">只注意符合既有信念的資訊，自動過濾矛盾證據</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-soc)">
+        <h3 style="color:var(--c-soc)">現狀偏誤</h3>
+        <p style="font-size:.95rem">傾向維持現況，對「改變」的損失感受強過同等的「獲益」</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-beh)">
+        <h3 style="color:var(--c-beh)">末日疲勞</h3>
+        <p style="font-size:.95rem">長期接觸災難性訊息後，情緒麻木並停止關注或行動</p>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">研究發現</div>
+      <div class="dc-fact">框架效應可使民眾支持氣候政策的意願改變 10–15%；情緒投入使記憶保留率提升約 20%</div>
+      <div class="dc-src">來源：政府間氣候變遷小組 AR6 WGII；Lewandowsky et al.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. 偏誤自我偵測 -->
+<section class="slide" id="slide-bias-self">
+  <span class="slide-num">9</span>
+  <h2>偵測你自己的偏誤</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">反思工作單</div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div>
+          <p style="font-weight:600;margin-bottom:8px">1. 你最近看到一則氣候相關新聞，你第一個反應是？</p>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px"></div>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px;margin-top:8px"></div>
+        </div>
+        <div>
+          <p style="font-weight:600;margin-bottom:8px">2. 你是否曾因為「覺得太遠」或「太複雜」而不想繼續看完？</p>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px"></div>
+        </div>
+        <div>
+          <p style="font-weight:600;margin-bottom:8px">3. 哪一種偏誤最常出現在你的日常生活中？你有什麼對策？</p>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px"></div>
+          <div style="border-bottom:1.5px solid #d1d5db;height:28px;margin-top:8px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. 框架效應示範 -->
+<section class="slide" id="slide-framing">
+  <span class="slide-num">10</span>
+  <h2>框架如何改變你的感受？</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-warn)">
+        <h3 style="color:var(--c-warn)">恐懼框架</h3>
+        <p style="font-size:.95rem;margin-bottom:12px">「2050年將有數億人因氣候難民流離失所，文明面臨崩潰」</p>
+        <p style="font-size:.85rem;color:var(--c-muted)">→ 可能引發末日疲勞、無力感</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-beh)">
+        <h3 style="color:var(--c-beh)">機會框架</h3>
+        <p style="font-size:.95rem;margin-bottom:12px">「綠色轉型每年可創造數百萬就業，臺灣有機會成為亞洲能源轉型領頭羊」</p>
+        <p style="font-size:.85rem;color:var(--c-muted)">→ 激發希望感與行動意願</p>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">討論</div>
+      <div class="ac-task">
+        哪種框架更容易讓你想採取行動？<br>
+        你認為媒體應該優先使用哪種框架？為什麼？
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. ACTIVITY 3 DIVIDER -->
+<section class="slide divider" id="slide-a3">
+  <span class="slide-num">11</span>
+  <div class="slide-body">
+    <div class="act-badge">活動三</div>
+    <h2>歷史偵探：延遲行動的幕後推手</h2>
+    <div class="step-chips">
+      <span class="chip">步驟 1 化石燃料遊說</span>
+      <span class="chip">步驟 2 時間軸解密</span>
+      <span class="chip">步驟 3 臺灣脈絡</span>
+    </div>
+  </div>
+</section>
+
+<!-- 12. 遊說歷史 -->
+<section class="slide" id="slide-history">
+  <span class="slide-num">12</span>
+  <h2>誰在推遲氣候行動？</h2>
+  <div class="slide-body">
+    <div class="data-card">
+      <div class="dc-label">關鍵數據</div>
+      <div class="dc-fact">2020 年前後，化石燃料相關企業每年花費超過 10 億美元遊說各國政府放緩氣候立法；全球最富有的 10% 人口製造了全球 36–45% 的碳排放</div>
+      <div class="dc-src">來源：政府間氣候變遷小組 AR6 WGIII (2022)</div>
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h3>遊說手段</h3>
+        <ul>
+          <li>贊助質疑氣候科學的「研究機構」</li>
+          <li>資助否認氣候變遷的政治候選人</li>
+          <li>透過公關公司散播「個人碳足跡」敘事，轉移政策責任</li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <h3>歷史案例</h3>
+        <ul>
+          <li>埃克森美孚 1977 年內部報告已預測全球暖化</li>
+          <li>此後 40 年持續出資否認科學</li>
+          <li>菸草業「懷疑是我們的產品」策略被直接借用</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13. 時間軸 -->
+<section class="slide" id="slide-timeline-detail">
+  <span class="slide-num">13</span>
+  <h2>延遲行動時間軸</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center">
+        <div style="font-size:.8rem;color:var(--c-muted);margin-bottom:8px">圖表佔位</div>
+        <div style="font-size:1.4rem;font-weight:700;color:var(--c-accent);margin-bottom:12px">[此處放：氣候延遲行動歷史時間軸]</div>
+        <div style="font-size:1.1rem;color:var(--c-text);margin-bottom:8px">
+          <strong>關鍵節點：</strong>1977 企業內部知情 → 1988 IPCC 成立 → 1997 京都議定書 → 2015 巴黎協定 → 2022 損失與損害基金
+        </div>
+        <div style="font-size:.85rem;color:var(--c-muted)">示意圖待補繪</div>
+      </div>
+      <figcaption>從企業知情到國際行動：近半世紀的延遲</figcaption>
+    </figure>
+    <div class="act-card">
+      <div class="ac-badge">歷史偵探任務</div>
+      <div class="ac-task">
+        從時間軸中選擇一個「關鍵轉折點」，說明為什麼行動在此時加速或再度受阻
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14. 臺灣脈絡 -->
+<section class="slide" id="slide-taiwan-context">
+  <span class="slide-num">14</span>
+  <h2>臺灣的錯誤資訊生態</h2>
+  <div class="slide-body">
+    <div class="data-card">
+      <div class="dc-label">臺灣數據</div>
+      <div class="dc-fact">臺灣平均氣溫已升高約 1.6°C（高於全球平均）；然而約 25% 的民眾認為氣候媒體報導「誇大其詞」</div>
+      <div class="dc-src">來源：臺灣氣候變遷推估資訊與調適知識平台 (TCCIP)；中央氣象署</div>
+    </div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text">社群媒體上約 15–20% 的氣候相關貼文含有錯誤或誤導性資訊</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text">本土氣候懷疑論常與能源政策爭議（如核電）交織出現</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text">媒體識讀教育有助於提升辨識能力，但覆蓋率仍不足</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15. ACTIVITY 4 DIVIDER -->
+<section class="slide divider" id="slide-a4">
+  <span class="slide-num">15</span>
+  <div class="slide-body">
+    <div class="act-badge">活動四</div>
+    <h2>溝通工具箱：如何有效傳遞氣候訊息？</h2>
+    <div class="step-chips">
+      <span class="chip">步驟 1 預先接種</span>
+      <span class="chip">步驟 2 數據視覺化</span>
+      <span class="chip">步驟 3 溝通設計</span>
+    </div>
+  </div>
+</section>
+
+<!-- 16. 預先接種 -->
+<section class="slide" id="slide-inoculation">
+  <span class="slide-num">16</span>
+  <h2>「預先接種」策略</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h3>什麼是預先接種？</h3>
+        <ul>
+          <li>在接觸錯誤資訊「之前」，先告知可能的否認手法</li>
+          <li>類似疫苗：少量「弱化版」謬誤 → 建立抗體</li>
+          <li>Cranky Uncle 遊戲即是此策略的實際應用</li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <h3>效果如何？</h3>
+        <ul>
+          <li>接種後抵禦錯誤資訊能力提升 20–30%</li>
+          <li>效果對各年齡層、政治光譜皆有效</li>
+          <li>「解釋謬誤機制」比「提供正確事實」更有效</li>
+        </ul>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">體驗活動</div>
+      <div class="ac-task">
+        試著用「預先接種」方式，向家人解釋一種 FLICC 策略：<br>
+        先描述手法，再舉真實例子，最後說明破解方式
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 17. 數據視覺化 -->
+<section class="slide" id="slide-dataviz">
+  <span class="slide-num">17</span>
+  <h2>數據視覺化的力量與陷阱</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center">
+        <div style="font-size:.8rem;color:var(--c-muted);margin-bottom:8px">圖表佔位</div>
+        <div style="font-size:1.4rem;font-weight:700;color:var(--c-accent);margin-bottom:12px">[此處放：同一數據，不同 Y 軸起點的對比圖]</div>
+        <div style="font-size:1.1rem;color:var(--c-text);margin-bottom:8px">
+          <strong>關鍵概念：</strong>從 0 開始 vs. 從最低值開始 — 同樣數據，截然不同的「感受」
+        </div>
+        <div style="font-size:.85rem;color:var(--c-muted)">示意圖待補繪</div>
+      </div>
+      <figcaption>視覺化選擇本身就是一種框架決策</figcaption>
+    </figure>
+    <div class="pill-list">
+      <span class="pill-warn">截斷 Y 軸</span>
+      <span class="pill-warn">選擇性時間範圍</span>
+      <span class="pill-warn">混淆絕對值與相對值</span>
+      <span class="pill-warn">省略不確定範圍</span>
+    </div>
+  </div>
+</section>
+
+<!-- 18. 溝通設計工作站 -->
+<section class="slide" id="slide-communication">
+  <span class="slide-num">18</span>
+  <h2>溝通設計：為你的聽眾打造訊息</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">溝通設計工作單</div>
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th>設計面向</th>
+            <th>你的選擇</th>
+            <th>理由</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>目標聽眾</td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td>核心訊息（一句話）</td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td>框架選擇（恐懼/希望/公平/…）</td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td>媒介（影片/圖文/故事/…）</td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td>預防的 FLICC 手法</td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 19. 溝通成果展示 -->
+<section class="slide" id="slide-comm-showcase">
+  <span class="slide-num">19</span>
+  <h2>溝通成果分享</h2>
+  <div class="slide-body">
+    <div class="act-card">
+      <div class="ac-badge">全班分享</div>
+      <div class="ac-task">
+        各組輪流用 2 分鐘展示溝通設計：<br>
+        目標聽眾 → 核心訊息 → 框架選擇 → 為什麼這樣設計？
+      </div>
+    </div>
+    <div style="margin-top:20px">
+      <p style="font-weight:700;margin-bottom:14px">同學評分標準</p>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-text">訊息是否清晰、聚焦？</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-text">框架選擇是否適合目標聽眾？</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-text">是否有效預防 FLICC 策略的滲入？</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 20. 總結 -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <span class="slide-num">20</span>
+  <div class="slide-body">
+    <h2 style="color:var(--c-beh)">今天學到了什麼？</h2>
+    <div class="summary-keys">
+      <div class="key-card" style="border-color:var(--c-cog)">
+        <div class="kc-id" style="color:var(--c-cog)">識別</div>
+        <p>氣候錯誤資訊如何被各方行動者用來混淆公眾、延遲有效行動（FLICC 五策略）</p>
+      </div>
+      <div class="key-card" style="border-color:var(--c-cog)">
+        <div class="kc-id" style="color:var(--c-cog)">理解</div>
+        <p>認知偏誤（確認偏誤、現狀偏誤、末日疲勞）如何放大錯誤資訊的影響力</p>
+      </div>
+      <div class="key-card" style="border-color:var(--c-cog)">
+        <div class="kc-id" style="color:var(--c-cog)">行動</div>
+        <p>有效氣候溝通策略：框架選擇、預先接種、數據視覺化、情感投入的運用</p>
+      </div>
+    </div>
+    <p style="margin-top:30px"><a href="lesson_plan.html" style="color:var(--c-accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / 20</span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換・捲動換頁</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  if (!slides.length || !cur) return;
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

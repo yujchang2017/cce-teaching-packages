@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小小環保尖兵 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px;
+    border: 1px solid var(--c-border); border-bottom-width: 2px;
+    border-radius: 4px; font-family: monospace; font-size: 0.8em;
+    background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  /* 四 R 卡片 */
+  .r-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 24px 0;
+  }
+  .r-card {
+    background: var(--c-bg); border: 2px solid var(--c-accent);
+    border-radius: 12px; padding: 24px 12px; text-align: center;
+  }
+  .r-card .r-letter { font-size: 2.8rem; font-weight: 900; color: var(--c-accent); margin-bottom: 4px; }
+  .r-card .r-zh { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
+  .r-card .r-en { font-size: 0.85rem; color: var(--c-muted); }
+
+  /* 對比兩欄 */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card.clean { border-color: var(--c-beh); }
+  .compare-card.dirty { border-color: var(--c-warn); }
+  .compare-card .c-label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.clean .c-label { color: var(--c-beh); }
+  .compare-card.dirty .c-label { color: var(--c-warn); }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+
+  /* 分類桶 */
+  .bins-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 20px 0; }
+  .bin-card { border-radius: 12px; padding: 20px; text-align: center; font-weight: 700; }
+  .bin-card .bin-icon { font-size: 2.5rem; margin-bottom: 8px; }
+  .bin-card .bin-name { font-size: 1.1rem; }
+  .bin-card .bin-ex { font-size: 0.85rem; color: var(--c-muted); margin-top: 4px; }
+  .bin-paper { background: #fef9c3; border: 2px solid #ca8a04; }
+  .bin-plastic { background: #dbeafe; border: 2px solid #2563eb; }
+  .bin-metal { background: #fee2e2; border: 2px solid #dc2626; }
+  .bin-glass { background: #dcfce7; border: 2px solid #16a34a; }
+
+  /* 需要 vs 想要 */
+  .need-want { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+  .nw-card { border-radius: 12px; padding: 24px; }
+  .nw-card.need { background: #f0fdf4; border: 2px solid var(--c-beh); }
+  .nw-card.want { background: #fff7ed; border: 2px solid var(--c-warn); }
+  .nw-card h3 { margin-top: 0; font-size: 1.5rem; }
+  .nw-card.need h3 { color: var(--c-beh); }
+  .nw-card.want h3 { color: var(--c-warn); }
+  .nw-card ul { margin: 0; padding-left: 1.2em; }
+  .nw-card li { margin: 6px 0; }
+
+  /* 承諾學習單 */
+  .pledge-form {
+    border: 2px solid var(--c-accent); border-radius: 12px;
+    padding: 24px 30px; background: var(--c-bg); max-width: 700px; margin: 20px auto;
+  }
+  .pledge-form .row {
+    display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem;
+  }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+
+  /* 總結三關鍵字 */
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">小小環保尖兵 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>小小環保尖兵集合！</h2>
+    <p class="subtitle">幫地球把髒髒變乾淨、把垃圾變寶貝</p>
+    <div style="font-size: 5rem; margin: 24px 0;">🌱♻️🌍</div>
+    <p style="color: var(--c-muted);">Level II｜5–8 歲</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>地球生病了嗎？</h2>
+  <div class="slide-body">
+    <div class="compare-grid" id="slide-detective">
+      <div class="compare-card clean">
+        <div class="c-label">乾淨的公園</div>
+        <div class="icon">🌳🌸🐦</div>
+        <p>小鳥有家住、小花開心開</p>
+      </div>
+      <div class="compare-card dirty">
+        <div class="c-label">亂丟的公園</div>
+        <div class="icon">🗑️😢💀</div>
+        <p>垃圾臭臭、動物沒有乾淨的家</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 24px;">
+      你比較想去哪一邊玩？<strong style="color: var(--c-accent);">我們可以一起讓地球保持乾淨！</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>誰把地球弄髒髒？</h2>
+    <p class="subtitle">認識垃圾與污染，知道資源有限</p>
+  </div>
+</section>
+
+<!-- 4. 污染三種 -->
+<section class="slide" id="slide-pollution">
+  <div class="slide-tag">活動一・步驟 1–2</div>
+  <h2>污染在哪裡？</h2>
+  <div class="slide-body">
+    <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin: 20px 0;">
+      <div style="background:#fff7ed;border:2px solid var(--c-warn);border-radius:12px;padding:24px;text-align:center;">
+        <div style="font-size:2.5rem;">🏭</div>
+        <div style="font-weight:700;margin:8px 0;">空氣污染</div>
+        <div style="font-size:0.9rem;color:var(--c-muted);">煙囪冒煙，我們呼吸不舒服</div>
+      </div>
+      <div style="background:#eff6ff;border:2px solid var(--c-cog);border-radius:12px;padding:24px;text-align:center;">
+        <div style="font-size:2.5rem;">🏞️</div>
+        <div style="font-weight:700;margin:8px 0;">水污染</div>
+        <div style="font-size:0.9rem;color:var(--c-muted);">河裡漂垃圾，小魚生病了</div>
+      </div>
+      <div style="background:#f0fdf4;border:2px solid var(--c-beh);border-radius:12px;padding:24px;text-align:center;">
+        <div style="font-size:2.5rem;">🌱</div>
+        <div style="font-weight:700;margin:8px 0;">土壤污染</div>
+        <div style="font-size:0.9rem;color:var(--c-muted);">土地變黑，植物不能長</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.1rem;color:var(--c-accent);">
+      做「咳嗽／皺眉／搖頭」表情，代表三種污染！
+    </p>
+  </div>
+</section>
+
+<!-- 5. RRRR 四個環保好朋友 -->
+<section class="slide" id="slide-rrrr">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>四個環保好朋友 RRRR</h2>
+  <div class="slide-body">
+    <div class="r-grid">
+      <div class="r-card">
+        <div class="r-letter">R</div>
+        <div class="r-zh">少用</div>
+        <div class="r-en">Reduce</div>
+      </div>
+      <div class="r-card">
+        <div class="r-letter">R</div>
+        <div class="r-zh">再用</div>
+        <div class="r-en">Reuse</div>
+      </div>
+      <div class="r-card">
+        <div class="r-letter">R</div>
+        <div class="r-zh">修理</div>
+        <div class="r-en">Repair</div>
+      </div>
+      <div class="r-card">
+        <div class="r-letter">R</div>
+        <div class="r-zh">回收</div>
+        <div class="r-en">Recycle</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.15rem;">
+      舉起 <strong>4 根手指頭</strong>，一起念「少用！再用！修理！回收！」<br>
+      <span style="color:var(--c-muted);font-size:0.95rem;">四個好朋友，每天選一個幫地球！</span>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料：<a href="https://www.epa.gov/recycle/reducing-and-reusing-basics" target="_blank" rel="noopener">美國環境保護署 — 減少與再用基礎</a>
+  </div>
+</section>
+
+<!-- 6. 社區回收小地圖學習單 -->
+<section class="slide" id="slide-ws-map">
+  <div class="slide-tag">活動一・步驟 4・學習單（投影版）</div>
+  <h2>我的社區回收小地圖</h2>
+  <div class="slide-body">
+    <p style="color:var(--c-muted);margin:0 0 16px;">用彩色筆在紙上畫出三個地方：</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+      <div style="background:#eff6ff;border:2px dashed var(--c-cog);border-radius:10px;padding:20px;text-align:center;">
+        <div style="font-size:2rem;">🏠</div>
+        <div style="font-weight:700;margin-top:8px;">我的家</div>
+      </div>
+      <div style="background:#f0fdf4;border:2px dashed var(--c-beh);border-radius:10px;padding:20px;text-align:center;">
+        <div style="font-size:2rem;">🏫</div>
+        <div style="font-weight:700;margin-top:8px;">我的學校</div>
+      </div>
+      <div style="background:#fff7ed;border:2px dashed var(--c-warn);border-radius:10px;padding:20px;text-align:center;">
+        <div style="font-size:2rem;">♻️</div>
+        <div style="font-weight:700;margin-top:8px;">回收桶在哪裡</div>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:20px;font-size:1.1rem;color:var(--c-accent);">用一條線把三個地方連起來，你的社區回收地圖完成了！</p>
+  </div>
+</section>
+
+<!-- 7. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>愛乾淨的好心情</h2>
+    <p class="subtitle">感受乾淨環境的美好；學會分類回收</p>
+  </div>
+</section>
+
+<!-- 8. 四大回收家族 -->
+<section class="slide" id="slide-sort">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>四大回收家族，送寶寶回家！</h2>
+  <div class="slide-body">
+    <div class="bins-grid">
+      <div class="bin-card bin-paper">
+        <div class="bin-icon">📄</div>
+        <div class="bin-name">紙類</div>
+        <div class="bin-ex">報紙、紙箱、書</div>
+      </div>
+      <div class="bin-card bin-plastic">
+        <div class="bin-icon">🧴</div>
+        <div class="bin-name">塑膠</div>
+        <div class="bin-ex">寶特瓶、塑膠袋</div>
+      </div>
+      <div class="bin-card bin-metal">
+        <div class="bin-icon">🥫</div>
+        <div class="bin-name">金屬</div>
+        <div class="bin-ex">鐵罐、鋁罐</div>
+      </div>
+      <div class="bin-card bin-glass">
+        <div class="bin-icon">🍶</div>
+        <div class="bin-name">玻璃</div>
+        <div class="bin-ex">玻璃瓶、玻璃罐</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.1rem;margin-top:16px;">
+      每個家族都要回到自己的家，才能變成新東西！
+    </p>
+  </div>
+</section>
+
+<!-- 9. 瓶子洗澡 -->
+<section class="slide" id="slide-wash">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>瓶瓶罐罐的洗澡時間</h2>
+  <div class="slide-body">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:20px 0;">
+      <div style="background:var(--c-bg);border:2px solid var(--c-accent);border-radius:12px;padding:24px;text-align:center;">
+        <div style="font-size:2.5rem;">🚿</div>
+        <div style="font-weight:700;margin:8px 0;font-size:1.2rem;">沖一沖</div>
+        <div style="color:var(--c-muted);font-size:0.9rem;">不然會有臭臭味</div>
+      </div>
+      <div style="background:var(--c-bg);border:2px solid var(--c-accent);border-radius:12px;padding:24px;text-align:center;">
+        <div style="font-size:2.5rem;">👐</div>
+        <div style="font-weight:700;margin:8px 0;font-size:1.2rem;">壓一壓</div>
+        <div style="color:var(--c-muted);font-size:0.9rem;">讓更多瓶子住進桶</div>
+      </div>
+      <div style="background:var(--c-bg);border:2px solid var(--c-accent);border-radius:12px;padding:24px;text-align:center;">
+        <div style="font-size:2.5rem;">🏠</div>
+        <div style="font-weight:700;margin:8px 0;font-size:1.2rem;">送回家</div>
+        <div style="color:var(--c-muted);font-size:0.9rem;">投到對的回收桶</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.1rem;">
+      全班一起做「沖一沖、壓一壓、送回家」三個動作！
+    </p>
+  </div>
+</section>
+
+<!-- 10. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>我是小小環保尖兵</h2>
+    <p class="subtitle">動手做再利用作品；把學到的帶回家</p>
+  </div>
+</section>
+
+<!-- 11. 需要 vs 想要 -->
+<section class="slide" id="slide-need-want">
+  <div class="slide-tag">活動三・步驟 1–2 前置</div>
+  <h2>需要 vs 想要？</h2>
+  <div class="slide-body">
+    <div class="need-want">
+      <div class="nw-card need">
+        <h3>需要</h3>
+        <ul>
+          <li>水壺</li>
+          <li>鉛筆</li>
+          <li>今天的午餐</li>
+        </ul>
+      </div>
+      <div class="nw-card want">
+        <h3>想要</h3>
+        <ul>
+          <li>第 10 個玩具</li>
+          <li>第 5 罐糖果</li>
+          <li>又一個一樣的杯子</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.15rem;">
+      一家人一週少用一個塑膠袋，<strong>一年就少掉約五十個！</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 12. 舊瓶罐變寶 -->
+<section class="slide" id="slide-craft">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>舊瓶罐變寶！</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：舊瓶罐變寶作品示範圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵示範：</strong>寶特瓶變筆筒、鐵罐變花瓶</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>用洗淨的寶特瓶、鐵罐＋貼紙、彩色紙、緞帶裝飾</figcaption>
+    </figure>
+    <p style="text-align:center;font-size:1.1rem;margin-top:16px;">
+      閉上眼睛想 3 秒：「我想把它變成什麼？」然後跟旁邊同學說！
+    </p>
+  </div>
+</section>
+
+<!-- 13. 家庭小任務 -->
+<section class="slide" id="slide-pledge">
+  <div class="slide-tag">活動三・步驟 4・學習單（投影版）</div>
+  <h2>家庭四 R 小任務</h2>
+  <div class="slide-body">
+    <p style="text-align:center;color:var(--c-muted);">回家後，當「家裡的回收小隊長」！</p>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">我這週要做的 R 是：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我要邀請的家人是：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我們要做的具體行動：</span>
+        <span class="blank"></span>
+      </div>
+      <hr style="margin:16px 0;border:0;border-top:1px dashed var(--c-border);">
+      <div class="row">
+        <span class="lbl">小隊長簽名：</span>
+        <span class="blank"></span>
+        <span class="lbl">家人簽名：</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">污染</div>
+        <div class="desc">髒東西讓空氣、水、土地生病<br>我們可以一起防止</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">四 R</div>
+        <div class="desc">少用・再用・修理・回收<br>四個好朋友幫地球排隊</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">行動</div>
+        <div class="desc">少一個垃圾、多一個笑臉<br>小小尖兵，超棒的！</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.15rem;margin-top:24px;">
+      <strong style="color:var(--c-accent);">拍手三下，大喊「我是環保小尖兵！」</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">14</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color:var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+
+</body>
+</html>

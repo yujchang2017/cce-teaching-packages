@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地球的大棉被 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px;
+    z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px;
+    border: 1px solid var(--c-border); border-bottom-width: 2px;
+    border-radius: 4px; font-family: monospace; font-size: 0.8em;
+    background: #fff; margin: 0 2px;
+  }
+
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px;
+    display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .compare-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 30px; margin: 20px 0;
+  }
+  .compare-card {
+    border: 2px solid var(--c-border); border-radius: 12px;
+    padding: 24px; text-align: center;
+  }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label {
+    font-size: 0.9rem; font-weight: 700;
+    letter-spacing: 0.1em; margin-bottom: 8px;
+  }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 4rem; margin: 10px 0; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .summary-keys {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; margin: 30px 0;
+  }
+  .key-card {
+    text-align: center; padding: 30px 20px;
+    border-radius: 16px; background: var(--c-bg);
+    border: 3px solid;
+  }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  .feel-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 18px; margin: 20px 0;
+  }
+  .feel-card {
+    border: 3px solid var(--c-border);
+    border-radius: 14px;
+    padding: 24px 12px; text-align: center;
+  }
+  .feel-card .ic { font-size: 3rem; }
+  .feel-card .nm { font-size: 1.4rem; font-weight: 800; margin-top: 6px; }
+  .feel-card.hot { border-color: #dc2626; background: #fee2e2; }
+  .feel-card.warm { border-color: #f59e0b; background: #fffbeb; }
+  .feel-card.cool { border-color: #3b82f6; background: #eff6ff; }
+  .feel-card.cold { border-color: #6366f1; background: #eef2ff; }
+  .feel-card.hot .nm { color: #dc2626; }
+  .feel-card.warm .nm { color: #d97706; }
+  .feel-card.cool .nm { color: #2563eb; }
+  .feel-card.cold .nm { color: #4f46e5; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">地球的大棉被 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>地球的大棉被</h2>
+    <p class="subtitle">看不見的空氣朋友,把地球抱得暖暖的</p>
+    <div style="font-size: 5rem; margin-top: 20px;">🌍💛🛌</div>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>今天的太陽,有摸到你嗎?</h2>
+  <div class="slide-body">
+    <p style="text-align:center; font-size:1.1rem; color: var(--c-muted); margin: 0 0 14px;">
+      想一想,早上走來學校時,太陽摸到你的頭,是什麼感覺?
+    </p>
+    <div class="feel-grid">
+      <div class="feel-card hot"><div class="ic">🥵</div><div class="nm">熱熱</div></div>
+      <div class="feel-card warm"><div class="ic">😊</div><div class="nm">溫溫</div></div>
+      <div class="feel-card cool"><div class="ic">😌</div><div class="nm">涼涼</div></div>
+      <div class="feel-card cold"><div class="ic">🥶</div><div class="nm">冷冷</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      老師數 1、2、3,大家一起摸頭頂,喊一個字!
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>太陽寶寶好溫暖</h2>
+    <p class="subtitle">用手感受太陽的力量</p>
+  </div>
+</section>
+
+<!-- 4. 太陽像什麼 -->
+<section class="slide" id="slide-sun-heater">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>太陽像什麼?像「大電暖爐」!</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:大太陽 + 電暖爐並列圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵概念:</strong>太陽像超級大電暖爐,把手與石頭都曬暖。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>把手伸到太陽下,手會慢慢變熱</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      動作時間:雙手做<strong>「烤火」</strong>動作,喊「暖暖~暖暖~」
+    </p>
+  </div>
+</section>
+
+<!-- 5. 石頭實驗 -->
+<section class="slide" id="slide-stones">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>魔法實驗:石頭熱了嗎?</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:#f59e0b;">
+        <div class="label">太 陽 下 的 石 頭</div>
+        <div class="icon">☀️🪨</div>
+        <h3>熱熱的</h3>
+        <p>太陽把石頭曬暖了</p>
+      </div>
+      <div class="compare-card" style="border-color:#3b82f6;">
+        <div class="label">陰 影 的 石 頭</div>
+        <div class="icon">🌳🪨</div>
+        <h3>涼涼的</h3>
+        <p>沒有曬到太陽</p>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:1.1rem; margin-top:24px; color: var(--c-accent);">
+      <strong>請用手摸一摸,猜哪一顆比較熱?</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 6. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>地球的大棉被</h2>
+    <p class="subtitle">空氣裡有看不見的朋友</p>
+  </div>
+</section>
+
+<!-- 7. 沒有棉被的地球像大冰箱 -->
+<section class="slide" id="slide-cold-earth">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>沒有棉被,地球會怎樣?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:地球哭哭臉 + 大冰箱比較圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵比喻:</strong>沒有空氣棉被,地球會冷得像一個大冰箱。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>太陽下山後,熱會跑光光,生物都活不下去</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      全班一起發抖:<strong>「好冷~好冷~」</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://science.nasa.gov/kids/earth/what-is-the-greenhouse-effect" target="_blank" rel="noopener">什麼是溫室效應?(美國太空總署兒童科學館)</a>
+  </div>
+</section>
+
+<!-- 8. 秘密大棉被 -->
+<section class="slide" id="slide-blanket">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>秘密大棉被出現!</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:地球寶寶蓋粉色棉被 + 太陽光線]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵比喻:</strong>空氣中看不見的氣體就像一條大棉被,把熱留下來,讓地球剛剛好暖暖的。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>看不見、摸不到,但一直都在保護地球</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 24px;">
+      動作:兩手做<strong>「蓋棉被」</strong>從頭掃到腳
+    </p>
+  </div>
+</section>
+
+<!-- 9. 棉被太厚 -->
+<section class="slide" id="slide-too-thick">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>棉被太厚,地球會發燒!</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:地球寶寶被 5 條棉被壓住,流汗紅臉]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵概念:</strong>人們開車、用電太多 → 棉被變太厚 → 地球太熱、像在發燒。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>夏天蓋 5 條被子是什麼感覺?地球現在就是這樣</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 24px;">
+      <strong>摸額頭裝流汗,大喊「好熱喔~好熱喔~」</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:教育部能源教育教材《北極熊的請求》、
+    <a href="https://science.nasa.gov/kids/earth/what-is-the-greenhouse-effect" target="_blank" rel="noopener">美國太空總署兒童科學館</a>
+  </div>
+</section>
+
+<!-- 10. 呼~吐氣小秘密 -->
+<section class="slide" id="slide-co2">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>呼~吐氣小秘密</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.2rem;">
+      你呼吸吐氣的時候,會吐出一點點 <strong style="color: var(--c-accent);">「棉被的材料」</strong> ——二氧化碳。
+    </p>
+    <div style="text-align: center; font-size: 5rem; margin: 30px 0;">😮‍💨💨</div>
+    <p style="text-align:center; font-size:1.1rem; color: var(--c-muted);">
+      別擔心,吐一點點沒關係,地球會開心接受!<br>
+      但是太多車子和工廠燒東西時,棉被就會變太厚。
+    </p>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 24px;">
+      對著手心「呼~」一口氣,跟地球打招呼:「<strong>嗨地球!</strong>」
+    </p>
+  </div>
+</section>
+
+<!-- 11. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>北極熊的家 & 小小行動</h2>
+    <p class="subtitle">我們一起幫地球</p>
+  </div>
+</section>
+
+<!-- 12. 北極熊的家 -->
+<section class="slide" id="slide-bear">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>北極熊的家變小了</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:小北極熊站在小浮冰上,旁邊大海]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵連結:</strong>地球太熱 → 北極的冰融化 → 北極熊家變小,需要我們幫忙。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>溫和版,不放災害畫面;只說「家變小了,想找朋友幫忙」</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 24px;">
+      雙手合十:<strong>「北極熊加油!」</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:教育部能源教育教材《北極熊的請求》、
+    <a href="https://science.nasa.gov/kids/earth/climate-change" target="_blank" rel="noopener">氣候變遷介紹(美國太空總署兒童科學館)</a>
+  </div>
+</section>
+
+<!-- 13. 小腳 vs 小車車 -->
+<section class="slide" id="slide-walk">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>小腳 vs 小車車</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:#16a34a;">
+        <div class="label">小 腳 隊</div>
+        <div class="icon">👣😊</div>
+        <h3>走路!</h3>
+        <p>地球會笑,棉被薄一點點</p>
+      </div>
+      <div class="compare-card" style="border-color:#dc2626;">
+        <div class="label">車 車 隊</div>
+        <div class="icon">🚗💨</div>
+        <h3>開車</h3>
+        <p>燒油,棉被會變厚一點</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 24px;">
+      <strong>少開一趟車 = 送地球一個擁抱 🤗</strong>
+    </p>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      原地踏步 5 下,大喊「<strong>我走路~</strong>」
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:教育部能源教育教材《從自己做起》、
+    <a href="https://co2.ftis.org.tw/" target="_blank" rel="noopener">經濟部產業節能減碳資訊網</a>
+  </div>
+</section>
+
+<!-- 14. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三件大事,一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 件</div>
+        <div class="word">太陽</div>
+        <div class="desc">像大電暖爐<br>把地球曬暖</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 件</div>
+        <div class="word">棉被</div>
+        <div class="desc">看不見的氣體<br>剛剛好最舒服</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 件</div>
+        <div class="word">行動</div>
+        <div class="desc">走路 + 關燈<br>當地球小幫手</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">小朋友超棒的!回家也跟爸媽說一次喔。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">14</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

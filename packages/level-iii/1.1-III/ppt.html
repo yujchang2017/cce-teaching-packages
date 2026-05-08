@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天氣、氣候與氣候變遷 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text);
+    line-height: 1.6;
+    margin: 0;
+    background: #fff;
+  }
+
+  /* 頂部回教案列 */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 44px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.9rem;
+  }
+  .topbar a.back {
+    color: var(--c-accent); text-decoration: none; font-weight: 600;
+  }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title {
+    margin: 0 0 0 24px;
+    font-size: 0.95rem; font-weight: 500; color: var(--c-muted);
+  }
+
+  /* 底部頁碼列 */
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 36px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator {
+    font-family: "JetBrains Mono", "Consolas", monospace;
+    color: var(--c-text);
+  }
+  .navbar .page-indicator .nav-current {
+    color: var(--c-accent); font-weight: 700;
+  }
+  .navbar .hint kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    border: 1px solid var(--c-border);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    font-family: monospace; font-size: 0.8em;
+    background: #fff;
+    margin: 0 2px;
+  }
+
+  /* 投影片基本框架 */
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px);
+    scroll-snap-align: start;
+    padding: 40px 60px;
+    display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag {
+    font-size: 0.85rem;
+    color: var(--c-accent);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .slide h2 {
+    font-size: 1.9rem;
+    margin: 0 0 16px;
+    color: var(--c-text);
+  }
+  .slide h3 {
+    font-size: 1.15rem;
+    color: var(--c-accent);
+    margin-top: 18px;
+  }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem;
+    color: var(--c-muted);
+  }
+  .slide-source a {
+    color: var(--c-accent); text-decoration: none;
+    border-bottom: 1px dashed var(--c-accent);
+  }
+  .slide-source a:hover { border-bottom-style: solid; }
+
+  /* 封面與過場 */
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 {
+    font-size: 2.6rem;
+    line-height: 1.3;
+  }
+  .slide.cover .subtitle {
+    font-size: 1.2rem;
+    color: var(--c-muted);
+    margin-top: 8px;
+  }
+  .slide.divider .activity-num {
+    font-size: 0.9rem;
+    color: var(--c-accent);
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+  }
+  .slide.divider h2 {
+    font-size: 2.4rem;
+    color: var(--c-accent);
+  }
+  .cover-svg, .divider-svg { margin: 20px 0; max-width: 100%; }
+
+  /* 共用元件 */
+  .question-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 30px 0;
+  }
+  .question-card {
+    background: var(--c-bg);
+    border: 2px solid var(--c-accent);
+    border-radius: 12px;
+    padding: 24px;
+    font-size: 1.15rem;
+    text-align: center;
+    color: var(--c-text);
+    position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px;
+    background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%;
+    font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 20px 0;
+  }
+  .compare-card {
+    border: 2px solid var(--c-border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label {
+    font-size: 0.9rem; font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+
+  /* 學習單表格 */
+  .ws-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 1.05rem;
+  }
+  .ws-table th, .ws-table td {
+    border: 2px solid var(--c-border);
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .ws-table th {
+    background: var(--c-accent-soft);
+    color: var(--c-accent);
+    font-weight: 700;
+  }
+  .ws-table td.fill {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px);
+    height: 48px;
+  }
+
+  /* 三欄行動 */
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 20px 0;
+  }
+  .col-card {
+    border: 2px solid var(--c-border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 {
+    margin: 0 0 10px;
+    font-size: 1.15rem;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+
+  /* 衝擊連連看 */
+  .impact-chain {
+    display: grid;
+    grid-template-columns: repeat(7, auto);
+    gap: 8px;
+    align-items: center;
+    margin: 16px 0;
+    font-size: 1rem;
+  }
+  .impact-chain .cause, .impact-chain .effect, .impact-chain .final {
+    padding: 12px 16px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .impact-chain .cause { background: #fef3c7; color: #92400e; }
+  .impact-chain .effect { background: #dbeafe; color: var(--c-cog); }
+  .impact-chain .final { background: #fee2e2; color: #991b1b; }
+  .impact-chain .arrow { color: var(--c-muted); font-size: 1.4rem; }
+
+  /* 三關鍵字總結 */
+  .summary-keys {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin: 30px 0;
+  }
+  .key-card {
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: 16px;
+    background: var(--c-bg);
+    border: 3px solid;
+  }
+  .key-card .num {
+    font-size: 0.85rem; font-weight: 700;
+    color: var(--c-muted);
+    letter-spacing: 0.2em;
+  }
+  .key-card .word {
+    font-size: 3rem; font-weight: 800;
+    margin: 12px 0;
+  }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc {
+    font-size: 0.95rem; color: var(--c-muted);
+    margin-top: 8px;
+  }
+
+  /* 簽名/承諾框 */
+  .pledge-form {
+    border: 2px solid var(--c-accent);
+    border-radius: 12px;
+    padding: 24px 30px;
+    background: var(--c-bg);
+    max-width: 700px;
+    margin: 20px auto;
+  }
+  .pledge-form .row {
+    display: flex; align-items: baseline;
+    gap: 12px; margin: 16px 0;
+    font-size: 1.05rem;
+  }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank {
+    flex: 1;
+    border-bottom: 2px solid var(--c-text);
+    height: 28px;
+  }
+  .checklist {
+    list-style: none; padding: 0;
+    margin: 12px 0;
+  }
+  .checklist li {
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--c-border);
+    font-size: 1rem;
+  }
+  .checklist li::before {
+    content: "☐ ";
+    margin-right: 6px;
+    color: var(--c-accent); font-size: 1.1em;
+  }
+
+  /* 希望框 */
+  .hope-frame {
+    border: 3px dashed var(--c-soc);
+    border-radius: 16px;
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 700px;
+    background: #fff5f7;
+  }
+  .hope-frame .prompt {
+    font-size: 1.4rem;
+    color: var(--c-soc);
+    font-weight: 700;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .hope-frame .text-area {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 30px, #f3a3bc 30px, #f3a3bc 31px);
+    height: 120px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+  }
+  .hope-frame .draw-area {
+    border: 2px dashed #f9a8d4;
+    height: 140px;
+    border-radius: 6px;
+    text-align: center;
+    color: #f9a8d4;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.95rem;
+  }
+
+  /* 圖表共用 */
+  figure { margin: 0; text-align: center; }
+  figure svg { max-width: 100%; height: auto; }
+  figcaption {
+    font-size: 0.9rem;
+    color: var(--c-muted);
+    margin-top: 8px;
+  }
+  .chart-note {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--c-muted);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* 新聞蒐集表 */
+  .news-table th { background: #fef3c7; color: #92400e; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">天氣、氣候與氣候變遷 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- ============ 1. 封面 ============ -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>天氣、氣候與氣候變遷</h2>
+    <p class="subtitle">天氣一直變,氣候也在變嗎?</p>
+    <svg class="cover-svg" viewBox="0 0 500 200" width="500">
+      <!-- 太陽 -->
+      <circle cx="100" cy="100" r="40" fill="#fbbf24"/>
+      <g stroke="#fbbf24" stroke-width="3" stroke-linecap="round">
+        <line x1="100" y1="40" x2="100" y2="20"/>
+        <line x1="100" y1="160" x2="100" y2="180"/>
+        <line x1="40" y1="100" x2="20" y2="100"/>
+        <line x1="160" y1="100" x2="180" y2="100"/>
+        <line x1="58" y1="58" x2="44" y2="44"/>
+        <line x1="142" y1="58" x2="156" y2="44"/>
+      </g>
+      <!-- 雲 -->
+      <g fill="#e5e7eb" stroke="#9ca3af" stroke-width="2">
+        <ellipse cx="240" cy="100" rx="40" ry="22"/>
+        <ellipse cx="270" cy="90" rx="32" ry="20"/>
+        <ellipse cx="220" cy="92" rx="26" ry="18"/>
+      </g>
+      <!-- 雨滴 -->
+      <g fill="#3b82f6">
+        <path d="M225 130 Q220 142 225 148 Q230 142 225 130"/>
+        <path d="M250 138 Q245 150 250 156 Q255 150 250 138"/>
+        <path d="M275 130 Q270 142 275 148 Q280 142 275 130"/>
+      </g>
+      <!-- 溫度計 -->
+      <g>
+        <rect x="395" y="40" width="14" height="100" rx="7" fill="#fff" stroke="#dc2626" stroke-width="3"/>
+        <rect x="398" y="80" width="8" height="60" fill="#dc2626"/>
+        <circle cx="402" cy="148" r="14" fill="#dc2626"/>
+        <line x1="412" y1="60" x2="420" y2="60" stroke="#9ca3af" stroke-width="2"/>
+        <line x1="412" y1="80" x2="420" y2="80" stroke="#9ca3af" stroke-width="2"/>
+        <line x1="412" y1="100" x2="420" y2="100" stroke="#9ca3af" stroke-width="2"/>
+        <line x1="412" y1="120" x2="420" y2="120" stroke="#9ca3af" stroke-width="2"/>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ============ 2. 大問題 ============ -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>同樣一個地方,為什麼天氣每天不一樣?</h2>
+  <div class="slide-body">
+    <div class="compare-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+      <div class="compare-card" style="border-color: #fbbf24;">
+        <div class="icon">☀️</div>
+        <h3>晴朗</h3>
+        <p>今天</p>
+      </div>
+      <div class="compare-card" style="border-color: #3b82f6;">
+        <div class="icon">⛈️</div>
+        <h3>午後雷陣雨</h3>
+        <p>明天</p>
+      </div>
+      <div class="compare-card" style="border-color: #6366f1;">
+        <div class="icon">🌀</div>
+        <h3>颱風來襲</h3>
+        <p>下週</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      這些「<strong style="color: var(--c-cog);">當下</strong>」的狀態 = <strong>天氣</strong><br>
+      但「<strong style="color: var(--c-warn);">整體</strong>」變得越來越熱、極端大雨變多 = <strong>氣候</strong>正在變
+    </p>
+  </div>
+</section>
+
+<!-- ============ 3. 活動一過場 ============ -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>引起動機:天氣 vs 氣候</h2>
+    <p class="subtitle">分辨「短時間」與「長時間」的氣象現象</p>
+  </div>
+</section>
+
+<!-- ============ 4. 暖身提問卡 ============ -->
+<section class="slide" id="slide-warmup">
+  <div class="slide-tag">活動一・步驟 1</div>
+  <h2>暖身問答</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>今天的天氣怎麼樣?</div>
+      <div class="question-card"><div class="q-num">2</div>上個月的天氣呢?</div>
+      <div class="question-card"><div class="q-num">3</div>去年這個月呢?</div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 30px; color: var(--c-accent);">
+      <strong>這三題,問的真的都是「天氣」嗎?</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ============ 5. 天氣 vs 氣候定義卡 ============ -->
+<section class="slide" id="slide-def">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>天氣 vs 氣候:一句話記住</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">天 氣 / WEATHER</div>
+        <svg viewBox="0 0 200 160" width="200">
+          <!-- 雨衣狗 -->
+          <ellipse cx="100" cy="120" rx="50" ry="22" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+          <circle cx="60" cy="100" r="22" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+          <circle cx="55" cy="98" r="2" fill="#1f2937"/>
+          <path d="M50 108 Q55 113 60 108" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+          <path d="M48 78 Q60 60 72 78" fill="none" stroke="#2563eb" stroke-width="2"/>
+          <!-- 雨滴 -->
+          <g fill="#60a5fa">
+            <path d="M30 30 Q26 40 30 46 Q34 40 30 30"/>
+            <path d="M70 22 Q66 32 70 38 Q74 32 70 22"/>
+            <path d="M150 28 Q146 38 150 44 Q154 38 150 28"/>
+            <path d="M180 18 Q176 28 180 34 Q184 28 180 18"/>
+          </g>
+        </svg>
+        <h3>你今天穿什麼</h3>
+        <p>短時間(幾小時 ~ 幾天)的大氣狀態</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">氣 候 / CLIMATE</div>
+        <svg viewBox="0 0 200 160" width="200">
+          <!-- 衣櫃 -->
+          <rect x="40" y="20" width="120" height="120" fill="#fff" stroke="#ea580c" stroke-width="2.5" rx="4"/>
+          <line x1="100" y1="20" x2="100" y2="140" stroke="#ea580c" stroke-width="2"/>
+          <line x1="40" y1="80" x2="160" y2="80" stroke="#ea580c" stroke-width="1" stroke-dasharray="3,3"/>
+          <!-- 衣服 icon -->
+          <text x="70" y="55" font-size="20" text-anchor="middle">🧥</text>
+          <text x="130" y="55" font-size="20" text-anchor="middle">👕</text>
+          <text x="70" y="115" font-size="20" text-anchor="middle">🧣</text>
+          <text x="130" y="115" font-size="20" text-anchor="middle">🩳</text>
+        </svg>
+        <h3>衣櫃裡有什麼</h3>
+        <p>長時間(約 30 年)天氣的平均狀況</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 24px; color: var(--c-muted);">
+      情境分類練習:把「明天會下雨」「臺灣夏天悶熱」「下週要降溫」「南部冬天少雨」這些句子,分到天氣或氣候。
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://science.nasa.gov/kids/earth/what-is-climate-change/" target="_blank" rel="noopener">美國太空總署兒童科學館 — 什麼是氣候變遷?</a>
+  </div>
+</section>
+
+<!-- ============ 6. 臺灣氣溫拼圖學習單 ============ -->
+<section class="slide" id="slide-ws-temp">
+  <div class="slide-tag">活動一・步驟 3 ・學習單(投影版)</div>
+  <h2>臺灣氣溫拼圖</h2>
+  <div class="slide-body">
+    <p style="font-size: 1.05rem; color: var(--c-muted); margin: 0 0 8px;">
+      查中央氣象署的歷年資料,把四個城市的一月與七月平均氣溫填進去。
+    </p>
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>城市</th>
+          <th>1 月平均氣溫(°C)</th>
+          <th>7 月平均氣溫(°C)</th>
+          <th>溫差(7 月 − 1 月)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>臺北</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><th>臺中</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><th>高雄</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><th>花蓮</th><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size: 1.05rem; margin-top: 14px;">
+      <strong>觀察題:</strong>哪個城市的「溫差」最大?哪個最小?為什麼?
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §1</a></div>
+</section>
+
+<!-- ============ 7. 活動二過場 ============ -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>臺灣的氣候正在變</h2>
+    <p class="subtitle">從數據看百年升溫與高溫日的變化</p>
+  </div>
+</section>
+
+<!-- ============ 8. 臺灣升溫曲線 ============ -->
+<section class="slide" id="slide-tw-warming">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>臺灣近 110 年升溫約 1.6°C ≈ 全球 2 倍</h2>
+  <div class="slide-body">
+    <figure>
+      <svg viewBox="0 0 700 360" width="700">
+        <!-- 軸 -->
+        <line x1="60" y1="40" x2="60" y2="300" stroke="#9ca3af" stroke-width="1.5"/>
+        <line x1="60" y1="300" x2="660" y2="300" stroke="#9ca3af" stroke-width="1.5"/>
+        <!-- 格線 -->
+        <line x1="60" y1="100" x2="660" y2="100" stroke="#e5e7eb" stroke-dasharray="3,3"/>
+        <line x1="60" y1="180" x2="660" y2="180" stroke="#e5e7eb" stroke-dasharray="3,3"/>
+        <line x1="60" y1="240" x2="660" y2="240" stroke="#e5e7eb" stroke-dasharray="3,3"/>
+        <!-- Y 軸標籤 -->
+        <text x="50" y="105" font-size="12" text-anchor="end" fill="#6b7280">+1.5°C</text>
+        <text x="50" y="185" font-size="12" text-anchor="end" fill="#6b7280">+0.5°C</text>
+        <text x="50" y="245" font-size="12" text-anchor="end" fill="#6b7280">0°C</text>
+        <text x="50" y="305" font-size="12" text-anchor="end" fill="#6b7280">−0.5°C</text>
+        <!-- X 軸標籤 -->
+        <text x="80" y="320" font-size="12" fill="#6b7280">1910</text>
+        <text x="200" y="320" font-size="12" fill="#6b7280">1940</text>
+        <text x="320" y="320" font-size="12" fill="#6b7280">1970</text>
+        <text x="440" y="320" font-size="12" fill="#6b7280">1990</text>
+        <text x="560" y="320" font-size="12" fill="#6b7280">2010</text>
+        <text x="630" y="320" font-size="12" fill="#6b7280">2020</text>
+        <!-- 全球升溫曲線(較緩,灰) -->
+        <path d="M80,255 Q150,253 200,250 Q260,248 320,240 Q400,228 480,210 Q560,190 640,165"
+              fill="none" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5,4"/>
+        <text x="640" y="160" font-size="12" fill="#6b7280" text-anchor="end">全球(約 +1°C)</text>
+        <!-- 臺灣升溫曲線(較陡,主色) -->
+        <path d="M80,260 Q140,258 200,252 Q260,246 320,232 Q380,212 440,180 Q500,150 560,120 Q610,100 640,90"
+              fill="none" stroke="#0f766e" stroke-width="3"/>
+        <!-- 起點/終點數據點 -->
+        <circle cx="80" cy="260" r="5" fill="#0f766e"/>
+        <circle cx="640" cy="90" r="6" fill="#dc2626"/>
+        <!-- 標註 -->
+        <text x="80" y="280" font-size="12" fill="#0f766e" font-weight="600">起點</text>
+        <text x="640" y="78" font-size="13" fill="#dc2626" font-weight="700" text-anchor="end">+1.6°C</text>
+        <!-- 圖例 -->
+        <rect x="450" y="50" width="200" height="50" fill="#fff" stroke="#e5e7eb" rx="4"/>
+        <line x1="460" y1="65" x2="490" y2="65" stroke="#0f766e" stroke-width="3"/>
+        <text x="496" y="69" font-size="13" fill="#0f766e" font-weight="600">臺灣年均溫距平</text>
+        <line x1="460" y1="85" x2="490" y2="85" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5,4"/>
+        <text x="496" y="89" font-size="13" fill="#6b7280">全球年均溫距平</text>
+        <!-- Y 軸標題 -->
+        <text x="20" y="170" font-size="13" fill="#6b7280" transform="rotate(-90,20,170)">溫度距平(℃)</text>
+      </svg>
+      <figcaption>示意圖:臺灣百年升溫趨勢,約為全球速度 2 倍</figcaption>
+    </figure>
+    <p class="chart-note">▲ 圖為示意化教學用,實際逐年數據請見 TCCIP 平台</p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://tccip.ncdr.nat.gov.tw/" target="_blank" rel="noopener">臺灣氣候變遷推估資訊與調適知識平台(TCCIP)</a>
+  </div>
+</section>
+
+<!-- ============ 9. 高溫日翻倍 ============ -->
+<section class="slide" id="slide-hot-days">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>臺灣高溫日(≥36°C)近數十年約翻倍</h2>
+  <div class="slide-body">
+    <figure>
+      <svg viewBox="0 0 600 360" width="600">
+        <!-- 軸 -->
+        <line x1="80" y1="40" x2="80" y2="300" stroke="#9ca3af" stroke-width="1.5"/>
+        <line x1="80" y1="300" x2="560" y2="300" stroke="#9ca3af" stroke-width="1.5"/>
+        <!-- 格線 -->
+        <line x1="80" y1="80" x2="560" y2="80" stroke="#e5e7eb" stroke-dasharray="3,3"/>
+        <line x1="80" y1="140" x2="560" y2="140" stroke="#e5e7eb" stroke-dasharray="3,3"/>
+        <line x1="80" y1="200" x2="560" y2="200" stroke="#e5e7eb" stroke-dasharray="3,3"/>
+        <line x1="80" y1="260" x2="560" y2="260" stroke="#e5e7eb" stroke-dasharray="3,3"/>
+        <!-- Y 軸標籤 -->
+        <text x="70" y="85" font-size="12" text-anchor="end" fill="#6b7280">25</text>
+        <text x="70" y="145" font-size="12" text-anchor="end" fill="#6b7280">20</text>
+        <text x="70" y="205" font-size="12" text-anchor="end" fill="#6b7280">15</text>
+        <text x="70" y="265" font-size="12" text-anchor="end" fill="#6b7280">10</text>
+        <text x="70" y="305" font-size="12" text-anchor="end" fill="#6b7280">0</text>
+        <!-- Bar 1: 20世紀中期 -->
+        <rect x="180" y="240" width="100" height="60" fill="#94a3b8" rx="4"/>
+        <text x="230" y="230" font-size="14" text-anchor="middle" fill="#475569" font-weight="700">約 10 天</text>
+        <text x="230" y="320" font-size="14" text-anchor="middle" fill="#1f2937">20 世紀中期</text>
+        <!-- Bar 2: 近數十年 -->
+        <rect x="380" y="170" width="100" height="130" fill="#dc2626" rx="4"/>
+        <text x="430" y="160" font-size="14" text-anchor="middle" fill="#991b1b" font-weight="700">約 22 天</text>
+        <text x="430" y="320" font-size="14" text-anchor="middle" fill="#1f2937">近 數 十 年</text>
+        <!-- 倍增箭頭 -->
+        <path d="M295 200 Q330 130 365 200" fill="none" stroke="#ea580c" stroke-width="2.5" marker-end="url(#arrowhead)"/>
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L6,3 z" fill="#ea580c"/>
+          </marker>
+        </defs>
+        <text x="330" y="125" font-size="16" text-anchor="middle" fill="#ea580c" font-weight="700">約倍增</text>
+        <!-- Y 軸標題 -->
+        <text x="20" y="180" font-size="13" fill="#6b7280" transform="rotate(-90,20,180)">高溫日 ≥36°C(天/年)</text>
+      </svg>
+      <figcaption>示意圖:高溫日數從 20 世紀中期到近數十年的倍增比較</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>小組討論:</strong>學校或家裡有哪些「變熱」的感受?例如下課後不能在操場玩?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://tccip.ncdr.nat.gov.tw/" target="_blank" rel="noopener">臺灣氣候變遷推估資訊平台 / 國家災害防救科技中心</a>
+  </div>
+</section>
+
+<!-- ============ 10. 臺灣受影響地圖 ============ -->
+<section class="slide" id="slide-tw-map">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>臺灣受影響地圖</h2>
+  <div class="slide-body">
+    <figure>
+      <svg viewBox="0 0 500 500" width="450">
+        <!-- 海洋背景 -->
+        <rect x="0" y="0" width="500" height="500" fill="#dbeafe"/>
+        <!-- 簡化臺灣形狀 -->
+        <path d="M210,60
+                 Q240,55 260,80
+                 Q280,110 285,145
+                 Q295,180 290,215
+                 Q295,250 305,290
+                 Q310,335 295,375
+                 Q280,415 250,435
+                 Q220,440 200,420
+                 Q180,395 175,360
+                 Q170,320 165,285
+                 Q170,245 180,210
+                 Q190,175 195,140
+                 Q200,100 210,60 Z"
+              fill="#fef3c7" stroke="#ca8a04" stroke-width="2.5"/>
+        <!-- 標記:西南沿海淹沒風險 -->
+        <circle cx="195" cy="370" r="14" fill="#dc2626" opacity="0.7"/>
+        <text x="195" y="375" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">!</text>
+        <line x1="210" y1="370" x2="380" y2="380" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="385" y="378" font-size="13" fill="#991b1b" font-weight="600">西南沿海・淹沒風險</text>
+        <text x="385" y="394" font-size="11" fill="#991b1b">海平面上升、地層下陷</text>
+        <!-- 標記:蘭陽平原 -->
+        <circle cx="290" cy="155" r="14" fill="#dc2626" opacity="0.7"/>
+        <text x="290" y="160" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">!</text>
+        <line x1="305" y1="155" x2="380" y2="140" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="385" y="138" font-size="13" fill="#991b1b" font-weight="600">蘭陽平原・淹沒風險</text>
+        <text x="385" y="154" font-size="11" fill="#991b1b">低窪沿海地區</text>
+        <!-- 標記:都市熱島(臺北/臺中/高雄) -->
+        <circle cx="252" cy="105" r="11" fill="#ea580c" opacity="0.7"/>
+        <text x="252" y="109" font-size="11" text-anchor="middle" fill="#fff">熱</text>
+        <circle cx="220" cy="240" r="11" fill="#ea580c" opacity="0.7"/>
+        <text x="220" y="244" font-size="11" text-anchor="middle" fill="#fff">熱</text>
+        <circle cx="220" cy="385" r="11" fill="#ea580c" opacity="0.7"/>
+        <text x="220" y="389" font-size="11" text-anchor="middle" fill="#fff">熱</text>
+        <line x1="265" y1="105" x2="380" y2="80" stroke="#ea580c" stroke-width="1.5"/>
+        <text x="385" y="78" font-size="13" fill="#9a3412" font-weight="600">都市熱島</text>
+        <text x="385" y="94" font-size="11" fill="#9a3412">臺北・臺中・高雄</text>
+        <!-- 標記:夏季豪雨 -->
+        <text x="385" y="220" font-size="13" fill="#1e40af" font-weight="600">⛈ 夏季豪雨增強</text>
+        <text x="385" y="236" font-size="11" fill="#1e40af">山區土石流風險上升</text>
+      </svg>
+      <figcaption>示意圖:臺灣氣候變遷主要受影響區域</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>學生畫法:</strong>在你的學習單地圖上,圈出你聽過或感受過「變熱了」的地方。
+    </p>
+  </div>
+</section>
+
+<!-- ============ 11. 活動三過場 ============ -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>全球視野:地球的體溫</h2>
+    <p class="subtitle">從世界尺度看升溫與生態衝擊</p>
+  </div>
+</section>
+
+<!-- ============ 12. NASA 全球均溫曲線 ============ -->
+<section class="slide" id="slide-nasa">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>地球的體溫:1880 → 2024</h2>
+  <div class="slide-body">
+    <figure>
+      <svg viewBox="0 0 760 360" width="760">
+        <!-- 軸 -->
+        <line x1="60" y1="40" x2="60" y2="300" stroke="#9ca3af" stroke-width="1.5"/>
+        <line x1="60" y1="300" x2="730" y2="300" stroke="#9ca3af" stroke-width="1.5"/>
+        <!-- 格線 -->
+        <line x1="60" y1="80" x2="730" y2="80" stroke="#e5e7eb" stroke-dasharray="3,3"/>
+        <line x1="60" y1="140" x2="730" y2="140" stroke="#e5e7eb" stroke-dasharray="3,3"/>
+        <line x1="60" y1="200" x2="730" y2="200" stroke="#e5e7eb" stroke-dasharray="3,3"/>
+        <line x1="60" y1="240" x2="730" y2="240" stroke="#fbbf24" stroke-dasharray="3,3"/>
+        <!-- Y 軸標籤 -->
+        <text x="50" y="85" font-size="12" text-anchor="end" fill="#6b7280">+1.5°C</text>
+        <text x="50" y="145" font-size="12" text-anchor="end" fill="#6b7280">+1.0°C</text>
+        <text x="50" y="205" font-size="12" text-anchor="end" fill="#6b7280">+0.5°C</text>
+        <text x="50" y="245" font-size="12" text-anchor="end" fill="#fbbf24" font-weight="600">基準線</text>
+        <text x="50" y="305" font-size="12" text-anchor="end" fill="#6b7280">−0.5°C</text>
+        <!-- X 軸標籤 -->
+        <text x="80" y="320" font-size="12" fill="#6b7280">1880</text>
+        <text x="220" y="320" font-size="12" fill="#6b7280">1920</text>
+        <text x="370" y="320" font-size="12" fill="#6b7280">1960</text>
+        <text x="520" y="320" font-size="12" fill="#6b7280">2000</text>
+        <text x="700" y="320" font-size="12" fill="#6b7280">2024</text>
+        <!-- 全球均溫曲線 -->
+        <path d="M80,260 Q140,265 180,260 Q230,256 280,250 Q340,242 400,240 Q460,232 520,215 Q580,190 640,160 Q680,130 720,90"
+              fill="none" stroke="#0f766e" stroke-width="2.5"/>
+        <!-- 最熱10年區塊 -->
+        <rect x="600" y="50" width="120" height="250" fill="#fee2e2" opacity="0.5"/>
+        <text x="660" y="68" font-size="12" text-anchor="middle" fill="#991b1b" font-weight="700">最熱 10 年</text>
+        <!-- 2024 紅點 -->
+        <circle cx="720" cy="90" r="8" fill="#dc2626"/>
+        <text x="720" y="50" font-size="14" text-anchor="middle" fill="#dc2626" font-weight="700">2024</text>
+        <text x="720" y="68" font-size="13" text-anchor="middle" fill="#dc2626" font-weight="700">+1.47°C</text>
+        <line x1="720" y1="73" x2="720" y2="86" stroke="#dc2626" stroke-width="1.5"/>
+        <!-- Y 軸標題 -->
+        <text x="20" y="170" font-size="13" fill="#6b7280" transform="rotate(-90,20,170)">較工業化前升溫(℃)</text>
+        <!-- 工業化標記 -->
+        <line x1="180" y1="40" x2="180" y2="300" stroke="#dc2626" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+        <text x="184" y="52" font-size="11" fill="#dc2626">工業化加速</text>
+      </svg>
+      <figcaption>示意圖:1880 年迄今全球均溫距平,累計升溫約 1.1–1.5°C,2024 年達 +1.47°C</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>提問:</strong>為什麼工業化以後升得這麼快?(燃煤、石油、汽車、工廠 → 溫室氣體)
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://science.nasa.gov/earth/explore/earth-indicators/global-temperature/" target="_blank" rel="noopener">美國太空總署 — 全球溫度指標</a> ・
+    <a href="https://climate.nasa.gov/vital-signs/global-temperature/" target="_blank" rel="noopener">美國太空總署 — 氣候關鍵指標</a>
+  </div>
+</section>
+
+<!-- ============ 13. 衝擊連連看 ============ -->
+<section class="slide" id="slide-impacts">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>衝擊連連看:暖化引發的連鎖反應</h2>
+  <div class="slide-body">
+    <div style="display: flex; flex-direction: column; gap: 18px; max-width: 900px; margin: 20px auto;">
+
+      <div class="impact-chain">
+        <div class="cause">🌡️ 全球暖化</div>
+        <div class="arrow">→</div>
+        <div class="effect">🧊 冰川融化</div>
+        <div class="arrow">→</div>
+        <div class="effect">🌊 海平面上升</div>
+        <div class="arrow">→</div>
+        <div class="final">🏝️ 低窪地區淹沒</div>
+      </div>
+
+      <div class="impact-chain">
+        <div class="cause">🌡️ 海水變熱、變酸</div>
+        <div class="arrow">→</div>
+        <div class="effect">🐠 珊瑚白化</div>
+        <div class="arrow">→</div>
+        <div class="effect">🐟 海洋生態鏈受損</div>
+        <div class="arrow">→</div>
+        <div class="final">🎣 漁業衰退</div>
+      </div>
+
+      <div class="impact-chain">
+        <div class="cause">☀️ 高溫 + 乾旱</div>
+        <div class="arrow">→</div>
+        <div class="effect">🔥 森林大火</div>
+        <div class="arrow">→</div>
+        <div class="effect">💨 PM2.5 / 空氣品質惡化</div>
+        <div class="arrow">→</div>
+        <div class="final">🫁 呼吸道疾病</div>
+      </div>
+
+      <div class="impact-chain">
+        <div class="cause">🌊 海洋暖化</div>
+        <div class="arrow">→</div>
+        <div class="effect">🌀 颱風/暴雨更強</div>
+        <div class="arrow">→</div>
+        <div class="effect">🌧️ 短時強降雨</div>
+        <div class="arrow">→</div>
+        <div class="final">⚠️ 山區土石流</div>
+      </div>
+
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 16px; color: var(--c-muted);">
+      看完影片後,小組挑一條鏈,在學習單上重新畫出來。
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://learning.sciencemuseumgroup.org.uk/resources/climate-change-video-series/" target="_blank" rel="noopener">氣候變遷動畫影片系列(英國科學博物館集團)</a>
+  </div>
+</section>
+
+<!-- ============ 14. 異常天氣新聞蒐集表 ============ -->
+<section class="slide" id="slide-news">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>異常天氣新聞蒐集表</h2>
+  <div class="slide-body">
+    <p style="font-size: 1.05rem; color: var(--c-muted); margin: 0 0 12px;">
+      分組挑一則近一年臺灣或全球的極端天氣新聞,填入下表後輪流發表。
+    </p>
+    <table class="ws-table news-table">
+      <thead>
+        <tr>
+          <th style="width: 14%;">時間</th>
+          <th style="width: 16%;">地點</th>
+          <th style="width: 22%;">事件類型</th>
+          <th style="width: 24%;">災害</th>
+          <th style="width: 24%;">對人 / 生態的影響</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top: 16px; font-size: 1rem;">
+      <strong>事件類型參考:</strong>熱浪 / 乾旱 / 短時強降雨 / 寒流 / 颱風 / 野火 / 沙塵暴
+    </p>
+  </div>
+</section>
+
+<!-- ============ 15. 活動四過場 ============ -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>行動與反思</h2>
+    <p class="subtitle">把感受變成下一步行動</p>
+  </div>
+</section>
+
+<!-- ============ 16. 我可以做什麼 三欄 ============ -->
+<section class="slide" id="slide-actions">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>我可以做什麼?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 12px;">
+      腦力激盪:從個人到社群,有哪些行動?
+    </p>
+    <div class="three-col">
+      <div class="col-card fam">
+        <h4>家 庭</h4>
+        <ul>
+          <li>隨手關燈、拔插頭</li>
+          <li>冷氣設定 26°C 以上</li>
+          <li>少肉多蔬、不浪費食物</li>
+          <li>自備水壺與餐具</li>
+          <li>步行、騎單車取代開車</li>
+        </ul>
+      </div>
+      <div class="col-card sch">
+        <h4>學 校</h4>
+        <ul>
+          <li>班級認養一棵樹</li>
+          <li>校園種植耐旱植物</li>
+          <li>節水節電大隊</li>
+          <li>校園廚餘減量</li>
+          <li>下課多走樓梯少搭電梯</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>社 區</h4>
+        <ul>
+          <li>參加社區淨灘 / 淨山</li>
+          <li>支持在地小農、減少運輸碳</li>
+          <li>社區共乘、共享</li>
+          <li>協助長輩防熱浪</li>
+          <li>關心社區綠地保留</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 17. 家庭行動計畫書 ============ -->
+<section class="slide" id="slide-ws-pledge">
+  <div class="slide-tag">活動四・步驟 2 ・學習單(投影版)</div>
+  <h2>家庭行動計畫書</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      寫下你這週要和家人一起做的 1 項氣候行動,兩兩互相承諾並簽名。
+    </p>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">我這週要做的行動是:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我會邀請的家人是:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">執行的時間 / 地點:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我希望這個行動能帶來:</span>
+        <span class="blank"></span>
+      </div>
+      <hr style="margin: 18px 0; border: 0; border-top: 1px dashed var(--c-border);">
+      <div class="row">
+        <span class="lbl">承諾人簽名:</span>
+        <span class="blank"></span>
+        <span class="lbl">見證夥伴簽名:</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §4</a></div>
+</section>
+
+<!-- ============ 18. 希望 2035 ============ -->
+<section class="slide" id="slide-ws-hope">
+  <div class="slide-tag">活動四・步驟 3 ・學習單(投影版)</div>
+  <h2>希望牆:寫給 2035 年的臺灣</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      用一句話加一幅小圖,畫出你希望 10 年後的臺灣是什麼樣子。完成後貼到教室後牆,組成全班的「希望牆」。
+    </p>
+    <div class="hope-frame">
+      <div class="prompt">「我希望 2035 年的臺灣……」</div>
+      <div class="text-area"></div>
+      <div class="draw-area">✏️ 在這裡畫一幅圖</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 19. 三關鍵字總結 ============ -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字,一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">差別</div>
+        <div class="desc">天氣 ≠ 氣候<br>(短期 vs 30 年平均)</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">趨勢</div>
+        <div class="desc">地球在發燒<br>臺灣升溫 ≈ 全球 2 倍</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">行動</div>
+        <div class="desc">從個人到社區<br>每個人都能出力</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      你不渺小。<br>
+      <strong style="color: var(--c-accent);">每做一件對地球好的事,都是投給未來的一張票。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">19</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+
+  // 用 IntersectionObserver 追蹤目前顯示的 slide
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+
+  // 鍵盤左右切頁
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  // 直接從 URL hash 跳到指定投影片
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小水滴旅行家 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0369a1;
+    --c-accent-soft: #e0f2fe;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border);
+    border-bottom-width: 2px; border-radius: 4px; font-family: monospace;
+    font-size: 0.8em; background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+
+  /* 封面與過場 */
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; color: var(--c-accent); }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.2rem; color: var(--c-accent); }
+
+  /* 問題卡 */
+  .question-cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin: 24px 0;
+  }
+  .question-card {
+    background: var(--c-bg); border: 2px solid var(--c-accent);
+    border-radius: 12px; padding: 24px; font-size: 1.1rem;
+    text-align: center; position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px;
+    background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%;
+    font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .question-card .q-icon { font-size: 2.5rem; margin-bottom: 8px; }
+
+  /* 兩欄比較 */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+
+  /* 三欄行動 */
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.1rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card ul { margin: 0; padding-left: 18px; }
+  .col-card li { margin: 6px 0; font-size: 0.95rem; }
+
+  /* 三關鍵字 */
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 28px 18px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.8rem; font-weight: 800; margin: 12px 0; }
+  .key-card .desc { font-size: 0.9rem; color: var(--c-muted); }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: #0369a1; } .key-card.k2 .word { color: #0369a1; }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+
+  /* 學習單 */
+  .ws-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 1rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 12px 14px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #bfdbfe 18px, #bfdbfe 19px);
+    height: 48px;
+  }
+
+  /* 承諾框 */
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 28px; background: var(--c-bg); max-width: 680px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 10px; margin: 14px 0; font-size: 1rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; font-weight: 600; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 26px; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">小水滴旅行家（1.4-II）— 教學投影片</span>
+</header>
+
+<main>
+
+<!-- ============ 封面 ============ -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content:center;">
+    <div style="font-size:5rem;margin-bottom:16px;">💧</div>
+    <h2>小水滴旅行家</h2>
+    <p class="subtitle">水循環：水對人類、動物與植物都很重要</p>
+    <p style="color:var(--c-muted);margin-top:8px;">Level II ｜ 幼兒園大班至小學二年級（5–8 歲）</p>
+    <div style="margin-top:24px;background:var(--c-accent-soft);border-radius:12px;padding:16px 28px;display:inline-block;font-size:1.05rem;">
+      「我是小水滴，飄飄飄，變成雲朵棉花糖。」🎵
+    </div>
+  </div>
+</section>
+
+<!-- ============ 太陽公公的魔法 ============ -->
+<section class="slide" id="slide-sun">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>太陽公公的魔法☀️</h2>
+  <div class="slide-body">
+    <div style="display:flex;gap:20px;align-items:center;justify-content:center;flex-wrap:wrap;margin:20px 0;">
+      <div style="text-align:center;">
+        <div style="font-size:4rem;">☀️</div>
+        <div style="font-size:0.9rem;color:var(--c-muted);">太陽公公出來了！</div>
+      </div>
+      <div style="font-size:2rem;color:var(--c-accent);">→→→</div>
+      <div style="text-align:center;">
+        <div style="font-size:4rem;">💧💧💧</div>
+        <div style="font-size:0.9rem;color:var(--c-muted);">水被曬暖，飛上天！</div>
+      </div>
+      <div style="font-size:2rem;color:var(--c-accent);">→→→</div>
+      <div style="text-align:center;">
+        <div style="font-size:4rem;">☁️</div>
+        <div style="font-size:0.9rem;color:var(--c-muted);">變成雲！</div>
+      </div>
+    </div>
+    <div style="background:var(--c-accent-soft);border-radius:12px;padding:20px;text-align:center;font-size:1.1rem;margin-top:16px;">
+      太陽公公有超厲害的魔法！<br>
+      把地上的水曬得暖暖的，水就會變得<strong style="color:var(--c-accent);">好輕好輕</strong>，<br>
+      像小氣球一樣<strong style="color:var(--c-accent);">飛上天</strong>！<br>
+      <span style="font-size:0.9rem;color:var(--c-muted);margin-top:8px;display:block;">（就像洗澡時，浴室會有霧霧的熱水氣飄起來）</span>
+    </div>
+    <div style="background:#eff6ff;border-radius:10px;padding:14px;margin-top:16px;text-align:center;">
+      <strong>身體劇場：</strong>老師喊「太陽公公出來了！」→ 孩子從蹲下慢慢站起來，把手舉高高！
+    </div>
+    <div class="slide-source">參考資料：<a href="https://www.usgs.gov/special-topics/water-science-school/science/water-cycle" target="_blank" rel="noopener">美國地質調查所水科學學園</a></div>
+  </div>
+</section>
+
+<!-- ============ 雲是誰 ============ -->
+<section class="slide" id="slide-cloud">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>雲是誰？☁️</h2>
+  <div class="slide-body">
+    <div style="display:flex;gap:24px;align-items:center;justify-content:center;flex-wrap:wrap;margin:20px 0;">
+      <div style="text-align:center;">
+        <div style="font-size:6rem;">☁️</div>
+        <div style="font-size:1rem;color:var(--c-muted);margin-top:6px;">看起來像棉花糖</div>
+      </div>
+      <div style="text-align:center;font-size:2.5rem;color:var(--c-accent);">＝</div>
+      <div style="background:var(--c-accent-soft);border-radius:14px;padding:20px;text-align:center;min-width:200px;">
+        <div style="font-size:2rem;">💧💧💧💧💧</div>
+        <div style="font-size:0.95rem;color:var(--c-accent);font-weight:700;margin-top:8px;">好多好多小水滴<br>手牽手抱在一起！</div>
+      </div>
+    </div>
+    <div style="background:var(--c-accent-soft);border-radius:12px;padding:18px;text-align:center;font-size:1.1rem;margin-top:12px;">
+      天上白白一團的雲，<br>
+      其實是好多好多小水滴<strong style="color:var(--c-accent);">抱在一起</strong>！<br>
+      就像一團棉花糖，軟軟的、輕輕的，在天空飄來飄去！
+    </div>
+    <div style="background:#eff6ff;border-radius:10px;padding:14px;margin-top:16px;text-align:center;">
+      <strong>遊戲：</strong>老師喊「變成雲！」→ 3–4 人一組手牽手圍成圈圈！
+    </div>
+    <div class="slide-source">參考資料：<a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署</a></div>
+  </div>
+</section>
+
+<!-- ============ 水的大旅行 ============ -->
+<section class="slide" id="slide-cycle">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>水的大旅行 🔄</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 36px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：可愛水循環圓形圖]</div>
+        <div style="font-size: 1.3rem; margin: 16px 0; line-height: 2.2;">
+          🌊 地面的水 → ☀️ 太陽加熱 → ⬆️ 上升變成水氣 → ☁️ 變成雲 → 🌧️ 下雨 → 🌊 回到地面
+        </div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>這個旅行一直一直重複，不會停！這就叫「水循環」！</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>水循環示意圖：地面→蒸發→雲→降雨→地面</figcaption>
+    </figure>
+    <div style="background:#eff6ff;border-radius:10px;padding:14px;margin-top:16px;text-align:center;">
+      <strong>遊戲：</strong>全班手牽手轉一圈，嘴裡說「轉啊轉～水的大旅行！」
+    </div>
+    <div class="slide-source">參考資料：<a href="https://www.usgs.gov/special-topics/water-science-school/science/water-cycle" target="_blank" rel="noopener">美國地質調查所水科學學園</a> ・ 教育部教材《水的旅行》</div>
+  </div>
+</section>
+
+<!-- ============ 活動二過場 ============ -->
+<section class="slide divider" id="slide-act2">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動二</div>
+    <h2>小園丁照顧小綠朋友</h2>
+    <p style="color:var(--c-muted);font-size:1.1rem;margin-top:8px;">誰都需要水！</p>
+  </div>
+</section>
+
+<!-- ============ 誰需要水 ============ -->
+<section class="slide" id="slide-need-water">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>誰需要水？🌱</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card">
+        <div class="q-icon">🧒</div>
+        <strong>小朋友</strong><br>喝水才能長大
+      </div>
+      <div class="question-card">
+        <div class="q-icon">🐕</div>
+        <strong>小狗</strong><br>玩耍後要喝水
+      </div>
+      <div class="question-card">
+        <div class="q-icon">🌸</div>
+        <strong>小花</strong><br>沒水葉子會垂垂
+      </div>
+      <div class="question-card">
+        <div class="q-icon">🌳</div>
+        <strong>大樹</strong><br>根喝水才長得高
+      </div>
+      <div class="question-card">
+        <div class="q-icon">🐦</div>
+        <strong>小鳥</strong><br>洗澡和喝水都要
+      </div>
+    </div>
+    <div style="background:var(--c-accent-soft);border-radius:12px;padding:18px;text-align:center;font-size:1.15rem;margin-top:12px;">
+      小水滴告訴你一個祕密：<strong style="color:var(--c-accent);">所有活著的朋友都需要水！</strong><br>
+      <span style="font-size:0.95rem;color:var(--c-muted);">人、動物、花、樹……沒有水大家就活不下去！</span>
+    </div>
+    <div style="background:#eff6ff;border-radius:10px;padding:14px;margin-top:14px;text-align:center;">
+      <strong>互動：</strong>拿起自己的水壺喝一口，跟旁邊同學說「喝水啦！」
+    </div>
+  </div>
+</section>
+
+<!-- ============ 小花口渴了 ============ -->
+<section class="slide" id="slide-thirsty">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>小花口渴了 🌻</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-beh);background:#f0fdf4;">
+        <div class="label" style="color:var(--c-beh);font-weight:700;letter-spacing:0.1em;">喝飽水的小花</div>
+        <div class="icon">🌸</div>
+        <p style="font-size:1.1rem;margin:0;"><strong>葉子挺挺的</strong><br>快樂有精神！</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-warn);background:#fff7ed;">
+        <div class="label" style="color:var(--c-warn);font-weight:700;letter-spacing:0.1em;">口渴的小花</div>
+        <div class="icon">🥀</div>
+        <p style="font-size:1.1rem;margin:0;"><strong>葉子垂垂的</strong><br>好難受，快來幫我！</p>
+      </div>
+    </div>
+    <div style="background:var(--c-accent-soft);border-radius:12px;padding:18px;text-align:center;font-size:1.05rem;margin-top:16px;">
+      一棵小樹苗<strong style="color:var(--c-accent);">一個星期約要一杯水</strong>才長得好。<br>
+      用你的食指摸摸土表 1 公分——<strong style="color:var(--c-accent);">「乾乾的」</strong>就要幫它澆水！
+    </div>
+    <div style="background:#eff6ff;border-radius:10px;padding:14px;margin-top:14px;text-align:center;">
+      <strong>實驗：</strong>觸摸三盆植物的土（剛澆過、半乾、很乾），說出「濕濕」或「乾乾」
+    </div>
+    <div class="slide-source">參考：教育部教材《只有一瓶水》繪本教案</div>
+  </div>
+</section>
+
+<!-- ============ 活動三過場 ============ -->
+<section class="slide divider" id="slide-act3">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三</div>
+    <h2>小水滴故事家 + 節水小超人</h2>
+    <p style="color:var(--c-muted);font-size:1.1rem;margin-top:8px;">每一滴水都很寶貴！</p>
+  </div>
+</section>
+
+<!-- ============ 一大桶水的驚奇 ============ -->
+<section class="slide" id="slide-bucket">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>一大桶水的驚奇！🪣</h2>
+  <div class="slide-body">
+    <div style="display:flex;gap:24px;align-items:center;justify-content:center;flex-wrap:wrap;margin:20px 0;">
+      <div style="text-align:center;">
+        <div style="font-size:5rem;">🪣</div>
+        <div style="font-size:0.9rem;color:var(--c-muted);margin-top:6px;">大水桶</div>
+      </div>
+      <div style="background:var(--c-accent-soft);border-radius:14px;padding:24px;text-align:center;min-width:240px;">
+        <div style="font-size:1rem;color:var(--c-muted);margin-bottom:4px;">臺灣每人每天用</div>
+        <div style="font-size:3rem;font-weight:800;color:var(--c-accent);">約 280 公升</div>
+        <div style="font-size:0.9rem;color:var(--c-muted);margin-top:4px;">≈ 一大桶水</div>
+      </div>
+      <div style="background:#fff7ed;border-radius:14px;padding:24px;text-align:center;min-width:200px;">
+        <div style="font-size:1rem;color:var(--c-muted);margin-bottom:4px;">全家一天</div>
+        <div style="font-size:3rem;font-weight:800;color:var(--c-warn);">3–4 桶</div>
+        <div style="font-size:0.9rem;color:var(--c-muted);margin-top:4px;">好多水喔！</div>
+      </div>
+    </div>
+    <div style="background:var(--c-accent-soft);border-radius:12px;padding:16px;text-align:center;font-size:1.05rem;">
+      洗澡、上廁所、喝水、洗手……全部加起來要這麼多！<br>
+      <strong style="color:var(--c-accent);">所以我們要好好珍惜每一滴水！</strong>
+    </div>
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;margin-top:14px;text-align:center;">
+      <strong>互動：</strong>老師說「大桶！」→ 孩子兩手在身體旁比一個超大的圓圈
+    </div>
+    <div class="slide-source">資料來源：<a href="https://www.wra.gov.tw/" target="_blank" rel="noopener">經濟部水利署</a></div>
+  </div>
+</section>
+
+<!-- ============ 節水三招 ============ -->
+<section class="slide" id="slide-actions">
+  <div class="slide-tag">活動三・步驟 2–3</div>
+  <h2>節水小超人三招！🦸</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card" style="border-color:var(--c-cog);">
+        <h4 style="color:var(--c-cog);">🚰 招式 1</h4>
+        <p style="text-align:center;font-size:1rem;">洗手後<br><strong>關緊水龍頭</strong><br>數 1、2、關緊！</p>
+      </div>
+      <div class="col-card" style="border-color:#0369a1;">
+        <h4 style="color:#0369a1;">🪣 招式 2</h4>
+        <p style="text-align:center;font-size:1rem;">下雨時<br><strong>接雨水桶</strong><br>放陽台收雨水！</p>
+      </div>
+      <div class="col-card" style="border-color:var(--c-beh);">
+        <h4 style="color:var(--c-beh);">🌱 招式 3</h4>
+        <p style="text-align:center;font-size:1rem;">喝剩的水<br><strong>拿去澆花</strong><br>花兒說謝謝！</p>
+      </div>
+    </div>
+    <div style="background:var(--c-accent-soft);border-radius:12px;padding:16px;text-align:center;font-size:1.05rem;margin-top:12px;">
+      老師邊演邊教，每個動作孩子全體模仿一次！
+    </div>
+    <div style="background:#ecfdf5;border-radius:10px;padding:12px;margin-top:12px;text-align:center;">
+      <strong>口渴小花故事接龍：</strong>老師起頭「有一朵小花，它好渴好渴～」<br>孩子一人一句接下去，鼓勵以「剩水/雨水」做正向結局
+    </div>
+  </div>
+</section>
+
+<!-- ============ 關緊水龍頭 ============ -->
+<section class="slide" id="slide-tap">
+  <div class="slide-tag">活動三・步驟 3・招式 1 特寫</div>
+  <h2>招式 1：關緊水龍頭 🚰</h2>
+  <div class="slide-body">
+    <div style="display:flex;gap:24px;align-items:center;justify-content:center;flex-wrap:wrap;margin:20px 0;">
+      <div style="text-align:center;">
+        <div style="font-size:5rem;">🚰</div>
+        <div style="font-size:1rem;color:var(--c-warn);font-weight:700;margin-top:6px;">沒關緊 = 滴滴答答<br>水一直跑掉！</div>
+      </div>
+      <div style="font-size:3rem;color:var(--c-accent);">→</div>
+      <div style="background:var(--c-accent-soft);border-radius:14px;padding:24px;text-align:center;min-width:200px;">
+        <div style="font-size:1rem;color:var(--c-muted);margin-bottom:8px;">洗完手記得⋯⋯</div>
+        <div style="font-size:2.5rem;font-weight:800;color:var(--c-accent);">關 緊 ✅</div>
+        <div style="font-size:1rem;color:var(--c-muted);margin-top:8px;">轉一轉，確認沒在滴！</div>
+      </div>
+    </div>
+    <div style="background:#eff6ff;border-radius:12px;padding:18px;text-align:center;font-size:1.1rem;margin-top:16px;">
+      <strong>一起做：</strong>伸手做出「轉水龍頭」動作，一邊數「1、2、關緊！」
+    </div>
+    <div style="background:#ecfdf5;border-radius:10px;padding:14px;margin-top:14px;text-align:center;font-size:1rem;">
+      每次洗手不關緊，每分鐘可能多流掉一杯水（約 200 毫升）。<br>
+      <span style="color:var(--c-muted);">你每天洗幾次手？那要流掉多少水？</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 總結 ============ -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結・節水小超人宣誓</div>
+  <h2>三件大事，我記住了！</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">大事 1</div>
+        <div class="word">旅行</div>
+        <div class="desc">水從地上到天上<br>再回到地上<br>一直循環不停！</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">大事 2</div>
+        <div class="word">需要</div>
+        <div class="desc">人、動物、植物<br>大家都需要水<br>沒有水活不下去</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">大事 3</div>
+        <div class="word">珍惜</div>
+        <div class="desc">關緊水龍頭<br>接雨水、剩水澆花<br>我是節水小超人！</div>
+      </div>
+    </div>
+    <div class="pledge-form">
+      <div style="font-size:1.1rem;font-weight:700;text-align:center;color:var(--c-accent);margin-bottom:12px;">小水滴宣誓卡</div>
+      <div class="row"><span class="lbl">我的名字：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">我今天要做的節水行動：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">我要邀請的家人：</span><span class="blank"></span></div>
+    </div>
+    <div style="text-align:center;font-size:1.3rem;font-weight:700;color:var(--c-accent);margin-top:16px;">
+      全班大聲說：「我是節水小超人！💧」
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">10</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+
+</body>
+</html>

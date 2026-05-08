@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>社會決定因素與氣候正義 — 投影片</title>
+<style>
+  :root{--accent:#0f766e;--soft:#ccfbf1;--cog:#2563eb;--soc:#db2777;--beh:#16a34a;--warn:#ea580c;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--text);line-height:1.6;margin:0;background:#fff}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.95rem;font-weight:500;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--muted)}
+  .nav-indicator{font-family:monospace;color:var(--text)}
+  .nav-cur{color:var(--accent);font-weight:700}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--border);position:relative}
+  .slide h2{font-size:2rem;margin:0 0 20px;color:var(--text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.8rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--accent);color:#fff;padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--accent);letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.4rem;color:var(--accent)}
+  .slide.divider .act-steps{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .act-step-chip{background:var(--soft);color:var(--accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  .q-box{background:var(--soft);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.4rem;line-height:1.6;color:var(--accent);font-weight:600}
+  .q-sub{font-size:1.05rem;color:var(--muted);font-weight:400;margin-top:10px}
+  .data-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0;background:var(--bg)}
+  .data-card .dc-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;color:var(--muted);margin-bottom:8px}
+  .data-card .dc-fact{font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.5}
+  .data-card .dc-src{font-size:.85rem;color:var(--muted)}
+  .data-card .dc-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  .act-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0}
+  .act-card .ac-badge{display:inline-block;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:4px;margin-bottom:12px;letter-spacing:.08em}
+  .act-card .ac-task{font-size:1.05rem;color:var(--text);line-height:1.7}
+  .ws-frame{border:2px dashed var(--accent);border-radius:12px;padding:28px 32px;margin:20px 0;background:#fff}
+  .ws-frame .ws-title{font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:14px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--border);padding:12px 14px;text-align:center}
+  .ws-table th{background:var(--soft);color:var(--accent);font-weight:700}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:52px}
+  .ws-lines{display:flex;flex-direction:column;gap:14px}
+  .ws-line{border-bottom:1.5px solid #d1d5db;height:28px}
+  .chart-placeholder{border:2px dashed var(--accent);border-radius:12px;padding:40px;background:var(--soft);text-align:center;margin:20px 0}
+  .chart-placeholder .cp-label{font-size:.8rem;color:var(--muted);letter-spacing:.15em;margin-bottom:8px}
+  .chart-placeholder .cp-title{font-size:1.4rem;color:var(--accent);font-weight:700;margin-bottom:12px}
+  .chart-placeholder .cp-data{font-size:1.1rem;margin:14px 0}
+  .chart-placeholder .cp-note{font-size:.85rem;color:var(--muted);margin-top:12px}
+  .hl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:20px 0}
+  .hl-card{background:var(--soft);border-radius:10px;padding:18px 20px;text-align:center}
+  .hl-card .hc-num{font-size:1.9rem;font-weight:800;color:var(--accent);line-height:1.1}
+  .hl-card .hc-desc{font-size:.88rem;color:var(--text);margin-top:8px}
+  .nation-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:20px 0}
+  .nation-card{border-radius:10px;padding:16px 18px;border:2px solid var(--border)}
+  .nation-card .nc-label{font-size:.8rem;font-weight:700;letter-spacing:.1em;color:var(--muted);margin-bottom:6px}
+  .nation-card .nc-name{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:8px}
+  .nation-card .nc-pos{font-size:.9rem;color:var(--muted);line-height:1.5}
+  .cer-frame{border:2px solid var(--cog);border-radius:12px;padding:20px 24px;margin:16px 0;background:#eff6ff}
+  .cer-frame .cer-row{margin:10px 0}
+  .cer-frame .cer-label{font-weight:700;color:var(--cog);font-size:.9rem;margin-bottom:4px}
+  .cer-frame .cer-line{border-bottom:1.5px solid #bfdbfe;height:26px}
+  .summary-keys{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:28px}
+  .sk-chip{background:var(--soft);border:2px solid var(--accent);color:var(--accent);border-radius:24px;padding:10px 24px;font-size:1.1rem;font-weight:700}
+  .slide-src{margin-top:auto;padding-top:12px;border-top:1px dashed var(--border);font-size:.8rem;color:var(--muted)}
+  .slide-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  a.ext{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  a.ext::after{content:" ↗";font-size:.8em;opacity:.7}
+  ul.bullet{padding-left:1.4em;margin:12px 0}
+  ul.bullet li{margin:8px 0;font-size:1.05rem}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">社會決定因素與氣候正義 ｜ Level IV</span>
+</header>
+
+<main>
+
+<!-- SLIDE 1: COVER -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body">
+    <div class="level-tag">Level IV</div>
+    <h2>社會決定因素<br>與氣候正義</h2>
+    <p style="color:var(--muted);max-width:680px;font-size:1.05rem;margin-top:12px">當權力、資源與話語權分配不均，氣候決策往往使邊緣群體承受最大衝擊——這種「脆弱」不是巧合，而是結構。</p>
+  </div>
+</section>
+
+<!-- SLIDE 2: BIG QUESTION -->
+<section class="slide" id="slide-question">
+  <div class="slide-body">
+    <h2>大問題</h2>
+    <div class="q-box">
+      排放最多的人，是不是受苦最深的人？
+      <div class="q-sub">——如果不是，這個世界的氣候規則是公平的嗎？誰有資格要求改變？</div>
+    </div>
+    <ul class="bullet">
+      <li>最富裕 <strong>1%</strong> 人口的碳排放是最貧窮 <strong>50%</strong> 的 <strong>66 倍</strong></li>
+      <li>約 <strong>10 億兒童</strong>生活在氣候極高風險國家，這些國家合計碳排不到全球的 10%</li>
+      <li>開發中國家氣候調適資金缺口高達實際所得的 <strong>10–18 倍</strong></li>
+    </ul>
+  </div>
+</section>
+
+<!-- SLIDE 3: ACTIVITY 1 DIVIDER -->
+<section class="slide divider" id="slide-a1">
+  <div class="act-badge">活動一</div>
+  <h2>結構性脆弱：誰製造了這個問題？</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">兩張地圖的對話</span>
+    <span class="act-step-chip">碳不平等數據</span>
+    <span class="act-step-chip">氣候正義概念</span>
+  </div>
+</section>
+
+<!-- SLIDE 4: A1 — Two Maps -->
+<section class="slide" id="slide-a1-maps">
+  <div class="slide-body">
+    <h2>兩張地圖：排放 vs. 受害</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0">
+      <figure>
+        <div class="chart-placeholder" style="padding:28px">
+          <div class="cp-label">圖表佔位</div>
+          <div class="cp-title" style="font-size:1.1rem">[此處放：全球碳排放量地圖]</div>
+          <div class="cp-data" style="font-size:.95rem">北美、歐洲、東亞為高排放區域</div>
+          <div class="cp-note">📌 待補繪</div>
+        </div>
+        <figcaption style="font-size:.8rem;color:var(--muted);text-align:center">碳排放量分布</figcaption>
+      </figure>
+      <figure>
+        <div class="chart-placeholder" style="padding:28px">
+          <div class="cp-label">圖表佔位</div>
+          <div class="cp-title" style="font-size:1.1rem">[此處放：全球氣候脆弱度地圖]</div>
+          <div class="cp-data" style="font-size:.95rem">撒哈拉以南非洲、南亞、太平洋小島為高脆弱區域</div>
+          <div class="cp-note">📌 待補繪</div>
+        </div>
+        <figcaption style="font-size:.8rem;color:var(--muted);text-align:center">氣候脆弱度分布</figcaption>
+      </figure>
+    </div>
+    <div class="act-card" style="margin-top:4px">
+      <div class="ac-badge">觀察討論</div>
+      <div class="ac-task">兩張地圖重疊嗎？碳排最高的地方，是受害最深的地方嗎？這在道德上意味著什麼？</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: A1 — Carbon Inequality Data -->
+<section class="slide" id="slide-a1-carbon">
+  <div class="slide-body">
+    <h2>碳不平等：數字說話</h2>
+    <div class="hl-grid">
+      <div class="hl-card">
+        <div class="hc-num">66 倍</div>
+        <div class="hc-desc">最富裕 1% 人口 vs. 最貧窮 50% 人口<br>的碳排放倍數<br><span style="font-size:.8rem;color:var(--muted)">樂施會 2023</span></div>
+      </div>
+      <div class="hl-card">
+        <div class="hc-num">10 億</div>
+        <div class="hc-desc">生活在氣候極高風險國家的兒童數<br>（這些國家碳排 &lt;10% 全球）<br><span style="font-size:.8rem;color:var(--muted)">聯合國兒童基金會</span></div>
+      </div>
+      <div class="hl-card">
+        <div class="hc-num">33–36 億</div>
+        <div class="hc-desc">生活在高度氣候脆弱條件下的人口數<br><span style="font-size:.8rem;color:var(--muted)">聯合國跨政府氣候變遷專門委員會 AR6</span></div>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">氣候正義三大主張</div>
+      <div class="dc-fact">① 減排責任應與歷史排放量及能力相稱<br>② 最脆弱者應優先獲得支持與賠償<br>③ 氣候決策應包含受影響群體的聲音</div>
+    </div>
+  </div>
+  <div class="slide-src">資料：<a href="https://www.oxfam.org/en/research/carbon-inequality-2030" target="_blank">樂施會</a> ／ <a href="https://www.unicef.org/reports/climate-crisis-child-rights-crisis" target="_blank">聯合國兒童基金會</a> ／ <a href="https://www.ipcc.ch/report/ar6/wg2/" target="_blank">聯合國跨政府氣候變遷專門委員會</a></div>
+</section>
+
+<!-- SLIDE 6: ACTIVITY 2 DIVIDER -->
+<section class="slide divider" id="slide-a2">
+  <div class="act-badge">活動二</div>
+  <h2>CBDR 與損失和損害</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">模擬國際談判</span>
+    <span class="act-step-chip">損失與損害機制</span>
+    <span class="act-step-chip">臺灣的位置</span>
+  </div>
+</section>
+
+<!-- SLIDE 7: A2 — CBDR Negotiation -->
+<section class="slide" id="slide-a2-cbdr">
+  <div class="slide-body">
+    <h2>模擬談判：誰來填補資金缺口？</h2>
+    <p style="color:var(--muted);margin-bottom:8px">開發中國家氣候調適資金缺口是實際獲得的 <strong>10–18 倍</strong>。每組代表一個談判陣營：</p>
+    <div class="nation-grid">
+      <div class="nation-card" style="border-color:#fb923c">
+        <div class="nc-label">陣營 A</div>
+        <div class="nc-name">已開發國家集團</div>
+        <div class="nc-pos">強調技術轉移、貸款而非補助；主張新興國家也需承擔責任</div>
+      </div>
+      <div class="nation-card" style="border-color:var(--cog)">
+        <div class="nc-label">陣營 B</div>
+        <div class="nc-name">新興經濟體</div>
+        <div class="nc-pos">發展權利不應被剝奪；願意減排但需要技術與資金支持</div>
+      </div>
+      <div class="nation-card" style="border-color:var(--soc)">
+        <div class="nc-label">陣營 C</div>
+        <div class="nc-name">小島嶼國家聯盟</div>
+        <div class="nc-pos">已超越調適能力；需要立即賠償，而不只是貸款</div>
+      </div>
+      <div class="nation-card" style="border-color:var(--beh)">
+        <div class="nc-label">陣營 D</div>
+        <div class="nc-name">最低度開發國家</div>
+        <div class="nc-pos">歷史排放量極低；氣候資金應是補償而非援助</div>
+      </div>
+    </div>
+    <div class="cer-frame">
+      <div class="cer-row"><div class="cer-label">主張（C）：我方立場是___</div><div class="cer-line"></div></div>
+      <div class="cer-row"><div class="cer-label">證據（E）：數據顯示___</div><div class="cer-line"></div></div>
+      <div class="cer-row"><div class="cer-label">推理（R）：因此___應優先</div><div class="cer-line"></div></div>
+    </div>
+  </div>
+  <div class="slide-src">資料：<a href="https://www.unep.org/resources/adaptation-gap-report-2023" target="_blank">聯合國環境規劃署 調適差距報告 2023</a></div>
+</section>
+
+<!-- SLIDE 8: A2 — Loss and Damage -->
+<section class="slide" id="slide-a2-ld">
+  <div class="slide-body">
+    <h2>損失與損害：30 年談判的成果</h2>
+    <div class="q-box" style="font-size:1.1rem">
+      2022 年埃及 COP27：首次正式通過「損失與損害基金」——確認已開發國家對氣候受害國的補償責任。
+      <div class="q-sub">這個機制為何談判了 30 年才成立？哪些阻力最大？</div>
+    </div>
+    <div class="hl-grid">
+      <div class="hl-card">
+        <div class="hc-num">2.16 億</div>
+        <div class="hc-desc">2050 年前氣候境內移民<br>預估人數（若不調適）<br><span style="font-size:.8rem;color:var(--muted)">世界銀行</span></div>
+      </div>
+      <div class="hl-card">
+        <div class="hc-num">10–18 倍</div>
+        <div class="hc-desc">開發中國家氣候調適<br>資金需求 vs. 實際獲得<br><span style="font-size:.8rem;color:var(--muted)">聯合國環境規劃署 2023</span></div>
+      </div>
+    </div>
+    <p style="color:var(--muted);font-size:.95rem">「損失與損害」不只是金錢賠償，也包含文化消失、傳統知識喪失、故土沉沒等無法用金錢衡量的傷害。</p>
+  </div>
+  <div class="slide-src">資料：<a href="https://openknowledge.worldbank.org/handle/10986/36248" target="_blank">世界銀行</a> ／ <a href="https://www.unep.org/resources/adaptation-gap-report-2023" target="_blank">聯合國環境規劃署</a></div>
+</section>
+
+<!-- SLIDE 9: ACTIVITY 3 DIVIDER -->
+<section class="slide divider" id="slide-a3">
+  <div class="act-badge">活動三</div>
+  <h2>公正轉型：沒有人被遺忘</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">煤礦社區案例</span>
+    <span class="act-step-chip">轉型原則設計</span>
+    <span class="act-step-chip">臺灣能源轉型</span>
+  </div>
+</section>
+
+<!-- SLIDE 10: A3 — Just Transition -->
+<section class="slide" id="slide-a3-just">
+  <div class="slide-body">
+    <h2>公正轉型：能源轉型中的正義</h2>
+    <div class="q-box" style="font-size:1.1rem">
+      當一座煤礦關閉，礦工、他們的家庭、整個依賴煤礦的小鎮——誰來負責他們的未來？
+    </div>
+    <div class="hl-grid">
+      <div class="hl-card" style="background:#fff7ed">
+        <div class="hc-num" style="font-size:1rem;color:#c2410c">沒有公正的轉型</div>
+        <div class="hc-desc">失業、貧窮、社區凋零<br>反彈情緒、氣候行動阻力增加</div>
+      </div>
+      <div class="hl-card" style="background:#f0fdf4">
+        <div class="hc-num" style="font-size:1rem;color:var(--beh)">公正轉型的要素</div>
+        <div class="hc-desc">再培訓計畫、社區參與決策<br>污染修復、收入保障、替代產業</div>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">小組討論</div>
+      <div class="ac-task">臺灣推動太陽能與風電過程中，哪些群體可能被忽略？（漁民、農民、原住民族傳統領域、低收入家庭電費負擔）如何讓轉型更「公正」？</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 11: ACTIVITY 4 DIVIDER -->
+<section class="slide divider" id="slide-a4">
+  <div class="act-badge">活動四</div>
+  <h2>校園氣候正義倡議書</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">倡議書框架</span>
+    <span class="act-step-chip">撰寫與回饋</span>
+    <span class="act-step-chip">修訂與提案</span>
+  </div>
+</section>
+
+<!-- SLIDE 12: A4 — Advocacy Guide -->
+<section class="slide" id="slide-a4-guide">
+  <div class="slide-body">
+    <h2>倡議書的三個關鍵特徵</h2>
+    <div class="hl-grid">
+      <div class="hl-card" style="background:#eff6ff">
+        <div class="hc-num" style="font-size:1.2rem;color:var(--cog)">以邊緣群體為中心</div>
+        <div class="hc-desc">不只描述問題<br>而是以受影響者的聲音為核心<br>避免「代言」，鼓勵「賦權」</div>
+      </div>
+      <div class="hl-card" style="background:#f0fdf4">
+        <div class="hc-num" style="font-size:1.2rem;color:var(--beh)">問責機制</div>
+        <div class="hc-desc">明確說明<br>誰應負責 / 何時完成 / 如何追蹤<br>沒有期限的承諾等於沒有承諾</div>
+      </div>
+      <div class="hl-card" style="background:#fdf2f8">
+        <div class="hc-num" style="font-size:1.2rem;color:var(--soc)">CER 結構</div>
+        <div class="hc-desc">主張（Claim）清晰<br>證據（Evidence）充分<br>推理（Reasoning）連貫</div>
+      </div>
+    </div>
+    <p style="color:var(--muted);font-size:.95rem;margin-top:12px">倡議不是抱怨，而是建設性的改變提案。目標字數：300–400 字</p>
+  </div>
+</section>
+
+<!-- SLIDE 13: A4 — Advocacy Worksheet -->
+<section class="slide" id="slide-a4-ws">
+  <div class="slide-body">
+    <h2>校園氣候正義倡議書工作單</h2>
+    <div class="ws-frame">
+      <div class="ws-title">✏️ 倡議對象：□ 校長 □ 學生自治會 □ 縣市議員 □ 其他：____</div>
+      <table class="ws-table">
+        <thead>
+          <tr><th>結構</th><th>內容（填寫草稿）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="white-space:nowrap">受影響的邊緣群體</td><td class="fill"></td></tr>
+          <tr><td>問題描述（含數據）</td><td class="fill"></td></tr>
+          <tr><td>主張（Claim）</td><td class="fill"></td></tr>
+          <tr><td>證據（Evidence）</td><td class="fill"></td></tr>
+          <tr><td>推理（Reasoning）</td><td class="fill"></td></tr>
+          <tr><td>具體要求事項</td><td class="fill"></td></tr>
+          <tr><td>問責機制（期限 + 追蹤方式）</td><td class="fill"></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:12px;font-size:.85rem;color:var(--muted)">
+        評分：邊緣群體中心 25 ｜CER 結構 25 ｜問責機制 25 ｜語氣建設性 25
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 14: SUMMARY -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <div class="slide-body">
+    <h2 style="color:var(--beh)">今天學到了什麼？</h2>
+    <div class="summary-keys">
+      <div class="sk-chip">氣候正義</div>
+      <div class="sk-chip">CBDR</div>
+      <div class="sk-chip">損失與損害</div>
+      <div class="sk-chip">公正轉型</div>
+      <div class="sk-chip">倡議行動</div>
+    </div>
+    <p style="color:var(--muted);max-width:600px;margin:24px auto 0;font-size:1rem">氣候正義不是遙遠的國際議題——它就在我們的校園、社區、每一個被忽視的聲音裡。倡議，從這裡開始。</p>
+    <p style="margin-top:30px"><a href="lesson_plan.html" style="color:var(--accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / <span id="navTotal"></span></span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換・捲動換頁</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  const tot    = document.getElementById('navTotal');
+  if (!slides.length || !cur) return;
+  if (tot) tot.textContent = slides.length;
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>不一樣的我們 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #9333ea;
+    --c-accent-soft: #f3e8ff;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px; background: var(--c-bg); max-width: 700px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  .placeholder { border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center; }
+  .placeholder .ph-tag { font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px; }
+  .placeholder .ph-title { font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px; }
+  .placeholder .ph-data { font-size: 1.1rem; margin: 14px 0; }
+  .placeholder .ph-note { font-size: 0.85rem; color: var(--c-muted); margin-top: 12px; }
+  .emoji-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 18px; margin: 24px 0; }
+  .emoji-card { background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 12px; padding: 18px 12px; text-align: center; }
+  .emoji-card .icon { font-size: 3rem; }
+  .emoji-card .label { margin-top: 8px; font-weight: 600; color: var(--c-text); }
+  .emoji-card .desc { font-size: 0.85rem; color: var(--c-muted); margin-top: 4px; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card.left { border-color: var(--c-warn); background: #fef2f2; }
+  .compare-card.right { border-color: var(--c-beh); background: #f0fdf4; }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.left .label { color: var(--c-warn); }
+  .compare-card.right .label { color: var(--c-beh); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">不一樣的我們 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>不一樣的我們</h2>
+    <p class="subtitle">每個人都是一顆閃亮的小星星</p>
+    <svg viewBox="0 0 500 200" width="500" style="margin: 20px 0;">
+      <g transform="translate(60,100)"><polygon points="0,-30 8,-10 30,-10 12,5 18,28 0,15 -18,28 -12,5 -30,-10 -8,-10" fill="#ef4444"/></g>
+      <g transform="translate(130,80)"><polygon points="0,-30 8,-10 30,-10 12,5 18,28 0,15 -18,28 -12,5 -30,-10 -8,-10" fill="#f59e0b"/></g>
+      <g transform="translate(200,100)"><polygon points="0,-30 8,-10 30,-10 12,5 18,28 0,15 -18,28 -12,5 -30,-10 -8,-10" fill="#fde047"/></g>
+      <g transform="translate(270,80)"><polygon points="0,-30 8,-10 30,-10 12,5 18,28 0,15 -18,28 -12,5 -30,-10 -8,-10" fill="#22c55e"/></g>
+      <g transform="translate(340,100)"><polygon points="0,-30 8,-10 30,-10 12,5 18,28 0,15 -18,28 -12,5 -30,-10 -8,-10" fill="#3b82f6"/></g>
+      <g transform="translate(410,80)"><polygon points="0,-30 8,-10 30,-10 12,5 18,28 0,15 -18,28 -12,5 -30,-10 -8,-10" fill="#a855f7"/></g>
+      <g transform="translate(450,140)"><polygon points="0,-30 8,-10 30,-10 12,5 18,28 0,15 -18,28 -12,5 -30,-10 -8,-10" fill="#ec4899"/></g>
+    </svg>
+  </div>
+</section>
+
+<!-- 2. 我是誰 -->
+<section class="slide" id="slide-mirror">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>我是誰?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.1rem; color: var(--c-muted);">
+      想一想:我是誰?我住在哪裡?我最喜歡做什麼?
+    </p>
+    <div class="emoji-grid">
+      <div class="emoji-card"><div class="icon">🧒</div><div class="label">我是 ___</div><div class="desc">名字 / 年紀</div></div>
+      <div class="emoji-card"><div class="icon">🏠</div><div class="label">我住 ___</div><div class="desc">海邊 / 山上 / 城市</div></div>
+      <div class="emoji-card"><div class="icon">💖</div><div class="label">我喜歡 ___</div><div class="desc">畫畫 / 跑步 / 唱歌</div></div>
+      <div class="emoji-card"><div class="icon">🗣️</div><div class="label">我會說 ___</div><div class="desc">國語 / 客家話 / 臺語</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px; color: var(--c-accent);">
+      <strong>左右轉身,跟旁邊同學說一說!</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3. 三家天氣遊戲 -->
+<section class="slide" id="slide-three-homes">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>一樣的天氣,不一樣的故事</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="placeholder">
+        <div class="ph-tag">圖表佔位</div>
+        <div class="ph-title">[此處放:颱風雲連到三個家插畫]</div>
+        <div class="ph-data"><strong>關鍵數據:</strong>1 個颱風 → 3 種準備(海邊怕淹水、山上怕土石流、城市怕停電)</div>
+        <div class="ph-note">📌 示意圖待補繪 — 中間大颱風雲,三條箭頭分連到海邊、山上、城市</div>
+      </div>
+      <figcaption>同一個颱風,住哪裡決定你要怎麼準備</figcaption>
+    </figure>
+    <div class="emoji-grid" style="margin-top: 20px;">
+      <div class="emoji-card" style="border-color: #3b82f6;"><div class="icon">🌊</div><div class="label">海邊家</div><div class="desc">手往上游泳</div></div>
+      <div class="emoji-card" style="border-color: #16a34a;"><div class="icon">⛰️</div><div class="label">山上家</div><div class="desc">手擋石頭</div></div>
+      <div class="emoji-card" style="border-color: #6366f1;"><div class="icon">🏙️</div><div class="label">城市家</div><div class="desc">開燈關燈</div></div>
+    </div>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署 — 颱風資訊</a>
+  </div>
+</section>
+
+<!-- 4. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>不公平時我們可以做什麼</h2>
+    <p class="subtitle">用同理心關心需要幫忙的朋友</p>
+  </div>
+</section>
+
+<!-- 5. 有冷氣 vs 沒冷氣 -->
+<section class="slide" id="slide-ac">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>熱熱的一天,你有涼涼的嗎?</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card right">
+        <div class="label">有 冷 氣 ❄️</div>
+        <div class="icon">😊</div>
+        <h3>還好</h3>
+        <p style="margin: 0;">家裡涼涼的<br>不會太辛苦</p>
+      </div>
+      <div class="compare-card left">
+        <div class="label">沒 冷 氣 🥵</div>
+        <div class="icon">😓</div>
+        <h3>很辛苦</h3>
+        <p style="margin: 0;">流汗、頭暈<br>很想喝水</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      <strong style="color: var(--c-accent);">家裡的東西不一樣,熱天感覺差很多 — 這就是一種不公平。</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health" target="_blank" rel="noopener">世界衛生組織 — 氣候變遷與健康</a>
+  </div>
+</section>
+
+<!-- 6. 想想看 如果是我 -->
+<section class="slide" id="slide-empathy">
+  <div class="slide-tag">活動二・步驟 2 反思</div>
+  <h2>想想看:如果是我……</h2>
+  <div class="slide-body">
+    <div style="text-align: center; padding: 40px 20px;">
+      <div style="font-size: 6rem;">💛</div>
+      <p style="font-size: 1.4rem; color: var(--c-accent); font-weight: 600; margin: 20px 0;">
+        如果你是那個沒冷氣的小朋友……
+      </p>
+      <p style="font-size: 1.1rem; color: var(--c-muted); margin-top: 16px;">
+        你會有什麼感覺?<br>
+        你希望大家怎麼幫你?
+      </p>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 24px;">
+      <strong>自由舉手分享,老師會傾聽你的想法。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 7. 小星星挺身而出 -->
+<section class="slide" id="slide-stand-up">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>小星星挺身而出</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 12px;">
+      看到朋友難過、被冷落,我們可以做這 3 件事!
+    </p>
+    <div class="emoji-grid">
+      <div class="emoji-card" style="border-color: var(--c-soc);"><div class="icon">🤗</div><div class="label">抱抱</div><div class="desc">雙手交叉</div></div>
+      <div class="emoji-card" style="border-color: var(--c-cog);"><div class="icon">🗣️</div><div class="label">問候</div><div class="desc">「你沒事嗎?」</div></div>
+      <div class="emoji-card" style="border-color: var(--c-beh);"><div class="icon">🙋</div><div class="label">找大人</div><div class="desc">小手高舉</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px; color: var(--c-accent);">
+      <strong>跟著老師一起練習這 3 個手勢!</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 8. 每個不一樣都很棒 -->
+<section class="slide" id="slide-celebrate">
+  <div class="slide-tag">活動一 / 二 共同概念</div>
+  <h2>每個不一樣都很棒</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="placeholder">
+        <div class="ph-tag">圖表佔位</div>
+        <div class="ph-title">[此處放:7 顆小星星手牽手圍圈插畫]</div>
+        <div class="ph-data"><strong>關鍵概念:</strong>每個小朋友都是獨一無二的寶貝</div>
+        <div class="ph-note">📌 示意圖待補繪 — 7 隻不同顏色的小星星手牽手圍成大圈,中間大愛心</div>
+      </div>
+      <figcaption>講不同的話、喜歡不同的東西、住不同的地方,都很棒</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px; color: var(--c-accent);">
+      <strong>跟旁邊朋友做「好朋友手勢」(擊掌或勾勾小指)!</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://adl.edu.tw/" target="_blank" rel="noopener">教育部因材網 — 食在現代 / 搶救糧食大作戰</a>
+  </div>
+</section>
+
+<!-- 9. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>我的選擇,地球的故事</h2>
+    <p class="subtitle">小行為,大影響</p>
+  </div>
+</section>
+
+<!-- 10. 地球笑 vs 地球哭 -->
+<section class="slide" id="slide-earth-faces">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>地球笑 vs 地球哭</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card right">
+        <div class="label">地 球 笑 😊</div>
+        <div class="icon">🌍✨</div>
+        <h3>對地球好</h3>
+        <p style="margin: 0;">走路、騎腳踏車<br>關燈、多穿衣服</p>
+      </div>
+      <div class="compare-card left">
+        <div class="label">地 球 哭 😢</div>
+        <div class="icon">🌍💧</div>
+        <h3>對地球不好</h3>
+        <p style="margin: 0;">開很多車、看電視很久<br>浪費水、忘記關燈</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px; color: var(--c-accent);">
+      <strong>老師喊行為,你比「地球笑」或「地球哭」!</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://adl.edu.tw/" target="_blank" rel="noopener">教育部因材網 — 電費帳單與碳排量 / 綠色騎跡 Ubike</a>
+  </div>
+</section>
+
+<!-- 11. 換個做法 -->
+<section class="slide" id="slide-swap">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>換個做法!</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 12px;">
+      他不是壞人,只是還沒想到 — 我們可以幫他想!
+    </p>
+    <div class="emoji-grid">
+      <div class="emoji-card" style="border-color: var(--c-warn);"><div class="icon">🚙</div><div class="label">每天開車上學</div><div class="desc">原本的做法</div></div>
+      <div class="emoji-card" style="border-color: var(--c-beh);"><div class="icon">🚶</div><div class="label">走路</div><div class="desc">換做法 1</div></div>
+      <div class="emoji-card" style="border-color: var(--c-beh);"><div class="icon">🚲</div><div class="label">腳踏車</div><div class="desc">換做法 2</div></div>
+      <div class="emoji-card" style="border-color: var(--c-beh);"><div class="icon">🚌</div><div class="label">搭公車</div><div class="desc">換做法 3</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      <strong style="color: var(--c-accent);">分組想 1 個「換個做法」(例如:看電視很久 → 出去散步)。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 12. 我的好行為金牌 -->
+<section class="slide" id="slide-medal">
+  <div class="slide-tag">活動三・步驟 4 ・學習單(投影版)</div>
+  <h2>我的好行為金牌</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      在小圓紙上,畫一個你今天想做的好行為。掛在脖子上,當地球小幫手!
+    </p>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">我的好行為金牌:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我會做的好行為是:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">這個行為會讓地球:</span>
+        <span class="blank"></span>
+      </div>
+      <hr style="margin: 18px 0; border: 0; border-top: 1px dashed var(--c-border);">
+      <div class="row">
+        <span class="lbl">小星星簽名:</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 13. 三件大事總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>我們學到的三件大事</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 件</div>
+        <div class="word">不一樣</div>
+        <div class="desc">每個小朋友都不一樣<br>都很棒</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 件</div>
+        <div class="word">挺身</div>
+        <div class="desc">看到不公平<br>我們可以幫忙</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 件</div>
+        <div class="word">選擇</div>
+        <div class="desc">我的小選擇<br>讓地球更好</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      全班拍手三下,大喊 — <br>
+      <strong style="color: var(--c-accent);">「不一樣,很棒!」</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">13</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

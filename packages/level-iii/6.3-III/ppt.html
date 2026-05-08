@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>負責任的消費 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border);
+    border-bottom-width: 2px; border-radius: 4px; font-family: monospace;
+    font-size: 0.8em; background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .slide.divider .subtitle { font-size: 1.1rem; color: var(--c-muted); margin-top: 8px; }
+
+  .stat-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap: 16px; margin: 16px 0; }
+  .stat-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 20px 16px; text-align: center; }
+  .stat-card .big-num { font-size: 2.6rem; font-weight: 900; color: var(--c-accent); line-height: 1.1; }
+  .stat-card .unit { font-size: 0.82rem; color: var(--c-muted); margin-top: 4px; }
+  .stat-card .label { font-size: 0.92rem; font-weight: 600; margin-top: 8px; }
+
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin: 18px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 20px; text-align: center; }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; color: var(--c-muted); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.3rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; font-size: 0.9rem; }
+
+  .r6-pyramid {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 6px; margin: 18px auto; max-width: 560px;
+  }
+  .r6-row {
+    border-radius: 6px; padding: 10px 20px; text-align: center;
+    font-weight: 700; color: #fff; font-size: 1rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .r6-row .r6-label { font-size: 1.05rem; }
+  .r6-row .r6-desc { font-size: 0.85rem; font-weight: 400; opacity: 0.9; }
+
+  .ws-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.98rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 11px 13px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg,transparent 0,transparent 18px,#d1d5db 18px,#d1d5db 19px); height: 42px; }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; margin: 24px 0; }
+  .key-card { text-align: center; padding: 26px 16px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.8rem; font-weight: 800; margin: 10px 0; }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.88rem; color: var(--c-muted); margin-top: 8px; }
+
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 20px 26px; background: var(--c-bg); max-width: 660px; margin: 14px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 10px; margin: 12px 0; font-size: 1rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 26px; }
+
+  .checklist { list-style: none; padding: 0; margin: 10px 0; }
+  .checklist li { padding: 9px 0; border-bottom: 1px dashed var(--c-border); font-size: 1rem; }
+  .checklist li::before { content: "☐ "; margin-right: 6px; color: var(--c-accent); font-size: 1.1em; }
+
+  .wsa-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; margin: 14px 0; }
+  .wsa-card { background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 10px; padding: 16px; }
+  .wsa-card h4 { margin: 0 0 8px; font-size: 1rem; color: var(--c-accent); }
+  .wsa-card ul { margin: 0; padding-left: 16px; font-size: 0.88rem; }
+  .wsa-card li { margin: 4px 0; }
+
+  .scenario-cards { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; margin: 16px 0; }
+  .scenario-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 16px; }
+  .scenario-card h4 { margin: 0 0 8px; font-size: 1rem; }
+  .scenario-card p { margin: 0; font-size: 0.9rem; color: var(--c-muted); }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.88rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">負責任的消費 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- ===== 封面 ===== -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content:center;">
+    <div style="font-size:0.9rem;color:var(--c-accent);letter-spacing:0.15em;margin-bottom:10px;">UNESCO 6.3-III ｜ 9-12 歲</div>
+    <h2>用更少，做更好<br><span style="font-size:2rem;">地球購物車大挑戰</span></h2>
+    <p class="subtitle">為什麼我們買東西，會影響遙遠的北極熊、珊瑚礁和隔壁國家的小朋友？</p>
+  </div>
+</section>
+
+<!-- ===== T恤驚嘆號 ===== -->
+<section class="slide" id="slide-tshirt">
+  <div class="slide-tag">活動一・數據 dp3・震撼開場</div>
+  <h2>一件 T 恤藏著一個小水庫</h2>
+  <div class="slide-body">
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="big-num">2,700</div>
+        <div class="unit">公升水</div>
+        <div class="label">製作一件棉質 T 恤<br>≈ 一個人 2.5 年飲水量</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-cog);">
+        <div class="big-num" style="color:var(--c-cog);">7,500</div>
+        <div class="unit">公升水</div>
+        <div class="label">製作一條牛仔褲</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div class="big-num" style="color:var(--c-warn);">12<span style="font-size:1.5rem;">億</span></div>
+        <div class="unit">噸 CO₂e / 年</div>
+        <div class="label">全球紡織業年排放<br>超過航空＋航運總和</div>
+      </div>
+    </div>
+    <p style="font-size:1.1rem;text-align:center;margin-top:16px;">
+      快時尚雖然便宜，<strong style="color:var(--c-warn);">地球卻在悄悄買單。</strong>
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://ellenmacarthurfoundation.org/topics/fashion/overview" target="_blank" rel="noopener">Ellen MacArthur Foundation 'A New Textiles Economy'</a> ／ UNEP 2023</div>
+</section>
+
+<!-- ===== 飲料杯 ===== -->
+<section class="slide" id="slide-cups">
+  <div class="slide-tag">活動一・數據 dp5</div>
+  <h2>台灣一年用掉超過 40 億個一次性飲料杯</h2>
+  <div class="slide-body">
+    <div style="display:flex;align-items:center;gap:32px;flex-wrap:wrap;margin:14px 0;">
+      <div style="text-align:center;min-width:180px;">
+        <div style="font-size:5rem;font-weight:900;color:var(--c-warn);line-height:1;">40<span style="font-size:2.5rem;">億</span></div>
+        <div style="font-size:1rem;color:var(--c-muted);margin-top:6px;">個 / 年<br>台灣一次性飲料杯</div>
+      </div>
+      <div style="flex:1;min-width:220px;">
+        <div class="stat-card" style="margin-bottom:14px;border-color:var(--c-beh);">
+          <div class="big-num" style="color:var(--c-beh);">180</div>
+          <div class="unit">個 / 學年</div>
+          <div class="label">自帶環保杯每週 5 次<br>一人可減少的杯子數</div>
+        </div>
+        <div style="background:var(--c-accent-soft);border-radius:8px;padding:12px 16px;font-size:1rem;">
+          <strong style="color:var(--c-accent);">同時減碳：</strong>一學年省下約 <strong>6 公斤 CO₂e</strong>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:1rem;background:#fef3c7;border-radius:8px;padding:12px 16px;margin-top:10px;">
+      <strong>計算看看：</strong>全班 30 人如果都自帶環保杯，一學年可少用幾個杯子？
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.moenv.gov.tw/" target="_blank" rel="noopener">環境部 資源循環署</a> ／ 看守台灣協會（2023-2024）</div>
+</section>
+
+<!-- ===== 6R 階層 ===== -->
+<section class="slide" id="slide-6r">
+  <div class="slide-tag">活動一・概念</div>
+  <h2>6R 階層：回收不是最強的環保</h2>
+  <div class="slide-body">
+    <div class="r6-pyramid">
+      <div class="r6-row" style="background:#15803d;width:90%;">
+        <span style="font-size:1.4rem;">🚫</span>
+        <div><span class="r6-label">Refuse 拒絕</span><br><span class="r6-desc">不買不需要的——最強環保行動</span></div>
+      </div>
+      <div class="r6-row" style="background:#16a34a;width:80%;">
+        <span style="font-size:1.4rem;">📉</span>
+        <div><span class="r6-label">Reduce 減量</span><br><span class="r6-desc">少買、買耐用品</span></div>
+      </div>
+      <div class="r6-row" style="background:#2563eb;width:70%;">
+        <span style="font-size:1.4rem;">🔄</span>
+        <div><span class="r6-label">Reuse 重複使用</span><br><span class="r6-desc">環保杯、布袋、二手物品</span></div>
+      </div>
+      <div class="r6-row" style="background:#7c3aed;width:60%;">
+        <span style="font-size:1.4rem;">🔧</span>
+        <div><span class="r6-label">Repair 修理</span><br><span class="r6-desc">壞了修而不是直接丟</span></div>
+      </div>
+      <div class="r6-row" style="background:#db2777;width:50%;">
+        <span style="font-size:1.4rem;">✂️</span>
+        <div><span class="r6-label">Repurpose 改造</span><br><span class="r6-desc">舊衣改購物袋、瓶子變花器</span></div>
+      </div>
+      <div class="r6-row" style="background:#ea580c;width:40%;">
+        <span style="font-size:1.4rem;">♻️</span>
+        <div><span class="r6-label">Recycle 回收</span><br><span class="r6-desc">最後防線，不是萬靈丹</span></div>
+      </div>
+    </div>
+    <p style="font-size:0.95rem;text-align:center;color:var(--c-muted);margin-top:8px;">由上到下，優先執行排序越前面的，環境效益越大。</p>
+  </div>
+</section>
+
+<!-- ===== 長壽命消費 ===== -->
+<section class="slide" id="slide-longevity">
+  <div class="slide-tag">活動一・數據 dp7</div>
+  <h2>多用 9 個月，減少 20-30% 足跡</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-beh);background:#dcfce7;">
+        <div class="label" style="color:var(--c-beh);">衣服多穿 9 個月</div>
+        <div style="font-size:3rem;font-weight:900;color:var(--c-beh);">-20~30%</div>
+        <p>碳、水、廢棄物足跡削減</p>
+        <p style="margin-top:8px;font-size:0.85rem;">把舊的用久，就是最強環保。</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-cog);background:#dbeafe;">
+        <div class="label" style="color:var(--c-cog);">3C 多用 1 年</div>
+        <div style="font-size:3rem;font-weight:900;color:var(--c-cog);">-20~30%</div>
+        <p>生命週期足跡削減</p>
+        <p style="margin-top:8px;font-size:0.85rem;">不換新機，也是在節省稀土開採。</p>
+      </div>
+    </div>
+    <p style="font-size:1rem;text-align:center;margin-top:14px;">快時尚平均只穿 <strong style="color:var(--c-warn);">7 次</strong>就進垃圾桶——你能想到「穿舊的更酷」的點子嗎？</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://wrap.ngo/taking-action/textiles/initiatives/clothing-longevity-protocol" target="_blank" rel="noopener">WRAP UK Clothing Longevity Protocol</a> ／ Ellen MacArthur Foundation（2022-2024）</div>
+</section>
+
+<!-- ===== 需要 vs 想要 ===== -->
+<section class="slide" id="slide-define">
+  <div class="slide-tag">活動二・概念定義</div>
+  <h2>負責任消費：用更少，做更好</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--c-beh);background:#dcfce7;">
+        <div class="label" style="color:var(--c-beh);">需 要 / NEED</div>
+        <div style="font-size:3rem;">🍱📚👟</div>
+        <h3>維持生活必需</h3>
+        <p>食物、衣服、上學用品<br>沒有會影響生存與健康</p>
+      </div>
+      <div class="compare-card" style="border-color:var(--c-warn);background:#fff7ed;">
+        <div class="label" style="color:var(--c-warn);">想 要 / WANT</div>
+        <div style="font-size:3rem;">🎮👑🛍️</div>
+        <h3>有的話更開心</h3>
+        <p>第 11 支遊戲造型<br>第 10 件 T 恤<br>沒有也能生存</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:18px;font-size:1.1rem;background:var(--c-accent-soft);border-radius:10px;padding:14px;">
+      <strong>購物前三問魔法咒語：</strong><br>
+      ① 我真的需要嗎？　② 有沒有替代？　③ 能用多久？
+    </div>
+  </div>
+</section>
+
+<!-- ===== 活動二過場 ===== -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動二</div>
+    <h2>暖身：需要 vs 想要大挑戰</h2>
+    <p class="subtitle">三個情境，你怎麼決定？</p>
+  </div>
+</section>
+
+<!-- ===== 暖身 ===== -->
+<section class="slide" id="slide-warmup">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>情境投票：需要還是想要？</h2>
+  <div class="slide-body">
+    <div class="scenario-cards">
+      <div class="scenario-card" style="border-color:var(--c-cog);">
+        <h4 style="color:var(--c-cog);">情境 A</h4>
+        <p>你的球鞋破了一個小洞，但還能穿。網路廣告出現了一款「超帥新款」，打 7 折。你會買嗎？</p>
+      </div>
+      <div class="scenario-card" style="border-color:var(--c-beh);">
+        <h4 style="color:var(--c-beh);">情境 B</h4>
+        <p>手遊推出新角色造型，限時 3 天特賣 $99。你已經有 10 個造型了。要買嗎？</p>
+      </div>
+      <div class="scenario-card" style="border-color:var(--c-warn);">
+        <h4 style="color:var(--c-warn);">情境 C</h4>
+        <p>媽媽說要買新的洗衣機，舊的還能用但耗電多。換了會省電但要花一大筆錢。你的建議是？</p>
+      </div>
+      <div class="scenario-card" style="border-color:var(--c-soc);">
+        <h4 style="color:var(--c-soc);">情境 D</h4>
+        <p>便利商店推出集點活動，買滿 $39 送點數，湊 100 點可換特典。你會特地去多買一樣東西嗎？</p>
+      </div>
+    </div>
+    <p style="font-size:1rem;text-align:center;color:var(--c-muted);margin-top:12px;">每個情境舉手投票，然後說說你的理由。</p>
+  </div>
+</section>
+
+<!-- ===== 食物浪費 ===== -->
+<section class="slide" id="slide-food-rank">
+  <div class="slide-tag">活動二・數據 dp1・dp2</div>
+  <h2>如果食物浪費是一個國家……</h2>
+  <div class="slide-body">
+    <div class="stat-cards">
+      <div class="stat-card" style="border-color:#dc2626;">
+        <div class="big-num" style="color:#dc2626;">10.5<span style="font-size:1.5rem;">億</span></div>
+        <div class="unit">噸 / 年</div>
+        <div class="label">全球食物浪費量<br>家庭是最大來源</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div class="big-num" style="color:var(--c-warn);">79</div>
+        <div class="unit">公斤 / 人 / 年</div>
+        <div class="label">平均每人丟掉的<br>可食用食物</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-cog);">
+        <div class="big-num" style="color:var(--c-cog);">8-10<span style="font-size:1.4rem;">%</span></div>
+        <div class="unit">全球 GHG</div>
+        <div class="label">食物損失+浪費占比<br>= 全球第三大排放國</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;background:#fee2e2;border:2px solid #dc2626;border-radius:10px;padding:14px 18px;font-size:1.05rem;">
+      🌍 如果食物浪費是一個國家，它是全球<strong>第三大溫室氣體排放國</strong>，僅次於中國與美國。
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.unep.org/resources/publication/food-waste-index-report-2024" target="_blank" rel="noopener">UNEP Food Waste Index Report 2024</a> ／ FAO / IPCC AR6 WG3</div>
+</section>
+
+<!-- ===== 活動三過場 ===== -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三</div>
+    <h2>台灣的垃圾地圖與地球超載日</h2>
+    <p class="subtitle">數據就在我們身邊</p>
+  </div>
+</section>
+
+<!-- ===== 食物浪費深入 ===== -->
+<section class="slide" id="slide-food-waste">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>少倒一口飯，就是在救地球</h2>
+  <div class="slide-body">
+    <div style="display:flex;align-items:center;gap:30px;flex-wrap:wrap;margin:14px 0;">
+      <div style="min-width:200px;">
+        <figure>
+          <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:32px 20px;background:var(--c-accent-soft);text-align:center;">
+            <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+            <div style="font-size:1.1rem;color:var(--c-accent);font-weight:700;margin-bottom:8px;">[此處放：地球上食物掉落→垃圾車示意圖]</div>
+            <div style="font-size:0.85rem;color:var(--c-muted);">📌 示意圖待補繪</div>
+          </div>
+          <figcaption>平均每人每年丟掉 79 公斤食物——差不多是一個國中生的體重</figcaption>
+        </figure>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <p style="font-size:1.05rem;">MOE 教案《搶救糧食大作戰》提醒我們：地球另一端有人吃不到飯，我們卻在丟飯。</p>
+        <div style="background:var(--c-accent-soft);border-radius:8px;padding:12px 16px;margin-top:12px;font-size:1rem;">
+          <strong style="color:var(--c-accent);">班級行動：</strong>量測一週午餐剩食重量，算出全班一學期的「丟棄成本」與「減碳潛力」。
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">參考：<a href="https://www.fao.org/food-loss-and-food-waste" target="_blank" rel="noopener">UN FAO Food Loss and Food Waste</a> ／ MOE 0174《搶救糧食大作戰》</div>
+</section>
+
+<!-- ===== 消費健檢 ===== -->
+<section class="slide" id="slide-checkup">
+  <div class="slide-tag">活動三・步驟 2・學習單（投影版）</div>
+  <h2>我的消費健檢</h2>
+  <div class="slide-body">
+    <p style="color:var(--c-muted);font-size:1rem;margin:0 0 10px;">在四個類別中，你的「負責任消費」表現如何？</p>
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>消費類別</th>
+          <th>我的習慣（描述）</th>
+          <th>6R 最高到哪層？</th>
+          <th>下週可以進步一步？</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>外食 / 飲料</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>衣物 / 配件</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>文具 / 3C</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>交通 / 出行</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- ===== 活動四過場 ===== -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動四</div>
+    <h2>全校行動與 30 天承諾</h2>
+    <p class="subtitle">從健檢結果到實際改變</p>
+  </div>
+</section>
+
+<!-- ===== WSA 校園行動 ===== -->
+<section class="slide" id="slide-wsa-school">
+  <div class="slide-tag">活動四・步驟 1・WSA 全校視野</div>
+  <h2>全校可以做的四件事</h2>
+  <div class="slide-body">
+    <div class="wsa-grid">
+      <div class="wsa-card">
+        <h4>📚 課程整合</h4>
+        <ul>
+          <li>自然課：水足跡、碳足跡計算</li>
+          <li>社會課：快時尚的全球供應鏈</li>
+          <li>數學課：計算全班每年減少多少垃圾</li>
+        </ul>
+      </div>
+      <div class="wsa-card">
+        <h4>🏫 校園營運</h4>
+        <ul>
+          <li>合作社選購有環保標章商品</li>
+          <li>廚房每週秤剩食、公布數據</li>
+          <li>飲水機旁放二手杯、停售一次性杯</li>
+        </ul>
+      </div>
+      <div class="wsa-card">
+        <h4>🤝 社區連結</h4>
+        <ul>
+          <li>辦「二手衣交換日」開放社區參加</li>
+          <li>連結在地小農、辦快時尚講座</li>
+          <li>與里辦合作廚餘堆肥計畫</li>
+        </ul>
+      </div>
+      <div class="wsa-card">
+        <h4>🎙️ 學生治理</h4>
+        <ul>
+          <li>組「6R 小隊」，每週在班上報告</li>
+          <li>在家長會提案「校園減廢方案」</li>
+          <li>在社群發起「30 天負責任消費挑戰」</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 剩食故事 ===== -->
+<section class="slide" id="slide-story">
+  <div class="slide-tag">活動四・步驟 2</div>
+  <h2>一個便當的故事</h2>
+  <div class="slide-body">
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin:20px 0;flex-wrap:wrap;font-size:1.05rem;">
+      <div style="background:#fef3c7;padding:16px 18px;border-radius:10px;text-align:center;min-width:110px;">
+        🌾<br><strong>農夫種米</strong><br><span style="font-size:0.85rem;color:var(--c-muted);">水、土壤、陽光</span>
+      </div>
+      <div style="font-size:1.6rem;color:var(--c-muted);">→</div>
+      <div style="background:#dcfce7;padding:16px 18px;border-radius:10px;text-align:center;min-width:110px;">
+        🚛<br><strong>運輸</strong><br><span style="font-size:0.85rem;color:var(--c-muted);">碳排放</span>
+      </div>
+      <div style="font-size:1.6rem;color:var(--c-muted);">→</div>
+      <div style="background:#dbeafe;padding:16px 18px;border-radius:10px;text-align:center;min-width:110px;">
+        🍱<br><strong>你的便當</strong><br><span style="font-size:0.85rem;color:var(--c-muted);">吃光 or 丟棄？</span>
+      </div>
+      <div style="font-size:1.6rem;color:var(--c-muted);">→</div>
+      <div style="background:#fee2e2;padding:16px 18px;border-radius:10px;text-align:center;min-width:110px;border:2px solid var(--c-warn);">
+        🌍<br><strong>氣候影響</strong><br><span style="font-size:0.85rem;color:var(--c-muted);">甲烷排放</span>
+      </div>
+    </div>
+    <p style="font-size:1.05rem;text-align:center;">每一次<strong style="color:var(--c-beh);">吃光光</strong>，就是投給未來一張票。<br>每一次<strong style="color:var(--c-warn);">隨手丟</strong>，也是一個氣候選擇。</p>
+  </div>
+</section>
+
+<!-- ===== WSA 學生行動 ===== -->
+<section class="slide" id="slide-wsa-students">
+  <div class="slide-tag">活動四・步驟 3・學習單（投影版）</div>
+  <h2>學生行動方案設計</h2>
+  <div class="slide-body">
+    <p style="color:var(--c-muted);font-size:1rem;margin:0 0 12px;">選一個你願意在校內推動的行動，設計你的方案。</p>
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>方案名稱</th>
+          <th>目標對象</th>
+          <th>執行步驟（至少 2 步）</th>
+          <th>如何衡量成效？</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>（你的方案）</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>備選方案</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:1rem;margin-top:10px;">參考方向：①減少午餐剩食 ②推動二手衣交換 ③校園零一次性杯週 ④家長會提案</p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- ===== 地球超載日 + 情境選擇 ===== -->
+<section class="slide" id="slide-scenario">
+  <div class="slide-tag">活動四・步驟 4・數據 dp6</div>
+  <h2>我們只有一顆地球——多出來的 0.7 個從哪裡借？</h2>
+  <div class="slide-body">
+    <div class="stat-cards" style="margin-bottom:16px;">
+      <div class="stat-card" style="border-color:#dc2626;">
+        <div class="big-num" style="color:#dc2626;">1.7</div>
+        <div class="unit">個地球</div>
+        <div class="label">若全球都像最高收入國家消費<br>我們需要的地球數</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--c-warn);">
+        <div style="font-size:2.5rem;">🌍<span style="font-size:1.4rem;color:var(--c-warn);">+0.7</span></div>
+        <div class="label" style="color:var(--c-warn);">多出來的 0.7 個地球<br>是向未來世代借來的</div>
+      </div>
+    </div>
+    <div style="background:#fef9c3;border:2px solid #ca8a04;border-radius:10px;padding:14px 18px;font-size:1rem;margin-top:4px;">
+      <strong>情境選擇：</strong>如果你是學校合作社主任，你會優先推動下列哪一項？<br>
+      A. 停售所有一次性塑膠袋　　B. 賣場只賣有環保標章商品<br>
+      C. 剩食打折促銷、不丟棄　　D. 讓學生自帶餐盒享折扣
+    </div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.unep.org/topics/sustainable-development-goals/sdg-12-responsible-consumption-and-production" target="_blank" rel="noopener">UNEP SDG 12</a> ／ Global Footprint Network Earth Overshoot Day（2024）</div>
+</section>
+
+<!-- ===== 30 天承諾 ===== -->
+<section class="slide" id="slide-pledge">
+  <div class="slide-tag">活動四・步驟 5・學習單（投影版）</div>
+  <h2>30 天負責任消費承諾書</h2>
+  <div class="slide-body">
+    <p style="text-align:center;color:var(--c-muted);font-size:1rem;">寫下一件你願意從今天做到下個月的小行動。</p>
+    <ul class="checklist" style="max-width:640px;margin:14px auto;">
+      <li>自帶水壺，不買一次性飲料杯</li>
+      <li>三週不買新衣——看看有沒有差別</li>
+      <li>每天清空便當，不留剩飯</li>
+      <li>購物前先問「我真的需要嗎？」</li>
+      <li>修理一件壞掉的東西，而不是直接買新的</li>
+    </ul>
+    <div class="pledge-form" style="margin-top:10px;">
+      <div class="row"><span class="lbl">我選擇的行動是：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">我承諾從</span><span class="blank" style="max-width:90px;"></span><span class="lbl">起，持續</span><span class="blank" style="max-width:50px;"></span><span class="lbl">天</span></div>
+      <div class="row"><span class="lbl">我希望帶來的改變：</span><span class="blank"></span></div>
+      <div class="row"><span class="lbl">承諾人：</span><span class="blank"></span><span class="lbl">見證夥伴：</span><span class="blank"></span></div>
+    </div>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- ===== 三關鍵字總結 ===== -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">足跡</div>
+        <div class="desc">一件 T 恤 = 2,700 公升水<br>一條牛仔褲 = 7,500 公升<br>每件東西背後有代價</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">6R</div>
+        <div class="desc">拒絕 > 減量 > 重複使用<br>> 修理 > 改造 > 回收<br>回收不是最強的環保</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">行動</div>
+        <div class="desc">自帶水壺・少買新衣<br>吃光便當・修舊物品<br>每次消費都是投票</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.1rem;margin-top:20px;">
+      <strong style="color:var(--c-accent);">地球只有一顆，我們每一次消費，都是一張投票。成為我們的全校英雄！</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">14</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+</body>
+</html>

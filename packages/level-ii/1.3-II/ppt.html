@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小樹朋友的秘密 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px;
+    z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px;
+    border: 1px solid var(--c-border); border-bottom-width: 2px;
+    border-radius: 4px; font-family: monospace; font-size: 0.8em;
+    background: #fff; margin: 0 2px;
+  }
+
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px;
+    display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .tree-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px; margin: 18px 0;
+  }
+  .tree-card {
+    border: 2px solid var(--c-beh);
+    background: #f0fdf4;
+    border-radius: 12px;
+    padding: 18px 10px;
+    text-align: center;
+  }
+  .tree-card .ic { font-size: 3rem; }
+  .tree-card .nm { font-size: 1.1rem; font-weight: 700; color: #15803d; margin-top: 6px; }
+
+  .gift-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 16px; margin: 16px 0;
+  }
+  .gift-card {
+    border: 2px solid var(--c-border);
+    border-radius: 12px;
+    padding: 18px;
+    background: var(--c-bg);
+    text-align: center;
+  }
+  .gift-card .ic { font-size: 3rem; }
+  .gift-card h3 { margin: 8px 0 4px; color: var(--c-accent); }
+  .gift-card p { color: var(--c-muted); margin: 0; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .summary-keys {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; margin: 30px 0;
+  }
+  .key-card {
+    text-align: center; padding: 30px 20px;
+    border-radius: 16px; background: var(--c-bg);
+    border: 3px solid;
+  }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  .step-row {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 10px; margin: 20px 0;
+  }
+  .step-row .stp {
+    border: 2px dashed var(--c-accent);
+    background: #ecfeff;
+    border-radius: 10px;
+    padding: 14px 6px;
+    text-align: center;
+  }
+  .step-row .stp .num {
+    font-size: 0.8rem; color: var(--c-muted);
+    letter-spacing: 0.15em;
+  }
+  .step-row .stp .ic { font-size: 2rem; margin: 4px 0; }
+  .step-row .stp .nm { font-size: 0.95rem; font-weight: 700; color: var(--c-accent); }
+
+  .compare-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 24px; margin: 20px 0;
+  }
+  .compare-card {
+    border: 2px solid var(--c-border);
+    border-radius: 12px;
+    padding: 24px; text-align: center;
+  }
+  .compare-card .icon { font-size: 3.6rem; }
+  .compare-card h3 { margin: 8px 0; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">小樹朋友的秘密 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>小樹朋友的秘密</h2>
+    <p class="subtitle">樹是怎麼幫我們呼吸的?</p>
+    <div style="font-size: 5rem; margin-top: 20px;">🌳☀️🌱</div>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>樹站著不能跑,牠在做什麼?</h2>
+  <div class="slide-body">
+    <p style="text-align:center; font-size:1.2rem; margin: 0 0 16px;">
+      你家附近、學校旁邊,有什麼樹?
+    </p>
+    <div style="text-align:center; font-size:5rem; margin: 20px 0;">🌳🌴🌲🍃</div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 20px; color: var(--c-accent);">
+      <strong>偷偷告訴你:樹有一個大大的秘密喔!</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>小樹朋友在呼吸?</h2>
+    <p class="subtitle">葉子像吸管,白天認真工作</p>
+  </div>
+</section>
+
+<!-- 4. 樹朋友長什麼樣 -->
+<section class="slide" id="slide-trees">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>樹朋友長什麼樣子?</h2>
+  <div class="slide-body">
+    <div class="tree-grid">
+      <div class="tree-card"><div class="ic">🌳</div><div class="nm">榕樹</div></div>
+      <div class="tree-card"><div class="ic">🌲</div><div class="nm">樟樹</div></div>
+      <div class="tree-card"><div class="ic">🌴</div><div class="nm">茄苳</div></div>
+      <div class="tree-card"><div class="ic">🌺</div><div class="nm">鳳凰木</div></div>
+      <div class="tree-card"><div class="ic">🌸</div><div class="nm">櫻花</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      長得不一樣,但每一棵都是好朋友。<br>
+      <strong>哪一棵你最喜歡?為什麼?</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 5. 樹的小秘密 -->
+<section class="slide" id="slide-secret">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>樹的小秘密:葉子像吸管</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:樹葉變吸管,藍色 CO2 進、綠色 O₂ 出]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵概念:</strong>白天有太陽時,樹葉吸進二氧化碳、吐出氧氣。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>白天有太陽 = 樹的「陽光餐」時間</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 24px;">
+      動作:對著手心<strong>「呼~」</strong>吐一口氣。<br>
+      你吐的氣,小樹要吃掉了!
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.forest.gov.tw/0004658" target="_blank" rel="noopener">行政院農業部林業及自然保育署 — 森林碳管理</a>
+  </div>
+</section>
+
+<!-- 6. 我變成樹 -->
+<section class="slide" id="slide-be-tree">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>小實驗:我變成樹</h2>
+  <div class="slide-body">
+    <p style="text-align:center; font-size:1.2rem; color: var(--c-muted); margin: 0 0 24px;">
+      站起來,雙手慢慢舉高,張開手指當葉子!
+    </p>
+    <div class="step-row">
+      <div class="stp">
+        <div class="num">1</div>
+        <div class="ic">🙋</div>
+        <div class="nm">站好</div>
+      </div>
+      <div class="stp">
+        <div class="num">2</div>
+        <div class="ic">🙆</div>
+        <div class="nm">舉高高</div>
+      </div>
+      <div class="stp">
+        <div class="num">3</div>
+        <div class="ic">🌬️</div>
+        <div class="nm">慢慢吸</div>
+      </div>
+      <div class="stp">
+        <div class="num">4</div>
+        <div class="ic">😌</div>
+        <div class="nm">慢慢吐</div>
+      </div>
+      <div class="stp">
+        <div class="num">5</div>
+        <div class="ic">🌳</div>
+        <div class="nm">變成樹</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      連續做 <strong>3 次</strong> 深呼吸。你現在就是一棵小樹!
+    </p>
+  </div>
+</section>
+
+<!-- 7. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>樹朋友給我們好多禮物</h2>
+    <p class="subtitle">遮蔭、家、果子、清新空氣</p>
+  </div>
+</section>
+
+<!-- 8. 樹的禮物 -->
+<section class="slide" id="slide-gifts">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>樹還會給我們什麼?</h2>
+  <div class="slide-body">
+    <div class="gift-grid">
+      <div class="gift-card">
+        <div class="ic">☂️</div>
+        <h3>遮太陽 / 擋雨</h3>
+        <p>夏天乘涼,雨天當小雨傘</p>
+      </div>
+      <div class="gift-card">
+        <div class="ic">🐦</div>
+        <h3>小鳥的家</h3>
+        <p>松鼠、小鳥、小昆蟲都住</p>
+      </div>
+      <div class="gift-card">
+        <div class="ic">🍎</div>
+        <h3>果子吃</h3>
+        <p>有些樹會結果子給人和動物</p>
+      </div>
+      <div class="gift-card">
+        <div class="ic">🌬️</div>
+        <h3>清新空氣</h3>
+        <p>風吹過樹葉,空氣變清爽</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px; color: var(--c-accent);">
+      <strong>樹是「全能好朋友」!</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 9. 臺灣綠色外套 -->
+<section class="slide" id="slide-tw-forest">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>臺灣的綠色外套</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:臺灣島塗綠色 + 60% 大字]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>臺灣陸地<strong style="color:#16a34a; font-size:1.4rem;">約 60%</strong>是森林,像穿著一件綠色大外套。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>大家一起把學習單上的臺灣島塗綠</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      <strong>你去過哪座山或森林?</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.forest.gov.tw/0004658" target="_blank" rel="noopener">林業及自然保育署 — 森林碳管理</a>
+  </div>
+</section>
+
+<!-- 10. 樹樹擁抱 CO2 -->
+<section class="slide" id="slide-game">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>小遊戲:樹樹擁抱 CO2</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:#3b82f6;">
+        <div class="icon">💨</div>
+        <h3>吐氣的人</h3>
+        <p>拿藍色 CO2 卡</p>
+      </div>
+      <div class="compare-card" style="border-color:#16a34a;">
+        <div class="icon">🌳</div>
+        <h3>小樹</h3>
+        <p>張開手臂等 CO2,交換出綠色 O₂ 卡</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      老師喊:<strong>「白天到了!」</strong> → 小樹跑去抱 CO2 卡 → 換 O₂ 卡。<br>
+      玩 3 輪,交換角色。
+    </p>
+  </div>
+</section>
+
+<!-- 11. 化石便當故事 -->
+<section class="slide" id="slide-fossil">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>煤炭和石油是什麼?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:遠古森林 → 埋地底 → 加油站/工廠 三格連連看]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵概念:</strong>煤和石油 = 很久很久以前的植物 → 燒掉會放出二氧化碳 → 地球變熱。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>化石燃料就像「埋在地底的遠古樹葉便當」</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 24px;">
+      <strong>地球為什麼會覺得熱呢?</strong>(讓孩子自由回答)
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:教育部教材《氣候變遷大觀園》、
+    <a href="https://science.nasa.gov/kids/earth/" target="_blank" rel="noopener">兒童科學館(美國太空總署)</a>
+  </div>
+</section>
+
+<!-- 12. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>我是地球小英雄</h2>
+    <p class="subtitle">每個小動作都是給地球的擁抱</p>
+  </div>
+</section>
+
+<!-- 13. 我能做什麼 -->
+<section class="slide" id="slide-actions">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>我能做什麼?</h2>
+  <div class="slide-body">
+    <div class="gift-grid">
+      <div class="gift-card" style="border-color: var(--c-beh);">
+        <div class="ic">♻️</div>
+        <h3>撿垃圾</h3>
+        <p>公園、操場看到先撿起來</p>
+      </div>
+      <div class="gift-card" style="border-color: var(--c-warn);">
+        <div class="ic">💡</div>
+        <h3>關燈</h3>
+        <p>離開房間記得「喀嚓」一下</p>
+      </div>
+      <div class="gift-card" style="border-color: var(--c-cog);">
+        <div class="ic">👣</div>
+        <h3>多走路</h3>
+        <p>近近的地方不開車</p>
+      </div>
+      <div class="gift-card" style="border-color: var(--c-soc);">
+        <div class="ic">🌱</div>
+        <h3>種一棵</h3>
+        <p>跟家人一起種小種子</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 16px;">
+      <strong>你今天想先做哪一件事?</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 14. 動手種一顆種子 -->
+<section class="slide" id="slide-plant">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>動手種一顆種子!</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.1rem; color: var(--c-muted); margin: 0 0 16px;">
+      綠豆、九層塔,或老師準備的台灣原生小苗。
+    </p>
+    <div class="step-row">
+      <div class="stp">
+        <div class="num">1</div>
+        <div class="ic">⛏️</div>
+        <div class="nm">挖洞洞</div>
+      </div>
+      <div class="stp">
+        <div class="num">2</div>
+        <div class="ic">🌰</div>
+        <div class="nm">放種子</div>
+      </div>
+      <div class="stp">
+        <div class="num">3</div>
+        <div class="ic">🪣</div>
+        <div class="nm">蓋土土</div>
+      </div>
+      <div class="stp">
+        <div class="num">4</div>
+        <div class="ic">💧</div>
+        <div class="nm">澆水水</div>
+      </div>
+      <div class="stp">
+        <div class="num">5</div>
+        <div class="ic">✏️</div>
+        <div class="nm">寫名字</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px;">
+      你就是它的小爸爸/小媽媽,每天回來看看它喔!
+    </p>
+  </div>
+</section>
+
+<!-- 15. 我們一起做 -->
+<section class="slide" id="slide-together">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>我們一起做(承諾卡)</h2>
+  <div class="slide-body">
+    <p style="text-align:center; font-size:1.1rem; margin: 0 0 16px;">
+      圈選 1–2 項,回家做完請爸媽簽名再帶回!
+    </p>
+    <div style="border: 3px dashed var(--c-warn); background:#fff7ed; border-radius:14px; padding:24px; max-width:680px; margin:0 auto;">
+      <p style="font-size:1.4rem; color: var(--c-warn); font-weight:700; text-align:center; margin:0 0 16px;">⭐ 我是地球小英雄 ⭐</p>
+      <ul style="list-style:none; padding:0; margin:0; font-size:1.1rem;">
+        <li style="padding:10px 0; border-bottom:1px dashed #fed7aa;">☐ 撿一個垃圾</li>
+        <li style="padding:10px 0; border-bottom:1px dashed #fed7aa;">☐ 關掉沒在用的燈</li>
+        <li style="padding:10px 0; border-bottom:1px dashed #fed7aa;">☐ 少用一個塑膠袋</li>
+        <li style="padding:10px 0;">☐ 多走路少坐車</li>
+      </ul>
+      <p style="text-align:right; margin:16px 0 0; color: var(--c-muted); font-size:0.95rem;">家長簽名:______________</p>
+    </div>
+  </div>
+</section>
+
+<!-- 16. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三件大事,一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 件</div>
+        <div class="word">呼吸</div>
+        <div class="desc">樹葉白天<br>吸 CO2 吐 O₂</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 件</div>
+        <div class="word">禮物</div>
+        <div class="desc">樹給遮蔭、家、<br>果子、清新空氣</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 件</div>
+        <div class="word">行動</div>
+        <div class="desc">種子、撿垃圾、關燈<br>當地球小英雄</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">小樹謝謝你 ♡ 你已經是地球的小英雄!</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">16</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地球小英雄 — 教學投影片（4.5-II）</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border);
+    border-bottom-width: 2px; border-radius: 4px; font-family: monospace;
+    font-size: 0.8em; background: #fff; margin: 0 2px;
+  }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .question-cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; margin: 24px 0;
+  }
+  .question-card {
+    background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px;
+    padding: 24px; font-size: 1.1rem; text-align: center; position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%; font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .skill-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0;
+  }
+  .skill-card {
+    border: 2px solid var(--c-border); border-radius: 12px; padding: 22px; text-align: center;
+  }
+  .skill-card .icon { font-size: 2.6rem; margin-bottom: 10px; }
+  .skill-card .name { font-size: 1.1rem; font-weight: 700; color: var(--c-accent); margin-bottom: 6px; }
+  .skill-card .desc { font-size: 0.9rem; color: var(--c-muted); }
+  .data-compare {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;
+  }
+  .data-box {
+    border-radius: 12px; padding: 22px; text-align: center;
+  }
+  .data-box.warn { background: #fff7ed; border: 2px solid var(--c-warn); }
+  .data-box.good { background: #f0fdf4; border: 2px solid var(--c-beh); }
+  .data-box .stat { font-size: 2.2rem; font-weight: 800; margin-bottom: 8px; }
+  .data-box.warn .stat { color: var(--c-warn); }
+  .data-box.good .stat { color: var(--c-beh); }
+  .data-box .desc { font-size: 0.95rem; }
+  .pledge-form {
+    border: 2px solid var(--c-accent); border-radius: 12px;
+    padding: 24px 30px; background: var(--c-bg); max-width: 640px; margin: 20px auto;
+  }
+  .pledge-form .row {
+    display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem;
+  }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 12px 0; }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">地球小英雄 — 教學投影片（4.5-II）</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <div style="font-size: 3rem; margin-bottom: 16px;">🦔🌍</div>
+    <h2>地球小英雄</h2>
+    <p class="subtitle">今天就出動！每個小行動都算數</p>
+    <p style="font-size: 1rem; color: var(--c-muted); margin-top: 12px;">Level II｜5–8 歲｜Key ID: 4.5-II</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>地球需要我們幫忙，你準備好了嗎？</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>地球現在有什麼問題？</div>
+      <div class="question-card"><div class="q-num">2</div>為什麼要「現在就」開始幫忙？</div>
+      <div class="question-card"><div class="q-num">3</div>小朋友可以做什麼小行動？</div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px; color: var(--c-accent);">
+      <strong>阿波波說：我需要你們的幫忙！準備好戴上披風了嗎？</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>地球的小警報</h2>
+    <p style="font-size: 1.1rem; color: var(--c-muted); margin-top: 8px;">認識「地球現在需要幫忙」，知道小朋友也可以幫忙</p>
+  </div>
+</section>
+
+<!-- 4. 地球生病了 -->
+<section class="slide" id="slide-warming">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>地球媽媽在發燒！</h2>
+  <div class="slide-body">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 16px 0;">
+      <div style="background: #fff7ed; border: 2px solid var(--c-warn); border-radius: 12px; padding: 24px; text-align: center;">
+        <div style="font-size: 2.4rem; margin-bottom: 10px;">🌍🥵</div>
+        <div style="font-size: 1rem; font-weight: 700; color: var(--c-warn);">太多「壞氣體」</div>
+        <p style="font-size: 0.9rem; color: var(--c-muted);">汽車、工廠、電燈放出的氣，太多讓地球太熱</p>
+      </div>
+      <div style="background: #f0fdf4; border: 2px solid var(--c-beh); border-radius: 12px; padding: 24px; text-align: center;">
+        <div style="font-size: 2.4rem; margin-bottom: 10px;">🌍😊</div>
+        <div style="font-size: 1rem; font-weight: 700; color: var(--c-beh);">我們可以幫忙！</div>
+        <p style="font-size: 0.9rem; color: var(--c-muted);">關燈、省水、不浪費，每個小行動都讓地球好一點</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 12px;">
+      老師喊「地球你還好嗎？」——孩子回「<strong style="color: var(--c-beh);">我來幫你！</strong>」
+    </p>
+  </div>
+</section>
+
+<!-- 5. 大蛋糕比喻 -->
+<section class="slide" id="slide-cake">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>大蛋糕要在 2030 年前吃掉一半！</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：大蛋糕分 10 格，中間寫「2030」的示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>全世界要在 2030 年以前，把讓地球發燒的氣體少掉約 45%（差不多一半）</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>每個孩子上台貼一張小行動貼紙，蓋掉蛋糕的一格！</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.ipcc.ch/sr15/chapter/spm/" target="_blank" rel="noopener">IPCC 1.5°C 特別報告（決策者摘要）</a></div>
+</section>
+
+<!-- 6. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>小行動大力量</h2>
+    <p style="font-size: 1.1rem; color: var(--c-muted); margin-top: 8px;">體驗 3–4 個可以做的氣候小行動，感受「我會！」</p>
+  </div>
+</section>
+
+<!-- 7. 關燈救地球 -->
+<section class="slide" id="slide-cow">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>關燈一年，少放一隻乳牛那麼重的壞氣體！</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放：亮房間 vs 節能房間 + 一隻乳牛示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據：</strong>記得關燈、關電視、關冷氣，一年可以少放約 900 公斤壞氣體，差不多是一隻乳牛那麼重</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>比牛角手勢＋喊「哞！」＋比「關」的動作</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.un.org/en/actnow/ten-actions" target="_blank" rel="noopener">聯合國 ActNow — 十大個人氣候行動</a></div>
+</section>
+
+<!-- 8. 吃光光 -->
+<section class="slide" id="slide-lunchbox">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>便當吃光光，地球笑咪咪！</h2>
+  <div class="slide-body">
+    <div class="data-compare">
+      <div class="data-box warn">
+        <div style="font-size: 2rem; margin-bottom: 8px;">😢🍱</div>
+        <div class="stat">浪費食物</div>
+        <div class="desc">讓地球多「咳嗽」</div>
+      </div>
+      <div class="data-box good">
+        <div style="font-size: 2rem; margin-bottom: 8px;">😊🍱</div>
+        <div class="stat">吃光光</div>
+        <div class="desc">一年少放約 <strong>300 公斤</strong> 壞氣體<br>像 <strong>60 個大書包</strong> 那麼重</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      孩子做「吃光光」動作＋拍拍肚子說「<strong style="color: var(--c-beh);">我可以！</strong>」
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.un.org/en/actnow/ten-actions" target="_blank" rel="noopener">聯合國 ActNow — 十大個人氣候行動</a></div>
+</section>
+
+<!-- 9. 英雄宣誓 -->
+<section class="slide" id="slide-pledge">
+  <div class="slide-tag">活動二・步驟 4・學習單（投影版）</div>
+  <h2>地球小英雄宣誓！</h2>
+  <div class="slide-body">
+    <div class="pledge-form">
+      <div style="font-size: 1.1rem; font-weight: 700; color: var(--c-accent); margin-bottom: 16px; text-align: center;">🦔 英雄宣誓</div>
+      <div class="row">
+        <span class="lbl">我是地球小英雄，我要：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我今天回家要做的一件事：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我想邀請</span>
+        <span class="blank"></span>
+        <span class="lbl">一起做。</span>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-accent);">
+      圍坐一圈，每人大聲說出自己的宣誓！
+    </p>
+  </div>
+</section>
+
+<!-- 10. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>一起動起來</h2>
+    <p style="font-size: 1.1rem; color: var(--c-muted); margin-top: 8px;">用社區和家庭行動連結概念，做出一件作品</p>
+  </div>
+</section>
+
+<!-- 11. 走路上學 -->
+<section class="slide" id="slide-walk">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>走路上學，每一步送地球一個愛心！</h2>
+  <div class="slide-body">
+    <div style="text-align: center; margin: 20px 0;">
+      <div style="font-size: 4rem; margin-bottom: 16px;">👟❤️🌍</div>
+      <p style="font-size: 1.3rem; font-weight: 700; color: var(--c-accent);">走路或騎腳踏車上學，不請爸媽開車</p>
+      <p style="font-size: 1.1rem; color: var(--c-muted); margin-top: 12px;">每走一公里，就幫地球「喘口氣」<br>每一步都算數！</p>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      原地踏步 10 下＋比愛心手勢，送給地球！
+    </p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.un.org/en/actnow/ten-actions" target="_blank" rel="noopener">聯合國 ActNow — 十大個人氣候行動</a></div>
+</section>
+
+<!-- 12. 愛地球海報 -->
+<section class="slide" id="slide-poster">
+  <div class="slide-tag">活動三・步驟 3・學習單（投影版）</div>
+  <h2>我們班愛地球的 3 件事</h2>
+  <div class="slide-body">
+    <div style="border: 2px dashed var(--c-beh); border-radius: 16px; padding: 30px; margin: 16px auto; max-width: 700px; background: #f0fdf4;">
+      <div style="font-size: 1.1rem; color: var(--c-beh); font-weight: 700; margin-bottom: 16px; text-align: center;">🌍 我們班的愛地球海報</div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+        <div style="border: 2px dashed #86efac; border-radius: 10px; min-height: 120px; display: flex; align-items: center; justify-content: center; background: #fff; text-align: center; color: var(--c-muted); font-size: 0.9rem; padding: 12px;">第 1 件事<br>（畫在這裡）</div>
+        <div style="border: 2px dashed #86efac; border-radius: 10px; min-height: 120px; display: flex; align-items: center; justify-content: center; background: #fff; text-align: center; color: var(--c-muted); font-size: 0.9rem; padding: 12px;">第 2 件事<br>（畫在這裡）</div>
+        <div style="border: 2px dashed #86efac; border-radius: 10px; min-height: 120px; display: flex; align-items: center; justify-content: center; background: #fff; text-align: center; color: var(--c-muted); font-size: 0.9rem; padding: 12px;">第 3 件事<br>（畫在這裡）</div>
+      </div>
+      <p style="text-align: center; margin-top: 16px; font-size: 1rem; color: var(--c-accent);">分組完成後，每組說一句說明！</p>
+    </div>
+  </div>
+</section>
+
+<!-- 13. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">現在</div>
+        <div class="desc">地球需要現在就開始幫忙，不能再等</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">累積</div>
+        <div class="desc">小行動加起來是大力量，像小水滴變大河</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">英雄</div>
+        <div class="desc">每個人都是地球小英雄，拍拍自己的肩膀！</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">你不渺小。每做一件對地球好的事，都是投給未來的一張票。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">13</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+
+</body>
+</html>

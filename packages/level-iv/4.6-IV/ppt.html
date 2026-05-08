@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>應對氣候錯誤訊息與虛假資訊 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .question-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 30px 0; }
+  .question-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px; font-size: 1.15rem; text-align: center; color: var(--c-text); position: relative; }
+  .question-card .q-num { position: absolute; top: -12px; left: 14px; background: var(--c-accent); color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.mis { border-color: #f59e0b; }
+  .col-card.dis { border-color: #dc2626; }
+  .col-card.mal { border-color: #7c3aed; }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card.mis h4 { color: #d97706; }
+  .col-card.dis h4 { color: #b91c1c; }
+  .col-card.mal h4 { color: #6d28d9; }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; font-size: 0.95rem; }
+
+  .ws-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1.05rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 14px 16px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill { background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px); height: 48px; }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 26px 16px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 10px 0; }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-soc); } .key-card.k3 .word { color: var(--c-soc); }
+  .key-card.k4 { border-color: var(--c-beh); } .key-card.k4 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px; background: var(--c-bg); max-width: 720px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 14px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .sift-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 24px 0; }
+  .sift-card { background: var(--c-bg); border-top: 5px solid var(--c-accent); border-radius: 8px; padding: 18px 14px; text-align: center; }
+  .sift-card .letter { font-size: 2.6rem; font-weight: 800; color: var(--c-accent); }
+  .sift-card .word-en { font-size: 0.95rem; font-weight: 600; color: var(--c-muted); margin-bottom: 8px; }
+  .sift-card .word-zh { font-size: 1.05rem; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">應對氣候錯誤訊息與虛假資訊 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>訊息風暴中的氣候真相</h2>
+    <p class="subtitle">應對氣候錯誤訊息與虛假資訊｜13–15 歲</p>
+    <svg viewBox="0 0 500 220" width="480">
+      <circle cx="250" cy="110" r="70" fill="#ccfbf1" stroke="#0f766e" stroke-width="3"/>
+      <text x="250" y="105" font-size="40" text-anchor="middle">📱</text>
+      <text x="250" y="148" font-size="18" text-anchor="middle" fill="#0f766e" font-weight="700">真假交錯</text>
+      <g fill="#dc2626">
+        <text x="80" y="60" font-size="22">❓</text>
+        <text x="120" y="180" font-size="22">⚠️</text>
+        <text x="380" y="70" font-size="22">🤔</text>
+        <text x="420" y="170" font-size="22">📰</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- 2 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>那張北極熊瘦骨圖,你會按下「轉傳」嗎?</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>我有點開來源嗎?</div>
+      <div class="question-card"><div class="q-num">2</div>我知道作者是誰嗎?</div>
+      <div class="question-card"><div class="q-num">3</div>如果是假的,誰會因此受益?</div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 24px;">
+      全球有 <strong style="color: var(--c-warn);">56% 網民</strong>靠社群媒體取得時事;<br>
+      但 <strong style="color: var(--c-cog);">2/3 的內容創作者</strong>分享前不查證。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.unesco.org/en/media-information-literacy" target="_blank" rel="noopener">聯合國教科文組織/IPSOS 2023</a>
+  </div>
+</section>
+
+<!-- 3 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>訊息風暴:三種假訊息的臉</h2>
+    <p class="subtitle">辨識 misinformation / disinformation / malinformation</p>
+  </div>
+</section>
+
+<!-- 4 三種假訊息 -->
+<section class="slide" id="slide-three-types">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>三種假訊息的臉</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card mis">
+        <h4>錯誤訊息<br><span style="font-size:0.85rem;font-weight:400;">Misinformation</span></h4>
+        <ul>
+          <li><strong>無惡意但說錯</strong></li>
+          <li>分享者未必知情</li>
+          <li>例:把 2012 乾旱照誤標成 2025</li>
+        </ul>
+      </div>
+      <div class="col-card dis">
+        <h4>虛假訊息<br><span style="font-size:0.85rem;font-weight:400;">Disinformation</span></h4>
+        <ul>
+          <li><strong>刻意製造、刻意散布</strong></li>
+          <li>目的在誤導他人</li>
+          <li>例:刻意 P 圖製造假災情</li>
+        </ul>
+      </div>
+      <div class="col-card mal">
+        <h4>惡意訊息<br><span style="font-size:0.85rem;font-weight:400;">Malinformation</span></h4>
+        <ul>
+          <li><strong>真事但被抽離脈絡</strong></li>
+          <li>蓄意造成傷害</li>
+          <li>例:剪掉真科學家發言前後文</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px; color: var(--c-muted);">
+      情境分類練習:把班群常見 5 則貼文,分類到三欄。
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.unesco.org/en/media-information-literacy" target="_blank" rel="noopener">聯合國教科文組織 — 媒體與資訊素養</a>
+  </div>
+</section>
+
+<!-- 5 北極熊圖 -->
+<section class="slide" id="slide-bear">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>案例解剖:那張北極熊瘦骨圖</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:2017 瀕死北極熊影片截圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>單張影像 ≠ 直接歸因氣候變遷。北極海冰確實在縮減,但這隻熊很可能生病或受傷。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>2017 瀕死北極熊事件</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      <strong style="color: var(--c-warn);">查核鐵律:</strong>不要因為結論正確,就放鬆對證據的要求。
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.ipcc.ch/report/ar6/wg3/" target="_blank" rel="noopener">聯合國政府間氣候變化專門委員會 — AR6 第三工作組報告</a>
+  </div>
+</section>
+
+<!-- 6 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>SIFT 查核術:批判媒體素養實作</h2>
+    <p class="subtitle">90 秒攔截 80% 的常見錯誤訊息</p>
+  </div>
+</section>
+
+<!-- 7 數據衝擊 -->
+<section class="slide" id="slide-data-shock">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>數據衝擊:67% 沒查證就分享</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:三大數字長條圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>56% 靠社群看時事 / 85% 擔憂不實資訊 / 67% 創作者未查證就分享</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>白話:三個數字告訴我們,「分享」鍵正在塑造一個自我複製的錯誤訊息生態系。</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      <strong>提問:</strong>你按下「分享」前,平均花幾秒思考?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.unesco.org/en/media-information-literacy" target="_blank" rel="noopener">聯合國教科文組織 2023-2024 全球調查</a>
+  </div>
+</section>
+
+<!-- 8 SIFT 四步 -->
+<section class="slide" id="slide-sift">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>SIFT 四步查核術</h2>
+  <div class="slide-body">
+    <div class="sift-grid">
+      <div class="sift-card">
+        <div class="letter">S</div>
+        <div class="word-en">Stop</div>
+        <div class="word-zh">停下來</div>
+        <p style="font-size:0.85rem;color:var(--c-muted);margin:8px 0 0;">別急著轉傳,先深呼吸</p>
+      </div>
+      <div class="sift-card">
+        <div class="letter">I</div>
+        <div class="word-en">Investigate</div>
+        <div class="word-zh">查來源</div>
+        <p style="font-size:0.85rem;color:var(--c-muted);margin:8px 0 0;">發文者是誰?有聯絡資訊?</p>
+      </div>
+      <div class="sift-card">
+        <div class="letter">F</div>
+        <div class="word-en">Find</div>
+        <div class="word-zh">找報導</div>
+        <p style="font-size:0.85rem;color:var(--c-muted);margin:8px 0 0;">找更可靠的主流報導</p>
+      </div>
+      <div class="sift-card">
+        <div class="letter">T</div>
+        <div class="word-en">Trace</div>
+        <div class="word-zh">追原始</div>
+        <p style="font-size:0.85rem;color:var(--c-muted);margin:8px 0 0;">追主張回原始資料</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      <strong style="color: var(--c-accent);">90 秒,攔截 80% 的常見錯誤訊息。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 9 SIFT 實戰 -->
+<section class="slide" id="slide-sift-practice">
+  <div class="slide-tag">活動二・步驟 3 ・學習單(投影版)</div>
+  <h2>SIFT 實戰:臺北 7 月「全月不下雨」?</h2>
+  <div class="slide-body">
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th style="width: 12%;">步驟</th>
+          <th style="width: 40%;">操作</th>
+          <th style="width: 48%;">學生填寫</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>S 停</th><td>不要急著轉</td><td class="fill"></td></tr>
+        <tr><th>I 查</th><td>發文者是誰?</td><td class="fill"></td></tr>
+        <tr><th>F 找</th><td>查中央氣象署該月降水紀錄</td><td class="fill"></td></tr>
+        <tr><th>T 追</th><td>原始來源是否可追?</td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size: 1.05rem; margin-top: 14px;">
+      <strong>判定:</strong>氣象署資料顯示該月有 6 個降水日 → 此貼文為<strong style="color: var(--c-warn);">錯誤訊息或故意誇大</strong>。
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §B</a></div>
+</section>
+
+<!-- 10 97% 共識 -->
+<section class="slide" id="slide-consensus">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>97% 科學共識:不是「還在爭論」</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:97% 共識圓餅圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>同儕審查文獻顯示,超過 97% 的氣候科學家同意「當前暖化主要由人類活動造成」。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>IPCC AR6 以「unequivocal(毋庸置疑)」描述此結論</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>當有人說「科學家還沒定論」,你可以回應:</strong><br>
+      「科學永遠對細節保持開放,但主要結論早已高度一致。」
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.ipcc.ch/report/ar6/wg3/" target="_blank" rel="noopener">聯合國政府間氣候變化專門委員會 — AR6 第三工作組報告</a>
+  </div>
+</section>
+
+<!-- 11 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>AI 深偽與情緒韌性</h2>
+    <p class="subtitle">看見深偽,看清自己的情緒</p>
+  </div>
+</section>
+
+<!-- 12 深偽 -->
+<section class="slide" id="slide-deepfake">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>AI 深偽:新戰場</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:真假對比圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>80% 青少年每日多次使用 AI 工具;AI 生圖、生影、生聲讓深偽變得便宜而逼真。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>深偽不再是好萊塢專利</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px; color: var(--c-muted);">
+      技術仍在快速進步,沒有單一指標絕對可靠 — <strong>多指標交叉</strong>才是關鍵。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.unesco.org/en/media-information-literacy" target="_blank" rel="noopener">聯合國教科文組織 2024</a>
+  </div>
+</section>
+
+<!-- 13 鑑別五指標 -->
+<section class="slide" id="slide-detect">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>深偽鑑別五指標</h2>
+  <div class="slide-body">
+    <div class="question-cards" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+      <div class="question-card"><div class="q-num">1</div>👁️ 手指、耳朵、眼神瑕疵</div>
+      <div class="question-card"><div class="q-num">2</div>💡 光影方向不一致</div>
+      <div class="question-card"><div class="q-num">3</div>🔤 背景文字亂碼</div>
+      <div class="question-card"><div class="q-num">4</div>📁 元資料(EXIF)缺失</div>
+      <div class="question-card"><div class="q-num">5</div>🔍 反向圖搜結果</div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      <strong>多指標交叉</strong> ≠ 單一指標就斷定真假
+    </p>
+  </div>
+</section>
+
+<!-- 14 情緒韌性 -->
+<section class="slide" id="slide-emotion">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>情緒韌性:別被恐懼操弄</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:情緒鐘擺圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>假訊息常利用兩極情緒 — 極度恐懼(世界末日)與極度否認(什麼都不用做),兩者都讓人失去行動力。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+    </figure>
+    <div class="three-col" style="margin-top: 24px;">
+      <div class="col-card mis"><h4>① 辨識</h4><p style="margin:0;text-align:center;font-size:0.95rem;">心跳加速?胸悶?</p></div>
+      <div class="col-card dis"><h4>② 暫停</h4><p style="margin:0;text-align:center;font-size:0.95rem;">深呼吸 4 秒</p></div>
+      <div class="col-card mal"><h4>③ 提問</h4><p style="margin:0;text-align:center;font-size:0.95rem;">情緒來自事實還是呈現方式?</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 倫理兩難 -->
+<section class="slide" id="slide-dilemma">
+  <div class="slide-tag">活動三・步驟 4</div>
+  <h2>倫理兩難:祖母轉傳假圖</h2>
+  <div class="slide-body">
+    <p style="font-size: 1.1rem; max-width: 720px; margin: 0 auto;">
+      情境:奶奶把一張假的冰川融化圖貼到家族群,並寫「台灣也要完蛋了!」<strong>你怎麼做?</strong>
+    </p>
+    <div class="three-col" style="margin-top: 24px;">
+      <div class="col-card mis">
+        <h4>選項 A</h4>
+        <p style="margin:0;text-align:center;">公開糾正並附連結</p>
+      </div>
+      <div class="col-card dis">
+        <h4>選項 B</h4>
+        <p style="margin:0;text-align:center;font-weight:700;">私訊先同理,再提供資訊</p>
+      </div>
+      <div class="col-card mal">
+        <h4>選項 C</h4>
+        <p style="margin:0;text-align:center;">裝沒看到</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 28px;">
+      多數專家建議 <strong style="color: var(--c-warn);">B</strong> — <strong>真相需要關係作為載體。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 16 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>學生治理專題:校園查核隊</h2>
+    <p class="subtitle">把素養變成校園的日常景觀</p>
+  </div>
+</section>
+
+<!-- 17 政策 -->
+<section class="slide" id="slide-policy">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>32 國 MIL 政策:你正在學公民社會的骨架</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:32 國世界地圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>2024 年聯合國教科文組織協助 32 國制定國家級媒體與資訊素養政策;台灣 108 課綱已將「B2 科技資訊與媒體素養」列為核心素養。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      你正在學的,是<strong>公民社會的基礎建設</strong>。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.unesco.org/en/media-information-literacy" target="_blank" rel="noopener">聯合國教科文組織 2024</a>
+  </div>
+</section>
+
+<!-- 18 校園查核角 -->
+<section class="slide" id="slide-ws-corner">
+  <div class="slide-tag">活動四・步驟 2 ・學習單(投影版)</div>
+  <h2>校園事實查核角企劃書</h2>
+  <div class="slide-body">
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th style="width: 18%;">企劃面向</th>
+          <th style="width: 82%;">小組設計</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>受眾</th><td class="fill"></td></tr>
+        <tr><th>查核流程</th><td class="fill"></td></tr>
+        <tr><th>倫理守則</th><td class="fill"></td></tr>
+        <tr><th>推廣管道</th><td class="fill"></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size: 1rem; margin-top: 14px; color: var(--c-muted);">
+      <strong>提示:</strong>結合 CER 論證(Claim-Evidence-Reasoning),讓判斷可被他人檢視。
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html §C 專題</a></div>
+</section>
+
+<!-- 19 公約 -->
+<section class="slide" id="slide-ws-pledge">
+  <div class="slide-tag">活動四・步驟 4 ・行動承諾</div>
+  <h2>「停、查、問、分享」公約</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1"><div class="num">第 1 步</div><div class="word">停</div><div class="desc">深呼吸,先別轉傳</div></div>
+      <div class="key-card k2"><div class="num">第 2 步</div><div class="word">查</div><div class="desc">確認來源、作者</div></div>
+      <div class="key-card k3"><div class="num">第 3 步</div><div class="word">問</div><div class="desc">如果是假的,誰受益?</div></div>
+      <div class="key-card k4"><div class="num">第 4 步</div><div class="word">分享</div><div class="desc">負責任地再傳出去</div></div>
+    </div>
+    <div class="pledge-form">
+      <p style="text-align: center; margin: 0 0 16px; font-weight: 600;">本週我會完成的查核或對話 ↓</p>
+      <div class="row">
+        <span class="lbl">我這週要做的查核行動是:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">承諾人簽名:</span>
+        <span class="blank"></span>
+        <span class="lbl">見證夥伴簽名:</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 20 總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字,一起記住</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="col-card mis">
+        <h4 style="color:var(--c-cog);">辨識</h4>
+        <p style="margin:0;text-align:center;font-size:1rem;">三種假訊息:<br>mis / dis / mal</p>
+      </div>
+      <div class="col-card dis">
+        <h4 style="color:var(--c-warn);">查證</h4>
+        <p style="margin:0;text-align:center;font-size:1rem;">SIFT 四步,<br>90 秒攔截 80%</p>
+      </div>
+      <div class="col-card mal">
+        <h4 style="color:var(--c-beh);">行動</h4>
+        <p style="margin:0;text-align:center;font-size:1rem;">停、查、問、分享<br>關係 + 真相並行</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      你不是獨自面對訊息風暴的 ——<br>
+      <strong style="color: var(--c-accent);">每一次查證,都是讓真相多走一步。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">20</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>碳循環 — 教學投影片</title>
+<style>
+  :root { --c-accent: #0f766e; --c-accent-soft: #ccfbf1; --c-cog: #2563eb; --c-soc: #db2777; --c-beh: #16a34a; --c-warn: #ea580c; --c-text: #1f2937; --c-muted: #6b7280; --c-border: #e5e7eb; --c-bg: #f9fafb; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">碳循環 — 教學投影片</span>
+</header>
+
+<main>
+
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>看不見的旅行家</h2>
+    <p class="subtitle">碳的世界之旅</p>
+    <div style="font-size: 5rem; margin-top: 30px;">🌍♻️</div>
+  </div>
+</section>
+
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>碳很重要,但碳是什麼?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.2rem;">
+      你的骨頭、頭髮、衣服、午餐的飯——<strong style="color: var(--c-accent);">都是碳組成的</strong>
+    </p>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px; color: var(--c-muted);">
+      碳在地球上不會消失,它只會換地方住。今天我們要追蹤這個超級旅行家。
+    </p>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>認識看不見的碳</h2>
+    <p class="subtitle">空氣裡的二氧化碳到底有多少?</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-ppm">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>空氣裡的二氧化碳:429 ppm</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:1000×1000 方格紙塗 429 格示意]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>2026 年 2 月夏威夷觀測站測得大氣二氧化碳濃度達 429.35 ppm,創歷史新高</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>每百萬顆空氣粒子中有 429 顆是二氧化碳</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://gml.noaa.gov/ccgg/trends/" target="_blank" rel="noopener">美國國家海洋暨大氣總署 — 大氣二氧化碳趨勢</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-trend">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>250 年暴衝:280 → 429 ppm</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:1750 vs 2026 二氧化碳柱狀圖,+53% 紅色箭頭]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>工業革命前 280 ppm → 2026 年 429 ppm,250 年間 +53%</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>對地球而言 250 年只是一瞬間,上一次自然增加這麼多花了幾千年</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>提問:</strong>這 250 年人類做了什麼?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://science.nasa.gov/earth/explore/earth-indicators/carbon-dioxide" target="_blank" rel="noopener">美國太空總署 — 二氧化碳指標</a>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>碳在地球上旅行</h2>
+    <p class="subtitle">碳的五個家</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-five-homes">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>碳的五個家</h2>
+  <div class="slide-body">
+    <div class="three-col" style="grid-template-columns: repeat(5, 1fr); gap: 12px;">
+      <div class="col-card" style="text-align: center;"><div style="font-size: 2.5rem;">☁️</div><h4>大氣</h4><p style="font-size: 0.9rem;">幾年</p></div>
+      <div class="col-card fam" style="text-align: center;"><div style="font-size: 2.5rem;">🌳</div><h4>生物圈</h4><p style="font-size: 0.9rem;">幾十年</p></div>
+      <div class="col-card sch" style="text-align: center;"><div style="font-size: 2.5rem;">🟫</div><h4>土壤</h4><p style="font-size: 0.9rem;">幾百年</p></div>
+      <div class="col-card com" style="text-align: center;"><div style="font-size: 2.5rem;">🌊</div><h4>海洋</h4><p style="font-size: 0.9rem;">上千年</p></div>
+      <div class="col-card" style="text-align: center;"><div style="font-size: 2.5rem;">🪨</div><h4>岩石圈</h4><p style="font-size: 0.9rem;">上億年</p></div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      碳會一直搬家,這就叫<strong style="color: var(--c-accent);">「碳循環」</strong>。
+    </p>
+  </div>
+</section>
+
+<section class="slide" id="slide-photo">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>光合作用:空氣變木頭</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:樹葉光合作用分解圖 / 1 噸木 ← 1.6 噸 CO2 → 1.2 噸 O2 天平]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>樹木每長 1 噸生物量需吸收 1.6 噸二氧化碳,釋放 1.2 噸氧氣</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>樹不只是美麗——它是超強的空氣清淨機</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源:教育部教案《林農畜漁業生產與生物多樣性》</div>
+</section>
+
+<section class="slide" id="slide-balance">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>碳收支天平嚴重失衡</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:傾斜的天平,左 70 億噸排放 vs 右 25 億噸吸收]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>人類年排 70 億噸 vs 海洋 20 億噸 + 森林 5 億噸 = 25 億噸</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>剩下 45 億噸留在空氣裡,這就是暖化加速的原因</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">資料來源:教育部教案《林農畜漁業生產與生物多樣性》</div>
+</section>
+
+<section class="slide" id="slide-myth">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>破解迷思:只靠種樹夠嗎?</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="icon">❌</div>
+        <h3>錯誤想法</h3>
+        <p>只要多種樹,就可以繼續開車、開冷氣</p>
+      </div>
+      <div class="compare-card right">
+        <div class="icon">✅</div>
+        <h3>正確觀念</h3>
+        <p>森林一年只吸 5 億噸,抵不過排的 70 億噸</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px; color: var(--c-accent);">
+      <strong>兩件事要一起做:多種樹 + 少燒化石燃料。</strong>
+    </p>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>化石燃料與森林的祕密</h2>
+    <p class="subtitle">時間壓縮機與在地紅樹林</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-fossil">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>化石燃料:碳的越獄</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:地底煤層→鑽探→燃燒回大氣 流程圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵概念:</strong>化石燃料是上億年前被鎖進地下的碳,挖出來燒等於把幾億年份的碳一口氣釋放</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>「存了 10 年的零用錢 10 分鐘花完」——這是不可永續的</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://climatekids.nasa.gov/fossil-fuels-coal/" target="_blank" rel="noopener">美國太空總署兒童氣候站 — 化石燃料</a>
+  </div>
+</section>
+
+<section class="slide" id="slide-mangrove">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>臺灣紅樹林:藍碳寶庫</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:臺灣西部地圖,標示淡水河口、新豐、四草紅樹林]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵概念:</strong>紅樹林每公頃儲碳比一般森林還多,還能擋颱風、保護海岸、養育螃蟹和鳥類</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>碳循環不只發生在亞馬遜,也在我們的沿海濕地</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://tccip.ncdr.nat.gov.tw/" target="_blank" rel="noopener">臺灣氣候變遷推估資訊與調適知識平台</a> ・
+    <a href="https://www.forest.gov.tw/" target="_blank" rel="noopener">農業部林業及自然保育署</a>
+  </div>
+</section>
+
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動四</div>
+    <h2>我能為碳循環做什麼</h2>
+    <p class="subtitle">從個人行動到全校挑戰</p>
+  </div>
+</section>
+
+<section class="slide" id="slide-wsa">
+  <div class="slide-tag">活動四・步驟 2</div>
+  <h2>全校行動四面向</h2>
+  <div class="slide-body">
+    <div class="three-col" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="col-card sch">
+        <h4>📚 課程整合</h4>
+        <ul>
+          <li>跨領域「一棵樹的碳故事」</li>
+          <li>主題書架與數位資源</li>
+          <li>邀請林業署志工到校</li>
+        </ul>
+      </div>
+      <div class="col-card com">
+        <h4>🏫 校園營運</h4>
+        <ul>
+          <li>校園樹木普查與固碳量計算</li>
+          <li>減少燃燒(金紙、落葉)</li>
+          <li>食堂「每週一素」</li>
+        </ul>
+      </div>
+      <div class="col-card fam">
+        <h4>🤝 社區連結</h4>
+        <ul>
+          <li>紅樹林保護親子活動</li>
+          <li>「里內綠蔭地圖」</li>
+          <li>邀請林業專家到校</li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-color: var(--c-warn);">
+        <h4 style="color: var(--c-warn);">🌟 學生治理</h4>
+        <ul>
+          <li>「碳循環小隊」校園碳新聞牆</li>
+          <li>「減一趟汽車接送」月挑戰</li>
+          <li>「畢業紀念樹」政策</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="slide-keys">
+  <div class="slide-tag">活動四・步驟 3</div>
+  <h2>你的數據力:三個關鍵數字</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">429</div>
+        <div class="desc">ppm<br>大氣二氧化碳濃度</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">70 億</div>
+        <div class="desc">公噸/年<br>人類年排碳量</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">1.6</div>
+        <div class="desc">公噸 CO2<br>1 噸木材吸收量</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 30px;">
+      記住這三個數字,你就比很多大人都懂碳循環了!
+    </p>
+  </div>
+</section>
+
+<section class="slide" id="slide-badge">
+  <div class="slide-tag">總結</div>
+  <h2>碳循環小守護者</h2>
+  <div class="slide-body">
+    <div style="text-align: center; font-size: 5rem; margin: 20px 0;">🏆</div>
+    <p style="text-align: center; font-size: 1.3rem; color: var(--c-accent); font-weight: 700;">
+      碳不壞,失衡才可怕。
+    </p>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 16px;">
+      你的每一口呼吸、每一餐選擇、每一棵親手種下的樹,<br>都在寫地球的碳故事。
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">15</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting && e.intersectionRatio > 0.5) { current = slides.indexOf(e.target); navCurrent.textContent = current + 1; } });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); const next = Math.min(current + 1, slides.length - 1); slides[next].scrollIntoView({ behavior: 'smooth' }); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); const prev = Math.max(current - 1, 0); slides[prev].scrollIntoView({ behavior: 'smooth' }); }
+  });
+  if (location.hash) { const target = document.querySelector(location.hash); if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100); }
+</script>
+
+</body>
+</html>

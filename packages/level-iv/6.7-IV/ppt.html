@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>永續廢棄物處理實踐 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e; --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb; --c-soc: #db2777; --c-beh: #16a34a;
+    --c-warn: #ea580c; --c-text: #1f2937; --c-muted: #6b7280;
+    --c-border: #e5e7eb; --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono","Consolas",monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  /* 廢棄物層級倒三角 */
+  .hierarchy { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 20px 0; }
+  .h-row { display: flex; align-items: center; justify-content: center; border-radius: 6px; font-weight: 700; color: #fff; height: 48px; transition: opacity 0.2s; }
+  .h-row .h-label { font-size: 1.05rem; }
+  .h-row .h-note { font-size: 0.8rem; opacity: 0.85; margin-left: 10px; }
+  .h-r1 { background: #15803d; width: 100%; }
+  .h-r2 { background: #16a34a; width: 85%; }
+  .h-r3 { background: #ca8a04; width: 70%; }
+  .h-r4 { background: #ea580c; width: 55%; }
+  .h-r5 { background: #dc2626; width: 40%; }
+  .h-badge { background: #fef3c7; color: #92400e; font-size: 0.85rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-top: 12px; }
+
+  /* 比較圖 */
+  .compare-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+  .cmp-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 22px; text-align: center; }
+  .cmp-card .cmp-num { font-size: 2.8rem; font-weight: 800; margin: 8px 0; }
+  .cmp-card .cmp-label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .cmp-card .cmp-sub { font-size: 0.95rem; color: var(--c-muted); }
+  .cmp-card.left { border-color: var(--c-cog); }
+  .cmp-card.left .cmp-num { color: var(--c-cog); }
+  .cmp-card.right { border-color: var(--c-warn); }
+  .cmp-card.right .cmp-num { color: var(--c-warn); }
+
+  /* 5R 層級清單 */
+  .fiver { list-style: none; padding: 0; margin: 20px 0; display: flex; flex-direction: column; gap: 10px; }
+  .fiver li { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-radius: 8px; font-size: 1.05rem; }
+  .fiver .tag { font-weight: 800; font-family: monospace; font-size: 1.15rem; min-width: 40px; }
+  .fiver .zh { font-weight: 600; }
+  .fiver .desc { color: var(--c-muted); font-size: 0.9rem; }
+  .fiver .src { background: #15803d; color: #fff; }
+  .fiver .src2 { background: #16a34a; color: #fff; }
+  .fiver .src3 { background: #4ade80; color: #1f2937; }
+  .fiver .end1 { background: #fef3c7; color: #92400e; }
+  .fiver .end2 { background: #fed7aa; color: #9a3412; }
+  .fiver .end3 { background: #fee2e2; color: #991b1b; }
+
+  /* CLD 因果迴路 */
+  .cld-chain { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: 20px 0; font-size: 1rem; }
+  .cld-node { background: var(--c-bg); border: 2px solid var(--c-border); border-radius: 8px; padding: 10px 14px; font-weight: 600; }
+  .cld-arrow { color: var(--c-muted); font-size: 1.3rem; }
+  .cld-node.plus { border-color: #dc2626; color: #dc2626; }
+
+  /* 學習單 pledge */
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px; background: var(--c-bg); max-width: 700px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+
+  /* 三關鍵字總結 */
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.8rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); } .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); } .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); } .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">永續廢棄物處理實踐 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content:center;">
+    <h2>回收不是答案<br>重新想像我們與垃圾的關係</h2>
+    <p class="subtitle">6.7 永續廢棄物處理實踐｜國中版（13–15 歲）</p>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>你覺得哪個最環保？</h2>
+  <div class="slide-body">
+    <div class="compare-2col" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="cmp-card left">
+        <div class="cmp-label">選項 A</div>
+        <div class="cmp-num" style="font-size:2.2rem;">♻️</div>
+        <div class="cmp-sub">把寶特瓶丟進回收桶</div>
+      </div>
+      <div class="cmp-card" style="border-color:var(--c-beh);">
+        <div class="cmp-label">選項 B</div>
+        <div class="cmp-num" style="font-size:2.2rem;color:var(--c-beh);">🧴</div>
+        <div class="cmp-sub">自備水壺完全不買寶特瓶</div>
+      </div>
+      <div class="cmp-card right">
+        <div class="cmp-label">選項 C</div>
+        <div class="cmp-num" style="font-size:2.2rem;">🌺</div>
+        <div class="cmp-sub">把寶特瓶洗乾淨做花瓶</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.15rem;margin-top:24px;color:var(--c-accent);font-weight:600;">答案是 B——那才是「預防」，五層中的第一層。</p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動一</div>
+    <h2>為什麼回收排最後？</h2>
+    <p class="subtitle">挑戰你對「環保」的直覺排序</p>
+  </div>
+</section>
+
+<!-- 4. 廢棄物處理優先順序 -->
+<section class="slide" id="slide-hierarchy">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>廢棄物處理優先順序</h2>
+  <div class="slide-body">
+    <div class="hierarchy">
+      <div class="h-row h-r1"><span class="h-label">① 預防／避免</span><span class="h-note">根本不產生最好</span></div>
+      <div class="h-row h-r2"><span class="h-label">② 再使用準備</span><span class="h-note">押金瓶、二手衣</span></div>
+      <div class="h-row h-r3"><span class="h-label">③ 回收</span><span class="h-note">仍需能源、有純度損失</span></div>
+      <div class="h-row h-r4"><span class="h-label">④ 能源回收（焚化）</span><span class="h-note">仍排 CO₂、有飛灰</span></div>
+      <div class="h-row h-r5"><span class="h-label">⑤ 最終處置（掩埋）</span><span class="h-note">最差，甲烷排放</span></div>
+    </div>
+    <div class="h-badge">歐盟法律（2008/98/EC）確立，回收排第三——不是第一！</div>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://environment.ec.europa.eu/topics/waste-and-recycling/waste-framework-directive_en" target="_blank" rel="noopener">歐盟廢棄物框架指令（EU Directive 2008/98/EC）</a></div>
+</section>
+
+<!-- 5. 全球真實回收率 -->
+<section class="slide" id="slide-global-rate">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>全球 100 件垃圾的真實去向</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center;">
+        <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--c-accent);font-weight:700;margin-bottom:12px;">[此處放：全球廢棄物流向圓餅圖]</div>
+        <div style="font-size:1.1rem;margin:14px 0;"><strong>材料回收 19%｜能源回收 11%｜掩埋/焚燒/漏入環境 70%+</strong></div>
+        <div style="font-size:0.85rem;color:var(--c-muted);margin-top:12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>全球城市固體廢棄物的真實去向——回收遠不如想像中普遍</figcaption>
+    </figure>
+    <p style="text-align:center;font-size:1.05rem;margin-top:16px;">即使是最先進國家，材料回收率上限也只到 <strong style="color:var(--c-warn);">50–60%</strong>。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.unep.org/resources/global-waste-management-outlook-2024" target="_blank" rel="noopener">聯合國環境規劃署《全球廢棄物管理展望 2024》</a></div>
+</section>
+
+<!-- 6. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動二</div>
+    <h2>數據解讀 × 文化診斷</h2>
+    <p class="subtitle">從臺灣數據看見拋棄式文化的根源</p>
+  </div>
+</section>
+
+<!-- 7. 臺灣垃圾量趨勢 -->
+<section class="slide" id="slide-tw-data">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>臺灣的成績單：進步了，但還不夠</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center;">
+        <div style="font-size:0.8rem;color:var(--c-muted);letter-spacing:0.15em;margin-bottom:8px;">圖表佔位</div>
+        <div style="font-size:1.4rem;color:var(--c-accent);font-weight:700;margin-bottom:12px;">[此處放：臺灣人均垃圾清運量趨勢線圖]</div>
+        <div style="font-size:1.1rem;margin:14px 0;"><strong>1998 年每人每日 1.14 kg → 2009 年 0.50 kg → 2018 年回收率約 60%</strong></div>
+        <div style="font-size:0.85rem;color:var(--c-muted);margin-top:12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>臺灣人均垃圾量砍半——後端處理成績優秀，但源頭減量仍有空間</figcaption>
+    </figure>
+    <p style="text-align:center;font-size:1.05rem;margin-top:16px;color:var(--c-muted);">問題是：若把一次性產品在源頭刪除，根本不必回收——這是 <strong>系統思考</strong> 的起點。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.moenv.gov.tw/" target="_blank" rel="noopener">中華民國環境部</a></div>
+</section>
+
+<!-- 8. 手搖杯因果迴路圖 -->
+<section class="slide" id="slide-cld">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>一次性手搖杯的惡性循環</h2>
+  <div class="slide-body">
+    <div class="cld-chain">
+      <div class="cld-node">方便</div>
+      <div class="cld-arrow">→</div>
+      <div class="cld-node plus">消費依賴</div>
+      <div class="cld-arrow">→</div>
+      <div class="cld-node plus">產業擴張</div>
+      <div class="cld-arrow">→</div>
+      <div class="cld-node plus">垃圾增加</div>
+      <div class="cld-arrow">→</div>
+      <div class="cld-node plus">回收壓力</div>
+      <div class="cld-arrow">→</div>
+      <div class="cld-node">（回到）方便文化</div>
+    </div>
+    <p style="margin-top:20px;font-size:1.05rem;"><strong>槓桿點在哪裡？</strong>從「方便」這個節點下手——押金制飲料杯、自備杯折扣，讓「不買一次性」比「買」更方便。</p>
+    <p style="font-size:1.05rem;color:var(--c-muted);">小組任務：畫出你們班最常見的一次性物品因果迴路圖，找出 1 個可以介入的槓桿點。</p>
+  </div>
+</section>
+
+<!-- 9. 5R/6R 層級 -->
+<section class="slide" id="slide-5r">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>5R / 6R 優先順序：前三項才是真正永續</h2>
+  <div class="slide-body">
+    <ul class="fiver">
+      <li class="src"><span class="tag">①</span><span class="zh">Refuse 拒用</span><span class="desc">— 對不必要的消費說不，例如拒收一次性吸管</span></li>
+      <li class="src2"><span class="tag">②</span><span class="zh">Reduce 減量</span><span class="desc">— 少買、少用，例如雙面列印、縮短淋浴時間</span></li>
+      <li class="src3"><span class="tag">③</span><span class="zh">Reuse 重複使用</span><span class="desc">— 同一物品多次使用，例如自備水壺、布袋</span></li>
+      <li class="end1"><span class="tag">④</span><span class="zh">Repair 維修</span><span class="desc">— 壞了修，延長壽命</span></li>
+      <li class="end2"><span class="tag">⑤</span><span class="zh">Recycle 回收</span><span class="desc">— 前四項都做不到時才回收</span></li>
+      <li class="end3"><span class="tag">⑥</span><span class="zh">Recovery 再生利用</span><span class="desc">— 最後手段，焚化發電</span></li>
+    </ul>
+    <p style="text-align:center;font-size:1rem;color:var(--c-muted);">前 3 = 源頭（最優先）｜後 3 = 後端處理（最後手段）</p>
+  </div>
+</section>
+
+<!-- 10. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動三</div>
+    <h2>社區回收場田野研究</h2>
+    <p class="subtitle">從回收阿姨的視角，看見源頭的問題</p>
+  </div>
+</section>
+
+<!-- 11. Repair Café -->
+<section class="slide" id="slide-repair">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>Repair Café 修理咖啡館</h2>
+  <div class="slide-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:20px 0;">
+      <div style="border:2px solid var(--c-beh);border-radius:12px;padding:20px;">
+        <div style="font-size:1.1rem;font-weight:700;color:var(--c-beh);margin-bottom:12px;">維修站任務</div>
+        <ul style="margin:0;padding-left:1.2em;">
+          <li>帶來家中壞掉的小物</li>
+          <li>同學互助維修或重新利用</li>
+          <li>填寫維修紀錄表</li>
+        </ul>
+      </div>
+      <div style="border:2px solid var(--c-accent);border-radius:12px;padding:20px;">
+        <div style="font-size:1.1rem;font-weight:700;color:var(--c-accent);margin-bottom:12px;">維修紀錄表</div>
+        <ul style="margin:0;padding-left:1.2em;">
+          <li>物品名稱與損壞情形</li>
+          <li>修復方法</li>
+          <li>預計延長使用年限</li>
+          <li>若不修理，會變成哪類垃圾？</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.05rem;margin-top:16px;">全球 Repair Café 運動已在 35 個國家設立超過 2,000 個據點——維修是文化，不是妥協。</p>
+  </div>
+</section>
+
+<!-- 12. 活動四過場 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-body" style="justify-content:center;">
+    <div class="activity-num">活動四</div>
+    <h2>學生治理 × WSA 行動日</h2>
+    <p class="subtitle">從教室走向校園制度改變</p>
+  </div>
+</section>
+
+<!-- 13. 2050 若不行動 -->
+<section class="slide" id="slide-2050">
+  <div class="slide-tag">活動四・步驟 1</div>
+  <h2>若不行動：2050 年全球垃圾幾乎翻倍</h2>
+  <div class="slide-body">
+    <div class="compare-2col">
+      <div class="cmp-card left">
+        <div class="cmp-label">2020 年</div>
+        <div class="cmp-num">21.3</div>
+        <div class="cmp-sub">億噸城市固體廢棄物／年</div>
+      </div>
+      <div class="cmp-card right">
+        <div class="cmp-label">2050 年（若不改變）</div>
+        <div class="cmp-num">38.8</div>
+        <div class="cmp-sub">億噸城市固體廢棄物／年</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.05rem;margin-top:16px;">若實施零廢棄加循環經濟路徑，每年可省下超過 <strong style="color:var(--c-beh);">一兆美元</strong> 社會成本。</p>
+  </div>
+  <div class="slide-source">資料來源：<a href="https://www.unep.org/resources/global-waste-management-outlook-2024" target="_blank" rel="noopener">聯合國環境規劃署《全球廢棄物管理展望 2024》</a></div>
+</section>
+
+<!-- 14. 個人承諾卡（學習單） -->
+<section class="slide" id="slide-ws-pledge">
+  <div class="slide-tag">活動四・步驟 2 ・ 學習單（投影版）</div>
+  <h2>個人承諾卡：這週我要「拒用」一項</h2>
+  <div class="slide-body">
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">我要挑戰拒用的是：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">具體做法是：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">執行時間/地點：</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">若成功，我要告訴：</span>
+        <span class="blank"></span>
+      </div>
+      <hr style="margin:18px 0;border:0;border-top:1px dashed var(--c-border);">
+      <div class="row">
+        <span class="lbl">承諾人：</span>
+        <span class="blank"></span>
+        <span class="lbl">見證夥伴：</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字，重新定義「環保」</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">拒用</div>
+        <div class="desc">Refuse 排第一<br>最環保的垃圾是沒出現的垃圾</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">系統</div>
+        <div class="desc">廢棄物是設計問題<br>不只是個人行為問題</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">治理</div>
+        <div class="desc">從自己做到提案<br>讓制度支持永續選擇</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:1.1rem;margin-top:28px;">
+      <strong style="color:var(--c-accent);">回收是保險，不是環保的終點。你的第一步是：拒用。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">15</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color:var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+</script>
+</body>
+</html>

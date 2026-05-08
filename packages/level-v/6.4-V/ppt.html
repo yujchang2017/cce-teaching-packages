@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.4-V 永續生活空間 — 教學投影片</title>
+<style>
+  :root{--c-accent:#0f766e;--c-soft:#ccfbf1;--c-accent-soft:#f0fdfa;--c-cog:#2563eb;--c-soc:#db2777;--c-beh:#16a34a;--c-text:#1f2937;--c-muted:#6b7280;--c-border:#e5e7eb;--c-bg:#f9fafb}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--c-text);background:#fff;line-height:1.65}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--c-accent);text-decoration:none;font-weight:600;font-size:.95rem;white-space:nowrap}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.9rem;font-weight:500;color:var(--c-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--c-muted)}
+  .page-indicator{font-family:monospace;color:var(--c-text)}.nav-current{color:var(--c-accent);font-weight:700}
+  .hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--c-border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--c-border);position:relative}
+  @media(max-width:700px){.slide{padding:32px 24px}}
+  .slide-num{position:absolute;top:14px;right:20px;font-size:.75rem;font-family:monospace;color:var(--c-border)}
+  .slide h2{font-size:1.9rem;margin-bottom:20px;color:var(--c-text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--c-soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.6rem;line-height:1.2;max-width:800px}
+  .level-tag{display:inline-block;background:var(--c-accent);color:#fff;padding:4px 16px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.85rem;color:var(--c-accent);letter-spacing:.2em;font-weight:700;margin-bottom:12px}
+  .slide.divider h2{font-size:2.2rem;color:var(--c-accent);max-width:700px}
+  .slide.divider .chips{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .chip{background:var(--c-soft);color:var(--c-accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  .q-box{background:var(--c-soft);border-left:5px solid var(--c-accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.35rem;line-height:1.6;color:var(--c-accent);font-weight:600;max-width:750px}
+  .q-sub{font-size:1rem;color:var(--c-muted);font-weight:400;margin-top:10px;line-height:1.6}
+  .data-card{border:2px solid var(--c-border);border-radius:12px;padding:22px 28px;margin:16px 0;background:var(--c-bg)}
+  .dc-label{font-size:.78rem;font-weight:700;letter-spacing:.15em;color:var(--c-muted);margin-bottom:8px}
+  .dc-fact{font-size:1.15rem;font-weight:700;color:var(--c-text);margin-bottom:10px;line-height:1.5}
+  .dc-src{font-size:.83rem;color:var(--c-muted)}.dc-src a{color:var(--c-accent);text-decoration:none;border-bottom:1px dashed var(--c-accent)}
+  .chart-placeholder{border:2px dashed var(--c-accent);border-radius:12px;padding:40px;background:var(--c-accent-soft);text-align:center;margin:16px 0}
+  .cp-label{font-size:.78rem;color:var(--c-muted);letter-spacing:.15em;margin-bottom:8px}
+  .cp-title{font-size:1.35rem;color:var(--c-accent);font-weight:700;margin-bottom:12px}
+  .cp-data{font-size:1.05rem;margin:14px 0}
+  .cp-note{font-size:.83rem;color:var(--c-muted);margin-top:12px}
+  figcaption{font-size:.85rem;color:var(--c-muted);text-align:center;margin-top:8px}
+  .act-card{border:2px solid var(--c-border);border-radius:12px;padding:20px 26px;margin:16px 0}
+  .ac-badge{display:inline-block;background:var(--c-accent);color:#fff;font-size:.78rem;font-weight:700;padding:2px 10px;border-radius:4px;margin-bottom:10px;letter-spacing:.08em}
+  .ac-task{font-size:1.1rem;color:var(--c-text);line-height:1.65}
+  .ws-frame{border:2px dashed var(--c-accent);border-radius:12px;padding:28px 32px;margin:16px 0;background:#fff}
+  .ws-title{font-size:1rem;font-weight:700;color:var(--c-accent);margin-bottom:14px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--c-border);padding:12px 14px;text-align:center;font-size:.95rem}
+  .ws-table th{background:var(--c-soft);color:var(--c-accent);font-weight:700}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:56px}
+  .ws-lines{display:flex;flex-direction:column;gap:14px;margin-top:10px}
+  .ws-line{border-bottom:1.5px solid #d1d5db;height:28px}
+  .compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:16px 0}
+  .compare-card{border:1px solid var(--c-border);border-radius:10px;padding:14px 16px;background:var(--c-bg)}
+  .compare-card h4{font-size:.9rem;color:var(--c-accent);margin-bottom:8px}
+  .compare-card ul{padding-left:1.2em;font-size:.9rem}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0}
+  @media(max-width:600px){.two-col{grid-template-columns:1fr}}
+  .col-card{border:1px solid var(--c-border);border-radius:10px;padding:16px 18px;background:var(--c-bg)}
+  .col-card h4{font-size:.95rem;margin-bottom:8px;color:var(--c-accent)}
+  .summary-keys{display:flex;flex-direction:column;gap:14px;margin:16px 0;max-width:720px}
+  .key-card{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--c-border);border-radius:10px;padding:14px 18px;background:var(--c-bg)}
+  .key-num{font-size:1.4rem;font-weight:700;color:var(--c-accent);font-family:monospace;min-width:2rem}
+  .key-text{font-size:.98rem;line-height:1.6}
+  .pledge-form{border:2px solid var(--c-beh);border-radius:12px;padding:24px 28px;margin:16px 0;background:#f0fdf4;max-width:680px}
+  .pledge-form h4{color:var(--c-beh);font-size:1rem;margin-bottom:14px}
+  .pledge-row{display:flex;align-items:center;gap:10px;margin:10px 0}
+  .pledge-box{width:18px;height:18px;border:2px solid var(--c-beh);border-radius:4px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">永續生活空間：城市綠藍共生與政策行動 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- SLIDE 1: COVER -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-num">1 / 20</div>
+  <div class="slide-body">
+    <div class="level-tag">Level V｜高中 10–12 年級</div>
+    <h2>永續生活空間<br>城市綠藍共生與政策行動</h2>
+    <p style="color:var(--c-muted);max-width:640px;font-size:1.05rem;margin-top:16px">Key ID: 6.4-V｜4 節課 × 50 分鐘</p>
+    <p style="color:var(--c-muted);font-size:.9rem;margin-top:8px">SDG 11：永續城市與社區</p>
+  </div>
+</section>
+
+<!-- SLIDE 2: QUESTION -->
+<section class="slide" id="slide-question">
+  <div class="slide-num">2 / 20</div>
+  <div class="slide-body">
+    <div class="q-box">
+      你的日常生活空間中，有多少是綠色的？多少是藍色的？
+      <div class="q-sub">畫出你上學路線的綠藍空間記憶地圖<br>標出每一棵樹、每一條水道、每一塊草地</div>
+    </div>
+    <div style="margin-top:20px;color:var(--c-muted);font-size:.95rem">
+      <strong style="color:var(--c-text)">綠色空間：</strong>公園・行道樹・屋頂花園・校園綠地
+      　<strong style="color:var(--c-text)">藍色空間：</strong>河川・湖泊・濕地・滯洪池
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: DIVIDER — 活動一 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-num">3 / 20</div>
+  <div class="slide-body">
+    <div class="act-badge">活動一</div>
+    <h2>城市綠藍空間<br>現況、數據與全球挑戰</h2>
+    <div class="chips">
+      <span class="chip">步驟 1 記憶地圖</span>
+      <span class="chip">步驟 2 全球危機數據</span>
+      <span class="chip">步驟 3 3-30-300 自測</span>
+      <span class="chip">步驟 4 自然多種形態</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: urban crisis -->
+<section class="slide" id="slide-urban-crisis">
+  <div class="slide-num">4 / 20</div>
+  <h2>全球都市化與綠地危機</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="col-card">
+        <h4>都市化加速</h4>
+        <p style="font-size:1.6rem;font-weight:700;color:var(--c-accent);margin:8px 0">56% → 68%</p>
+        <p style="font-size:.9rem;color:var(--c-muted)">現有城市人口占比 → 2050 年預測值</p>
+        <p style="font-size:.85rem;color:var(--c-muted);margin-top:6px">城市碳排放占全球 70% 以上</p>
+      </div>
+      <div class="col-card">
+        <h4>綠地正在消失</h4>
+        <p style="font-size:1.6rem;font-weight:700;color:#dc2626;margin:8px 0">75%</p>
+        <p style="font-size:.9rem;color:var(--c-muted)">城市綠地面積正在縮減的比例</p>
+        <p style="font-size:.85rem;color:var(--c-muted);margin-top:6px">開發中城市人均綠地僅約 6 m²（世界衛生組織建議 9 m²）</p>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">數據來源</div>
+      <div class="dc-fact">全球城市均綠覆率約 43%；南亞與西亞僅約 25%</div>
+      <div class="dc-src"><a href="https://population.un.org/wup/" target="_blank" rel="noopener">聯合國人口司城市化展望</a>　<a href="https://hugsi.green/" target="_blank" rel="noopener">都市綠色指數 HUGSI 2024</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: 3-30-300 -->
+<section class="slide" id="slide-3-30-300">
+  <div class="slide-num">5 / 20</div>
+  <h2>3-30-300 規則：城市綠化基準</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="text-align:center">
+        <h4>3 棵樹</h4>
+        <p style="font-size:2rem;font-weight:700;color:var(--c-beh)">3</p>
+        <p style="font-size:.88rem">每戶窗外至少看到 3 棵樹</p>
+      </div>
+      <div class="compare-card" style="text-align:center">
+        <h4>30% 樹冠</h4>
+        <p style="font-size:2rem;font-weight:700;color:var(--c-beh)">30%</p>
+        <p style="font-size:.88rem">社區樹冠覆蓋率至少 30%</p>
+      </div>
+      <div class="compare-card" style="text-align:center">
+        <h4>300 公尺</h4>
+        <p style="font-size:2rem;font-weight:700;color:var(--c-beh)">300m</p>
+        <p style="font-size:.88rem">距離最近公園不超過 300 公尺</p>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">現實差距</div>
+      <div class="dc-fact">評估 862 個歐洲城市：不到 15% 人口所在區域完全符合三項標準；21% 人口三項均未達</div>
+      <div class="dc-src"><a href="https://www.nature.com/articles/s41467-026-71523-8" target="_blank" rel="noopener">Nature Communications 2026</a></div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">公民科學任務</div>
+      <div class="ac-task">用 Google Maps 測量學校周邊——你的學校符合 3-30-300 幾項？</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: nature forms -->
+<section class="slide" id="slide-nature-forms">
+  <div class="slide-num">6 / 20</div>
+  <h2>自然在城市中的多種形態</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card"><h4>地面層</h4><ul><li>公園與廣場</li><li>行道樹</li><li>生態草溝</li><li>雨花園</li></ul></div>
+      <div class="compare-card"><h4>水域系統</h4><ul><li>河川復育</li><li>濕地公園</li><li>滯洪池</li><li>親水步道</li></ul></div>
+      <div class="compare-card"><h4>垂直立體</h4><ul><li>屋頂花園</li><li>垂直綠化牆</li><li>空橋綠廊</li><li>立體農場</li></ul></div>
+      <div class="compare-card"><h4>生態廊道</h4><ul><li>連接綠地斑塊</li><li>都市野生動物通道</li><li>蜜蜂友善花圃</li></ul></div>
+    </div>
+    <p style="font-size:.9rem;color:var(--c-muted);margin-top:12px">城市裡的自然不只是公園——每一種形態都有不同的生態系統服務功能</p>
+  </div>
+</section>
+
+<!-- SLIDE 7: DIVIDER — 活動二 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-num">7 / 20</div>
+  <div class="slide-body">
+    <div class="act-badge">活動二</div>
+    <h2>自然解方、海綿城市<br>與生態系統服務</h2>
+    <div class="chips">
+      <span class="chip">步驟 1 NbS 深度解析</span>
+      <span class="chip">步驟 2 海綿城市工作坊</span>
+      <span class="chip">步驟 3 因果循環圖</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: NbS -->
+<section class="slide" id="slide-nbs">
+  <div class="slide-num">8 / 20</div>
+  <h2>自然解方（NbS）</h2>
+  <div class="slide-body">
+    <div class="q-box" style="font-size:1.1rem">
+      透過保護、永續管理與恢復生態系統，以有效應對社會挑戰的行動
+      <div class="q-sub">——世界自然保護聯盟定義</div>
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card" style="text-align:center">
+        <h4>氣候減緩潛力</h4>
+        <p style="font-size:1.8rem;font-weight:700;color:var(--c-accent)">37%</p>
+        <p style="font-size:.85rem">全球氣候需求可由 NbS 提供</p>
+      </div>
+      <div class="compare-card" style="text-align:center">
+        <h4>防洪受益人口</h4>
+        <p style="font-size:1.8rem;font-weight:700;color:var(--c-cog)">1,800 萬</p>
+        <p style="font-size:.85rem">健康紅樹林保護的人口</p>
+      </div>
+      <div class="compare-card" style="text-align:center">
+        <h4>年避免損失</h4>
+        <p style="font-size:1.8rem;font-weight:700;color:var(--c-beh)">570 億</p>
+        <p style="font-size:.85rem">美元洪災損失（紅樹林效益）</p>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">生態系統服務四類</div>
+      <div class="dc-fact">供給服務（食物、水）　調節服務（氣候調節、洪水控制）　文化服務（休閒、美學）　支持服務（土壤形成、養分循環）</div>
+      <div class="dc-src"><a href="https://www.iucn.org/resources/issues-brief/ensuring-effective-nature-based-solutions" target="_blank" rel="noopener">世界自然保護聯盟自然解方政策簡報</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9: sponge city -->
+<section class="slide" id="slide-sponge-city">
+  <div class="slide-num">9 / 20</div>
+  <h2>海綿城市：六大措施</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="text-align:center"><h4>滲</h4><p style="font-size:.88rem">透水鋪面讓雨水滲入地下</p></div>
+      <div class="compare-card" style="text-align:center"><h4>滯</h4><p style="font-size:.88rem">雨花園、生態草溝暫時儲水</p></div>
+      <div class="compare-card" style="text-align:center"><h4>蓄</h4><p style="font-size:.88rem">滯洪池、雨水回收桶蓄水</p></div>
+      <div class="compare-card" style="text-align:center"><h4>淨</h4><p style="font-size:.88rem">濕地植物淨化水質</p></div>
+      <div class="compare-card" style="text-align:center"><h4>用</h4><p style="font-size:.88rem">回收雨水用於灌溉、廁所</p></div>
+      <div class="compare-card" style="text-align:center"><h4>排</h4><p style="font-size:.88rem">安全排放多餘逕流</p></div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">臺灣政策數據</div>
+      <div class="dc-fact">開發面積達 2 公頃以上需設滯洪設施，逕流削減目標 50% 以上</div>
+      <div class="dc-src"><a href="https://www.wra.gov.tw/" target="_blank" rel="noopener">經濟部水利署逕流分擔與出流管制</a></div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">設計任務</div>
+      <div class="ac-task">為你學校所在街區設計 NbS 方案，至少選用 3 項海綿城市措施，標示預期逕流削減量</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10: system CLD -->
+<section class="slide" id="slide-system-cld">
+  <div class="slide-num">10 / 20</div>
+  <h2>城市綠藍系統：因果循環圖</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：城市綠藍系統因果循環圖（CLD）]</div>
+        <div class="cp-data"><strong>正反饋 ①：</strong>都市化→綠地減少→熱島加劇→能源消耗增加→更多排放<br><strong>正反饋 ②：</strong>不透水鋪面增加→逕流增加→洪災→財產損失<br><strong>負反饋：</strong>NbS 投資→滯洪→洪災減少→財產保護<br><strong>槓桿點：</strong>出流管制法規 / 綠地最低保留標準</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>小組任務：畫出 ≥2 個正反饋、1 個負反饋與 1 個槓桿點</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- SLIDE 11: DIVIDER — 活動三 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-num">11 / 20</div>
+  <div class="slide-body">
+    <div class="act-badge">活動三</div>
+    <h2>健康公平<br>原住民智慧與政策兩難</h2>
+    <div class="chips">
+      <span class="chip">步驟 1 健康效益</span>
+      <span class="chip">步驟 2 臺灣綠地公平</span>
+      <span class="chip">步驟 3 傳統生態知識</span>
+      <span class="chip">步驟 4 倫理辯論</span>
+      <span class="chip">步驟 5 CER 論證</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 12: health equity -->
+<section class="slide" id="slide-health-equity">
+  <div class="slide-num">12 / 20</div>
+  <h2>綠藍空間的健康效益</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="text-align:center">
+        <h4>降低死亡率</h4>
+        <p style="font-size:1.8rem;font-weight:700;color:var(--c-beh)">8–12%</p>
+        <p style="font-size:.85rem">城市綠地降低全因死亡率</p>
+      </div>
+      <div class="compare-card" style="text-align:center">
+        <h4>心理健康門檻</h4>
+        <p style="font-size:1.8rem;font-weight:700;color:var(--c-cog)">120 分鐘</p>
+        <p style="font-size:.85rem">每週自然接觸的最低建議量</p>
+      </div>
+      <div class="compare-card" style="text-align:center">
+        <h4>城市降溫</h4>
+        <p style="font-size:1.8rem;font-weight:700;color:var(--c-accent)">0.5°C</p>
+        <p style="font-size:.85rem">城市樹木年均降低地表溫度</p>
+      </div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">健康公平觀點</div>
+      <div class="dc-fact">藍色空間（河流、湖泊、海岸）在社會經濟梯度上分布較綠地更均勻，具有促進健康公平的潛力</div>
+      <div class="dc-src"><a href="https://www.who.int/europe/publications/i/item/WHO-EURO-2024-9004-48769-73135" target="_blank" rel="noopener">世界衛生組織城市綠地與健康</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 13: taiwan green -->
+<section class="slide" id="slide-taiwan-green">
+  <div class="slide-num">13 / 20</div>
+  <h2>臺灣綠地公平性分析</h2>
+  <div class="slide-body">
+    <figure>
+      <div class="chart-placeholder">
+        <div class="cp-label">圖表佔位</div>
+        <div class="cp-title">[此處放：臺灣六都人均公園綠地面積比較圖]</div>
+        <div class="cp-data"><strong>關鍵數據：</strong>全國平均 5.6 m²／臺北市 5.2 m²／高雄市 7.8 m²<br>世界衛生組織建議最低標準：9 m²</div>
+        <div class="cp-note">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>資料來源：內政部國土管理署（2023）</figcaption>
+    </figure>
+    <div class="q-box" style="font-size:1.05rem">
+      臺灣人均綠地 5.6 m² 是否足以保障城市居民的環境健康權？
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 14: TEK -->
+<section class="slide" id="slide-tek">
+  <div class="slide-num">14 / 20</div>
+  <h2>傳統生態知識與現代自然解方</h2>
+  <div class="slide-body">
+    <div class="data-card">
+      <div class="dc-label">關鍵數據</div>
+      <div class="dc-fact">全球約 80% 的生物多樣性位於原住民族領地——傳統生態知識被認定為與科學知識互補的永續管理體系</div>
+      <div class="dc-src"><a href="https://www.ipbes.net/global-assessment" target="_blank" rel="noopener">生物多樣性與生態系統服務政府間科學政策平台全球評估（2019）</a></div>
+    </div>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>臺灣原住民族智慧</h4>
+        <ul style="font-size:.9rem">
+          <li>布農族輪耕休養制度</li>
+          <li>魯凱族獵場分區管理</li>
+          <li>土地倫理：人與自然和諧共存</li>
+          <li>禁伐區與神聖自然地的保護</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <h4>與現代 NbS 的連結</h4>
+        <ul style="font-size:.9rem">
+          <li>輪耕 ↔ 生態系統服務維護</li>
+          <li>獵場分區 ↔ 棲地廊道設計</li>
+          <li>土地倫理 ↔ 環境正義框架</li>
+          <li>在地知識 ↔ 參與式規劃</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 15: ethics debate -->
+<section class="slide" id="slide-ethics-debate">
+  <div class="slide-num">15 / 20</div>
+  <h2>倫理兩難辯論</h2>
+  <div class="slide-body">
+    <div class="q-box">
+      都市開發 vs 綠地保存
+      <div class="q-sub">在土地有限的城市中，應優先蓋社會住宅還是保留最後一塊綠地？</div>
+    </div>
+    <div class="two-col">
+      <div class="col-card" style="border-color:var(--c-cog)">
+        <h4 style="color:var(--c-cog)">正方：居住正義優先</h4>
+        <ul style="font-size:.9rem">
+          <li>居住是基本人權，弱勢族群無適居住所</li>
+          <li>社會住宅可納入綠建築設計（垂直綠化）</li>
+          <li>都市邊緣另覓補償綠地</li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-color:var(--c-beh)">
+        <h4 style="color:var(--c-beh)">反方：環境正義優先</h4>
+        <ul style="font-size:.9rem">
+          <li>綠地一旦開發難以復原</li>
+          <li>低收入社區更需要綠地健康效益</li>
+          <li>公園周邊長期帶動地區發展</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:.9rem;color:var(--c-muted);margin-top:12px">各組 4 分鐘陳述 + 3 分鐘交互質詢｜好的論證必須承認對方最強論點再回應</p>
+  </div>
+</section>
+
+<!-- SLIDE 16: CER argument -->
+<section class="slide" id="slide-cer-argument">
+  <div class="slide-num">16 / 20</div>
+  <h2>CER 論證（含反駁段）</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">論題：臺灣人均綠地 5.6 m² 是否足以保障城市居民的環境健康權？</div>
+      <table class="ws-table">
+        <tr><th>Claim 主張</th><th>Evidence 證據</th><th>Reasoning 推理</th><th>Rebuttal 反駁段</th></tr>
+        <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </table>
+      <p style="font-size:.85rem;color:var(--c-muted);margin-top:10px">可引用：臺灣 5.6 m²、世界衛生組織建議 9 m²、綠地降低死亡率 8-12%、六都差距數據</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 17: DIVIDER — 活動四 -->
+<section class="slide divider" id="slide-a4">
+  <div class="slide-num">17 / 20</div>
+  <div class="slide-body">
+    <div class="act-badge">活動四</div>
+    <h2>學生治理行動<br>跨域整合與後設反思</h2>
+    <div class="chips">
+      <span class="chip">步驟 1 全校永續框架</span>
+      <span class="chip">步驟 2 模擬聽證</span>
+      <span class="chip">步驟 3 跨域短論文</span>
+      <span class="chip">步驟 4 後設認知</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 18: mock hearing -->
+<section class="slide" id="slide-mock-hearing">
+  <div class="slide-num">18 / 20</div>
+  <h2>模擬議會聽證</h2>
+  <div class="slide-body">
+    <div class="q-box" style="font-size:1.1rem">
+      議題：某都市計畫區最後一塊綠地——開發為商業區，還是保留為社區公園？
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card"><h4>市府都發局</h4><p style="font-size:.85rem">在都市發展目標與環保法規間取得平衡</p></div>
+      <div class="compare-card"><h4>建商代表</h4><p style="font-size:.85rem">強調稅收貢獻與就業機會</p></div>
+      <div class="compare-card"><h4>環境保護團體</h4><p style="font-size:.85rem">主張生態功能與健康效益不可替代</p></div>
+      <div class="compare-card"><h4>在地居民</h4><p style="font-size:.85rem">關心日常使用與鄰避效應</p></div>
+      <div class="compare-card"><h4>原住民社區代表</h4><p style="font-size:.85rem">強調傳統土地連結與文化主權</p></div>
+    </div>
+    <p style="font-size:.9rem;color:var(--c-muted);margin-top:12px">各組 3 分鐘陳述 + 2 分鐘被質詢｜完成利害關係人分析表</p>
+  </div>
+</section>
+
+<!-- SLIDE 19: essay guide -->
+<section class="slide" id="slide-essay-guide">
+  <div class="slide-num">19 / 20</div>
+  <h2>跨域整合短論文</h2>
+  <div class="slide-body">
+    <div class="q-box" style="font-size:1.1rem">
+      從 NbS 到海綿城市：生態科學、城市規劃與社會公平的交叉路口
+    </div>
+    <div class="ws-frame">
+      <div class="ws-title">500 字以上｜整合生態科學・城市規劃・社會公平三維度</div>
+      <div class="ws-lines">
+        <div style="font-size:.9rem;color:var(--c-muted)">① 問題界定：城市綠藍空間的危機現況（引用都市化、綠地縮減數據）</div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--c-muted)">② 生態科學：自然解方的科學基礎與量化效益（引用 37%、1800 萬人、570 億美元）</div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--c-muted)">③ 城市規劃：臺灣政策工具（海綿城市、出流管制、綠地標準）</div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--c-muted)">④ 社會公平：綠地可及性差距與健康不平等（引用臺灣 5.6 m²、六都差異）</div>
+        <div class="ws-line"></div>
+        <div style="font-size:.9rem;color:var(--c-muted)">⑤ 結論：系統性整合建議</div>
+        <div class="ws-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 20: SUMMARY -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <div class="slide-num">20 / 20</div>
+  <div class="slide-body">
+    <h2 style="color:var(--c-accent);font-size:2rem;margin-bottom:24px">核心收穫</h2>
+    <div class="summary-keys">
+      <div class="key-card">
+        <div class="key-num">1</div>
+        <div class="key-text">城市綠藍空間是多功能基礎設施：降溫、滯洪、固碳、促進健康——不是奢侈品</div>
+      </div>
+      <div class="key-card">
+        <div class="key-num">2</div>
+        <div class="key-text">自然解方與海綿城市可提供灰色基礎設施無法替代的生態服務，且往往更具成本效益</div>
+      </div>
+      <div class="key-card">
+        <div class="key-num">3</div>
+        <div class="key-text">綠地公平是社會正義問題——誰有機會享有綠藍空間，取決於城市規劃的優先選擇</div>
+      </div>
+    </div>
+    <div class="pledge-form">
+      <h4>我的行動承諾</h4>
+      <div class="pledge-row"><div class="pledge-box"></div><span>治理：</span><div style="flex:1;border-bottom:1px solid var(--c-beh);margin-left:4px"></div></div>
+      <div class="pledge-row"><div class="pledge-box"></div><span>課程：</span><div style="flex:1;border-bottom:1px solid var(--c-beh);margin-left:4px"></div></div>
+      <div class="pledge-row"><div class="pledge-box"></div><span>營運：</span><div style="flex:1;border-bottom:1px solid var(--c-beh);margin-left:4px"></div></div>
+      <div class="pledge-row"><div class="pledge-box"></div><span>社群：</span><div style="flex:1;border-bottom:1px solid var(--c-beh);margin-left:4px"></div></div>
+    </div>
+    <p style="margin-top:20px"><a href="lesson_plan.html" style="color:var(--c-accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator">投影片 <span class="nav-current" id="navCur">1</span> / 20</span>
+  <span class="hint"><kbd>←</kbd><kbd>→</kbd> 切換投影片</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur = document.getElementById('navCur');
+  if (!slides.length || !cur) return;
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => io.observe(s));
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -10 && r.top < window.innerHeight * 0.5;
+    });
+    const ci = i >= 0 ? i : 0;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = slides[Math.min(ci + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(ci - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

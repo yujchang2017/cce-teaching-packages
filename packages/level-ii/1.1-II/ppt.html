@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天氣小偵探 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text);
+    line-height: 1.6;
+    margin: 0;
+    background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 44px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 36px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator {
+    font-family: "JetBrains Mono", "Consolas", monospace;
+    color: var(--c-text);
+  }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px;
+    border: 1px solid var(--c-border); border-bottom-width: 2px;
+    border-radius: 4px; font-family: monospace; font-size: 0.8em;
+    background: #fff; margin: 0 2px;
+  }
+
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px);
+    scroll-snap-align: start;
+    padding: 40px 60px;
+    display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .question-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 30px 0;
+  }
+  .question-card {
+    background: var(--c-bg);
+    border: 2px solid var(--c-accent);
+    border-radius: 12px;
+    padding: 24px;
+    font-size: 1.15rem;
+    text-align: center;
+    color: var(--c-text);
+    position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px;
+    background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%;
+    font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 20px 0;
+  }
+  .compare-card {
+    border: 2px solid var(--c-border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label {
+    font-size: 0.9rem; font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+
+  .seasons-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin: 20px 0;
+  }
+  .season-card {
+    border-radius: 14px;
+    padding: 28px 12px;
+    text-align: center;
+    border: 3px solid;
+  }
+  .season-card .icon { font-size: 3.4rem; margin-bottom: 8px; }
+  .season-card .name { font-size: 1.5rem; font-weight: 800; }
+  .season-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 6px; }
+  .season-card.spring { border-color: #22c55e; background: #f0fdf4; }
+  .season-card.summer { border-color: #f59e0b; background: #fffbeb; }
+  .season-card.autumn { border-color: #ea580c; background: #fff7ed; }
+  .season-card.winter { border-color: #3b82f6; background: #eff6ff; }
+  .season-card.spring .name { color: #16a34a; }
+  .season-card.summer .name { color: #d97706; }
+  .season-card.autumn .name { color: #c2410c; }
+  .season-card.winter .name { color: #2563eb; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .summary-keys {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin: 30px 0;
+  }
+  .key-card {
+    text-align: center; padding: 30px 20px;
+    border-radius: 16px; background: var(--c-bg);
+    border: 3px solid;
+  }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.6rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  .typhoon-bag {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .item-card {
+    border: 2px solid var(--c-border);
+    border-radius: 10px;
+    padding: 18px 8px;
+    text-align: center;
+    background: var(--c-bg);
+  }
+  .item-card.must { border-color: var(--c-beh); background: #f0fdf4; }
+  .item-card.no { border-color: var(--c-muted); opacity: 0.55; }
+  .item-card .ic { font-size: 2.4rem; }
+  .item-card .nm { font-size: 1rem; margin-top: 6px; font-weight: 600; }
+  .item-card .tag {
+    display: inline-block; margin-top: 6px;
+    font-size: 0.75rem; padding: 2px 8px;
+    border-radius: 12px;
+  }
+  .item-card.must .tag { background: var(--c-beh); color: #fff; }
+  .item-card.no .tag { background: #d1d5db; color: #374151; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">天氣小偵探 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>天氣小偵探</h2>
+    <p class="subtitle">天天觀察天空,認識四季與颱風</p>
+    <div style="font-size: 5rem; margin-top: 20px;">🐻‍❄️🔍🌈</div>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>今天的天空,跟昨天一樣嗎?</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>今天天空什麼顏色?</div>
+      <div class="question-card"><div class="q-num">2</div>有沒有看到太陽?</div>
+      <div class="question-card"><div class="q-num">3</div>有沒有下雨?</div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      天天看一看,你就是<strong style="color: var(--c-accent);">天氣小偵探</strong>!
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>今天天氣是誰?</h2>
+    <p class="subtitle">學會用眼睛、皮膚、耳朵感受天氣</p>
+  </div>
+</section>
+
+<!-- 4. 窗外小偵探 -->
+<section class="slide" id="slide-window">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>今天外面怎麼樣?</h2>
+  <div class="slide-body">
+    <div class="seasons-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="season-card summer"><div class="icon">☀️</div><div class="name">晴</div></div>
+      <div class="season-card winter"><div class="icon">🌧️</div><div class="name">雨</div></div>
+      <div class="season-card spring"><div class="icon">☁️</div><div class="name">雲</div></div>
+      <div class="season-card autumn"><div class="icon">💨</div><div class="name">風</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      老師數 1、2、3,大家一起用手指比!
+    </p>
+  </div>
+</section>
+
+<!-- 5. 什麼叫天氣 -->
+<section class="slide" id="slide-weather-def">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>什麼叫「天氣」?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:大時鐘「今天」+ 晴/雨/風三表情]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵概念:</strong>天氣 = 今天外面是什麼樣子,每天可能不一樣。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>天氣每天都可能不一樣,像我們的心情</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 24px;">
+      做做看:<strong>晴天笑臉 / 雨天哭臉 / 風天吹氣</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://science.nasa.gov/kids/earth/weather-and-climate" target="_blank" rel="noopener">美國太空總署兒童科學館 — 天氣與氣候</a>
+  </div>
+</section>
+
+<!-- 6. 心情 vs 個性 -->
+<section class="slide" id="slide-mood">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>天氣 vs 氣候:心情和個性</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">天 氣 = 今天的心情</div>
+        <div class="icon">😊😢😣</div>
+        <h3>每天都會變</h3>
+        <p>晴天、雨天、颳風天</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">氣 候 = 平常的個性</div>
+        <div class="icon">🌞🌧️🍃</div>
+        <h3>很多年才看得出來</h3>
+        <p>臺灣夏天常熱、冬天常涼</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px; color: var(--c-accent);">
+      <strong>心情會變,個性比較固定。天氣會變,氣候比較固定。</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://science.nasa.gov/kids/earth/weather-and-climate" target="_blank" rel="noopener">美國太空總署兒童科學館 — 天氣與氣候</a>
+  </div>
+</section>
+
+<!-- 7. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>四季是好朋友</h2>
+    <p class="subtitle">春夏秋冬輪流來找我們</p>
+  </div>
+</section>
+
+<!-- 8. 四季 -->
+<section class="slide" id="slide-seasons">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>臺灣的四個季節</h2>
+  <div class="slide-body">
+    <div class="seasons-grid">
+      <div class="season-card spring">
+        <div class="icon">🌸</div>
+        <div class="name">春</div>
+        <div class="desc">花開了</div>
+      </div>
+      <div class="season-card summer">
+        <div class="icon">☀️</div>
+        <div class="name">夏</div>
+        <div class="desc">熱熱的</div>
+      </div>
+      <div class="season-card autumn">
+        <div class="icon">🍂</div>
+        <div class="name">秋</div>
+        <div class="desc">葉子掉下來</div>
+      </div>
+      <div class="season-card winter">
+        <div class="icon">❄️</div>
+        <div class="name">冬</div>
+        <div class="desc">要穿外套</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      4 個季節,每個大約住 <strong style="color: var(--c-accent); font-size: 1.6rem;">3 個月</strong>,加起來剛好 12 個月!
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署</a>
+  </div>
+</section>
+
+<!-- 9. 夏天像什麼/冬天像什麼 -->
+<section class="slide" id="slide-summer-winter">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>夏天像什麼?冬天像什麼?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 30px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:左邊大毛毯(夏)+ 右邊風吹臉(冬)]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;">
+          <strong>關鍵數據:</strong>臺灣夏天平均約 <strong style="color:#dc2626;">28°C</strong>(像大毛毯),冬天平均約 <strong style="color:#2563eb;">16°C</strong>(像風輕吹)。
+        </div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>用身體感受:抱抱自己 = 夏天,輕輕發抖 = 冬天</figcaption>
+    </figure>
+    <div class="compare-grid" style="margin-top: 24px;">
+      <div class="compare-card" style="border-color:#f59e0b;">
+        <div class="icon">🛌</div>
+        <h3>夏天 28°C</h3>
+        <p>像被大毛毯包著,熱熱的</p>
+      </div>
+      <div class="compare-card" style="border-color:#3b82f6;">
+        <div class="icon">🍃</div>
+        <h3>冬天 16°C</h3>
+        <p>像風輕輕吹過臉,涼涼的</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署氣候資料</a>
+  </div>
+</section>
+
+<!-- 10. 穿什麼才剛剛好 -->
+<section class="slide" id="slide-dressup">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>穿什麼才剛剛好?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 20px;">
+      老師喊「下雨了!」「夏天了!」「冬天了!」,大家用手指出對的衣服。
+    </p>
+    <div class="typhoon-bag">
+      <div class="item-card"><div class="ic">👕</div><div class="nm">T 恤</div><div class="tag" style="background:#fde68a;color:#92400e;">夏</div></div>
+      <div class="item-card"><div class="ic">🧥</div><div class="nm">外套</div><div class="tag" style="background:#bfdbfe;color:#1e40af;">冬</div></div>
+      <div class="item-card"><div class="ic">🧣</div><div class="nm">圍巾</div><div class="tag" style="background:#bfdbfe;color:#1e40af;">冬</div></div>
+      <div class="item-card"><div class="ic">🧢</div><div class="nm">帽子</div><div class="tag" style="background:#fde68a;color:#92400e;">夏</div></div>
+      <div class="item-card"><div class="ic">☂️</div><div class="nm">雨傘</div><div class="tag" style="background:#a5f3fc;color:#155e75;">雨</div></div>
+      <div class="item-card"><div class="ic">🥾</div><div class="nm">雨鞋</div><div class="tag" style="background:#a5f3fc;color:#155e75;">雨</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>颱風天我來準備</h2>
+    <p class="subtitle">知道天氣,就能保護自己</p>
+  </div>
+</section>
+
+<!-- 12. 颱風是誰 -->
+<section class="slide" id="slide-typhoon">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>颱風是誰?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:可愛颱風卡通(轉圈圈)+ 雨滴與風]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>臺灣每年 <strong style="color:#dc2626;">7 月到 10 月</strong>颱風比較多。</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>颱風像一個又吵又溼的客人,我們要準備好家</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.4rem; margin-top: 24px;">
+      動作時間:<strong>手臂繞圈 🌀,嘴巴發「呼—」風聲</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署 — 颱風資訊</a>
+  </div>
+</section>
+
+<!-- 13. 颱風來了要準備什麼 -->
+<section class="slide" id="slide-typhoon-bag">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>颱風來了要準備什麼?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 16px;">
+      請從下面選 5 個放進颱風背包。哪些是必要的?哪些可以先不用?
+    </p>
+    <div class="typhoon-bag">
+      <div class="item-card must"><div class="ic">💧</div><div class="nm">水</div><div class="tag">必要</div></div>
+      <div class="item-card must"><div class="ic">🔦</div><div class="nm">手電筒</div><div class="tag">必要</div></div>
+      <div class="item-card must"><div class="ic">🍪</div><div class="nm">餅乾</div><div class="tag">必要</div></div>
+      <div class="item-card must"><div class="ic">📻</div><div class="nm">收音機</div><div class="tag">必要</div></div>
+      <div class="item-card must"><div class="ic">🩹</div><div class="nm">小急救包</div><div class="tag">必要</div></div>
+      <div class="item-card no"><div class="ic">🧸</div><div class="nm">玩具</div><div class="tag">可不帶</div></div>
+      <div class="item-card no"><div class="ic">☂️</div><div class="nm">雨傘</div><div class="tag">出門用</div></div>
+      <div class="item-card no"><div class="ic">🍦</div><div class="nm">冰淇淋</div><div class="tag">會融化</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      別忘了:<strong>關好窗戶 🪟</strong>,聽爸爸媽媽和老師的話。
+    </p>
+  </div>
+</section>
+
+<!-- 14. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三件大事,一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 件</div>
+        <div class="word">看天空</div>
+        <div class="desc">天氣是<br>今天的樣子</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 件</div>
+        <div class="word">記四季</div>
+        <div class="desc">氣候是<br>很多年的平均</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 件</div>
+        <div class="word">會準備</div>
+        <div class="desc">看天氣穿衣服<br>颱風要做準備</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">小偵探,真棒!記得回家跟爸爸媽媽一起數雲朵喔。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">14</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

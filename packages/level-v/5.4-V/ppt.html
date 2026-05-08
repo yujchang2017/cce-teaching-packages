@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>碳排放、能源效率、碳定價與綠色金融 — 投影片</title>
+<style>
+  :root{--accent:#0f766e;--soft:#ccfbf1;--cog:#2563eb;--soc:#db2777;--beh:#16a34a;--warn:#ea580c;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--text);line-height:1.6;margin:0;background:#fff}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.95rem;font-weight:500;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--muted)}
+  .nav-indicator{font-family:monospace;color:var(--text)}
+  .nav-cur{color:var(--accent);font-weight:700}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--border);position:relative}
+  .slide-num{position:absolute;top:14px;right:20px;font-size:.8rem;font-family:monospace;color:var(--border)}
+  .slide h2{font-size:2rem;margin:0 0 20px;color:var(--text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.8rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--accent);color:#fff;padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--accent);letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.4rem;color:var(--accent)}
+  .slide.divider .act-steps{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .act-step-chip{background:var(--soft);color:var(--accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  .q-box{background:var(--soft);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.4rem;line-height:1.6;color:var(--accent);font-weight:600}
+  .q-sub{font-size:1.05rem;color:var(--muted);font-weight:400;margin-top:10px}
+  .data-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:14px 0;background:var(--bg)}
+  .data-card .dc-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;color:var(--muted);margin-bottom:6px}
+  .data-card .dc-fact{font-size:1.15rem;font-weight:700;color:var(--text);line-height:1.5}
+  .act-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:14px 0}
+  .act-card .ac-badge{display:inline-block;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:4px;margin-bottom:10px}
+  .act-card .ac-task{font-size:1.1rem;color:var(--text);line-height:1.6}
+  .ws-frame{border:2px dashed var(--accent);border-radius:12px;padding:28px 32px;margin:14px 0;background:#fff}
+  .ws-frame .ws-title{font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:12px}
+  .ws-table{width:100%;border-collapse:collapse;margin:10px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--border);padding:10px 12px;text-align:center;font-size:.95rem}
+  .ws-table th{background:var(--soft);color:var(--accent);font-weight:700}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:52px}
+  .chart-placeholder{border:2px dashed var(--accent);border-radius:10px;min-height:200px;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--muted);font-size:.95rem;margin:14px 0;padding:20px;text-align:center}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:14px 0}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:14px 0}
+  .key-card{border:2px solid var(--border);border-radius:10px;padding:18px;text-align:center}
+  .key-card .kc-icon{font-size:2rem;margin-bottom:8px}
+  .key-card .kc-word{font-size:1.2rem;font-weight:700;color:var(--accent);margin-bottom:6px}
+  .key-card .kc-desc{font-size:.9rem;color:var(--muted)}
+  .summary-keys{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:24px 0}
+  .slide-src{margin-top:auto;padding-top:12px;border-top:1px dashed var(--border);font-size:.8rem;color:var(--muted)}
+  .slide-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  ul.bullet{margin:0;padding-left:1.4em;line-height:2}
+  ul.bullet li{font-size:1rem}
+  .tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.8rem;font-weight:700;margin:2px}
+  .tag.cog{background:#dbeafe;color:#1d4ed8}
+  .tag.soc{background:#fce7f3;color:#9d174d}
+  .tag.beh{background:#dcfce7;color:#15803d}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">碳排放、能源效率、碳定價與綠色金融 ｜ Level V</span>
+</header>
+
+<main>
+
+<!-- ===== SLIDE 1: COVER ===== -->
+<section class="slide cover" id="slide-cover">
+  <span class="slide-num">1/28</span>
+  <div class="slide-body">
+    <div class="level-tag">Level V</div>
+    <h2>碳排放、能源效率、碳定價與綠色金融</h2>
+    <p style="color:var(--muted);font-size:1.1rem;margin-top:16px">5.4-V ｜ 4 個活動</p>
+  </div>
+</section>
+
+<!-- ===== SLIDE 2: 課程地圖 ===== -->
+<section class="slide" id="slide-map">
+  <span class="slide-num">2/28</span>
+  <h2>今天的學習旅程</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="key-card">
+        <div class="kc-word">活動一</div>
+        <div class="kc-desc">全球碳排放<br>生產端 vs 消費端</div>
+      </div>
+      <div class="key-card">
+        <div class="kc-word">活動二</div>
+        <div class="kc-desc">能源效率<br>節能技術與反彈效應</div>
+      </div>
+      <div class="key-card">
+        <div class="kc-word">活動三</div>
+        <div class="kc-desc">碳定價<br>碳稅 vs 碳交易</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;margin-top:16px">
+      <div class="key-card" style="max-width:300px">
+        <div class="kc-word">活動四</div>
+        <div class="kc-desc">綠色金融<br>ESG、漂綠辨識與模擬聽證</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 3: 核心問題 ===== -->
+<section class="slide" id="slide-question">
+  <span class="slide-num">3/28</span>
+  <h2>核心探究問題</h2>
+  <div class="slide-body">
+    <div class="q-box">
+      我們能用哪些政策工具減少碳排放，同時確保經濟公平與永續發展？
+      <div class="q-sub">從數據分析到政策設計，從個人節能到綠色金融，尋找系統性解方。</div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">數據錨點</div>
+      <div class="dc-fact">2022年全球排放約 <strong>368億噸 CO₂</strong>，能源系統佔 <strong>73%</strong>；若達成全部現有政策目標，本世紀升溫仍超過 2°C</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ACTIVITY 1 DIVIDER ===== -->
+<section class="slide divider" id="slide-a1">
+  <span class="slide-num">4/28</span>
+  <div class="act-badge">活動一</div>
+  <h2>全球碳排放與數據素養</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">步驟 1｜生產端 vs 消費端排放</span>
+    <span class="act-step-chip">步驟 2｜數據解讀任務</span>
+    <span class="act-step-chip">步驟 3｜活動一小結</span>
+  </div>
+</section>
+
+<!-- ===== SLIDE 5: 全球碳排放圖 ===== -->
+<section class="slide" id="slide-global-co2">
+  <span class="slide-num">5/28</span>
+  <h2>全球 CO₂ 排放：從哪裡來？</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div>
+        <div class="data-card">
+          <div class="dc-label">全球總排放</div>
+          <div class="dc-fact">2022 年：<strong>368 億噸</strong> CO₂ 當量</div>
+        </div>
+        <div class="data-card">
+          <div class="dc-label">能源系統佔比</div>
+          <div class="dc-fact">能源系統 <strong>73%</strong>，其中電熱生產 <strong>1/3</strong></div>
+        </div>
+      </div>
+      <div class="chart-placeholder">
+        全球排放來源圓餅圖<br><small>（能源 73% / 農業 18% / 工業製程 6% / 廢棄物 3%）</small>
+      </div>
+    </div>
+    <div class="slide-src">資料來源：政府間氣候變遷小組 AR6（2022）；Global Carbon Project 2023</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 6: 生產端 vs 消費端 ===== -->
+<section class="slide" id="slide-prod-cons">
+  <span class="slide-num">6/28</span>
+  <h2>生產端 vs 消費端排放</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="chart-placeholder">
+        各國生產端排放排名長條圖<br><small>（中國、美國、印度、歐盟、俄羅斯…）</small>
+      </div>
+      <div class="chart-placeholder">
+        各國消費端排放排名長條圖<br><small>（考慮進出口調整後順序改變）</small>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">討論</div>
+      <div class="ac-task">高消費端國家是否有責任協助高生產端國家減排？碳邊境調整（CBAM）如何回應這一問題？</div>
+    </div>
+    <div class="slide-src">資料來源：Global Carbon Project 2023</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 7: 數據素養任務 ===== -->
+<section class="slide" id="slide-data-task">
+  <span class="slide-num">7/28</span>
+  <h2>數據解讀任務</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">📋 小組任務：閱讀圖表，回答以下問題</div>
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th>問題</th>
+            <th>你的答案</th>
+            <th>佐證數據</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>哪個部門排放最多？</td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td>生產端與消費端排名差異最大的國家是？</td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td>若你是政策制定者，最先鎖定哪個部門？理由？</td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 8: 活動一小結 ===== -->
+<section class="slide" id="slide-a1-summary">
+  <span class="slide-num">8/28</span>
+  <h2>活動一小結</h2>
+  <div class="slide-body">
+    <ul class="bullet">
+      <li>全球年排放約 368 億噸 CO₂，能源系統是最大來源</li>
+      <li>生產端 vs 消費端計算方式影響各國的「責任」認定</li>
+      <li>數據本身不說話——詮釋框架決定政策方向</li>
+      <li>CBAM（碳邊境調整機制）是一種連結生產端與消費端的政策嘗試</li>
+    </ul>
+    <div class="tag cog">認知</div><div class="tag soc">社會情緒</div>
+  </div>
+</section>
+
+<!-- ===== ACTIVITY 2 DIVIDER ===== -->
+<section class="slide divider" id="slide-a2">
+  <span class="slide-num">9/28</span>
+  <div class="act-badge">活動二</div>
+  <h2>能源效率與節能技術</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">步驟 1｜各部門能耗與節能潛力</span>
+    <span class="act-step-chip">步驟 2｜反彈效應思辨</span>
+    <span class="act-step-chip">步驟 3｜系統思考分析</span>
+  </div>
+</section>
+
+<!-- ===== SLIDE 10: 能源效率機會 ===== -->
+<section class="slide" id="slide-energy-eff">
+  <span class="slide-num">10/28</span>
+  <h2>各部門能耗與節能潛力</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="chart-placeholder">
+        各部門終端能耗佔比圓餅圖<br><small>（建築 30% / 交通 23% / 工業 37% / 其他 10%）</small>
+      </div>
+      <div>
+        <div class="data-card">
+          <div class="dc-label">節能技術效益</div>
+          <div class="dc-fact">LED 照明、變頻空調、高效隔熱可減少能耗 <strong>30–50%</strong></div>
+        </div>
+        <div class="data-card">
+          <div class="dc-label">臺灣目標</div>
+          <div class="dc-fact">2030 年能源密集度較 2005 年降低 <strong>28%</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-src">資料來源：國際能源署 WEO 2024；能源署</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 11: 節能技術清單 ===== -->
+<section class="slide" id="slide-tech-list">
+  <span class="slide-num">11/28</span>
+  <h2>主要節能技術一覽</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="data-card">
+        <div class="dc-label">建築</div>
+        <div class="dc-fact">LED 照明、高效空調、外牆隔熱翻新可減少能耗 <strong>50–75%</strong></div>
+      </div>
+      <div class="data-card">
+        <div class="dc-label">交通</div>
+        <div class="dc-fact">電動車、大眾運輸、主動通勤（步行、單車）</div>
+      </div>
+      <div class="data-card">
+        <div class="dc-label">工業</div>
+        <div class="dc-fact">電氣化製程、廢熱回收、循環材料使用</div>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">思考</div>
+      <div class="ac-task">技術改進真的能讓總能耗下降嗎？還是會有其他效果出現？</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 12: 反彈效應 ===== -->
+<section class="slide" id="slide-rebound">
+  <span class="slide-num">12/28</span>
+  <h2>反彈效應與傑文斯悖論</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="chart-placeholder">
+        反彈效應因果循環圖<br><small>效率提升 → 單位成本降低 → 使用量增加 → 總能耗不降反升</small>
+      </div>
+      <div>
+        <div class="data-card">
+          <div class="dc-label">反彈效應估計</div>
+          <div class="dc-fact">直接反彈效應通常抵消節能潛力的 <strong>10–30%</strong>；某些案例下超過 100%（傑文斯悖論）</div>
+        </div>
+        <div class="act-card">
+          <div class="ac-badge">討論</div>
+          <div class="ac-task">如果節能技術反而增加能耗，我們還應該推廣它嗎？需要搭配什麼政策？</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-src">資料來源：國際能源署 WEO 2024</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 13: 系統思考 ===== -->
+<section class="slide" id="slide-system-think">
+  <span class="slide-num">13/28</span>
+  <h2>系統思考：能源效率的複雜性</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">📋 系統圖繪製任務</div>
+      <p style="font-size:.95rem;margin-bottom:12px">在下方框格中，畫出「節能政策 → 能耗變化」的因果循環圖，至少標示 3 個反饋迴路。</p>
+      <div class="chart-placeholder" style="min-height:160px">學生繪製區（課堂活動）</div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">小組分享</div>
+      <div class="ac-task">每組分享一個「意外的後果」——節能政策可能帶來哪些你沒預料到的效果？</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 14: 活動二小結 ===== -->
+<section class="slide" id="slide-a2-summary">
+  <span class="slide-num">14/28</span>
+  <h2>活動二小結</h2>
+  <div class="slide-body">
+    <ul class="bullet">
+      <li>建築（30%）、交通（23%）是能耗最大的兩個部門</li>
+      <li>LED、變頻、隔熱等技術可減少能耗 30–50%</li>
+      <li>反彈效應可能抵消 10–30% 的節能效益</li>
+      <li>傑文斯悖論提醒我們：技術改進必須搭配需求管理政策</li>
+    </ul>
+    <div class="tag cog">認知</div><div class="tag soc">社會情緒</div><div class="tag beh">行為</div>
+  </div>
+</section>
+
+<!-- ===== ACTIVITY 3 DIVIDER ===== -->
+<section class="slide divider" id="slide-a3">
+  <span class="slide-num">15/28</span>
+  <div class="act-badge">活動三</div>
+  <h2>碳定價：碳稅 vs 碳交易</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">步驟 1｜碳定價原理</span>
+    <span class="act-step-chip">步驟 2｜比較分析</span>
+    <span class="act-step-chip">步驟 3｜模擬碳交易</span>
+    <span class="act-step-chip">步驟 4｜CER 論證</span>
+  </div>
+</section>
+
+<!-- ===== SLIDE 16: 碳定價現況 ===== -->
+<section class="slide" id="slide-carbon-price">
+  <span class="slide-num">16/28</span>
+  <h2>全球碳定價現況</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="chart-placeholder">
+        全球碳定價覆蓋地圖<br><small>（75 項機制，覆蓋全球 23% 排放）</small>
+      </div>
+      <div>
+        <div class="data-card">
+          <div class="dc-label">全球規模</div>
+          <div class="dc-fact"><strong>75</strong> 項碳定價機制，覆蓋 <strong>23%</strong> 全球排放；年收入約 <strong>1,040 億美元</strong></div>
+        </div>
+        <div class="data-card">
+          <div class="dc-label">價格範圍</div>
+          <div class="dc-fact">臺灣 NT$300／噸 → 歐盟 €85／噸 → 瑞典 €120／噸</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-src">資料來源：世界銀行碳定價儀表板（2024）；OECD Effective Carbon Rates</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 17: 碳稅 vs 碳交易 ===== -->
+<section class="slide" id="slide-tax-vs-ets">
+  <span class="slide-num">17/28</span>
+  <h2>碳稅 vs 排放交易制度（ETS）</h2>
+  <div class="slide-body">
+    <div class="chart-placeholder" style="min-height:240px">
+      碳稅 vs ETS 比較表（橫向對照）<br>
+      <small>比較維度：價格確定性 / 減排量確定性 / 行政成本 / 分配公平性 / 適用規模</small>
+    </div>
+    <div class="two-col">
+      <div class="data-card">
+        <div class="dc-label">歐盟 ETS 案例</div>
+        <div class="dc-fact">2005 年啟動，2024 年排放較基準年降 <strong>36%</strong>；第四期拍賣收入用於氣候基金</div>
+      </div>
+      <div class="data-card">
+        <div class="dc-label">臺灣碳費</div>
+        <div class="dc-fact">2024 年啟動，費率 NT$300 起，預計覆蓋 500 多個排放大戶</div>
+      </div>
+    </div>
+    <div class="slide-src">資料來源：歐盟執委會；環境部</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 18: CBAM ===== -->
+<section class="slide" id="slide-cbam">
+  <span class="slide-num">18/28</span>
+  <h2>碳邊境調整機制（CBAM）</h2>
+  <div class="slide-body">
+    <div class="q-box">
+      如果 A 國有碳稅，B 國沒有，高碳產業會不會從 A 遷移到 B？CBAM 如何解決「碳洩漏」問題？
+    </div>
+    <div class="two-col">
+      <div class="data-card">
+        <div class="dc-label">CBAM 機制</div>
+        <div class="dc-fact">進口商須購買與歐盟 ETS 相應的「碳憑證」，對鋼鐵、水泥、鋁、化學品、電力課徵</div>
+      </div>
+      <div class="act-card">
+        <div class="ac-badge">討論</div>
+        <div class="ac-task">CBAM 是保護主義還是公平貿易工具？對開發中國家出口商有何影響？</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 19: 模擬碳交易 ===== -->
+<section class="slide" id="slide-ets-game">
+  <span class="slide-num">19/28</span>
+  <h2>模擬碳交易：角色扮演</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">🎮 遊戲規則</div>
+      <ul class="bullet">
+        <li>每組代表一家「工廠」，獲得初始排放配額</li>
+        <li>各組排放成本不同（A 廠低成本 / B 廠中成本 / C 廠高成本）</li>
+        <li>可在「碳市場」中買賣配額，3 輪後結算總成本</li>
+        <li>目標：以最低總成本達成整體減排 30%</li>
+      </ul>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">反思</div>
+      <div class="ac-task">誰受益？誰受損？市場機制是否比統一規定更有效率？</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 20: CER 論證 ===== -->
+<section class="slide" id="slide-cer">
+  <span class="slide-num">20/28</span>
+  <h2>CER 論證：哪種碳定價更好？</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">📝 論證框架</div>
+      <table class="ws-table">
+        <thead>
+          <tr><th>論證要素</th><th>你的回應（碳稅 或 ETS）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>主張（Claim）</td><td class="fill"></td></tr>
+          <tr><td>證據（Evidence）</td><td class="fill"></td></tr>
+          <tr><td>推理（Reasoning）</td><td class="fill"></td></tr>
+          <tr><td>反駁（Rebuttal）</td><td class="fill"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 21: 活動三小結 ===== -->
+<section class="slide" id="slide-a3-summary">
+  <span class="slide-num">21/28</span>
+  <h2>活動三小結</h2>
+  <div class="slide-body">
+    <ul class="bullet">
+      <li>全球 75 項碳定價機制，但覆蓋率僅 23%，平均碳價遠低於氣候目標所需</li>
+      <li>碳稅確定價格，ETS 確定數量——各有優劣</li>
+      <li>CBAM 是防止碳洩漏的新工具，但也引發貿易爭議</li>
+      <li>瑞典（€120）vs 臺灣（NT$300）：價格差異背後是政治與經濟選擇</li>
+    </ul>
+    <div class="tag cog">認知</div><div class="tag soc">社會情緒</div><div class="tag beh">行為</div>
+  </div>
+</section>
+
+<!-- ===== ACTIVITY 4 DIVIDER ===== -->
+<section class="slide divider" id="slide-a4">
+  <span class="slide-num">22/28</span>
+  <div class="act-badge">活動四</div>
+  <h2>綠色金融、ESG 與模擬聽證</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">步驟 1｜綠色金融工具</span>
+    <span class="act-step-chip">步驟 2｜漂綠辨識</span>
+    <span class="act-step-chip">步驟 3｜模擬聽證</span>
+    <span class="act-step-chip">步驟 4｜跨域小論文</span>
+  </div>
+</section>
+
+<!-- ===== SLIDE 23: 綠色金融工具 ===== -->
+<section class="slide" id="slide-green-bonds">
+  <span class="slide-num">23/28</span>
+  <h2>綠色金融工具：債券、基金、ESG</h2>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="chart-placeholder">
+        綠色債券年度發行量折線圖<br><small>（2015–2023，從約 500 億美元成長至 5,750 億美元）</small>
+      </div>
+      <div>
+        <div class="data-card">
+          <div class="dc-label">綠色債券規模</div>
+          <div class="dc-fact">2023 年全球發行 <strong>5,750 億美元</strong>，累計超過 <strong>2.5 兆美元</strong></div>
+        </div>
+        <div class="data-card">
+          <div class="dc-label">ESG 投資</div>
+          <div class="dc-fact">全球 ESG 資產預計 2025 年達 <strong>50 兆美元</strong>（約全球資產管理 1/3）</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-src">資料來源：氣候債券倡議組織（Climate Bonds Initiative）</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 24: 漂綠辨識 ===== -->
+<section class="slide" id="slide-greenwash">
+  <span class="slide-num">24/28</span>
+  <h2>漂綠（Greenwashing）辨識指南</h2>
+  <div class="slide-body">
+    <div class="three-col">
+      <div class="data-card">
+        <div class="dc-label">模糊聲明</div>
+        <div class="dc-fact">「環保材質」「天然」「永續」——未定義標準，無法驗證</div>
+      </div>
+      <div class="data-card">
+        <div class="dc-label">無關聲明</div>
+        <div class="dc-fact">強調某項優點卻忽略整體影響（如「不含氟氯烴」但仍高耗能）</div>
+      </div>
+      <div class="data-card">
+        <div class="dc-label">虛假標章</div>
+        <div class="dc-fact">自製認證圖示，非第三方驗證；或放大局部成就</div>
+      </div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">任務</div>
+      <div class="ac-task">搜尋 3 個市面上的「綠色」產品廣告，用上方標準判斷是否為漂綠行為。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 25: 模擬聽證角色卡 ===== -->
+<section class="slide" id="slide-hearing">
+  <span class="slide-num">25/28</span>
+  <h2>模擬聽證：ESG 強制披露是否應立法？</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">🎭 角色分配</div>
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th>角色</th>
+            <th>立場</th>
+            <th>主要論點方向</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>大型企業代表</td>
+            <td>反對強制</td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td>環保 NGO</td>
+            <td>贊成強制</td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td>中小企業聯盟</td>
+            <td>有條件同意</td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td>金融監管機構</td>
+            <td>需要標準統一</td>
+            <td class="fill"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 26: 跨域小論文架構 ===== -->
+<section class="slide" id="slide-essay">
+  <span class="slide-num">26/28</span>
+  <h2>跨域小論文：政策組合拳</h2>
+  <div class="slide-body">
+    <div class="ws-frame">
+      <div class="ws-title">📝 論文結構引導</div>
+      <ul class="bullet">
+        <li><strong>論點：</strong>選擇一項你認為最有效的碳定價 + 綠色金融政策組合</li>
+        <li><strong>數據支持：</strong>引用至少 2 個具體數字（有來源）</li>
+        <li><strong>反駁處理：</strong>說明為何此組合優於其他選項</li>
+        <li><strong>社會公正：</strong>政策對不同收入族群或地區的影響</li>
+        <li><strong>行動建議：</strong>學校或社區可採取的對應行動</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 27: 活動四小結 / WSA ===== -->
+<section class="slide" id="slide-a4-summary">
+  <span class="slide-num">27/28</span>
+  <h2>活動四小結 ＆ WSA 連結</h2>
+  <div class="slide-body">
+    <ul class="bullet">
+      <li>綠色金融市場快速成長，但漂綠風險也同步上升</li>
+      <li>ESG 披露標準化（如 TCFD、ISSB）是防範漂綠的關鍵</li>
+      <li>模擬聽證訓練多元觀點辨析與公共論述能力</li>
+    </ul>
+    <div class="two-col" style="margin-top:16px">
+      <div class="data-card">
+        <div class="dc-label">WSA 課程面向</div>
+        <div class="dc-fact">碳定價與 ESG 融入公民素養課程與跨科主題</div>
+      </div>
+      <div class="data-card">
+        <div class="dc-label">WSA 校園運營</div>
+        <div class="dc-fact">學校採購可評估供應商 ESG 表現，採用綠色標章產品</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 28: SUMMARY ===== -->
+<section class="slide cover" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <span class="slide-num">28/28</span>
+  <div class="slide-body">
+    <h2 style="color:var(--beh)">三個核心關鍵詞</h2>
+    <div class="summary-keys">
+      <div class="key-card">
+        <div class="kc-icon">📊</div>
+        <div class="kc-word">數據素養</div>
+        <div class="kc-desc">生產端 vs 消費端排放，詮釋框架決定政策方向</div>
+      </div>
+      <div class="key-card">
+        <div class="kc-icon">⚖️</div>
+        <div class="kc-word">碳定價</div>
+        <div class="kc-desc">將碳的外部成本內部化，75 項機制覆蓋 23% 全球排放</div>
+      </div>
+      <div class="key-card">
+        <div class="kc-icon">💚</div>
+        <div class="kc-word">綠色金融</div>
+        <div class="kc-desc">5,750 億美元綠色債券，但須防範漂綠與不實聲明</div>
+      </div>
+    </div>
+    <p style="margin-top:24px"><a href="lesson_plan.html" style="color:var(--accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / 28</span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換・捲動換頁</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  if (!slides.length || !cur) return;
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

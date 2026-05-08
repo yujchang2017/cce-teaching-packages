@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心情天氣 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #be185d;
+    --c-accent-soft: #fce7f3;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #f59e0b;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; color: var(--c-text); line-height: 1.6; margin: 0; background: #fff; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 44px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; z-index: 100; font-size: 0.9rem; }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+  .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 36px; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted); }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border); border-bottom-width: 2px; border-radius: 4px; font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px; }
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide { min-height: calc(100vh - 80px); scroll-snap-align: start; padding: 40px 60px; display: flex; flex-direction: column; border-bottom: 1px dashed var(--c-border); }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--c-border); font-size: 0.8rem; color: var(--c-muted); }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+  .slide.cover, .slide.divider { align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%); }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+  .babies-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin: 30px 0; }
+  .baby-card { background: var(--c-bg); border: 3px solid; border-radius: 18px; padding: 24px 12px; text-align: center; }
+  .baby-card .emoji { font-size: 3.6rem; display: block; }
+  .baby-card .name { font-size: 1.2rem; font-weight: 700; margin-top: 10px; }
+  .baby-card.b1 { border-color: var(--c-warn); } .baby-card.b1 .name { color: var(--c-warn); }
+  .baby-card.b2 { border-color: var(--c-cog); } .baby-card.b2 .name { color: var(--c-cog); }
+  .baby-card.b3 { border-color: #6366f1; } .baby-card.b3 .name { color: #6366f1; }
+  .baby-card.b4 { border-color: #dc2626; } .baby-card.b4 .name { color: #dc2626; }
+  .breathe-box { display: grid; grid-template-columns: 1fr auto 1fr; gap: 30px; align-items: center; margin: 30px 0; }
+  .breathe-card { border: 3px solid var(--c-accent); border-radius: 16px; padding: 30px; text-align: center; }
+  .breathe-card .emoji { font-size: 4rem; }
+  .breathe-card .label { font-size: 1.2rem; font-weight: 700; color: var(--c-accent); margin: 10px 0; }
+  .breathe-card .time { font-size: 0.95rem; color: var(--c-muted); }
+  .breathe-arrow { font-size: 2.5rem; color: var(--c-accent); }
+  .three-things { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 30px 0; }
+  .thing-card { border: 2px solid var(--c-accent); border-radius: 16px; padding: 24px 16px; text-align: center; }
+  .thing-card .emoji { font-size: 3rem; }
+  .thing-card .name { font-size: 1.2rem; font-weight: 700; margin-top: 10px; color: var(--c-accent); }
+  .thing-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 6px; }
+  .magic-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 30px 0; }
+  .magic-card { border-radius: 16px; padding: 30px 16px; text-align: center; }
+  .magic-card.m1 { background: #ecfeff; border: 3px solid #0891b2; }
+  .magic-card.m2 { background: #fef3c7; border: 3px solid var(--c-warn); }
+  .magic-card.m3 { background: var(--c-accent-soft); border: 3px solid var(--c-accent); }
+  .magic-card .emoji { font-size: 3.5rem; }
+  .magic-card .name { font-size: 1.3rem; font-weight: 700; margin: 10px 0; }
+  .magic-card.m1 .name { color: #0891b2; }
+  .magic-card.m2 .name { color: #92400e; }
+  .magic-card.m3 .name { color: var(--c-accent); }
+  .magic-card .desc { font-size: 0.95rem; color: var(--c-muted); }
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.4rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-warn); } .key-card.k1 .word { color: var(--c-warn); }
+  .key-card.k2 { border-color: var(--c-cog); } .key-card.k2 .word { color: var(--c-cog); }
+  .key-card.k3 { border-color: var(--c-accent); } .key-card.k3 .word { color: var(--c-accent); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px; background: var(--c-bg); max-width: 700px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">心情天氣 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>心情天氣</h2>
+    <p class="subtitle">心裡也有天氣,心心帶我們認識情緒小夥伴</p>
+    <div style="font-size: 6rem; margin: 30px 0;">🐻💗😊😢😨😠</div>
+    <p style="font-size: 1.1rem; color: var(--c-accent); font-weight: 600;">把手放在胸口,跟心心說「哈囉」!</p>
+  </div>
+</section>
+
+<!-- 2 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>情緒是什麼?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.2rem; color: var(--c-muted);">
+      心裡面的感覺,看不到但感覺得到。<br>就像天氣一樣,有時候晴、有時候會下雨。
+    </p>
+    <div style="text-align: center; font-size: 5rem; margin: 30px 0; letter-spacing: 16px;">
+      😊 😢 😨 😠
+    </div>
+    <p style="text-align: center; font-size: 1.15rem;">
+      跟著老師做 4 個表情:<strong>笑笑、哭哭、發抖、鼓臉頰</strong>
+    </p>
+  </div>
+</section>
+
+<!-- 3 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>情緒四寶寶來找我</h2>
+    <p class="subtitle">認識 4 個基本情緒,做一組聞花吹氣球</p>
+  </div>
+</section>
+
+<!-- 4 4 個情緒寶寶 -->
+<section class="slide" id="slide-4babies">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>4 個情緒好朋友</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.1rem; color: var(--c-muted);">
+      心裡住著 4 個基本情緒,輪流來找我們——沒有壞情緒喔!
+    </p>
+    <div class="babies-grid">
+      <div class="baby-card b1"><span class="emoji">😊</span><div class="name">高興</div></div>
+      <div class="baby-card b2"><span class="emoji">😢</span><div class="name">難過</div></div>
+      <div class="baby-card b3"><span class="emoji">😨</span><div class="name">害怕</div></div>
+      <div class="baby-card b4"><span class="emoji">😠</span><div class="name">生氣</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.3rem; margin-top: 24px; color: var(--c-accent); font-weight: 700;">
+      高!難!害!氣!
+    </p>
+    <p style="text-align: center; color: var(--c-muted);">
+      用手指數,四下拍手
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.who.int/" target="_blank" rel="noopener">世界衛生組織 — 兒童心理健康與氣候變遷</a>
+  </div>
+</section>
+
+<!-- 5 聞花吹氣球 -->
+<section class="slide" id="slide-breathe">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>神奇小魔法 — 聞花吹氣球</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 30px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:左邊大花、右邊大氣球、中間箭頭 圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>深呼吸 5 下,讓害怕慢慢變小</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>慢慢吸氣聞花,慢慢吐氣吹氣球</figcaption>
+    </figure>
+    <div class="breathe-box">
+      <div class="breathe-card">
+        <div class="emoji">🌸</div>
+        <div class="label">吸氣聞花</div>
+        <div class="time">3 秒</div>
+      </div>
+      <div class="breathe-arrow">→</div>
+      <div class="breathe-card">
+        <div class="emoji">🎈</div>
+        <div class="label">吐氣吹氣球</div>
+        <div class="time">5 秒</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 20px; color: var(--c-accent); font-weight: 700;">
+      做 5 次,心裡的風會慢慢小下來 💨
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.who.int/" target="_blank" rel="noopener">世界衛生組織 — 兒童心理健康指引</a>
+  </div>
+</section>
+
+<!-- 6 今天你是哪一個寶寶 -->
+<section class="slide" id="slide-mirror">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>今天你是哪一個寶寶?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.1rem; color: var(--c-muted);">
+      照照心裡的鏡子,誠實告訴自己——<strong>你可以有 2 個、3 個都可以</strong>!
+    </p>
+    <div class="babies-grid">
+      <div class="baby-card b1"><span class="emoji">😊</span><div class="name">1<br>高興</div></div>
+      <div class="baby-card b2"><span class="emoji">😢</span><div class="name">2<br>難過</div></div>
+      <div class="baby-card b3"><span class="emoji">😨</span><div class="name">3<br>害怕</div></div>
+      <div class="baby-card b4"><span class="emoji">😠</span><div class="name">4<br>生氣</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 24px;">
+      <strong>每人舉手比 1–4 之間的數字</strong>(指自己今天的情緒寶寶)
+    </p>
+  </div>
+</section>
+
+<!-- 7 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>大自然是心情的好朋友</h2>
+    <p class="subtitle">出去走 10 分鐘,心會變得穩穩的</p>
+  </div>
+</section>
+
+<!-- 8 大自然暖心 10 分鐘 -->
+<section class="slide" id="slide-nature">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>大自然幫我們充電 10 分鐘</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:大樹下閉眼微笑的孩子+陽光斑點 圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>到外面看樹和花 10 分鐘,心會像被陽光曬過一樣</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>陽光、微風和葉子像溫暖的棉被包住心</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 24px;">
+      做<strong style="color: var(--c-accent);">「抱抱太陽」</strong>動作 ☀️<br>
+      雙手從頭頂張開到兩邊
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.childrenandnature.org/" target="_blank" rel="noopener">兒童與大自然網絡</a>
+  </div>
+</section>
+
+<!-- 9 為地球擔心,正常嗎 -->
+<section class="slide" id="slide-worry">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>為地球擔心,正常嗎?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:可愛地球臉+小朋友歪頭關心 圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>擔心地球是正常的——就像看到朋友跌倒會心疼</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>為地球擔心,代表你很愛它 💚</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.4rem; margin-top: 24px; color: var(--c-accent); font-weight: 700;">
+      擔心 = 愛 ❤️
+    </p>
+    <p style="text-align: center; color: var(--c-muted);">
+      做「心疼朋友」的動作:雙手交叉貼在胸口
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://www.unicef.org/parenting/child-development/talking-children-climate-change" target="_blank" rel="noopener">聯合國兒童基金會 — 與孩子談氣候變遷</a>
+  </div>
+</section>
+
+<!-- 10 和大自然交朋友 3 件事 -->
+<section class="slide" id="slide-3things">
+  <div class="slide-tag">活動二・延伸</div>
+  <h2>和大自然交朋友 3 件事</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.1rem; color: var(--c-muted);">
+      放學後可以試試,讓心變得穩穩的
+    </p>
+    <div class="three-things">
+      <div class="thing-card">
+        <div class="emoji">☁️</div>
+        <div class="name">看雲</div>
+        <div class="desc">抬頭找一朵雲<br>它像什麼?</div>
+      </div>
+      <div class="thing-card">
+        <div class="emoji">🍃</div>
+        <div class="name">撿葉</div>
+        <div class="desc">撿一片漂亮的<br>落葉</div>
+      </div>
+      <div class="thing-card">
+        <div class="emoji">🐦</div>
+        <div class="name">聽鳥</div>
+        <div class="desc">閉眼聽聽看<br>有沒有鳥叫?</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 24px; color: var(--c-accent); font-weight: 700;">
+      看雲!撿葉!聽鳥!
+    </p>
+  </div>
+</section>
+
+<!-- 11 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>心情安安小魔法</h2>
+    <p class="subtitle">把擔心變成行動,送一封心給地球</p>
+  </div>
+</section>
+
+<!-- 12 小熊心心的煩惱 -->
+<section class="slide" id="slide-bear">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>小熊心心的煩惱</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:心心抱著自己+旁邊小北極熊+融化的雪(溫和畫風) 圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>擔心是愛的表現,我們可以一起想辦法</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪</div>
+      </div>
+      <figcaption>心心擔心北極熊的家會變小</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 24px;">
+      心心問:<strong>「北極熊的家會不會變小呢?」</strong>
+    </p>
+    <p style="text-align: center; font-size: 1.1rem; color: var(--c-accent); font-weight: 700;">
+      你會怎麼安慰心心?和旁邊同學說一句話 🤗
+    </p>
+  </div>
+</section>
+
+<!-- 13 3 個安心小魔法 -->
+<section class="slide" id="slide-3magic">
+  <div class="slide-tag">活動三・步驟 2 ・學習單(投影版)</div>
+  <h2>3 個安心小魔法</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.1rem; color: var(--c-muted);">
+      心情悶悶的時候,試試這 3 個小方法
+    </p>
+    <div class="magic-grid">
+      <div class="magic-card m1">
+        <div class="emoji">🗣️</div>
+        <div class="name">說出來</div>
+        <div class="desc">告訴大人或好朋友<br>「我現在覺得 ___」</div>
+      </div>
+      <div class="magic-card m2">
+        <div class="emoji">🎨</div>
+        <div class="name">畫出來</div>
+        <div class="desc">用蠟筆畫一張<br>讓心情跑到紙上</div>
+      </div>
+      <div class="magic-card m3">
+        <div class="emoji">🤗</div>
+        <div class="name">抱抱</div>
+        <div class="desc">抱抱爸爸媽媽<br>或老師、抱枕</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 24px;">
+      <strong>哪一個你最喜歡?</strong>舉手選 1 / 2 / 3 ✋
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 14 給地球的心 -->
+<section class="slide" id="slide-letter">
+  <div class="slide-tag">活動三・步驟 3 ・學習單(投影版)</div>
+  <h2>畫一張「給地球的心」</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      送一張心給地球,它會收到你的愛 💗
+    </p>
+    <div class="pledge-form">
+      <div class="row">
+        <span class="lbl">我想送給地球的圖案是:</span>
+        <span style="flex: 1;">💗 心 ・ 🌳 大樹 ・ ☀️ 太陽 ・ 🌈 彩虹 ・ 🐻 動物</span>
+      </div>
+      <div class="row">
+        <span class="lbl">我想對地球說的一句話:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我這週要做的小行動:</span>
+        <span class="blank"></span>
+      </div>
+      <hr style="margin: 18px 0; border: 0; border-top: 1px dashed var(--c-border);">
+      <div style="text-align: center; padding: 18px; border: 2px dashed var(--c-accent); border-radius: 8px; color: var(--c-accent); font-size: 1rem;">
+        ✏️ 在這裡用蠟筆畫一顆大愛心送給地球
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      畫好之後貼到<strong style="color: var(--c-accent);">愛地球牆</strong>,全班一起做 5 次深呼吸 🌬️
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 15 三件大事總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三件大事,情緒小夥伴一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 件</div>
+        <div class="word">4 寶寶</div>
+        <div class="desc">高興、難過、害怕、生氣<br>沒有壞情緒</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 件</div>
+        <div class="word">深呼吸</div>
+        <div class="desc">聞花吹氣球 5 次<br>心裡的風會變小</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 件</div>
+        <div class="word">擔心 = 愛</div>
+        <div class="desc">為地球擔心是正常<br>是因為我們愛它</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">我是心情小夥伴!</strong> 🐻💗<br>
+      全班拍手三下,大喊「我是心情小夥伴!」
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">15</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

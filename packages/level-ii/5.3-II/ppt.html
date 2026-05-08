@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天氣怎麼改變我們的一天 — Level II 投影片</title>
+<style>
+  :root{--accent:#0f766e;--soft:#ccfbf1;--cog:#2563eb;--soc:#db2777;--beh:#16a34a;--warn:#ea580c;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--text);line-height:1.6;margin:0;background:#fff}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100;gap:16px}
+  .topbar a.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.95rem}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar-title{flex:1;font-size:.95rem;font-weight:500;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;font-size:.85rem;color:var(--muted)}
+  .nav-indicator{font-family:monospace;color:var(--text)} .nav-cur{color:var(--accent);font-weight:700}
+  .nav-hint kbd{display:inline-block;padding:1px 6px;border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;font-family:monospace;font-size:.8em;background:#fff;margin:0 2px}
+  main{padding-top:48px;padding-bottom:40px}
+  .slide{min-height:calc(100vh - 88px);scroll-snap-align:start;padding:48px 64px;display:flex;flex-direction:column;border-bottom:1px dashed var(--border);position:relative}
+  .slide-num{position:absolute;top:14px;right:20px;font-size:.8rem;font-family:monospace;color:var(--border)}
+  .slide h2{font-size:2rem;margin:0 0 20px;color:var(--text);line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  /* cover & divider */
+  .slide.cover,.slide.divider{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--soft) 0%,#fff 65%)}
+  .slide.cover h2{font-size:2.8rem;line-height:1.25}
+  .slide.cover .level-tag{display:inline-block;background:var(--accent);color:#fff;padding:4px 14px;border-radius:20px;font-size:.95rem;font-weight:600;margin-bottom:18px}
+  .slide.cover .mascot{font-size:1rem;color:var(--muted);margin-top:14px}
+  .slide.divider .act-badge{font-size:.9rem;color:var(--accent);letter-spacing:.2em;font-weight:700;margin-bottom:10px}
+  .slide.divider h2{font-size:2.4rem;color:var(--accent)}
+  .slide.divider .act-steps{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .slide.divider .act-step-chip{background:var(--soft);color:var(--accent);border-radius:20px;padding:4px 14px;font-size:.9rem}
+  /* question slide */
+  .q-box{background:var(--soft);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:28px 32px;margin:20px 0;font-size:1.4rem;line-height:1.6;color:var(--accent);font-weight:600}
+  .q-sub{font-size:1.05rem;color:var(--muted);font-weight:400;margin-top:10px}
+  /* data card */
+  .data-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0;background:var(--bg)}
+  .data-card .dc-label{font-size:.8rem;font-weight:700;letter-spacing:.15em;color:var(--muted);margin-bottom:8px}
+  .data-card .dc-fact{font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.5}
+  .data-card .dc-src{font-size:.85rem;color:var(--muted)}
+  .data-card .dc-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  /* activity card */
+  .act-card{border:2px solid var(--border);border-radius:12px;padding:22px 28px;margin:20px 0}
+  .act-card .ac-badge{display:inline-block;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:4px;margin-bottom:12px;letter-spacing:.08em}
+  .act-card .ac-task{font-size:1.15rem;color:var(--text);line-height:1.6}
+  /* worksheet */
+  .ws-frame{border:2px dashed var(--accent);border-radius:12px;padding:28px 32px;margin:20px 0;background:#fff}
+  .ws-frame .ws-title{font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:14px}
+  .ws-lines{display:flex;flex-direction:column;gap:14px}
+  .ws-line{border-bottom:1.5px solid #d1d5db;height:28px}
+  .ws-table{width:100%;border-collapse:collapse;margin:12px 0}
+  .ws-table th,.ws-table td{border:2px solid var(--border);padding:12px 14px;text-align:center}
+  .ws-table th{background:var(--soft);color:var(--accent);font-weight:700}
+  .ws-table td.fill{background:repeating-linear-gradient(0deg,transparent 0,transparent 20px,#d1d5db 20px,#d1d5db 21px);height:52px}
+  /* placeholder figure */
+  .fig-placeholder{border:2px dashed var(--accent);border-radius:12px;padding:40px 32px;margin:20px 0;background:#f0fdfa;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;color:var(--accent);text-align:center}
+  .fig-placeholder .fig-icon{font-size:2.5rem;margin-bottom:12px}
+  .fig-placeholder .fig-label{font-size:1rem;font-weight:700;margin-bottom:6px}
+  .fig-placeholder .fig-desc{font-size:.85rem;color:var(--muted)}
+  /* source */
+  .slide-src{margin-top:auto;padding-top:12px;border-top:1px dashed var(--border);font-size:.8rem;color:var(--muted)}
+  .slide-src a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+  /* summary keywords */
+  .kw-row{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:28px}
+  .kw-chip{background:var(--soft);border:2px solid var(--accent);border-radius:24px;padding:10px 26px;font-size:1.15rem;font-weight:700;color:var(--accent)}
+  /* chain diagram */
+  .chain{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:20px 0;justify-content:center}
+  .chain-box{background:var(--soft);border:2px solid var(--accent);border-radius:10px;padding:12px 18px;font-size:1rem;font-weight:600;color:var(--accent);text-align:center}
+  .chain-arrow{font-size:1.4rem;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">天氣怎麼改變我們的一天 — Level II（5-8 歲）</span>
+</header>
+
+<main>
+
+<!-- 1. Cover -->
+<section class="slide cover" id="slide-cover">
+  <span class="slide-num">1</span>
+  <div class="slide-body">
+    <div class="level-tag">Level II・5–8 歲</div>
+    <h2>天氣怎麼改變我們的一天？</h2>
+    <p class="mascot">吉祥物：小松鼠果果 🌤️</p>
+  </div>
+</section>
+
+<!-- 2. Big Question -->
+<section class="slide" id="slide-question">
+  <span class="slide-num">2</span>
+  <div class="slide-body">
+    <h2>大哉問</h2>
+    <div class="q-box">
+      天氣怎麼改變我們的一天？
+      <div class="q-sub">雨天、晴天、颱風天……每一種天氣都讓我們的生活不一樣。<br>天氣不只影響「今天穿什麼」，還會影響食物、家庭、甚至整個社區！</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Activity 1 Divider -->
+<section class="slide divider" id="slide-a1">
+  <span class="slide-num">3</span>
+  <div class="act-badge">活動一</div>
+  <h2>天氣變了我的一天也變了</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">步驟 1 天氣日曆點名</span>
+    <span class="act-step-chip">步驟 2 溫度感受體驗</span>
+    <span class="act-step-chip">步驟 3 我的天氣活動表</span>
+  </div>
+</section>
+
+<!-- 4. Temperature slide (data) -->
+<section class="slide" id="slide-temp">
+  <span class="slide-num">4</span>
+  <div class="slide-body">
+    <h2>溫度讓我們的身體有感覺</h2>
+    <div class="fig-placeholder">
+      <div class="fig-icon">🌡️</div>
+      <div class="fig-label">溫度對照圖</div>
+      <div class="fig-desc">夏天超過 30°C（熱到快融化）vs 冬天低於 15°C（冷到縮成一團）<br>搭配身體動作示範：誇張伸展 vs 縮成一團</div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">科學小事實</div>
+      <div class="dc-fact">夏天氣溫超過 30°C 時，人體需要多喝水；冬天氣溫低於 15°C，要多加一件外套才不會著涼。</div>
+      <div class="dc-src">來源：<a href="https://science.nasa.gov/kids/earth/weather-and-climate" target="_blank" rel="noopener">NASA Weather and Climate for Kids</a>（美國太空總署）</div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Weather Activity Worksheet -->
+<section class="slide" id="slide-activity-ws">
+  <span class="slide-num">5</span>
+  <div class="slide-body">
+    <h2>我的天氣活動表</h2>
+    <div class="ws-frame">
+      <div class="ws-title">在每個天氣格子裡，畫出你那天會做的一件事</div>
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th>☀️ 晴天</th>
+            <th>🌧️ 雨天</th>
+            <th>🌀 颱風天</th>
+            <th>🥶 寒冷天</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="fill"></td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:14px;font-size:.95rem;color:var(--muted)">完成後：「我最喜歡＿＿天氣，因為……」</div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Activity 2 Divider -->
+<section class="slide divider" id="slide-a2">
+  <span class="slide-num">6</span>
+  <div class="act-badge">活動二</div>
+  <h2>颱風來了我家變怎樣？</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">步驟 1 颱風月份知多少</span>
+    <span class="act-step-chip">步驟 2 颱風帶來的改變</span>
+    <span class="act-step-chip">步驟 3 颱風小背包</span>
+  </div>
+</section>
+
+<!-- 7. Typhoon Month -->
+<section class="slide" id="slide-typhoon-month">
+  <span class="slide-num">7</span>
+  <div class="slide-body">
+    <h2>臺灣的颱風季</h2>
+    <div class="fig-placeholder">
+      <div class="fig-icon">🌀</div>
+      <div class="fig-label">颱風好發月份圖</div>
+      <div class="fig-desc">月份橫軸 1–12 月，7–10 月區間標示為颱風高峰期（深色區塊）<br>其餘月份標示為低風險（淺色區塊）</div>
+    </div>
+    <div class="data-card">
+      <div class="dc-label">氣象資料</div>
+      <div class="dc-fact">臺灣每年 7 至 10 月是颱風季，這四個月颱風侵臺機率最高。</div>
+      <div class="dc-src">來源：<a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">交通部中央氣象署（CWA）</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. Typhoon Impact -->
+<section class="slide" id="slide-typhoon-impact">
+  <span class="slide-num">8</span>
+  <div class="slide-body">
+    <h2>颱風來了，發生了什麼？</h2>
+    <div class="act-card">
+      <div class="ac-badge">情境討論</div>
+      <div class="ac-task">
+        <p>颱風帶來強風大雨之後……</p>
+        <ul>
+          <li>大樹被風吹倒，路被堵住了</li>
+          <li>鄰居家的屋頂破了個洞</li>
+          <li>農田積水，蔬菜都爛掉了</li>
+          <li>停電了，家裡一片漆黑</li>
+        </ul>
+        <p style="margin-top:14px;color:var(--accent);font-weight:600">小組討論：我們可以幫助鄰居做什麼？</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Typhoon Bag -->
+<section class="slide" id="slide-typhoon-bag">
+  <span class="slide-num">9</span>
+  <div class="slide-body">
+    <h2>颱風小背包——必備三樣物品</h2>
+    <div class="fig-placeholder">
+      <div class="fig-icon">🎒</div>
+      <div class="fig-label">颱風防災背包圖</div>
+      <div class="fig-desc">背包輪廓（大）中放入三個物品圖示：<br>手電筒（停電照明）｜飲用水（停水備用）｜急救包（受傷處理）<br>旁邊留空白欄讓學生補充</div>
+    </div>
+    <div class="slide-src">資料來源：<a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">交通部中央氣象署</a>——颱風防災準備建議</div>
+  </div>
+</section>
+
+<!-- 10. Activity 3 Divider -->
+<section class="slide divider" id="slide-a3">
+  <span class="slide-num">10</span>
+  <div class="act-badge">活動三</div>
+  <h2>超市裡的祕密——天氣讓菜變少了</h2>
+  <div class="act-steps">
+    <span class="act-step-chip">步驟 1 超市劇場</span>
+    <span class="act-step-chip">步驟 2 天氣影響鏈</span>
+    <span class="act-step-chip">步驟 3 果果家計畫卡</span>
+  </div>
+</section>
+
+<!-- 11. Supermarket scene -->
+<section class="slide" id="slide-supermarket">
+  <span class="slide-num">11</span>
+  <div class="slide-body">
+    <h2>超市老闆說……</h2>
+    <div class="q-box" style="font-size:1.2rem">
+      「今天青菜只剩一點點，而且變貴了！」
+      <div class="q-sub">猜猜看：為什麼菜變少了？</div>
+    </div>
+    <div class="chain">
+      <div class="chain-box">大雨不停</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box">農田積水</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box">蔬菜爛掉</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box">超市供應少</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box">菜變貴</div>
+    </div>
+    <div class="slide-src">資料來源：路德維希-馬克西米利安大學（德國 LMU）農業氣候研究</div>
+  </div>
+</section>
+
+<!-- 12. Chain diagram slide -->
+<section class="slide" id="slide-chain">
+  <span class="slide-num">12</span>
+  <div class="slide-body">
+    <h2>天氣影響鏈——連連看</h2>
+    <div class="fig-placeholder">
+      <div class="fig-icon">🔗</div>
+      <div class="fig-label">天氣影響鏈圖（箭頭卡片版）</div>
+      <div class="fig-desc">六個方塊連成一排：大雨／乾旱 → 農作物減少 → 超市供應少 → 價格上漲 → 家庭多花錢 → ？<br>最後一格留空，學生用便利貼填入自己的想法</div>
+    </div>
+    <div class="act-card">
+      <div class="ac-badge">學生活動</div>
+      <div class="ac-task">用箭頭卡片在地板上排出這條連鎖反應，再口說每一個步驟給全班聽。</div>
+    </div>
+  </div>
+</section>
+
+<!-- 13. Plan worksheet -->
+<section class="slide" id="slide-plan-ws">
+  <span class="slide-num">13</span>
+  <div class="slide-body">
+    <h2>果果家的計畫卡</h2>
+    <div class="ws-frame">
+      <div class="ws-title">小松鼠果果的家在颱風後菜變少了、電費也漲了。你的小組要幫果果家想一個永續小行動！</div>
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th>我們的永續小行動</th>
+            <th>這樣做可以幫助</th>
+            <th>誰來負責</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="fill"></td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+          <tr>
+            <td class="fill"></td>
+            <td class="fill"></td>
+            <td class="fill"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 14. Summary -->
+<section class="slide" id="slide-summary" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)">
+  <span class="slide-num">14</span>
+  <div class="slide-body" style="text-align:center">
+    <h2 style="color:var(--beh)">今天學到了什麼？</h2>
+    <div class="kw-row">
+      <span class="kw-chip">天氣改變生活</span>
+      <span class="kw-chip">颱風需要準備</span>
+      <span class="kw-chip">我們可以行動</span>
+    </div>
+    <p style="margin-top:32px;font-size:1.05rem;color:var(--muted)">小松鼠果果說：天氣不是我們能控制的，<br>但<strong style="color:var(--accent)">我們可以準備好，也可以互相幫助！</strong></p>
+    <p style="margin-top:24px"><a href="lesson_plan.html" style="color:var(--accent);font-weight:700">← 回教案</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="nav-indicator">投影片 <span class="nav-cur" id="navCur">1</span> / 14</span>
+  <span class="nav-hint"><kbd>←</kbd><kbd>→</kbd> 切換・捲動換頁</span>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const cur    = document.getElementById('navCur');
+  if (!slides.length || !cur) return;
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = slides.indexOf(e.target);
+        if (i >= 0) cur.textContent = i + 1;
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+
+  document.addEventListener('keydown', e => {
+    const i = slides.findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -20 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = slides[Math.min(i + 1, slides.length - 1)];
+      if (next) next.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = slides[Math.max(i - 1, 0)];
+      if (prev) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

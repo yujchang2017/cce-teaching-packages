@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>避免污染、節約資源 投影片</title>
+<style>
+:root{--accent:#0f766e;--bg:#fff;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--soft:#f9fafb;--cog:#2563eb;--soc:#db2777;--beh:#16a34a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;background:#1a1a2e;overflow:hidden;height:100vh}
+.topbar{position:fixed;top:0;left:0;right:0;height:44px;background:rgba(15,118,110,.95);backdrop-filter:blur(8px);display:flex;align-items:center;gap:16px;padding:0 20px;z-index:100;border-bottom:1px solid rgba(255,255,255,.15)}
+.topbar a{color:#fff;text-decoration:none;font-size:.85rem;opacity:.85;white-space:nowrap;border-bottom:1px dashed rgba(255,255,255,.4);padding-bottom:1px}
+.topbar a:hover{opacity:1;border-bottom-style:solid}
+.topbar .title{color:#fff;font-size:.95rem;font-weight:600;flex:1;text-align:center}
+.navbar{position:fixed;bottom:0;left:0;right:0;height:38px;background:rgba(15,118,110,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;gap:24px;z-index:100;border-top:1px solid rgba(255,255,255,.15)}
+.navbar .page-num{color:#fff;font-size:.85rem;font-weight:600;min-width:80px;text-align:center}
+.navbar .hint{color:rgba(255,255,255,.7);font-size:.78rem}
+.viewport{height:100vh;padding-top:44px;padding-bottom:38px;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth}
+.slide{height:100%;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:48px 60px;position:relative}
+.slide-cover{background:linear-gradient(135deg,#0f766e 0%,#134e4a 50%,#1a1a2e 100%);color:#fff}
+.slide-question{background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%);color:#fff}
+.slide-divider{background:linear-gradient(135deg,#134e4a 0%,#0f766e 100%);color:#fff}
+.slide-content{background:#fff;color:#1f2937}
+.slide-summary{background:linear-gradient(135deg,#064e3b 0%,#0f766e 100%);color:#fff}
+.cover-tag{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 16px;font-size:.8rem;letter-spacing:.1em;margin-bottom:20px}
+.cover-title{font-size:2.4rem;font-weight:800;line-height:1.3;text-align:center;margin-bottom:16px}
+.cover-sub{font-size:1.1rem;opacity:.8;text-align:center;margin-bottom:32px}
+.cover-meta{display:flex;gap:24px;flex-wrap:wrap;justify-content:center}
+.cover-meta span{background:rgba(255,255,255,.12);padding:6px 16px;border-radius:20px;font-size:.85rem}
+.big-q{font-size:2rem;font-weight:700;text-align:center;line-height:1.5;max-width:700px}
+.big-q-lead{font-size:1rem;opacity:.75;margin-bottom:24px;letter-spacing:.05em}
+.divider-label{background:rgba(255,255,255,.15);border-radius:6px;padding:4px 14px;font-size:.85rem;margin-bottom:16px;letter-spacing:.08em}
+.divider-title{font-size:2rem;font-weight:700;text-align:center;margin-bottom:12px}
+.divider-desc{font-size:1rem;opacity:.78;text-align:center;max-width:500px}
+.slide-inner{width:100%;max-width:760px}
+.slide-heading{font-size:1.5rem;font-weight:700;color:#0f766e;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid #e5e7eb}
+.slide-heading .tag{background:#0f766e;color:#fff;border-radius:4px;padding:2px 10px;font-size:.8rem;margin-right:10px;font-weight:600}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
+.content-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px}
+.content-card h4{font-size:.95rem;font-weight:700;color:#0f766e;margin-bottom:10px}
+.content-card ul{padding-left:1.2em}
+.content-card li{font-size:.9rem;margin:5px 0;line-height:1.5}
+.chart-placeholder{background:#f9fafb;border:2px dashed #9ca3af;border-radius:8px;padding:32px 20px;text-align:center;color:#6b7280;margin:16px 0}
+.chart-placeholder .chart-title{font-size:.9rem;font-weight:600;color:#4b5563;margin-bottom:8px}
+.chart-placeholder .chart-desc{font-size:.82rem}
+.data-highlight{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-left:4px solid #059669;border-radius:6px;padding:12px 16px;margin:12px 0}
+.data-highlight .num{font-size:1.8rem;font-weight:800;color:#059669}
+.data-highlight .label{font-size:.85rem;color:#374151;margin-top:4px}
+.data-row{display:flex;gap:16px;margin:12px 0}
+.data-row .data-highlight{flex:1}
+.bullet-list{list-style:none;padding-left:0;margin:12px 0}
+.bullet-list li{padding:8px 0;border-top:1px dashed #e5e7eb;font-size:.92rem;line-height:1.55}
+.bullet-list li:first-child{border-top:none}
+.bullet-list li::before{content:"▸ ";color:#0f766e;font-weight:700}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0}
+.col-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:12px}
+.col-card .col-head{font-size:.82rem;font-weight:700;color:#fff;background:#0f766e;border-radius:4px;padding:3px 8px;margin-bottom:8px;display:inline-block}
+.col-card ul{padding-left:1.2em}
+.col-card li{font-size:.82rem;margin:3px 0}
+.wsa-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.wsa-card{border-radius:8px;padding:12px 14px;border:1px solid #e5e7eb}
+.wsa-card.gov{background:#eff6ff;border-left:4px solid #2563eb}
+.wsa-card.cur{background:#fdf2f8;border-left:4px solid #db2777}
+.wsa-card.ops{background:#ecfdf5;border-left:4px solid #16a34a}
+.wsa-card.com{background:#fff7ed;border-left:4px solid #ea580c}
+.wsa-card h4{font-size:.88rem;font-weight:700;margin-bottom:6px}
+.wsa-card ul{padding-left:1.1em}
+.wsa-card li{font-size:.8rem;margin:3px 0}
+.rrrr-row{display:flex;gap:12px;margin:14px 0}
+.rrrr-item{flex:1;text-align:center;padding:14px 8px;border-radius:8px;border:2px solid #e5e7eb}
+.rrrr-item .rrrr-letter{font-size:1.8rem;font-weight:800;margin-bottom:6px}
+.rrrr-item .rrrr-name{font-size:.8rem;font-weight:600;margin-bottom:4px}
+.rrrr-item .rrrr-desc{font-size:.75rem;color:#6b7280}
+.rrrr-item.r1{background:#fef3c7;border-color:#f59e0b;color:#92400e}
+.rrrr-item.r2{background:#dcfce7;border-color:#16a34a;color:#14532d}
+.rrrr-item.r3{background:#dbeafe;border-color:#2563eb;color:#1e3a5f}
+.rrrr-item.r4{background:#fdf2f8;border-color:#db2777;color:#831843}
+.summary-keywords{display:flex;gap:24px;justify-content:center;margin:32px 0}
+.kw{text-align:center}
+.kw .kw-word{font-size:1.6rem;font-weight:800;margin-bottom:6px}
+.kw .kw-desc{font-size:.85rem;opacity:.8}
+.source-tag{font-size:.75rem;color:#9ca3af;margin-top:6px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="lesson_plan.html">← 回教案</a>
+  <span class="title">避免污染、節約資源（1.5-V）</span>
+</div>
+
+<div class="navbar">
+  <span class="hint">← →  切換投影片</span>
+  <span class="page-num" id="page-num">1 / 18</span>
+  <span class="hint">PageUp PageDn</span>
+</div>
+
+<div class="viewport" id="viewport">
+
+<!-- slide-cover -->
+<section class="slide slide-cover" id="slide-cover">
+  <div class="cover-tag">Level V ｜ 16–18 歲 ｜ Key ID 1.5-V</div>
+  <div class="cover-title">看不見的代價<br>——污染、資源與我們的選擇</div>
+  <div class="cover-sub">避免污染、節約資源</div>
+  <div class="cover-meta">
+    <span>4 節課 × 50 分鐘</span>
+    <span>28 個投影片</span>
+    <span>4 大活動</span>
+  </div>
+</section>
+
+<!-- slide-question -->
+<section class="slide slide-question" id="slide-question">
+  <div class="big-q-lead">核心思辨問題</div>
+  <div class="big-q">你今天早上呼吸的第一口空氣安全嗎？<br>全球有幾%的人說「不確定」？</div>
+</section>
+
+<!-- 活動一分隔 -->
+<section class="slide slide-divider" id="slide-a1">
+  <div class="divider-label">活動一</div>
+  <div class="divider-title">污染的三張面孔</div>
+  <div class="divider-desc">溫室氣體、臭氧層破壞物、健康危害物——三種機制，一個系統問題</div>
+</section>
+
+<!-- slide-pollutants -->
+<section class="slide slide-content" id="slide-pollutants">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">認知</span>三類空氣污染物全景</div>
+    <div class="three-col">
+      <div class="col-card">
+        <span class="col-head">溫室氣體</span>
+        <ul><li>CO₂、CH₄、N₂O</li><li>HFCs（氫氟碳化物）</li><li>機制：吸收地表輻射再輻射回地面 → 增溫</li></ul>
+      </div>
+      <div class="col-card">
+        <span class="col-head">臭氧層破壞物</span>
+        <ul><li>CFC-11、CFC-12</li><li>HCFC、海龍</li><li>機制：平流層光解→氯原子→催化分解 O₃</li><li>1 個氯原子可分解 10 萬個臭氧分子</li></ul>
+      </div>
+      <div class="col-card">
+        <span class="col-head">健康危害物</span>
+        <ul><li>PM2.5（粒徑 ≤2.5μm）</li><li>SOx、NOx → 酸雨</li><li>CO、地面臭氧</li><li>世界衛生組織統計每年 700 萬人因空污死亡</li></ul>
+      </div>
+    </div>
+    <p style="font-size:.85rem;color:#6b7280;margin-top:10px">注意：同一工廠可能同時排放三類污染物（例如燃煤電廠）——分類是為了理解機制，現實中它們交互作用。</p>
+    <div class="source-tag">資料來源：世界衛生組織 / 聯合國環境規劃署</div>
+  </div>
+</section>
+
+<!-- slide-pm25 -->
+<section class="slide slide-content" id="slide-pm25">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">資料</span>PM2.5 健康衝擊</div>
+    <div class="data-row">
+      <div class="data-highlight"><div class="num">700 萬</div><div class="label">每年全球空污相關死亡人數（室內+室外）</div></div>
+      <div class="data-highlight"><div class="num">90%</div><div class="label">全球人口呼吸超標空氣的比例</div></div>
+    </div>
+    <div class="chart-placeholder">
+      <div class="chart-title">【圖表佔位】PM2.5 侵入人體路徑示意圖</div>
+      <div class="chart-desc">鼻腔 → 支氣管 → 肺泡（粒徑 ≤2.5μm 可穿透）→ 血液 → 心血管 / 腦<br>粒徑：PM10 可被鼻腔攔截；PM2.5 可達肺泡，甚至進入血液循環</div>
+    </div>
+    <ul class="bullet-list">
+      <li>長期暴露關聯疾病：支氣管炎、氣喘惡化、心血管疾病、缺血性中風、肺癌</li>
+      <li>世界衛生組織年均指引值：15 μg/m³（2021 年更新）</li>
+      <li>臺灣 PM2.5 來源多元：車輛、工廠、農廢燃燒、烹飪油煙、境外傳輸</li>
+    </ul>
+    <div class="source-tag">資料來源：世界衛生組織 / 行政院環境部</div>
+  </div>
+</section>
+
+<!-- slide-montreal -->
+<section class="slide slide-content" id="slide-montreal">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">資料</span>蒙特婁議定書：史上最成功的環保條約</div>
+    <div class="data-row">
+      <div class="data-highlight"><div class="num">99%+</div><div class="label">已削減的臭氧層破壞物質比例（自 1987 年起）</div></div>
+      <div class="data-highlight"><div class="num">2066 年</div><div class="label">南極臭氧層預計恢復至 1980 年水準</div></div>
+    </div>
+    <div class="chart-placeholder">
+      <div class="chart-title">【圖表佔位】南極臭氧洞面積 1979–2024 年趨勢圖</div>
+      <div class="chart-desc">1979（基準）→ 1987 蒙特婁議定書 → 2000（最大面積）→ 2023（縮小中）<br>Y 軸：面積（百萬 km²）；X 軸：年份</div>
+    </div>
+    <ul class="bullet-list">
+      <li>1985 年：科學家發現南極臭氧洞 → 1987 年各國簽署議定書</li>
+      <li>替代品 HFC 雖不破壞臭氧，但全球暖化潛勢（GWP）是 CO₂ 的數百至上千倍</li>
+      <li>2016 年《基加利修正案》：進一步限制 HFC — 環境問題的解方常衍生新問題</li>
+    </ul>
+    <div class="source-tag">資料來源：聯合國環境規劃署 / 臭氧秘書處</div>
+  </div>
+</section>
+
+<!-- 活動二分隔 -->
+<section class="slide slide-divider" id="slide-a2">
+  <div class="divider-label">活動二</div>
+  <div class="divider-title">塑膠星球</div>
+  <div class="divider-desc">從石油到微塑膠——追蹤一個寶特瓶的全生命週期</div>
+</section>
+
+<!-- slide-plastics -->
+<section class="slide slide-content" id="slide-plastics">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">資料</span>塑膠全生命週期</div>
+    <div class="data-row">
+      <div class="data-highlight"><div class="num">4.6 億噸</div><div class="label">全球每年塑膠生產量</div></div>
+      <div class="data-highlight"><div class="num">9%</div><div class="label">真正被回收再利用的比例</div></div>
+      <div class="data-highlight"><div class="num">3.4%</div><div class="label">全球碳排放中塑膠生命週期佔比</div></div>
+    </div>
+    <div class="chart-placeholder">
+      <div class="chart-title">【圖表佔位】塑膠全生命週期圓形圖</div>
+      <div class="chart-desc">石油開採 → 乙烯裂解 → 聚合 → 製品 → 使用 → 末端處理<br>末端：9% 回收再利用 / 12% 焚化 / 79% 掩埋或流入自然環境</div>
+    </div>
+    <ul class="bullet-list">
+      <li>回收率低的原因：塑膠種類繁多（PP/PE/PET/PS/PVC）混合後難以分離</li>
+      <li>降級回收：寶特瓶回收後通常變成纖維或填充料，最終仍進入掩埋</li>
+      <li>科學家共識：光靠回收無法解決塑膠問題，必須從源頭減量</li>
+    </ul>
+    <div class="source-tag">資料來源：經濟合作暨發展組織（OECD）</div>
+  </div>
+</section>
+
+<!-- slide-microplastics -->
+<section class="slide slide-content" id="slide-microplastics">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">科學</span>微塑膠：看不見的入侵者</div>
+    <div class="chart-placeholder">
+      <div class="chart-title">【圖表佔位】微塑膠全球分布檢測數據</div>
+      <div class="chart-desc">已在以下地點檢測到微塑膠（粒徑 &lt;5mm）：<br>馬里亞納海溝 11,000m 深處 ／ 北極冰芯 ／ 飲用水 ／ 食鹽 ／ 蜂蜜 ／ 人體血液與胎盤</div>
+    </div>
+    <div class="content-grid">
+      <div class="content-card">
+        <h4>來源</h4>
+        <ul>
+          <li>一次性微塑膠：化妝品塑膠微珠、合成纖維洗滌脫落</li>
+          <li>大塑膠碎裂分解（二次性微塑膠）</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h4>健康影響</h4>
+        <ul>
+          <li>2022 年荷蘭研究：首次在人體血液中檢測到 PET 和 PS 微塑膠</li>
+          <li>可攜帶持久性有機污染物（POPs）在食物鏈中生物累積</li>
+          <li>即使住在無工廠鄉間也無法逃避</li>
+        </ul>
+      </div>
+    </div>
+    <div class="source-tag">資料來源：經濟合作暨發展組織 / 荷蘭 Vrije Universiteit Amsterdam（2022）</div>
+  </div>
+</section>
+
+<!-- slide-rrrr -->
+<section class="slide slide-content" id="slide-rrrr">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">概念</span>RRRR 優先階梯</div>
+    <p style="margin-bottom:14px;font-size:.92rem;color:#374151">RRRR 不是「四個 R 都一樣重要」，而是有優先順序的倒三角形——越上面越根本。</p>
+    <div class="rrrr-row">
+      <div class="rrrr-item r1">
+        <div class="rrrr-letter">Refuse</div>
+        <div class="rrrr-name">拒絕</div>
+        <div class="rrrr-desc">最根本。不買不需要的東西，就不會產生垃圾。</div>
+      </div>
+      <div class="rrrr-item r2">
+        <div class="rrrr-letter">Reuse</div>
+        <div class="rrrr-name">重複使用</div>
+        <div class="rrrr-desc">環保杯、購物袋、二手物品交換</div>
+      </div>
+      <div class="rrrr-item r3">
+        <div class="rrrr-letter">Repair</div>
+        <div class="rrrr-name">維修</div>
+        <div class="rrrr-desc">手機換電池而不換新機、衣服補而不是丟</div>
+      </div>
+      <div class="rrrr-item r4">
+        <div class="rrrr-letter">Recycle</div>
+        <div class="rrrr-name">回收</div>
+        <div class="rrrr-desc">最後手段。回收本身也需要能源，有降級問題。</div>
+      </div>
+    </div>
+    <div class="data-highlight" style="margin-top:14px">
+      <div class="num">55%</div>
+      <div class="label">臺灣生活廢棄物回收率（全球名列前茅），但「量」高不等於循環率高</div>
+    </div>
+    <div class="source-tag">資料來源：行政院環境部 / 美國環境保護局</div>
+  </div>
+</section>
+
+<!-- 活動三分隔 -->
+<section class="slide slide-divider" id="slide-a3">
+  <div class="divider-label">活動三</div>
+  <div class="divider-title">誰該負責？</div>
+  <div class="divider-desc">EPR、標章、立法——政策工具如何分配污染的責任</div>
+</section>
+
+<!-- slide-epr -->
+<section class="slide slide-content" id="slide-epr">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">政策</span>延伸生產者責任（EPR）</div>
+    <div class="chart-placeholder">
+      <div class="chart-title">【圖表佔位】EPR 責任循環概念圖</div>
+      <div class="chart-desc">生產者 → 產品（設計＋製造）→ 消費者（使用）→ 廢棄物（回收處理）→ 回到生產者<br>EPR 核心：生產者對產品使用後的回收處理承擔經濟或實體責任（「內部化外部成本」）</div>
+    </div>
+    <div class="data-row">
+      <div class="data-highlight"><div class="num">25%→30%</div><div class="label">歐盟要求塑膠瓶含再生塑膠（rPET）比例：2025 年→2030 年</div></div>
+      <div class="data-highlight"><div class="num">費率制</div><div class="label">臺灣做法：生產者繳納回收處理費，由回收基金委員會統籌運用</div></div>
+    </div>
+    <ul class="bullet-list">
+      <li>爭議一：生產者可能把成本轉嫁到售價，最終由消費者買單</li>
+      <li>爭議二：中小企業可能負擔不起合規成本</li>
+      <li>爭議三：回收體系的品質監督也是問題</li>
+      <li>結論：EPR 需要制度設計、消費者配合、政府監管三者協力</li>
+    </ul>
+    <div class="source-tag">資料來源：歐盟委員會 / 行政院環境部</div>
+  </div>
+</section>
+
+<!-- slide-policy -->
+<section class="slide slide-content" id="slide-policy">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">分析</span>三類政策工具比較矩陣</div>
+    <div class="three-col">
+      <div class="col-card">
+        <span class="col-head">管制型</span>
+        <ul>
+          <li>禁令（禁用一次性塑膠）</li>
+          <li>排放標準、總量管制</li>
+          <li class="text-green">優點：立竿見影</li>
+          <li style="color:#dc2626">缺點：執法成本高，產業反彈</li>
+          <li>案例：歐盟 2021 年一次性塑膠禁令</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <span class="col-head">經濟誘因型</span>
+        <ul>
+          <li>碳稅 / 碳交易</li>
+          <li>EPR 費率</li>
+          <li>押金退款制（deposit-return）</li>
+          <li style="color:#16a34a">優點：利用市場機制</li>
+          <li style="color:#dc2626">缺點：可能加重弱勢消費者負擔</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <span class="col-head">資訊型</span>
+        <ul>
+          <li>環保標章、碳足跡標籤</li>
+          <li>能效分級、ESG 報告</li>
+          <li style="color:#16a34a">優點：尊重消費者自主</li>
+          <li style="color:#dc2626">缺點：效果慢、標章通膨</li>
+        </ul>
+      </div>
+    </div>
+    <div class="data-highlight" style="margin-top:14px">
+      有效的環境政策通常是三者混搭：例如歐盟塑膠策略 = 禁令（管制）+ EPR 制度（經濟）+ 回收標章（資訊）
+    </div>
+    <div class="source-tag">資料來源：美國環境保護局 / 歐盟委員會 / 臺灣環境部</div>
+  </div>
+</section>
+
+<!-- slide-debate -->
+<section class="slide slide-content" id="slide-debate">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">思辨</span>倫理兩難：全球塑膠公約的核心爭議</div>
+    <div class="content-grid">
+      <div class="content-card">
+        <h4>正方：源頭限制生產</h4>
+        <ul>
+          <li>全球 9% 回收率已證明末端管理失敗</li>
+          <li>塑膠生命週期碳排佔全球 3.4%</li>
+          <li>微塑膠已無處不在——防堵源頭是唯一出路</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h4>反方：聚焦末端回收</h4>
+        <ul>
+          <li>限制生產將衝擊數百萬人就業</li>
+          <li>開發中國家有發展的權利</li>
+          <li>應先建設回收基礎設施，而非直接禁產</li>
+        </ul>
+      </div>
+    </div>
+    <div class="data-highlight" style="margin-top:12px">
+      思考框架：這不只是環境科學問題，更是政治經濟學和倫理學的交錯。<br>你的立場是什麼？用 CER 架構寫出論點。
+    </div>
+  </div>
+</section>
+
+<!-- 活動四分隔 -->
+<section class="slide slide-divider" id="slide-a4">
+  <div class="divider-label">活動四</div>
+  <div class="divider-title">行動實驗室</div>
+  <div class="divider-desc">學生議會模擬——你就是利害關係人</div>
+</section>
+
+<!-- slide-parliament -->
+<section class="slide slide-content" id="slide-parliament">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">行動</span>學生議會模擬：角色卡</div>
+    <p style="font-size:.9rem;color:#374151;margin-bottom:12px">議題：「校園一次性餐具全面禁用——可行嗎？替代方案為何？」</p>
+    <div class="chart-placeholder">
+      <div class="chart-title">【圖表佔位】五角色色塊圖</div>
+      <div class="chart-desc">校長室（預算 / 家長反彈）｜學生會（推動力但缺資源）｜家長會（衛生安全）<br>在地企業（環保餐具供應商）｜環保 NGO（專業知識）</div>
+    </div>
+    <ul class="bullet-list">
+      <li>每組要求：數據支持論點（至少引用 2 項資料）</li>
+      <li>考量至少 2 個利害關係人的觀點</li>
+      <li>提出具體可操作的行動方案</li>
+      <li>連結 RRRR 優先階梯：為什麼不只是「多回收」？</li>
+    </ul>
+  </div>
+</section>
+
+<!-- slide-action -->
+<section class="slide slide-content" id="slide-action">
+  <div class="slide-inner">
+    <div class="slide-heading"><span class="tag">行動</span>Whole School Approach 四面向</div>
+    <div class="wsa-grid">
+      <div class="wsa-card gov">
+        <h4>治理 Governance</h4>
+        <ul>
+          <li>學生議會提案永續校園政策</li>
+          <li>廢棄物稽核委員會（學生輪值）</li>
+          <li>校方採購政策納入環保評分</li>
+        </ul>
+      </div>
+      <div class="wsa-card cur">
+        <h4>課程 Curriculum</h4>
+        <ul>
+          <li>化學：塑膠聚合與降解</li>
+          <li>地理：區域空品地圖</li>
+          <li>數學：計算回收能源節約量</li>
+          <li>公民：EPR 與碳稅政策分析</li>
+        </ul>
+      </div>
+      <div class="wsa-card ops">
+        <h4>校園營運 Operations</h4>
+        <ul>
+          <li>廢棄物審計（waste audit）</li>
+          <li>設置維修站（Repair Cafe）</li>
+          <li>安裝 PM2.5 感測器監測校園空品</li>
+          <li>採購再生紙和環保餐具</li>
+        </ul>
+      </div>
+      <div class="wsa-card com">
+        <h4>社群 Community</h4>
+        <ul>
+          <li>與環保局合作取得空品數據</li>
+          <li>與 NGO 辦理淨灘淨山</li>
+          <li>社區大學環境教育工作坊</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- slide-summary -->
+<section class="slide slide-summary" id="slide-summary">
+  <div class="summary-keywords">
+    <div class="kw">
+      <div class="kw-word">分類</div>
+      <div class="kw-desc">三類污染物機制各異<br>分類才能有效應對</div>
+    </div>
+    <div class="kw">
+      <div class="kw-word">溯源</div>
+      <div class="kw-desc">生命週期思維<br>從源頭減量優先</div>
+    </div>
+    <div class="kw">
+      <div class="kw-word">問責</div>
+      <div class="kw-desc">EPR 政策工具<br>誰製造誰負責</div>
+    </div>
+  </div>
+  <div style="text-align:center;opacity:.8;font-size:.95rem;max-width:600px">
+    四節課的核心：面對污染問題，用數據分析、用系統思考、用政策工具、用倫理判斷，然後行動。
+  </div>
+</section>
+
+</div><!-- /viewport -->
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const pageNum = document.getElementById('page-num');
+const total = slides.length;
+const viewport = document.getElementById('viewport');
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const idx = Array.from(slides).indexOf(e.target);
+      pageNum.textContent = (idx + 1) + ' / ' + total;
+    }
+  });
+}, { root: viewport, threshold: 0.5 });
+slides.forEach(s => obs.observe(s));
+
+document.addEventListener('keydown', e => {
+  const idx = Array.from(slides).findIndex(s => {
+    const r = s.getBoundingClientRect();
+    return r.top >= -10 && r.top < window.innerHeight / 2;
+  });
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') {
+    e.preventDefault();
+    if (idx < total - 1) slides[idx + 1].scrollIntoView({ behavior: 'smooth' });
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+    e.preventDefault();
+    if (idx > 0) slides[idx - 1].scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+const hash = location.hash.slice(1);
+if (hash) {
+  const target = document.getElementById(hash);
+  if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+}
+</script>
+</body>
+</html>

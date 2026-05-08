@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>消失的大朋友 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #7c3aed;
+    --c-accent-soft: #ede9fe;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text); line-height: 1.6; margin: 0; background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 44px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center; padding: 0 20px;
+    z-index: 100; font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator { font-family: "JetBrains Mono", "Consolas", monospace; color: var(--c-text); }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px; border: 1px solid var(--c-border);
+    border-bottom-width: 2px; border-radius: 4px;
+    font-family: monospace; font-size: 0.8em; background: #fff; margin: 0 2px;
+  }
+
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px); scroll-snap-align: start;
+    padding: 40px 60px; display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .question-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 30px 0; }
+  .question-card { background: var(--c-bg); border: 2px solid var(--c-accent); border-radius: 12px;
+    padding: 24px; font-size: 1.15rem; text-align: center; color: var(--c-text); position: relative; }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px;
+    background: var(--c-accent); color: #fff; width: 28px; height: 28px;
+    border-radius: 50%; font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0; }
+  .compare-card { border: 2px solid var(--c-border); border-radius: 12px; padding: 24px; text-align: center; }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+
+  .ws-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1.05rem; }
+  .ws-table th, .ws-table td { border: 2px solid var(--c-border); padding: 14px 16px; text-align: center; }
+  .ws-table th { background: var(--c-accent-soft); color: var(--c-accent); font-weight: 700; }
+  .ws-table td.fill {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px);
+    height: 48px;
+  }
+
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .col-card { border: 2px solid var(--c-border); border-radius: 10px; padding: 18px; }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 { margin: 0 0 10px; font-size: 1.15rem; text-align: center;
+    padding-bottom: 8px; border-bottom: 1px dashed var(--c-border); }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+
+  .impact-chain {
+    display: grid; grid-template-columns: repeat(5, auto);
+    gap: 8px; align-items: center; margin: 16px 0; font-size: 1rem;
+  }
+  .impact-chain .cause, .impact-chain .effect, .impact-chain .final {
+    padding: 12px 16px; border-radius: 8px; text-align: center; font-weight: 600;
+  }
+  .impact-chain .cause { background: #fef3c7; color: #92400e; }
+  .impact-chain .effect { background: #dbeafe; color: var(--c-cog); }
+  .impact-chain .final { background: #fee2e2; color: #991b1b; }
+  .impact-chain .arrow { color: var(--c-muted); font-size: 1.4rem; }
+
+  .summary-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 30px 0; }
+  .key-card { text-align: center; padding: 30px 20px; border-radius: 16px; background: var(--c-bg); border: 3px solid; }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 3rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  .pledge-form { border: 2px solid var(--c-accent); border-radius: 12px; padding: 24px 30px;
+    background: var(--c-bg); max-width: 700px; margin: 20px auto; }
+  .pledge-form .row { display: flex; align-items: baseline; gap: 12px; margin: 16px 0; font-size: 1.05rem; }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank { flex: 1; border-bottom: 2px solid var(--c-text); height: 28px; }
+
+  .checklist { list-style: none; padding: 0; margin: 12px 0; }
+  .checklist li { padding: 10px 0; border-bottom: 1px dashed var(--c-border); font-size: 1rem; }
+  .checklist li::before { content: "☐ "; margin-right: 6px; color: var(--c-accent); font-size: 1.1em; }
+
+  figure { margin: 0; text-align: center; }
+  figure svg { max-width: 100%; height: auto; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .timeline-bar {
+    width: 100%; height: 60px; background: linear-gradient(90deg, var(--c-accent) 0%, var(--c-accent) 96%, var(--c-warn) 96%, var(--c-warn) 100%);
+    border-radius: 8px; position: relative; margin: 30px 0;
+  }
+  .timeline-bar .label-dino {
+    position: absolute; top: 70px; left: 30%; transform: translateX(-50%);
+    font-weight: 700; color: var(--c-accent); text-align: center;
+  }
+  .timeline-bar .label-human {
+    position: absolute; top: 70px; right: 0; transform: translateX(20%);
+    font-weight: 700; color: var(--c-warn); text-align: center;
+  }
+  .timeline-bar .marker-now {
+    position: absolute; top: -20px; right: 0;
+    width: 2px; height: 80px; background: #1f2937;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">消失的大朋友 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>消失的大朋友</h2>
+    <p class="subtitle">恐龍住在哪裡?為什麼牠們不見了?</p>
+    <svg viewBox="0 0 500 220" width="500" style="margin-top: 20px;">
+      <ellipse cx="250" cy="180" rx="220" ry="20" fill="#d4d4d8" opacity="0.4"/>
+      <path d="M120,170 Q120,100 180,100 Q220,80 260,100 Q300,80 350,100 Q400,110 380,170 L370,170 Q360,150 340,170 L290,170 Q280,150 260,170 L210,170 Q200,150 180,170 L150,170 Q140,150 120,170 Z"
+            fill="#84cc16" stroke="#4d7c0f" stroke-width="2"/>
+      <circle cx="200" cy="115" r="4" fill="#1f2937"/>
+      <path d="M120,140 Q60,150 50,170 L80,170 Q70,160 100,160 Q110,160 120,170" fill="#84cc16" stroke="#4d7c0f" stroke-width="2"/>
+      <circle cx="430" cy="60" r="35" fill="#fbbf24"/>
+      <text x="430" y="70" font-size="30" text-anchor="middle">😎</text>
+    </svg>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>你看過真的恐龍嗎?</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>恐龍住在哪裡?</div>
+      <div class="question-card"><div class="q-num">2</div>為什麼現在沒有恐龍了?</div>
+      <div class="question-card"><div class="q-num">3</div>我們可以做什麼,讓現在的動物不要也不見?</div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      今天我們要當小小科學家,一起找答案!
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>恐龍住在好久好久以前</h2>
+    <p class="subtitle">用超長彩帶看時間</p>
+  </div>
+</section>
+
+<!-- 4. 恐龍住在好久好久以前 -->
+<section class="slide" id="slide-long-ago">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>恐龍住在好久好久以前</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:恐龍與小鳥對比圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>最後一隻恐龍大約在 6,600 萬年前就不見了(科學家叫這個「滅絕」)</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪(左:大恐龍剪影,右:小鳥;中間問號)</div>
+      </div>
+      <figcaption>恐龍是好久好久以前的動物,那時候還沒有人類、也沒有房子。</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      <strong>提問:</strong>你有看過活的恐龍嗎?為什麼沒有?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://en.wikipedia.org/wiki/Cretaceous%E2%80%93Paleogene_extinction_event" target="_blank" rel="noopener">英文維基百科 — 白堊紀–古近紀滅絕事件</a>
+  </div>
+</section>
+
+<!-- 5. 超長彩帶時間軸 -->
+<section class="slide" id="slide-timeline">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>超長彩帶:恐龍玩了 1 億 4 千萬年!</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft);">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px; text-align: center;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px; text-align: center;">[此處放:時間軸彩帶 — 恐龍佔大段、人類佔末端一小點]</div>
+        <div class="timeline-bar">
+          <div class="label-dino">🦕 恐龍時代<br>約 1.4 億年</div>
+          <div class="label-human">👶 人類<br>很短</div>
+          <div class="marker-now"></div>
+        </div>
+        <div style="font-size: 1.1rem; margin: 60px 0 14px; text-align: center;"><strong>關鍵數據:</strong>恐龍存在約 2.33 億年前到 6,600 萬年前;人類比恐龍晚太多太多了</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px; text-align: center;">📌 示意圖待補繪(完整 3 公尺彩帶實物對應視覺)</div>
+      </div>
+      <figcaption>恐龍佔了一大段彩帶,人類只佔最後一小小點。</figcaption>
+    </figure>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://zh.wikipedia.org/wiki/%E6%81%90%E9%BE%8D" target="_blank" rel="noopener">中文維基百科 — 恐龍</a>
+  </div>
+</section>
+
+<!-- 6. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>恐龍為什麼不見了?</h2>
+    <p class="subtitle">大石頭、變冷、食物變少</p>
+  </div>
+</section>
+
+<!-- 7. 大石頭從天上掉下來 -->
+<section class="slide" id="slide-impact">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>大石頭從天上掉下來</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:小行星撞地球溫和示意圖]</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>一顆很大很大的石頭從天上掉下來撞地球 → 天氣變冷 → 食物變少</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪(雲朵間掉下大石頭,地球表情驚訝;避免恐怖畫面)</div>
+      </div>
+      <figcaption>溫和敘事:大石頭來自天上,讓恐龍的家暫時變得很不舒服。</figcaption>
+    </figure>
+    <div style="display: flex; flex-direction: column; gap: 18px; max-width: 900px; margin: 30px auto;">
+      <div class="impact-chain">
+        <div class="cause">☄️ 大石頭撞地球</div>
+        <div class="arrow">→</div>
+        <div class="effect">❄️ 天氣變冷</div>
+        <div class="arrow">→</div>
+        <div class="final">🦕 恐龍不見了</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      <strong>動動看:</strong>老師比「天上→地上」手勢,孩子一起喊「碰!」
+    </p>
+  </div>
+</section>
+
+<!-- 8. 糖果剩下幾顆 -->
+<section class="slide" id="slide-candy">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>糖果剩下幾顆?</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:4 顆糖果 → 拿走 3 顆 → 剩 1 顆]</div>
+        <div style="font-size: 2.5rem; margin: 14px 0;">🍬🍬🍬🍬 &nbsp;→&nbsp; 🍬</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>大石頭撞地球後,大概每 4 隻動物裡就有 3 隻不見了(約 75% 物種消失)</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪(4 顆糖果道具實拍或卡通,搭配「拿走 3 顆」的動態)</div>
+      </div>
+      <figcaption>用糖果遊戲讓孩子體會「很多大朋友都不見了」。</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      <strong>提問:</strong>4 顆糖果只剩 1 顆,你會不會覺得有點難過?
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:<a href="https://en.wikipedia.org/wiki/Cretaceous%E2%80%93Paleogene_extinction_event" target="_blank" rel="noopener">英文維基百科 — 白堊紀–古近紀滅絕事件</a>
+  </div>
+</section>
+
+<!-- 9. 化石配對學習單 -->
+<section class="slide" id="slide-ws-fossil">
+  <div class="slide-tag">活動二・步驟 3 ・學習單(投影版)</div>
+  <h2>化石小偵探配對</h2>
+  <div class="slide-body">
+    <p style="font-size: 1.05rem; color: var(--c-muted); margin: 0 0 8px;">
+      把化石圖片和恐龍圖片連在一起。
+    </p>
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>化石長這樣</th>
+          <th>連連看</th>
+          <th>恐龍的名字</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>大尖牙骨頭</td><td class="fill"></td><td>暴龍 🦖</td></tr>
+        <tr><td>三隻角的頭骨</td><td class="fill"></td><td>三角龍</td></tr>
+        <tr><td>翅膀骨頭</td><td class="fill"></td><td>翼手龍</td></tr>
+        <tr><td>長長脖子骨頭</td><td class="fill"></td><td>梁龍</td></tr>
+      </tbody>
+    </table>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>觀察題:</strong>你最喜歡哪一隻恐龍?牠住在哪裡?
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 10. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>我來照顧現在的動物朋友</h2>
+    <p class="subtitle">臺灣黑熊、黑面琵鷺需要我們</p>
+  </div>
+</section>
+
+<!-- 11. 臺灣的動物朋友 -->
+<section class="slide" id="slide-tw-animals">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>臺灣的動物朋友</h2>
+  <div class="slide-body">
+    <figure>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 12px; padding: 40px; background: var(--c-accent-soft); text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--c-muted); letter-spacing: 0.15em; margin-bottom: 8px;">圖表佔位</div>
+        <div style="font-size: 1.4rem; color: var(--c-accent); font-weight: 700; margin-bottom: 12px;">[此處放:臺灣 5 種動物拼貼圖]</div>
+        <div style="font-size: 2.5rem; margin: 14px 0;">🐻 🐒 🦌 🦩 🐈</div>
+        <div style="font-size: 1.05rem; margin: 4px 0;">臺灣黑熊・臺灣獼猴・梅花鹿・黑面琵鷺・石虎</div>
+        <div style="font-size: 1.1rem; margin: 14px 0;"><strong>關鍵數據:</strong>黑面琵鷺全球約 4,463 隻(近年族群數),牠們需要我們照顧</div>
+        <div style="font-size: 0.85rem; color: var(--c-muted); margin-top: 12px;">📌 示意圖待補繪(5 隻臺灣動物的可愛插畫拼版)</div>
+      </div>
+      <figcaption>這些是臺灣現在還在的動物朋友,我們是主人,要幫忙照顧家裡的客人。</figcaption>
+    </figure>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      <strong>遊戲:</strong>老師說名字,孩子做動物動作。
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:行政院農業部生物多樣性研究所 / 教育部環境教育教案
+  </div>
+</section>
+
+<!-- 12. 動物的家手作學習單 -->
+<section class="slide" id="slide-ws-home">
+  <div class="slide-tag">活動三・步驟 2 ・學習單(投影版)</div>
+  <h2>我來蓋一個動物的家</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      用黏土加紙盒,做一隻恐龍或一隻臺灣動物加上牠的家。
+    </p>
+    <ul class="checklist" style="max-width: 600px; margin: 16px auto;">
+      <li>我做的動物名字是 ____________</li>
+      <li>牠住在 ____________(山上 / 海邊 / 樹上 / 草原 / 森林)</li>
+      <li>牠最喜歡吃 ____________</li>
+      <li>牠的家裡需要 ____________(水 / 食物 / 樹 / 安全的地方)</li>
+    </ul>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 16px;">
+      <strong>提問:</strong>如果我們把牠的家弄壞了,牠會去哪裡?
+    </p>
+  </div>
+  <div class="slide-source">完整互動版見 <a href="worksheet.html" target="_blank">worksheet.html</a></div>
+</section>
+
+<!-- 13. 紀念卡學習單 -->
+<section class="slide" id="slide-ws-card">
+  <div class="slide-tag">活動三・步驟 3 ・學習單(投影版)</div>
+  <h2>給臺灣黑熊的紀念卡</h2>
+  <div class="slide-body">
+    <div class="pledge-form">
+      <div style="text-align: center; font-size: 1.3rem; color: var(--c-accent); font-weight: 700; margin-bottom: 16px;">
+        🐻 親愛的臺灣黑熊
+      </div>
+      <div class="row">
+        <span class="lbl">謝謝你住在臺灣!</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">為了你,我會做的事是:</span>
+        <span class="blank"></span>
+      </div>
+      <div style="border: 2px dashed var(--c-accent); border-radius: 8px; height: 140px; margin: 16px 0;
+                  display: flex; align-items: center; justify-content: center; color: var(--c-muted);">
+        ✏️ 在這裡畫一張黑熊圖
+      </div>
+      <div class="row">
+        <span class="lbl">我的名字:</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字,小科學家一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">很久</div>
+        <div class="desc">恐龍是 6,600 萬年前的<br>大朋友,現在不見了</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">原因</div>
+        <div class="desc">大石頭、變冷、食物少<br>家不見了動物就消失</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">照顧</div>
+        <div class="desc">臺灣黑熊還在!<br>我們可以做小事保護牠</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">每一種動物都是地球的好朋友。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">14</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>
