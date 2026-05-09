@@ -63,7 +63,7 @@ export default async function PackageDetail({
           1. 動態學習單（worksheet.html）
         </a>
         <a href={pptHtmlUrl} target="_blank" rel="noopener noreferrer"
-          className="px-5 py-2.5 rounded-full border border-earth/30 text-earth hover:bg-sand/50 transition text-sm font-semibold">
+          className="px-5 py-2.5 rounded-full bg-sky-100 border border-sky-200 text-sky-700 hover:bg-sky-200 transition text-sm font-semibold">
           2. PPT.html
         </a>
         <Link href={`/remix/${keyId}/`}
