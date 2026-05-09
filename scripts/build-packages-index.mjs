@@ -31,7 +31,10 @@ const LOCAL_PACKAGES = join(ROOT, "packages");
 const REPO = process.env.PACKAGES_REPO ?? "yujchang2017/cce-teaching-packages";
 const BRANCH = process.env.PACKAGES_BRANCH ?? "main";
 const RAW_BASE = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
-const PAGES_BASE = `https://${REPO.split("/")[0]}.github.io/${REPO.split("/")[1]}`;
+const CUSTOM_DOMAIN = process.env.CUSTOM_DOMAIN?.trim();
+const PAGES_BASE = CUSTOM_DOMAIN
+  ? `https://${CUSTOM_DOMAIN}`
+  : `https://${REPO.split("/")[0]}.github.io/${REPO.split("/")[1]}`;
 const INDEX_URL = `${RAW_BASE}/packages/_index.json`;
 
 const isOffline = process.argv.includes("--offline");
