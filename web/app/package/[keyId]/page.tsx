@@ -11,6 +11,12 @@ import { fetchPackageDetail, getAllKeyIds } from "@/lib/github-api";
 
 export const dynamicParams = false; // 靜態匯出:不允許未列出的 keyId
 
+const packageAssetVersion = process.env.GITHUB_SHA?.slice(0, 12) ?? String(Date.now());
+
+function versionedUrl(url: string) {
+  return `${url}${url.includes("?") ? "&" : "?"}v=${packageAssetVersion}`;
+}
+
 export async function generateStaticParams() {
   return getAllKeyIds().map((keyId) => ({ keyId }));
 }
@@ -31,6 +37,9 @@ export default async function PackageDetail({
   // HTML 版教案/簡報的 GitHub Pages URL（由 worksheetPagesUrl 推導）
   const lessonPlanHtmlUrl = detail.worksheetPagesUrl.replace("worksheet.html", "lesson_plan.html");
   const pptHtmlUrl = detail.worksheetPagesUrl.replace("worksheet.html", "ppt.html");
+  const worksheetPagesUrl = versionedUrl(detail.worksheetPagesUrl);
+  const lessonPlanHtmlViewUrl = versionedUrl(lessonPlanHtmlUrl);
+  const pptHtmlViewUrl = versionedUrl(pptHtmlUrl);
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 w-full flex-1">
@@ -58,11 +67,11 @@ export default async function PackageDetail({
 
       {/* CTA BAR */}
       <section className="bg-white rounded-2xl shadow-warm border border-earth/10 p-5 sm:p-6 mb-6 flex items-center gap-3 flex-wrap">
-        <a href={detail.worksheetPagesUrl} target="_blank" rel="noopener noreferrer"
+        <a href={worksheetPagesUrl} target="_blank" rel="noopener noreferrer"
           className="px-5 py-2.5 rounded-full bg-sun text-white hover:bg-sunDeep transition text-sm font-semibold shadow-sm">
           1. 動態學習單（worksheet.html）
         </a>
-        <a href={pptHtmlUrl} target="_blank" rel="noopener noreferrer"
+        <a href={pptHtmlViewUrl} target="_blank" rel="noopener noreferrer"
           className="px-5 py-2.5 rounded-full bg-sky-100 border border-sky-200 text-sky-700 hover:bg-sky-200 transition text-sm font-semibold">
           2. PPT.html
         </a>
@@ -76,11 +85,11 @@ export default async function PackageDetail({
       <section className="bg-white rounded-2xl shadow-warm border border-earth/10 p-6 sm:p-8 mb-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-ink flex items-center gap-2">📘 完整教案</h2>
-          <a href={lessonPlanHtmlUrl} target="_blank" rel="noopener noreferrer"
+          <a href={lessonPlanHtmlViewUrl} target="_blank" rel="noopener noreferrer"
             className="text-xs text-sun hover:underline">新視窗開啟 ↗</a>
         </div>
         <iframe
-          src={lessonPlanHtmlUrl}
+          src={lessonPlanHtmlViewUrl}
           title={`${keyId} 完整教案`}
           className="w-full rounded-xl border border-earth/10"
           style={{ height: "80vh", minHeight: "600px" }}
