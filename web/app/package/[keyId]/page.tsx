@@ -6,8 +6,6 @@
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 import { fetchPackageDetail, getAllKeyIds } from "@/lib/github-api";
 
@@ -29,10 +27,6 @@ export default async function PackageDetail({
   if (!summary) {
     notFound();
   }
-
-  const githubWebUrl = detail.baseUrl
-    .replace("raw.githubusercontent.com", "github.com")
-    .replace("/main/", "/tree/main/");
 
   // HTML 版教案/簡報的 GitHub Pages URL（由 worksheetPagesUrl 推導）
   const lessonPlanHtmlUrl = detail.worksheetPagesUrl.replace("worksheet.html", "lesson_plan.html");
@@ -66,16 +60,16 @@ export default async function PackageDetail({
       <section className="bg-white rounded-2xl shadow-warm border border-earth/10 p-5 sm:p-6 mb-6 flex items-center gap-3 flex-wrap">
         <a href={detail.worksheetPagesUrl} target="_blank" rel="noopener noreferrer"
           className="px-5 py-2.5 rounded-full bg-sun text-white hover:bg-sunDeep transition text-sm font-semibold shadow-sm">
-          🎮 互動學習單（直接玩）
+          1. 動態學習單（worksheet.html）
+        </a>
+        <a href={pptHtmlUrl} target="_blank" rel="noopener noreferrer"
+          className="px-5 py-2.5 rounded-full border border-earth/30 text-earth hover:bg-sand/50 transition text-sm font-semibold">
+          2. PPT.html
         </a>
         <Link href={`/remix/${keyId}/`}
           className="px-5 py-2.5 rounded-full bg-forest text-white hover:bg-forest/85 transition text-sm font-semibold">
-          ✏️ 我要試教／改編這個教案
+          3. 試教／修改表單
         </Link>
-        <a href={pptHtmlUrl} target="_blank" rel="noopener noreferrer"
-          className="px-4 py-2 rounded-full border border-earth/30 text-earth hover:bg-sand/50 transition text-xs">
-          📊 檢視 PPT.html
-        </a>
       </section>
 
       {/* LESSON PLAN */}
@@ -92,99 +86,6 @@ export default async function PackageDetail({
           style={{ height: "80vh", minHeight: "600px" }}
         />
       </section>
-
-      {/* DATA CARD */}
-      {detail.dataCard && (
-        <section className="bg-white rounded-2xl shadow-warm border border-earth/10 p-6 sm:p-8 mb-6">
-          <h2 className="text-xl font-bold text-ink mb-4">📊 數據資料卡</h2>
-          {detail.dataCard.last_verified && (
-            <p className="text-xs text-mute mb-4">資料驗證日：{detail.dataCard.last_verified}{detail.dataCard.age_band && ` · 年段：${detail.dataCard.age_band} 歲`}</p>
-          )}
-          {Array.isArray(detail.dataCard.data_points) && detail.dataCard.data_points.length > 0 && (
-            <div className="space-y-4 mb-6">
-              <h3 className="text-sm font-bold text-earth">核心數據點</h3>
-              <div className="grid gap-3">
-                {detail.dataCard.data_points.map((dp, i) => (
-                  <div key={dp.id ?? i} className="border border-earth/10 rounded-xl p-4 bg-sand/30">
-                    <p className="text-sm text-ink font-medium mb-2">{dp.fact_zh ?? "(未填寫)"}</p>
-                    {(dp.value || dp.unit || dp.year) && (
-                      <p className="text-xs text-mute mb-1.5"><b className="text-earth">{dp.value} {dp.unit}</b>{dp.year && ` · ${dp.year}`}</p>
-                    )}
-                    {dp.teaching_hook && <p className="text-xs text-ink/70 italic mb-1.5">💡 教學切入：{dp.teaching_hook}</p>}
-                    {dp.source_name && (
-                      <p className="text-xs text-mute">來源：{dp.source_url ? <a href={dp.source_url} target="_blank" rel="noopener noreferrer" className="text-sun hover:underline">{dp.source_name}</a> : dp.source_name}{dp.reliability && ` · 可信度：${dp.reliability}`}</p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {Array.isArray(detail.dataCard.glossary) && detail.dataCard.glossary.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-sm font-bold text-earth mb-3">詞彙表</h3>
-              <dl className="grid sm:grid-cols-2 gap-3">
-                {detail.dataCard.glossary.map((g, i) => (
-                  <div key={i} className="border-l-2 border-forest/30 pl-3">
-                    <dt className="text-sm font-bold text-ink">{g.term_zh}</dt>
-                    <dd className="text-xs text-ink/75 mt-0.5">{g.definition_zh}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          )}
-          {Array.isArray(detail.dataCard.misconceptions) && detail.dataCard.misconceptions.length > 0 && (
-            <div>
-              <h3 className="text-sm font-bold text-earth mb-3">常見迷思</h3>
-              <div className="space-y-2">
-                {detail.dataCard.misconceptions.map((m, i) => (
-                  <div key={i} className="text-xs">
-                    <p className="text-ink/70">❌ 迷思：{m.wrong}</p>
-                    <p className="text-forest">✅ 正解：{m.correct}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* PPT SCRIPT */}
-      {detail.pptScriptMd && (
-        <section className="bg-white rounded-2xl shadow-warm border border-earth/10 p-6 sm:p-8 mb-6">
-          <details className="group">
-            <summary className="cursor-pointer select-none text-xl font-bold text-ink flex items-center gap-2">
-              🎬 簡報腳本<span className="text-xs text-mute font-normal ml-auto">點擊展開 / 收合</span>
-            </summary>
-            <article className="prose prose-sm max-w-none mt-4 prose-headings:text-ink prose-p:text-ink/85 prose-li:text-ink/85 prose-strong:text-earth">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{detail.pptScriptMd}</ReactMarkdown>
-            </article>
-          </details>
-        </section>
-      )}
-
-      {/* RESOURCES */}
-      {detail.resourcesMd && (
-        <section className="bg-white rounded-2xl shadow-warm border border-earth/10 p-6 sm:p-8 mb-6">
-          <h2 className="text-xl font-bold text-ink mb-4">📚 參考資源</h2>
-          <article className="prose prose-sm max-w-none prose-headings:text-ink prose-p:text-ink/85 prose-li:text-ink/85 prose-a:text-sun">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{detail.resourcesMd}</ReactMarkdown>
-          </article>
-        </section>
-      )}
-
-      {/* QA REPORT */}
-      {detail.qaReportMd && (
-        <section className="bg-white rounded-2xl shadow-warm border border-earth/10 p-6 sm:p-8 mb-6">
-          <details className="group">
-            <summary className="cursor-pointer select-none text-xl font-bold text-ink flex items-center gap-2">
-              ✅ 品管報告<span className="text-xs text-mute font-normal ml-auto">點擊展開 / 收合</span>
-            </summary>
-            <article className="prose prose-sm max-w-none mt-4 prose-headings:text-ink prose-p:text-ink/85 prose-li:text-ink/85">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{detail.qaReportMd}</ReactMarkdown>
-            </article>
-          </details>
-        </section>
-      )}
 
       {/* 改編列表 (取代 Phase 0 的 FamilyTree;Phase 1 再升級成 SVG 樹) */}
       <section className="bg-white rounded-2xl shadow-warm border border-earth/10 p-6 sm:p-8 mb-6">

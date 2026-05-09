@@ -106,10 +106,6 @@ export type DataCard = {
 export type PackageDetail = {
   summary: PackageSummary | null;
   dataCard: DataCard | null;
-  lessonPlanMd: string | null;
-  pptScriptMd: string | null;
-  resourcesMd: string | null;
-  qaReportMd: string | null;
   worksheetRawUrl: string;
   worksheetPagesUrl: string;
   baseUrl: string;
@@ -129,10 +125,6 @@ export type RemixEntry = {
 type DetailJson = {
   summary: PackageSummary;
   dataCard: DataCard | null;
-  lessonPlanMd: string | null;
-  pptScriptMd: string | null;
-  resourcesMd: string | null;
-  qaReportMd: string | null;
   worksheetRawUrl: string;
   worksheetPagesUrl: string;
   baseUrl: string;
@@ -147,10 +139,6 @@ export async function fetchPackageDetail(keyId: string): Promise<PackageDetail> 
     return {
       summary: d.summary,
       dataCard: d.dataCard,
-      lessonPlanMd: d.lessonPlanMd,
-      pptScriptMd: d.pptScriptMd,
-      resourcesMd: d.resourcesMd,
-      qaReportMd: d.qaReportMd,
       worksheetRawUrl: d.worksheetRawUrl,
       worksheetPagesUrl: d.worksheetPagesUrl,
       baseUrl: d.baseUrl,
@@ -164,10 +152,6 @@ export async function fetchPackageDetail(keyId: string): Promise<PackageDetail> 
     return {
       summary: null,
       dataCard: null,
-      lessonPlanMd: null,
-      pptScriptMd: null,
-      resourcesMd: null,
-      qaReportMd: null,
       worksheetRawUrl: `${base}/worksheet.html`,
       worksheetPagesUrl: `${base}/worksheet.html`,
       baseUrl: base,

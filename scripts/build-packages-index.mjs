@@ -133,28 +133,15 @@ async function buildOneDetailLocal(entry) {
   const pagesBase = `${PAGES_BASE}/packages/level-${levelLc}/${keyId}`;
   const rawBase = `${RAW_BASE}/packages/level-${levelLc}/${keyId}`;
 
-  async function readLocalText(filename) {
-    try { return await readFile(join(pkgDir, filename), "utf8"); } catch { return null; }
-  }
   async function readLocalJson(filename) {
     try { return JSON.parse(await readFile(join(pkgDir, filename), "utf8")); } catch { return null; }
   }
 
-  const [dataCard, lessonPlanMd, pptScriptMd, resourcesMd, qaReportMd] = await Promise.all([
-    readLocalJson("data_card.json"),
-    readLocalText("lesson_plan.md"),
-    readLocalText("ppt_script.md"),
-    readLocalText("resources.md"),
-    readLocalText("qa_report.md"),
-  ]);
+  const dataCard = await readLocalJson("data_card.json");
 
   return {
     summary: toSummary(entry),
     dataCard,
-    lessonPlanMd,
-    pptScriptMd,
-    resourcesMd,
-    qaReportMd,
     worksheetRawUrl: `${rawBase}/worksheet.html`,
     worksheetPagesUrl: `${pagesBase}/worksheet.html`,
     baseUrl: rawBase,
@@ -171,21 +158,11 @@ async function buildOneDetail(entry) {
   const base = `${RAW_BASE}/${dir}`;
   const pagesBase = `${PAGES_BASE}/${dir}`;
 
-  const [dataCard, lessonPlanMd, pptScriptMd, resourcesMd, qaReportMd] = await Promise.all([
-    fetchJson(`${dir}/data_card.json`),
-    fetchText(`${dir}/lesson_plan.md`),
-    fetchText(`${dir}/ppt_script.md`),
-    fetchText(`${dir}/resources.md`),
-    fetchText(`${dir}/qa_report.md`),
-  ]);
+  const dataCard = await fetchJson(`${dir}/data_card.json`);
 
   return {
     summary: toSummary(entry),
     dataCard,
-    lessonPlanMd,
-    pptScriptMd,
-    resourcesMd,
-    qaReportMd,
     worksheetRawUrl: `${base}/worksheet.html`,
     worksheetPagesUrl: `${pagesBase}/worksheet.html`,
     baseUrl: base,
