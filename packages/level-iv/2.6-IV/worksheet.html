@@ -3,347 +3,840 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2.6-IV 重新融入大自然並保護自然 — 國中互動學習單</title>
+<title>重新融入大自然並保護自然 | 2.6-IV 國中互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { font-family: "Noto Sans TC", system-ui, sans-serif; }
-  .card { transition: all .25s; }
-  .card:hover { transform: translateY(-2px); }
-  .level-hidden { display: none; }
-  .chosen { background:#34d399; color:white; }
-  textarea { min-height: 90px; }
-  .fade-in { animation: f .4s ease-in; }
-  @keyframes f { from{opacity:0;transform:translateY(8px)} to{opacity:1} }
-  .badge { display:inline-block; padding:.25rem .6rem; border-radius:9999px; font-size:.8rem; margin:.15rem; }
-  details > summary { cursor:pointer; }
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#ecfdf5,#f0fdfa,#d1fae5); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:80px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#0d9488; transform:scale(1.3);}
+  .progress-dot.done { background:#059669;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  svg.loop text { font-size:11px; pointer-events:none;}
+  svg.loop .loop-slot { cursor: pointer; }
+  svg.loop .loop-slot.over { fill:#fde68a; stroke-width:3; }
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.92rem;}
+  .opt:hover { background:#f8fafc; }
+  .opt.sel { border-color:#0d9488; background:#ccfbf1;}
+  .opt.correct { border-color:#059669; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.4rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
+  .flash-card { perspective:600px; }
+  .flash-inner { transition: transform .5s; transform-style: preserve-3d; position:relative; min-height:90px; }
+  .flash-inner.flipped { transform: rotateY(180deg); }
+  .flash-face { backface-visibility:hidden; position:absolute; width:100%; }
+  .flash-back { transform: rotateY(180deg); }
 </style>
 </head>
-<body class="bg-gradient-to-br from-emerald-50 via-teal-50 to-sky-50 min-h-screen">
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
+<div class="max-w-4xl mx-auto">
 
-<header class="max-w-4xl mx-auto px-4 pt-6 pb-4">
-  <h1 class="text-3xl font-bold text-emerald-800">2.6-IV 自然偵探行動｜重新融入大自然並保護自然</h1>
-  <p class="text-slate-600 mt-1">國中 13-15 歲 · 情境：你是校園「自然守護社」新任社長，要在 6 道關卡中帶領同學認識生物多樣性、動物福利、保護區與原住民族智慧，並提出一份具體行動提案。</p>
-  <div class="mt-3 flex items-center gap-3">
-    <span class="text-sm text-slate-600">進度</span>
-    <div class="flex gap-1" id="dots">
-      <span class="w-3 h-3 rounded-full bg-slate-300" id="dot-1"></span>
-      <span class="w-3 h-3 rounded-full bg-slate-300" id="dot-2"></span>
-      <span class="w-3 h-3 rounded-full bg-slate-300" id="dot-3"></span>
-      <span class="w-3 h-3 rounded-full bg-slate-300" id="dot-4"></span>
-      <span class="w-3 h-3 rounded-full bg-slate-300" id="dot-5"></span>
-      <span class="w-3 h-3 rounded-full bg-slate-300" id="dot-6"></span>
-    </div>
-    <span class="ml-auto bg-emerald-600 text-white rounded-lg px-3 py-1 text-sm">分數 <span id="score">0</span> / 100</span>
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-teal-800">🌿 重新融入大自然並保護自然</h1>
+    <p class="text-sm text-slate-600 mt-1">你是校園『自然守護社』社長：5 個任務，從石虎系統思考到全校行動，走完你就正式就職。</p>
   </div>
-  <div id="badge-box" class="mt-2"></div>
-</header>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">社長積分</div>
+    <div class="text-2xl font-bold text-teal-600"><span id="score">0</span> / 80</div>
+  </div>
+</div>
 
-<main class="max-w-4xl mx-auto px-4 pb-20 space-y-6">
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">配對</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">資料</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">論證</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">專題</span>
+</div>
 
-<!-- L1 系統思考：石虎路殺因果鏈 -->
-<section id="level-1" class="card bg-white rounded-2xl shadow-lg p-6">
-  <h2 class="text-xl font-bold text-emerald-700">關卡 1｜系統思考：為何臺灣已保護 19.5% 陸地，石虎仍瀕危？</h2>
-  <p class="text-slate-600 mt-1 text-sm">依據：臺灣法定保護區陸域 ~19.5%（林業及自然保育署 2024）；IUCN 紅皮書 2024 列石虎為「瀕危」等級。</p>
-  <p class="mt-3">以下有 8 張因果卡，請<strong>勾選至少 5 張</strong>組成一條合理的「系統性因果鏈」解釋石虎仍瀕危的原因。</p>
-  <div class="grid md:grid-cols-2 gap-2 mt-3" id="l1-cards"></div>
-  <label class="block mt-4 text-sm font-medium">再用你自己的話，寫一段 50-80 字的因果鏈敘述：</label>
-  <textarea id="l1-text" class="w-full mt-1 p-3 border rounded-lg" placeholder="例：保護區多分布在高山，但石虎生活在淺山；淺山沒有保護...所以..."></textarea>
-  <button onclick="checkL1()" class="mt-3 bg-emerald-600 text-white px-4 py-2 rounded-lg">提交</button>
-  <p id="l1-fb" class="mt-2 text-sm"></p>
-</section>
-
-<!-- L2 資料詮釋 -->
-<section id="level-2" class="card bg-white rounded-2xl shadow-lg p-6 level-hidden">
-  <h2 class="text-xl font-bold text-emerald-700">關卡 2｜資料詮釋：全球保護區 vs 受威脅物種</h2>
-  <div class="grid md:grid-cols-2 gap-4 mt-3">
-    <div class="bg-slate-50 p-3 rounded-lg">
-      <h3 class="font-semibold">資料 A（Protected Planet 2026.04）</h3>
-      <ul class="text-sm mt-2 list-disc ml-4">
-        <li>保護區總數：295,837 處</li>
-        <li>陸域保護率：17.33%</li>
-        <li>海域保護率：9.79%</li>
-        <li>CBD 2030 目標：30x30</li>
-      </ul>
-    </div>
-    <div class="bg-slate-50 p-3 rounded-lg">
-      <h3 class="font-semibold">資料 B（IUCN Red List 2024）</h3>
-      <ul class="text-sm mt-2 list-disc ml-4">
-        <li>受威脅物種：約 46,300 種</li>
-        <li>佔已評估物種：約 28%</li>
-        <li>五大威脅：棲地、入侵、氣候、污染、過度利用</li>
-      </ul>
+<!-- ===== T1: 石虎威脅因子配對（去直覺化） ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🐱</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 1｜石虎威脅因子配對</h2>
+      <p class="text-sm text-slate-700 mt-1">台灣已保護 19.5% 陸地，但石虎仍瀕危。把 4 張「人為壓力卡片」拖到最符合其「作用機制」的描述區。區域說明只描述影響機制，不直接寫答案——請依生態學推論。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：自然守護社實習社長 ｜ 10 分</p>
     </div>
   </div>
-  <p class="mt-4 font-medium">Q2.1 單選：要達成 30x30 目標，陸域保護率還需要增加約多少百分點？</p>
-  <div class="mt-2 space-y-1" id="q21"></div>
-  <p class="mt-4 font-medium">Q2.2 請寫 2 句話解讀兩份資料的「弔詭」（保護區一直增加，為何受威脅物種也增加？）：</p>
-  <textarea id="q22" class="w-full mt-1 p-3 border rounded-lg"></textarea>
-  <button onclick="checkL2()" class="mt-3 bg-emerald-600 text-white px-4 py-2 rounded-lg">提交</button>
-  <p id="l2-fb" class="mt-2 text-sm"></p>
-</section>
 
-<!-- L3 倫理兩難 -->
-<section id="level-3" class="card bg-white rounded-2xl shadow-lg p-6 level-hidden">
-  <h2 class="text-xl font-bold text-emerald-700">關卡 3｜倫理兩難：原住民族狩獵 vs 保護區禁令</h2>
-  <div class="bg-amber-50 border-l-4 border-amber-400 p-4 mt-3 text-sm">
-    <strong>情境</strong>：某原住民族部落申請在玉山國家公園範圍內恢復傳統獵祭，獵取 3 頭山羌、2 頭水鹿。這是族群數百年的文化實踐，也是青年認同的重要儀式。保育團體反對，認為會衝擊生態。
-  </div>
-  <p class="mt-3 font-medium">你會支持哪一方？<strong>沒有標準答案</strong>，但要論述理由（至少 80 字）：</p>
-  <div class="flex gap-2 mt-2" id="l3-side">
-    <button class="l3-btn border rounded-lg px-3 py-1" data-v="支持部落">支持部落傳統獵祭</button>
-    <button class="l3-btn border rounded-lg px-3 py-1" data-v="支持保育團體">支持保育團體限制</button>
-    <button class="l3-btn border rounded-lg px-3 py-1" data-v="有條件折衷">有條件折衷（請說明）</button>
-  </div>
-  <textarea id="l3-text" class="w-full mt-3 p-3 border rounded-lg" placeholder="請至少引用 1 項事實依據（如 dp5、dp7 或你的在地觀察），並處理『對方最強的反對理由』。"></textarea>
-  <button onclick="checkL3()" class="mt-3 bg-emerald-600 text-white px-4 py-2 rounded-lg">提交</button>
-  <p id="l3-fb" class="mt-2 text-sm"></p>
-</section>
-
-<!-- L4 CER 論證 -->
-<section id="level-4" class="card bg-white rounded-2xl shadow-lg p-6 level-hidden">
-  <h2 class="text-xl font-bold text-emerald-700">關卡 4｜CER 論證寫作：工業化畜牧是否該被限制？</h2>
-  <details class="mt-2 bg-slate-50 p-3 rounded-lg">
-    <summary class="font-medium">CER 結構範例（點開）</summary>
-    <p class="text-sm mt-2">
-      <strong>Claim 主張</strong>：應立法要求所有雞蛋於 2030 年前全面脫離格子籠。<br>
-      <strong>Evidence 證據</strong>：FAO 統計每年 740 億隻家禽被屠宰（dp4），歐盟已於 2012 年禁止傳統格子籠，2035 年將全面禁籠。<br>
-      <strong>Reasoning 推理</strong>：格子籠剝奪雞展現自然行為（飛、抓、沙浴），造成長期痛苦；有替代方案且消費者願意多付 20-30% 購買福利蛋。
-    </p>
-  </details>
-  <label class="block mt-3 text-sm font-medium">Claim（你的主張，1-2 句）：</label>
-  <textarea id="l4-c" class="w-full mt-1 p-2 border rounded-lg"></textarea>
-  <label class="block mt-2 text-sm font-medium">Evidence（至少 2 項數據或來源）：</label>
-  <textarea id="l4-e" class="w-full mt-1 p-2 border rounded-lg"></textarea>
-  <label class="block mt-2 text-sm font-medium">Reasoning（推理：為何證據能支持主張？）：</label>
-  <textarea id="l4-r" class="w-full mt-1 p-2 border rounded-lg"></textarea>
-  <button onclick="checkL4()" class="mt-3 bg-emerald-600 text-white px-4 py-2 rounded-lg">提交</button>
-  <p id="l4-fb" class="mt-2 text-sm"></p>
-</section>
-
-<!-- L5 開放反思 + 後設認知 -->
-<section id="level-5" class="card bg-white rounded-2xl shadow-lg p-6 level-hidden">
-  <h2 class="text-xl font-bold text-emerald-700">關卡 5｜開放反思 × 後設認知</h2>
-
-  <p class="mt-3 font-medium">Q5.1（開放反思 A，≥50 字）你上週真正「走進自然」（有土、有昆蟲、有風）多少小時？那些時刻你感覺到什麼？</p>
-  <textarea id="q51" class="w-full mt-1 p-3 border rounded-lg"></textarea>
-
-  <p class="mt-3 font-medium">Q5.2（開放反思 B，≥50 字）WHO 指出都市人 90%+ 時間在室內，綠地接觸能降皮質醇 15-20%。請描述你家庭/學校如何系統性地把你留在室內，並提出 2 個可行改變。</p>
-  <textarea id="q52" class="w-full mt-1 p-3 border rounded-lg"></textarea>
-
-  <p class="mt-3 font-medium">Q5.3（後設認知）上完這幾節課與 worksheet，你對「吃肉」或「接觸自然」的想法有改變嗎？是什麼資訊、情境或討論促成了改變（或為何沒變）？</p>
-  <textarea id="q53" class="w-full mt-1 p-3 border rounded-lg"></textarea>
-
-  <button onclick="checkL5()" class="mt-3 bg-emerald-600 text-white px-4 py-2 rounded-lg">提交</button>
-  <p id="l5-fb" class="mt-2 text-sm"></p>
-</section>
-
-<!-- L6 WSA Challenge + 專題 -->
-<section id="level-6" class="card bg-white rounded-2xl shadow-lg p-6 level-hidden">
-  <h2 class="text-xl font-bold text-emerald-700">關卡 6｜WSA 全校挑戰 + 社長專題任務</h2>
-  <p class="mt-2 text-sm text-slate-600">全校取向（Whole School Approach）四面向各選一個可行動項目，勾選代表你本學期願意執行：</p>
-  <div class="mt-3 space-y-2">
-    <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1" data-axis="課程整合"><span><strong>[課程整合]</strong> 在生物、社會、國文任一科發起「里山週」跨科專題，整合校園生態調查與訪談。</span></label>
-    <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1" data-axis="校園營運"><span><strong>[校園營運]</strong> 推動設立「授粉昆蟲花園」或合作社引入 1 項動物福利認證食材（如福利蛋）。</span></label>
-    <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1" data-axis="社區連結"><span><strong>[社區連結]</strong> 聯繫在地里山組織或原住民族部落，安排 1 次戶外教學或講座。</span></label>
-    <label class="flex items-start gap-2"><input type="checkbox" class="wsa mt-1" data-axis="學生治理"><span><strong>[學生治理]</strong> 在班會或校務會議提案 1 項制度變革（如週一無肉日、綠屋頂、自然漫步日）。</span></label>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="road">公路路殺</div>
+    <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="poison">農地鼠藥</div>
+    <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="frag">棲地片段化</div>
+    <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="dog">流浪犬貓競爭</div>
   </div>
 
-  <hr class="my-5">
-  <h3 class="font-bold text-emerald-700">社長專題任務（總結性作業）</h3>
-  <p class="text-sm text-slate-600 mt-1">作為「自然守護社」社長，選定以下 1 個在地議題，撰寫 200-400 字行動提案：（1）石虎廊道 （2）校園減塑禁蜂藥 （3）合作社福利肉品 （4）部落戶外教學。請至少引用 2 個 data_card 數據。</p>
-  <textarea id="final-proposal" class="w-full mt-2 p-3 border rounded-lg" style="min-height:140px" placeholder="【題目】我選擇：&#10;【背景數據】&#10;【具體行動】&#10;【預期影響】"></textarea>
-  <button onclick="checkL6()" class="mt-3 bg-emerald-600 text-white px-4 py-2 rounded-lg">完成學習單</button>
-  <p id="l6-fb" class="mt-2 text-sm"></p>
-</section>
-
-<!-- 成果總結 -->
-<section id="summary" class="card bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl shadow-xl p-6 level-hidden">
-  <h2 class="text-2xl font-bold">完成！自然守護社社長就職！</h2>
-  <p class="mt-2">你的總分：<span id="final-score" class="text-3xl font-bold"></span> / 100</p>
-  <div id="final-badges" class="mt-3"></div>
-  <div class="mt-4 bg-white/20 rounded-lg p-3">
-    <h3 class="font-semibold">三題延伸思考（帶回家）</h3>
-    <ol class="list-decimal ml-6 mt-2 text-sm space-y-1">
-      <li>如果臺灣把保護面積從 19.5% 提高到 30%，會有哪些既得利益者反對？你會怎麼回應？</li>
-      <li>未來 20 年，若基改昆蟲可完全取代蜜蜂授粉，我們還需要保護野生蜜蜂嗎？為什麼？</li>
-      <li>你願意說服 1 位家人改變 1 項飲食或戶外習慣嗎？何時開始？怎麼開口？</li>
-    </ol>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="zones-box-1">
+    <div class="drop-zone p-3" data-accept="road">
+      <div class="font-bold text-slate-700 text-sm">威脅機制 A
+        <div class="text-xs text-slate-500 mt-1">高速移動的車輛在夜間主動脈道路上與野生動物相遇；夜行性淺山物種穿越時缺乏預警；族群被切割在道路兩側無法交流；此威脅在苗栗、台中交界平均每月記錄 1–2 件</div>
+      </div>
+    </div>
+    <div class="drop-zone p-3" data-accept="poison">
+      <div class="font-bold text-slate-700 text-sm">威脅機制 B
+        <div class="text-xs text-slate-500 mt-1">農業防治嚙齒類的化學物質累積在獵物體內；頂級掠食者攝食大量中毒獵物後達到有害濃度；死亡個體常在農地周邊而非保護區內發現，無法以劃設保護區解決</div>
+      </div>
+    </div>
+    <div class="drop-zone p-3" data-accept="frag">
+      <div class="font-bold text-slate-700 text-sm">威脅機制 C
+        <div class="text-xs text-slate-500 mt-1">開發將連續棲地切割為彼此隔離的小塊；每塊面積不足以支撐可存活族群（MVP）；個體無法移動至其他族群進行基因交流；近親繁殖使免疫力下降，族群走向滅絕旋渦</div>
+      </div>
+    </div>
+    <div class="drop-zone p-3" data-accept="dog">
+      <div class="font-bold text-slate-700 text-sm">威脅機制 D
+        <div class="text-xs text-slate-500 mt-1">人為引入或放棄的物種佔據相同食物基礎與活動時段；追逐幼體造成直接死亡；部分個體傳播可感染野生動物的病原體；影響範圍沿農村社區邊界廣泛分佈</div>
+      </div>
+    </div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <div class="nav-row">
+    <span></span>
+    <button id="btn-next-1" class="btn bg-teal-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
   </div>
 </section>
 
-</main>
+<!-- ===== T2: 資料詮釋（Protected Planet + IUCN Red List） ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📊</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 2｜資料詮釋：保護區 vs 受威脅物種的弔詭</h2>
+      <p class="text-sm text-slate-700 mt-1">下圖整合全球保護區與物種威脅數據。保護區持續增加，但受威脅物種也同步增加——這說明了什麼？</p>
+      <p class="text-xs text-slate-500 mt-1">角色：資料科學家 ｜ 15 分 ｜ <span class="chip bg-teal-100 text-teal-800">資料詮釋</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 420 205" class="w-full max-w-xl mx-auto block bg-slate-50 rounded mb-4">
+    <text x="210" y="17" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">全球保護區 vs 受威脅物種：關鍵數據（2024–2026）</text>
+    <!-- 陸域保護率 17.33% -->
+    <text x="8" y="47" font-size="10" fill="#334155">全球陸域保護率</text>
+    <rect x="158" y="36" width="210" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="158" y="36" width="121" height="14" fill="#10b981" rx="2"/>
+    <text x="282" y="47" font-size="9" fill="#065f46" font-weight="bold">17.33%</text>
+    <!-- 30x30 目標 30% -->
+    <text x="8" y="69" font-size="10" fill="#334155">CBD 2030 目標</text>
+    <rect x="158" y="58" width="210" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="158" y="58" width="210" height="14" fill="#0ea5e9" rx="2" opacity="0.3"/>
+    <line x1="368" y1="56" x2="368" y2="74" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="3"/>
+    <text x="372" y="69" font-size="9" fill="#0369a1" font-weight="bold">30%</text>
+    <!-- 海域保護率 9.79% -->
+    <text x="8" y="91" font-size="10" fill="#334155">全球海域保護率</text>
+    <rect x="158" y="80" width="210" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="158" y="80" width="69" height="14" fill="#6366f1" rx="2"/>
+    <text x="231" y="91" font-size="9" fill="#3730a3" font-weight="bold">9.79%</text>
+    <!-- 受威脅物種 28% -->
+    <text x="8" y="113" font-size="10" fill="#334155">已評估物種受威脅比例</text>
+    <rect x="158" y="102" width="210" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="158" y="102" width="59" height="14" fill="#f97316" rx="2"/>
+    <text x="221" y="113" font-size="9" fill="#c2410c" font-weight="bold">約 28%（46,300 種）</text>
+    <!-- 臺灣保護率 19.5% -->
+    <text x="8" y="135" font-size="10" fill="#334155">臺灣陸域保護率</text>
+    <rect x="158" y="124" width="210" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="158" y="124" width="137" height="14" fill="#14b8a6" rx="2"/>
+    <text x="299" y="135" font-size="9" fill="#0f766e" font-weight="bold">19.5%</text>
+    <!-- 石虎族群 -->
+    <text x="8" y="157" font-size="10" fill="#334155">臺灣石虎估計族群數</text>
+    <rect x="158" y="146" width="210" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="158" y="146" width="42" height="14" fill="#dc2626" rx="2"/>
+    <text x="204" y="157" font-size="9" fill="#991b1b" font-weight="bold">約 500–600 隻（IUCN 瀕危）</text>
+    <text x="210" y="198" text-anchor="middle" font-size="9" fill="#64748b">資料來源：Protected Planet 2026.04、IUCN Red List 2024、林業及自然保育署 2024</text>
+  </svg>
+
+  <div class="space-y-4">
+    <div>
+      <p class="text-sm font-semibold mb-1">Q2-1｜要從目前的 17.33% 達成 30x30 目標，全球陸域保護率還需增加約多少？（單選，6 分）</p>
+      <div id="q21-opts"></div>
+      <p id="q21-fb" class="text-xs mt-1 text-slate-500"></p>
+    </div>
+    <div>
+      <p class="text-sm font-semibold mb-1">Q2-2｜「保護區持續增加，但受威脅物種也同步增加」這個弔詭，最可能的解釋是哪 <strong>2 項</strong>？（4 選 2，共 9 分）</p>
+      <div id="q22-opts" class="space-y-1"></div>
+      <p id="q22-fb" class="text-xs mt-1 text-slate-500"></p>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="1">← 上一關</button>
+    <button id="btn-next-2" class="btn bg-teal-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T3: 系統思考｜石虎棲地片段化正反饋 ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-700">任務 3｜系統思考：淺山棲地片段化的惡化迴圈</h2>
+      <p class="text-sm text-slate-700 mt-1">石虎族群縮小後，一連串系統性後果接踵而來，最終形成一個加速滅絕的正反饋迴路。把 4 張節點卡片拖到圖中正確位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統分析師 ｜ 15 分 ｜ <span class="chip bg-orange-100 text-orange-800">系統思考</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 540 235" class="loop w-full bg-slate-50 rounded mb-3">
+    <defs>
+      <marker id="arr3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L0,10 L10,5 z" fill="#64748b"/>
+      </marker>
+    </defs>
+    <!-- fixed start -->
+    <rect x="8" y="18" width="155" height="45" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="85" y="38" text-anchor="middle" fill="#991b1b" font-weight="bold">棲地片段化</text>
+    <text x="85" y="55" text-anchor="middle" fill="#991b1b">族群隔離加劇</text>
+    <!-- slot 1 -->
+    <rect x="190" y="18" width="152" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" class="loop-slot" data-slot="1"/>
+    <text x="266" y="40" text-anchor="middle" fill="#92400e" id="slot-1-text">（節點 1）</text>
+    <!-- slot 2 -->
+    <rect x="373" y="18" width="152" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" class="loop-slot" data-slot="2"/>
+    <text x="449" y="40" text-anchor="middle" fill="#92400e" id="slot-2-text">（節點 2）</text>
+    <!-- slot 3 -->
+    <rect x="373" y="130" width="152" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" class="loop-slot" data-slot="3"/>
+    <text x="449" y="152" text-anchor="middle" fill="#92400e" id="slot-3-text">（節點 3）</text>
+    <!-- slot 4 -->
+    <rect x="190" y="130" width="152" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" class="loop-slot" data-slot="4"/>
+    <text x="266" y="152" text-anchor="middle" fill="#92400e" id="slot-4-text">（節點 4）</text>
+    <!-- fixed end (loops back) -->
+    <rect x="8" y="130" width="155" height="45" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="85" y="150" text-anchor="middle" fill="#1e40af" font-weight="bold">保護區效果</text>
+    <text x="85" y="167" text-anchor="middle" fill="#1e40af">不足以阻止滅絕</text>
+    <!-- arrows -->
+    <line x1="163" y1="40" x2="187" y2="40" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <line x1="342" y1="40" x2="370" y2="40" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <line x1="449" y1="63" x2="449" y2="127" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <line x1="370" y1="152" x2="344" y2="152" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <line x1="187" y1="152" x2="163" y2="152" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <text x="168" y="36" font-size="9" fill="#64748b">導致</text>
+    <text x="344" y="36" font-size="9" fill="#64748b">導致</text>
+    <text x="452" y="98" font-size="9" fill="#64748b">導致</text>
+    <text x="344" y="148" font-size="9" fill="#64748b">導致</text>
+    <text x="165" y="148" font-size="9" fill="#64748b">加速</text>
+    <text x="270" y="108" text-anchor="middle" font-size="10" fill="#7c3aed" font-weight="bold">滅絕旋渦（正回饋）</text>
+  </svg>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3" id="items-box-3">
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">族群規模縮小至低於最小存活族群（MVP）</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">近親繁殖增加，免疫缺陷與遺傳多樣性降低</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">疾病、氣候事件衝擊下存活率下降</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">族群進一步碎裂，各小群無法相互補充</div>
+  </div>
+  <div id="feedback-3" class="text-sm"></div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="2">← 上一關</button>
+    <button id="btn-next-3" class="btn bg-orange-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T4: CER + 倫理（工業化畜牧 × 原住民族狩獵） ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">⚖️</div>
+    <div>
+      <h2 class="text-xl font-bold text-violet-700">任務 4｜CER 論證（含倫理）：工業化畜牧該被限制嗎？</h2>
+      <p class="text-sm text-slate-700 mt-1">全球每年 740 億隻家禽被屠宰，工業化畜牧對生物多樣性、動物福利與氣候均有重大衝擊。翻閱 3 張觀點牌，選出你認同的立場，再配對最合適的「證據」與「推理」。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：跨學科政策研究員 ｜ 20 分 ｜ <span class="chip bg-violet-100 text-violet-800">CER 論證</span></p>
+    </div>
+  </div>
+
+  <div class="bg-amber-50 rounded-lg p-3 mb-3 text-xs text-slate-700">
+    <p class="font-bold text-amber-800 mb-1">📌 倫理背景：原住民族傳統獵祭</p>
+    <p>某原住民族申請在國家公園範圍內恢復傳統獵祭，獵取少量山羌與水鹿。保育團體反對，部落主張這是數百年文化傳承。此案提示：「保護自然」不只是科學問題，也是文化正義問題——保護區的設計應如何納入原住民族知識與主體性？</p>
+  </div>
+
+  <!-- Flash cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+    <div class="flash-card rounded-xl border-2 border-violet-300 overflow-hidden">
+      <button class="w-full bg-violet-100 px-3 py-2 text-xs font-bold text-violet-700 text-left" onclick="flipCard('card-a')">翻牌查看立場 A ↕</button>
+      <div class="flash-inner p-3 min-h-[80px]" id="card-a">
+        <div class="flash-face text-sm font-semibold text-violet-800">立場 A：立法限制工業化畜牧</div>
+        <div class="flash-face flash-back text-xs text-slate-700">食物系統佔全球溫室氣體 21–37%，工業化畜牧同時是棲地喪失與水污染的主因；強制規範才能系統性改變。</div>
+      </div>
+    </div>
+    <div class="flash-card rounded-xl border-2 border-emerald-300 overflow-hidden">
+      <button class="w-full bg-emerald-100 px-3 py-2 text-xs font-bold text-emerald-700 text-left" onclick="flipCard('card-b')">翻牌查看立場 B ↕</button>
+      <div class="flash-inner p-3 min-h-[80px]" id="card-b">
+        <div class="flash-face text-sm font-semibold text-emerald-800">立場 B：推廣動物福利認證</div>
+        <div class="flash-face flash-back text-xs text-slate-700">強制禁令衝擊農民生計；動物福利認證（如福利蛋）透過市場引導，消費者願意多付 20–30%，形成正向誘因。</div>
+      </div>
+    </div>
+    <div class="flash-card rounded-xl border-2 border-sky-300 overflow-hidden">
+      <button class="w-full bg-sky-100 px-3 py-2 text-xs font-bold text-sky-700 text-left" onclick="flipCard('card-c')">翻牌查看立場 C ↕</button>
+      <div class="flash-inner p-3 min-h-[80px]" id="card-c">
+        <div class="flash-face text-sm font-semibold text-sky-800">立場 C：減少肉食消費</div>
+        <div class="flash-face flash-back text-xs text-slate-700">個人與集體飲食轉型可直接減少市場需求；植物性飲食的土地與水資源需求比肉食低 80%；學校蔬食日是最可行的起點。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-slate-50 rounded-lg p-3 mb-3">
+    <p class="text-xs font-bold text-slate-600 mb-2">▶ 選擇你支持的立場（6 分）</p>
+    <div id="stance-opts"></div>
+  </div>
+  <div class="bg-slate-50 rounded-lg p-3 mb-3">
+    <p class="text-xs font-bold text-slate-600 mb-2">▶ 選出最能支持你立場的「證據」（7 分）</p>
+    <div id="evid-opts"></div>
+    <p id="evid-fb" class="text-xs mt-1 text-slate-500"></p>
+  </div>
+  <div class="bg-slate-50 rounded-lg p-3 mb-3">
+    <p class="text-xs font-bold text-slate-600 mb-2">▶ 選出最合適的「推理」（7 分）</p>
+    <div id="reas-opts"></div>
+    <p id="reas-fb" class="text-xs mt-1 text-slate-500"></p>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="3">← 上一關</button>
+    <button id="btn-next-4" class="btn bg-violet-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T5: 校園/社區提案 ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🌱</div>
+    <div>
+      <h2 class="text-xl font-bold text-lime-700">任務 5｜社長行動提案：重新融入大自然</h2>
+      <p class="text-sm text-slate-700 mt-1">身為自然守護社社長，選擇一個你最想推動的全校行動，系統預填問題與步驟，你只需選定指標並確認 WSA 面向。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：自然守護社社長 ｜ 15 分 ｜ <span class="chip bg-lime-100 text-lime-800">提案設計</span></p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-2 mb-4">
+    <button class="theme-btn btn border-2 border-teal-400 bg-teal-50 rounded-xl p-3 text-sm font-bold text-teal-800" data-theme="corridor">🐱 石虎廊道倡議</button>
+    <button class="theme-btn btn border-2 border-lime-400 bg-lime-50 rounded-xl p-3 text-sm font-bold text-lime-800" data-theme="satoyama">🏔️ 里山週戶外教學</button>
+    <button class="theme-btn btn border-2 border-amber-400 bg-amber-50 rounded-xl p-3 text-sm font-bold text-amber-800" data-theme="welfare">🥚 福利蛋合作社倡議</button>
+    <button class="theme-btn btn border-2 border-sky-400 bg-sky-50 rounded-xl p-3 text-sm font-bold text-sky-800" data-theme="walk">🚶 自然漫步日計畫</button>
+  </div>
+
+  <div id="proj-detail" class="hidden-screen space-y-3">
+    <div class="bg-lime-50 rounded-lg p-3 text-sm" id="proj-desc"></div>
+    <div>
+      <p class="text-sm font-semibold mb-1">▶ 選擇 1 個成效指標 KPI（3 分）</p>
+      <div id="kpi-opts" class="space-y-1"></div>
+    </div>
+    <div class="bg-white border rounded-lg p-3">
+      <p class="text-sm font-semibold mb-2">▶ WSA 四面向自檢（至少勾選 3 項，共 6 分）</p>
+      <label class="block text-sm mt-1"><input type="checkbox" class="wsa-cb mr-1"> 治理 Governance：提案送學生委員會或校務會議</label>
+      <label class="block text-sm mt-1"><input type="checkbox" class="wsa-cb mr-1"> 課程 Curriculum：結合生物、社會或國文跨科學習</label>
+      <label class="block text-sm mt-1"><input type="checkbox" class="wsa-cb mr-1"> 營運 Operations：改變學校採購、排課或設備</label>
+      <label class="block text-sm mt-1"><input type="checkbox" class="wsa-cb mr-1"> 社群 Community：與在地部落、里山組織或 NGO 合作</label>
+    </div>
+    <div id="proj-fb" class="text-sm"></div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="4">← 上一關</button>
+    <button id="btn-next-5" class="btn bg-lime-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並繼續 →</button>
+  </div>
+</section>
+
+<!-- ===== Final: 反思 ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🌍</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">最終反思</h2>
+      <p class="text-sm text-slate-700 mt-1">作為自然守護社社長，你上週真正「走進自然」多少時間？這堂課改變了你嗎？</p>
+      <p class="text-xs text-slate-500 mt-1">5 分</p>
+    </div>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <p class="text-sm font-semibold mb-2">⭐ 這堂課讓我最印象深刻的概念（1–5 星）</p>
+      <div class="flex gap-1" id="star-learn">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+    </div>
+    <div>
+      <p class="text-sm font-semibold mb-2">⭐ 我願意在生活中重新「融入大自然」的意願（1–5 星）</p>
+      <div class="flex gap-1" id="star-act">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+    </div>
+    <div>
+      <p class="text-sm font-semibold mb-2">▶ 你願意說服 1 位家人改變的習慣是：</p>
+      <div id="impact-opts"></div>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="5">← 上一關</button>
+    <button id="btn-finish" class="btn bg-teal-600 text-white px-6 py-2 rounded-lg font-bold" disabled>完成學習單 🎉</button>
+  </div>
+</section>
+
+<!-- ===== Finale ===== -->
+<section id="finale" class="card p-6 hidden-screen fade-in text-center">
+  <div class="text-6xl mb-3">🏆</div>
+  <h2 class="text-2xl font-bold text-teal-700 mb-3">自然守護社社長正式就職！</h2>
+  <p class="text-sm text-slate-700 mb-3">你完成了 5 個任務，從石虎系統思考到全校行動提案。你的守護社，從今天開始。</p>
+  <p class="text-sm text-slate-600">最終分數：<span class="text-3xl font-bold text-teal-600" id="final-score">0</span> / 80</p>
+  <div class="mt-4 bg-amber-50 rounded-lg p-3 text-left text-sm">
+    <p class="font-semibold text-amber-800">📚 延伸資源</p>
+    <ul class="list-disc list-inside text-slate-700 text-xs mt-1 space-y-1">
+      <li>石虎保育協會 — leopardcat.org</li>
+      <li>Protected Planet — protectedplanet.net</li>
+      <li>IUCN 紅皮書 — iucnredlist.org</li>
+      <li>里山倡議 — satoyama-initiative.org</li>
+      <li>動物社會研究會 — east.org.tw</li>
+    </ul>
+  </div>
+</section>
+
+</div>
 
 <script>
-const state = { score: 0, step: 1, wsa: new Set() };
+(() => {
+  'use strict';
+  const TOTAL_LEVELS = 5;
 
-// L1 卡片
-const l1Cards = [
-  {t:"保護區多分布在高山，但石虎是淺山物種", c:true},
-  {t:"台 61 線等公路切割石虎棲地，造成路殺", c:true},
-  {t:"淺山農地使用老鼠藥，石虎次級中毒", c:true},
-  {t:"流浪犬追咬石虎幼體", c:true},
-  {t:"棲地零碎化導致基因交流受阻", c:true},
-  {t:"石虎只吃特定昂貴飼料，所以數量少", c:false},
-  {t:"臺灣氣候太熱，石虎無法生存", c:false},
-  {t:"石虎自主選擇不繁殖", c:false},
-];
-const box = document.getElementById('l1-cards');
-l1Cards.forEach((c,i)=>{
-  const el=document.createElement('label');
-  el.className="flex items-start gap-2 p-2 border rounded-lg cursor-pointer hover:bg-emerald-50";
-  el.innerHTML=`<input type="checkbox" data-i="${i}" class="mt-1"><span class="text-sm">${c.t}</span>`;
-  box.appendChild(el);
-});
-
-function award(pts, badge){
-  state.score += pts;
-  document.getElementById('score').textContent = state.score;
-  if(badge){
-    const b=document.createElement('span');
-    b.className="badge bg-amber-200 text-amber-900 fade-in";
-    b.textContent="🏆 "+badge;
-    document.getElementById('badge-box').appendChild(b);
+  /* ---- Score ---- */
+  let _score = 0;
+  const scoreEl = document.getElementById('score');
+  const awarded = {};
+  function awardOnce(key, pts) {
+    if (awarded[key]) return;
+    awarded[key] = true;
+    _score += pts;
+    scoreEl.textContent = _score;
   }
-}
 
-function nextStep(n){
-  document.getElementById('dot-'+state.step).classList.remove('bg-slate-300');
-  document.getElementById('dot-'+state.step).classList.add('bg-emerald-500');
-  state.step = n;
-  const el = document.getElementById('level-'+n) || document.getElementById('summary');
-  el.classList.remove('level-hidden');
-  el.scrollIntoView({behavior:'smooth',block:'start'});
-}
+  /* ---- Navigation ---- */
+  function goto(n) {
+    document.querySelectorAll('section[id^="level-"], section#finale').forEach(s => s.classList.add('hidden-screen'));
+    const target = n === 'final' ? document.getElementById('level-final') : document.getElementById('level-' + n);
+    if (target) target.classList.remove('hidden-screen');
+    for (let i = 1; i <= TOTAL_LEVELS; i++) {
+      const d = document.getElementById('dot-' + i);
+      if (!d) continue;
+      if (i < n) { d.classList.remove('active'); d.classList.add('done'); }
+      else if (i === n) { d.classList.add('active'); d.classList.remove('done'); }
+      else { d.classList.remove('active', 'done'); }
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-function checkL1(){
-  const picked=[...document.querySelectorAll('#l1-cards input:checked')].map(x=>+x.dataset.i);
-  const correct=picked.filter(i=>l1Cards[i].c).length;
-  const wrong=picked.filter(i=>!l1Cards[i].c).length;
-  const txt=document.getElementById('l1-text').value.trim();
-  const fb=document.getElementById('l1-fb');
-  if(picked.length<5){ fb.textContent="提示：請至少勾選 5 張卡片，試著組成一條完整因果鏈。"; fb.className="mt-2 text-amber-600"; return; }
-  if(txt.length<40){ fb.textContent="你的敘述再豐富一點（至少 40 字），把因果關係串起來。"; fb.className="mt-2 text-amber-600"; return; }
-  const pts = Math.min(15, correct*3 - wrong*2);
-  award(Math.max(8,pts), "系統思考者");
-  fb.textContent=`做得好！正確 ${correct} 張、誤選 ${wrong} 張。關鍵系統觀念：保護區有面積但『連通性』與『淺山保護』不足，是石虎議題核心。`;
-  fb.className="mt-2 text-emerald-700";
-  nextStep(2);
-}
-
-// L2
-const q21opts=[
-  {t:"約 3 個百分點（17.33 → 20）",c:false},
-  {t:"約 13 個百分點（17.33 → 30）",c:true},
-  {t:"約 30 個百分點",c:false},
-  {t:"已達標，不需增加",c:false},
-];
-const q21box=document.getElementById('q21');
-q21opts.forEach((o,i)=>{
-  const el=document.createElement('label');
-  el.className="block p-2 border rounded-lg cursor-pointer hover:bg-emerald-50";
-  el.innerHTML=`<input type="radio" name="q21" value="${i}"> ${o.t}`;
-  q21box.appendChild(el);
-});
-
-function checkL2(){
-  const pick=document.querySelector('input[name=q21]:checked');
-  const txt=document.getElementById('q22').value.trim();
-  const fb=document.getElementById('l2-fb');
-  if(!pick){ fb.textContent="請先選擇 Q2.1。"; fb.className="mt-2 text-amber-600"; return; }
-  if(txt.length<40){ fb.textContent="Q2.2 請至少寫 40 字，試著觸及『保護有效性』『紙上公園』或『威脅源未消除』。"; fb.className="mt-2 text-amber-600"; return; }
-  const correct = q21opts[+pick.value].c;
-  award(correct?15:8, "資料偵探");
-  fb.textContent = correct
-    ? "正確！30 - 17.33 ≈ 13 個百分點，6 年內要達標挑戰極大。你的 Q2.2 觸及了 MPA 有效管理議題。"
-    : "Q2.1 答案是『約 13 個百分點』（30 - 17.33）。不過你願意詮釋弔詭本身就是批判思考的起點。";
-  fb.className = "mt-2 "+(correct?"text-emerald-700":"text-sky-700");
-  nextStep(3);
-}
-
-// L3
-let l3Side=null;
-document.querySelectorAll('.l3-btn').forEach(b=>{
-  b.addEventListener('click',()=>{
-    document.querySelectorAll('.l3-btn').forEach(x=>x.classList.remove('chosen'));
-    b.classList.add('chosen');
-    l3Side=b.dataset.v;
+  document.querySelectorAll('.btn-back').forEach(b => {
+    b.addEventListener('click', () => goto(Number(b.dataset.back)));
   });
-});
-function checkL3(){
-  const txt=document.getElementById('l3-text').value.trim();
-  const fb=document.getElementById('l3-fb');
-  if(!l3Side){ fb.textContent="先選一個立場。"; fb.className="mt-2 text-amber-600"; return; }
-  if(txt.length<80){ fb.textContent="你的論述還不足 80 字。倫理議題沒有標準答案，但需要清楚依據。"; fb.className="mt-2 text-amber-600"; return; }
-  award(15, "倫理思辨者");
-  fb.textContent=`收到你的立場『${l3Side}』。記得：好的論述能說出對方最強的反對理由，並回應它。這正是民主社會處理爭議的方式。`;
-  fb.className="mt-2 text-emerald-700";
-  nextStep(4);
-}
 
-// L4
-function checkL4(){
-  const c=document.getElementById('l4-c').value.trim();
-  const e=document.getElementById('l4-e').value.trim();
-  const r=document.getElementById('l4-r').value.trim();
-  const fb=document.getElementById('l4-fb');
-  if(c.length<15||e.length<30||r.length<40){
-    fb.textContent="三段都需達到建議字數（C≥15、E≥30、R≥40）。證據要能支持主張，推理要把兩者連起來。";
-    fb.className="mt-2 text-amber-600"; return;
+  /* ---- Confetti ---- */
+  function confetti() {
+    for (let i = 0; i < 35; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = ['#f59e0b','#10b981','#6366f1','#ec4899','#0ea5e9'][Math.floor(Math.random() * 5)];
+      c.style.animationDelay = Math.random() * .8 + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 2800);
+    }
   }
-  const hasNum=/\d/.test(e);
-  award(hasNum?18:12, hasNum?"CER 論證專家":"CER 練習生");
-  fb.textContent=hasNum
-    ?"優秀的 CER！有數據支撐，論證紮實。"
-    :"結構完整，但 Evidence 欄未見數據——下次引用具體數字（如 740 億、17.33%）會更有說服力。";
-  fb.className="mt-2 text-emerald-700";
-  nextStep(5);
-}
 
-// L5
-function checkL5(){
-  const a=document.getElementById('q51').value.trim();
-  const b=document.getElementById('q52').value.trim();
-  const c=document.getElementById('q53').value.trim();
-  const fb=document.getElementById('l5-fb');
-  if(a.length<50||b.length<50||c.length<40){
-    fb.textContent="三題中有題字數不足（Q5.1、Q5.2 ≥50 字；Q5.3 ≥40 字）。慢慢寫。";
-    fb.className="mt-2 text-amber-600"; return;
+  /* ---- Shuffle ---- */
+  function shuffleChildren(parent) {
+    const items = Array.from(parent.children);
+    for (let i = items.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      parent.appendChild(items[j]);
+      items.splice(j, 1);
+    }
   }
-  award(17, "反思實踐者");
-  fb.textContent="你已完成三層反思：經驗—系統—後設。『覺察』本身就是改變的起點。";
-  fb.className="mt-2 text-emerald-700";
-  nextStep(6);
-}
 
-// L6
-document.querySelectorAll('.wsa').forEach(cb=>{
-  cb.addEventListener('change',()=>{
-    cb.checked ? state.wsa.add(cb.dataset.axis) : state.wsa.delete(cb.dataset.axis);
+  /* ---- renderOpts ---- */
+  function renderOpts(wrap, items, name, onPick) {
+    wrap.innerHTML = '';
+    const shuffled = [...items].sort(() => Math.random() - 0.5);
+    shuffled.forEach(item => {
+      const d = document.createElement('div');
+      d.className = 'opt';
+      d.textContent = item.text;
+      d.addEventListener('click', () => {
+        wrap.querySelectorAll('.opt').forEach(o => o.classList.remove('sel', 'correct', 'wrong'));
+        d.classList.add('sel');
+        onPick(item, d, wrap);
+      });
+      wrap.appendChild(d);
+    });
+  }
+
+  /* ===================== T1: Drag-drop match ===================== */
+  shuffleChildren(document.getElementById('items-box-1'));
+  shuffleChildren(document.getElementById('zones-box-1'));
+
+  let t1Correct = 0;
+  const T1_TOTAL = 4;
+
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(it => {
+    it.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', it.dataset.match);
+      it.classList.add('dragging');
+      window._t1drag = it;
+    });
+    it.addEventListener('dragend', () => it.classList.remove('dragging'));
   });
-});
 
-function checkL6(){
-  const prop=document.getElementById('final-proposal').value.trim();
-  const fb=document.getElementById('l6-fb');
-  if(state.wsa.size<4){ fb.textContent=`WSA 四面向還缺 ${4-state.wsa.size} 項——真正的全校改變需要四面向協同。`; fb.className="mt-2 text-amber-600"; return; }
-  if(prop.length<150){ fb.textContent="專題提案至少 150 字才能展開『背景—行動—影響』三段。"; fb.className="mt-2 text-amber-600"; return; }
-  const hasData=/\d/.test(prop);
-  award(hasData?20:14, "自然守護社長");
-  award(0, "全校英雄 WSA ★");
-  document.getElementById('final-score').textContent=state.score;
-  const fb2=document.getElementById('final-badges');
-  fb2.innerHTML=`<span class="badge bg-white text-emerald-700">🌱 系統思考 ✓</span>
-    <span class="badge bg-white text-emerald-700">📊 資料詮釋 ✓</span>
-    <span class="badge bg-white text-emerald-700">⚖️ 倫理思辨 ✓</span>
-    <span class="badge bg-white text-emerald-700">📝 CER 論證 ✓</span>
-    <span class="badge bg-white text-emerald-700">🔁 後設認知 ✓</span>
-    <span class="badge bg-amber-200 text-amber-900">🏆 全校英雄</span>`;
-  fb.textContent="恭喜完成！你的提案會帶回課堂與班級討論。";
-  fb.className="mt-2 text-emerald-700";
-  nextStep(7);
-  document.getElementById('dot-6').classList.remove('bg-slate-300');
-  document.getElementById('dot-6').classList.add('bg-emerald-500');
-}
+  document.querySelectorAll('#zones-box-1 .drop-zone').forEach(z => {
+    z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('over'); });
+    z.addEventListener('dragleave', () => z.classList.remove('over'));
+    z.addEventListener('drop', e => {
+      e.preventDefault(); z.classList.remove('over');
+      const val = e.dataTransfer.getData('text/plain');
+      if (z.dataset.accept === val) {
+        const label = document.createElement('span');
+        label.className = 'text-emerald-700 font-bold text-xs ml-1';
+        label.textContent = ' ✓ ' + window._t1drag.textContent;
+        z.appendChild(label);
+        window._t1drag.remove();
+        t1Correct++;
+        z.classList.add('pop');
+        if (t1Correct === T1_TOTAL) {
+          document.getElementById('feedback-1').innerHTML = '<p class="text-emerald-600 font-bold">✓ 所有石虎威脅機制配對正確！</p>';
+          document.getElementById('btn-next-1').disabled = false;
+          awardOnce('t1', 10);
+        }
+      } else {
+        z.classList.add('shake');
+        setTimeout(() => z.classList.remove('shake'), 400);
+      }
+    });
+  });
+
+  document.getElementById('btn-next-1').addEventListener('click', () => goto(2));
+
+  /* ===================== T2: Data interpretation ===================== */
+  const q21Items = [
+    { text: 'A. 約 13 個百分點（30 – 17.33 ≈ 13）', correct: true },
+    { text: 'B. 約 3 個百分點（接近 20%）', correct: false },
+    { text: 'C. 已達標，不需增加', correct: false }
+  ];
+  let q21done = false;
+
+  renderOpts(document.getElementById('q21-opts'), q21Items, 'q21', (item, d) => {
+    if (q21done) return;
+    q21done = true;
+    if (item.correct) {
+      d.classList.remove('sel'); d.classList.add('correct');
+      document.getElementById('q21-fb').textContent = '✓ 正確！30 – 17.33 ≈ 12.67，約需再增加 13 個百分點。距 2030 目標還有 6 年，挑戰極大。';
+      document.getElementById('q21-fb').className = 'text-xs mt-1 text-emerald-700';
+      awardOnce('q21', 6);
+    } else {
+      d.classList.remove('sel'); d.classList.add('wrong');
+      document.getElementById('q21-fb').textContent = '✗ 計算看看：30 – 17.33 = ?';
+      document.getElementById('q21-fb').className = 'text-xs mt-1 text-rose-600';
+    }
+    checkT2Done();
+  });
+
+  const q22Items = [
+    { text: 'A. 許多保護區是「紙上公園」——有名義上的保護但缺乏實際管理與執法', correct: true },
+    { text: 'B. 威脅源（農業擴張、氣候變遷、污染）在保護區外持續惡化，保護區無法阻止', correct: true },
+    { text: 'C. 保護區越多，物種就越容易被引入，所以受威脅數量增加', correct: false },
+    { text: 'D. IUCN 統計方法出錯，其實受威脅物種數沒有增加', correct: false }
+  ];
+  const q22Selected = new Set();
+  let q22scored = false;
+
+  (function renderQ22() {
+    const wrap = document.getElementById('q22-opts');
+    const shuffled = [...q22Items].sort(() => Math.random() - 0.5);
+    shuffled.forEach(item => {
+      const label = document.createElement('label');
+      label.className = 'block text-sm cursor-pointer';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.className = 'mr-1';
+      cb.addEventListener('change', () => {
+        if (cb.checked) q22Selected.add(item.text);
+        else q22Selected.delete(item.text);
+        if (q22Selected.size === 2 && !q22scored) {
+          q22scored = true;
+          const correctTexts = q22Items.filter(x => x.correct).map(x => x.text);
+          const bothCorrect = correctTexts.every(t => q22Selected.has(t));
+          if (bothCorrect) {
+            document.getElementById('q22-fb').textContent = '✓ 正確！「紙上公園」與「威脅源持續」是保護區失效的兩大核心原因。';
+            document.getElementById('q22-fb').className = 'text-xs mt-1 text-emerald-700';
+            awardOnce('q22', 9);
+          } else {
+            document.getElementById('q22-fb').textContent = '✗ 思考：為什麼面積增加但物種仍受威脅？C 和 D 邏輯上有問題。';
+            document.getElementById('q22-fb').className = 'text-xs mt-1 text-rose-600';
+          }
+          checkT2Done();
+        }
+      });
+      label.appendChild(cb);
+      label.appendChild(document.createTextNode(item.text));
+      wrap.appendChild(label);
+    });
+  })();
+
+  function checkT2Done() {
+    if (q21done && q22scored) document.getElementById('btn-next-2').disabled = false;
+  }
+
+  document.getElementById('btn-next-2').addEventListener('click', () => goto(3));
+
+  /* ===================== T3: Loop drag-to-slot ===================== */
+  const loopSlots = document.querySelectorAll('#level-3 .loop-slot');
+  const loopItems = document.querySelectorAll('#items-box-3 .drag-item');
+  const slotFilled = {};
+  let t3Correct = 0;
+  const T3_TOTAL = 4;
+
+  shuffleChildren(document.getElementById('items-box-3'));
+
+  loopItems.forEach(it => {
+    it.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', it.dataset.loop);
+      it.classList.add('dragging');
+      window._t3drag = it;
+    });
+    it.addEventListener('dragend', () => it.classList.remove('dragging'));
+  });
+
+  loopSlots.forEach(z => {
+    z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('over'); });
+    z.addEventListener('dragleave', () => z.classList.remove('over'));
+    z.addEventListener('drop', e => {
+      e.preventDefault(); z.classList.remove('over');
+      const val = e.dataTransfer.getData('text/plain');
+      const slot = z.dataset.slot;
+      if (slotFilled[slot]) return;
+      if (val === slot) {
+        slotFilled[slot] = true;
+        const textEl = document.getElementById('slot-' + slot + '-text');
+        if (textEl) {
+          textEl.textContent = window._t3drag.textContent.substring(0, 12);
+          textEl.setAttribute('fill', '#065f46');
+          textEl.setAttribute('font-weight', 'bold');
+        }
+        window._t3drag.remove();
+        t3Correct++;
+        if (t3Correct === T3_TOTAL) {
+          document.getElementById('feedback-3').innerHTML = '<p class="text-emerald-600 font-bold">✓ 滅絕旋渦正回饋迴路完整！這就是為何保護區不夠——必須同時建立廊道。</p>';
+          document.getElementById('btn-next-3').disabled = false;
+          awardOnce('t3', 15);
+        }
+      } else {
+        z.classList.add('shake');
+        setTimeout(() => z.classList.remove('shake'), 400);
+      }
+    });
+  });
+
+  document.getElementById('btn-next-3').addEventListener('click', () => goto(4));
+
+  /* ===================== T4: CER flash card ===================== */
+  window.flipCard = function(id) {
+    document.getElementById(id).classList.toggle('flipped');
+  };
+
+  const stanceItems = [
+    { text: '立場 A：應立法限制工業化畜牧的規模與方式，強制推廣動物福利標準', key: 'A' },
+    { text: '立場 B：推廣動物福利認證，透過市場機制引導消費者選擇，不強制干預', key: 'B' },
+    { text: '立場 C：推動學校與社會的飲食轉型，減少肉食消費從需求端改變', key: 'C' }
+  ];
+  let stancePicked = false, stanceKey = null;
+  let evidScored = false, reasScored = false;
+
+  const evidBank = [
+    { text: '食物系統佔全球溫室氣體排放的 21–37%；工業化畜牧的土地使用佔農業用地的 80%，卻只提供全球 20% 卡路里（IPCC SRCCL, 2019）', forA: true },
+    { text: '歐盟 2012 年禁止傳統格子籠後，放養蛋市場在 10 年內從 25% 成長至 55%；消費者接受率高於預期（歐盟農業統計, 2022）', forB: true },
+    { text: '植物性飲食的土地使用量比肉食低 80%、水資源少 55%；若全球減少 50% 肉食消費，相當於釋放 1,600 萬 km² 土地回歸自然（Poore & Nemecek, Science 2018）', forC: true }
+  ];
+  const reasBank = [
+    { text: '市場自願性改變太慢；氣候與生態危機的時間表無法等待消費者自然轉型——立法設定底線才能驅動整個產業系統改變', forA: true },
+    { text: '強制法規易引發農業部門抗拒；認證制度讓農民有選擇空間，同時建立消費者信任，是兼顧農業生計與動物福利的漸進路徑', forB: true },
+    { text: '工業化畜牧的存在根本源於消費需求；減少肉食需求才能從根本縮減畜牧業規模，同時有益個人健康與地球生態', forC: true }
+  ];
+
+  renderOpts(document.getElementById('stance-opts'), stanceItems, 'stance', (item, d) => {
+    if (stancePicked) return;
+    stancePicked = true;
+    stanceKey = item.key;
+    awardOnce('t4-stance', 6);
+    renderOpts(document.getElementById('evid-opts'), evidBank, 'evid', (ev, dv) => {
+      if (evidScored) return;
+      evidScored = true;
+      const correct = (stanceKey === 'A' && ev.forA) || (stanceKey === 'B' && ev.forB) || (stanceKey === 'C' && ev.forC);
+      dv.classList.remove('sel');
+      dv.classList.add(correct ? 'correct' : 'wrong');
+      document.getElementById('evid-fb').textContent = correct ? '✓ 這條證據直接支持你的立場！' : '✗ 選擇能直接支持你立場的研究數據。';
+      document.getElementById('evid-fb').className = 'text-xs mt-1 ' + (correct ? 'text-emerald-700' : 'text-rose-600');
+      if (correct) awardOnce('t4-evid', 7);
+      checkT4Done();
+    });
+    renderOpts(document.getElementById('reas-opts'), reasBank, 'reas', (rs, dr) => {
+      if (reasScored) return;
+      reasScored = true;
+      const correct = (stanceKey === 'A' && rs.forA) || (stanceKey === 'B' && rs.forB) || (stanceKey === 'C' && rs.forC);
+      dr.classList.remove('sel');
+      dr.classList.add(correct ? 'correct' : 'wrong');
+      document.getElementById('reas-fb').textContent = correct ? '✓ 推理清楚說明了證據如何支持主張！' : '✗ 選擇能說明「為何此證據支持你的立場」的推理。';
+      document.getElementById('reas-fb').className = 'text-xs mt-1 ' + (correct ? 'text-emerald-700' : 'text-rose-600');
+      if (correct) awardOnce('t4-reas', 7);
+      checkT4Done();
+    });
+  });
+
+  function checkT4Done() {
+    if (stancePicked && evidScored && reasScored) document.getElementById('btn-next-4').disabled = false;
+  }
+
+  document.getElementById('btn-next-4').addEventListener('click', () => goto(5));
+
+  /* ===================== T5: Project ===================== */
+  const projBank = {
+    corridor: {
+      desc: '【石虎廊道倡議】問題：苗栗-台中台 61 線切割石虎棲地，每月平均 1–2 件路殺。\n行動步驟：① 收集石虎路殺地點資料（台灣路殺社 roadkill.tw）② 製作地圖與倡議海報 ③ 連署要求公路局設置警示牌與生態廊道 ④ 聯繫石虎保育協會共同行動',
+      kpis: ['收集並標記 ≥ 10 個路殺熱點，送交石虎保育協會', '連署人數 ≥ 200 人，送交公路局', '完成 1 份「石虎生態廊道必要性」報告，在班級發表']
+    },
+    satoyama: {
+      desc: '【里山週戶外教學】問題：學生 90%+ 時間在室內，與自然的接觸逐漸斷裂。\n行動步驟：① 聯繫在地里山倡議組織 ② 安排半天戶外教學至里山農村 ③ 進行訪談與物種記錄 ④ 產出「我們的里山故事」成果展',
+      kpis: ['完成 1 次里山半日戶外教學（參與人數 ≥ 30）', '用 iNaturalist 記錄觀察物種 ≥ 30 種', '成果在校展出，觀看人次 ≥ 100']
+    },
+    welfare: {
+      desc: '【福利蛋合作社倡議】問題：學校合作社販售的雞蛋未標示飼養方式，學生無法做出知情選擇。\n行動步驟：① 調查現有蛋品來源 ② 設計「福利蛋 vs 格子籠蛋」比較海報 ③ 連署要求合作社引入至少 1 款動物福利認證蛋品 ④ 追蹤銷售比例',
+      kpis: ['合作社引入至少 1 款福利認證蛋品', '學期末福利蛋銷售量佔蛋品銷售 ≥ 20%', '完成 2 班以上的班級宣導（問卷顯示理解率 ≥ 70%）']
+    },
+    walk: {
+      desc: '【自然漫步日計畫】問題：都市學生平均每週戶外活動不足 1 小時，WHO 建議每週至少接觸綠地 2 小時。\n行動步驟：① 提案設立每月 1 次「自然漫步日」（無手機、走進校園或附近公園）② 記錄物種觀察 ③ 分享感受 ④ 追蹤學生心理健康指標',
+      kpis: ['學期末累計舉辦 ≥ 4 次自然漫步日，參與率 ≥ 60%', '前後問卷顯示學生「與自然連結感」分數提升', '累積 iNaturalist 記錄 ≥ 100 筆']
+    }
+  };
+
+  let themePicked = false;
+  let kpiPicked = false;
+
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('ring-4', 'ring-offset-1', 'ring-teal-500'));
+      btn.classList.add('ring-4', 'ring-offset-1', 'ring-teal-500');
+      const theme = btn.dataset.theme;
+      const bank = projBank[theme];
+      document.getElementById('proj-desc').innerHTML = '<p class="text-sm font-semibold text-lime-800 whitespace-pre-line">' + bank.desc + '</p>';
+      const kpiWrap = document.getElementById('kpi-opts');
+      kpiWrap.innerHTML = '';
+      kpiPicked = false;
+      bank.kpis.forEach(kpi => {
+        const label = document.createElement('label');
+        label.className = 'block text-sm cursor-pointer';
+        const rb = document.createElement('input');
+        rb.type = 'radio';
+        rb.name = 'kpi';
+        rb.className = 'mr-1';
+        rb.addEventListener('change', () => {
+          kpiPicked = true;
+          awardOnce('t5-kpi', 3);
+          checkT5Done();
+        });
+        label.appendChild(rb);
+        label.appendChild(document.createTextNode(kpi));
+        kpiWrap.appendChild(label);
+      });
+      document.getElementById('proj-detail').classList.remove('hidden-screen');
+      themePicked = true;
+      awardOnce('t5-theme', 6);
+      checkT5Done();
+    });
+  });
+
+  document.querySelectorAll('.wsa-cb').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (document.querySelectorAll('.wsa-cb:checked').length >= 3) awardOnce('t5-wsa', 6);
+      checkT5Done();
+    });
+  });
+
+  function checkT5Done() {
+    if (themePicked && kpiPicked && document.querySelectorAll('.wsa-cb:checked').length >= 1)
+      document.getElementById('btn-next-5').disabled = false;
+  }
+
+  document.getElementById('btn-next-5').addEventListener('click', () => {
+    const wsa = document.querySelectorAll('.wsa-cb:checked').length;
+    document.getElementById('proj-fb').innerHTML = '<p class="text-emerald-600 text-sm font-semibold">✓ 提案送出！WSA 覆蓋 ' + wsa + '/4 面向。</p>';
+    goto('final');
+    for (let i = 1; i <= TOTAL_LEVELS; i++) {
+      const d = document.getElementById('dot-' + i);
+      if (d) { d.classList.remove('active'); d.classList.add('done'); }
+    }
+  });
+
+  /* ===================== Final reflection ===================== */
+  let starLearnVal = 0, starActVal = 0, impactPicked = false;
+
+  function setupStars(groupId, onSet) {
+    document.querySelectorAll('#' + groupId + ' .star').forEach(s => {
+      s.addEventListener('click', () => {
+        const val = Number(s.dataset.val);
+        onSet(val);
+        document.querySelectorAll('#' + groupId + ' .star').forEach(x => x.classList.toggle('on', Number(x.dataset.val) <= val));
+      });
+    });
+  }
+
+  setupStars('star-learn', v => { starLearnVal = v; checkFinalDone(); });
+  setupStars('star-act', v => { starActVal = v; checkFinalDone(); });
+
+  const impactItems = [
+    { text: '每週至少 1 次，帶家人一起去校園或公園觀察自然（無手機）' },
+    { text: '在超市選購時選擇動物福利認證蛋品' },
+    { text: '一起報名 iNaturalist 並每月記錄 5 筆觀察' },
+    { text: '說服家人減少 1 次週間肉食，改吃植物性蛋白' }
+  ];
+  renderOpts(document.getElementById('impact-opts'), impactItems, 'impact', () => {
+    impactPicked = true;
+    awardOnce('final-impact', 2);
+    checkFinalDone();
+  });
+
+  function checkFinalDone() {
+    if (starLearnVal > 0 && starActVal > 0 && impactPicked) document.getElementById('btn-finish').disabled = false;
+  }
+
+  document.getElementById('btn-finish').addEventListener('click', () => {
+    awardOnce('final-stars', 3);
+    document.getElementById('level-final').classList.add('hidden-screen');
+    document.getElementById('finale').classList.remove('hidden-screen');
+    document.getElementById('final-score').textContent = _score;
+    confetti();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

@@ -1,130 +1,668 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>6.7-IV 永續廢棄物處理實踐｜國中學習單</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>廢棄物源頭減量師 | 6.7-IV 國中學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-body{font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;max-width:860px;margin:24px auto;padding:0 16px;color:#222;line-height:1.7}
-h1{color:#2a6e3f;border-bottom:3px solid #2a6e3f;padding-bottom:6px}
-h2{color:#1f4d82;margin-top:28px;border-left:6px solid #1f4d82;padding-left:8px}
-h3{color:#555}
-.box{border:1px solid #bbb;border-radius:8px;padding:12px;margin:10px 0;background:#f7faf7}
-.tag{display:inline-block;background:#2a6e3f;color:#fff;padding:2px 8px;border-radius:4px;font-size:.85em;margin-right:6px}
-.depth{background:#fff4e0;border-left:5px solid #d89000;padding:10px;margin:10px 0;border-radius:4px}
-textarea,input[type=text]{width:100%;padding:6px;border:1px solid #aaa;border-radius:4px;font-family:inherit}
-table{border-collapse:collapse;width:100%;margin:10px 0}
-th,td{border:1px solid #aaa;padding:6px 8px;text-align:left}
-th{background:#e8f1ea}
-.meta{font-size:.9em;color:#666}
-.project{background:#eef4ff;border:2px dashed #1f4d82;padding:14px;border-radius:8px;margin-top:24px}
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#e0f2fe,#f0fdf4,#fef3c7); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:100px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#059669; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  svg.loop text { font-size:11px; pointer-events:none;}
+  svg.loop .loop-slot { cursor: pointer; }
+  svg.loop .loop-slot.over { fill:#fde68a; stroke-width:3; }
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.92rem;}
+  .opt:hover { background:#f8fafc; }
+  .opt.sel { border-color:#059669; background:#d1fae5;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.4rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
+<div class="max-w-4xl mx-auto">
 
-<h1>永續廢棄物處理實踐｜國中學習單 6.7-IV</h1>
-<p class="meta">姓名：__________　班級：______　日期：______　｜年齡層 13-15｜驗證日 2026-04-16</p>
-
-<div class="box">
-<strong>核心概念</strong>：避免與減少廢棄物的產生，是提高效率、減少浪費的<strong>首要任務</strong>；回收只是廢棄物處理優先順序中最後的手段之一。
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-cyan-700">♻️ 廢棄物源頭減量師</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『校園源頭減量委員』：5 個任務，從廢棄物層級到系統介入，解決一次性廢棄物困局。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">減量師積分</div>
+    <div class="text-2xl font-bold text-cyan-600"><span id="score">0</span> / 80</div>
+  </div>
 </div>
 
-<!-- 深度 1：資料詮釋 -->
-<h2><span class="tag">深度 1</span>資料詮釋（Data Interpretation）</h2>
-<div class="depth">
-請閱讀下列數據（取自 UNEP 2024 與臺灣環境部）：
-<ul>
-<li>全球城市固體廢棄物：2020 年約 <strong>21.3 億噸</strong>，2050 年預估 <strong>38.8 億噸</strong>。</li>
-<li>全球僅 <strong>19%</strong> 被材料回收、<strong>11%</strong> 能源回收、<strong>超過 70%</strong> 掩埋或未妥善處理。</li>
-<li>臺灣人均每日垃圾量：1998 年 1.14 kg → 2009 年 0.50 kg；2018 年回收率 60.56%。</li>
-</ul>
-<p><strong>Q1</strong>：請計算，若 2020→2050 線性外推，每年平均成長率約為多少%？（提示：算幾何平均年成長率）</p>
-<textarea rows="2"></textarea>
-<p><strong>Q2</strong>：臺灣『人均垃圾量大幅下降、但回收率卻仍只到 60%』，請對這兩個數字之間的矛盾做出至少兩個可能的解釋。</p>
-<textarea rows="3"></textarea>
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">配對</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">資料</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">論證</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">專題</span>
 </div>
 
-<!-- 深度 2：系統思考 -->
-<h2><span class="tag">深度 2</span>系統思考（Systems Thinking）</h2>
-<div class="depth">
-<p>請畫出『一次性手搖飲料杯』的因果迴路圖（CLD），至少包含 5 個變數與 2 個迴路（增強 R 或調節 B）。</p>
-<table>
-<tr><th>變數</th><th>定義（1 句話）</th></tr>
-<tr><td>1.</td><td></td></tr>
-<tr><td>2.</td><td></td></tr>
-<tr><td>3.</td><td></td></tr>
-<tr><td>4.</td><td></td></tr>
-<tr><td>5.</td><td></td></tr>
-</table>
-<p><strong>Q3</strong>：在你畫的圖中，哪一個『槓桿點』介入，最可能降低整體廢棄物？為什麼？</p>
-<textarea rows="3"></textarea>
+<!-- ===== T1: 廢棄物層級配對（去直覺化） ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🗂️</div>
+    <div>
+      <h2 class="text-xl font-bold text-cyan-700">任務 1｜廢棄物管理層級配對</h2>
+      <p class="text-sm text-slate-700 mt-1">把 4 個廢棄物管理行動拖到正確的「優先層級描述」。提示不含行動名稱，請依「廢棄物產生量的影響程度」推論。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：廢棄物政策研究實習生 ｜ 10 分</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-cyan-100 border-2 border-cyan-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="refuse">拒絕（Refuse）</div>
+    <div class="drag-item bg-cyan-100 border-2 border-cyan-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="reduce">減少（Reduce）</div>
+    <div class="drag-item bg-cyan-100 border-2 border-cyan-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="reuse">重複使用（Reuse）</div>
+    <div class="drag-item bg-cyan-100 border-2 border-cyan-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="recycle">回收（Recycle）</div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="zones-box-1">
+    <div class="drop-zone p-3" data-accept="refuse"><div class="font-bold text-slate-700 text-sm">層級 A（最優先）<div class="text-xs text-slate-500 mt-1">完全不讓廢棄物進入消費鏈：不接受不必要的包裝、袋子或一次性贈品，從源頭截斷廢棄物的產生，環境衝擊趨近於零</div></div></div>
+    <div class="drop-zone p-3" data-accept="reduce"><div class="font-bold text-slate-700 text-sm">層級 B<div class="text-xs text-slate-500 mt-1">在消費行為中縮小使用量或購買量：選購耐久品、買恰好夠用的份量、延長使用年限，仍會產生廢棄物但數量大幅下降</div></div></div>
+    <div class="drop-zone p-3" data-accept="reuse"><div class="font-bold text-slate-700 text-sm">層級 C<div class="text-xs text-slate-500 mt-1">讓物品在報廢前多次使用：借用、租賃、二手交換、修理後繼續使用；物品最終仍會成為廢棄物，但延長了使用壽命</div></div></div>
+    <div class="drop-zone p-3" data-accept="recycle"><div class="font-bold text-slate-700 text-sm">層級 D（最後手段）<div class="text-xs text-slate-500 mt-1">廢棄物已產生後，將材料送入再製程序；仍需消耗能源與水，且並非所有材料都可無限循環，是廢棄物已存在時才採用的補救措施</div></div></div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <div class="nav-row">
+    <span></span>
+    <button id="btn-next-1" class="btn bg-cyan-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T2: 資料詮釋：全球固體廢棄物數據 ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📊</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 2｜資料詮釋：全球固體廢棄物趨勢</h2>
+      <p class="text-sm text-slate-700 mt-1">根據 UNEP 2024 與臺灣環境部數據：全球城市固體廢棄物 2020 年約 21.3 億噸，2050 年預估 38.8 億噸；全球僅 19% 材料回收、11% 能源回收、超過 70% 掩埋或未妥善處理。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：廢棄物政策分析師 ｜ 15 分</p>
+    </div>
+  </div>
+
+  <!-- SVG bar chart: 2020 vs 2050 comparison + treatment breakdown -->
+  <svg viewBox="0 0 440 210" class="w-full max-w-xl mx-auto block bg-slate-50 rounded mb-4">
+    <text x="10" y="14" font-size="9" fill="#475569">億噸</text>
+    <!-- 2020 bar -->
+    <rect x="50" y="30" width="100" height="110" fill="#0ea5e9" rx="4"/>
+    <text x="100" y="155" text-anchor="middle" font-size="10" fill="#334155">2020</text>
+    <text x="100" y="25" text-anchor="middle" font-size="11" fill="#0369a1" font-weight="bold">21.3 億噸</text>
+    <!-- 2050 bar -->
+    <rect x="180" y="10" width="100" height="130" fill="#f97316" rx="4"/>
+    <text x="230" y="155" text-anchor="middle" font-size="10" fill="#334155">2050（預估）</text>
+    <text x="230" y="8" text-anchor="middle" font-size="11" fill="#c2410c" font-weight="bold">38.8 億噸</text>
+    <!-- treatment breakdown (right side) -->
+    <text x="310" y="25" font-size="9" fill="#475569">2020 處理方式</text>
+    <rect x="310" y="32" width="30" height="30" fill="#10b981" rx="3"/>
+    <text x="345" y="52" font-size="9" fill="#065f46">材料回收 19%</text>
+    <rect x="310" y="70" width="17" height="30" fill="#a3e635" rx="3"/>
+    <text x="345" y="90" font-size="9" fill="#365314">能源回收 11%</text>
+    <rect x="310" y="108" width="112" height="30" fill="#ef4444" rx="3"/>
+    <text x="345" y="128" font-size="9" fill="#7f1d1d">掩埋/未妥善 70%+</text>
+    <!-- x axis -->
+    <line x1="30" y1="145" x2="430" y2="145" stroke="#94a3b8" stroke-width="1"/>
+  </svg>
+
+  <!-- Q1 radio -->
+  <div class="mb-4">
+    <p class="font-semibold text-sm mb-2">Q1｜若從 2020 到 2050 廢棄物量線性增長，平均每年增加約多少億噸？（5 分）</p>
+    <label class="opt"><input type="radio" name="q21" value="A" class="mr-2"> A. 約 0.58 億噸／年（(38.8-21.3)÷30≈0.583）</label>
+    <label class="opt"><input type="radio" name="q21" value="B" class="mr-2"> B. 約 5.8 億噸／年（多算 10 倍）</label>
+    <label class="opt"><input type="radio" name="q21" value="C" class="mr-2"> C. 約 0.058 億噸／年（少算 10 倍）</label>
+    <p id="q21-fb" class="text-xs mt-1"></p>
+  </div>
+
+  <!-- Q2 checkboxes exactly-2 -->
+  <div class="mb-4">
+    <p class="font-semibold text-sm mb-2">Q2｜面對「全球 70% 廢棄物掩埋或未妥善處理」，以下哪 2 個說法最符合邏輯？（恰好選 2 個，10 分）</p>
+    <label class="opt"><input type="checkbox" name="q22" value="A" class="mr-2"> A. 回收率即使提升至 50%，若廢棄物總量持續增長，絕對掩埋量仍可能增加</label>
+    <label class="opt"><input type="checkbox" name="q22" value="B" class="mr-2"> B. 提升回收率是最根本的解決方案，不需要減少廢棄物產生量</label>
+    <label class="opt"><input type="checkbox" name="q22" value="C" class="mr-2"> C. 源頭減量（Refuse/Reduce）比末端回收更能有效降低掩埋量的絕對數字</label>
+    <label class="opt"><input type="checkbox" name="q22" value="D" class="mr-2"> D. 廢棄物問題主要發生在開發中國家，已開發國家回收率已足夠，無需改變</label>
+    <p id="q22-fb" class="text-xs mt-1"></p>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="1">← 上一關</button>
+    <button id="btn-next-2" class="btn bg-teal-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T3: 系統思考：一次性飲料杯正反饋循環 ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-700">任務 3｜系統思考：一次性飲料杯增強循環</h2>
+      <p class="text-sm text-slate-700 mt-1">完成「便利性→消費量→廢棄物→壓低成本→再度購買」的增強循環：把 4 張卡片拖入正確位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統動力學分析師 ｜ 15 分</p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 500 270" class="loop w-full bg-slate-50 rounded">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L0,10 L10,5 z" fill="#64748b"/>
+      </marker>
+    </defs>
+    <rect x="10" y="10" width="160" height="54" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" class="loop-slot" data-slot="1"/>
+    <text x="90" y="35" text-anchor="middle" fill="#92400e" id="slot-1-text">（拖這裡 1）</text>
+    <text x="90" y="50" text-anchor="middle" fill="#92400e" id="slot-1-sub"></text>
+
+    <rect x="330" y="10" width="160" height="54" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" class="loop-slot" data-slot="2"/>
+    <text x="410" y="35" text-anchor="middle" fill="#92400e" id="slot-2-text">（拖這裡 2）</text>
+    <text x="410" y="50" text-anchor="middle" fill="#92400e" id="slot-2-sub"></text>
+
+    <rect x="330" y="206" width="160" height="54" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" class="loop-slot" data-slot="3"/>
+    <text x="410" y="231" text-anchor="middle" fill="#92400e" id="slot-3-text">（拖這裡 3）</text>
+    <text x="410" y="246" text-anchor="middle" fill="#92400e" id="slot-3-sub"></text>
+
+    <rect x="10" y="206" width="160" height="54" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" class="loop-slot" data-slot="4"/>
+    <text x="90" y="231" text-anchor="middle" fill="#92400e" id="slot-4-text">（拖這裡 4）</text>
+    <text x="90" y="246" text-anchor="middle" fill="#92400e" id="slot-4-sub"></text>
+
+    <line x1="170" y1="37" x2="330" y2="37" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+    <line x1="410" y1="64" x2="410" y2="206" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+    <line x1="330" y1="233" x2="170" y2="233" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+    <line x1="90" y1="206" x2="90" y2="64" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+    <text x="250" y="138" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="bold">增強循環（R）</text>
+  </svg>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3" id="loop-items">
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">一次性杯使用量增加</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">大量生產→單價下降</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">低價使重複使用杯失去競爭力</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">消費者傾向選擇一次性杯</div>
+  </div>
+  <p id="loop-fb" class="mt-3 text-sm"></p>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="2">← 上一關</button>
+    <button id="btn-next-3" class="btn bg-orange-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T4: CER 閃卡：園遊會禁用一次性餐具 ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">⚖️</div>
+    <div>
+      <h2 class="text-xl font-bold text-pink-700">任務 4｜CER 閃卡：校園園遊會禁用一次性餐具</h2>
+      <p class="text-sm text-slate-700 mt-1">情境：學生議會提議下屆園遊會全面禁止一次性塑膠餐具，改用自備或租借餐具。請為每個立場選出「最強的證據」與「最佳的推理」。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生環境委員 ｜ 20 分</p>
+    </div>
+  </div>
+
+  <div id="cer-area"></div>
+
+  <div class="nav-row mt-4">
+    <button class="btn btn-back" data-back="3">← 上一關</button>
+    <button id="btn-next-4" class="btn bg-pink-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T5: 專題：校園源頭減量提案 + WSA ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏫</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 5｜專題：校園源頭減量提案書</h2>
+      <p class="text-sm text-slate-700 mt-1">為你的學校設計一份源頭減量提案，送交學生氣候委員會。選擇主題並通過 WSA 四面向檢核。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生氣候委員會提案人 ｜ 20 分</p>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <p class="font-semibold text-sm mb-2">選擇提案主題：</p>
+    <label class="opt"><input type="radio" name="proj" value="0" class="mr-2"> A. 福利社禁塑行動 — 要求福利社停售一次性塑膠袋/吸管，改提供可重複使用選項</label>
+    <label class="opt"><input type="radio" name="proj" value="1" class="mr-2"> B. 班級廚餘源頭記錄站 — 連續 4 週記錄午餐廚餘重量，追蹤並公開減量成效</label>
+    <label class="opt"><input type="radio" name="proj" value="2" class="mr-2"> C. 修繕工作坊 Repair Café — 每月一次讓師生帶壞掉的物品來修，延長使用壽命</label>
+    <label class="opt"><input type="radio" name="proj" value="3" class="mr-2"> D. 一次性用品盤點與替代計畫 — 調查校園每週使用的一次性物品種類與數量，提出替代方案</label>
+  </div>
+
+  <div id="proj-detail" class="bg-slate-50 rounded-xl p-4 mb-4 hidden-screen">
+    <p class="text-sm font-semibold text-slate-700 mb-2">提案問題：</p>
+    <p id="proj-problem" class="text-sm text-slate-600 mb-3"></p>
+    <p class="text-sm font-semibold text-slate-700 mb-2">建議行動步驟：</p>
+    <p id="proj-steps" class="text-sm text-slate-600 mb-3"></p>
+  </div>
+
+  <div id="kpi-area" class="mb-4 hidden-screen">
+    <p class="font-semibold text-sm mb-2">選擇最合適的成效指標（KPI）：</p>
+    <div id="kpi-opts"></div>
+    <p id="kpi-fb" class="text-xs mt-1"></p>
+  </div>
+
+  <div class="bg-indigo-50 p-3 rounded mb-3">
+    <p class="font-bold text-indigo-800 text-sm mb-2">WSA Challenge 四面向檢核（全勾才能解鎖完成）</p>
+    <label class="block mt-1 text-sm"><input type="checkbox" class="wsa mr-1"> <strong>治理 Governance</strong>：提案會送學生議會/班聯會或校務會議</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa mr-1"> <strong>課程 Curriculum</strong>：可跨科連結（自然/社會/數學/家政）</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa mr-1"> <strong>校園營運 Operations</strong>：改變校園採購/設施/作業流程</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa mr-1"> <strong>社群 Community</strong>：擴散到家庭/社區/在地商家</label>
+  </div>
+  <p id="p-fb" class="text-xs mb-2"></p>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="4">← 上一關</button>
+    <button id="btn-next-5" class="btn bg-amber-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== Final Reflection ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in">
+  <div class="text-center mb-6">
+    <div class="text-5xl mb-2">🏆</div>
+    <h2 class="text-2xl font-bold text-cyan-700">廢棄物源頭減量師 — 任務完成！</h2>
+    <p class="text-sm text-slate-600 mt-1">你完成了 5 個任務：廢棄物層級配對、全球數據詮釋、系統循環分析、CER 論證、校園減量提案。</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-4 mb-6">
+    <div class="bg-cyan-50 rounded-xl p-4">
+      <p class="font-semibold text-sm mb-2">這次學習對你的「廢棄物管理知識」幫助多大？</p>
+      <div id="stars-know" class="flex gap-1">
+        <span class="star" data-g="know" data-v="1">★</span>
+        <span class="star" data-g="know" data-v="2">★</span>
+        <span class="star" data-g="know" data-v="3">★</span>
+        <span class="star" data-g="know" data-v="4">★</span>
+        <span class="star" data-g="know" data-v="5">★</span>
+      </div>
+    </div>
+    <div class="bg-amber-50 rounded-xl p-4">
+      <p class="font-semibold text-sm mb-2">你對「推動校園源頭減量」的行動意願？</p>
+      <div id="stars-act" class="flex gap-1">
+        <span class="star" data-g="act" data-v="1">★</span>
+        <span class="star" data-g="act" data-v="2">★</span>
+        <span class="star" data-g="act" data-v="3">★</span>
+        <span class="star" data-g="act" data-v="4">★</span>
+        <span class="star" data-g="act" data-v="5">★</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-slate-50 rounded-xl p-4 mb-6">
+    <p class="font-semibold text-sm mb-2">概念確認：根據廢棄物管理優先層級，以下哪個行動「最優先」且「最能從根本解決問題」？</p>
+    <label class="opt"><input type="radio" name="impact" value="A" class="mr-2"> A. 提升社區回收率，讓更多廢棄物進入再生材料循環</label>
+    <label class="opt"><input type="radio" name="impact" value="B" class="mr-2"> B. 拒絕接受不必要的一次性包裝與贈品，讓廢棄物根本不產生</label>
+    <label class="opt"><input type="radio" name="impact" value="C" class="mr-2"> C. 將廢棄物送往焚化廠進行能源回收，比掩埋更好</label>
+    <p id="impact-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="5">← 上一關</button>
+    <button id="btn-finish" class="btn bg-cyan-600 text-white px-8 py-2 rounded-lg font-bold" disabled>完成任務 🎉</button>
+  </div>
+
+  <div id="final-banner" class="hidden-screen text-center mt-6">
+    <p class="text-lg font-bold text-emerald-700">最終減量師積分：<span id="final-score">0</span> / 80</p>
+    <button onclick="location.reload()" class="btn mt-3 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold">再玩一次</button>
+    <p class="text-xs text-slate-500 mt-4">延伸思考：焚化爐「能源回收」真的算環保嗎？它是解決方案還是讓一次性消費合理化的藉口？</p>
+  </div>
+</section>
+
 </div>
 
-<!-- 深度 3：倫理兩難 -->
-<h2><span class="tag">深度 3</span>倫理兩難（Ethical Dilemma）</h2>
-<div class="depth">
-<p>情境：你家附近要蓋一座大型焚化爐。支持方說『能發電、減少掩埋、附電廠回饋金』；反對方說『會排碳、抑制減量政策、飛灰處理風險』。</p>
-<p><strong>Q4</strong>：請分別寫出支持與反對各 3 個理由，並標示你自己的立場與依據。</p>
-<table>
-<tr><th>立場</th><th>理由（3 點）</th></tr>
-<tr><td>支持</td><td><textarea rows="3"></textarea></td></tr>
-<tr><td>反對</td><td><textarea rows="3"></textarea></td></tr>
-<tr><td>我的立場</td><td><textarea rows="2"></textarea></td></tr>
-</table>
-</div>
+<script>
+(() => {
+  const TOTAL_LEVELS = 5;
+  const S = { score:0, current:1, awarded:{} };
+  const setScore = (n) => { S.score += n; document.getElementById('score').textContent = S.score; };
+  const awardOnce = (key, pts) => { if(!S.awarded[key]){ S.awarded[key]=true; setScore(pts); } };
 
-<!-- 深度 4：CER 論證 -->
-<h2><span class="tag">深度 4</span>CER 論證（Claim-Evidence-Reasoning）</h2>
-<div class="depth">
-<p>主題：<strong>『校園園遊會應否禁用一次性餐具？』</strong></p>
-<table>
-<tr><th>C 主張（Claim）</th><td><textarea rows="2"></textarea></td></tr>
-<tr><th>E 證據（Evidence）<br><span class="meta">至少引用 1 筆 dp 數據</span></th><td><textarea rows="3"></textarea></td></tr>
-<tr><th>R 推理（Reasoning）</th><td><textarea rows="4"></textarea></td></tr>
-</table>
-</div>
+  const goto = (n) => {
+    const cur = document.getElementById('level-'+S.current) || document.getElementById('level-final');
+    if(cur) cur.classList.add('hidden-screen');
+    S.current = n;
+    const next = (n === 'final') ? document.getElementById('level-final') : document.getElementById('level-'+n);
+    if(next) next.classList.remove('hidden-screen');
+    for(let i=1;i<=TOTAL_LEVELS;i++){
+      const d = document.getElementById('dot-'+i);
+      if(!d) continue;
+      d.classList.remove('active','done');
+      if(i < n) d.classList.add('done');
+      else if(i === n) d.classList.add('active');
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
 
-<!-- 深度 5：開放反思 1 -->
-<h2><span class="tag">深度 5</span>開放反思 A：文化批判</h2>
-<div class="depth">
-<p><strong>Q5</strong>：臺灣社會有哪些『社會或文化規範』其實在阻礙永續廢棄物處理？（例如節慶、送禮、婚宴、校園活動、宗教儀式…）請舉至少 2 個例子，並說明為什麼它們難以改變。</p>
-<textarea rows="5"></textarea>
-</div>
+  document.querySelectorAll('.btn-back').forEach(b => {
+    b.onclick = () => goto(parseInt(b.dataset.back, 10));
+  });
 
-<!-- 深度 5：開放反思 2 -->
-<h2><span class="tag">深度 5</span>開放反思 B：行動抉擇</h2>
-<div class="depth">
-<p><strong>Q6</strong>：在『Refuse → Reduce → Reuse → Repair → Recycle → Recovery』六個行動中，挑出你家目前『最容易』與『最困難』各一項，說明原因，並各提出一個改進方案。</p>
-<textarea rows="5"></textarea>
-</div>
+  const confetti = () => {
+    const colors=['#f59e0b','#10b981','#6366f1','#ec4899','#0ea5e9'];
+    for(let i=0;i<40;i++){
+      const el=document.createElement('div');
+      el.className='confetti';
+      el.style.left=Math.random()*100+'vw';
+      el.style.background=colors[i%colors.length];
+      el.style.animationDelay=(Math.random()*0.6)+'s';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),2500);
+    }
+  };
 
-<!-- 深度 6：後設認知 -->
-<h2><span class="tag">深度 6</span>後設認知（Metacognition）</h2>
-<div class="depth">
-<p><strong>Q7</strong>：這堂課之前，你對『回收』的理解是什麼？課後的理解有什麼改變？你最想進一步追問的一個問題是？</p>
-<table>
-<tr><th>課前想法</th><td><textarea rows="2"></textarea></td></tr>
-<tr><th>課後改變</th><td><textarea rows="2"></textarea></td></tr>
-<tr><th>我還想問</th><td><textarea rows="2"></textarea></td></tr>
-</table>
-</div>
+  const shuffleChildren = (el) => {
+    const items=[...el.children];
+    for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));el.appendChild(items[j]);}
+  };
 
-<!-- 專題任務 -->
-<div class="project">
-<h2 style="color:#1f4d82;border:none;padding:0">期末專題任務：『校園源頭減量提案書』</h2>
-<p>以小組（3-4 人）為單位，為本校設計一份源頭減量提案，於期末向班聯會或校務會議提出。</p>
-<ol>
-<li><strong>問題盤點</strong>：連續 1 週記錄校園某一場景（福利社、便當時段、園遊會）的一次性物品數量，列出 Top 5。</li>
-<li><strong>數據支撐</strong>：引用本資料卡中至少 2 筆 dp，並比對臺灣或全球數據。</li>
-<li><strong>方案設計</strong>：對 Top 5 分別提出 Refuse / Reduce / Reuse 三層級的具體方案；並估算可能的減量比例。</li>
-<li><strong>利害關係人</strong>：指出學生、老師、福利社廠商、家長各自可能的支持與反對理由。</li>
-<li><strong>治理路徑</strong>：具體寫出提案遞交給誰、需要什麼決議程序、預期時程。</li>
-<li><strong>行動承諾</strong>：小組成員每人寫下 1 項個人層級的 Refuse 承諾。</li>
-</ol>
-<p class="meta">繳交形式：A4 書面報告 4-6 頁 + 5 分鐘口頭發表；評分面向：資料正確性、系統思考、可行性、倫理考量、表達清晰度。</p>
-</div>
+  // ===== T1 =====
+  shuffleChildren(document.getElementById('items-box-1'));
+  shuffleChildren(document.getElementById('zones-box-1'));
+  let done1=0, err1=0;
+  const zones1=document.querySelectorAll('#zones-box-1 .drop-zone');
+  let dragged1=null;
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(it=>{
+    it.addEventListener('dragstart',()=>{dragged1=it;it.classList.add('dragging');});
+    it.addEventListener('dragend',()=>{if(dragged1)dragged1.classList.remove('dragging');dragged1=null;});
+  });
+  zones1.forEach(z=>{
+    z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over');});
+    z.addEventListener('dragleave',()=>z.classList.remove('over'));
+    z.addEventListener('drop',e=>{
+      e.preventDefault();z.classList.remove('over');
+      if(!dragged1) return;
+      if(z.dataset.accept===dragged1.dataset.match){
+        dragged1.classList.add('pop');
+        z.appendChild(dragged1);
+        dragged1.setAttribute('draggable','false');
+        dragged1.style.cursor='default';
+        done1++;
+        if(done1===4){
+          awardOnce('t1',Math.max(6,10-err1*2));
+          document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 層級全部正確！記憶口訣：Refuse（拒）→ Reduce（減）→ Reuse（重用）→ Recycle（回收）：越前面越根本。</span>';
+          confetti();
+          document.getElementById('btn-next-1').disabled=false;
+        }
+      } else {
+        err1++;
+        z.classList.add('shake');setTimeout(()=>z.classList.remove('shake'),400);
+        document.getElementById('feedback-1').innerHTML='<span class="text-rose-600">❌ 提示：「最優先」是讓廢棄物根本不產生的那個層級，「最後手段」是廢棄物已存在後的補救。</span>';
+      }
+    });
+  });
+  document.getElementById('btn-next-1').onclick=()=>goto(2);
 
-<hr>
-<p class="meta">資料來源請見同目錄 <code>resources.md</code>；本學習單包含 6 深度：資料詮釋 ×1、系統思考 ×1、倫理兩難 ×1、CER ×1、開放反思 ×2、後設認知 ×1 + 專題任務。</p>
+  // ===== T2 =====
+  let q21ans=null;
+  const checkL2=()=>{
+    const cb=[...document.querySelectorAll('input[name=q22]:checked')];
+    document.getElementById('btn-next-2').disabled=!(q21ans && cb.length===2);
+  };
+  document.querySelectorAll('input[name=q21]').forEach(r=>r.onchange=()=>{q21ans=r.value;checkL2();});
+  document.querySelectorAll('input[name=q22]').forEach(c=>c.onchange=()=>{
+    const checked=[...document.querySelectorAll('input[name=q22]:checked')];
+    if(checked.length>2){c.checked=false;return;}
+    checkL2();
+  });
+  document.getElementById('btn-next-2').onclick=()=>{
+    const fb1=document.getElementById('q21-fb');
+    if(q21ans==='A'){fb1.textContent='✅ 正解 A：(38.8-21.3)÷30 = 17.5÷30 ≈ 0.583 億噸／年。';fb1.className='text-xs mt-1 text-emerald-700';awardOnce('t2q1',5);}
+    else{fb1.textContent='❌ 正解為 A：(38.8-21.3)÷30 ≈ 0.58 億噸／年。';fb1.className='text-xs mt-1 text-rose-600';}
+    const checked=[...document.querySelectorAll('input[name=q22]:checked')].map(c=>c.value);
+    const fb2=document.getElementById('q22-fb');
+    if(checked.includes('A')&&checked.includes('C')){
+      fb2.textContent='✅ 正解 A+C：絕對量持續增長是關鍵，源頭減量才能從根本解決問題。';fb2.className='text-xs mt-1 text-emerald-700';
+      awardOnce('t2q2',10);
+    } else {
+      fb2.textContent='❌ 正解為 A+C。B 錯（只提升回收率而不減量，絕對廢棄物量仍增加）；D 錯（已開發國家人均廢棄物量更高）。';fb2.className='text-xs mt-1 text-rose-600';
+    }
+    confetti();goto(3);
+  };
 
+  // ===== T3 =====
+  let loopDone=0;
+  const loopItems=document.querySelectorAll('#loop-items .drag-item');
+  const loopSlots=document.querySelectorAll('.loop-slot');
+  let dragged3=null;
+  loopItems.forEach(it=>{
+    it.addEventListener('dragstart',()=>{dragged3=it;it.classList.add('dragging');});
+    it.addEventListener('dragend',()=>{if(dragged3)dragged3.classList.remove('dragging');dragged3=null;});
+  });
+  loopSlots.forEach(s=>{
+    s.addEventListener('dragenter',e=>{e.preventDefault();s.classList.add('over');});
+    s.addEventListener('dragover',e=>{e.preventDefault();s.classList.add('over');});
+    s.addEventListener('dragleave',()=>s.classList.remove('over'));
+    s.addEventListener('drop',e=>{
+      e.preventDefault();s.classList.remove('over');
+      if(!dragged3) return;
+      if(s.dataset.slot===dragged3.dataset.loop){
+        document.getElementById('slot-'+s.dataset.slot+'-text').textContent=dragged3.textContent;
+        document.getElementById('slot-'+s.dataset.slot+'-sub').textContent='';
+        dragged3.style.display='none';
+        loopDone++;
+        if(loopDone===4){
+          awardOnce('t3',15);
+          document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 增強循環建構正確！這就是為什麼「收費」或「押金制」是打斷此循環的有效槓桿。</span>';
+          confetti();
+          document.getElementById('btn-next-3').disabled=false;
+        }
+      } else {
+        s.classList.add('shake');setTimeout(()=>s.classList.remove('shake'),400);
+        document.getElementById('loop-fb').innerHTML='<span class="text-rose-600">❌ 試想：一次性杯使用量增加後，廠商的第一個反應是什麼？</span>';
+      }
+    });
+  });
+  document.getElementById('btn-next-3').onclick=()=>goto(4);
+
+  // ===== T4: CER flash cards =====
+  const claimBank = [
+    { id:'ban', label:'立場 1：支持全面禁用一次性餐具',
+      desc:'立場：園遊會應全面禁止一次性塑膠餐具，這是學校能展現源頭減量決心的具體行動。' },
+    { id:'cond', label:'立場 2：有條件支持（需提供替代方案）',
+      desc:'立場：禁用一次性餐具前須確保租借或自備餐具的系統已就位，否則禁令難以執行。' },
+    { id:'opp', label:'立場 3：反對（應以教育取代強制）',
+      desc:'立場：強制禁用缺乏教育基礎，應先讓師生了解廢棄物問題，再自主選擇改變。' }
+  ];
+  const evidBank = {
+    ban:[
+      {t:'UNEP 2024：全球塑膠廢棄物中僅 9% 被回收，一次性塑膠是主要污染來源；校園園遊會每次活動可產生數百件一次性塑膠廢棄物。',ok:true},
+      {t:'調查顯示 95% 的學生表示「自備餐具很麻煩」，因此禁令沒有執行的可能性。',ok:false},
+      {t:'臺灣環境部要求 2030 年前所有公立學校禁用一次性餐具，因此提前執行只是依法行事。',ok:false}
+    ],
+    cond:[
+      {t:'臺北市多個國中試行「借餐具系統」後，園遊會一次性廢棄物量平均減少 78%，且學生滿意度不低於傳統方式（臺北市環保局 2023）。',ok:true},
+      {t:'若不提供替代方案，禁令會讓學生只能空手吃東西，違反基本人權。',ok:false},
+      {t:'餐具租借系統的建置費用遠超過省下的廢棄物處理費，因此在財務上不划算。',ok:false}
+    ],
+    opp:[
+      {t:'研究顯示，強制行為改變若缺乏認知基礎，往往在政策解除後立即反彈；教育介入後的自主改變持續時間更長（Kollmuss & Agyeman, 2002）。',ok:true},
+      {t:'個人的餐具選擇是私人事務，學校無權干涉學生的消費行為。',ok:false},
+      {t:'教育的效果需要數十年才能看見，面對氣候緊急狀態教育太慢了，因此反對禁令毫無根據。',ok:false}
+    ]
+  };
+  const reasBank = {
+    ban:[
+      {t:'等待個人自願改變需要數十年，而塑膠污染的環境傷害（微塑膠、海洋污染）是即時且不可逆的；學校作為公共機構有責任以制度帶動行為改變。',ok:true},
+      {t:'因為政府說禁止，所以學校當然要禁止，這是服從的表現。',ok:false},
+      {t:'禁止一次性餐具可以節省學校的廢棄物處理費用，純粹從成本角度就值得支持。',ok:false}
+    ],
+    cond:[
+      {t:'若替代系統已就位，禁令的障礙消除，學生無需犧牲便利性即可完成減量；制度與基礎設施同步建立，才能讓政策真正落地而非流於形式。',ok:true},
+      {t:'有條件支持只是一種妥協，其實支持和反對都是一樣的，不如直接反對。',ok:false},
+      {t:'只要提供替代方案，所有人都會自動選擇環保選項，不需要任何禁令。',ok:false}
+    ],
+    opp:[
+      {t:'沒有認知基礎的政策改變容易引發抵觸，且無法培養學生的環境公民素養；透過課程讓學生理解問題根源，才能在學校之外也持續影響消費行為。',ok:true},
+      {t:'個人選擇永遠優先於集體環境利益，所以任何集體政策都是錯誤的。',ok:false},
+      {t:'既然教育比強制更有效，就應該完全不需要任何政策或規範，純粹靠教育解決一切環境問題。',ok:false}
+    ]
+  };
+
+  let cerScore=0, cerDone=0;
+  const renderOpts=(container,items,onSelect)=>{
+    items.forEach((item,i)=>{
+      const el=document.createElement('label');
+      el.className='opt';
+      el.innerHTML=`<input type="radio" name="${container.id}-r" value="${i}" class="mr-2">${item.t}`;
+      el.querySelector('input').onchange=()=>onSelect(item.ok, el, container);
+      container.appendChild(el);
+    });
+  };
+
+  const cerArea=document.getElementById('cer-area');
+  claimBank.forEach((claim,ci)=>{
+    const card=document.createElement('div');
+    card.className='bg-slate-50 rounded-xl p-4 mb-4';
+    card.innerHTML=`<p class="font-semibold text-sm mb-1">${claim.label}</p><p class="text-sm text-slate-600 mb-3">${claim.desc}</p>
+      <p class="text-xs font-bold text-slate-500 mb-1">選出最強的「證據 E」：</p>
+      <div id="evid-${ci}"></div>
+      <p id="evid-${ci}-fb" class="text-xs mt-1 mb-2"></p>
+      <p class="text-xs font-bold text-slate-500 mb-1">選出最佳的「推理 R」：</p>
+      <div id="reas-${ci}"></div>
+      <p id="reas-${ci}-fb" class="text-xs mt-1"></p>`;
+    cerArea.appendChild(card);
+
+    const evidContainer=card.querySelector('#evid-'+ci);
+    const reasContainer=card.querySelector('#reas-'+ci);
+    const si=[0,1,2].sort(()=>Math.random()-.5);
+    const rsi=[0,1,2].sort(()=>Math.random()-.5);
+    let evidDone=false, reasDone=false;
+    const checkCer=()=>{ if(evidDone&&reasDone){ cerDone++; if(cerDone===3){ awardOnce('t4',cerScore); document.getElementById('btn-next-4').disabled=false; confetti(); } } };
+
+    renderOpts(evidContainer, si.map(j=>evidBank[claim.id][j]), (ok,el)=>{
+      if(evidDone) return;
+      const fb=card.querySelector('#evid-'+ci+'-fb');
+      if(ok){ el.classList.add('correct'); fb.textContent='✅ 最強證據！具體數據直接支撐立場。'; fb.className='text-xs mt-1 text-emerald-700'; cerScore+=3; evidDone=true; }
+      else { el.classList.add('wrong'); fb.textContent='❌ 這個證據較弱或有事實問題，請再想想。'; fb.className='text-xs mt-1 text-rose-600'; }
+      checkCer();
+    });
+    renderOpts(reasContainer, rsi.map(j=>reasBank[claim.id][j]), (ok,el)=>{
+      if(reasDone) return;
+      const fb=card.querySelector('#reas-'+ci+'-fb');
+      if(ok){ el.classList.add('correct'); fb.textContent='✅ 最佳推理！邏輯清晰地連結證據與主張。'; fb.className='text-xs mt-1 text-emerald-700'; cerScore+=4; reasDone=true; }
+      else { el.classList.add('wrong'); fb.textContent='❌ 這個推理有邏輯問題，試試另一個。'; fb.className='text-xs mt-1 text-rose-600'; }
+      checkCer();
+    });
+  });
+  document.getElementById('btn-next-4').onclick=()=>goto(5);
+
+  // ===== T5 =====
+  const projBank = [
+    { problem:'福利社每天出售大量一次性塑膠袋與塑膠吸管，是校園塑膠廢棄物的最大來源之一。',
+      steps:'① 調查目前每週塑膠袋/吸管使用量；② 與福利社協商停售並提供環保替代品；③ 設計海報宣傳並追蹤 1 個月後的改變。',
+      kpis:['福利社一次性塑膠袋銷售量在 2 個月內降低 50%（正確：基準線清晰、目標明確可驗證）','同學都帶自己的袋子來','福利社老闆支持這個計畫'] },
+    { problem:'班級午餐廚餘量龐大，但沒有人知道確切數字，也沒有減量壓力。',
+      steps:'① 向學校借秤，建立每班午餐廚餘記錄表；② 每週公布各班廚餘排行；③ 第 4 週提出 3 項改善方案。',
+      kpis:['廚餘量在 4 週內減少 20% 以上（正確：時間範圍與量化目標明確）','同學覺得廚餘追蹤很有趣','廚餘數字比上個月少'] },
+    { problem:'學生丟棄的物品中有大量仍可修復的電子用品、衣物與文具，快速進入垃圾桶。',
+      steps:'① 向學校借用空間設立修繕工作坊；② 招募有修繕技能的師生志工；③ 每月舉辦一次，記錄修繕件數與延長使用年限。',
+      kpis:['每場工作坊修繕 10 件以上、累計 3 個月達 30 件（正確：具體交付物可計數）','同學覺得修繕很酷','沒有東西被丟掉'] },
+    { problem:'校園每週使用哪些一次性物品、數量多少，從未被系統性地記錄過，無法制定減量策略。',
+      steps:'① 設計觀察記錄表，連續 2 週調查福利社/午餐/活動的一次性用品；② 整理出 Top 5 問題項目；③ 針對每項提出 Refuse/Reduce/Reuse 三層級方案。',
+      kpis:['完成 Top 5 問題清單並附具體替代方案，提交學生議會（正確：可驗證的交付物）','調查很詳細','報告寫得很好'] }
+  ];
+  let selProj=-1, kpiSel=null;
+  document.querySelectorAll('input[name=proj]').forEach(r=>r.onchange=()=>{
+    selProj=parseInt(r.value);
+    const p=projBank[selProj];
+    document.getElementById('proj-problem').textContent=p.problem;
+    document.getElementById('proj-steps').textContent=p.steps;
+    document.getElementById('proj-detail').classList.remove('hidden-screen');
+    const kpiArea=document.getElementById('kpi-area');
+    kpiArea.classList.remove('hidden-screen');
+    const kpiOpts=document.getElementById('kpi-opts');
+    kpiOpts.innerHTML='';
+    kpiSel=null;
+    const kidxs=[0,1,2].sort(()=>Math.random()-.5);
+    kidxs.forEach(ki=>{
+      const lbl=document.createElement('label');
+      lbl.className='opt';
+      lbl.innerHTML=`<input type="radio" name="kpi-r" value="${ki}" class="mr-2">${p.kpis[ki]}`;
+      lbl.querySelector('input').onchange=()=>{kpiSel=ki;checkL5();};
+      kpiOpts.appendChild(lbl);
+    });
+    checkL5();
+  });
+  const checkL5=()=>{
+    const wsaOk=[...document.querySelectorAll('.wsa')].every(c=>c.checked);
+    document.getElementById('btn-next-5').disabled=!(selProj>=0 && kpiSel===0 && wsaOk);
+    if(kpiSel!==null && kpiSel!==0){
+      document.getElementById('kpi-fb').textContent='❌ 最佳 KPI 應具體、可量化且有基準線，請再選一次。';
+      document.getElementById('kpi-fb').className='text-xs mt-1 text-rose-600';
+    } else if(kpiSel===0){
+      document.getElementById('kpi-fb').textContent='✅ 正確！好的指標讓進度清晰可見，也讓別人能獨立驗證成效。';
+      document.getElementById('kpi-fb').className='text-xs mt-1 text-emerald-700';
+    }
+  };
+  document.querySelectorAll('.wsa').forEach(c=>c.onchange=checkL5);
+  document.getElementById('btn-next-5').onclick=()=>{ awardOnce('t5',20); confetti(); goto('final'); };
+
+  // ===== Final =====
+  const starsState={know:0,act:0};
+  document.querySelectorAll('.star').forEach(s=>{
+    s.onclick=()=>{
+      const g=s.dataset.g, v=parseInt(s.dataset.v);
+      starsState[g]=v;
+      document.querySelectorAll(`.star[data-g="${g}"]`).forEach(st=>{
+        st.classList.toggle('on',parseInt(st.dataset.v)<=v);
+      });
+      checkFinal();
+    };
+  });
+  let impactAns=null;
+  document.querySelectorAll('input[name=impact]').forEach(r=>r.onchange=()=>{
+    impactAns=r.value;
+    const fb=document.getElementById('impact-fb');
+    if(impactAns==='B'){fb.textContent='✅ 正確！Refuse（拒絕）是廢棄物層級的最頂端——讓廢棄物根本不產生，比任何末端處理都更根本有效。';fb.className='text-xs mt-2 text-emerald-700';awardOnce('final-impact',5);}
+    else{fb.textContent='❌ 回收（A）和能源回收（C）都在層級的末端——廢棄物已經產生才介入。最優先是 Refuse（拒絕），讓廢棄物根本不進入系統。';fb.className='text-xs mt-2 text-rose-600';}
+    checkFinal();
+  });
+  const checkFinal=()=>{
+    document.getElementById('btn-finish').disabled=!(starsState.know>0 && starsState.act>0 && impactAns);
+  };
+  document.getElementById('btn-finish').onclick=()=>{
+    awardOnce('final-stars',5);
+    confetti();
+    document.getElementById('btn-finish').style.display='none';
+    document.getElementById('final-banner').classList.remove('hidden-screen');
+    document.getElementById('final-score').textContent=S.score;
+    document.getElementById('score').textContent=S.score;
+  };
+
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
+</script>
 </body>
 </html>

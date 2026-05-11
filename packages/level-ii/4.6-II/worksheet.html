@@ -14,519 +14,659 @@
   }
   .popin { animation: popin 0.6s cubic-bezier(.34,1.56,.64,1) both; }
   @keyframes popin { 0%{transform:scale(.3);opacity:0} 60%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
-  .bounce { animation: bounce 1s infinite; }
+  .bounce { animation: bounce 1.2s infinite; }
   @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-  .wiggle { animation: wiggle 0.5s ease-in-out; }
+  .wiggle { animation: wiggle 0.4s ease-in-out; }
   @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-10deg)} 75%{transform:rotate(10deg)} }
   .shine { animation: shine 2s infinite; }
   @keyframes shine { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.3) drop-shadow(0 0 20px #fde047)} }
-  .pulse { animation: pulse 1.2s infinite; }
-  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
-  .confetti {
+  .confetti-piece {
     position: fixed;
     width: 14px; height: 14px;
-    border-radius: 2px;
+    border-radius: 3px;
     pointer-events: none;
     z-index: 9999;
   }
-  .dropzone-active { background: #fde68a !important; transform: scale(1.08); }
+  .hide { display: none !important; }
+  .card {
+    background: white;
+    border-radius: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    padding: 1.5rem;
+  }
   .big-btn {
-    font-size: 2rem;
-    padding: 1rem 2rem;
+    font-size: 1.6rem;
+    padding: 0.9rem 2rem;
     border-radius: 9999px;
     font-weight: 800;
     box-shadow: 0 6px 0 rgba(0,0,0,0.15);
     transition: all 0.15s;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
   }
   .big-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,0.15); }
-  /* CRITICAL: SVG text must NOT block clicks on parent buttons */
-  svg text, svg tspan { pointer-events: none; }
-  svg * { pointer-events: none; }
-  .card {
+  .btn-back {
+    background: #fde68a;
+    color: #92400e;
+    padding: 0.6rem 1.4rem;
+    border-radius: 9999px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.12);
+    transition: all 0.15s;
+  }
+  .btn-back:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.12); }
+  .drag-item {
+    cursor: grab;
+    user-select: none;
+    border-radius: 1.5rem;
+    transition: transform 0.15s, box-shadow 0.15s;
+    touch-action: none;
+  }
+  .drag-item:active { transform: scale(1.08); box-shadow: 0 8px 20px rgba(0,0,0,0.18); }
+  .drag-item.dragging { opacity: 0.45; }
+  .drop-zone {
+    min-height: 120px;
+    border: 4px dashed #a78bfa;
+    border-radius: 1.5rem;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .drop-zone.over { background: #ede9fe !important; transform: scale(1.04); border-color: #7c3aed; }
+  .promise-card {
+    border: 4px solid #e2e8f0;
+    border-radius: 1.5rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
     background: white;
-    border-radius: 2rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    padding: 1.5rem;
   }
-  .hide { display: none !important; }
-  .finger {
-    display: inline-block;
-    transition: transform 0.2s;
+  .promise-card.chosen {
+    border-color: #a78bfa;
+    background: #ede9fe;
+    transform: scale(1.04);
   }
-  .finger:hover { transform: scale(1.1); }
-  .badge-glow {
-    filter: drop-shadow(0 0 20px #fde047);
+  .bubble {
+    background: #faf5ff;
+    border: 3px solid #a78bfa;
+    border-radius: 1.5rem;
+    padding: 0.8rem 1.2rem;
+    position: relative;
   }
+  .bubble::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: -16px;
+    border: 8px solid transparent;
+    border-bottom-color: #a78bfa;
+  }
+  .bubble::after {
+    content: "";
+    position: absolute;
+    left: 23px;
+    top: -11px;
+    border: 6px solid transparent;
+    border-bottom-color: #faf5ff;
+  }
+  svg text { pointer-events: none; }
+  svg * { pointer-events: none; }
+  .prog-dot {
+    width: 44px; height: 44px;
+    border-radius: 9999px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; font-weight: 800;
+    transition: all 0.3s;
+  }
+  .prog-dot.done { background: #a78bfa; color: white; }
+  .prog-dot.active { background: #c4b5fd; color: #4c1d95; }
+  .prog-dot.todo { background: #e5e7eb; color: #9ca3af; }
 </style>
 </head>
-<body class="flex flex-col items-center">
+<body class="flex flex-col items-center pb-12">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 
-<!-- 主角：咕咕小貓頭鷹 SVG (可重用) -->
+<!-- 咕咕小貓頭鷹 SVG -->
 <svg width="0" height="0" style="position:absolute">
   <defs>
     <g id="guagua">
-      <!-- 身體 -->
-      <ellipse cx="50" cy="60" rx="38" ry="40" fill="#a78bfa"/>
-      <!-- 肚子 -->
-      <ellipse cx="50" cy="65" rx="25" ry="28" fill="#fef3c7"/>
-      <!-- 左眼大圓 -->
-      <circle cx="32" cy="40" r="14" fill="white"/>
-      <!-- 右眼大圓 -->
-      <circle cx="68" cy="40" r="14" fill="white"/>
-      <!-- 左眼珠 -->
-      <circle cx="32" cy="42" r="7" fill="#1e1b4b"/>
-      <circle cx="34" cy="40" r="2" fill="white"/>
-      <!-- 右眼珠 -->
-      <circle cx="68" cy="42" r="7" fill="#1e1b4b"/>
-      <circle cx="70" cy="40" r="2" fill="white"/>
-      <!-- 嘴 -->
-      <path d="M 45 52 L 50 58 L 55 52 Z" fill="#f59e0b"/>
-      <!-- 耳羽 -->
-      <path d="M 20 18 L 28 30 L 18 30 Z" fill="#7c3aed"/>
-      <path d="M 80 18 L 72 30 L 82 30 Z" fill="#7c3aed"/>
-      <!-- 偵探帽 -->
-      <ellipse cx="50" cy="15" rx="28" ry="6" fill="#4c1d95"/>
-      <path d="M 30 15 Q 50 0 70 15 L 68 20 Q 50 8 32 20 Z" fill="#6d28d9"/>
-      <!-- 翅膀 -->
-      <ellipse cx="15" cy="60" rx="8" ry="15" fill="#8b5cf6" transform="rotate(-20 15 60)"/>
-      <ellipse cx="85" cy="60" rx="8" ry="15" fill="#8b5cf6" transform="rotate(20 85 60)"/>
-    </g>
-    <!-- 書本 -->
-    <g id="book">
-      <rect x="20" y="25" width="60" height="50" rx="4" fill="#fbbf24"/>
-      <rect x="22" y="27" width="56" height="46" rx="2" fill="#fef3c7"/>
-      <line x1="50" y1="27" x2="50" y2="73" stroke="#92400e" stroke-width="2"/>
-      <line x1="30" y1="38" x2="45" y2="38" stroke="#92400e" stroke-width="1.5"/>
-      <line x1="30" y1="48" x2="45" y2="48" stroke="#92400e" stroke-width="1.5"/>
-      <line x1="55" y1="38" x2="70" y2="38" stroke="#92400e" stroke-width="1.5"/>
-      <line x1="55" y1="48" x2="70" y2="48" stroke="#92400e" stroke-width="1.5"/>
-    </g>
-    <!-- 老師 -->
-    <g id="teacher">
-      <circle cx="50" cy="30" r="15" fill="#fbbf24"/>
-      <circle cx="45" cy="28" r="2" fill="#1e1b4b"/>
-      <circle cx="55" cy="28" r="2" fill="#1e1b4b"/>
-      <path d="M 44 35 Q 50 40 56 35" stroke="#1e1b4b" stroke-width="2" fill="none"/>
-      <rect x="30" y="45" width="40" height="40" rx="4" fill="#ec4899"/>
-      <rect x="40" y="55" width="20" height="20" fill="#fef3c7"/>
-    </g>
-    <!-- 螢幕 -->
-    <g id="screen">
-      <rect x="15" y="20" width="70" height="50" rx="6" fill="#1e40af"/>
-      <rect x="20" y="25" width="60" height="40" rx="3" fill="#bfdbfe"/>
-      <rect x="40" y="70" width="20" height="5" fill="#1e40af"/>
-      <rect x="30" y="75" width="40" height="6" rx="2" fill="#1e40af"/>
-      <circle cx="35" cy="40" r="5" fill="#fbbf24"/>
-      <circle cx="65" cy="50" r="4" fill="#22c55e"/>
-    </g>
-    <!-- 溫度計（事實） -->
-    <g id="thermometer">
-      <rect x="45" y="20" width="10" height="50" rx="5" fill="#e5e7eb"/>
-      <rect x="47" y="30" width="6" height="35" fill="#ef4444"/>
-      <circle cx="50" cy="75" r="12" fill="#ef4444"/>
-      <text x="62" y="45" font-size="12" fill="#1e1b4b" font-weight="bold">25°</text>
-    </g>
-    <!-- 表情（意見） -->
-    <g id="emoji">
-      <circle cx="50" cy="50" r="35" fill="#fbbf24"/>
-      <circle cx="38" cy="42" r="4" fill="#1e1b4b"/>
-      <circle cx="62" cy="42" r="4" fill="#1e1b4b"/>
-      <path d="M 35 60 Q 50 75 65 60" stroke="#1e1b4b" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <path d="M 30 30 Q 35 25 40 30" stroke="#ef4444" stroke-width="2" fill="none"/>
+      <!-- body -->
+      <ellipse cx="50" cy="62" rx="28" ry="32" fill="#7c3aed"/>
+      <!-- tummy -->
+      <ellipse cx="50" cy="68" rx="18" ry="20" fill="#ddd6fe"/>
+      <!-- head -->
+      <circle cx="50" cy="34" r="24" fill="#7c3aed"/>
+      <!-- ear tufts -->
+      <polygon points="30,16 26,6 36,14" fill="#5b21b6"/>
+      <polygon points="70,16 74,6 64,14" fill="#5b21b6"/>
+      <!-- face disc -->
+      <ellipse cx="50" cy="36" rx="18" ry="16" fill="#c4b5fd"/>
+      <!-- eyes -->
+      <circle cx="42" cy="32" r="7" fill="white"/>
+      <circle cx="58" cy="32" r="7" fill="white"/>
+      <circle cx="43" cy="32" r="4" fill="#1f2937"/>
+      <circle cx="59" cy="32" r="4" fill="#1f2937"/>
+      <circle cx="44" cy="31" r="1.5" fill="white"/>
+      <circle cx="60" cy="31" r="1.5" fill="white"/>
+      <!-- beak -->
+      <polygon points="50,39 46,44 54,44" fill="#fbbf24"/>
+      <!-- wing left -->
+      <ellipse cx="24" cy="62" rx="10" ry="18" fill="#6d28d9" transform="rotate(-15 24 62)"/>
+      <!-- wing right -->
+      <ellipse cx="76" cy="62" rx="10" ry="18" fill="#6d28d9" transform="rotate(15 76 62)"/>
+      <!-- detective hat -->
+      <rect x="30" y="8" width="40" height="8" rx="3" fill="#1e293b"/>
+      <rect x="34" y="1" width="32" height="10" rx="4" fill="#1e293b"/>
+      <!-- magnifying glass -->
+      <circle cx="78" cy="75" r="8" fill="none" stroke="#fbbf24" stroke-width="3"/>
+      <line x1="84" y1="81" x2="90" y2="87" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
     </g>
   </defs>
 </svg>
 
-<!-- 頂部進度條 -->
-<div class="w-full max-w-3xl p-4">
-  <div class="flex items-center justify-center gap-2 text-3xl font-extrabold text-purple-700">
-    <svg width="60" height="60" viewBox="0 0 100 100"><use href="#guagua"/></svg>
-    <span>咕咕的真相大冒險</span>
+<!-- 頂部標題 + 進度 -->
+<div class="w-full max-w-2xl px-4 pt-4">
+  <div class="flex items-center justify-center gap-3 text-3xl font-extrabold text-purple-800 mb-3">
+    <svg width="56" height="56" viewBox="0 0 100 100"><use href="#guagua"/></svg>
+    <span>咕咕的問號大冒險</span>
   </div>
-  <div class="flex gap-2 mt-4 justify-center" id="progress-bar"></div>
+  <div class="flex items-center justify-center gap-2" id="prog-bar">
+    <div class="prog-dot todo" id="dot-1">1</div>
+    <div class="w-8 h-1 rounded bg-gray-300" id="line-1"></div>
+    <div class="prog-dot todo" id="dot-2">2</div>
+    <div class="w-8 h-1 rounded bg-gray-300" id="line-2"></div>
+    <div class="prog-dot todo" id="dot-3">3</div>
+    <div class="w-8 h-1 rounded bg-gray-300" id="line-3"></div>
+    <div class="prog-dot todo" id="dot-f">😊</div>
+  </div>
+  <div class="text-center mt-2 text-xl font-bold text-purple-800">
+    得了 <span id="score-display">0</span> 分！
+  </div>
 </div>
 
-<!-- 關卡容器 -->
-<main class="w-full max-w-3xl p-4 flex-1 flex items-center justify-center">
+<main class="w-full max-w-2xl px-4 mt-4">
 
   <!-- 開始畫面 -->
   <section id="intro" class="card text-center popin">
-    <svg width="180" height="180" viewBox="0 0 100 100" class="mx-auto bounce"><use href="#guagua"/></svg>
-    <h1 class="text-4xl font-extrabold text-purple-600 mt-4">咕咕咕！我是咕咕！</h1>
-    <p class="text-2xl text-gray-700 mt-4">今天要跟我一起當<span class="text-pink-500 font-bold">問號偵探</span>嗎？</p>
-    <p class="text-xl text-gray-500 mt-2">一起玩 3 個小關卡！🔍</p>
-    <button onclick="startGame()" class="big-btn bg-yellow-400 hover:bg-yellow-300 text-purple-900 mt-6">開始 🎉</button>
+    <div class="bounce inline-block">
+      <svg width="160" height="160" viewBox="0 0 100 100" class="mx-auto"><use href="#guagua"/></svg>
+    </div>
+    <h1 class="text-4xl font-extrabold text-purple-700 mt-2">嗨！我是咕咕！</h1>
+    <p class="text-2xl text-gray-700 mt-3">有問題不知道答案？</p>
+    <p class="text-2xl text-gray-700">我們一起當<span class="text-purple-600 font-bold">小小問號偵探</span>！</p>
+    <p class="text-xl text-gray-500 mt-2 mb-6">一起闖 3 個任務！</p>
+    <button onclick="gotoLevel(1)" class="big-btn bg-purple-400 text-white">
+      出發！🦉
+    </button>
   </section>
 
-  <!-- 關卡 1：消息從哪裡來？ -->
-  <section id="level1" class="card w-full hide">
-    <div class="flex items-center gap-3 mb-4">
-      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#guagua"/></svg>
-      <p class="text-2xl font-bold text-purple-700">咕咕：這個消息從哪裡來？點一點！</p>
-    </div>
-    <div id="l1-target" class="text-center my-4">
-      <div class="text-2xl font-bold text-pink-600 mb-2" id="l1-question">「今天會下雨！」爸爸從哪裡知道的？</div>
-      <div class="text-6xl my-4 bounce">💧</div>
-    </div>
-    <div class="grid grid-cols-3 gap-4 mt-4">
-      <button onclick="l1Choose('book', this)" class="big-btn bg-yellow-200 hover:bg-yellow-300 text-yellow-900 flex flex-col items-center" style="font-size:1.2rem">
-        <svg width="80" height="80" viewBox="0 0 100 100"><use href="#book"/></svg>
-        <span>書本</span>
-      </button>
-      <button onclick="l1Choose('teacher', this)" class="big-btn bg-pink-200 hover:bg-pink-300 text-pink-900 flex flex-col items-center" style="font-size:1.2rem">
-        <svg width="80" height="80" viewBox="0 0 100 100"><use href="#teacher"/></svg>
-        <span>老師/大人</span>
-      </button>
-      <button onclick="l1Choose('screen', this)" class="big-btn bg-blue-200 hover:bg-blue-300 text-blue-900 flex flex-col items-center" style="font-size:1.2rem">
-        <svg width="80" height="80" viewBox="0 0 100 100"><use href="#screen"/></svg>
-        <span>螢幕</span>
-      </button>
-    </div>
-    <div id="l1-feedback" class="text-center mt-4 text-2xl font-bold"></div>
-  </section>
-
-  <!-- 關卡 2：事實 vs 意見 拖拉遊戲 -->
-  <section id="level2" class="card w-full hide">
-    <div class="flex items-center gap-3 mb-4">
-      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#guagua"/></svg>
-      <p class="text-2xl font-bold text-purple-700">咕咕：這句話是「事實」還是「意見」？拉一拉！</p>
-    </div>
-    <div id="l2-card" class="mx-auto my-4 p-6 bg-yellow-100 rounded-3xl border-4 border-yellow-400 cursor-grab text-center"
-         style="max-width: 400px; touch-action: none;"
-         draggable="false"
-         onmousedown="startDrag(event)" ontouchstart="startDrag(event)">
-      <div id="l2-text" class="text-2xl font-bold text-purple-800">今天外面是 25 度</div>
-    </div>
-    <div class="grid grid-cols-2 gap-4 mt-8">
-      <div id="l2-fact" class="dropzone p-6 bg-green-100 rounded-3xl border-4 border-dashed border-green-400 text-center">
-        <svg width="80" height="80" viewBox="0 0 100 100" class="mx-auto"><use href="#thermometer"/></svg>
-        <div class="text-2xl font-bold text-green-800 mt-2">事實 📊</div>
-        <div class="text-lg text-green-700">真的、可以量</div>
-      </div>
-      <div id="l2-opinion" class="dropzone p-6 bg-pink-100 rounded-3xl border-4 border-dashed border-pink-400 text-center">
-        <svg width="80" height="80" viewBox="0 0 100 100" class="mx-auto"><use href="#emoji"/></svg>
-        <div class="text-2xl font-bold text-pink-800 mt-2">意見 💭</div>
-        <div class="text-lg text-pink-700">我覺得</div>
+  <!-- 關卡 1：看一看 / 拖一拖 (30分) -->
+  <section id="level-1" class="card w-full hide">
+    <div class="flex items-end gap-3 mb-4">
+      <svg width="80" height="80" viewBox="0 0 100 100" class="flex-shrink-0"><use href="#guagua"/></svg>
+      <div class="bubble">
+        <p class="text-xl font-bold text-purple-800">咕咕說：把行動拖到對的地方！</p>
       </div>
     </div>
-    <div id="l2-feedback" class="text-center mt-4 text-2xl font-bold"></div>
-  </section>
+    <h2 class="text-2xl font-extrabold text-purple-700 text-center mb-1">
+      第 1 關：拖一拖！ 🔍
+    </h2>
+    <p class="text-lg text-center text-gray-500 mb-4">遇到問題，是問大人還是自己猜猜看？</p>
 
-  <!-- 關卡 3：問號小拳頭挑戰 -->
-  <section id="level3" class="card w-full hide">
-    <div class="flex items-center gap-3 mb-4">
-      <svg width="70" height="70" viewBox="0 0 100 100"><use href="#guagua"/></svg>
-      <p class="text-2xl font-bold text-purple-700">咕咕：聽到奇怪消息，可以問哪些問題？（可以點很多個！）</p>
-    </div>
-    <div class="card bg-blue-50 mb-4 p-4 text-center">
-      <p class="text-xl text-gray-600">💬 咕咕聽到：</p>
-      <p class="text-2xl font-bold text-blue-800 mt-2">「聽說下雨的雲是巧克力做的！🍫☁️」</p>
-    </div>
+    <div id="l1-items" class="flex flex-wrap justify-center gap-4 mb-6"></div>
+
     <div class="grid grid-cols-2 gap-4">
-      <button onclick="l3Choose(this, true)" class="big-btn bg-purple-200 hover:bg-purple-300 text-purple-900" style="font-size:1.3rem">
-        <span class="text-3xl">👆</span> 誰說的？
-      </button>
-      <button onclick="l3Choose(this, true)" class="big-btn bg-purple-200 hover:bg-purple-300 text-purple-900" style="font-size:1.3rem">
-        <span class="text-3xl">✌️</span> 怎麼知道？
-      </button>
-      <button onclick="l3Choose(this, true)" class="big-btn bg-purple-200 hover:bg-purple-300 text-purple-900" style="font-size:1.3rem">
-        <span class="text-3xl">🤟</span> 真的嗎？
-      </button>
-      <button onclick="l3Choose(this, true)" class="big-btn bg-purple-200 hover:bg-purple-300 text-purple-900" style="font-size:1.3rem">
-        <span class="text-3xl">🖖</span> 問大人！
-      </button>
-      <button onclick="l3Choose(this, false)" class="big-btn bg-gray-200 hover:bg-gray-300 text-gray-700 col-span-2" style="font-size:1.3rem">
-        😋 好想吃巧克力！
-      </button>
+      <div class="drop-zone flex flex-col items-center justify-start pt-3 gap-2 bg-purple-50" data-zone="ask">
+        <div class="text-6xl">🙋</div>
+        <div class="text-2xl font-extrabold text-purple-700">問大人</div>
+        <div class="text-gray-400 text-base mt-1">拖到這裡</div>
+        <div class="dz-placed flex flex-wrap justify-center gap-2 mt-1"></div>
+      </div>
+      <div class="drop-zone flex flex-col items-center justify-start pt-3 gap-2 bg-yellow-50" data-zone="guess">
+        <div class="text-6xl">🤔</div>
+        <div class="text-2xl font-extrabold text-yellow-700">自己猜猜看</div>
+        <div class="text-gray-400 text-base mt-1">拖到這裡</div>
+        <div class="dz-placed flex flex-wrap justify-center gap-2 mt-1"></div>
+      </div>
     </div>
-    <div id="l3-count" class="text-center mt-4 text-xl font-bold text-purple-700">已選：0 / 4</div>
-    <div id="l3-feedback" class="text-center mt-2 text-2xl font-bold"></div>
-    <button id="l3-done" onclick="l3Done()" class="big-btn bg-yellow-400 hover:bg-yellow-300 text-purple-900 mt-4 mx-auto block hide">完成！✨</button>
+
+    <p id="l1-feedback" class="text-2xl text-center font-bold mt-4 hide"></p>
+
+    <div class="flex justify-start mt-4">
+      <button class="btn-back" onclick="gotoLevel(0)">← 回上一頁</button>
+    </div>
   </section>
 
-  <!-- 結尾成就畫面 -->
-  <section id="finale" class="card text-center hide">
-    <svg width="200" height="200" viewBox="0 0 100 100" class="mx-auto shine badge-glow"><use href="#guagua"/></svg>
-    <h1 class="text-5xl font-extrabold text-purple-600 mt-4 popin">🏆 問號偵探 🏆</h1>
-    <p class="text-2xl text-gray-700 mt-4">你學會了！咕咕好開心～</p>
-    <div class="bg-yellow-100 border-4 border-yellow-400 rounded-3xl p-6 mt-6">
-      <p class="text-xl font-bold text-purple-800">🏠 親子小任務</p>
-      <p class="text-lg text-gray-700 mt-2">回家找爸媽，一起看一則氣候新聞，用 4 個問號問問題！🔍</p>
+  <!-- 關卡 2：想一想 / 選一選 (30分) -->
+  <section id="level-2" class="card w-full hide">
+    <div class="flex items-end gap-3 mb-4">
+      <svg width="80" height="80" viewBox="0 0 100 100" class="flex-shrink-0"><use href="#guagua"/></svg>
+      <div class="bubble">
+        <p class="text-xl font-bold text-purple-800">咕咕說：偵探要選對方法！</p>
+      </div>
     </div>
-    <button onclick="restart()" class="big-btn bg-pink-400 hover:bg-pink-300 text-white mt-6">再玩一次 🎉</button>
+    <h2 class="text-2xl font-extrabold text-purple-700 text-center mb-5">
+      第 2 關：選一選！ 🤔
+    </h2>
+
+    <!-- Q1 -->
+    <div id="l2-q1-wrap">
+      <p class="text-xl font-bold text-center text-gray-700 mb-4">
+        📰 朋友說「外星人來了！」你會怎麼做？
+      </p>
+      <div class="grid grid-cols-2 gap-4">
+        <button class="promise-card" data-val="ask" onclick="l2Pick(1,this)">
+          <div class="text-6xl">👨‍👩‍👧</div>
+          <div class="text-xl font-bold mt-2">去問爸爸媽媽</div>
+        </button>
+        <button class="promise-card" data-val="spread" onclick="l2Pick(1,this)">
+          <div class="text-6xl">📣</div>
+          <div class="text-xl font-bold mt-2">馬上告訴所有人</div>
+        </button>
+      </div>
+      <p id="l2-q1-fb" class="text-2xl text-center font-bold mt-3 hide"></p>
+    </div>
+
+    <!-- Q2 -->
+    <div id="l2-q2-wrap" class="mt-6 hide">
+      <p class="text-xl font-bold text-center text-gray-700 mb-4">
+        🖼️ 你看到一張很驚人的圖片，你會？
+      </p>
+      <div class="grid grid-cols-2 gap-4">
+        <button class="promise-card" data-val="check" onclick="l2Pick(2,this)">
+          <div class="text-6xl">🔍</div>
+          <div class="text-xl font-bold mt-2">先問大人是不是真的</div>
+        </button>
+        <button class="promise-card" data-val="believe" onclick="l2Pick(2,this)">
+          <div class="text-6xl">😱</div>
+          <div class="text-xl font-bold mt-2">看起來真的就相信</div>
+        </button>
+      </div>
+      <p id="l2-q2-fb" class="text-2xl text-center font-bold mt-3 hide"></p>
+    </div>
+
+    <!-- Q3 -->
+    <div id="l2-q3-wrap" class="mt-6 hide">
+      <p class="text-xl font-bold text-center text-gray-700 mb-4">
+        ❓ 不知道一件事是真是假，最好的辦法是？
+      </p>
+      <div class="grid grid-cols-2 gap-4">
+        <button class="promise-card" data-val="verify" onclick="l2Pick(3,this)">
+          <div class="text-6xl">📚</div>
+          <div class="text-xl font-bold mt-2">查一查、問一問</div>
+        </button>
+        <button class="promise-card" data-val="ignore" onclick="l2Pick(3,this)">
+          <div class="text-6xl">🙈</div>
+          <div class="text-xl font-bold mt-2">不管它，不重要</div>
+        </button>
+      </div>
+      <p id="l2-q3-fb" class="text-2xl text-center font-bold mt-3 hide"></p>
+    </div>
+
+    <div class="flex justify-between mt-6 items-center">
+      <button class="btn-back" onclick="gotoLevel(1)">← 回上一頁</button>
+    </div>
+  </section>
+
+  <!-- 關卡 3：做一做 / 偵探守則 (15分) -->
+  <section id="level-3" class="card w-full hide">
+    <div class="flex items-end gap-3 mb-4">
+      <svg width="80" height="80" viewBox="0 0 100 100" class="flex-shrink-0"><use href="#guagua"/></svg>
+      <div class="bubble">
+        <p class="text-xl font-bold text-purple-800">咕咕說：選 2 條你要遵守的偵探守則！</p>
+      </div>
+    </div>
+    <h2 class="text-2xl font-extrabold text-purple-700 text-center mb-1">
+      第 3 關：偵探守則！ 🕵️
+    </h2>
+    <p class="text-lg text-center text-gray-500 mb-5">點一點你願意做到的（選 2 個）</p>
+
+    <div class="grid grid-cols-2 gap-4" id="l3-promises">
+      <button class="promise-card" data-id="p1" onclick="l3Toggle(this)">
+        <div class="text-5xl">🙋</div>
+        <div class="text-lg font-bold mt-2">不確定就問大人</div>
+      </button>
+      <button class="promise-card" data-id="p2" onclick="l3Toggle(this)">
+        <div class="text-5xl">🔍</div>
+        <div class="text-lg font-bold mt-2">先查再相信</div>
+      </button>
+      <button class="promise-card" data-id="p3" onclick="l3Toggle(this)">
+        <div class="text-5xl">🤫</div>
+        <div class="text-lg font-bold mt-2">不亂傳沒查過的事</div>
+      </button>
+      <button class="promise-card" data-id="p4" onclick="l3Toggle(this)">
+        <div class="text-5xl">💬</div>
+        <div class="text-lg font-bold mt-2">分享問題給家人</div>
+      </button>
+    </div>
+
+    <p id="l3-hint" class="text-xl text-center text-gray-400 mt-4">選了 <span id="l3-count">0</span> 個</p>
+    <p id="l3-feedback" class="text-2xl text-center font-bold mt-2 hide"></p>
+
+    <div class="text-center mt-4">
+      <button id="l3-submit-btn" onclick="l3Submit()" class="big-btn bg-purple-400 text-white" disabled>
+        立定守則！⭐
+      </button>
+    </div>
+
+    <div class="flex justify-start mt-4">
+      <button class="btn-back" onclick="gotoLevel(2)">← 回上一頁</button>
+    </div>
+  </section>
+
+  <!-- Final：笑臉評分 (5分) -->
+  <section id="level-final" class="card w-full hide">
+    <div class="flex items-end gap-3 mb-4">
+      <div class="shine inline-block">
+        <svg width="100" height="100" viewBox="0 0 100 100" class="bounce"><use href="#guagua"/></svg>
+      </div>
+      <div>
+        <div class="text-6xl">🏅</div>
+        <h1 class="text-3xl font-extrabold text-purple-700">你是小小問號偵探！</h1>
+      </div>
+    </div>
+
+    <p class="text-3xl text-center font-extrabold text-violet-600 mt-1">
+      得了 <span id="final-score">0</span> / 80 分！
+    </p>
+
+    <div class="bg-purple-50 rounded-2xl p-5 mt-5 border-2 border-purple-200">
+      <p class="text-xl font-bold text-purple-700 mb-3 text-center">你覺得今天好玩嗎？</p>
+      <div class="flex justify-center gap-6" id="smiley-row">
+        <button class="text-6xl hover:scale-125 transition-transform" onclick="rateSmiley(1)" id="sm-1">😞</button>
+        <button class="text-6xl hover:scale-125 transition-transform" onclick="rateSmiley(2)" id="sm-2">😊</button>
+        <button class="text-6xl hover:scale-125 transition-transform" onclick="rateSmiley(3)" id="sm-3">🤩</button>
+      </div>
+      <p id="smiley-fb" class="text-xl text-center font-bold mt-3 hide"></p>
+
+      <p class="text-xl font-bold text-purple-700 mb-3 mt-5 text-center">你最喜歡哪一關？</p>
+      <div class="flex flex-col gap-3" id="fav-opts">
+        <button class="promise-card text-left flex items-center gap-3" data-fav="1" onclick="pickFav(this)">
+          <span class="text-3xl">🔍</span>
+          <span class="text-lg font-bold">第 1 關：拖拖卡片</span>
+        </button>
+        <button class="promise-card text-left flex items-center gap-3" data-fav="2" onclick="pickFav(this)">
+          <span class="text-3xl">🤔</span>
+          <span class="text-lg font-bold">第 2 關：選一選</span>
+        </button>
+        <button class="promise-card text-left flex items-center gap-3" data-fav="3" onclick="pickFav(this)">
+          <span class="text-3xl">🕵️</span>
+          <span class="text-lg font-bold">第 3 關：偵探守則</span>
+        </button>
+      </div>
+      <p id="fav-fb" class="text-lg text-center text-gray-500 mt-2 hide"></p>
+    </div>
+
+    <div class="bg-yellow-50 rounded-2xl p-5 mt-5 border-2 border-yellow-200">
+      <p class="text-xl font-bold text-yellow-700">咕咕的小任務：</p>
+      <p class="text-lg text-gray-700 mt-2">
+        今天回家後，找一個問題問爸爸媽媽，<br/>
+        看看<span class="text-purple-600 font-bold">真正的答案</span>是什麼！
+      </p>
+    </div>
+
+    <div class="flex justify-between mt-6 items-center">
+      <button class="btn-back" onclick="gotoLevel(3)">← 回上一頁</button>
+      <button onclick="gotoLevel(0)" class="big-btn bg-yellow-400 text-amber-900">
+        再玩一次 🔁
+      </button>
+    </div>
   </section>
 
 </main>
 
 <script>
-let currentLevel = 0;
-let l1Index = 0;
-const l1Questions = [
-  {text: '「今天會下雨！」爸爸從哪裡知道的？', emoji: '💧', hint: 'teacher', hintText: '爸爸是大人喔！'},
-  {text: '「北極熊住在北極」你從哪裡看到的？', emoji: '🐻‍❄️', hint: 'book', hintText: '書本裡常寫動物家！'},
-  {text: '「颱風要來了」新聞上看到的是哪裡？', emoji: '🌀', hint: 'screen', hintText: '電視新聞是螢幕！'}
-];
-let l2Index = 0;
-const l2Cards = [
-  {text: '今天外面是 25 度', answer: 'fact'},
-  {text: '下雨天好無聊', answer: 'opinion'},
-  {text: '今天有 3 朵雲', answer: 'fact'},
-  {text: '我覺得夏天最好玩', answer: 'opinion'}
-];
-let l2Score = 0;
-let l3Selected = 0;
+(() => {
+  const TOTAL_LEVELS = 3;
+  const S = { score: 0, current: 0, awarded: {} };
+  const el = id => document.getElementById(id);
 
-function initProgress() {
-  const bar = document.getElementById('progress-bar');
-  bar.innerHTML = '';
-  for (let i = 0; i < 3; i++) {
-    const dot = document.createElement('div');
-    dot.className = 'w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-lg font-bold text-gray-500';
-    dot.textContent = i + 1;
-    dot.id = 'dot-' + i;
-    bar.appendChild(dot);
-  }
-}
-function setProgress(level) {
-  for (let i = 0; i < 3; i++) {
-    const dot = document.getElementById('dot-' + i);
-    if (i < level) {
-      dot.className = 'w-10 h-10 rounded-full bg-green-400 flex items-center justify-center text-lg font-bold text-white shine';
-      dot.textContent = '✓';
-    } else if (i === level) {
-      dot.className = 'w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center text-lg font-bold text-purple-900 pulse';
-      dot.textContent = i + 1;
+  function addScore(pts) { S.score += pts; el('score-display').textContent = S.score; }
+  function awardOnce(key, pts) { if (!S.awarded[key]) { S.awarded[key] = true; addScore(pts); } }
+
+  function updateDots() {
+    const map = [
+      { dot: 'dot-1', level: 1 }, { dot: 'dot-2', level: 2 },
+      { dot: 'dot-3', level: 3 }, { dot: 'dot-f', level: 99 }
+    ];
+    map.forEach(({ dot, level }) => {
+      const d = el(dot);
+      d.classList.remove('done', 'active', 'todo');
+      if (level < S.current) d.classList.add('done');
+      else if (level === S.current || (level === 99 && S.current > TOTAL_LEVELS)) d.classList.add('active');
+      else d.classList.add('todo');
+    });
+    for (let i = 1; i <= 3; i++) {
+      const ln = el('line-' + i);
+      if (ln) ln.style.background = (i < S.current) ? '#a78bfa' : '#e5e7eb';
     }
   }
-}
-function startGame() {
-  document.getElementById('intro').classList.add('hide');
-  document.getElementById('level1').classList.remove('hide');
-  document.getElementById('level1').classList.add('popin');
-  initProgress();
-  setProgress(0);
-  showL1Question();
-}
-function showL1Question() {
-  const q = l1Questions[l1Index];
-  document.getElementById('l1-question').textContent = q.text;
-  document.getElementById('l1-target').querySelector('.bounce').textContent = q.emoji;
-  document.getElementById('l1-feedback').textContent = '';
-}
-function l1Choose(choice, btn) {
-  const q = l1Questions[l1Index];
-  const fb = document.getElementById('l1-feedback');
-  if (choice === q.hint) {
-    btn.classList.add('shine');
-    fb.innerHTML = '<span class="text-green-600">🎉 答對了！好棒！</span>';
-    confetti();
-    setTimeout(() => {
-      l1Index++;
-      if (l1Index < l1Questions.length) {
-        showL1Question();
-        btn.classList.remove('shine');
-      } else {
-        setProgress(1);
-        document.getElementById('level1').classList.add('hide');
-        document.getElementById('level2').classList.remove('hide');
-        document.getElementById('level2').classList.add('popin');
-        showL2Card();
-      }
-    }, 1200);
-  } else {
-    btn.classList.add('wiggle');
-    fb.innerHTML = '<span class="text-amber-600">😊 ' + q.hintText + ' 再試試！</span>';
-    setTimeout(() => btn.classList.remove('wiggle'), 500);
-  }
-}
 
-function showL2Card() {
-  const c = l2Cards[l2Index];
-  document.getElementById('l2-text').textContent = c.text;
-  document.getElementById('l2-feedback').textContent = '';
-  document.getElementById('l2-card').style.transform = '';
-  document.getElementById('l2-card').style.left = '';
-  document.getElementById('l2-card').style.top = '';
-  document.getElementById('l2-card').style.position = '';
-}
+  const SCREENS = ['intro', 'level-1', 'level-2', 'level-3', 'level-final'];
 
-// 拖拉邏輯（支援 mouse 與 touch）
-let dragData = null;
-function startDrag(e) {
-  e.preventDefault();
-  const card = document.getElementById('l2-card');
-  const rect = card.getBoundingClientRect();
-  const pt = e.touches ? e.touches[0] : e;
-  dragData = {
-    startX: pt.clientX,
-    startY: pt.clientY,
-    origX: rect.left,
-    origY: rect.top,
-    width: rect.width,
-    height: rect.height
-  };
-  card.style.position = 'fixed';
-  card.style.left = rect.left + 'px';
-  card.style.top = rect.top + 'px';
-  card.style.zIndex = '100';
-  card.style.width = rect.width + 'px';
-  document.addEventListener('mousemove', onDrag);
-  document.addEventListener('touchmove', onDrag, {passive: false});
-  document.addEventListener('mouseup', endDrag);
-  document.addEventListener('touchend', endDrag);
-}
-function onDrag(e) {
-  if (!dragData) return;
-  e.preventDefault();
-  const pt = e.touches ? e.touches[0] : e;
-  const dx = pt.clientX - dragData.startX;
-  const dy = pt.clientY - dragData.startY;
-  const card = document.getElementById('l2-card');
-  card.style.left = (dragData.origX + dx) + 'px';
-  card.style.top = (dragData.origY + dy) + 'px';
-  // 高亮 dropzone
-  const overF = isOver(card, document.getElementById('l2-fact'));
-  const overO = isOver(card, document.getElementById('l2-opinion'));
-  document.getElementById('l2-fact').classList.toggle('dropzone-active', overF);
-  document.getElementById('l2-opinion').classList.toggle('dropzone-active', overO);
-}
-function isOver(dragEl, dropEl) {
-  const d = dragEl.getBoundingClientRect();
-  const z = dropEl.getBoundingClientRect();
-  const cx = d.left + d.width / 2;
-  const cy = d.top + d.height / 2;
-  return cx >= z.left && cx <= z.right && cy >= z.top && cy <= z.bottom;
-}
-function endDrag(e) {
-  if (!dragData) return;
-  const card = document.getElementById('l2-card');
-  const overF = isOver(card, document.getElementById('l2-fact'));
-  const overO = isOver(card, document.getElementById('l2-opinion'));
-  document.getElementById('l2-fact').classList.remove('dropzone-active');
-  document.getElementById('l2-opinion').classList.remove('dropzone-active');
-  document.removeEventListener('mousemove', onDrag);
-  document.removeEventListener('touchmove', onDrag);
-  document.removeEventListener('mouseup', endDrag);
-  document.removeEventListener('touchend', endDrag);
-  dragData = null;
-  const c = l2Cards[l2Index];
-  const fb = document.getElementById('l2-feedback');
-  let correctZone = null;
-  if (overF) correctZone = 'fact';
-  if (overO) correctZone = 'opinion';
-  if (correctZone === c.answer) {
-    fb.innerHTML = '<span class="text-green-600">🎉 答對了！你會分辨了！</span>';
-    confetti();
-    l2Score++;
-    setTimeout(() => {
-      l2Index++;
-      if (l2Index < l2Cards.length) {
-        showL2Card();
-      } else {
-        setProgress(2);
-        document.getElementById('level2').classList.add('hide');
-        document.getElementById('level3').classList.remove('hide');
-        document.getElementById('level3').classList.add('popin');
-      }
-    }, 1200);
-  } else if (correctZone) {
-    fb.innerHTML = '<span class="text-amber-600">😊 想一想，再試試！📊 看得到的是事實，💭 覺得的是意見</span>';
-    card.classList.add('wiggle');
-    // 回到原位
-    setTimeout(() => {
-      card.style.position = '';
-      card.style.left = '';
-      card.style.top = '';
-      card.classList.remove('wiggle');
-    }, 500);
-  } else {
-    // 沒拉到任何區域，放回原位
-    card.style.position = '';
-    card.style.left = '';
-    card.style.top = '';
-  }
-}
-
-function l3Choose(btn, isGood) {
-  if (btn.dataset.selected === 'yes') return;
-  btn.dataset.selected = 'yes';
-  const fb = document.getElementById('l3-feedback');
-  if (isGood) {
-    btn.classList.add('shine');
-    btn.classList.remove('bg-purple-200');
-    btn.classList.add('bg-green-300');
-    l3Selected++;
-    document.getElementById('l3-count').textContent = '已選：' + l3Selected + ' / 4';
-    confetti();
-    if (l3Selected === 4) {
-      fb.innerHTML = '<span class="text-green-600">🎉 全部問題都找到了！超級偵探！</span>';
-      document.getElementById('l3-done').classList.remove('hide');
+  window.gotoLevel = function(n) {
+    SCREENS.forEach(s => el(s) && el(s).classList.add('hide'));
+    S.current = n;
+    updateDots();
+    if (n === 0) {
+      el('intro').classList.remove('hide'); el('intro').classList.add('popin');
+    } else if (n >= 1 && n <= TOTAL_LEVELS) {
+      const sec = el('level-' + n);
+      sec.classList.remove('hide'); sec.classList.add('popin');
     } else {
-      fb.innerHTML = '<span class="text-green-600">👍 好問題！</span>';
+      el('level-final').classList.remove('hide'); el('level-final').classList.add('popin');
+      el('final-score').textContent = S.score;
+      confetti(); setTimeout(confetti, 600);
     }
-  } else {
-    btn.classList.add('wiggle');
-    fb.innerHTML = '<span class="text-amber-600">😊 這個不是偵探問題，想想看咕咕的問號小拳頭！</span>';
-    setTimeout(() => {
-      btn.classList.remove('wiggle');
-      btn.dataset.selected = '';
-    }, 800);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  function confetti() {
+    const colors = ['#fbbf24','#f472b6','#a78bfa','#60a5fa','#f97316','#4ade80'];
+    for (let i = 0; i < 45; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = (Math.random() * 100) + 'vw';
+      c.style.top = '40vh';
+      c.style.background = colors[i % colors.length];
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '3px';
+      document.body.appendChild(c);
+      const dx = (Math.random() - 0.5) * 700, dy = (Math.random() - 0.4) * 700;
+      c.animate([
+        { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy}px) rotate(720deg)`, opacity: 0 }
+      ], { duration: 1600, easing: 'cubic-bezier(.17,.67,.83,.67)' });
+      setTimeout(() => c.remove(), 1700);
+    }
   }
-}
-function l3Done() {
-  setProgress(3);
-  document.getElementById('level3').classList.add('hide');
-  document.getElementById('finale').classList.remove('hide');
-  document.getElementById('finale').classList.add('popin');
-  bigConfetti();
-}
 
-function confetti() {
-  const colors = ['#fbbf24', '#a78bfa', '#ec4899', '#22c55e', '#3b82f6'];
-  for (let i = 0; i < 30; i++) {
-    const d = document.createElement('div');
-    d.className = 'confetti';
-    d.style.background = colors[Math.floor(Math.random() * colors.length)];
-    d.style.left = (50 + (Math.random() - 0.5) * 40) + '%';
-    d.style.top = '40%';
-    document.body.appendChild(d);
-    const angle = Math.random() * Math.PI * 2;
-    const speed = 100 + Math.random() * 200;
-    const vx = Math.cos(angle) * speed;
-    const vy = Math.sin(angle) * speed - 200;
-    d.animate([
-      {transform: 'translate(0,0) rotate(0)', opacity: 1},
-      {transform: `translate(${vx}px, ${vy + 500}px) rotate(720deg)`, opacity: 0}
-    ], {duration: 1500, easing: 'ease-out'});
-    setTimeout(() => d.remove(), 1500);
+  function bearReact(fbId, correct) {
+    const fb = el(fbId);
+    fb.classList.remove('hide');
+    if (correct) { fb.textContent = '🎉 答對啦！真厲害！'; fb.className = 'text-2xl text-center font-bold mt-3 text-purple-500 popin'; }
+    else { fb.textContent = '😊 哎呀！再想想～'; fb.className = 'text-2xl text-center font-bold mt-3 text-orange-500'; }
   }
-}
-function bigConfetti() {
-  for (let i = 0; i < 5; i++) setTimeout(confetti, i * 300);
-}
 
-function restart() {
-  currentLevel = 0;
-  l1Index = 0;
-  l2Index = 0;
-  l2Score = 0;
-  l3Selected = 0;
-  document.querySelectorAll('#level3 button').forEach(b => {
-    b.dataset.selected = '';
-    b.classList.remove('shine', 'bg-green-300', 'wiggle');
-    if (!b.textContent.includes('巧克力')) b.classList.add('bg-purple-200');
-  });
-  document.getElementById('l3-count').textContent = '已選：0 / 4';
-  document.getElementById('l3-feedback').textContent = '';
-  document.getElementById('l3-done').classList.add('hide');
-  document.getElementById('finale').classList.add('hide');
-  document.getElementById('intro').classList.remove('hide');
-  initProgress();
-}
+  // Level 1 (30分) — 問大人 vs 自己猜猜看
+  const L1_ITEMS = [
+    { id: 'hurt',   emoji: '🤕', label: '身體受傷了', zone: 'ask'   },
+    { id: 'news',   emoji: '📰', label: '聽到奇怪消息', zone: 'ask' },
+    { id: 'lost',   emoji: '😰', label: '走丟找不到路', zone: 'ask'  },
+    { id: 'color',  emoji: '🌈', label: '天空是什麼顏色', zone: 'guess' },
+    { id: 'count',  emoji: '✏️', label: '數看看有幾顆', zone: 'guess' },
+    { id: 'feel',   emoji: '😊', label: '猜猜朋友喜歡什麼', zone: 'guess' }
+  ];
 
-// 初始化
-initProgress();
+  let l1Correct = 0, dragged1 = null;
+
+  function loadLevel1() {
+    l1Correct = 0; dragged1 = null;
+    el('l1-feedback').classList.add('hide');
+    document.querySelectorAll('#level-1 .dz-placed').forEach(dz => dz.innerHTML = '');
+    const box = el('l1-items');
+    box.innerHTML = '';
+    const items = L1_ITEMS.slice().sort(() => Math.random() - 0.5);
+    items.forEach(it => {
+      const d = document.createElement('div');
+      d.className = 'drag-item bg-white border-4 border-purple-300 rounded-2xl p-3 text-center shadow-md w-28';
+      d.draggable = true;
+      d.dataset.id = it.id; d.dataset.zone = it.zone;
+      d.innerHTML = `<div class="text-4xl">${it.emoji}</div><div class="text-sm font-bold text-gray-700 mt-1">${it.label}</div>`;
+      d.addEventListener('dragstart', () => { dragged1 = d; d.classList.add('dragging'); });
+      d.addEventListener('dragend', () => d.classList.remove('dragging'));
+      d.addEventListener('click', () => {
+        if (!d.dataset.zone) return;
+        document.querySelectorAll('#l1-items .drag-item').forEach(x => x.classList.remove('ring-4','ring-purple-400'));
+        dragged1 = d; d.classList.add('ring-4','ring-purple-400');
+      });
+      box.appendChild(d);
+    });
+    document.querySelectorAll('#level-1 .drop-zone').forEach(zone => {
+      zone.ondragover = e => { e.preventDefault(); zone.classList.add('over'); };
+      zone.ondragleave = () => zone.classList.remove('over');
+      zone.ondrop = e => { e.preventDefault(); zone.classList.remove('over'); handleDrop1(zone); };
+      zone.onclick = () => { if (dragged1) handleDrop1(zone); };
+    });
+  }
+
+  function handleDrop1(zone) {
+    if (!dragged1) return;
+    const fb = el('l1-feedback');
+    const correct = dragged1.dataset.zone === zone.dataset.zone;
+    if (correct) {
+      dragged1.classList.remove('ring-4','ring-purple-400','dragging');
+      dragged1.classList.add('popin');
+      dragged1.style.cursor = 'default'; dragged1.draggable = false;
+      delete dragged1.dataset.zone;
+      zone.querySelector('.dz-placed').appendChild(dragged1);
+      l1Correct++;
+      fb.classList.remove('hide');
+      fb.textContent = `✨ 放對了！（${l1Correct}/${L1_ITEMS.length}）`;
+      fb.className = 'text-xl text-center font-bold mt-4 text-purple-500';
+      if (l1Correct === L1_ITEMS.length) {
+        awardOnce('L1', 30);
+        fb.textContent = '🎉 全部放對了！咕咕好開心！';
+        fb.className = 'text-2xl text-center font-bold mt-4 text-purple-500 popin';
+        confetti(); setTimeout(() => gotoLevel(2), 2000);
+      }
+    } else {
+      dragged1.classList.add('wiggle');
+      setTimeout(() => { if(dragged1) dragged1.classList.remove('wiggle'); }, 400);
+      fb.classList.remove('hide');
+      fb.textContent = '😊 不對喔！再試試！';
+      fb.className = 'text-xl text-center font-bold mt-4 text-orange-500';
+    }
+    dragged1 = null;
+  }
+
+  // Level 2 (30分)
+  const L2_CORRECT = { 1: 'ask', 2: 'check', 3: 'verify' };
+
+  window.l2Pick = function(qNum, btn) {
+    const opts = btn.closest('div.grid').querySelectorAll('button');
+    if (Array.from(opts).some(b => b.style.pointerEvents === 'none')) return;
+    const correct = btn.dataset.val === L2_CORRECT[qNum];
+    bearReact('l2-q' + qNum + '-fb', correct);
+    opts.forEach(b => b.style.pointerEvents = 'none');
+    btn.style.border = correct ? '4px solid #a78bfa' : '4px solid #f87171';
+    btn.style.background = correct ? '#ede9fe' : '#fee2e2';
+    if (correct) awardOnce('L2-q' + qNum, 10);
+    const delay = 1200;
+    if (qNum === 1) setTimeout(() => { el('l2-q2-wrap').classList.remove('hide'); el('l2-q2-wrap').classList.add('popin'); }, delay);
+    else if (qNum === 2) setTimeout(() => { el('l2-q3-wrap').classList.remove('hide'); el('l2-q3-wrap').classList.add('popin'); }, delay);
+    else if (qNum === 3) setTimeout(() => gotoLevel(3), delay + 600);
+  };
+
+  function resetLevel2() {
+    ['l2-q2-wrap','l2-q3-wrap'].forEach(id => { el(id).classList.add('hide'); el(id).classList.remove('popin'); });
+    ['l2-q1-fb','l2-q2-fb','l2-q3-fb'].forEach(id => el(id).classList.add('hide'));
+    document.querySelectorAll('#level-2 button.promise-card').forEach(b => { b.style.pointerEvents = ''; b.style.border = ''; b.style.background = ''; });
+  }
+
+  // Level 3 (15分)
+  const l3Chosen = new Set();
+
+  window.l3Toggle = function(btn) {
+    if (btn.disabled) return;
+    const id = btn.dataset.id;
+    if (l3Chosen.has(id)) { l3Chosen.delete(id); btn.classList.remove('chosen'); }
+    else { l3Chosen.add(id); btn.classList.add('chosen'); }
+    el('l3-count').textContent = l3Chosen.size;
+    el('l3-submit-btn').disabled = l3Chosen.size < 2;
+    el('l3-feedback').classList.add('hide');
+  };
+
+  window.l3Submit = function() {
+    if (l3Chosen.size < 2) return;
+    awardOnce('L3', 15);
+    const fb = el('l3-feedback');
+    fb.classList.remove('hide');
+    fb.textContent = '🎉 守則立好了！你是真正的小問號偵探！';
+    fb.className = 'text-2xl text-center font-bold mt-2 text-purple-500 popin';
+    confetti();
+    document.querySelectorAll('#l3-promises button').forEach(b => b.disabled = true);
+    el('l3-submit-btn').disabled = true;
+    setTimeout(() => gotoLevel(TOTAL_LEVELS + 1), 2000);
+  };
+
+  function resetLevel3() {
+    l3Chosen.clear();
+    el('l3-count').textContent = '0';
+    el('l3-feedback').classList.add('hide');
+    el('l3-submit-btn').disabled = true;
+    document.querySelectorAll('#l3-promises button').forEach(b => { b.classList.remove('chosen'); b.disabled = false; });
+  }
+
+  // Final (5分)
+  let smileyPicked = false, favPicked = false;
+
+  window.rateSmiley = function(val) {
+    ['sm-1','sm-2','sm-3'].forEach((id,i) => {
+      el(id).style.opacity = (i+1 <= val) ? '1' : '0.35';
+      el(id).style.transform = (i+1 === val) ? 'scale(1.3)' : '';
+    });
+    const msgs = ['😞 沒關係，下次再來！', '😊 謝謝你的回覆！', '🤩 哇，咕咕好高興！'];
+    const fb = el('smiley-fb');
+    fb.classList.remove('hide'); fb.textContent = msgs[val - 1];
+    smileyPicked = true; checkFinalDone();
+  };
+
+  window.pickFav = function(btn) {
+    document.querySelectorAll('#fav-opts button').forEach(b => b.classList.remove('chosen'));
+    btn.classList.add('chosen');
+    el('fav-fb').classList.remove('hide'); el('fav-fb').textContent = '✨ 記下來了！';
+    favPicked = true; checkFinalDone();
+  };
+
+  function checkFinalDone() {
+    if (smileyPicked && favPicked) {
+      awardOnce('FINAL', 5);
+      el('final-score').textContent = S.score;
+      el('score-display').textContent = S.score;
+    }
+  }
+
+  const _origGoto = window.gotoLevel;
+  window.gotoLevel = function(n) {
+    if (n === 1) loadLevel1();
+    if (n === 2) resetLevel2();
+    if (n === 3) resetLevel3();
+    _origGoto(n);
+  };
+
+  gotoLevel(0);
+})();
 </script>
 
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
+</script>
 </body>
 </html>

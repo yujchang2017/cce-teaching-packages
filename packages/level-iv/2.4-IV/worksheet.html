@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>沒有蜜蜂的早餐 | 國中生物多樣性、氣候與糧食互動學習單 (2.4-IV)</title>
+<title>沒有蜜蜂的早餐 | 2.4-IV 生物多樣性、氣候與糧食互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#fef9c3,#ecfccb,#bbf7d0); min-height:100vh;}
@@ -11,204 +11,825 @@
   .btn { transition:all .18s; }
   .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
   .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:80px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
   .pop { animation: pop .5s ease;}
   @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
   .shake { animation: shake .4s;}
   @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#ca8a04; transform:scale(1.3);}
+  .progress-dot.done { background:#65a30d;}
   .fade-in { animation: fade .4s ease;}
   @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
-  textarea.cer { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem;}
   .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
-  .section-title { background: linear-gradient(90deg,#fcd34d,#84cc16); -webkit-background-clip:text; background-clip:text; color:transparent; font-weight:800;}
+  svg.loop text { font-size:11px; pointer-events:none;}
+  svg.loop .loop-slot { cursor: pointer; }
+  svg.loop .loop-slot.over { fill:#fde68a; stroke-width:3; }
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.92rem;}
+  .opt:hover { background:#f8fafc; }
+  .opt.sel { border-color:#ca8a04; background:#fef9c3;}
+  .opt.correct { border-color:#16a34a; background:#dcfce7;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.4rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
+  .flash-card { perspective:600px; }
+  .flash-inner { transition: transform .5s; transform-style: preserve-3d; position:relative; min-height:90px; }
+  .flash-inner.flipped { transform: rotateY(180deg); }
+  .flash-face { backface-visibility:hidden; position:absolute; width:100%; }
+  .flash-back { transform: rotateY(180deg); }
 </style>
 </head>
 <body class="p-4 md:p-8">
-<div class="max-w-4xl mx-auto space-y-5">
-
-<div class="card p-5">
-  <h1 class="text-2xl md:text-3xl section-title mb-2">沒有蜜蜂的早餐 🐝🌾</h1>
-  <p class="text-sm text-gray-600">2.4-IV｜生物多樣性、氣候與糧食生產｜國中 13–15 歲｜繁體中文</p>
-  <p class="text-xs text-gray-500 mt-1">共 8 個單元 × 6 大深度題型（開放反思 / 系統思考 / 倫理兩難 / CER / 資料詮釋 / 後設認知）＋ 專題任務</p>
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
 </div>
+<div class="max-w-4xl mx-auto">
 
-<!-- §1 基礎配對：授粉依賴的食物 -->
-<div class="card p-5">
-  <h2 class="text-xl font-bold text-lime-700">§1 食物 × 授粉者 配對（基礎）</h2>
-  <p class="text-sm text-gray-600 mb-3">以下食物中，哪些高度依賴動物授粉？勾選（正解 5 項）。</p>
-  <div id="q1" class="grid grid-cols-2 md:grid-cols-3 gap-2"></div>
-  <button class="btn bg-lime-500 text-white px-4 py-2 rounded-lg mt-3" onclick="checkQ1()">提交</button>
-  <div id="q1-result" class="mt-2 text-sm"></div>
-</div>
-
-<!-- §2 資料詮釋（depth: 資料詮釋） -->
-<div class="card p-5">
-  <h2 class="text-xl font-bold text-amber-700">§2 資料詮釋：花期錯位與蜂群消失</h2>
-  <p class="text-sm text-gray-600 mb-2">TCCIP：臺灣百年升溫約 1.6°C（全球 2 倍）；IPBES：全球授粉服務價值 2,350–5,770 億美元/年。</p>
-  <p class="text-sm mb-2">問題：若暖冬使某果園花期提早 10 天，但蜂群尚未結束冬眠，下列哪個現象最可能發生？請選擇並於下方說明『你是依據哪個資料推論』。</p>
-  <select id="q2" class="border rounded px-2 py-1 w-full mb-2">
-    <option value="">-- 選擇 --</option>
-    <option value="a">A. 果園產量暴增（花多）</option>
-    <option value="b">B. 花掉了卻沒結果，產量下降</option>
-    <option value="c">C. 蜂群繁殖加速，採蜜增加</option>
-    <option value="d">D. 沒有影響，因為風也能授粉</option>
-  </select>
-  <textarea id="q2r" class="cer" placeholder="我根據哪個資料推論？（至少 30 字）"></textarea>
-  <button class="btn bg-amber-500 text-white px-4 py-2 rounded-lg mt-2" onclick="checkQ2()">提交</button>
-  <div id="q2-result" class="mt-2 text-sm"></div>
-</div>
-
-<!-- §3 系統思考（depth: 系統思考） -->
-<div class="card p-5">
-  <h2 class="text-xl font-bold text-emerald-700">§3 系統思考：工業化農業的連鎖反應</h2>
-  <p class="text-sm text-gray-600 mb-2">食物系統佔全球溫室氣體 21–37%。請用下方文字方塊繪製『因果鏈』（至少 4 個節點、2 條回饋迴圈）。</p>
-  <p class="text-xs text-gray-500 mb-2">示例：單一栽培 → 授粉者棲地減少 → 授粉失敗 → 果蔬減產 → 農民更依賴農藥 → 授粉者再減少（正反饋）</p>
-  <textarea id="q3" class="cer" rows="5" placeholder="請寫出你的系統因果鏈（箭頭用 → 或 ↑↓ 表示）"></textarea>
-  <button class="btn bg-emerald-500 text-white px-4 py-2 rounded-lg mt-2" onclick="saveLocal('q3')">儲存</button>
-  <div id="q3-result" class="mt-2 text-sm"></div>
-</div>
-
-<!-- §4 倫理兩難（depth: 倫理兩難） -->
-<div class="card p-5">
-  <h2 class="text-xl font-bold text-rose-700">§4 倫理兩難：類尼古丁農藥禁用？</h2>
-  <p class="text-sm text-gray-600 mb-2">某蘋果農民若不用類尼古丁農藥，將損失 30% 作物；用了蜂群受害。你是農政官員，會怎麼做？</p>
-  <div class="space-y-1 mb-2 text-sm">
-    <label><input type="radio" name="q4" value="A"> A. 完全禁止（保護蜂群第一）</label><br>
-    <label><input type="radio" name="q4" value="B"> B. 限制使用（只在非花期）</label><br>
-    <label><input type="radio" name="q4" value="C"> C. 不介入（交給市場）</label><br>
-    <label><input type="radio" name="q4" value="D"> D. 補貼農民轉型有機</label>
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-amber-700">🐝 沒有蜜蜂的早餐</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『糧食系統偵探』：5 個任務，從授粉者到糧食安全，走完你就是行動農業公民。</p>
   </div>
-  <textarea id="q4r" class="cer" rows="4" placeholder="寫下你的三個理由，並至少包含一個你不同意的觀點（至少 80 字）"></textarea>
-  <button class="btn bg-rose-500 text-white px-4 py-2 rounded-lg mt-2" onclick="saveLocal('q4')">儲存</button>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">偵探積分</div>
+    <div class="text-2xl font-bold text-amber-600"><span id="score">0</span> / 80</div>
+  </div>
 </div>
 
-<!-- §5 資料詮釋加強（depth: 資料詮釋） -->
-<div class="card p-5">
-  <h2 class="text-xl font-bold text-sky-700">§5 臺灣糧食自給率與進口依賴</h2>
-  <p class="text-sm text-gray-600 mb-2">臺灣熱量自給率 30–32%；黃豆、小麥、玉米自給率 &lt;5%。</p>
-  <p class="text-sm mb-2">計算：假設你一天吃 2000 大卡，若進口中斷一週，你每天可能少獲得多少熱量？請選擇並簡述理由。</p>
-  <select id="q5" class="border rounded px-2 py-1 w-full mb-2">
-    <option value="">-- 選擇 --</option>
-    <option value="a">A. 約 400 大卡</option>
-    <option value="b">B. 約 700 大卡</option>
-    <option value="c">C. 約 1400 大卡</option>
-    <option value="d">D. 不會有影響</option>
-  </select>
-  <textarea id="q5r" class="cer" placeholder="計算過程與資料來源（至少 30 字）"></textarea>
-  <button class="btn bg-sky-500 text-white px-4 py-2 rounded-lg mt-2" onclick="checkQ5()">提交</button>
-  <div id="q5-result" class="mt-2 text-sm"></div>
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">配對</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">資料</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">論證</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">專題</span>
 </div>
 
-<!-- §6 開放反思（depth: 開放反思 ×2） -->
-<div class="card p-5">
-  <h2 class="text-xl font-bold text-violet-700">§6 開放反思（二題）</h2>
-  <p class="text-sm text-gray-700 font-semibold mt-3">反思 A：有機蔬菜貴 30%，而你家經濟條件不允許，你還能做哪些不花更多錢的環保食選擇？請寫出至少三項。</p>
-  <textarea id="q6a" class="cer" rows="3" placeholder="至少 60 字"></textarea>
-  <p class="text-sm text-gray-700 font-semibold mt-3">反思 B：糧食自給率 30% 的臺灣，面對氣候變遷應優先做什麼（提高自給率？多元進口？發展垂直農業？改變飲食？）？請列出你的優先順序與一個可能的反對意見。</p>
-  <textarea id="q6b" class="cer" rows="3" placeholder="至少 80 字"></textarea>
-  <button class="btn bg-violet-500 text-white px-4 py-2 rounded-lg mt-2" onclick="saveLocal('q6')">儲存</button>
-</div>
+<!-- ===== T1: 授粉依賴配對（去直覺化） ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🍎</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 1｜糧食授粉依賴配對</h2>
+      <p class="text-sm text-slate-700 mt-1">把 4 種食物拖到最符合其「授粉機制」的描述區。區域說明只描述植物的繁殖機制，不直接寫食物名稱——請根據植物學推論。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：糧食系統偵探實習生 ｜ 10 分</p>
+    </div>
+  </div>
 
-<!-- §7 專題任務 CER（depth: CER + 專題任務） -->
-<div class="card p-5">
-  <h2 class="text-xl font-bold text-orange-700">§7 專題任務：校園永續農業提案（CER）</h2>
-  <p class="text-sm text-gray-600 mb-2">三選一主題：A. 校園授粉者花園 / B. 每週一蔬食日 / C. 與在地小農共學</p>
-  <label class="text-sm font-semibold">主張（Claim）：我們學校應該…</label>
-  <textarea id="q7c" class="cer" rows="2"></textarea>
-  <label class="text-sm font-semibold mt-2 block">證據（Evidence）：至少引用 2 個 data_card 數據（如 dp1 75% 授粉依賴、dp3 牛肉碳足跡 60 kg、dp5 稻作減產 13–20%）</label>
-  <textarea id="q7e" class="cer" rows="3"></textarea>
-  <label class="text-sm font-semibold mt-2 block">理由（Reasoning）：證據為什麼支持主張？與 WSA 四面向哪一項最相關？</label>
-  <textarea id="q7r" class="cer" rows="3"></textarea>
-  <label class="text-sm font-semibold mt-2 block">可行動步驟（4 週計畫，含成效指標）</label>
-  <textarea id="q7s" class="cer" rows="4"></textarea>
-  <button class="btn bg-orange-500 text-white px-4 py-2 rounded-lg mt-2" onclick="saveLocal('q7')">儲存提案</button>
-</div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="animal">🍎 蘋果</div>
+    <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="wind">🌾 小麥</div>
+    <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="self">🍅 番茄</div>
+    <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="insect">☕ 咖啡</div>
+  </div>
 
-<!-- §8 後設認知（depth: 後設認知） -->
-<div class="card p-5">
-  <h2 class="text-xl font-bold text-teal-700">§8 後設認知：我的學習反思</h2>
-  <p class="text-sm text-gray-600 mb-2">回答以下三題（合計至少 80 字）：</p>
-  <p class="text-sm">1. 上這四節課之前，我對『吃』的想法是 ____；現在改變成 ____。</p>
-  <p class="text-sm">2. 今天哪一個數據最讓我驚訝？為什麼？</p>
-  <p class="text-sm">3. 我這一週要開始實踐的『一個飲食小行動』是 ____。</p>
-  <textarea id="q8" class="cer" rows="5" placeholder="至少 80 字的反思"></textarea>
-  <button class="btn bg-teal-500 text-white px-4 py-2 rounded-lg mt-2" onclick="saveLocal('q8')">完成學習單 🎉</button>
-  <div id="q8-result" class="mt-2 text-sm"></div>
-</div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="zones-box-1">
+    <div class="drop-zone p-3" data-accept="animal">
+      <div class="font-bold text-slate-700 text-sm">授粉機制 A
+        <div class="text-xs text-slate-500 mt-1">花朵顏色鮮豔、具蜜腺；花粉黏性高，附著於訪花動物身體；需要媒介物種將花粉從雄蕊攜帶至另一朵花的柱頭才能結果；如無傳粉者，結果率幾乎歸零</div>
+      </div>
+    </div>
+    <div class="drop-zone p-3" data-accept="wind">
+      <div class="font-bold text-slate-700 text-sm">授粉機制 B
+        <div class="text-xs text-slate-500 mt-1">花朵小且不顯眼，無蜜腺；花粉量極大、質地輕、表面光滑；依靠氣流大量散播；不需昆蟲媒介即可完成授粉；是主要的禾本科穀物授粉方式</div>
+      </div>
+    </div>
+    <div class="drop-zone p-3" data-accept="self">
+      <div class="font-bold text-slate-700 text-sm">授粉機制 C
+        <div class="text-xs text-slate-500 mt-1">雄蕊與雌蕊位於同一朵花且同時成熟；可藉震動（如蜂振翅）提高結實率，但也可靠自花授粉產果；即使無訪花者也能維持基本產量</div>
+      </div>
+    </div>
+    <div class="drop-zone p-3" data-accept="insect">
+      <div class="font-bold text-slate-700 text-sm">授粉機制 D
+        <div class="text-xs text-slate-500 mt-1">開白色或淡色小花，具香氣；花蜜主要吸引小型蜂類；需跨株異花授粉才能結出完整果實；種植在高海拔山坡時訪花昆蟲多樣性直接影響果實品質</div>
+      </div>
+    </div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <div class="nav-row">
+    <span></span>
+    <button id="btn-next-1" class="btn bg-amber-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
 
-<div class="card p-5 text-xs text-gray-500">
-  資料來源：FAO (2019)、IPBES (2016)、IPCC SRCCL (2019)、IPCC AR6 WG1 (2021)、TCCIP/NCDR、中華民國農業部、環境部氣候變遷署、MOE 教材《林農畜漁業生產與生物多樣性》《花不成蜜不就》《水資源》《維生基礎系統》《認識有機農耕作》。驗證日期：2026-04-16。
-</div>
+<!-- ===== T2: 資料詮釋（物候錯置 + 糧食自給率） ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📊</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 2｜資料詮釋：氣候變遷與糧食系統</h2>
+      <p class="text-sm text-slate-700 mt-1">下圖整合了物候錯置與臺灣糧食自給率資料。仔細觀察後回答問題。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：資料科學家 ｜ 15 分 ｜ <span class="chip bg-teal-100 text-teal-800">資料詮釋</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 420 210" class="w-full max-w-xl mx-auto block bg-slate-50 rounded mb-4">
+    <text x="210" y="17" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">氣候 × 授粉 × 糧食：關鍵數據</text>
+    <!-- 臺灣百年升溫 1.6°C -->
+    <text x="8" y="48" font-size="10" fill="#334155">臺灣升溫幅度（百年）</text>
+    <rect x="160" y="37" width="200" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="160" y="37" width="128" height="14" fill="#dc2626" rx="2"/>
+    <text x="364" y="48" font-size="9" fill="#dc2626" font-weight="bold">+1.6°C（全球 2×）</text>
+    <!-- 物候錯置風險 -->
+    <text x="8" y="72" font-size="10" fill="#334155">授粉服務年產值（全球）</text>
+    <rect x="160" y="61" width="200" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="160" y="61" width="170" height="14" fill="#f59e0b" rx="2"/>
+    <text x="334" y="72" font-size="9" fill="#92400e" font-weight="bold">2,350–5,770 億美元</text>
+    <!-- 臺灣熱量自給率 30% -->
+    <text x="8" y="96" font-size="10" fill="#334155">臺灣熱量自給率</text>
+    <rect x="160" y="85" width="200" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="160" y="85" width="60" height="14" fill="#7c3aed" rx="2"/>
+    <text x="224" y="96" font-size="9" fill="#6b21a8" font-weight="bold">30–32%</text>
+    <!-- 黃豆/小麥/玉米自給率 <5% -->
+    <text x="8" y="120" font-size="10" fill="#334155">黃豆、小麥、玉米自給率</text>
+    <rect x="160" y="109" width="200" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="160" y="109" width="10" height="14" fill="#0ea5e9" rx="2"/>
+    <text x="174" y="120" font-size="9" fill="#0369a1" font-weight="bold">&lt;5%</text>
+    <!-- 稻作減產預測 -->
+    <text x="8" y="144" font-size="10" fill="#334155">稻作減產預測（+2°C 情境）</text>
+    <rect x="160" y="133" width="200" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="160" y="133" width="80" height="14" fill="#ef4444" rx="2"/>
+    <text x="244" y="144" font-size="9" fill="#b91c1c" font-weight="bold">-13～20%</text>
+    <!-- 花期提早 -->
+    <text x="8" y="168" font-size="10" fill="#334155">暖冬花期提早天數（部分果樹）</text>
+    <rect x="160" y="157" width="200" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="160" y="157" width="46" height="14" fill="#10b981" rx="2"/>
+    <text x="210" y="168" font-size="9" fill="#065f46" font-weight="bold">約 10 天</text>
+    <text x="210" y="202" text-anchor="middle" font-size="9" fill="#64748b">資料來源：TCCIP、IPBES 2016、FAO、農業部</text>
+  </svg>
+
+  <div class="space-y-4">
+    <div>
+      <p class="text-sm font-semibold mb-1">Q2-1｜若暖冬讓某果園花期提早 10 天，但蜂群尚未結束冬眠，最可能發生什麼？（單選，6 分）</p>
+      <div id="q21-opts"></div>
+      <p id="q21-fb" class="text-xs mt-1 text-slate-500"></p>
+    </div>
+    <div>
+      <p class="text-sm font-semibold mb-1">Q2-2｜由圖中數據推論：臺灣糧食安全面臨哪 <strong>2 項</strong>最直接的風險？（4 選 2，共 9 分）</p>
+      <div id="q22-opts" class="space-y-1"></div>
+      <p id="q22-fb" class="text-xs mt-1 text-slate-500"></p>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="1">← 上一關</button>
+    <button id="btn-next-2" class="btn bg-teal-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T3: 系統思考｜農藥→授粉者→農業正反饋 ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-700">任務 3｜系統思考：工業化農業的惡化迴圈</h2>
+      <p class="text-sm text-slate-700 mt-1">農業大量使用農藥（特別是類尼古丁農藥），與授粉者族群之間形成一個正反饋惡化迴圈。把 4 張節點卡片拖到圖中正確位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統分析師 ｜ 15 分 ｜ <span class="chip bg-orange-100 text-orange-800">系統思考</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 540 235" class="loop w-full bg-slate-50 rounded mb-3">
+    <defs>
+      <marker id="arr3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L0,10 L10,5 z" fill="#64748b"/>
+      </marker>
+    </defs>
+    <!-- fixed start -->
+    <rect x="8" y="18" width="155" height="45" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="85" y="38" text-anchor="middle" fill="#991b1b" font-weight="bold">農藥使用量增加</text>
+    <text x="85" y="55" text-anchor="middle" fill="#991b1b">（類尼古丁農藥）</text>
+    <!-- slot 1 -->
+    <rect x="190" y="18" width="152" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" class="loop-slot" data-slot="1"/>
+    <text x="266" y="40" text-anchor="middle" fill="#92400e" id="slot-1-text">（節點 1）</text>
+    <!-- slot 2 -->
+    <rect x="373" y="18" width="152" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" class="loop-slot" data-slot="2"/>
+    <text x="449" y="40" text-anchor="middle" fill="#92400e" id="slot-2-text">（節點 2）</text>
+    <!-- slot 3 -->
+    <rect x="373" y="130" width="152" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" class="loop-slot" data-slot="3"/>
+    <text x="449" y="152" text-anchor="middle" fill="#92400e" id="slot-3-text">（節點 3）</text>
+    <!-- slot 4 -->
+    <rect x="190" y="130" width="152" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" class="loop-slot" data-slot="4"/>
+    <text x="266" y="152" text-anchor="middle" fill="#92400e" id="slot-4-text">（節點 4）</text>
+    <!-- fixed end -->
+    <rect x="8" y="130" width="155" height="45" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="85" y="150" text-anchor="middle" fill="#1e40af" font-weight="bold">農民更依賴</text>
+    <text x="85" y="167" text-anchor="middle" fill="#1e40af">農藥 / 化肥（回饋）</text>
+    <!-- arrows -->
+    <line x1="163" y1="40" x2="187" y2="40" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <line x1="342" y1="40" x2="370" y2="40" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <line x1="449" y1="63" x2="449" y2="127" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <line x1="370" y1="152" x2="344" y2="152" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <line x1="187" y1="152" x2="163" y2="152" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <text x="168" y="36" font-size="9" fill="#64748b">導致</text>
+    <text x="346" y="36" font-size="9" fill="#64748b">導致</text>
+    <text x="452" y="98" font-size="9" fill="#64748b">導致</text>
+    <text x="346" y="148" font-size="9" fill="#64748b">導致</text>
+    <text x="165" y="148" font-size="9" fill="#64748b">加重</text>
+    <text x="270" y="108" text-anchor="middle" font-size="10" fill="#7c3aed" font-weight="bold">正回饋（惡化循環）</text>
+  </svg>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3" id="items-box-3">
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">蜜蜂及野蜂族群受損、授粉者數量減少</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">授粉服務品質下降、果實結實率降低</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">農業減產、作物品質降低，農民收入下滑</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">大量使用單一化肥促進短期產量，壓縮植物多樣性</div>
+  </div>
+  <div id="feedback-3" class="text-sm"></div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="2">← 上一關</button>
+    <button id="btn-next-3" class="btn bg-orange-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T4: CER + 倫理（類尼古丁農藥禁令） ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">⚖️</div>
+    <div>
+      <h2 class="text-xl font-bold text-violet-700">任務 4｜CER 論證（含倫理）：農藥禁令的兩難</h2>
+      <p class="text-sm text-slate-700 mt-1">某蘋果農若不用類尼古丁農藥，將損失 30% 作物；用了蜂群受害。翻閱 3 張政策牌，選出你認同的立場，再配對最合適的「證據」與「推理」。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：農政研究員 ｜ 20 分 ｜ <span class="chip bg-violet-100 text-violet-800">CER 論證</span> ｜ 此題無標準答案</p>
+    </div>
+  </div>
+
+  <!-- Flash cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+    <div class="flash-card rounded-xl border-2 border-red-300 overflow-hidden">
+      <button class="w-full bg-red-100 px-3 py-2 text-xs font-bold text-red-700 text-left" onclick="flipCard('card-a')">翻牌查看立場 A ↕</button>
+      <div class="flash-inner p-3 min-h-[80px]" id="card-a">
+        <div class="flash-face text-sm font-semibold text-red-800">立場 A：全面禁止</div>
+        <div class="flash-face flash-back text-xs text-slate-700">生態系服務（授粉）不可替代。短期農損可透過轉型補助解決；長期禁藥才能根本保護蜂群與糧食系統。</div>
+      </div>
+    </div>
+    <div class="flash-card rounded-xl border-2 border-amber-300 overflow-hidden">
+      <button class="w-full bg-amber-100 px-3 py-2 text-xs font-bold text-amber-700 text-left" onclick="flipCard('card-b')">翻牌查看立場 B ↕</button>
+      <div class="flash-inner p-3 min-h-[80px]" id="card-b">
+        <div class="flash-face text-sm font-semibold text-amber-800">立場 B：限制使用</div>
+        <div class="flash-face flash-back text-xs text-slate-700">只允許在作物非開花期施藥，同時設立緩衝區保護蜂群棲地。兼顧農業生產與生態保育。</div>
+      </div>
+    </div>
+    <div class="flash-card rounded-xl border-2 border-green-300 overflow-hidden">
+      <button class="w-full bg-green-100 px-3 py-2 text-xs font-bold text-green-700 text-left" onclick="flipCard('card-c')">翻牌查看立場 C ↕</button>
+      <div class="flash-inner p-3 min-h-[80px]" id="card-c">
+        <div class="flash-face text-sm font-semibold text-green-800">立場 C：補貼轉型有機</div>
+        <div class="flash-face flash-back text-xs text-slate-700">政府以農業補貼鼓勵農民轉型有機耕作，5 年內逐步淘汰類尼古丁農藥，確保農民生計不受衝擊。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-slate-50 rounded-lg p-3 mb-3">
+    <p class="text-xs font-bold text-slate-600 mb-2">▶ 選擇你支持的立場（6 分）</p>
+    <div id="stance-opts"></div>
+  </div>
+  <div class="bg-slate-50 rounded-lg p-3 mb-3">
+    <p class="text-xs font-bold text-slate-600 mb-2">▶ 選出最能支持你立場的「證據」（7 分）</p>
+    <div id="evid-opts"></div>
+    <p id="evid-fb" class="text-xs mt-1 text-slate-500"></p>
+  </div>
+  <div class="bg-slate-50 rounded-lg p-3 mb-3">
+    <p class="text-xs font-bold text-slate-600 mb-2">▶ 選出最合適的「推理」（7 分）</p>
+    <div id="reas-opts"></div>
+    <p id="reas-fb" class="text-xs mt-1 text-slate-500"></p>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="3">← 上一關</button>
+    <button id="btn-next-4" class="btn bg-violet-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T5: 校園/社區提案 ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🌱</div>
+    <div>
+      <h2 class="text-xl font-bold text-lime-700">任務 5｜校園永續農業行動提案</h2>
+      <p class="text-sm text-slate-700 mt-1">選擇一個你最想推動的校園永續行動，系統預填問題與步驟，你只需選定指標並確認 WSA 面向。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生農業委員 ｜ 15 分 ｜ <span class="chip bg-lime-100 text-lime-800">提案設計</span></p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-2 mb-4">
+    <button class="theme-btn btn border-2 border-amber-400 bg-amber-50 rounded-xl p-3 text-sm font-bold text-amber-800" data-theme="garden">🌸 校園授粉者花圃</button>
+    <button class="theme-btn btn border-2 border-green-400 bg-green-50 rounded-xl p-3 text-sm font-bold text-green-800" data-theme="veg">🥗 每週一蔬食日</button>
+    <button class="theme-btn btn border-2 border-sky-400 bg-sky-50 rounded-xl p-3 text-sm font-bold text-sky-800" data-theme="farmer">👩‍🌾 與在地小農共學</button>
+    <button class="theme-btn btn border-2 border-rose-400 bg-rose-50 rounded-xl p-3 text-sm font-bold text-rose-800" data-theme="waste">♻️ 校園廚餘減量行動</button>
+  </div>
+
+  <div id="proj-detail" class="hidden-screen space-y-3">
+    <div class="bg-lime-50 rounded-lg p-3 text-sm" id="proj-desc"></div>
+    <div>
+      <p class="text-sm font-semibold mb-1">▶ 選擇 1 個成效指標 KPI（3 分）</p>
+      <div id="kpi-opts" class="space-y-1"></div>
+    </div>
+    <div class="bg-white border rounded-lg p-3">
+      <p class="text-sm font-semibold mb-2">▶ WSA 四面向自檢（至少勾選 3 項，共 6 分）</p>
+      <label class="block text-sm mt-1"><input type="checkbox" class="wsa-cb mr-1"> 治理 Governance：提案送學生委員會或校務會議</label>
+      <label class="block text-sm mt-1"><input type="checkbox" class="wsa-cb mr-1"> 課程 Curriculum：結合自然、社會或健康跨科學習</label>
+      <label class="block text-sm mt-1"><input type="checkbox" class="wsa-cb mr-1"> 營運 Operations：改變學校餐廳採購或設備配置</label>
+      <label class="block text-sm mt-1"><input type="checkbox" class="wsa-cb mr-1"> 社群 Community：與家長會、在地農民或 NGO 合作</label>
+    </div>
+    <div id="proj-fb" class="text-sm"></div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="4">← 上一關</button>
+    <button id="btn-next-5" class="btn bg-lime-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並繼續 →</button>
+  </div>
+</section>
+
+<!-- ===== Final: 反思 ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🌾</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">最終反思</h2>
+      <p class="text-sm text-slate-700 mt-1">給自己一個評估——這堂課改變了你看「吃」這件事的方式嗎？</p>
+      <p class="text-xs text-slate-500 mt-1">5 分</p>
+    </div>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <p class="text-sm font-semibold mb-2">⭐ 這堂課讓我最驚訝的發現（1–5 星）</p>
+      <div class="flex gap-1" id="star-learn">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+    </div>
+    <div>
+      <p class="text-sm font-semibold mb-2">⭐ 我願意改變一個飲食習慣來支持生物多樣性（1–5 星）</p>
+      <div class="flex gap-1" id="star-act">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+    </div>
+    <div>
+      <p class="text-sm font-semibold mb-2">▶ 這週開始，你會先做哪一件事？</p>
+      <div id="impact-opts"></div>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="5">← 上一關</button>
+    <button id="btn-finish" class="btn bg-amber-600 text-white px-6 py-2 rounded-lg font-bold" disabled>完成學習單 🎉</button>
+  </div>
+</section>
+
+<!-- ===== Finale ===== -->
+<section id="finale" class="card p-6 hidden-screen fade-in text-center">
+  <div class="text-6xl mb-3">🏆</div>
+  <h2 class="text-2xl font-bold text-amber-700 mb-3">糧食系統偵探認證完成！</h2>
+  <p class="text-sm text-slate-700 mb-3">你完成了 5 個任務。你的飲食選擇，每一口都與生物多樣性、氣候與全球糧食系統相連。</p>
+  <p class="text-sm text-slate-600">最終分數：<span class="text-3xl font-bold text-amber-600" id="final-score">0</span> / 80</p>
+  <div class="mt-4 bg-amber-50 rounded-lg p-3 text-left text-sm">
+    <p class="font-semibold text-amber-800">📚 延伸資源</p>
+    <ul class="list-disc list-inside text-slate-700 text-xs mt-1 space-y-1">
+      <li>IPBES 授粉評估報告 — ipbes.net/pollination-assessment</li>
+      <li>FAO 糧食與農業狀況 — fao.org/state-of-food-and-agriculture</li>
+      <li>TCCIP 臺灣氣候變遷推估資訊平台 — tccip.ncdr.nat.gov.tw</li>
+      <li>農業部糧食安全資訊 — www.afa.gov.tw</li>
+    </ul>
+  </div>
+</section>
+
 </div>
 
 <script>
-// §1 data
-const q1foods = [
-  {name:'🍎 蘋果', pol:true},
-  {name:'🌾 稻米', pol:false},
-  {name:'🍓 草莓', pol:true},
-  {name:'☕ 咖啡', pol:true},
-  {name:'🌽 玉米', pol:false},
-  {name:'🫐 藍莓', pol:true},
-  {name:'🍚 小麥', pol:false},
-  {name:'🎃 南瓜', pol:true},
-  {name:'🥛 牛奶', pol:false}
-];
-const q1El = document.getElementById('q1');
-q1foods.forEach((f,i)=>{
-  q1El.innerHTML += `<label class="flex items-center gap-2 border rounded px-2 py-1 cursor-pointer hover:bg-lime-50"><input type="checkbox" data-i="${i}"> ${f.name}</label>`;
-});
-function checkQ1(){
-  let correct=0, total=0;
-  q1foods.forEach((f,i)=>{
-    const cb = document.querySelector(`#q1 input[data-i="${i}"]`);
-    if(f.pol) total++;
-    if(cb.checked===f.pol) correct++;
-  });
-  const score = Math.round(correct/q1foods.length*100);
-  document.getElementById('q1-result').innerHTML = `正確率 ${score}%（${correct}/${q1foods.length}）${score>=80?'✅ 很棒！':'🔁 再試一次'}`;
-}
+(() => {
+  'use strict';
+  const TOTAL_LEVELS = 5;
 
-function checkQ2(){
-  const v = document.getElementById('q2').value;
-  const r = document.getElementById('q2r').value;
-  if(v==='b' && r.length>=30){
-    document.getElementById('q2-result').innerHTML = '✅ 答對！物候錯置（phenological mismatch）是氣候變遷對授粉最隱性的傷害。';
-  } else {
-    document.getElementById('q2-result').innerHTML = '請檢查：正確答案為 B，且需至少 30 字的資料詮釋說明。';
+  /* ---- Score ---- */
+  let _score = 0;
+  const scoreEl = document.getElementById('score');
+  const awarded = {};
+  function awardOnce(key, pts) {
+    if (awarded[key]) return;
+    awarded[key] = true;
+    _score += pts;
+    scoreEl.textContent = _score;
   }
-}
 
-function checkQ5(){
-  const v = document.getElementById('q5').value;
-  if(v==='c'){
-    document.getElementById('q5-result').innerHTML = '✅ 接近答案：熱量自給 30% 代表約 70% 熱量進口，約 1400 大卡/日。';
-  } else {
-    document.getElementById('q5-result').innerHTML = '再想想：2000 × 70% = ?';
-  }
-}
-
-function saveLocal(key){
-  try{
-    const ids = {
-      q3:['q3'], q4:['q4r'], q6:['q6a','q6b'],
-      q7:['q7c','q7e','q7r','q7s'], q8:['q8']
-    }[key];
-    ids.forEach(id=>{
-      const el = document.getElementById(id);
-      if(el) localStorage.setItem('ws-2.4-IV-'+id, el.value);
-    });
-    alert('已儲存 ✅');
-    if(key==='q8'){
-      document.getElementById('q8-result').innerHTML = '🎉 完成！請截圖上傳至課程作業系統。';
+  /* ---- Navigation ---- */
+  function goto(n) {
+    document.querySelectorAll('section[id^="level-"], section#finale').forEach(s => s.classList.add('hidden-screen'));
+    const target = n === 'final' ? document.getElementById('level-final') : document.getElementById('level-' + n);
+    if (target) target.classList.remove('hidden-screen');
+    for (let i = 1; i <= TOTAL_LEVELS; i++) {
+      const d = document.getElementById('dot-' + i);
+      if (!d) continue;
+      if (i < n) { d.classList.remove('active'); d.classList.add('done'); }
+      else if (i === n) { d.classList.add('active'); d.classList.remove('done'); }
+      else { d.classList.remove('active', 'done'); }
     }
-  }catch(e){ alert('儲存失敗：'+e.message); }
-}
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-// restore
-['q3','q4r','q6a','q6b','q7c','q7e','q7r','q7s','q8','q2r','q5r'].forEach(id=>{
-  const saved = localStorage.getItem('ws-2.4-IV-'+id);
-  if(saved){ const el=document.getElementById(id); if(el) el.value=saved; }
-});
+  document.querySelectorAll('.btn-back').forEach(b => {
+    b.addEventListener('click', () => goto(Number(b.dataset.back)));
+  });
+
+  /* ---- Confetti ---- */
+  function confetti() {
+    for (let i = 0; i < 35; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = ['#f59e0b','#10b981','#6366f1','#ec4899','#0ea5e9'][Math.floor(Math.random() * 5)];
+      c.style.animationDelay = Math.random() * .8 + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 2800);
+    }
+  }
+
+  /* ---- Shuffle ---- */
+  function shuffleChildren(parent) {
+    const items = Array.from(parent.children);
+    for (let i = items.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      parent.appendChild(items[j]);
+      items.splice(j, 1);
+    }
+  }
+
+  /* ---- renderOpts ---- */
+  function renderOpts(wrap, items, name, onPick) {
+    wrap.innerHTML = '';
+    const shuffled = [...items].sort(() => Math.random() - 0.5);
+    shuffled.forEach(item => {
+      const d = document.createElement('div');
+      d.className = 'opt';
+      d.textContent = item.text;
+      d.addEventListener('click', () => {
+        wrap.querySelectorAll('.opt').forEach(o => o.classList.remove('sel', 'correct', 'wrong'));
+        d.classList.add('sel');
+        onPick(item, d, wrap);
+      });
+      wrap.appendChild(d);
+    });
+  }
+
+  /* ===================== T1: Drag-drop match ===================== */
+  shuffleChildren(document.getElementById('items-box-1'));
+  shuffleChildren(document.getElementById('zones-box-1'));
+
+  let t1Correct = 0;
+  const T1_TOTAL = 4;
+
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(it => {
+    it.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', it.dataset.match);
+      it.classList.add('dragging');
+      window._t1drag = it;
+    });
+    it.addEventListener('dragend', () => it.classList.remove('dragging'));
+  });
+
+  document.querySelectorAll('#zones-box-1 .drop-zone').forEach(z => {
+    z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('over'); });
+    z.addEventListener('dragleave', () => z.classList.remove('over'));
+    z.addEventListener('drop', e => {
+      e.preventDefault(); z.classList.remove('over');
+      const val = e.dataTransfer.getData('text/plain');
+      if (z.dataset.accept === val) {
+        const label = document.createElement('span');
+        label.className = 'text-emerald-700 font-bold text-xs ml-1';
+        label.textContent = ' ✓ ' + window._t1drag.textContent;
+        z.appendChild(label);
+        window._t1drag.remove();
+        t1Correct++;
+        z.classList.add('pop');
+        if (t1Correct === T1_TOTAL) {
+          document.getElementById('feedback-1').innerHTML = '<p class="text-emerald-600 font-bold">✓ 所有授粉機制配對正確！</p>';
+          document.getElementById('btn-next-1').disabled = false;
+          awardOnce('t1', 10);
+        }
+      } else {
+        z.classList.add('shake');
+        setTimeout(() => z.classList.remove('shake'), 400);
+      }
+    });
+  });
+
+  document.getElementById('btn-next-1').addEventListener('click', () => goto(2));
+
+  /* ===================== T2: Data interpretation ===================== */
+  const q21Items = [
+    { text: 'A. 花已開但沒有授粉者，果實無法結成，農業產量下降（物候錯置）', correct: true },
+    { text: 'B. 花期提早代表整個生長季提早，總產量不受影響', correct: false },
+    { text: 'C. 蜂群也會提早結束冬眠，配合花期開花採蜜', correct: false }
+  ];
+  let q21done = false;
+
+  renderOpts(document.getElementById('q21-opts'), q21Items, 'q21', (item, d) => {
+    if (q21done) return;
+    q21done = true;
+    if (item.correct) {
+      d.classList.remove('sel'); d.classList.add('correct');
+      document.getElementById('q21-fb').textContent = '✓ 正確！這就是「物候錯置」（phenological mismatch），氣候變遷對授粉最隱性的傷害。';
+      document.getElementById('q21-fb').className = 'text-xs mt-1 text-emerald-700';
+      awardOnce('q21', 6);
+    } else {
+      d.classList.remove('sel'); d.classList.add('wrong');
+      document.getElementById('q21-fb').textContent = '✗ 思考：蜂群的冬眠甦醒時間由溫度決定，不會自動配合花期——兩者「脫節」才是問題所在。';
+      document.getElementById('q21-fb').className = 'text-xs mt-1 text-rose-600';
+    }
+    checkT2Done();
+  });
+
+  const q22Items = [
+    { text: 'A. 稻作在升溫 2°C 情境下可能減產 13–20%，而稻米是主要熱量來源', correct: true },
+    { text: 'B. 臺灣熱量自給率僅 30%，進口中斷將造成嚴重缺口', correct: true },
+    { text: 'C. 歐盟已宣布禁止所有農業，所以臺灣也要禁農', correct: false },
+    { text: 'D. 全球授粉服務年產值高，因此臺灣授粉者不會受威脅', correct: false }
+  ];
+  const q22Selected = new Set();
+  let q22scored = false;
+
+  (function renderQ22() {
+    const wrap = document.getElementById('q22-opts');
+    const shuffled = [...q22Items].sort(() => Math.random() - 0.5);
+    shuffled.forEach(item => {
+      const label = document.createElement('label');
+      label.className = 'block text-sm cursor-pointer';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.className = 'mr-1';
+      cb.addEventListener('change', () => {
+        if (cb.checked) q22Selected.add(item.text);
+        else q22Selected.delete(item.text);
+        if (q22Selected.size === 2 && !q22scored) {
+          q22scored = true;
+          const correctTexts = q22Items.filter(x => x.correct).map(x => x.text);
+          const bothCorrect = correctTexts.every(t => q22Selected.has(t));
+          if (bothCorrect) {
+            document.getElementById('q22-fb').textContent = '✓ 正確！稻作減產 + 低自給率是臺灣糧食安全最直接的風險。';
+            document.getElementById('q22-fb').className = 'text-xs mt-1 text-emerald-700';
+            awardOnce('q22', 9);
+          } else {
+            document.getElementById('q22-fb').textContent = '✗ 找找哪些選項直接來自圖表數據？C 和 D 均非圖表所示。';
+            document.getElementById('q22-fb').className = 'text-xs mt-1 text-rose-600';
+          }
+          checkT2Done();
+        }
+      });
+      label.appendChild(cb);
+      label.appendChild(document.createTextNode(item.text));
+      wrap.appendChild(label);
+    });
+  })();
+
+  function checkT2Done() {
+    if (q21done && q22scored) document.getElementById('btn-next-2').disabled = false;
+  }
+
+  document.getElementById('btn-next-2').addEventListener('click', () => goto(3));
+
+  /* ===================== T3: Loop drag-to-slot ===================== */
+  const loopSlots = document.querySelectorAll('#level-3 .loop-slot');
+  const loopItems = document.querySelectorAll('#items-box-3 .drag-item');
+  const slotFilled = {};
+  let t3Correct = 0;
+  const T3_TOTAL = 4;
+
+  shuffleChildren(document.getElementById('items-box-3'));
+
+  loopItems.forEach(it => {
+    it.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', it.dataset.loop);
+      it.classList.add('dragging');
+      window._t3drag = it;
+    });
+    it.addEventListener('dragend', () => it.classList.remove('dragging'));
+  });
+
+  loopSlots.forEach(z => {
+    z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('over'); });
+    z.addEventListener('dragleave', () => z.classList.remove('over'));
+    z.addEventListener('drop', e => {
+      e.preventDefault(); z.classList.remove('over');
+      const val = e.dataTransfer.getData('text/plain');
+      const slot = z.dataset.slot;
+      if (slotFilled[slot]) return;
+      if (val === slot) {
+        slotFilled[slot] = true;
+        const textEl = document.getElementById('slot-' + slot + '-text');
+        if (textEl) {
+          textEl.textContent = window._t3drag.textContent.substring(0, 14);
+          textEl.setAttribute('fill', '#065f46');
+          textEl.setAttribute('font-weight', 'bold');
+        }
+        window._t3drag.remove();
+        t3Correct++;
+        if (t3Correct === T3_TOTAL) {
+          document.getElementById('feedback-3').innerHTML = '<p class="text-emerald-600 font-bold">✓ 農業惡化正回饋迴路完整！</p>';
+          document.getElementById('btn-next-3').disabled = false;
+          awardOnce('t3', 15);
+        }
+      } else {
+        z.classList.add('shake');
+        setTimeout(() => z.classList.remove('shake'), 400);
+      }
+    });
+  });
+
+  document.getElementById('btn-next-3').addEventListener('click', () => goto(4));
+
+  /* ===================== T4: CER flash card ===================== */
+  window.flipCard = function(id) {
+    document.getElementById(id).classList.toggle('flipped');
+  };
+
+  const stanceItems = [
+    { text: '立場 A：全面禁止類尼古丁農藥，以生態保育優先', key: 'A' },
+    { text: '立場 B：限制使用，只允許在非花期施藥並設緩衝區', key: 'B' },
+    { text: '立場 C：政府補貼農民 5 年轉型有機，逐步淘汰', key: 'C' }
+  ];
+  let stancePicked = false, stanceKey = null;
+  let evidScored = false, reasScored = false;
+
+  const evidBank = [
+    { text: '歐盟 2018 年全面禁用三種類尼古丁農藥後，野蜂族群在 3 年內部分恢復（Nature, 2021）', forA: true },
+    { text: '英國研究：花期外施藥的農場，蜂群受損率比花期施藥農場低 60%（PLOS ONE, 2020）', forB: true },
+    { text: '丹麥有機農業轉型補貼計畫使有機耕地佔比在 10 年內從 6% 增至 15%，同期蝴蝶多樣性提升（丹麥農業部, 2022）', forC: true }
+  ];
+  const reasBank = [
+    { text: '蜂群一旦崩潰，授粉服務便難以恢復；全面禁用才能在農業系統尚未崩潰前打斷正反饋惡化迴圈', forA: true },
+    { text: '農民在非花期施藥，農損風險最小；蜂群主要在花期訪花，錯開時間點即可大幅降低暴露風險', forB: true },
+    { text: '單純禁令引發農民抗拒；補貼轉型創造正誘因，使農民自願退出農藥依賴，且有案可循（丹麥模式）', forC: true }
+  ];
+
+  renderOpts(document.getElementById('stance-opts'), stanceItems, 'stance', (item, d) => {
+    if (stancePicked) return;
+    stancePicked = true;
+    stanceKey = item.key;
+    awardOnce('t4-stance', 6);
+    renderOpts(document.getElementById('evid-opts'), evidBank, 'evid', (ev, dv) => {
+      if (evidScored) return;
+      evidScored = true;
+      const correct = (stanceKey === 'A' && ev.forA) || (stanceKey === 'B' && ev.forB) || (stanceKey === 'C' && ev.forC);
+      dv.classList.remove('sel');
+      dv.classList.add(correct ? 'correct' : 'wrong');
+      document.getElementById('evid-fb').textContent = correct ? '✓ 這條證據直接支持你的立場！' : '✗ 選擇能直接支持你立場的數據。';
+      document.getElementById('evid-fb').className = 'text-xs mt-1 ' + (correct ? 'text-emerald-700' : 'text-rose-600');
+      if (correct) awardOnce('t4-evid', 7);
+      checkT4Done();
+    });
+    renderOpts(document.getElementById('reas-opts'), reasBank, 'reas', (rs, dr) => {
+      if (reasScored) return;
+      reasScored = true;
+      const correct = (stanceKey === 'A' && rs.forA) || (stanceKey === 'B' && rs.forB) || (stanceKey === 'C' && rs.forC);
+      dr.classList.remove('sel');
+      dr.classList.add(correct ? 'correct' : 'wrong');
+      document.getElementById('reas-fb').textContent = correct ? '✓ 推理清楚說明了證據如何支持主張！' : '✗ 選擇能說明「為何此證據支持你的立場」的推理。';
+      document.getElementById('reas-fb').className = 'text-xs mt-1 ' + (correct ? 'text-emerald-700' : 'text-rose-600');
+      if (correct) awardOnce('t4-reas', 7);
+      checkT4Done();
+    });
+  });
+
+  function checkT4Done() {
+    if (stancePicked && evidScored && reasScored) document.getElementById('btn-next-4').disabled = false;
+  }
+
+  document.getElementById('btn-next-4').addEventListener('click', () => goto(5));
+
+  /* ===================== T5: Project ===================== */
+  const projBank = {
+    garden: {
+      desc: '【校園授粉者花圃】問題：校園缺乏蜜源植物，蝴蝶及蜜蜂缺少棲地，授粉服務薄弱。\n行動步驟：① 選地點並申請預算 ② 種植馬利筋、薰衣草等蜜源植物 ③ 每月用 iNaturalist 記錄訪花昆蟲 ④ 製作說明牌教育師生',
+      kpis: ['學期末訪花昆蟲種類 ≥ 8 種（iNaturalist 記錄）', '蜜源植物存活率 ≥ 75%', '100 位以上師生了解授粉者重要性（問卷評估）']
+    },
+    veg: {
+      desc: '【每週一蔬食日】問題：牛肉碳足跡約 60 kg CO₂/kg，畜牧業佔全球溫室氣體 14.5%；校園飲食缺乏永續意識。\n行動步驟：① 提案送學生委員會 ② 設計蔬食菜單並與廚房合作 ③ 製作海報說明食物里程 ④ 追蹤每週蔬食日參與率',
+      kpis: ['蔬食日校園肉食使用量較平日下降 ≥ 20%', '80% 以上學生知道「食物碳足跡」概念（問卷）', '學期末蔬食日延伸為每週 2 天']
+    },
+    farmer: {
+      desc: '【與在地小農共學】問題：學生對食物生產過程陌生，缺乏對在地農業的理解與連結。\n行動步驟：① 聯繫學校周邊 5 km 內有機小農 ② 安排參訪課程 ③ 小農至校分享農藥與生態的關係 ④ 試行校園菜市場採購',
+      kpis: ['學期末辦理 1 場農場參訪，參與人數 ≥ 30', '採購在地食材佔學校至少 1 餐的 30%', '完成「我認識的農夫」報告存入學習檔案']
+    },
+    waste: {
+      desc: '【校園廚餘減量行動】問題：學校廚餘量龐大，食物浪費加重糧食系統壓力與碳排放。\n行動步驟：① 每週稱重廚餘量建立基線 ② 製作視覺化海報公布廚餘量 ③ 設計「光盤挑戰」積分制 ④ 多餘食材送堆肥',
+      kpis: ['學期末廚餘量較期初減少 ≥ 25%', '光盤挑戰參與率 ≥ 60%（全校）', '廚餘堆肥量達 100 公斤以上並用於校園植栽']
+    }
+  };
+
+  let themePicked = false;
+  let kpiPicked = false;
+
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('ring-4', 'ring-offset-1', 'ring-amber-500'));
+      btn.classList.add('ring-4', 'ring-offset-1', 'ring-amber-500');
+      const theme = btn.dataset.theme;
+      const bank = projBank[theme];
+      document.getElementById('proj-desc').innerHTML = '<p class="text-sm font-semibold text-lime-800 whitespace-pre-line">' + bank.desc + '</p>';
+      const kpiWrap = document.getElementById('kpi-opts');
+      kpiWrap.innerHTML = '';
+      kpiPicked = false;
+      bank.kpis.forEach(kpi => {
+        const label = document.createElement('label');
+        label.className = 'block text-sm cursor-pointer';
+        const rb = document.createElement('input');
+        rb.type = 'radio';
+        rb.name = 'kpi';
+        rb.className = 'mr-1';
+        rb.addEventListener('change', () => {
+          kpiPicked = true;
+          awardOnce('t5-kpi', 3);
+          checkT5Done();
+        });
+        label.appendChild(rb);
+        label.appendChild(document.createTextNode(kpi));
+        kpiWrap.appendChild(label);
+      });
+      document.getElementById('proj-detail').classList.remove('hidden-screen');
+      themePicked = true;
+      awardOnce('t5-theme', 6);
+      checkT5Done();
+    });
+  });
+
+  document.querySelectorAll('.wsa-cb').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (document.querySelectorAll('.wsa-cb:checked').length >= 3) awardOnce('t5-wsa', 6);
+      checkT5Done();
+    });
+  });
+
+  function checkT5Done() {
+    if (themePicked && kpiPicked && document.querySelectorAll('.wsa-cb:checked').length >= 1)
+      document.getElementById('btn-next-5').disabled = false;
+  }
+
+  document.getElementById('btn-next-5').addEventListener('click', () => {
+    const wsa = document.querySelectorAll('.wsa-cb:checked').length;
+    document.getElementById('proj-fb').innerHTML = '<p class="text-emerald-600 text-sm font-semibold">✓ 提案送出！WSA 覆蓋 ' + wsa + '/4 面向。</p>';
+    goto('final');
+    for (let i = 1; i <= TOTAL_LEVELS; i++) {
+      const d = document.getElementById('dot-' + i);
+      if (d) { d.classList.remove('active'); d.classList.add('done'); }
+    }
+  });
+
+  /* ===================== Final reflection ===================== */
+  let starLearnVal = 0, starActVal = 0, impactPicked = false;
+
+  function setupStars(groupId, onSet) {
+    document.querySelectorAll('#' + groupId + ' .star').forEach(s => {
+      s.addEventListener('click', () => {
+        const val = Number(s.dataset.val);
+        onSet(val);
+        document.querySelectorAll('#' + groupId + ' .star').forEach(x => x.classList.toggle('on', Number(x.dataset.val) <= val));
+      });
+    });
+  }
+
+  setupStars('star-learn', v => { starLearnVal = v; checkFinalDone(); });
+  setupStars('star-act', v => { starActVal = v; checkFinalDone(); });
+
+  const impactItems = [
+    { text: '減少一週一次牛肉攝取，改選在地植物蛋白' },
+    { text: '採購時選擇有機或友善農耕認證產品' },
+    { text: '用 iNaturalist 記錄學校周邊的授粉昆蟲' },
+    { text: '向學生委員會提案推動校園蔬食日或廚餘減量' }
+  ];
+  renderOpts(document.getElementById('impact-opts'), impactItems, 'impact', () => {
+    impactPicked = true;
+    awardOnce('final-impact', 2);
+    checkFinalDone();
+  });
+
+  function checkFinalDone() {
+    if (starLearnVal > 0 && starActVal > 0 && impactPicked) document.getElementById('btn-finish').disabled = false;
+  }
+
+  document.getElementById('btn-finish').addEventListener('click', () => {
+    awardOnce('final-stars', 3);
+    document.getElementById('level-final').classList.add('hidden-screen');
+    document.getElementById('finale').classList.remove('hidden-screen');
+    document.getElementById('final-score').textContent = _score;
+    confetti();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

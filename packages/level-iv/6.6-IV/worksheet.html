@@ -1,161 +1,665 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>6.6-IV 永續飲食 · 國中學習單</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>永續飲食偵探 | 6.6-IV 國中學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; max-width: 880px; margin: 24px auto; padding: 0 20px; line-height: 1.7; color: #222; background:#fafaf7; }
-  h1 { color: #2b6a4a; border-bottom: 3px solid #2b6a4a; padding-bottom: 6px; }
-  h2 { color: #3a6b8f; margin-top: 28px; background:#eef4f9; padding:6px 10px; border-left:5px solid #3a6b8f; }
-  .badge { display:inline-block; background:#f0b429; color:#000; padding:2px 8px; border-radius:10px; font-size:.85em; margin-left:6px;}
-  .basic { background:#fff9e6; border-left:5px solid #f0b429; padding:10px 14px; margin:10px 0; border-radius:6px;}
-  .deep { background:#eaf5ef; border-left:5px solid #2b6a4a; padding:10px 14px; margin:10px 0; border-radius:6px;}
-  textarea { width:100%; border:1px solid #bbb; border-radius:6px; padding:8px; font-family:inherit; font-size:1em;}
-  input[type=text] { border:1px solid #bbb; border-radius:5px; padding:5px 8px; width: 60%;}
-  table { border-collapse: collapse; width:100%; margin:8px 0;}
-  th,td { border:1px solid #999; padding:6px 8px; text-align:center; }
-  th { background:#e0ece4;}
-  .q { font-weight:bold; color:#2b6a4a;}
-  .tag { font-size:.8em; color:#666; font-style:italic;}
-  ol li, ul li { margin-bottom:4px; }
-  .depth-label { display:inline-block; background:#2b6a4a; color:#fff; font-size:.75em; padding:2px 8px; border-radius:10px; margin-right:6px;}
-  hr { border:none; border-top:1px dashed #aaa; margin:20px 0;}
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#fef9c3,#dcfce7,#fce7f3); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:100px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#059669; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  svg.loop text { font-size:11px; pointer-events:none;}
+  svg.loop .loop-slot { cursor: pointer; }
+  svg.loop .loop-slot.over { fill:#fde68a; stroke-width:3; }
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.92rem;}
+  .opt:hover { background:#f8fafc; }
+  .opt.sel { border-color:#059669; background:#d1fae5;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.4rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
+<div class="max-w-4xl mx-auto">
 
-<h1>6.6-IV 永續飲食 · 學習單（13–15 歲）</h1>
-<p>姓名：<input type="text"> 班級：<input type="text" style="width:25%"> 日期：2026-04-____</p>
-<p><strong>學習目標</strong>：了解食物系統對氣候/土地/水的影響；練習資料詮釋、系統思考與倫理判斷；設計個人與學校的行動方案。</p>
-
-<hr>
-
-<h2>第一部分 · 基礎層（Level III 同等）</h2>
-
-<div class="basic">
-<p class="q">1. 連連看：將下列詞彙與定義配對。</p>
-<table>
-<tr><th>詞彙</th><th>你的答案</th></tr>
-<tr><td>（A）永續飲食</td><td><input type="text"></td></tr>
-<tr><td>（B）食物碳足跡</td><td><input type="text"></td></tr>
-<tr><td>（C）食物里程</td><td><input type="text"></td></tr>
-<tr><td>（D）糧食自給率</td><td><input type="text"></td></tr>
-</table>
-<p>① 食物從產地到餐桌的距離 ② 食物全生命週期的溫室氣體總量 ③ 本國消費糧食中自產比例 ④ 兼顧健康、環境、文化、經濟的飲食方式</p>
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-green-700">🥗 永續飲食偵探</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『學校飲食永續顧問』：5 個任務，追查食物系統的碳足跡與解決之道。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">顧問積分</div>
+    <div class="text-2xl font-bold text-green-600"><span id="score">0</span> / 80</div>
+  </div>
 </div>
 
-<div class="basic">
-<p class="q">2. 是非題（正確打 O、錯誤打 X）：</p>
-<ol>
-<li>（　）生產 1 公斤牛肉大約產生 36.4 公斤的 CO₂。</li>
-<li>（　）臺灣糧食自給率（熱量計）目前大約是 90%。</li>
-<li>（　）食物里程是判斷碳足跡的唯一依據。</li>
-<li>（　）EAT-Lancet 建議紅肉和糖須減量 50% 以上。</li>
-</ol>
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">配對</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">資料</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">論證</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">專題</span>
 </div>
 
-<div class="basic">
-<p class="q">3. 填空：選填當季／在地／少肉／少包裝。</p>
-<p>低碳飲食的四原則包括：選擇_____ 食材、_____ 食材、多吃蔬食_____、選_____。</p>
+<!-- ===== T1: 食物碳排機制配對（去直覺化） ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🌾</div>
+    <div>
+      <h2 class="text-xl font-bold text-green-700">任務 1｜食物碳排機制配對</h2>
+      <p class="text-sm text-slate-700 mt-1">把 4 種食物拖到正確的「碳排放機制說明」。提示不含食物名稱，請依蛋白質來源與生產流程推論。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：食物系統研究實習生 ｜ 10 分</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="beef">牛肉</div>
+    <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="chicken">雞肉</div>
+    <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="tofu">豆腐</div>
+    <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="legume">豆類（乾燥）</div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="zones-box-1">
+    <div class="drop-zone p-3" data-accept="beef"><div class="font-bold text-slate-700 text-sm">機制 α<div class="text-xs text-slate-500 mt-1">反芻動物消化過程產生大量甲烷（CH₄，GWP=28），加上牧草地開墾與飼料生產，每 100g 蛋白質約排放 25 kg CO₂eq，是最高碳排蛋白質來源</div></div></div>
+    <div class="drop-zone p-3" data-accept="chicken"><div class="font-bold text-slate-700 text-sm">機制 β<div class="text-xs text-slate-500 mt-1">單胃動物（無反芻），飼料轉化率較高，主要排放來自飼料生產與廢水，每 100g 蛋白質約 4.3 kg CO₂eq，比反芻動物低約 6 倍</div></div></div>
+    <div class="drop-zone p-3" data-accept="tofu"><div class="font-bold text-slate-700 text-sm">機制 γ<div class="text-xs text-slate-500 mt-1">植物性食品，但需經過磨漿、凝固、壓製等加工步驟，故排放略高於原型豆類；每 100g 蛋白質約 1.6 kg CO₂eq</div></div></div>
+    <div class="drop-zone p-3" data-accept="legume"><div class="font-bold text-slate-700 text-sm">機制 δ<div class="text-xs text-slate-500 mt-1">豆科植物可固定大氣氮素，幾乎不需氮肥；加工最少，直接乾燥保存；每 100g 蛋白質約 0.65 kg CO₂eq，是所有選項中碳排最低者</div></div></div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <div class="nav-row">
+    <span></span>
+    <button id="btn-next-1" class="btn bg-green-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T2: 資料詮釋：食物碳排比較 ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📊</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 2｜資料詮釋：每 100g 蛋白質的碳排放比較</h2>
+      <p class="text-sm text-slate-700 mt-1">以「蛋白質等量」比較各食物的碳足跡（Poore & Nemecek, 2018）。請閱讀圖表並作答。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：食物政策分析師 ｜ 15 分</p>
+    </div>
+  </div>
+
+  <!-- SVG horizontal bar chart -->
+  <svg viewBox="0 0 440 200" class="w-full max-w-xl mx-auto block bg-slate-50 rounded mb-4">
+    <text x="10" y="15" font-size="9" fill="#475569">kg CO₂eq / 100g 蛋白質</text>
+    <!-- y axis labels -->
+    <text x="10" y="48" font-size="10" fill="#334155" text-anchor="end">牛肉</text>
+    <text x="10" y="88" font-size="10" fill="#334155" text-anchor="end">雞肉</text>
+    <text x="10" y="128" font-size="10" fill="#334155" text-anchor="end">豆腐</text>
+    <text x="10" y="168" font-size="10" fill="#334155" text-anchor="end">豆類</text>
+    <!-- bars (scale: 25kg → 390px → factor 15.6px per kg) -->
+    <rect x="15" y="32" width="390" height="26" fill="#ef4444" rx="4"/>
+    <text x="408" y="50" font-size="10" fill="#b91c1c" font-weight="bold">25</text>
+    <rect x="15" y="72" width="67" height="26" fill="#f97316" rx="4"/>
+    <text x="85" y="90" font-size="10" fill="#c2410c" font-weight="bold">4.3</text>
+    <rect x="15" y="112" width="25" height="26" fill="#84cc16" rx="4"/>
+    <text x="43" y="130" font-size="10" fill="#4d7c0f" font-weight="bold">1.6</text>
+    <rect x="15" y="152" width="10" height="26" fill="#16a34a" rx="4"/>
+    <text x="28" y="170" font-size="10" fill="#166534" font-weight="bold">0.65</text>
+  </svg>
+
+  <!-- Q1 radio -->
+  <div class="mb-4">
+    <p class="font-semibold text-sm mb-2">Q1｜為什麼用「每 100g 蛋白質」而非「每公斤重量」比較更合理？（5 分）</p>
+    <label class="opt"><input type="radio" name="q21" value="A" class="mr-2"> A. 因為不同食物提供的蛋白質量差異很大，等量蛋白質才能公平比較「取得相同營養的碳代價」</label>
+    <label class="opt"><input type="radio" name="q21" value="B" class="mr-2"> B. 因為蛋白質是唯一重要的營養素，所以只需比較蛋白質含量</label>
+    <label class="opt"><input type="radio" name="q21" value="C" class="mr-2"> C. 因為按重量比較時，所有食物的碳排放都差不多，無法區分</label>
+    <p id="q21-fb" class="text-xs mt-1"></p>
+  </div>
+
+  <!-- Q2 checkboxes exactly-2 -->
+  <div class="mb-4">
+    <p class="font-semibold text-sm mb-2">Q2｜若改以「每公斤重量」比較，哪 2 個說法最可能成立？（恰好選 2 個，10 分）</p>
+    <label class="opt"><input type="checkbox" name="q22" value="A" class="mr-2"> A. 豆腐因含水量高（約 85%），每公斤重量中蛋白質僅約 80g，若按重量算，與牛肉的差距會縮小</label>
+    <label class="opt"><input type="checkbox" name="q22" value="B" class="mr-2"> B. 乾燥豆類蛋白質濃度高（約 25g/100g重量），按重量比較反而顯示出更強的優勢</label>
+    <label class="opt"><input type="checkbox" name="q22" value="C" class="mr-2"> C. 按重量比較後，牛肉的碳排放會大幅降低，變得比豆腐更環保</label>
+    <label class="opt"><input type="checkbox" name="q22" value="D" class="mr-2"> D. 無論用哪種基準比較，牛肉永遠是碳排最高的食物</label>
+    <p id="q22-fb" class="text-xs mt-1"></p>
+  </div>
+
+  <p id="l2-fb" class="text-sm mb-2"></p>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="1">← 上一關</button>
+    <button id="btn-next-2" class="btn bg-teal-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T3: 系統思考：紅肉消費正反饋循環 ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-700">任務 3｜系統思考：紅肉消費正反饋循環</h2>
+      <p class="text-sm text-slate-700 mt-1">完成「紅肉需求→土地開墾→氣候變遷」的增強循環：把 4 張卡片拖入正確位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統動力學分析師 ｜ 15 分</p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 500 270" class="loop w-full bg-slate-50 rounded">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L0,10 L10,5 z" fill="#64748b"/>
+      </marker>
+    </defs>
+    <rect x="10" y="10" width="160" height="54" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" class="loop-slot" data-slot="1"/>
+    <text x="90" y="35" text-anchor="middle" fill="#92400e" id="slot-1-text">（拖這裡 1）</text>
+    <text x="90" y="50" text-anchor="middle" fill="#92400e" id="slot-1-sub"></text>
+
+    <rect x="330" y="10" width="160" height="54" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" class="loop-slot" data-slot="2"/>
+    <text x="410" y="35" text-anchor="middle" fill="#92400e" id="slot-2-text">（拖這裡 2）</text>
+    <text x="410" y="50" text-anchor="middle" fill="#92400e" id="slot-2-sub"></text>
+
+    <rect x="330" y="206" width="160" height="54" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" class="loop-slot" data-slot="3"/>
+    <text x="410" y="231" text-anchor="middle" fill="#92400e" id="slot-3-text">（拖這裡 3）</text>
+    <text x="410" y="246" text-anchor="middle" fill="#92400e" id="slot-3-sub"></text>
+
+    <rect x="10" y="206" width="160" height="54" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" class="loop-slot" data-slot="4"/>
+    <text x="90" y="231" text-anchor="middle" fill="#92400e" id="slot-4-text">（拖這裡 4）</text>
+    <text x="90" y="246" text-anchor="middle" fill="#92400e" id="slot-4-sub"></text>
+
+    <line x1="170" y1="37" x2="330" y2="37" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+    <line x1="410" y1="64" x2="410" y2="206" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+    <line x1="330" y1="233" x2="170" y2="233" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+    <line x1="90" y1="206" x2="90" y2="64" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+    <text x="250" y="138" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="bold">增強循環（R）</text>
+  </svg>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3" id="loop-items">
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">紅肉需求上升</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">牧場擴張/森林砍伐</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">碳匯減少+甲烷增加</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">氣溫升高/農業衝擊↑</div>
+  </div>
+  <p id="loop-fb" class="mt-3 text-sm"></p>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="2">← 上一關</button>
+    <button id="btn-next-3" class="btn bg-orange-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T4: CER 閃卡：每週蔬食日政策 ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">⚖️</div>
+    <div>
+      <h2 class="text-xl font-bold text-pink-700">任務 4｜CER 閃卡：學校蔬食日政策論證</h2>
+      <p class="text-sm text-slate-700 mt-1">情境：學校餐廳擬推行「每週一蔬食日」。請為每個立場選出「最強的證據」與「最佳的推理」。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生飲食政策委員 ｜ 20 分</p>
+    </div>
+  </div>
+
+  <div id="cer-area"></div>
+
+  <div class="nav-row mt-4">
+    <button class="btn btn-back" data-back="3">← 上一關</button>
+    <button id="btn-next-4" class="btn bg-pink-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T5: 專題：30 天校園永續飲食計畫 + WSA ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏫</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 5｜專題：30 天校園永續飲食提案</h2>
+      <p class="text-sm text-slate-700 mt-1">為你的學校設計永續飲食行動方案，送交學生氣候委員會。選擇主題並通過 WSA 四面向檢核。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生飲食委員會提案人 ｜ 20 分</p>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <p class="font-semibold text-sm mb-2">選擇提案主題：</p>
+    <label class="opt"><input type="radio" name="proj" value="0" class="mr-2"> A. 廚餘秤重計畫 — 每班每週秤量廚餘，視覺化呈現並設定減量目標</label>
+    <label class="opt"><input type="radio" name="proj" value="1" class="mr-2"> B. 每週一蔬食日 Meatless Monday — 全校推行蔬食午餐並計算累積碳減量</label>
+    <label class="opt"><input type="radio" name="proj" value="2" class="mr-2"> C. 在地當季食材採購標章 — 建立校餐採購指引，優先選用 100 公里內當季食材</label>
+    <label class="opt"><input type="radio" name="proj" value="3" class="mr-2"> D. 漂綠飲食偵測計畫 — 調查校餐與市售食品的環保標章真偽，製作學生指南</label>
+  </div>
+
+  <div id="proj-detail" class="bg-slate-50 rounded-xl p-4 mb-4 hidden-screen">
+    <p class="text-sm font-semibold text-slate-700 mb-2">提案問題：</p>
+    <p id="proj-problem" class="text-sm text-slate-600 mb-3"></p>
+    <p class="text-sm font-semibold text-slate-700 mb-2">建議行動步驟：</p>
+    <p id="proj-steps" class="text-sm text-slate-600 mb-3"></p>
+  </div>
+
+  <div id="kpi-area" class="mb-4 hidden-screen">
+    <p class="font-semibold text-sm mb-2">選擇最合適的成效指標（KPI）：</p>
+    <div id="kpi-opts"></div>
+    <p id="kpi-fb" class="text-xs mt-1"></p>
+  </div>
+
+  <div class="bg-indigo-50 p-3 rounded mb-3">
+    <p class="font-bold text-indigo-800 text-sm mb-2">WSA Challenge 四面向檢核（全勾才能解鎖完成）</p>
+    <label class="block mt-1 text-sm"><input type="checkbox" class="wsa mr-1"> <strong>治理 Governance</strong>：提案會送學生議會/班聯會或校務會議</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa mr-1"> <strong>課程 Curriculum</strong>：可跨科連結（自然/家政/數學/健康）</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa mr-1"> <strong>校園營運 Operations</strong>：改變校餐採購/廚餘處理/設施</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa mr-1"> <strong>社群 Community</strong>：擴散到家庭/在地小農/社區</label>
+  </div>
+  <p id="p-fb" class="text-xs mb-2"></p>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="4">← 上一關</button>
+    <button id="btn-next-5" class="btn bg-amber-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== Final Reflection ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in">
+  <div class="text-center mb-6">
+    <div class="text-5xl mb-2">🏆</div>
+    <h2 class="text-2xl font-bold text-green-700">永續飲食偵探 — 任務完成！</h2>
+    <p class="text-sm text-slate-600 mt-1">你完成了 5 個任務：碳排配對、資料詮釋、系統分析、CER 論證、校園飲食提案。</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-4 mb-6">
+    <div class="bg-green-50 rounded-xl p-4">
+      <p class="font-semibold text-sm mb-2">這次學習對你的「永續飲食知識」幫助多大？</p>
+      <div id="stars-know" class="flex gap-1">
+        <span class="star" data-g="know" data-v="1">★</span>
+        <span class="star" data-g="know" data-v="2">★</span>
+        <span class="star" data-g="know" data-v="3">★</span>
+        <span class="star" data-g="know" data-v="4">★</span>
+        <span class="star" data-g="know" data-v="5">★</span>
+      </div>
+    </div>
+    <div class="bg-amber-50 rounded-xl p-4">
+      <p class="font-semibold text-sm mb-2">你對「改變飲食習慣減少碳排」的行動意願？</p>
+      <div id="stars-act" class="flex gap-1">
+        <span class="star" data-g="act" data-v="1">★</span>
+        <span class="star" data-g="act" data-v="2">★</span>
+        <span class="star" data-g="act" data-v="3">★</span>
+        <span class="star" data-g="act" data-v="4">★</span>
+        <span class="star" data-g="act" data-v="5">★</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-slate-50 rounded-xl p-4 mb-6">
+    <p class="font-semibold text-sm mb-2">如果全班 30 人每週一天以豆類（0.65 kg CO₂eq/100g蛋白）取代牛肉（25 kg CO₂eq/100g蛋白），一學期（20 週）每人每餐攝取 30g 蛋白質，大約可減少多少 CO₂？</p>
+    <label class="opt"><input type="radio" name="impact" value="A" class="mr-2"> A. 約 144 kg（30人×（25−0.65）×0.3×20週 ≈ 4,383g eq 換算正確答案）</label>
+    <label class="opt"><input type="radio" name="impact" value="B" class="mr-2"> B. 約 4,383 kg（計算：30人×24.35 kg×0.3×20週 = 4,383 kg CO₂eq）</label>
+    <label class="opt"><input type="radio" name="impact" value="C" class="mr-2"> C. 不到 10 kg，個人飲食改變對氣候影響微乎其微</label>
+    <p id="impact-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="5">← 上一關</button>
+    <button id="btn-finish" class="btn bg-green-600 text-white px-8 py-2 rounded-lg font-bold" disabled>完成任務 🎉</button>
+  </div>
+
+  <div id="final-banner" class="hidden-screen text-center mt-6">
+    <p class="text-lg font-bold text-emerald-700">最終顧問積分：<span id="final-score">0</span> / 80</p>
+    <button onclick="location.reload()" class="btn mt-3 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold">再玩一次</button>
+    <p class="text-xs text-slate-500 mt-4">延伸思考：「食物里程」是衡量碳足跡的唯一依據嗎？在地生產的牛肉，碳足跡一定比進口豆腐低嗎？</p>
+  </div>
+</section>
+
 </div>
 
-<hr>
+<script>
+(() => {
+  const TOTAL_LEVELS = 5;
+  const S = { score:0, current:1, awarded:{} };
+  const setScore = (n) => { S.score += n; document.getElementById('score').textContent = S.score; };
+  const awardOnce = (key, pts) => { if(!S.awarded[key]){ S.awarded[key]=true; setScore(pts); } };
 
-<h2>第二部分 · 深度層（6 面向 × 專題任務）</h2>
+  const goto = (n) => {
+    const cur = document.getElementById('level-'+S.current) || document.getElementById('level-final');
+    if(cur) cur.classList.add('hidden-screen');
+    S.current = n;
+    const next = (n === 'final') ? document.getElementById('level-final') : document.getElementById('level-'+n);
+    if(next) next.classList.remove('hidden-screen');
+    for(let i=1;i<=TOTAL_LEVELS;i++){
+      const d = document.getElementById('dot-'+i);
+      if(!d) continue;
+      d.classList.remove('active','done');
+      if(i < n) d.classList.add('done');
+      else if(i === n) d.classList.add('active');
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
 
-<div class="deep">
-<p><span class="depth-label">資料詮釋</span> <span class="tag">（≥1 題，本單含 1）</span></p>
-<p class="q">4. 閱讀數據表並作答：</p>
-<table>
-<tr><th>食物（每 100 g 蛋白質）</th><th>CO₂eq (kg)</th></tr>
-<tr><td>牛肉</td><td>約 25</td></tr>
-<tr><td>雞肉</td><td>約 4.3</td></tr>
-<tr><td>豆腐</td><td>約 1.6</td></tr>
-<tr><td>豆類</td><td>約 0.65</td></tr>
-</table>
-<p>(a) 用『蛋白質等量』比較的理由是什麼？（2 分）</p>
-<textarea rows="2"></textarea>
-<p>(b) 若用『每公斤重量』比較，結論可能如何變動？請舉一個例子說明你的推論。（3 分）</p>
-<textarea rows="3"></textarea>
-</div>
+  document.querySelectorAll('.btn-back').forEach(b => {
+    b.onclick = () => goto(parseInt(b.dataset.back, 10));
+  });
 
-<div class="deep">
-<p><span class="depth-label">CER 論證</span> <span class="tag">（≥1 題，本單含 1）</span></p>
-<p class="q">5. 請用 Claim–Evidence–Reasoning 寫一段 120 字論證：『學校應推動每週一蔬食日』。必須引用至少 2 個本課數據。</p>
-<textarea rows="8"></textarea>
-</div>
+  const confetti = () => {
+    const colors=['#f59e0b','#10b981','#6366f1','#ec4899','#0ea5e9'];
+    for(let i=0;i<40;i++){
+      const el=document.createElement('div');
+      el.className='confetti';
+      el.style.left=Math.random()*100+'vw';
+      el.style.background=colors[i%colors.length];
+      el.style.animationDelay=(Math.random()*0.6)+'s';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),2500);
+    }
+  };
 
-<div class="deep">
-<p><span class="depth-label">系統思考</span> <span class="tag">（≥1 題，本單含 1）</span></p>
-<p class="q">6. 畫一張因果迴路圖（至少 5 個節點、2 條回饋迴路），描繪「紅肉消費增加 → ？ → ？ → 影響農民、氣候、健康」。可用方框與箭頭，標示 (+) 同向、(–) 反向。</p>
-<textarea rows="8"></textarea>
-</div>
+  const shuffleChildren = (el) => {
+    const items=[...el.children];
+    for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));el.appendChild(items[j]);}
+  };
 
-<div class="deep">
-<p><span class="depth-label">倫理兩難</span> <span class="tag">（≥1 題，本單含 1）</span></p>
-<p class="q">7. 情境：政府擬對紅肉每公斤課 20 元碳稅。</p>
-<p>(a) 列出贊成 2 點、反對 2 點的理由，各附 1 個受影響的族群：</p>
-<textarea rows="4"></textarea>
-<p>(b) 若你是 14 歲公民代表，提出一個折衷方案（包含補貼、教育或替代政策），並說明為何此方案較公平。</p>
-<textarea rows="4"></textarea>
-</div>
+  // ===== T1 =====
+  shuffleChildren(document.getElementById('items-box-1'));
+  shuffleChildren(document.getElementById('zones-box-1'));
+  let done1=0, err1=0;
+  const zones1=document.querySelectorAll('#zones-box-1 .drop-zone');
+  let dragged1=null;
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(it=>{
+    it.addEventListener('dragstart',()=>{dragged1=it;it.classList.add('dragging');});
+    it.addEventListener('dragend',()=>{if(dragged1)dragged1.classList.remove('dragging');dragged1=null;});
+  });
+  zones1.forEach(z=>{
+    z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over');});
+    z.addEventListener('dragleave',()=>z.classList.remove('over'));
+    z.addEventListener('drop',e=>{
+      e.preventDefault();z.classList.remove('over');
+      if(!dragged1) return;
+      if(z.dataset.accept===dragged1.dataset.match){
+        dragged1.classList.add('pop');
+        z.appendChild(dragged1);
+        dragged1.setAttribute('draggable','false');
+        dragged1.style.cursor='default';
+        done1++;
+        if(done1===4){
+          awardOnce('t1',Math.max(6,10-err1*2));
+          document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 全部配對正確！牛肉碳排是豆類的 38 倍——飲食選擇對碳足跡影響極大。</span>';
+          confetti();
+          document.getElementById('btn-next-1').disabled=false;
+        }
+      } else {
+        err1++;
+        z.classList.add('shake');setTimeout(()=>z.classList.remove('shake'),400);
+        document.getElementById('feedback-1').innerHTML='<span class="text-rose-600">❌ 提示：依加工程度與動物種類推論，反芻動物排放最高，豆科植物最低。</span>';
+      }
+    });
+  });
+  document.getElementById('btn-next-1').onclick=()=>goto(2);
 
-<div class="deep">
-<p><span class="depth-label">開放反思</span> <span class="tag">（≥2 題，本單含 2）</span></p>
-<p class="q">8. 回顧你最近三餐，有哪一餐讓你感到『不太永續』？請描述那一餐，並說出三種可以調整的方式，哪一種最可行、哪一種最難？為什麼？</p>
-<textarea rows="5"></textarea>
+  // ===== T2 =====
+  let q21ans=null;
+  const checkL2=()=>{
+    const cb=[...document.querySelectorAll('input[name=q22]:checked')];
+    document.getElementById('btn-next-2').disabled=!(q21ans && cb.length===2);
+  };
+  document.querySelectorAll('input[name=q21]').forEach(r=>r.onchange=()=>{q21ans=r.value;checkL2();});
+  document.querySelectorAll('input[name=q22]').forEach(c=>c.onchange=()=>{
+    const checked=[...document.querySelectorAll('input[name=q22]:checked')];
+    if(checked.length>2){c.checked=false;return;}
+    checkL2();
+  });
+  document.getElementById('btn-next-2').onclick=()=>{
+    const fb1=document.getElementById('q21-fb');
+    if(q21ans==='A'){fb1.textContent='✅ 正解 A：等量蛋白質比較才能公平評估獲得相同營養的環境代價。';fb1.className='text-xs mt-1 text-emerald-700';awardOnce('t2q1',5);}
+    else{fb1.textContent='❌ 正解為 A。不同食物蛋白質含量差異大，等量蛋白質才能公平比較碳代價。';fb1.className='text-xs mt-1 text-rose-600';}
+    const checked=[...document.querySelectorAll('input[name=q22]:checked')].map(c=>c.value);
+    const fb2=document.getElementById('q22-fb');
+    if(checked.includes('A')&&checked.includes('B')){
+      fb2.textContent='✅ 正解 A+B：豆腐含水量高導致蛋白質稀釋；乾豆蛋白質濃縮使其優勢更明顯。';fb2.className='text-xs mt-1 text-emerald-700';
+      awardOnce('t2q2',10);
+    } else {
+      fb2.textContent='❌ 正解為 A+B。C 錯誤（按重量牛肉仍遠高於豆腐）；D 錯誤（比較基準改變可能影響結論）。';fb2.className='text-xs mt-1 text-rose-600';
+    }
+    confetti();goto(3);
+  };
 
-<p class="q">9. 迷思挑戰：『一個人改吃植物性飲食不會改變世界。』你是否同意？請以 150 字回答，避免簡單的 Yes/No。</p>
-<textarea rows="5"></textarea>
-</div>
+  // ===== T3 =====
+  let loopDone=0;
+  const loopItems=document.querySelectorAll('#loop-items .drag-item');
+  const loopSlots=document.querySelectorAll('.loop-slot');
+  let dragged3=null;
+  loopItems.forEach(it=>{
+    it.addEventListener('dragstart',()=>{dragged3=it;it.classList.add('dragging');});
+    it.addEventListener('dragend',()=>{if(dragged3)dragged3.classList.remove('dragging');dragged3=null;});
+  });
+  loopSlots.forEach(s=>{
+    s.addEventListener('dragenter',e=>{e.preventDefault();s.classList.add('over');});
+    s.addEventListener('dragover',e=>{e.preventDefault();s.classList.add('over');});
+    s.addEventListener('dragleave',()=>s.classList.remove('over'));
+    s.addEventListener('drop',e=>{
+      e.preventDefault();s.classList.remove('over');
+      if(!dragged3) return;
+      if(s.dataset.slot===dragged3.dataset.loop){
+        document.getElementById('slot-'+s.dataset.slot+'-text').textContent=dragged3.textContent;
+        document.getElementById('slot-'+s.dataset.slot+'-sub').textContent='';
+        dragged3.style.display='none';
+        loopDone++;
+        if(loopDone===4){
+          awardOnce('t3',15);
+          document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 增強循環建構正確！這正是為什麼飲食轉型比技術解決方案更迫切。</span>';
+          confetti();
+          document.getElementById('btn-next-3').disabled=false;
+        }
+      } else {
+        s.classList.add('shake');setTimeout(()=>s.classList.remove('shake'),400);
+        document.getElementById('loop-fb').innerHTML='<span class="text-rose-600">❌ 試想：紅肉需求增加後，農業業者最直接的反應是什麼？</span>';
+      }
+    });
+  });
+  document.getElementById('btn-next-3').onclick=()=>goto(4);
 
-<div class="deep">
-<p><span class="depth-label">後設認知</span> <span class="tag">（≥1 題，本單含 1）</span></p>
-<p class="q">10. 用 3-2-1 方法自我檢視：</p>
-<ol>
-<li>本單元我學到最重要的 3 件事：<textarea rows="3"></textarea></li>
-<li>我還想問的 2 個問題：<textarea rows="2"></textarea></li>
-<li>我下週會嘗試的 1 個具體行動：<textarea rows="2"></textarea></li>
-</ol>
-</div>
+  // ===== T4: CER flash cards =====
+  const claimBank = [
+    { id:'support', label:'立場 1：全力支持每週蔬食日',
+      desc:'立場：學校應每週一天全面推行蔬食午餐，這是學校能做的最具氣候效益的飲食政策。' },
+    { id:'cond', label:'立場 2：有條件支持（需搭配教育）',
+      desc:'立場：蔬食日應搭配飲食教育，讓學生理解背後原因，而非僅是強制政策。' },
+    { id:'opp', label:'立場 3：反對（應尊重個人選擇）',
+      desc:'立場：飲食是個人與家庭的選擇，學校不應以政策強制改變學生飲食內容。' }
+  ];
+  const evidBank = {
+    support:[
+      {t:'Poore & Nemecek (2018)：若全球人類轉向植物性飲食，可減少 49% 的食物系統溫室氣體排放；學校蔬食日是可行切入點。',ok:true},
+      {t:'WHO 建議每日攝取 50g 蛋白質，而蔬食餐廳平均每餐提供 55g 蛋白質，顯示蔬食完全可滿足需求。',ok:false},
+      {t:'臺灣各縣市試行蔬食日後，90% 的學生表示「很喜歡」，顯示接受度極高。',ok:false}
+    ],
+    cond:[
+      {t:'英國研究：學校推行蔬食日時若同步提供碳足跡教育，學生在家改變飲食習慣的機率提升 3 倍（Journal of Environmental Education, 2022）。',ok:true},
+      {t:'強制政策通常比教育更有效，因為行為改變不需要理解原因。',ok:false},
+      {t:'加拿大研究顯示，蔬食日若沒有任何配套，5 年內學生反彈率達 80%。',ok:false}
+    ],
+    opp:[
+      {t:'部分學生有宗教飲食規範或食物過敏，強制蔬食日若設計不周，可能使這些學生面臨更少選擇。',ok:true},
+      {t:'個人飲食完全不影響全球氣候，因此學校推行蔬食日毫無意義。',ok:false},
+      {t:'牛肉是臺灣傳統文化的核心食物，不能因為氣候理由加以限制。',ok:false}
+    ]
+  };
+  const reasBank = {
+    support:[
+      {t:'學校午餐是國家教育體系的一部分，具有示範與教育功能；以最低碳的方式提供營養充足的午餐，既落實永續教育，也直接減少碳排放。',ok:true},
+      {t:'只要學生的蛋白質攝取量足夠，蔬食日的任何其他考量都不重要。',ok:false},
+      {t:'氣候緊急狀態下，任何個人選擇都必須讓位給集體利益，因此強制政策完全正當。',ok:false}
+    ],
+    cond:[
+      {t:'永續轉型需要改變認知與行為，單純的政策命令若缺乏理解支撐，學生離開學校後往往會回到原有習慣，教育才能產生持久影響。',ok:true},
+      {t:'教育比政策更昂貴，因此學校應先推政策，等有預算時再考慮教育。',ok:false},
+      {t:'蔬食日搭配教育後效果更好，因此政策本身就不必要，只需教育即可。',ok:false}
+    ],
+    opp:[
+      {t:'若政策設計忽略多元需求（宗教、健康、文化），可能反而強化不公平，且引發抵觸情緒，讓學生對永續議題產生負面連結。',ok:true},
+      {t:'個人自由在任何情況下都高於集體環境利益，所以反對理由永遠成立。',ok:false},
+      {t:'家長繳了學費，就有權要求學校提供任何飲食內容，學校無法更改菜單。',ok:false}
+    ]
+  };
 
-<hr>
+  let cerScore=0, cerDone=0;
+  const renderOpts=(container,items,onSelect)=>{
+    items.forEach((item,i)=>{
+      const el=document.createElement('label');
+      el.className='opt';
+      el.innerHTML=`<input type="radio" name="${container.id}-r" value="${i}" class="mr-2">${item.t}`;
+      el.querySelector('input').onchange=()=>onSelect(item.ok, el, container);
+      container.appendChild(el);
+    });
+  };
 
-<h2>第三部分 · 專題任務｜我們學校的 30 天永續飲食計畫</h2>
+  const cerArea=document.getElementById('cer-area');
+  claimBank.forEach((claim,ci)=>{
+    const card=document.createElement('div');
+    card.className='bg-slate-50 rounded-xl p-4 mb-4';
+    card.innerHTML=`<p class="font-semibold text-sm mb-1">${claim.label}</p><p class="text-sm text-slate-600 mb-3">${claim.desc}</p>
+      <p class="text-xs font-bold text-slate-500 mb-1">選出最強的「證據 E」：</p>
+      <div id="evid-${ci}"></div>
+      <p id="evid-${ci}-fb" class="text-xs mt-1 mb-2"></p>
+      <p class="text-xs font-bold text-slate-500 mb-1">選出最佳的「推理 R」：</p>
+      <div id="reas-${ci}"></div>
+      <p id="reas-${ci}-fb" class="text-xs mt-1"></p>`;
+    cerArea.appendChild(card);
 
-<div class="deep">
-<p>以 4–5 人小組合作，依 WSA 四面向設計完整方案。</p>
+    const evidContainer=card.querySelector('#evid-'+ci);
+    const reasContainer=card.querySelector('#reas-'+ci);
+    const si=[0,1,2].sort(()=>Math.random()-.5);
+    const rsi=[0,1,2].sort(()=>Math.random()-.5);
+    let evidDone=false, reasDone=false;
+    const checkCer=()=>{ if(evidDone&&reasDone){ cerDone++; if(cerDone===3){ awardOnce('t4',cerScore); document.getElementById('btn-next-4').disabled=false; confetti(); } } };
 
-<p class="q">任務 A｜治理（Governance）</p>
-<p>學校永續飲食委員會組成（含學生代表數、會議頻率、決議程序）：</p>
-<textarea rows="3"></textarea>
+    renderOpts(evidContainer, si.map(j=>evidBank[claim.id][j]), (ok,el)=>{
+      if(evidDone) return;
+      const fb=card.querySelector('#evid-'+ci+'-fb');
+      if(ok){ el.classList.add('correct'); fb.textContent='✅ 最強證據！具體研究數據支撐論點。'; fb.className='text-xs mt-1 text-emerald-700'; cerScore+=3; evidDone=true; }
+      else { el.classList.add('wrong'); fb.textContent='❌ 這個證據較弱或有誤，請再想想。'; fb.className='text-xs mt-1 text-rose-600'; }
+      checkCer();
+    });
+    renderOpts(reasContainer, rsi.map(j=>reasBank[claim.id][j]), (ok,el)=>{
+      if(reasDone) return;
+      const fb=card.querySelector('#reas-'+ci+'-fb');
+      if(ok){ el.classList.add('correct'); fb.textContent='✅ 最佳推理！清楚連結證據與主張的因果關係。'; fb.className='text-xs mt-1 text-emerald-700'; cerScore+=4; reasDone=true; }
+      else { el.classList.add('wrong'); fb.textContent='❌ 這個推理有邏輯漏洞，試試另一個。'; fb.className='text-xs mt-1 text-rose-600'; }
+      checkCer();
+    });
+  });
+  document.getElementById('btn-next-4').onclick=()=>goto(5);
 
-<p class="q">任務 B｜教與學（Teaching & Learning）</p>
-<p>規劃一週跨科主題活動（至少三科：自然/社會/家政/數學/健康）：</p>
-<textarea rows="3"></textarea>
+  // ===== T5 =====
+  const projBank = [
+    { problem:'學校廚餘量龐大但不透明，學生缺乏浪費意識，每週丟棄大量未食用食物。',
+      steps:'① 取得廚房廚餘稱重協議；② 設計班級廚餘記錄板；③ 每月公布全校廚餘排行並設獎勵。',
+      kpis:['廚餘量在 3 個月內減少 20%（正確：具體可量化）','全校同學都知道廚餘問題','午餐時間氣氛改善'] },
+    { problem:'校餐每天提供肉類，缺乏替代選擇，且學生對食物碳足跡完全沒有概念。',
+      steps:'① 與餐廳協商每週一日蔬食菜單；② 設計菜單碳排標示；③ 計算累積 CO₂ 減量並展示。',
+      kpis:['蔬食日參與率在 2 個月內達到 75% 以上（正確：直接衡量目標）','蔬食菜單口味評分提升','同學的碳知識測驗分數上升'] },
+    { problem:'校餐採購以價格為唯一考量，進口食材比例高，當季在地食材使用率不到 30%。',
+      steps:'① 調查目前採購清單，標記進口 vs. 在地；② 聯繫縣市農會建立當季供應名單；③ 設計採購評分標準。',
+      kpis:['在地當季食材比例由 30% 提升至 50%（正確：基準線清晰、目標具體）','採購成本不超過現有預算 5%','學生識別當季食材的能力提升'] },
+    { problem:'市面食品充斥環保標章，但學生無法辨別真偽，容易受漂綠行銷影響。',
+      steps:'① 收集 20 款有環保標章的校餐或市售食品；② 查詢認證機構並核實資料；③ 製作「漂綠偵測指南」海報。',
+      kpis:['完成 20 款食品核查報告並公開展示（正確：可驗證的具體交付物）','同學能辨別至少 3 種常見認證標章','海報被其他班借閱次數'] }
+  ];
+  let selProj=-1, kpiSel=null;
+  document.querySelectorAll('input[name=proj]').forEach(r=>r.onchange=()=>{
+    selProj=parseInt(r.value);
+    const p=projBank[selProj];
+    document.getElementById('proj-problem').textContent=p.problem;
+    document.getElementById('proj-steps').textContent=p.steps;
+    document.getElementById('proj-detail').classList.remove('hidden-screen');
+    const kpiArea=document.getElementById('kpi-area');
+    kpiArea.classList.remove('hidden-screen');
+    const kpiOpts=document.getElementById('kpi-opts');
+    kpiOpts.innerHTML='';
+    kpiSel=null;
+    const kidxs=[0,1,2].sort(()=>Math.random()-.5);
+    kidxs.forEach(ki=>{
+      const lbl=document.createElement('label');
+      lbl.className='opt';
+      lbl.innerHTML=`<input type="radio" name="kpi-r" value="${ki}" class="mr-2">${p.kpis[ki]}`;
+      lbl.querySelector('input').onchange=()=>{kpiSel=ki;checkL5();};
+      kpiOpts.appendChild(lbl);
+    });
+    checkL5();
+  });
+  const checkL5=()=>{
+    const wsaOk=[...document.querySelectorAll('.wsa')].every(c=>c.checked);
+    document.getElementById('btn-next-5').disabled=!(selProj>=0 && kpiSel===0 && wsaOk);
+    if(kpiSel!==null && kpiSel!==0){
+      document.getElementById('kpi-fb').textContent='❌ 最佳 KPI 應具體、可量化且直接反映提案目標，請再選一次。';
+      document.getElementById('kpi-fb').className='text-xs mt-1 text-rose-600';
+    } else if(kpiSel===0){
+      document.getElementById('kpi-fb').textContent='✅ 選擇正確！清晰的量化指標讓成效透明可驗證。';
+      document.getElementById('kpi-fb').className='text-xs mt-1 text-emerald-700';
+    }
+  };
+  document.querySelectorAll('.wsa').forEach(c=>c.onchange=checkL5);
+  document.getElementById('btn-next-5').onclick=()=>{ awardOnce('t5',20); confetti(); goto('final'); };
 
-<p class="q">任務 C｜設施與營運（Facilities & Operations）</p>
-<p>列出 3 項可量測的校園改變（範例：廚餘秤重、蔬食日、當季採購％）：</p>
-<textarea rows="3"></textarea>
+  // ===== Final =====
+  const starsState={know:0,act:0};
+  document.querySelectorAll('.star').forEach(s=>{
+    s.onclick=()=>{
+      const g=s.dataset.g, v=parseInt(s.dataset.v);
+      starsState[g]=v;
+      document.querySelectorAll(`.star[data-g="${g}"]`).forEach(st=>{
+        st.classList.toggle('on',parseInt(st.dataset.v)<=v);
+      });
+      checkFinal();
+    };
+  });
+  let impactAns=null;
+  document.querySelectorAll('input[name=impact]').forEach(r=>r.onchange=()=>{
+    impactAns=r.value;
+    const fb=document.getElementById('impact-fb');
+    if(impactAns==='B'){fb.textContent='✅ 正確！30×(25-0.65)×0.3×20 = 30×24.35×6 = 4,383 kg CO₂eq。全班每週一蔬食日，一學期減碳超過 4 公噸！';fb.className='text-xs mt-2 text-emerald-700';awardOnce('final-impact',5);}
+    else{fb.textContent='❌ 計算式：30人×(25-0.65)kg×0.3kg蛋白×20週 = 4,383 kg CO₂eq。選項 B 正確。';fb.className='text-xs mt-2 text-rose-600';}
+    checkFinal();
+  });
+  const checkFinal=()=>{
+    document.getElementById('btn-finish').disabled=!(starsState.know>0 && starsState.act>0 && impactAns);
+  };
+  document.getElementById('btn-finish').onclick=()=>{
+    awardOnce('final-stars',5);
+    confetti();
+    document.getElementById('btn-finish').style.display='none';
+    document.getElementById('final-banner').classList.remove('hidden-screen');
+    document.getElementById('final-score').textContent=S.score;
+    document.getElementById('score').textContent=S.score;
+  };
 
-<p class="q">任務 D｜社群夥伴（Community）</p>
-<p>擬定與在地小農／食物銀行／家長會的合作方式（1 封 100 字邀請信概要）：</p>
-<textarea rows="4"></textarea>
+})();
+</script>
 
-<p class="q">任務 E｜指標與檢核</p>
-<p>至少 2 個可量測指標（例：廚餘降 20%、蔬食日參與率 70%）：</p>
-<textarea rows="2"></textarea>
-</div>
-
-<hr>
-
-<h2>第四部分 · 倡議行動（可選加分）</h2>
-<div class="basic">
-<p>拍 1 張家中餐桌照片 + 100 字說明這一餐的永續亮點與可改之處，貼在班級電子牆。</p>
-<textarea rows="4"></textarea>
-</div>
-
-<p style="text-align:center; color:#666; margin-top:40px;">— 學習單結束 — 每一餐都是我們對未來的投票 —</p>
-
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
+</script>
 </body>
 </html>

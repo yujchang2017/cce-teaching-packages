@@ -1,379 +1,756 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>綠能小偵探 — 1.6-III 互動學習單</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>綠能小偵探光光 | 互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#fef9c3 0%,#dbeafe 50%,#dcfce7 100%); min-height:100vh; }
-  .card { transition: transform .2s; }
-  .card:hover { transform: translateY(-2px); }
-  .feedback-pop { animation: pop .4s ease-out; }
-  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#fef9c3,#d1fae5,#bfdbfe); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:100px; transition: background .2s; border:2px dashed #6ee7b7; border-radius:.75rem;}
+  .drop-zone.over { background:#fef08a; border-color:#eab308;}
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
   .shake { animation: shake .4s; }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
-  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; }
-  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
-  .progress-dot.done { background: #10b981; transform: scale(1.2); }
-  .progress-dot.active { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,.25); }
-  .drag-item { cursor: grab; user-select: none; }
-  .drag-item.dragging { opacity: .4; }
-  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
-  .badge { animation: glow 2s infinite alternate; }
-  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
-  .hidden-step { display: none; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#10b981; transform:scale(1.3);}
+  .progress-dot.done { background:#34d399;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.95rem;}
+  .opt:hover { background:#f0fdf4; }
+  .opt.sel { border-color:#10b981; background:#dcfce7;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.5rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
-<body class="text-gray-800">
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 
-<header class="bg-gradient-to-r from-amber-500 to-green-600 text-white p-6 shadow-lg">
-  <div class="max-w-5xl mx-auto">
-    <h1 class="text-3xl md:text-4xl font-extrabold">☀️ 綠能小偵探</h1>
-    <p class="mt-2 text-yellow-50">UNESCO 1.6-III ｜ 9-12 歲 ｜ 2050 淨零的關鍵就在你我手上！</p>
-    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
-      <div class="progress-dot active" id="dot1"></div>
-      <div class="progress-dot" id="dot2"></div>
-      <div class="progress-dot" id="dot3"></div>
-      <div class="progress-dot" id="dot4"></div>
-      <div class="progress-dot" id="dot5"></div>
-      <div class="progress-dot" id="dot6"></div>
-    </div>
-    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
-  </div>
-</header>
+<div class="max-w-3xl mx-auto">
 
-<main class="max-w-5xl mx-auto p-4 md:p-6">
-
-<!-- 角色與情境故事 -->
-<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <div class="flex items-start gap-4">
-    <div class="text-6xl">🤖</div>
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
     <div>
-      <h2 class="text-2xl font-bold text-amber-700">任務簡報：你被選為「綠能小偵探」！</h2>
-      <p class="mt-2 leading-relaxed">嗨！我是陽光機器人「光光」，我的電池快沒電了！台灣 2024 年再生能源只佔 <strong class="text-green-700">11.6%</strong>，距離 2025 目標 <strong class="text-green-700">20%</strong> 還差一大步。請你幫我完成 6 個任務，把校園變綠能基地，解鎖「全校英雄」徽章！</p>
-      <button onclick="startMission()" class="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 ⚡</button>
+      <h1 class="text-2xl md:text-3xl font-bold text-green-700">☀️ 綠能小偵探光光</h1>
+      <p class="text-sm text-slate-600 mt-1">幫機器人光光找到乾淨的能源，讓地球更涼快！</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
     </div>
   </div>
-</section>
 
-<!-- 關卡 1：能源分類（選擇題）-->
-<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-blue-700">🔌 關卡 1：2023 年全球再生能源發電佔比多少？</h2>
-  <p class="mt-2 text-gray-600">2023 年是人類能源的轉折年，太陽能加風力第一次突破 10%。你猜整體再生能源（含水力）是多少 %？</p>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">約 5%</button>
-    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">約 15%</button>
-    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="1">約 30%</button>
-    <button class="q1-opt p-4 border-2 border-blue-200 rounded-xl hover:bg-blue-50" data-ans="0">約 60%</button>
-  </div>
-  <div id="q1-feedback" class="mt-4"></div>
-</section>
-
-<!-- 關卡 2：能源家族拖曳分類 -->
-<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-teal-700">🧩 關卡 2：能源回家 — 分類再生 vs 非再生</h2>
-  <p class="mt-2 text-gray-600">把下面的能源拖到正確的家族。台灣 2024 再生能源裝置裡，太陽光電 <strong>14 GW</strong>、風力 <strong>3 GW</strong> 已經是主力！</p>
-
-  <div class="flex flex-wrap gap-3 mt-4" id="energyPool">
-    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="renew">☀️ 太陽能</div>
-    <div class="drag-item bg-gray-300 px-4 py-2 rounded-full shadow" draggable="true" data-type="fossil">⛽ 石油</div>
-    <div class="drag-item bg-sky-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="renew">💨 風力</div>
-    <div class="drag-item bg-gray-400 px-4 py-2 rounded-full shadow" draggable="true" data-type="fossil">🏭 煤炭</div>
-    <div class="drag-item bg-blue-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="renew">💧 水力</div>
-    <div class="drag-item bg-gray-200 px-4 py-2 rounded-full shadow" draggable="true" data-type="fossil">🔥 天然氣</div>
-    <div class="drag-item bg-orange-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="renew">🌋 地熱</div>
-    <div class="drag-item bg-green-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="renew">🌾 生質能</div>
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3 flex-wrap">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-2 text-sm text-slate-600">關卡 <span id="step-label">1</span> / 4</span>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-6">
-    <div class="drop-zone min-h-[140px] border-2 border-dashed border-green-400 bg-green-50 rounded-xl p-3" data-type="renew">
-      <p class="font-bold text-green-700">🌱 再生能源（自然循環、不會用光）</p>
-      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
-    </div>
-    <div class="drop-zone min-h-[140px] border-2 border-dashed border-gray-500 bg-gray-100 rounded-xl p-3" data-type="fossil">
-      <p class="font-bold text-gray-700">🪨 化石燃料（用完就沒、燒會排 CO2）</p>
-      <div class="drop-content flex flex-wrap gap-1 mt-2"></div>
-    </div>
-  </div>
-  <div id="q2-feedback" class="mt-4"></div>
-  <button id="q2-check" onclick="checkLevel2()" class="mt-3 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full">檢查答案</button>
-</section>
-
-<!-- 關卡 3：1 度電碳排算術 -->
-<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-rose-700">🧮 關卡 3：一度電的重量</h2>
-  <p class="mt-2 text-gray-600">台灣電力 2023 年平均每度排 <strong>0.495 kg CO2</strong>。如果小明家一個月用 <strong>300 度</strong>電，會排多少公斤 CO2？</p>
-  <div class="bg-amber-50 p-3 rounded-xl mt-3 text-sm">💡 提示：用「每度 0.495 × 300 度」計算，四捨五入到整數。</div>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-    <button class="q3-opt p-4 border-2 border-rose-200 rounded-xl hover:bg-rose-50" data-ans="0">約 50 kg</button>
-    <button class="q3-opt p-4 border-2 border-rose-200 rounded-xl hover:bg-rose-50" data-ans="1">約 149 kg</button>
-    <button class="q3-opt p-4 border-2 border-rose-200 rounded-xl hover:bg-rose-50" data-ans="0">約 300 kg</button>
-    <button class="q3-opt p-4 border-2 border-rose-200 rounded-xl hover:bg-rose-50" data-ans="0">約 900 kg</button>
-  </div>
-  <div id="q3-feedback" class="mt-4"></div>
-</section>
-
-<!-- 關卡 4：迷思破解（是非題）-->
-<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-purple-700">🧠 關卡 4：迷思大破解</h2>
-  <p class="mt-2 text-gray-600">下面的說法正確嗎？大膽選答，答錯也會學到重點。</p>
-  <div id="mythQs" class="space-y-4 mt-4">
-    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="核能不排 CO2 但鈾礦有限、核廢料長達數萬年要管理，UNESCO 分類為「低碳但非再生」，不算再生能源。">
-      <p class="font-semibold">Q1：核能沒有碳排放，所以就是再生能源。</p>
-      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
-    </div>
-    <div class="q4 border rounded-xl p-3" data-ans="false" data-hint="只有「砍一棵種一棵」才永續！若只砍不補種，燃燒排出的 CO2 和燒煤一樣會造成暖化。">
-      <p class="font-semibold">Q2：燒木材是天然的，不論有沒有補種，都算環保能源。</p>
-      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
-    </div>
-    <div class="q4 border rounded-xl p-3" data-ans="true" data-hint="正確！2023 年太陽與陸域風電已是全球最便宜的新建電源；台灣太陽光電裝置量已達 14 GW，2025 年目標再生能源佔 20%。">
-      <p class="font-semibold">Q3：現在太陽能和風力已經是全球最便宜的新電源之一，台灣 2025 目標再生能源佔 20%。</p>
-      <div class="flex gap-2 mt-2"><button class="q4-opt px-4 py-1 border rounded-full" data-v="true">✅ 對</button><button class="q4-opt px-4 py-1 border rounded-full" data-v="false">❌ 錯</button></div>
-    </div>
-  </div>
-  <div id="q4-feedback" class="mt-4"></div>
-</section>
-
-<!-- 關卡 5：選擇與後果（情境劇）-->
-<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-indigo-700">🎭 關卡 5：校舍屋頂的抉擇</h2>
-  <p class="mt-2 text-gray-600">學校正在討論閒置屋頂要怎麼用，你會建議怎麼做？（每個選擇會有不同後果）</p>
-  <div class="space-y-3 mt-4">
-    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-indigo-50" data-c="A">A. 什麼都不做，保持空空的</button>
-    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-indigo-50" data-c="B">B. 蓋一個水泥儲藏室</button>
-    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-indigo-50" data-c="C">C. 裝太陽能板 + 做隔熱處理</button>
-    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-indigo-50" data-c="D">D. 改種樹一片森林</button>
-  </div>
-  <div id="q5-feedback" class="mt-4"></div>
-</section>
-
-<!-- 關卡 6：全校行動挑戰（WSA 四面向）-->
-<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6 border-4 border-amber-400">
-  <h2 class="text-xl font-bold text-amber-700">🏫 關卡 6：全校綠能挑戰（Whole School Approach）</h2>
-  <p class="mt-2 text-gray-700">四個面向，一起讓學校變成綠能基地。請勾選你「本學期會嘗試」的行動，四項全勾，解鎖「全校英雄」徽章！</p>
-  <div class="grid md:grid-cols-2 gap-4 mt-4">
-    <label class="flex items-start gap-3 p-4 border-2 border-blue-200 rounded-xl cursor-pointer hover:bg-blue-50">
-      <input type="checkbox" class="wsa mt-1" data-aspect="curriculum" />
+  <!-- ===== Level 1: 能源分類配對 (15 pts) ===== -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🤖</div>
       <div>
-        <p class="font-bold text-blue-700">📚 課程整合</p>
-        <p class="text-sm">自然課記錄教室一週用電量 + 數學課換算 CO2 排放 + 藝文課畫「未來綠能家」。</p>
+        <h2 class="text-xl font-bold text-green-700">關卡 1：能源回家！</h2>
+        <p class="text-sm text-slate-700 mt-1">光光說：「太陽、風、水都可以一直用、不會用完；而煤炭和石油是很多年前就埋在地底的，用完就沒了！把能源卡片拖到正確的家！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 15 分｜全部放對才能前往下一關</p>
       </div>
-    </label>
-    <label class="flex items-start gap-3 p-4 border-2 border-green-200 rounded-xl cursor-pointer hover:bg-green-50">
-      <input type="checkbox" class="wsa mt-1" data-aspect="operations" />
+    </div>
+
+    <!-- Drag items -->
+    <div class="grid grid-cols-2 gap-3 my-3" id="items-box-1">
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="green">☀️ 太陽能板</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="fossil">🏭 燃燒煤炭</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="green">💨 風力發電機</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="fossil">⛽ 汽車用石油</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="green">💧 水力發電</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="fossil">🔥 燒天然氣</div>
+    </div>
+
+    <!-- Drop zones -->
+    <div class="grid grid-cols-2 gap-3" id="zones-box-1">
+      <div class="drop-zone bg-green-50 p-3" data-accept="green">
+        <div class="font-bold text-green-700 text-center mb-2">🌱 大自然補得上<br><span class="text-xs font-normal text-green-500">（陽光風水會自己回來）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-slate-100 p-3" data-accept="fossil">
+        <div class="font-bold text-slate-700 text-center mb-2">⏳ 用完就沒了<br><span class="text-xs font-normal text-slate-500">（地底埋了幾億年才有）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+    </div>
+
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <span></span>
+      <button id="btn-next-1" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>完成分類才能繼續 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 2: 看圖找答案 (20 pts) ===== -->
+  <section id="level-2" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">📊</div>
       <div>
-        <p class="font-bold text-green-700">🌳 校園營運</p>
-        <p class="text-sm">全校燈具改 LED、冷氣設 26°C、盤點屋頂加裝太陽能板的可能位置。</p>
+        <h2 class="text-xl font-bold text-green-700">關卡 2：看圖找答案</h2>
+        <p class="text-sm text-slate-700 mt-1">光光找到一張台灣家庭用電的圖表。仔細看，回答下面兩題！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜Q1 單選 5 分 + Q2 多選 15 分</p>
       </div>
-    </label>
-    <label class="flex items-start gap-3 p-4 border-2 border-orange-200 rounded-xl cursor-pointer hover:bg-orange-50">
-      <input type="checkbox" class="wsa mt-1" data-aspect="community" />
+    </div>
+
+    <!-- Simple SVG chart: Taiwan electricity sources -->
+    <svg viewBox="0 0 400 180" class="w-full max-w-lg mx-auto block bg-slate-50 rounded-xl mb-4 border border-slate-200">
+      <!-- Title -->
+      <text x="200" y="18" text-anchor="middle" font-size="11" font-weight="bold" fill="#374151">台灣家庭電力來源（2024 年）</text>
+      <!-- Bars -->
+      <rect x="40" y="30" width="60" height="110" fill="#94a3b8" rx="4"/>
+      <rect x="130" y="80" width="60" height="60" fill="#64748b" rx="4"/>
+      <rect x="220" y="110" width="60" height="30" fill="#34d399" rx="4"/>
+      <rect x="310" y="125" width="60" height="15" fill="#60a5fa" rx="4"/>
+      <!-- Labels top -->
+      <text x="70" y="26" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">57%</text>
+      <text x="160" y="76" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">24%</text>
+      <text x="250" y="106" text-anchor="middle" font-size="10" font-weight="bold" fill="#059669">12%</text>
+      <text x="340" y="121" text-anchor="middle" font-size="10" font-weight="bold" fill="#2563eb">5%</text>
+      <!-- Labels bottom -->
+      <text x="70" y="155" text-anchor="middle" font-size="9" fill="#374151">燃煤</text>
+      <text x="160" y="155" text-anchor="middle" font-size="9" fill="#374151">天然氣</text>
+      <text x="250" y="155" text-anchor="middle" font-size="9" fill="#059669">太陽能+風力</text>
+      <text x="340" y="155" text-anchor="middle" font-size="9" fill="#2563eb">水力</text>
+      <!-- Baseline -->
+      <line x1="25" y1="140" x2="385" y2="140" stroke="#cbd5e1" stroke-width="1.5"/>
+      <!-- Annotation -->
+      <text x="250" y="172" text-anchor="middle" font-size="9" fill="#059669">↗ 再生能源約 17%（持續增加中！）</text>
+    </svg>
+
+    <!-- Q1: Single choice -->
+    <div class="mb-5">
+      <p class="font-bold text-sm mb-2">📌 Q1：圖表中，台灣發電最多的是哪一種？（單選，5 分）</p>
+      <div id="q1-opts">
+        <label class="opt"><input type="radio" name="q1" value="0"> A. 太陽能和風力加起來</label>
+        <label class="opt"><input type="radio" name="q1" value="1"> B. 燃燒煤炭</label>
+        <label class="opt"><input type="radio" name="q1" value="0"> C. 水力發電</label>
+      </div>
+      <p id="q1-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <!-- Q2: Multi-select -->
+    <div class="mb-3">
+      <p class="font-bold text-sm mb-1">📌 Q2：下面哪些事情，可以幫台灣用更多「大自然補得上」的能源？<br><span class="font-normal text-slate-500 text-xs">（勾出你覺得對的，可勾多個）</span></p>
+      <div id="q2-opts">
+        <label class="opt"><input type="checkbox" data-correct="1"> ☀️ 學校屋頂裝太陽能板，自己發電</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 🚶 上下學走路或騎腳踏車，少用機車</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> 🏭 多蓋發電廠，越多越好不管哪一種</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 💡 教室電燈改用省電的 LED 燈</label>
+      </div>
+      <p id="q2-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="1">← 上一關</button>
+      <button id="btn-next-2" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>提交答案 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 3: 推一推 — 骨牌鏈 (20 pts) ===== -->
+  <section id="level-3" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🔄</div>
       <div>
-        <p class="font-bold text-orange-700">🤝 社區連結</p>
-        <p class="text-sm">邀請能源署講師或綠電業者到校分享，或全班一起參觀太陽光電 / 風力電廠。</p>
+        <h2 class="text-xl font-bold text-green-700">關卡 3：推一推！能源骨牌鏈</h2>
+        <p class="text-sm text-slate-700 mt-1">光光說：「我們用電的方式，會像骨牌一樣帶來一連串的影響！把四張卡片按照正確順序，拖進 ① ② ③ ④ 格子！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜順序全對才得分</p>
       </div>
-    </label>
-    <label class="flex items-start gap-3 p-4 border-2 border-purple-200 rounded-xl cursor-pointer hover:bg-purple-50">
-      <input type="checkbox" class="wsa mt-1" data-aspect="agency" />
+    </div>
+
+    <!-- Chain slots -->
+    <div class="flex flex-col md:flex-row items-center justify-center gap-2 my-4" id="chain-slots">
+      <div class="drop-zone bg-green-50 p-3 w-full md:w-32 text-center" data-slot="1">
+        <div class="text-xs font-bold text-green-700 mb-1">① 起點</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-green-50 p-3 w-full md:w-32 text-center" data-slot="2">
+        <div class="text-xs font-bold text-green-700 mb-1">②</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-green-50 p-3 w-full md:w-32 text-center" data-slot="3">
+        <div class="text-xs font-bold text-green-700 mb-1">③</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-green-50 p-3 w-full md:w-32 text-center" data-slot="4">
+        <div class="text-xs font-bold text-green-700 mb-1">④ 結果</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+    </div>
+
+    <!-- Chain drag items (shuffled by JS) -->
+    <div class="grid grid-cols-2 gap-3 mt-2" id="chain-items">
+      <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="1">⚡ 我們在學校、家裡每天用電</div>
+      <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="3">🌫️ 空氣中溫室氣體增加，地球變熱</div>
+      <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="2">🏭 發電廠燃燒煤炭，排出廢氣</div>
+      <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="4">🥵 夏天更熱，需要更多冷氣⋯再耗更多電</div>
+    </div>
+
+    <p id="l3-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="2">← 上一關</button>
+      <button id="btn-next-3" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>下一關 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 4: 我的行動 (20 pts) ===== -->
+  <section id="level-4" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">💚</div>
       <div>
-        <p class="font-bold text-purple-700">🙋 學生治理</p>
-        <p class="text-sm">選出「能源小隊長」，向校務會議提出 1 個校園節能或綠能提案。</p>
+        <h2 class="text-xl font-bold text-green-700">關卡 4：我的綠能行動</h2>
+        <p class="text-sm text-slate-700 mt-1">光光說：「每個小動作都讓地球多一點點綠！先選你想從哪裡開始，再選你覺得最容易做到的方法！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜選主題 + 選行動 + 立下承諾</p>
       </div>
-    </label>
-  </div>
-  <button onclick="checkWSA()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full shadow-lg">提交挑戰 🏆</button>
-  <div id="wsa-feedback" class="mt-4"></div>
-</section>
+    </div>
 
-<!-- 徽章與成果 -->
-<section id="result" class="hidden-step card bg-gradient-to-br from-yellow-100 to-amber-200 rounded-2xl shadow-2xl p-8 mb-6 text-center">
-  <div class="text-7xl mb-3 badge inline-block rounded-full bg-white p-6">🏆</div>
-  <h2 class="text-3xl font-extrabold text-amber-800">全校英雄 徽章解鎖！</h2>
-  <p class="mt-3 text-lg">你已經學會全球 <strong>30%</strong> 再生能源、台灣 <strong>11.6%</strong>、1 度電排 <strong>0.495 kg</strong> CO2、2050 <strong>淨零</strong>，並為校園綠能許下承諾！</p>
+    <!-- Step 1: 選主題 -->
+    <div class="mb-4">
+      <p class="font-bold text-sm mb-2">① 光光最想從哪件事開始？（選一個）</p>
+      <div id="theme-opts">
+        <label class="opt"><input type="radio" name="theme" value="school"> 🏫 學校的電（教室冷氣、走廊燈）</label>
+        <label class="opt"><input type="radio" name="theme" value="home"> 🏠 家裡的電（電視、充電器、冷氣）</label>
+        <label class="opt"><input type="radio" name="theme" value="commute"> 🚶 上下學的方式（走路、騎腳踏車）</label>
+        <label class="opt"><input type="radio" name="theme" value="spread"> 📢 把這件事告訴更多人</label>
+      </div>
+    </div>
 
-  <div class="bg-white rounded-xl p-5 mt-5 text-left">
-    <h3 class="font-bold text-emerald-700 text-xl mb-2">🌱 三個延伸思考（帶回家想想）</h3>
-    <ol class="list-decimal ml-6 space-y-2">
-      <li>如果家裡電費單出現「綠電方案」，每度多 1 元，你會建議爸媽選嗎？寫下你的理由（給家人看的說服論點）。</li>
-      <li>台灣要 2050 淨零，最大困難是什麼？（例如：土地、成本、民眾接受度）你會建議怎麼克服？</li>
-      <li>十年後你想從事什麼職業？列舉 3 種方式讓你的工作可以幫助能源轉型（每個職業都可以！）。</li>
-    </ol>
-  </div>
+    <!-- Step 2: 選行動（動態顯示） -->
+    <div id="action-wrap" class="hidden mb-4">
+      <p class="font-bold text-sm mb-2">② 以下三個做法，哪個最容易開始？（選一個）</p>
+      <div id="action-opts"></div>
+      <p id="action-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
 
-  <button onclick="window.print()" class="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full">🖨️ 列印成果頁</button>
-  <button onclick="location.reload()" class="mt-5 ml-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full">🔄 重新挑戰</button>
-</section>
+    <!-- Step 3: 承諾勾選框 -->
+    <div id="promise-wrap" class="hidden bg-green-50 rounded-xl p-4 mb-3">
+      <p class="font-bold text-sm mb-2">③ 在你能做到的事前打勾（至少選 2 個）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-green-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會跟家人分享今天學到關於能源的事</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-green-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會注意家裡哪些電器沒在用卻開著</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-green-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會跟同學或朋友一起做這件事</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-green-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會留意身邊哪裡有太陽能板或風力機</span>
+      </label>
+      <p id="promise-fb" class="text-xs mt-2 text-slate-500 min-h-[18px]"></p>
+    </div>
 
-<footer class="text-center text-xs text-gray-500 pb-6">
-  資料來源：IEA Electricity 2024、Ember 2024、IPCC AR6、經濟部能源署、國家發展委員會、FAO。教學套件 UNESCO 1.6-III ｜ 驗證日 2026-04-16
-</footer>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="3">← 上一關</button>
+      <button id="btn-next-4" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>查看成果 🏆</button>
+    </div>
+  </section>
 
-</main>
+  <!-- ===== Final: 反思 (5 pts) ===== -->
+  <section id="level-final" class="card p-6 hidden-screen fade-in">
+    <div class="text-6xl text-center pop">🏆</div>
+    <h2 class="text-2xl font-bold text-green-700 mt-2 text-center">恭喜你幫光光完成任務！</h2>
+    <p class="text-slate-700 mt-1 text-center">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> / 80 分</p>
+
+    <!-- Badges -->
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <!-- Reflection (5 pts) -->
+    <div class="bg-green-50 rounded-xl p-4 max-w-2xl mx-auto mb-4">
+      <p class="font-bold text-green-700 mb-3">🤔 最後一步：快速反思（5 分）</p>
+
+      <p class="text-sm font-semibold mb-1">Q1｜上這堂課之前，你對「再生能源」的了解程度：</p>
+      <div id="stars-before" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q2｜上完這堂課後，你的了解程度：</p>
+      <div id="stars-after" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q3｜如果全班同學都節省用電，最可能發生什麼？</p>
+      <div id="impact-opts">
+        <label class="opt"><input type="radio" name="impact" value="1"> A. 發電廠少燒一點煤，空氣更乾淨</label>
+        <label class="opt"><input type="radio" name="impact" value="2"> B. 同學的家人也受影響，一起省電</label>
+        <label class="opt"><input type="radio" name="impact" value="3"> C. 以上都有可能！</label>
+      </div>
+      <p id="reflect-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <!-- Extension questions -->
+    <div class="bg-yellow-50 rounded-xl p-4 text-left max-w-2xl mx-auto">
+      <h3 class="font-bold text-amber-700 mb-2">🧐 延伸思考小挑戰</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>你家附近或上學路上有沒有看過太陽能板或風力機？你覺得它們裝在哪裡最合適？</li>
+        <li>如果班上要選一個「省電小隊長」，你會希望他做什麼事？你願意當嗎？</li>
+        <li>你覺得哪一件事最難改變——個人習慣、學校規定，還是大人的想法？說說你的理由。</li>
+      </ol>
+    </div>
+
+    <div class="nav-row max-w-2xl mx-auto mt-4">
+      <button class="btn btn-back" data-back="4">← 回到關卡 4</button>
+      <button onclick="location.reload()" class="btn bg-green-500 text-white py-2 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+    </div>
+  </section>
+
+</div><!-- /max-w-3xl -->
 
 <script>
-let currentStep = 0;
-const steps = ['intro','level1','level2','level3','level4','level5','level6','result'];
+(() => {
+  /* ===================================================
+     Core state  (TOTAL = 4 tasks + 1 final = TOTAL_LEVELS = 4)
+     =================================================== */
+  const TOTAL_LEVELS = 4;
+  const S = { score: 0, current: 1, awarded: {} };
+  const el = id => document.getElementById(id);
 
-function showStep(i){
-  steps.forEach((s,idx)=>{
-    const el = document.getElementById(s);
-    if(!el) return;
-    if(idx===i) el.classList.remove('hidden-step');
-    else el.classList.add('hidden-step');
-  });
-  for(let k=1;k<=6;k++){
-    const d=document.getElementById('dot'+k);
-    d.classList.remove('done','active');
-    if(k < i) d.classList.add('done');
-    else if(k === i) d.classList.add('active');
-  }
-  const pt = document.getElementById('progressText');
-  if(i>=1 && i<=6) pt.textContent = `第 ${i} / 6 關`;
-  else if(i===7) pt.textContent = '完成！';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function startMission(){ currentStep=1; showStep(1); }
+  const setScore = n => {
+    S.score += n;
+    el('score').textContent = S.score;
+  };
+  const awardOnce = (key, pts) => {
+    if (!S.awarded[key]) { S.awarded[key] = true; setScore(pts); }
+  };
 
-// Level 1
-document.querySelectorAll('.q1-opt').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const fb = document.getElementById('q1-feedback');
-    if(btn.dataset.ans==='1'){
-      fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 答對了！2023 年全球再生能源發電約佔 30%，太陽+風首次超過 10%！</div>';
-      confetti();
-      setTimeout(()=>{currentStep=2;showStep(2);},1400);
-    } else {
-      btn.classList.add('shake');
-      fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再想想！提示：全球每 3 度電有 1 度來自再生能源，也就是大約 30%。</div>';
+  const updateDots = () => {
+    for (let i = 1; i <= TOTAL_LEVELS + 1; i++) {
+      const d = el('dot-' + i);
+      if (!d) continue;
+      d.classList.remove('active', 'done');
+      if (i < S.current) d.classList.add('done');
+      else if (i === S.current) d.classList.add('active');
     }
-  });
-});
+  };
 
-// Level 2 — drag & drop
-let dragged = null;
-document.querySelectorAll('.drag-item').forEach(el=>{
-  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
-  el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); });
-});
-document.querySelectorAll('.drop-zone').forEach(z=>{
-  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
-  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
-  z.addEventListener('drop', e=>{
-    e.preventDefault(); z.classList.remove('over');
-    if(dragged){ z.querySelector('.drop-content').appendChild(dragged); }
+  const gotoLevel = n => {
+    document.querySelectorAll('section[id^="level-"]').forEach(s => s.classList.add('hidden-screen'));
+    S.current = n;
+    el('step-label').textContent = Math.min(n, 4);
+    const target = (n > TOTAL_LEVELS) ? el('level-final') : el('level-' + n);
+    target.classList.remove('hidden-screen');
+    target.classList.add('fade-in');
+    updateDots();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Back buttons
+  document.querySelectorAll('.btn-back').forEach(b => {
+    b.onclick = () => gotoLevel(parseInt(b.dataset.back, 10));
   });
-});
-function checkLevel2(){
-  const zones = document.querySelectorAll('.drop-zone');
-  let correct=0, total=8;
-  zones.forEach(z=>{
-    const t = z.dataset.type;
-    z.querySelectorAll('.drop-content .drag-item').forEach(it=>{
-      if(it.dataset.type===t) correct++;
+
+  // Confetti
+  const confetti = () => {
+    const colors = ['#10b981', '#f59e0b', '#3b82f6', '#ef4444', '#a855f7'];
+    for (let i = 0; i < 32; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[i % colors.length];
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 2500);
+    }
+  };
+
+  const shuffleChildren = parent => {
+    const kids = Array.from(parent.children);
+    for (let i = kids.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      parent.appendChild(kids[j]);
+    }
+  };
+
+  /* =====================================================
+     Level 1: 能源分類配對 drag-drop  (15 pts)
+     ===================================================== */
+  shuffleChildren(el('items-box-1'));
+  shuffleChildren(el('zones-box-1'));
+
+  let dragged1 = null;
+  let l1Correct = 0;
+  const total1 = document.querySelectorAll('#items-box-1 .drag-item').length;
+
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged1 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => { item.classList.remove('dragging'); });
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#items-box-1 .drag-item').forEach(x => x.classList.remove('ring-4', 'ring-green-400'));
+      item.classList.add('ring-4', 'ring-green-400');
+      dragged1 = item;
     });
   });
-  const fb = document.getElementById('q2-feedback');
-  if(correct===total){
-    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌟 全部分類正確！再生能源：太陽、風、水、地熱、生質；化石燃料：煤、石油、天然氣。</div>';
+
+  document.querySelectorAll('#zones-box-1 .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop1(zone); });
+    zone.addEventListener('click', () => { if (dragged1) handleDrop1(zone); });
+  });
+
+  function handleDrop1(zone) {
+    if (!dragged1) return;
+    const fb = el('l1-feedback');
+    if (dragged1.dataset.match === zone.dataset.accept) {
+      zone.querySelector('.dz-items').appendChild(dragged1);
+      dragged1.setAttribute('draggable', 'false');
+      dragged1.classList.remove('ring-4', 'ring-green-400', 'bg-yellow-100', 'border-yellow-400');
+      dragged1.classList.add('bg-green-100', 'border-green-500', 'pop');
+      l1Correct++;
+      fb.textContent = '答對！ 👏';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+      confetti();
+      if (l1Correct === total1) {
+        awardOnce('L1', 15);
+        const btn = el('btn-next-1');
+        btn.disabled = false;
+        btn.className = 'btn bg-green-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(2);
+        fb.textContent = '全部答對！光光替你加油！🎉 +15 分';
+      }
+    } else {
+      dragged1.classList.add('shake');
+      setTimeout(() => dragged1.classList.remove('shake'), 400);
+      fb.textContent = '再想想！提示：太陽、風、水每天都有，不會減少哦 💡';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged1 = null;
+  }
+
+  /* =====================================================
+     Level 2: 看圖找答案  (Q1:5pts  Q2:15pts = 20)
+     ===================================================== */
+  let q1Done = false, q2Done = false;
+  const checkL2ready = () => {
+    const ready = q1Done && q2Done;
+    const btn = el('btn-next-2');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-green-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  // Q1 single choice
+  document.querySelectorAll('input[name=q1]').forEach(r => {
+    r.onchange = () => {
+      if (q1Done) return;
+      document.querySelectorAll('#q1-opts .opt').forEach(o => o.classList.remove('sel', 'correct', 'wrong'));
+      r.parentElement.classList.add(r.value === '1' ? 'correct' : 'wrong');
+      const fb = el('q1-fb');
+      if (r.value === '1') {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 對了！台灣目前最多電還是靠燃煤！所以我們需要更多太陽能和風力。+5 分</span>';
+        awardOnce('L2-q1', 5);
+        q1Done = true;
+      } else {
+        fb.innerHTML = '<span class="text-rose-600">❌ 再看看圖中最高的那根柱子是哪個？</span>';
+      }
+      checkL2ready();
+    };
+  });
+
+  // Q2 multi-select
+  let q2Submitted = false;
+  document.querySelectorAll('#q2-opts input[type=checkbox]').forEach(cb => {
+    cb.onchange = () => {
+      if (q2Submitted) return;
+      const checked = document.querySelectorAll('#q2-opts input:checked');
+      const fb = el('q2-fb');
+      if (checked.length >= 1) {
+        fb.textContent = `已選 ${checked.length} 項。覺得都選好了嗎？可以先提交～`;
+        q2Done = true;
+      } else {
+        q2Done = false;
+      }
+      checkL2ready();
+    };
+  });
+
+  el('btn-next-2').onclick = () => {
+    if (q2Submitted) { gotoLevel(3); return; }
+    q2Submitted = true;
+    const opts = document.querySelectorAll('#q2-opts input');
+    let correctCount = 0, wrongCount = 0;
+    opts.forEach(o => {
+      o.disabled = true;
+      const lbl = o.parentElement;
+      if (o.checked) {
+        if (o.dataset.correct === '1') { lbl.classList.add('correct'); correctCount++; }
+        else { lbl.classList.add('wrong'); wrongCount++; }
+      }
+    });
+    const pts = Math.max(0, correctCount * 5 - wrongCount * 5);
+    awardOnce('L2-q2', Math.min(pts, 15));
+    const fb = el('q2-fb');
+    if (wrongCount === 0 && correctCount >= 2) {
+      fb.innerHTML = `<span class="text-emerald-700 font-bold">✅ 很棒！勾對 ${correctCount} 項。+${Math.min(pts,15)} 分</span>`;
+      confetti();
+    } else if (correctCount >= 1) {
+      fb.innerHTML = `<span class="text-amber-600">勾對 ${correctCount} 項、錯 ${wrongCount} 項。提示：「多蓋哪種電廠都好」並不正確，燃煤電廠還是會排廢氣！</span>`;
+      if (pts > 0) confetti();
+    } else {
+      fb.innerHTML = '<span class="text-rose-600">❌ 都沒有勾到正確的！學校裝太陽能板、走路上學、換 LED 燈，這三件都能幫忙！</span>';
+    }
+    el('btn-next-2').textContent = '繼續下一關 →';
+    el('btn-next-2').onclick = () => gotoLevel(3);
+  };
+
+  /* =====================================================
+     Level 3: 骨牌鏈 drag-to-slot  (20 pts)
+     ===================================================== */
+  shuffleChildren(el('chain-items'));
+
+  let dragged3 = null;
+  let l3SlotsFilled = 0;
+  const slotMap = {};
+  const correctOrder = { '1': '1', '2': '2', '3': '3', '4': '4' };
+
+  document.querySelectorAll('#chain-items .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged3 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#chain-items .drag-item').forEach(x => x.classList.remove('ring-4', 'ring-green-400'));
+      item.classList.add('ring-4', 'ring-green-400');
+      dragged3 = item;
+    });
+  });
+
+  document.querySelectorAll('#chain-slots .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop3(zone); });
+    zone.addEventListener('click', () => { if (dragged3) handleDrop3(zone); });
+  });
+
+  function handleDrop3(zone) {
+    if (!dragged3) return;
+    const slot = zone.dataset.slot;
+    const chainVal = dragged3.dataset.chain;
+    const fb = el('l3-feedback');
+    if (slotMap[slot]) {
+      fb.textContent = '這格已經有卡片了！先試試其他格子。';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-amber-600';
+      dragged3 = null; return;
+    }
+    if (correctOrder[slot] === chainVal) {
+      slotMap[slot] = chainVal;
+      const slotText = zone.querySelector('.slot-text');
+      slotText.textContent = dragged3.textContent.trim();
+      slotText.classList.remove('text-slate-400');
+      slotText.classList.add('text-slate-800', 'font-bold', 'pop');
+      zone.classList.add('bg-green-50');
+      zone.style.borderColor = '#10b981';
+      dragged3.style.visibility = 'hidden';
+      l3SlotsFilled++;
+      fb.textContent = '對了！ 🎉 繼續放下一張！';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600';
+      if (l3SlotsFilled === 4) {
+        awardOnce('L3', 20);
+        fb.textContent = '完美！全部順序正確！ +20 分 🌿';
+        confetti();
+        const btn = el('btn-next-3');
+        btn.disabled = false;
+        btn.className = 'btn bg-green-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(4);
+      }
+    } else {
+      zone.classList.add('shake');
+      setTimeout(() => zone.classList.remove('shake'), 400);
+      fb.textContent = '順序不對喔！提示：第 ① 格是「我們平常的行動」。';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged3 = null;
+  }
+
+  /* =====================================================
+     Level 4: 我的行動  (20 pts)
+     ===================================================== */
+  const actionBank = {
+    school: [
+      '離開教室時提醒同學把電燈和冷氣關掉',
+      '建議老師把教室燈泡換成省電的 LED 燈',
+      '做一張「節能小提醒」貼在電燈開關旁邊'
+    ],
+    home: [
+      '手機充飽電就把充電線拔掉，不讓電白跑',
+      '沒人看電視就請家人一起關掉',
+      '夏天冷氣調高一度，少流一點電'
+    ],
+    commute: [
+      '短距離上下學改走路或騎腳踏車',
+      '搭公車或捷運，少讓爸媽開車',
+      '和同班同學約好一起走路上學'
+    ],
+    spread: [
+      '在班上分享今天學到最酷的能源知識',
+      '做一張「綠能小海報」貼在家裡提醒家人',
+      '邀請一個好朋友下次一起做省電的事'
+    ]
+  };
+
+  let themePicked = null, actionPicked = false, promiseCount = 0;
+
+  const checkL4ready = () => {
+    const ready = themePicked && actionPicked && promiseCount >= 2;
+    const btn = el('btn-next-4');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-green-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=theme]').forEach(r => {
+    r.onchange = () => {
+      themePicked = r.value;
+      document.querySelectorAll('#theme-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      const wrap = el('action-wrap');
+      const box = el('action-opts');
+      box.innerHTML = '';
+      actionPicked = false;
+      actionBank[themePicked].forEach(txt => {
+        const lbl = document.createElement('label');
+        lbl.className = 'opt';
+        lbl.innerHTML = `<input type="radio" name="action"> ${txt}`;
+        lbl.querySelector('input').onchange = () => {
+          document.querySelectorAll('#action-opts .opt').forEach(o => o.classList.remove('sel'));
+          lbl.classList.add('sel');
+          actionPicked = true;
+          el('action-fb').innerHTML = '<span class="text-emerald-700">✅ 好主意！繼續下一步～</span>';
+          el('promise-wrap').classList.remove('hidden');
+          checkL4ready();
+        };
+        box.appendChild(lbl);
+      });
+      wrap.classList.remove('hidden');
+      el('promise-wrap').classList.add('hidden');
+      checkL4ready();
+    };
+  });
+
+  document.querySelectorAll('.promise-cb').forEach(cb => {
+    cb.onchange = () => {
+      promiseCount = document.querySelectorAll('.promise-cb:checked').length;
+      const fb = el('promise-fb');
+      if (promiseCount < 2) fb.textContent = `已選 ${promiseCount}/4，請至少選 2 個 😊`;
+      else fb.textContent = `選了 ${promiseCount} 個承諾！太棒了！`;
+      checkL4ready();
+    };
+  });
+
+  el('btn-next-4').onclick = () => {
+    awardOnce('L4', 20);
     confetti();
-    setTimeout(()=>{currentStep=3;showStep(3);},1500);
-  } else {
-    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 你答對 ${correct}/${total}。提示：自然界能不斷循環補充的是再生；幾億年才形成、用完就沒的是化石燃料。</div>`;
-  }
-}
+    showFinal();
+  };
 
-// Level 3
-document.querySelectorAll('.q3-opt').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const fb = document.getElementById('q3-feedback');
-    if(btn.dataset.ans==='1'){
-      fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 答對！0.495 × 300 ≈ 149 kg CO2。這相當於 1 個大人體重的 CO2，光一個月就排出這麼多！</div>';
-      confetti();
-      setTimeout(()=>{currentStep=4;showStep(4);},1600);
+  /* =====================================================
+     Final screen
+     ===================================================== */
+  function showFinal() {
+    gotoLevel(TOTAL_LEVELS + 1);
+    el('final-score').textContent = S.score;
+    const box = el('badges');
+    box.innerHTML = '';
+    const earned = [];
+    if (S.awarded['L1']) earned.push('🌱 能源分類達人');
+    if (S.awarded['L2-q1'] || S.awarded['L2-q2']) earned.push('📊 圖表觀察家');
+    if (S.awarded['L3']) earned.push('🔗 骨牌思考王');
+    if (S.awarded['L4']) earned.push('💚 綠能行動者');
+    if (earned.length === 0) earned.push('☀️ 綠能小偵探');
+    earned.forEach(b => {
+      const chip = document.createElement('span');
+      chip.className = 'bg-green-100 border-2 border-green-400 rounded-full px-3 py-1 text-sm font-bold pop';
+      chip.textContent = b;
+      box.appendChild(chip);
+    });
+    confetti();
+  }
+
+  /* =====================================================
+     Final reflection (5 pts)
+     ===================================================== */
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+
+  const setupStars = (wrapId, setter) => {
+    const wrap = el(wrapId);
+    wrap.querySelectorAll('.star').forEach(s => {
+      s.onclick = () => {
+        const v = parseInt(s.dataset.val, 10);
+        setter(v);
+        wrap.querySelectorAll('.star').forEach(x => {
+          x.classList.toggle('on', parseInt(x.dataset.val, 10) <= v);
+        });
+        checkReflect();
+      };
+    });
+  };
+  setupStars('stars-before', v => starBefore = v);
+  setupStars('stars-after', v => starAfter = v);
+
+  document.querySelectorAll('input[name=impact]').forEach(r => {
+    r.onchange = () => {
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+
+  function checkReflect() {
+    const ok = starBefore > 0 && starAfter > 0 && impactPicked;
+    const fb = el('reflect-fb');
+    if (ok) {
+      fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 反思完成！+5 分 🌟</span>';
+      awardOnce('FINAL', 5);
+      el('final-score').textContent = S.score;
     } else {
-      btn.classList.add('shake');
-      fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再算一次：0.495 kg × 300 度 = 148.5，四捨五入約 149 kg CO2。</div>';
+      fb.textContent = '請完成三題反思（★ 前後了解度 + 選一個影響）';
     }
-  });
-});
-
-// Level 4
-let q4Done=0;
-document.querySelectorAll('.q4-opt').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const parent = btn.closest('.q4');
-    if(parent.dataset.answered) return;
-    const ans = parent.dataset.ans;
-    const hint = parent.dataset.hint;
-    if(btn.dataset.v===ans){
-      btn.classList.add('bg-green-400','text-white');
-      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-green-700 text-sm">✅ 正確！${hint}</p>`);
-    } else {
-      btn.classList.add('bg-red-300','shake');
-      parent.insertAdjacentHTML('beforeend',`<p class="mt-2 text-rose-700 text-sm">💡 再想想：${hint}</p>`);
-    }
-    parent.dataset.answered='1';
-    q4Done++;
-    if(q4Done===3){
-      document.getElementById('q4-feedback').innerHTML='<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎯 迷思破解完成！你越來越懂能源了。</div>';
-      confetti();
-      setTimeout(()=>{currentStep=5;showStep(5);},1500);
-    }
-  });
-});
-
-// Level 5 — choice consequences
-const choiceFeedback = {
-  A: { tone:'warn', text:'⚠️ 什麼都不做，夏天頂樓教室更熱、冷氣用電更多、排更多 CO2。' },
-  B: { tone:'warn', text:'🏗️ 蓋儲藏室雖然有用，但浪費了陽光資源，而且水泥本身製造過程會大量排 CO2。' },
-  C: { tone:'best', text:'🌟 最佳答案！屋頂光電 + 隔熱可省冷氣用電 15-25%、頂樓降 2-3°C，還能發電賣給台電。這是台灣很多學校正在做的示範！' },
-  D: { tone:'ok', text:'🌱 種樹很棒，但屋頂承重、澆水、根系會毀壞防水層。不如改在地面種樹、屋頂裝太陽能，兩者並進最好。' }
-};
-document.querySelectorAll('.choice').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    if(document.getElementById('level5').dataset.answered) return;
-    document.getElementById('level5').dataset.answered='1';
-    const c = choiceFeedback[btn.dataset.c];
-    const color = c.tone==='best'?'green':(c.tone==='ok'?'blue':'yellow');
-    btn.classList.add('bg-'+color+'-100','border-'+color+'-500');
-    document.getElementById('q5-feedback').innerHTML =
-      `<div class="feedback-pop bg-${color}-100 border-l-4 border-${color}-500 p-3 rounded">${c.text}</div>`;
-    if(c.tone==='best') confetti();
-    setTimeout(()=>{currentStep=6;showStep(6);},2200);
-  });
-});
-
-// Level 6 — WSA
-function checkWSA(){
-  const boxes = document.querySelectorAll('.wsa');
-  const all = Array.from(boxes).every(b=>b.checked);
-  const fb = document.getElementById('wsa-feedback');
-  if(all){
-    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-4 rounded text-lg">🏅 四面向全勾選！你就是我們班的全校英雄！</div>';
-    confetti(60);
-    setTimeout(()=>{currentStep=7;showStep(7);},1800);
-  } else {
-    const cnt = Array.from(boxes).filter(b=>b.checked).length;
-    fb.innerHTML = `<div class="feedback-pop bg-amber-100 border-l-4 border-amber-500 p-3 rounded">你選了 ${cnt}/4 個面向。全校英雄需要「課程、校園、社區、學生」四面向一起行動！再想想你可以怎麼參與剩下的面向？</div>`;
   }
-}
+})();
+</script>
 
-// Confetti
-function confetti(n=30){
-  const colors=['#fbbf24','#34d399','#60a5fa','#f87171','#a78bfa'];
-  for(let i=0;i<n;i++){
-    const c=document.createElement('div');
-    c.className='confetti';
-    c.style.left=Math.random()*100+'vw';
-    c.style.top='-20px';
-    c.style.background=colors[i%colors.length];
-    c.style.animationDelay=(Math.random()*0.5)+'s';
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3000);
-  }
-}
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

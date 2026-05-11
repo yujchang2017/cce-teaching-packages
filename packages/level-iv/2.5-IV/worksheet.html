@@ -1,242 +1,850 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>2.5-IV 人類造成的生物多樣性喪失 — 國中學習單</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人類造成的生物多樣性喪失 | 2.5-IV 國中互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-  :root{--g:#2d7a4e;--g2:#0f5132;--acc:#d9822b;--bg:#f6faf7;--ink:#1a2b22;--br:#cfe3d4;--w:#fff}
-  *{box-sizing:border-box}
-  body{font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;margin:0;padding:18px;background:var(--bg);color:var(--ink);line-height:1.7}
-  h1{color:var(--g2);border-bottom:4px solid var(--g);padding-bottom:8px}
-  h2{color:var(--g2);margin-top:32px;padding:10px 14px;background:linear-gradient(90deg,#e8f3ec,transparent);border-left:6px solid var(--g)}
-  h3{color:var(--g);margin-top:20px}
-  .meta{background:var(--w);padding:12px 16px;border-radius:8px;border:1px solid var(--br);margin-bottom:18px}
-  .sec{background:var(--w);padding:16px 18px;border-radius:10px;border:1px solid var(--br);margin-bottom:18px}
-  .depth{display:inline-block;font-size:12px;padding:2px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
-  .d-open{background:#fff0e1;color:#9a4b00;border:1px solid #f0c9a1}
-  .d-sys{background:#e1ecff;color:#173a8a;border:1px solid #b9ceff}
-  .d-eth{background:#ffe5ea;color:#8a1e36;border:1px solid #f0b4c0}
-  .d-cer{background:#e4f5e9;color:#0f5132;border:1px solid #b6dcc1}
-  .d-data{background:#eae1ff;color:#4a2a8a;border:1px solid #c5b4f0}
-  .d-meta{background:#f7edc0;color:#6b5002;border:1px solid #e2cc72}
-  .d-proj{background:#222;color:#fff;border:1px solid #000}
-  textarea,input[type=text]{width:100%;padding:8px;border:1px solid var(--br);border-radius:6px;font-family:inherit;font-size:14px}
-  textarea{min-height:74px;resize:vertical}
-  table{width:100%;border-collapse:collapse;margin:10px 0}
-  th,td{border:1px solid var(--br);padding:8px;vertical-align:top}
-  th{background:#eaf3ec}
-  .q{background:#fffae7;padding:10px 12px;border-left:4px solid var(--acc);margin:8px 0;border-radius:0 8px 8px 0}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-  .card{background:#f2f8f3;padding:10px;border-radius:8px;border:1px solid var(--br)}
-  .hint{color:#5e7a66;font-size:13px;margin:4px 0 8px}
-  .chk label{display:block;padding:4px 0}
-  .wsa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
-  .wsa div{background:#eef5f0;padding:8px;border-radius:6px;font-size:13px}
-  .score{background:#f8f4df;padding:10px;border-radius:8px;border:1px dashed var(--acc);margin-top:10px}
-  @media(max-width:720px){.grid2,.grid4,.wsa{grid-template-columns:1fr}}
-  @media print{body{background:#fff}.sec,.meta{break-inside:avoid}}
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#f0fdf4,#ecfdf5,#d1fae5); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:80px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#059669; transform:scale(1.3);}
+  .progress-dot.done { background:#0d9488;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  svg.loop text { font-size:11px; pointer-events:none;}
+  svg.loop .loop-slot { cursor: pointer; }
+  svg.loop .loop-slot.over { fill:#fde68a; stroke-width:3; }
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.92rem;}
+  .opt:hover { background:#f8fafc; }
+  .opt.sel { border-color:#059669; background:#d1fae5;}
+  .opt.correct { border-color:#059669; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.4rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
+  .flash-card { perspective:600px; }
+  .flash-inner { transition: transform .5s; transform-style: preserve-3d; position:relative; min-height:90px; }
+  .flash-inner.flipped { transform: rotateY(180deg); }
+  .flash-face { backface-visibility:hidden; position:absolute; width:100%; }
+  .flash-back { transform: rotateY(180deg); }
 </style>
 </head>
-<body>
-
-<h1>國中學習單｜2.5-IV 人類造成的生物多樣性喪失及其後果</h1>
-<div class="meta">
-  <strong>姓名：</strong><input type="text" style="width:180px"> &nbsp;
-  <strong>班級：</strong><input type="text" style="width:100px"> &nbsp;
-  <strong>座號：</strong><input type="text" style="width:60px"> &nbsp;
-  <strong>日期：</strong><input type="text" style="width:120px" value="2026/__/__">
-  <div style="margin-top:6px;font-size:13px;color:#555">四節課對應 §1–§8；§9 專題任務與 §10 後設反思為課後完成。</div>
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
 </div>
+<div class="max-w-4xl mx-auto">
 
-<!-- §1 基礎：HIPPO -->
-<section class="sec">
-<h2>§1 基礎知識｜HIPPO 五大驅動力配對</h2>
-<p class="hint">依據 IPBES 2019 報告（data_card dp1）。將英文字母與中文配對。</p>
-<table>
-  <tr><th>字母</th><th>英文</th><th>請填入中文意義</th></tr>
-  <tr><td>H</td><td>Habitat loss</td><td><input type="text"></td></tr>
-  <tr><td>I</td><td>Invasive alien species</td><td><input type="text"></td></tr>
-  <tr><td>P</td><td>Pollution</td><td><input type="text"></td></tr>
-  <tr><td>P</td><td>Population pressure</td><td><input type="text"></td></tr>
-  <tr><td>O</td><td>Overexploitation</td><td><input type="text"></td></tr>
-</table>
-</section>
-
-<!-- §2 盜獵案例 -->
-<section class="sec">
-<h2>§2 基礎知識｜CITES 與盜獵</h2>
-<p class="hint">依據 data_card dp4。</p>
-<div class="q">Q2-1：CITES 全名是什麼？目前約有多少締約方？管制約多少物種？</div>
-<textarea></textarea>
-<div class="q">Q2-2：全球被盜獵最多的哺乳動物是？其被獵的主要原因？</div>
-<textarea></textarea>
-</section>
-
-<!-- §3 資料詮釋 -->
-<section class="sec">
-<h2>§3 資料詮釋題<span class="depth d-data">資料詮釋</span></h2>
-<p class="hint">依據 FAO SOFIA 2022 / dp2。</p>
-<div class="q">Q3-1：2019 年全球海洋魚類中 64.6% 為「生物可持續」、35.4% 為過漁。請在下方圓餅圖中以分數或顏色標示此比例，並寫一句『資料詮釋』（不能只重複數字，要解讀意義）。</div>
-<div class="grid2">
-  <div class="card" style="min-height:180px">
-    <strong>我的圓餅圖（手繪）</strong>
-    <div style="border:1px dashed var(--br);height:140px;border-radius:8px;margin-top:6px;display:flex;align-items:center;justify-content:center;color:#999">在此畫出</div>
-  </div>
+<!-- Header -->
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
   <div>
-    <strong>我的詮釋（1 句話）：</strong>
-    <textarea></textarea>
-    <strong>若將全球魚類當作 10 條魚，危險海域約 ___ 條、可持續海域約 ___ 條。</strong>
+    <h1 class="text-2xl md:text-3xl font-bold text-emerald-800">🌿 人類造成的生物多樣性喪失</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『生物多樣性守護者』：5 個任務，從 HIPPO 五大驅動力到校園行動，走完你就是生態公民。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">守護者積分</div>
+    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
   </div>
 </div>
-</section>
 
-<!-- §4 工業捕撈三大傷害 -->
-<section class="sec">
-<h2>§4 基礎知識｜工業化捕撈三大傷害</h2>
-<table>
-  <tr><th>傷害</th><th>證據 / 例子</th><th>生態後果</th></tr>
-  <tr><td>底拖網</td><td><input type="text"></td><td><input type="text"></td></tr>
-  <tr><td>混獲（bycatch）</td><td><input type="text"></td><td><input type="text"></td></tr>
-  <tr><td>族群崩盤</td><td><input type="text" placeholder="例：1992 紐芬蘭大西洋鱈魚"></td><td><input type="text"></td></tr>
-</table>
-</section>
-
-<!-- §5 永續漁業 -->
-<section class="sec">
-<h2>§5 基礎知識｜永續漁業三元素</h2>
-<div class="q">Q5-1：請寫出永續漁業的三個元素，並在每個元素下舉一個實例。</div>
-<table>
-  <tr><th>元素</th><th>實例</th></tr>
-  <tr><td>1.</td><td><input type="text"></td></tr>
-  <tr><td>2.</td><td><input type="text"></td></tr>
-  <tr><td>3.</td><td><input type="text"></td></tr>
-</table>
-<div class="q">Q5-2：下次去超市買魚，你會怎麼查找 MSC 認證？</div>
-<textarea></textarea>
-</section>
-
-<!-- §6 入侵種檔案卡 -->
-<section class="sec">
-<h2>§6 基礎知識｜臺灣入侵種檔案卡（任選 4 種）</h2>
-<p class="hint">dp6 選項：紅火蟻 / 福壽螺 / 非洲大蝸牛 / 小花蔓澤蘭 / 銀合歡 / 綠鬣蜥 / 埃及聖䴉</p>
-<div class="grid4">
-  <div class="card"><strong>物種 1</strong>：<input type="text"><br><small>外觀：</small><input type="text"><br><small>傳入途徑：</small><input type="text"><br><small>影響：</small><input type="text"></div>
-  <div class="card"><strong>物種 2</strong>：<input type="text"><br><small>外觀：</small><input type="text"><br><small>傳入途徑：</small><input type="text"><br><small>影響：</small><input type="text"></div>
-  <div class="card"><strong>物種 3</strong>：<input type="text"><br><small>外觀：</small><input type="text"><br><small>傳入途徑：</small><input type="text"><br><small>影響：</small><input type="text"></div>
-  <div class="card"><strong>物種 4</strong>：<input type="text"><br><small>外觀：</small><input type="text"><br><small>傳入途徑：</small><input type="text"><br><small>影響：</small><input type="text"></div>
-</div>
-</section>
-
-<!-- §7 系統思考 + 倫理兩難 -->
-<section class="sec">
-<h2>§7 深度思考</h2>
-
-<h3>§7-A 系統思考<span class="depth d-sys">系統思考</span></h3>
-<div class="q">Q7-A：請繪製『黃石狼群 / 臺灣黑熊』或『1 個你選擇的基石物種』消失的連鎖反應圖，至少 5 個節點、4 條因果箭頭（物種 → 影響 → 下一層 → …）。</div>
-<div style="border:1px dashed var(--br);min-height:180px;border-radius:8px;padding:8px">在此繪製：</div>
-<textarea placeholder="文字補充說明（約 60 字）"></textarea>
-
-<h3>§7-B 倫理兩難<span class="depth d-eth">倫理兩難</span></h3>
-<div class="q">Q7-B：高雄美濃發現綠鬣蜥大量繁殖，政府以獎金鼓勵民眾捕殺。這樣『捕殺換獎金』的政策合理嗎？請從三個角度評估並選擇你的立場。</div>
-<table>
-  <tr><th>角度</th><th>支持此政策的理由</th><th>反對此政策的理由</th></tr>
-  <tr><td>生態保育</td><td><input type="text"></td><td><input type="text"></td></tr>
-  <tr><td>動物福利</td><td><input type="text"></td><td><input type="text"></td></tr>
-  <tr><td>社會公平</td><td><input type="text"></td><td><input type="text"></td></tr>
-</table>
-<strong>我的立場（支持 / 反對 / 有條件支持）：</strong><input type="text"><br>
-<strong>我的最強理由（2–3 句，須引用至少 1 個 data_card 資料點）：</strong>
-<textarea></textarea>
-</section>
-
-<!-- §8 開放反思 ×2 -->
-<section class="sec">
-<h2>§8 開放反思題</h2>
-<div class="q">Q8-1<span class="depth d-open">開放反思</span>：如果全世界的穿山甲都消失了，對人類生活會有什麼看得見與看不見的影響？（≥80 字，沒有標準答案，重點是論理）</div>
-<textarea></textarea>
-<div class="q">Q8-2<span class="depth d-open">開放反思</span>：你的家人或朋友曾經買過、吃過、飼養過你後來發現是『保育爭議物種』的東西嗎？你當時的反應是什麼？現在學完這個單元，你會怎麼跟他們對話？（≥80 字）</div>
-<textarea></textarea>
-</section>
-
-<!-- §9 專題任務 -->
-<section class="sec">
-<h2>§9 專題任務｜CER 行動提案書<span class="depth d-cer">CER</span><span class="depth d-proj">專題任務</span></h2>
-<p class="hint">分組完成；引用 ≥3 個 data_card 資料點；扣合 WSA 四面向至少 2 項。</p>
-<strong>選擇行動方向（擇一）：</strong>
-<div class="chk">
-  <label><input type="checkbox">① 反盜獵倡議</label>
-  <label><input type="checkbox">② 校園入侵種清除</label>
-  <label><input type="checkbox">③ 食魚教育（MSC 認證午餐連署）</label>
-  <label><input type="checkbox">④ 在地永續採購倡議</label>
-  <label><input type="checkbox">⑤ 公民科學（iNaturalist 校園物種調查）</label>
+<!-- Progress -->
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">配對</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">資料</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">論證</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">專題</span>
 </div>
 
-<h3>Claim 主張（1–2 句）</h3>
-<textarea placeholder="例：本校午餐應全面改採 MSC 永續認證或沿近海捕撈水產，並至 2027 年達到 100%。"></textarea>
+<!-- ===== T1: HIPPO 驅動力配對（去直覺化） ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🦛</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-700">任務 1｜HIPPO 驅動力配對</h2>
+      <p class="text-sm text-slate-700 mt-1">把 5 張「HIPPO 字母」卡片拖到最符合其「作用機制描述」的區域。區域說明只描述機制現象，不直接寫縮寫全名——請依 IPBES 2019 邏輯推論。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：生物多樣性守護者實習生 ｜ 10 分</p>
+    </div>
+  </div>
 
-<h3>Evidence 證據（至少 3 筆，標註 dp 編號或來源）</h3>
-<textarea></textarea>
-<textarea></textarea>
-<textarea></textarea>
+  <div class="grid grid-cols-3 md:grid-cols-5 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="H">H</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="I">I</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="P1">P¹</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="P2">P²</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="O">O</div>
+  </div>
 
-<h3>Reasoning 推理（為什麼證據支持主張？）</h3>
-<textarea></textarea>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3" id="zones-box-1">
+    <div class="drop-zone p-3" data-accept="H">
+      <div class="font-bold text-slate-700 text-sm">機制 A
+        <div class="text-xs text-slate-500 mt-1">森林砍伐、農業擴張、都市開發使物種可棲居的面積縮小；物種種群因無法維持最小存活族群而滅絕；IPBES 列為當前生物多樣性喪失的首要原因</div>
+      </div>
+    </div>
+    <div class="drop-zone p-3" data-accept="I">
+      <div class="font-bold text-slate-700 text-sm">機制 B
+        <div class="text-xs text-slate-500 mt-1">非原棲地物種透過人為貿易或意外釋放進入新地區；缺乏天敵管制下族群爆炸式增長；與原生物種競爭食物、棲地或直接掠食，是島嶼生物滅絕的首要原因</div>
+      </div>
+    </div>
+    <div class="drop-zone p-3" data-accept="P1">
+      <div class="font-bold text-slate-700 text-sm">機制 C
+        <div class="text-xs text-slate-500 mt-1">農業、工業及生活廢水中的化學物質、塑膠微粒或重金屬進入食物鏈；使土壤、水體及空氣中的生物可居住性下降；直接毒害物種或改變棲地化學條件</div>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="zones-box-1b">
+    <div class="drop-zone p-3" data-accept="P2">
+      <div class="font-bold text-slate-700 text-sm">機制 D
+        <div class="text-xs text-slate-500 mt-1">人口增長帶來食物、水資源及居住空間需求擴張；直接壓縮野生物種的棲地；也透過農業集約化、捕撈需求增加，間接加劇其他所有驅動力</div>
+      </div>
+    </div>
+    <div class="drop-zone p-3" data-accept="O">
+      <div class="font-bold text-slate-700 text-sm">機制 E
+        <div class="text-xs text-slate-500 mt-1">捕撈或採集速率超過物種族群的自然增長速率；盜獵珍貴物種、過漁、非法木材採伐均屬此類；CITES 管制約 38,000 種物種以控制此威脅</div>
+      </div>
+    </div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <div class="nav-row">
+    <span></span>
+    <button id="btn-next-1" class="btn bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
 
-<h3>可行動步驟（5 步驟以上）</h3>
-<textarea></textarea>
+<!-- ===== T2: 資料詮釋（FAO SOFIA 漁業 + 盜獵） ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📊</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 2｜資料詮釋：漁業與野生動物貿易</h2>
+      <p class="text-sm text-slate-700 mt-1">下圖整合 FAO SOFIA 2022 漁業數據與 CITES 野生動物管制資料。仔細閱讀後回答問題。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：資料科學家 ｜ 15 分 ｜ <span class="chip bg-teal-100 text-teal-800">資料詮釋</span></p>
+    </div>
+  </div>
 
-<h3>成效指標（SMART：具體、可衡量、可達成、相關、時限）</h3>
-<textarea></textarea>
+  <svg viewBox="0 0 420 210" class="w-full max-w-xl mx-auto block bg-slate-50 rounded mb-4">
+    <text x="210" y="17" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">漁業永續與野生動物保護：關鍵數據</text>
+    <!-- 可持續海洋漁業 64.6% -->
+    <text x="8" y="48" font-size="10" fill="#334155">海洋漁業可持續比例</text>
+    <rect x="165" y="37" width="200" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="165" y="37" width="129" height="14" fill="#10b981" rx="2"/>
+    <text x="298" y="48" font-size="9" fill="#065f46" font-weight="bold">64.6%（可持續）</text>
+    <!-- 過漁比例 35.4% -->
+    <text x="8" y="70" font-size="10" fill="#334155">海洋漁業過漁比例</text>
+    <rect x="165" y="59" width="200" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="165" y="59" width="71" height="14" fill="#dc2626" rx="2"/>
+    <text x="240" y="70" font-size="9" fill="#991b1b" font-weight="bold">35.4%（過漁）</text>
+    <!-- CITES 管制物種 -->
+    <text x="8" y="92" font-size="10" fill="#334155">CITES 管制物種數</text>
+    <rect x="165" y="81" width="200" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="165" y="81" width="160" height="14" fill="#f59e0b" rx="2"/>
+    <text x="329" y="92" font-size="9" fill="#92400e" font-weight="bold">約 38,000 種</text>
+    <!-- 穿山甲（最多盜獵哺乳類）-->
+    <text x="8" y="114" font-size="10" fill="#334155">穿山甲年估計走私量</text>
+    <rect x="165" y="103" width="200" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="165" y="103" width="140" height="14" fill="#7c3aed" rx="2"/>
+    <text x="309" y="114" font-size="9" fill="#5b21b6" font-weight="bold">約 10–20 萬隻</text>
+    <!-- 底拖網海床破壞 -->
+    <text x="8" y="136" font-size="10" fill="#334155">底拖網年破壞海床面積</text>
+    <rect x="165" y="125" width="200" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="165" y="125" width="180" height="14" fill="#0ea5e9" rx="2"/>
+    <text x="349" y="136" font-size="9" fill="#0369a1" font-weight="bold">約 1,500 萬 km²</text>
+    <!-- 混獲率 -->
+    <text x="8" y="158" font-size="10" fill="#334155">工業捕撈混獲比例</text>
+    <rect x="165" y="147" width="200" height="14" fill="#e2e8f0" rx="2"/>
+    <rect x="165" y="147" width="80" height="14" fill="#f97316" rx="2"/>
+    <text x="249" y="158" font-size="9" fill="#c2410c" font-weight="bold">約 40%</text>
+    <text x="210" y="202" text-anchor="middle" font-size="9" fill="#64748b">資料來源：FAO SOFIA 2022、CITES、TRAFFIC</text>
+  </svg>
 
-<h3>WSA 四面向檢核</h3>
-<div class="wsa">
-  <div><label><input type="checkbox"> 治理 Governance：學生代表參與決策</label></div>
-  <div><label><input type="checkbox"> 課程 Curriculum：跨科整合</label></div>
-  <div><label><input type="checkbox"> 校園營運 Operations：具體措施</label></div>
-  <div><label><input type="checkbox"> 社群 Community：在地夥伴合作</label></div>
+  <div class="space-y-4">
+    <div>
+      <p class="text-sm font-semibold mb-1">Q2-1｜以下哪個陳述最準確描述圖表中漁業數據的含義？（單選，6 分）</p>
+      <div id="q21-opts"></div>
+      <p id="q21-fb" class="text-xs mt-1 text-slate-500"></p>
+    </div>
+    <div>
+      <p class="text-sm font-semibold mb-1">Q2-2｜根據圖表，以下哪 <strong>2 項</strong>最能說明工業化捕撈對生物多樣性的直接傷害？（4 選 2，共 9 分）</p>
+      <div id="q22-opts" class="space-y-1"></div>
+      <p id="q22-fb" class="text-xs mt-1 text-slate-500"></p>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="1">← 上一關</button>
+    <button id="btn-next-2" class="btn bg-teal-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T3: 系統思考｜基石物種消失的連鎖 ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🐺</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-700">任務 3｜系統思考：基石物種消失的連鎖反應</h2>
+      <p class="text-sm text-slate-700 mt-1">黃石公園的狼群（基石掠食者）一旦移除，生態系便出現一連串失控反應。把 4 張節點卡片拖到圖中正確位置，還原因果鏈。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統分析師 ｜ 15 分 ｜ <span class="chip bg-orange-100 text-orange-800">系統思考</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 540 235" class="loop w-full bg-slate-50 rounded mb-3">
+    <defs>
+      <marker id="arr3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L0,10 L10,5 z" fill="#64748b"/>
+      </marker>
+    </defs>
+    <!-- fixed start -->
+    <rect x="8" y="18" width="158" height="45" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="87" y="38" text-anchor="middle" fill="#991b1b" font-weight="bold">頂級掠食者</text>
+    <text x="87" y="55" text-anchor="middle" fill="#991b1b">族群移除/消失</text>
+    <!-- slot 1 -->
+    <rect x="192" y="18" width="152" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" class="loop-slot" data-slot="1"/>
+    <text x="268" y="40" text-anchor="middle" fill="#92400e" id="slot-1-text">（節點 1）</text>
+    <!-- slot 2 -->
+    <rect x="375" y="18" width="152" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" class="loop-slot" data-slot="2"/>
+    <text x="451" y="40" text-anchor="middle" fill="#92400e" id="slot-2-text">（節點 2）</text>
+    <!-- slot 3 -->
+    <rect x="375" y="130" width="152" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" class="loop-slot" data-slot="3"/>
+    <text x="451" y="152" text-anchor="middle" fill="#92400e" id="slot-3-text">（節點 3）</text>
+    <!-- slot 4 -->
+    <rect x="192" y="130" width="152" height="45" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" class="loop-slot" data-slot="4"/>
+    <text x="268" y="152" text-anchor="middle" fill="#92400e" id="slot-4-text">（節點 4）</text>
+    <!-- fixed end -->
+    <rect x="8" y="130" width="158" height="45" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="87" y="150" text-anchor="middle" fill="#1e40af" font-weight="bold">河岸侵蝕加劇</text>
+    <text x="87" y="167" text-anchor="middle" fill="#1e40af">+ 魚類棲地喪失</text>
+    <!-- arrows -->
+    <line x1="166" y1="40" x2="189" y2="40" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <line x1="344" y1="40" x2="372" y2="40" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <line x1="451" y1="63" x2="451" y2="127" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <line x1="372" y1="152" x2="346" y2="152" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <line x1="189" y1="152" x2="166" y2="152" stroke="#64748b" stroke-width="2" marker-end="url(#arr3)"/>
+    <text x="170" y="36" font-size="9" fill="#64748b">導致</text>
+    <text x="347" y="36" font-size="9" fill="#64748b">導致</text>
+    <text x="454" y="98" font-size="9" fill="#64748b">導致</text>
+    <text x="347" y="148" font-size="9" fill="#64748b">導致</text>
+    <text x="168" y="148" font-size="9" fill="#64748b">導致</text>
+  </svg>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3" id="items-box-3">
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">鹿及有蹄類族群暴增（天敵解除）</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">河谷植被（柳樹、楊樹）被過度啃食</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">河岸植物根系消失，土壤固著力降低</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">河流泥沙增加，水溫上升，水生棲地劣化</div>
+  </div>
+  <div id="feedback-3" class="text-sm"></div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="2">← 上一關</button>
+    <button id="btn-next-3" class="btn bg-orange-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T4: CER + 倫理（過漁政策 / 盜獵 / 入侵種獎金撲殺） ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">⚖️</div>
+    <div>
+      <h2 class="text-xl font-bold text-violet-700">任務 4｜CER 論證（含倫理）：如何應對過漁危機？</h2>
+      <p class="text-sm text-slate-700 mt-1">全球 35% 海洋魚類已過漁。各方對如何管理漁業存在分歧。翻閱 3 張立場牌，選出你認同的政策方向，再配對最合適的「證據」與「推理」。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：海洋政策研究員 ｜ 20 分 ｜ <span class="chip bg-violet-100 text-violet-800">CER 論證</span></p>
+    </div>
+  </div>
+
+  <!-- Flash cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+    <div class="flash-card rounded-xl border-2 border-blue-300 overflow-hidden">
+      <button class="w-full bg-blue-100 px-3 py-2 text-xs font-bold text-blue-700 text-left" onclick="flipCard('card-a')">翻牌查看立場 A ↕</button>
+      <div class="flash-inner p-3 min-h-[80px]" id="card-a">
+        <div class="flash-face text-sm font-semibold text-blue-800">立場 A：設立更多海洋保護區</div>
+        <div class="flash-face flash-back text-xs text-slate-700">科學設計的海洋保護區（MPA）讓魚類族群在禁捕區內恢復，並溢出至周邊可捕區，長期總捕量反而提升。</div>
+      </div>
+    </div>
+    <div class="flash-card rounded-xl border-2 border-amber-300 overflow-hidden">
+      <button class="w-full bg-amber-100 px-3 py-2 text-xs font-bold text-amber-700 text-left" onclick="flipCard('card-b')">翻牌查看立場 B ↕</button>
+      <div class="flash-inner p-3 min-h-[80px]" id="card-b">
+        <div class="flash-face text-sm font-semibold text-amber-800">立場 B：推廣 MSC 永續認證</div>
+        <div class="flash-face flash-back text-xs text-slate-700">MSC 認證引導消費者選擇永續水產，透過市場機制讓漁業者有經濟誘因採取科學化管理，而非依賴強制法規。</div>
+      </div>
+    </div>
+    <div class="flash-card rounded-xl border-2 border-rose-300 overflow-hidden">
+      <button class="w-full bg-rose-100 px-3 py-2 text-xs font-bold text-rose-700 text-left" onclick="flipCard('card-c')">翻牌查看立場 C ↕</button>
+      <div class="flash-inner p-3 min-h-[80px]" id="card-c">
+        <div class="flash-face text-sm font-semibold text-rose-800">立場 C：禁止底拖網作業</div>
+        <div class="flash-face flash-back text-xs text-slate-700">底拖網每年破壞約 1,500 萬 km² 海床，是混獲率最高的捕撈方式；全面禁止可快速降低對非目標物種的傷害。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-slate-50 rounded-lg p-3 mb-3">
+    <p class="text-xs font-bold text-slate-600 mb-2">▶ 選擇你支持的立場（6 分）</p>
+    <div id="stance-opts"></div>
+  </div>
+  <div class="bg-slate-50 rounded-lg p-3 mb-3">
+    <p class="text-xs font-bold text-slate-600 mb-2">▶ 選出最能支持你立場的「證據」（7 分）</p>
+    <div id="evid-opts"></div>
+    <p id="evid-fb" class="text-xs mt-1 text-slate-500"></p>
+  </div>
+  <div class="bg-slate-50 rounded-lg p-3 mb-3">
+    <p class="text-xs font-bold text-slate-600 mb-2">▶ 選出最合適的「推理」（7 分）</p>
+    <div id="reas-opts"></div>
+    <p id="reas-fb" class="text-xs mt-1 text-slate-500"></p>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="3">← 上一關</button>
+    <button id="btn-next-4" class="btn bg-violet-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T5: 校園/社區提案 ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🌿</div>
+    <div>
+      <h2 class="text-xl font-bold text-lime-700">任務 5｜校園生物多樣性守護行動提案</h2>
+      <p class="text-sm text-slate-700 mt-1">選擇一個你最想推動的守護行動，系統預填問題與步驟，你只需選定指標並確認 WSA 面向。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生守護者委員 ｜ 15 分 ｜ <span class="chip bg-lime-100 text-lime-800">提案設計</span></p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-2 mb-4">
+    <button class="theme-btn btn border-2 border-blue-400 bg-blue-50 rounded-xl p-3 text-sm font-bold text-blue-800" data-theme="msc">🐟 永續水產午餐倡議</button>
+    <button class="theme-btn btn border-2 border-orange-400 bg-orange-50 rounded-xl p-3 text-sm font-bold text-orange-800" data-theme="invasive">🦀 校園入侵種清除</button>
+    <button class="theme-btn btn border-2 border-emerald-400 bg-emerald-50 rounded-xl p-3 text-sm font-bold text-emerald-800" data-theme="inat">📱 iNaturalist 公民科學</button>
+    <button class="theme-btn btn border-2 border-violet-400 bg-violet-50 rounded-xl p-3 text-sm font-bold text-violet-800" data-theme="anti">🚫 反盜獵宣導活動</button>
+  </div>
+
+  <div id="proj-detail" class="hidden-screen space-y-3">
+    <div class="bg-lime-50 rounded-lg p-3 text-sm" id="proj-desc"></div>
+    <div>
+      <p class="text-sm font-semibold mb-1">▶ 選擇 1 個成效指標 KPI（3 分）</p>
+      <div id="kpi-opts" class="space-y-1"></div>
+    </div>
+    <div class="bg-white border rounded-lg p-3">
+      <p class="text-sm font-semibold mb-2">▶ WSA 四面向自檢（至少勾選 3 項，共 6 分）</p>
+      <label class="block text-sm mt-1"><input type="checkbox" class="wsa-cb mr-1"> 治理 Governance：提案送學生委員會或校務會議</label>
+      <label class="block text-sm mt-1"><input type="checkbox" class="wsa-cb mr-1"> 課程 Curriculum：結合自然、地理或社會跨科學習</label>
+      <label class="block text-sm mt-1"><input type="checkbox" class="wsa-cb mr-1"> 營運 Operations：改變學校採購或校園管理實務</label>
+      <label class="block text-sm mt-1"><input type="checkbox" class="wsa-cb mr-1"> 社群 Community：與NGO、政府機關或社區合作</label>
+    </div>
+    <div id="proj-fb" class="text-sm"></div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="4">← 上一關</button>
+    <button id="btn-next-5" class="btn bg-lime-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並繼續 →</button>
+  </div>
+</section>
+
+<!-- ===== Final: 反思 ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🌏</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-700">最終反思</h2>
+      <p class="text-sm text-slate-700 mt-1">如果犀牛、鯊魚、穿山甲都消失了——這堂課之後，你的答案跟學習前有什麼不同？</p>
+      <p class="text-xs text-slate-500 mt-1">5 分</p>
+    </div>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <p class="text-sm font-semibold mb-2">⭐ 這堂課讓我最震撼的數據或概念（1–5 星）</p>
+      <div class="flex gap-1" id="star-learn">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+    </div>
+    <div>
+      <p class="text-sm font-semibold mb-2">⭐ 我願意採取具體行動守護生物多樣性（1–5 星）</p>
+      <div class="flex gap-1" id="star-act">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+    </div>
+    <div>
+      <p class="text-sm font-semibold mb-2">▶ 一個月後，你最有可能仍在做的行動是：</p>
+      <div id="impact-opts"></div>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="5">← 上一關</button>
+    <button id="btn-finish" class="btn bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>完成學習單 🎉</button>
+  </div>
+</section>
+
+<!-- ===== Finale ===== -->
+<section id="finale" class="card p-6 hidden-screen fade-in text-center">
+  <div class="text-6xl mb-3">🏆</div>
+  <h2 class="text-2xl font-bold text-emerald-700 mb-3">生物多樣性守護者認證完成！</h2>
+  <p class="text-sm text-slate-700 mb-3">你完成了 5 個任務。你的行動提案若送出，可能就是改變校園與社區的起點。</p>
+  <p class="text-sm text-slate-600">最終分數：<span class="text-3xl font-bold text-emerald-600" id="final-score">0</span> / 80</p>
+  <div class="mt-4 bg-amber-50 rounded-lg p-3 text-left text-sm">
+    <p class="font-semibold text-amber-800">📚 延伸資源</p>
+    <ul class="list-disc list-inside text-slate-700 text-xs mt-1 space-y-1">
+      <li>CITES — cites.org</li>
+      <li>FAO SOFIA 2022 — fao.org/state-of-world-fisheries-aquaculture</li>
+      <li>iNaturalist — inaturalist.org</li>
+      <li>臺灣入侵種資料庫 — taibannet.forest.gov.tw</li>
+      <li>MSC 永續漁業認證 — msc.org/zh-tw</li>
+    </ul>
+  </div>
+</section>
+
 </div>
 
-<div class="score">
-  <strong>互評量表（他組填寫，每項 1–4 分）</strong>
-  <table style="background:#fff">
-    <tr><th>向度</th><th>分數</th><th>備註</th></tr>
-    <tr><td>證據品質（引用 dp / 權威來源）</td><td><input type="text" style="width:50px"></td><td><input type="text"></td></tr>
-    <tr><td>可行性（時間、資源、人力）</td><td><input type="text" style="width:50px"></td><td><input type="text"></td></tr>
-    <tr><td>系統思考（考慮連鎖反應）</td><td><input type="text" style="width:50px"></td><td><input type="text"></td></tr>
-    <tr><td>倫理敏感度（尊重他者立場）</td><td><input type="text" style="width:50px"></td><td><input type="text"></td></tr>
-    <tr><td>在地連結（扣合臺灣 / 社區）</td><td><input type="text" style="width:50px"></td><td><input type="text"></td></tr>
-  </table>
-</div>
-</section>
+<script>
+(() => {
+  'use strict';
+  const TOTAL_LEVELS = 5;
 
-<!-- §10 後設認知 -->
-<section class="sec">
-<h2>§10 後設認知反思<span class="depth d-meta">後設認知</span></h2>
-<div class="q">Q10-1：回想第一節課我問你『如果犀牛、鯊魚、黑面琵鷺都消失，你的生活會改變嗎？』——現在你的答案和一開始有什麼不同？是什麼資料或案例讓你改變想法？（≥80 字）</div>
-<textarea></textarea>
+  /* ---- Score ---- */
+  let _score = 0;
+  const scoreEl = document.getElementById('score');
+  const awarded = {};
+  function awardOnce(key, pts) {
+    if (awarded[key]) return;
+    awarded[key] = true;
+    _score += pts;
+    scoreEl.textContent = _score;
+  }
 
-<div class="q">Q10-2：這四節課中，哪一個『思考方式』是你以前沒有做過的？（例：營養瀑布、資料詮釋、倫理兩難、CER 論證…）你打算如何在未來的學習或生活中繼續使用它？（≥50 字）</div>
-<textarea></textarea>
+  /* ---- Navigation ---- */
+  function goto(n) {
+    document.querySelectorAll('section[id^="level-"], section#finale').forEach(s => s.classList.add('hidden-screen'));
+    const target = n === 'final' ? document.getElementById('level-final') : document.getElementById('level-' + n);
+    if (target) target.classList.remove('hidden-screen');
+    for (let i = 1; i <= TOTAL_LEVELS; i++) {
+      const d = document.getElementById('dot-' + i);
+      if (!d) continue;
+      if (i < n) { d.classList.remove('active'); d.classList.add('done'); }
+      else if (i === n) { d.classList.add('active'); d.classList.remove('done'); }
+      else { d.classList.remove('active', 'done'); }
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-<div class="q">Q10-3：一個月後，你最有可能仍然在做的行動是？（請具體）</div>
-<textarea placeholder="例：每週幫家裡挑選 1 次 MSC 認證水產、加入 iNaturalist 每月記錄 5 筆物種……"></textarea>
-</section>
+  document.querySelectorAll('.btn-back').forEach(b => {
+    b.addEventListener('click', () => goto(Number(b.dataset.back)));
+  });
 
-<!-- 深度覆蓋說明（教師檢核用） -->
-<section class="sec" style="background:#fffdf3">
-<h2>深度題型覆蓋稽核（教師用）</h2>
-<ul>
-  <li>開放反思 ≥2：<strong>§8 Q8-1, Q8-2</strong> ✅</li>
-  <li>系統思考 ≥1：<strong>§7-A</strong> ✅</li>
-  <li>倫理兩難 ≥1：<strong>§7-B</strong> ✅</li>
-  <li>CER ≥1：<strong>§9 專題任務</strong> ✅</li>
-  <li>資料詮釋 ≥1：<strong>§3</strong> ✅</li>
-  <li>後設認知 ≥1：<strong>§10 (Q10-1~3)</strong> ✅</li>
-  <li>專題任務：<strong>§9 CER 行動提案書</strong> ✅</li>
-</ul>
-</section>
+  /* ---- Confetti ---- */
+  function confetti() {
+    for (let i = 0; i < 35; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = ['#f59e0b','#10b981','#6366f1','#ec4899','#0ea5e9'][Math.floor(Math.random() * 5)];
+      c.style.animationDelay = Math.random() * .8 + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 2800);
+    }
+  }
 
+  /* ---- Shuffle ---- */
+  function shuffleChildren(parent) {
+    const items = Array.from(parent.children);
+    for (let i = items.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      parent.appendChild(items[j]);
+      items.splice(j, 1);
+    }
+  }
+
+  /* ---- renderOpts ---- */
+  function renderOpts(wrap, items, name, onPick) {
+    wrap.innerHTML = '';
+    const shuffled = [...items].sort(() => Math.random() - 0.5);
+    shuffled.forEach(item => {
+      const d = document.createElement('div');
+      d.className = 'opt';
+      d.textContent = item.text;
+      d.addEventListener('click', () => {
+        wrap.querySelectorAll('.opt').forEach(o => o.classList.remove('sel', 'correct', 'wrong'));
+        d.classList.add('sel');
+        onPick(item, d, wrap);
+      });
+      wrap.appendChild(d);
+    });
+  }
+
+  /* ===================== T1: Drag-drop HIPPO ===================== */
+  shuffleChildren(document.getElementById('items-box-1'));
+  shuffleChildren(document.getElementById('zones-box-1'));
+  shuffleChildren(document.getElementById('zones-box-1b'));
+
+  let t1Correct = 0;
+  const T1_TOTAL = 5;
+
+  // Combine both zone containers for event listening
+  const allZones1 = [
+    ...document.querySelectorAll('#zones-box-1 .drop-zone'),
+    ...document.querySelectorAll('#zones-box-1b .drop-zone')
+  ];
+
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(it => {
+    it.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', it.dataset.match);
+      it.classList.add('dragging');
+      window._t1drag = it;
+    });
+    it.addEventListener('dragend', () => it.classList.remove('dragging'));
+  });
+
+  allZones1.forEach(z => {
+    z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('over'); });
+    z.addEventListener('dragleave', () => z.classList.remove('over'));
+    z.addEventListener('drop', e => {
+      e.preventDefault(); z.classList.remove('over');
+      const val = e.dataTransfer.getData('text/plain');
+      if (z.dataset.accept === val) {
+        const label = document.createElement('span');
+        label.className = 'text-emerald-700 font-bold text-xs ml-1';
+        label.textContent = ' ✓ ' + window._t1drag.textContent;
+        z.appendChild(label);
+        window._t1drag.remove();
+        t1Correct++;
+        z.classList.add('pop');
+        if (t1Correct === T1_TOTAL) {
+          document.getElementById('feedback-1').innerHTML = '<p class="text-emerald-600 font-bold">✓ 全部 HIPPO 五大驅動力配對正確！</p>';
+          document.getElementById('btn-next-1').disabled = false;
+          awardOnce('t1', 10);
+        }
+      } else {
+        z.classList.add('shake');
+        setTimeout(() => z.classList.remove('shake'), 400);
+      }
+    });
+  });
+
+  document.getElementById('btn-next-1').addEventListener('click', () => goto(2));
+
+  /* ===================== T2: Data interpretation ===================== */
+  const q21Items = [
+    { text: 'A. 超過 1/3 的海洋魚類已過漁；若趨勢持續，漁業資源可能在一代人內崩潰', correct: true },
+    { text: 'B. 64.6% 可持續代表漁業已完全恢復，未來不需要管制', correct: false },
+    { text: 'C. 過漁比例只有 35%，算少數，不需要優先處理', correct: false }
+  ];
+  let q21done = false;
+
+  renderOpts(document.getElementById('q21-opts'), q21Items, 'q21', (item, d) => {
+    if (q21done) return;
+    q21done = true;
+    if (item.correct) {
+      d.classList.remove('sel'); d.classList.add('correct');
+      document.getElementById('q21-fb').textContent = '✓ 正確！35% 過漁意味著每 10 條魚中有 3–4 條來自不可持續的捕撈，長期下去族群將崩潰。';
+      document.getElementById('q21-fb').className = 'text-xs mt-1 text-emerald-700';
+      awardOnce('q21', 6);
+    } else {
+      d.classList.remove('sel'); d.classList.add('wrong');
+      document.getElementById('q21-fb').textContent = '✗ 注意：64.6% 可持續不等於漁業健康——同時仍有 35% 在超限捕撈。';
+      document.getElementById('q21-fb').className = 'text-xs mt-1 text-rose-600';
+    }
+    checkT2Done();
+  });
+
+  const q22Items = [
+    { text: 'A. 底拖網每年破壞約 1,500 萬 km² 海床，摧毀底棲生物棲地', correct: true },
+    { text: 'B. 工業捕撈混獲比例約 40%，大量非目標物種（海豚、海龜等）遭誤捕死亡', correct: true },
+    { text: 'C. CITES 管制 38,000 種物種，表示這些物種都已滅絕', correct: false },
+    { text: 'D. 穿山甲因口感較差，所以走私量低', correct: false }
+  ];
+  const q22Selected = new Set();
+  let q22scored = false;
+
+  (function renderQ22() {
+    const wrap = document.getElementById('q22-opts');
+    const shuffled = [...q22Items].sort(() => Math.random() - 0.5);
+    shuffled.forEach(item => {
+      const label = document.createElement('label');
+      label.className = 'block text-sm cursor-pointer';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.className = 'mr-1';
+      cb.addEventListener('change', () => {
+        if (cb.checked) q22Selected.add(item.text);
+        else q22Selected.delete(item.text);
+        if (q22Selected.size === 2 && !q22scored) {
+          q22scored = true;
+          const correctTexts = q22Items.filter(x => x.correct).map(x => x.text);
+          const bothCorrect = correctTexts.every(t => q22Selected.has(t));
+          if (bothCorrect) {
+            document.getElementById('q22-fb').textContent = '✓ 正確！底拖網破壞海床 + 40% 混獲是工業捕撈對生物多樣性最直接的傷害。';
+            document.getElementById('q22-fb').className = 'text-xs mt-1 text-emerald-700';
+            awardOnce('q22', 9);
+          } else {
+            document.getElementById('q22-fb').textContent = '✗ 找找圖表中直接描述捕撈「傷害機制」的數據。C 和 D 與圖表事實不符。';
+            document.getElementById('q22-fb').className = 'text-xs mt-1 text-rose-600';
+          }
+          checkT2Done();
+        }
+      });
+      label.appendChild(cb);
+      label.appendChild(document.createTextNode(item.text));
+      wrap.appendChild(label);
+    });
+  })();
+
+  function checkT2Done() {
+    if (q21done && q22scored) document.getElementById('btn-next-2').disabled = false;
+  }
+
+  document.getElementById('btn-next-2').addEventListener('click', () => goto(3));
+
+  /* ===================== T3: Loop drag-to-slot ===================== */
+  const loopSlots = document.querySelectorAll('#level-3 .loop-slot');
+  const loopItems = document.querySelectorAll('#items-box-3 .drag-item');
+  const slotFilled = {};
+  let t3Correct = 0;
+  const T3_TOTAL = 4;
+
+  shuffleChildren(document.getElementById('items-box-3'));
+
+  loopItems.forEach(it => {
+    it.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', it.dataset.loop);
+      it.classList.add('dragging');
+      window._t3drag = it;
+    });
+    it.addEventListener('dragend', () => it.classList.remove('dragging'));
+  });
+
+  loopSlots.forEach(z => {
+    z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('over'); });
+    z.addEventListener('dragleave', () => z.classList.remove('over'));
+    z.addEventListener('drop', e => {
+      e.preventDefault(); z.classList.remove('over');
+      const val = e.dataTransfer.getData('text/plain');
+      const slot = z.dataset.slot;
+      if (slotFilled[slot]) return;
+      if (val === slot) {
+        slotFilled[slot] = true;
+        const textEl = document.getElementById('slot-' + slot + '-text');
+        if (textEl) {
+          textEl.textContent = window._t3drag.textContent.substring(0, 12);
+          textEl.setAttribute('fill', '#065f46');
+          textEl.setAttribute('font-weight', 'bold');
+        }
+        window._t3drag.remove();
+        t3Correct++;
+        if (t3Correct === T3_TOTAL) {
+          document.getElementById('feedback-3').innerHTML = '<p class="text-emerald-600 font-bold">✓ 基石物種消失的連鎖反應完整！這就是「營養瀑布」。</p>';
+          document.getElementById('btn-next-3').disabled = false;
+          awardOnce('t3', 15);
+        }
+      } else {
+        z.classList.add('shake');
+        setTimeout(() => z.classList.remove('shake'), 400);
+      }
+    });
+  });
+
+  document.getElementById('btn-next-3').addEventListener('click', () => goto(4));
+
+  /* ===================== T4: CER flash card ===================== */
+  window.flipCard = function(id) {
+    document.getElementById(id).classList.toggle('flipped');
+  };
+
+  const stanceItems = [
+    { text: '立場 A：設立更多科學設計的海洋保護區（MPA），給魚類族群恢復空間', key: 'A' },
+    { text: '立場 B：推廣 MSC 永續認證，透過消費者選擇驅動漁業轉型', key: 'B' },
+    { text: '立場 C：立即全面禁止底拖網作業，保護海床生物多樣性', key: 'C' }
+  ];
+  let stancePicked = false, stanceKey = null;
+  let evidScored = false, reasScored = false;
+
+  const evidBank = [
+    { text: '澳洲大堡礁禁漁區設立 5 年後，目標魚種族群密度提升 2–2.5 倍，周邊捕魚區產量也增加（GBRMPA, 2020）', forA: true },
+    { text: 'MSC 認證漁業的平均族群密度比非認證漁業高 46%；認證魚類市場溢價 5–15%（MSC, 2023）', forB: true },
+    { text: '歐盟於 2023 年通過法規，限制底拖網在保護區的作業；試行海域海床生物多樣性 3 年恢復 28%（EC, 2024）', forC: true }
+  ];
+  const reasBank = [
+    { text: '禁捕核心區創造「溢出效應」，成魚游入可捕區，長期總漁獲量提升；且MPA兼具保育與漁業管理的雙重效益', forA: true },
+    { text: '消費者導向的認證制度不需強制執法；市場機制讓漁業者自願採取科學管理，轉型阻力較法規禁令小', forB: true },
+    { text: '海床是魚類幼苗棲地與底棲生物多樣性熱點；底拖網一次破壞需數十年恢復；立即禁止才能阻止不可逆的損失', forC: true }
+  ];
+
+  renderOpts(document.getElementById('stance-opts'), stanceItems, 'stance', (item, d) => {
+    if (stancePicked) return;
+    stancePicked = true;
+    stanceKey = item.key;
+    awardOnce('t4-stance', 6);
+    renderOpts(document.getElementById('evid-opts'), evidBank, 'evid', (ev, dv) => {
+      if (evidScored) return;
+      evidScored = true;
+      const correct = (stanceKey === 'A' && ev.forA) || (stanceKey === 'B' && ev.forB) || (stanceKey === 'C' && ev.forC);
+      dv.classList.remove('sel');
+      dv.classList.add(correct ? 'correct' : 'wrong');
+      document.getElementById('evid-fb').textContent = correct ? '✓ 這條證據直接支持你的立場！' : '✗ 選擇能直接支持你立場的研究數據。';
+      document.getElementById('evid-fb').className = 'text-xs mt-1 ' + (correct ? 'text-emerald-700' : 'text-rose-600');
+      if (correct) awardOnce('t4-evid', 7);
+      checkT4Done();
+    });
+    renderOpts(document.getElementById('reas-opts'), reasBank, 'reas', (rs, dr) => {
+      if (reasScored) return;
+      reasScored = true;
+      const correct = (stanceKey === 'A' && rs.forA) || (stanceKey === 'B' && rs.forB) || (stanceKey === 'C' && rs.forC);
+      dr.classList.remove('sel');
+      dr.classList.add(correct ? 'correct' : 'wrong');
+      document.getElementById('reas-fb').textContent = correct ? '✓ 推理清楚說明了證據如何支持主張！' : '✗ 選擇能說明「為何此證據支持你的立場」的推理。';
+      document.getElementById('reas-fb').className = 'text-xs mt-1 ' + (correct ? 'text-emerald-700' : 'text-rose-600');
+      if (correct) awardOnce('t4-reas', 7);
+      checkT4Done();
+    });
+  });
+
+  function checkT4Done() {
+    if (stancePicked && evidScored && reasScored) document.getElementById('btn-next-4').disabled = false;
+  }
+
+  document.getElementById('btn-next-4').addEventListener('click', () => goto(5));
+
+  /* ===================== T5: Project ===================== */
+  const projBank = {
+    msc: {
+      desc: '【永續水產午餐倡議】問題：學校午餐不知道魚類來源是否過漁，可能間接助長不永續漁業。\n行動步驟：① 調查現有午餐水產種類與來源 ② 連署要求採購 MSC 認證或在地沿近海捕撈水產 ③ 設計「我的永續魚選指南」海報 ④ 追蹤採購比例變化',
+      kpis: ['學期末永續認證水產佔午餐比例 ≥ 30%', '100 位以上同學知道 MSC 認證是什麼（問卷）', '連署人數達全校學生 20% 以上']
+    },
+    invasive: {
+      desc: '【校園入侵種清除】問題：校園中可能有福壽螺、小花蔓澤蘭等入侵種威脅本地植物。\n行動步驟：① 學習辨識臺灣常見入侵種 ② 校園生態調查並記錄入侵種分布 ③ 組織清除活動（通報農業部）④ 追蹤入侵種覆蓋面積',
+      kpis: ['完成校園入侵種分布地圖（至少標記 3 種）', '清除行動面積 ≥ 50 m²，並回報農業部通報系統', '種植 5 株以上原生植物取代清除後空地']
+    },
+    inat: {
+      desc: '【iNaturalist 公民科學】問題：學校缺乏物種本底資料，無法追蹤生物多樣性長期變化。\n行動步驟：① 全班安裝 iNaturalist App ② 設定校園調查區域 ③ 每月定期觀察記錄 ④ 學期末整理物種清單',
+      kpis: ['學期末累積觀察記錄 ≥ 200 筆', '辨識物種數 ≥ 50 種（含植物、昆蟲、鳥類）', '至少 3 筆記錄獲得 iNaturalist 社群確認']
+    },
+    anti: {
+      desc: '【反盜獵宣導活動】問題：同學不了解穿山甲盜獵等野生動物走私問題與消費選擇的關係。\n行動步驟：① 製作「全球最多盜獵哺乳類」海報 ② 舉辦 10 分鐘班會宣導 ③ 設計「拒絕野生動物產品」承諾卡 ④ 聯絡 NGO（台灣動物社會研究會）合作',
+      kpis: ['完成 ≥ 5 班的班會宣導', '收集承諾卡 ≥ 100 張', '舉辦 1 場校園展覽或海報展，觀看人次 ≥ 200']
+    }
+  };
+
+  let themePicked = false;
+  let kpiPicked = false;
+
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('ring-4', 'ring-offset-1', 'ring-emerald-500'));
+      btn.classList.add('ring-4', 'ring-offset-1', 'ring-emerald-500');
+      const theme = btn.dataset.theme;
+      const bank = projBank[theme];
+      document.getElementById('proj-desc').innerHTML = '<p class="text-sm font-semibold text-lime-800 whitespace-pre-line">' + bank.desc + '</p>';
+      const kpiWrap = document.getElementById('kpi-opts');
+      kpiWrap.innerHTML = '';
+      kpiPicked = false;
+      bank.kpis.forEach(kpi => {
+        const label = document.createElement('label');
+        label.className = 'block text-sm cursor-pointer';
+        const rb = document.createElement('input');
+        rb.type = 'radio';
+        rb.name = 'kpi';
+        rb.className = 'mr-1';
+        rb.addEventListener('change', () => {
+          kpiPicked = true;
+          awardOnce('t5-kpi', 3);
+          checkT5Done();
+        });
+        label.appendChild(rb);
+        label.appendChild(document.createTextNode(kpi));
+        kpiWrap.appendChild(label);
+      });
+      document.getElementById('proj-detail').classList.remove('hidden-screen');
+      themePicked = true;
+      awardOnce('t5-theme', 6);
+      checkT5Done();
+    });
+  });
+
+  document.querySelectorAll('.wsa-cb').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (document.querySelectorAll('.wsa-cb:checked').length >= 3) awardOnce('t5-wsa', 6);
+      checkT5Done();
+    });
+  });
+
+  function checkT5Done() {
+    if (themePicked && kpiPicked && document.querySelectorAll('.wsa-cb:checked').length >= 1)
+      document.getElementById('btn-next-5').disabled = false;
+  }
+
+  document.getElementById('btn-next-5').addEventListener('click', () => {
+    const wsa = document.querySelectorAll('.wsa-cb:checked').length;
+    document.getElementById('proj-fb').innerHTML = '<p class="text-emerald-600 text-sm font-semibold">✓ 提案送出！WSA 覆蓋 ' + wsa + '/4 面向。</p>';
+    goto('final');
+    for (let i = 1; i <= TOTAL_LEVELS; i++) {
+      const d = document.getElementById('dot-' + i);
+      if (d) { d.classList.remove('active'); d.classList.add('done'); }
+    }
+  });
+
+  /* ===================== Final reflection ===================== */
+  let starLearnVal = 0, starActVal = 0, impactPicked = false;
+
+  function setupStars(groupId, onSet) {
+    document.querySelectorAll('#' + groupId + ' .star').forEach(s => {
+      s.addEventListener('click', () => {
+        const val = Number(s.dataset.val);
+        onSet(val);
+        document.querySelectorAll('#' + groupId + ' .star').forEach(x => x.classList.toggle('on', Number(x.dataset.val) <= val));
+      });
+    });
+  }
+
+  setupStars('star-learn', v => { starLearnVal = v; checkFinalDone(); });
+  setupStars('star-act', v => { starActVal = v; checkFinalDone(); });
+
+  const impactItems = [
+    { text: '每週幫家裡選 1 次 MSC 認證或在地水產' },
+    { text: '加入 iNaturalist 每月記錄 5 筆物種觀察' },
+    { text: '拒絕購買來路不明的野生動物或其製品' },
+    { text: '向學生委員會提案推動校園入侵種清除或永續採購' }
+  ];
+  renderOpts(document.getElementById('impact-opts'), impactItems, 'impact', () => {
+    impactPicked = true;
+    awardOnce('final-impact', 2);
+    checkFinalDone();
+  });
+
+  function checkFinalDone() {
+    if (starLearnVal > 0 && starActVal > 0 && impactPicked) document.getElementById('btn-finish').disabled = false;
+  }
+
+  document.getElementById('btn-finish').addEventListener('click', () => {
+    awardOnce('final-stars', 3);
+    document.getElementById('level-final').classList.add('hidden-screen');
+    document.getElementById('finale').classList.remove('hidden-screen');
+    document.getElementById('final-score').textContent = _score;
+    confetti();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
+</script>
 </body>
 </html>

@@ -3,417 +3,543 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>小樹苗綠綠的大冒險 — 碳循環互動學習</title>
+<title>樹木碳循環 — 綠綠的大冒險</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   body {
     font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
     background: linear-gradient(180deg, #d1fae5 0%, #fef3c7 50%, #bae6fd 100%);
-    min-height: 100vh;
-    overflow-x: hidden;
+    min-height: 100vh; overflow-x: hidden;
   }
   .popin { animation: popin 0.6s cubic-bezier(.34,1.56,.64,1) both; }
   @keyframes popin { 0%{transform:scale(.3);opacity:0} 60%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
-  .bounce { animation: bounce 1s infinite; }
-  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .bounce { animation: bounce 1.2s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
   .wiggle { animation: wiggle 0.4s ease-in-out; }
-  @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-8deg)} 75%{transform:rotate(8deg)} }
+  @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-10deg)} 75%{transform:rotate(10deg)} }
   .sway { animation: sway 3s ease-in-out infinite; transform-origin: bottom center; }
   @keyframes sway { 0%,100%{transform:rotate(-3deg)} 50%{transform:rotate(3deg)} }
   .shine { animation: shine 2s infinite; }
   @keyframes shine { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.3) drop-shadow(0 0 20px #86efac)} }
-  .float-up { animation: floatup 2s ease-out forwards; }
-  @keyframes floatup { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(-80px);opacity:0} }
-  .confetti {
-    position: fixed;
-    width: 14px; height: 14px;
-    border-radius: 2px;
-    pointer-events: none;
-    z-index: 9999;
+  .confetti-piece {
+    position: fixed; width: 14px; height: 14px;
+    border-radius: 2px; pointer-events: none; z-index: 9999;
   }
-  .dropzone-active { background: #bef264 !important; transform: scale(1.08); }
   .big-btn {
-    font-size: 2rem;
-    padding: 1rem 2rem;
-    border-radius: 9999px;
-    font-weight: 800;
-    box-shadow: 0 6px 0 rgba(0,0,0,0.15);
-    transition: all 0.15s;
+    font-size: 1.6rem; padding: 0.9rem 2rem;
+    border-radius: 9999px; font-weight: 800;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.15); transition: all 0.15s;
+    cursor: pointer; border: none; display: inline-block;
   }
   .big-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,0.15); }
-  svg text { pointer-events: none; }
-  .card {
-    background: white;
-    border-radius: 2rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    padding: 1.5rem;
+  .btn-back {
+    background: #bbf7d0; color: #14532d;
+    padding: 0.6rem 1.4rem; border-radius: 9999px;
+    font-size: 1.1rem; font-weight: 700;
+    border: none; cursor: pointer;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.12); transition: all 0.15s;
   }
+  .btn-back:active { transform: translateY(2px); }
+  .drag-item {
+    cursor: grab; user-select: none;
+    border-radius: 1.5rem; transition: transform 0.15s, box-shadow 0.15s;
+    touch-action: none;
+  }
+  .drag-item:active { transform: scale(1.08); box-shadow: 0 8px 20px rgba(0,0,0,0.18); }
+  .drag-item.dragging { opacity: 0.45; }
+  .drop-zone {
+    min-height: 120px; border: 4px dashed #86efac;
+    border-radius: 1.5rem; transition: background 0.2s, transform 0.15s;
+  }
+  .drop-zone.over { background: #dcfce7 !important; transform: scale(1.04); border-color: #22c55e; }
+  .promise-card {
+    border: 4px solid #e2e8f0; border-radius: 1.5rem;
+    padding: 1rem; cursor: pointer; transition: all 0.2s;
+    text-align: center; background: white;
+  }
+  .promise-card.chosen { border-color: #34d399; background: #d1fae5; transform: scale(1.04); }
+  .bubble {
+    background: #f0fdf4; border: 3px solid #86efac;
+    border-radius: 1.5rem; padding: 0.8rem 1.2rem; position: relative;
+  }
+  .bubble::before {
+    content: ""; position: absolute; left: 20px; top: -16px;
+    border: 8px solid transparent; border-bottom-color: #86efac;
+  }
+  .bubble::after {
+    content: ""; position: absolute; left: 23px; top: -11px;
+    border: 6px solid transparent; border-bottom-color: #f0fdf4;
+  }
+  svg text { pointer-events: none; }
+  .prog-dot {
+    width: 44px; height: 44px; border-radius: 9999px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; font-weight: 800; transition: all 0.3s;
+  }
+  .prog-dot.done { background: #34d399; color: white; }
+  .prog-dot.active { background: #86efac; color: #14532d; }
+  .prog-dot.todo { background: #e5e7eb; color: #9ca3af; }
   .hide { display: none !important; }
-  .tap-hint { animation: tap-hint 1.2s ease-in-out infinite; }
-  @keyframes tap-hint { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
 </style>
 </head>
-<body class="flex flex-col items-center">
+<body class="flex flex-col items-center pb-12">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 
-<!-- 主角：小樹苗綠綠 SVG（可重用） -->
+<!-- 綠綠 (小樹苗) SVG 定義 -->
 <svg width="0" height="0" style="position:absolute">
   <defs>
     <g id="sapling">
-      <!-- 土 -->
       <ellipse cx="50" cy="92" rx="40" ry="6" fill="#78350f" opacity="0.7"/>
-      <!-- 主幹 -->
       <rect x="46" y="55" width="8" height="38" fill="#92400e" rx="2"/>
-      <!-- 葉子大 -->
       <ellipse cx="30" cy="50" rx="20" ry="14" fill="#22c55e" transform="rotate(-25 30 50)"/>
       <ellipse cx="70" cy="50" rx="20" ry="14" fill="#22c55e" transform="rotate(25 70 50)"/>
       <ellipse cx="50" cy="35" rx="22" ry="16" fill="#16a34a"/>
-      <!-- 眼睛 -->
       <circle cx="42" cy="34" r="3.5" fill="white"/>
       <circle cx="58" cy="34" r="3.5" fill="white"/>
       <circle cx="42" cy="34" r="2" fill="black"/>
       <circle cx="58" cy="34" r="2" fill="black"/>
-      <!-- 嘴巴笑 -->
       <path d="M 43 42 Q 50 48 57 42" stroke="black" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <!-- 腮紅 -->
       <circle cx="36" cy="40" r="2.5" fill="#fca5a5" opacity="0.6"/>
       <circle cx="64" cy="40" r="2.5" fill="#fca5a5" opacity="0.6"/>
-    </g>
-    <g id="co2">
-      <circle cx="25" cy="25" r="22" fill="#93c5fd"/>
-      <text x="25" y="31" text-anchor="middle" font-size="14" font-weight="900" fill="white">CO₂</text>
-    </g>
-    <g id="o2">
-      <circle cx="25" cy="25" r="22" fill="#86efac"/>
-      <text x="25" y="31" text-anchor="middle" font-size="14" font-weight="900" fill="white">O₂</text>
-    </g>
-    <g id="sun">
-      <circle cx="30" cy="30" r="18" fill="#fcd34d"/>
-      <g stroke="#f59e0b" stroke-width="3" stroke-linecap="round">
-        <line x1="30" y1="4" x2="30" y2="12"/>
-        <line x1="30" y1="48" x2="30" y2="56"/>
-        <line x1="4" y1="30" x2="12" y2="30"/>
-        <line x1="48" y1="30" x2="56" y2="30"/>
-        <line x1="11" y1="11" x2="17" y2="17"/>
-        <line x1="43" y1="43" x2="49" y2="49"/>
-        <line x1="11" y1="49" x2="17" y2="43"/>
-        <line x1="43" y1="17" x2="49" y2="11"/>
-      </g>
-      <circle cx="24" cy="27" r="2" fill="black"/>
-      <circle cx="36" cy="27" r="2" fill="black"/>
-      <path d="M 25 35 Q 30 40 35 35" stroke="black" stroke-width="2" fill="none" stroke-linecap="round"/>
     </g>
   </defs>
 </svg>
 
-<!-- 頂部標題 & 進度條 -->
-<div class="w-full max-w-3xl p-4">
-  <div class="flex items-center justify-center gap-2 text-3xl font-extrabold text-green-700">
-    <svg width="70" height="70" viewBox="0 0 100 100" class="sway"><use href="#sapling"/></svg>
-    <span>小樹苗綠綠的大冒險</span>
+<!-- 頂部標題 + 進度 -->
+<div class="w-full max-w-2xl px-4 pt-4">
+  <div class="flex items-center justify-center gap-3 text-3xl font-extrabold text-green-700 mb-3">
+    <svg width="56" height="70" viewBox="0 0 100 100" class="sway"><use href="#sapling"/></svg>
+    <span>綠綠的大冒險</span>
   </div>
-  <div class="flex gap-2 mt-4 justify-center" id="progress-bar"></div>
+  <div class="flex items-center justify-center gap-2" id="prog-bar">
+    <div class="prog-dot todo" id="dot-1">1</div>
+    <div class="w-8 h-1 rounded bg-gray-300" id="line-1"></div>
+    <div class="prog-dot todo" id="dot-2">2</div>
+    <div class="w-8 h-1 rounded bg-gray-300" id="line-2"></div>
+    <div class="prog-dot todo" id="dot-3">3</div>
+    <div class="w-8 h-1 rounded bg-gray-300" id="line-3"></div>
+    <div class="prog-dot todo" id="dot-f">😊</div>
+  </div>
+  <div class="text-center mt-2 text-xl font-bold text-green-700">
+    得了 <span id="score-display">0</span> 分！
+  </div>
 </div>
 
-<!-- 開場 -->
-<div id="intro" class="w-full max-w-2xl card mx-4 text-center popin">
-  <svg width="180" height="180" viewBox="0 0 100 100" class="mx-auto sway"><use href="#sapling"/></svg>
-  <h2 class="text-3xl font-extrabold text-green-800 mt-2">嗨！我是綠綠 🌱</h2>
-  <p class="text-2xl mt-4 leading-relaxed">我是一棵<span class="text-green-700 font-bold">小樹苗</span>。<br/>今天我要帶你玩<span class="text-yellow-600 font-bold">3 個超好玩的關卡</span>！<br/>你願意幫我長大嗎？</p>
-  <button class="big-btn bg-green-500 text-white mt-6 bounce" onclick="startGame()">我願意！開始 🎉</button>
-</div>
+<main class="w-full max-w-2xl px-4 mt-4">
 
-<!-- 關卡 1：白天好忙碌 — CO2 拖曳給樹葉 -->
-<div id="level1" class="hide w-full max-w-2xl card mx-4 mt-6">
-  <h3 class="text-3xl font-extrabold text-green-700 text-center">🌞 關卡 1：白天好忙碌</h3>
-  <p class="text-xl text-center mt-2">太陽出來了！幫綠綠把<span class="text-blue-500 font-bold">藍色 CO₂</span> 拖到葉子上！</p>
-  <div class="relative mt-4 flex justify-center" style="height: 280px;">
-    <!-- 太陽 -->
-    <svg class="absolute top-0 right-4 shine" width="80" height="80" viewBox="0 0 60 60"><use href="#sun"/></svg>
-    <!-- 小樹苗目標 -->
-    <div id="dropzone1" class="absolute bottom-0 left-1/2 -translate-x-1/2" style="touch-action: none;">
-      <svg width="200" height="200" viewBox="0 0 100 100" class="sway"><use href="#sapling"/></svg>
+  <!-- 開始畫面 -->
+  <section id="intro" class="card bg-white rounded-3xl shadow-xl p-6 text-center popin">
+    <div class="sway inline-block">
+      <svg width="160" height="160" viewBox="0 0 100 100" class="mx-auto"><use href="#sapling"/></svg>
     </div>
-    <!-- 三顆 CO2 -->
-    <svg class="absolute top-20 left-6 tap-hint draggable" data-type="co2" width="50" height="50" viewBox="0 0 50 50" draggable="true"><use href="#co2"/></svg>
-    <svg class="absolute top-8 left-1/3 tap-hint draggable" data-type="co2" width="50" height="50" viewBox="0 0 50 50" draggable="true"><use href="#co2"/></svg>
-    <svg class="absolute top-16 right-16 tap-hint draggable" data-type="co2" width="50" height="50" viewBox="0 0 50 50" draggable="true"><use href="#co2"/></svg>
-  </div>
-  <p id="level1-feedback" class="text-2xl text-center mt-4 font-bold text-green-700 hide">太棒了！綠綠吃飽飽！🌱</p>
-  <div class="text-center mt-4">
-    <button id="level1-next" class="big-btn bg-amber-400 text-white hide" onclick="showLevel(2)">下一關 →</button>
-  </div>
-</div>
+    <h1 class="text-4xl font-extrabold text-green-800 mt-2">嗨！我是綠綠！🌱</h1>
+    <p class="text-2xl text-gray-700 mt-3">我是一棵小樹苗，</p>
+    <p class="text-2xl text-gray-700">我每天吃<span class="text-blue-500 font-bold">空氣</span>、曬<span class="text-yellow-500 font-bold">太陽</span>，</p>
+    <p class="text-2xl text-gray-700">送給大家<span class="text-green-600 font-bold">乾淨的氧氣</span>！</p>
+    <p class="text-xl text-gray-500 mt-3 mb-6">一起玩 3 個小關卡！你做得到！</p>
+    <button onclick="gotoLevel(1)" class="big-btn bg-green-500 hover:bg-green-400 text-white">
+      我願意！開始！🌱
+    </button>
+  </section>
 
-<!-- 關卡 2：樹的禮物 — 選擇對的 -->
-<div id="level2" class="hide w-full max-w-2xl card mx-4 mt-6">
-  <h3 class="text-3xl font-extrabold text-green-700 text-center">🎁 關卡 2：樹的禮物</h3>
-  <p class="text-xl text-center mt-2">綠綠長大了！請幫忙找出<span class="text-green-600 font-bold">樹朋友</span>送給我們的禮物（可以選多個喔）！</p>
-  <div class="grid grid-cols-2 gap-4 mt-6" id="gifts">
-    <button class="gift-btn card text-3xl p-6 hover:bg-green-50 popin" data-ok="1">🐦<br/><span class="text-xl">小鳥的家</span></button>
-    <button class="gift-btn card text-3xl p-6 hover:bg-green-50 popin" data-ok="0">🚗<br/><span class="text-xl">新車子</span></button>
-    <button class="gift-btn card text-3xl p-6 hover:bg-green-50 popin" data-ok="1">🌬️<br/><span class="text-xl">乾淨空氣</span></button>
-    <button class="gift-btn card text-3xl p-6 hover:bg-green-50 popin" data-ok="1">☂️<br/><span class="text-xl">遮陽涼爽</span></button>
-    <button class="gift-btn card text-3xl p-6 hover:bg-green-50 popin" data-ok="0">📱<br/><span class="text-xl">手機</span></button>
-    <button class="gift-btn card text-3xl p-6 hover:bg-green-50 popin" data-ok="1">🍎<br/><span class="text-xl">果子</span></button>
-  </div>
-  <p id="level2-feedback" class="text-2xl text-center mt-4 font-bold text-green-700"></p>
-  <div class="text-center mt-4">
-    <button id="level2-next" class="big-btn bg-amber-400 text-white hide" onclick="showLevel(3)">下一關 →</button>
-  </div>
-</div>
+  <!-- 關卡 1：拖一拖 — 樹的好朋友 vs 壞鄰居 (30 pts) -->
+  <section id="level-1" class="card bg-white rounded-3xl shadow-xl p-6 w-full hide">
+    <div class="flex items-end gap-3 mb-4">
+      <svg width="80" height="80" viewBox="0 0 100 100" class="flex-shrink-0 sway"><use href="#sapling"/></svg>
+      <div class="bubble">
+        <p class="text-xl font-bold text-green-800">綠綠說：哪些讓我長得好？拖到「💚 好朋友」！</p>
+      </div>
+    </div>
+    <h2 class="text-2xl font-extrabold text-pink-600 text-center mb-1">第 1 關：拖一拖！ 🌳</h2>
+    <p class="text-lg text-center text-gray-500 mb-4">把卡片拖到對的框框～</p>
+    <div id="l1-items" class="flex flex-wrap justify-center gap-4 mb-6"></div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="drop-zone flex flex-col items-center justify-start pt-3 gap-2 bg-green-50" data-zone="good">
+        <div class="text-6xl">💚</div>
+        <div class="text-2xl font-extrabold text-green-600">樹的好朋友</div>
+        <div class="text-gray-400 text-base mt-1">拖到這裡</div>
+        <div class="dz-placed flex flex-wrap justify-center gap-2 mt-1"></div>
+      </div>
+      <div class="drop-zone flex flex-col items-center justify-start pt-3 gap-2 bg-red-50" data-zone="bad">
+        <div class="text-6xl">😢</div>
+        <div class="text-2xl font-extrabold text-red-600">樹的壞鄰居</div>
+        <div class="text-gray-400 text-base mt-1">拖到這裡</div>
+        <div class="dz-placed flex flex-wrap justify-center gap-2 mt-1"></div>
+      </div>
+    </div>
+    <p id="l1-feedback" class="text-2xl text-center font-bold mt-4 hide"></p>
+    <div class="flex justify-start mt-4">
+      <button class="btn-back" onclick="gotoLevel(0)">← 回上一頁</button>
+    </div>
+  </section>
 
-<!-- 關卡 3：我是地球小英雄 — 點擊好行為 -->
-<div id="level3" class="hide w-full max-w-2xl card mx-4 mt-6">
-  <h3 class="text-3xl font-extrabold text-green-700 text-center">🦸 關卡 3：我是地球小英雄</h3>
-  <p class="text-xl text-center mt-2">點點看哪些是<span class="text-green-600 font-bold">愛地球</span>的好行為！</p>
-  <div class="grid grid-cols-2 gap-4 mt-6" id="actions">
-    <button class="act-btn card text-4xl p-6 hover:bg-yellow-50 popin" data-ok="1">🗑️<br/><span class="text-xl">撿垃圾</span></button>
-    <button class="act-btn card text-4xl p-6 hover:bg-yellow-50 popin" data-ok="0">💡<br/><span class="text-xl">整天開燈</span></button>
-    <button class="act-btn card text-4xl p-6 hover:bg-yellow-50 popin" data-ok="1">🚶<br/><span class="text-xl">走路上學</span></button>
-    <button class="act-btn card text-4xl p-6 hover:bg-yellow-50 popin" data-ok="1">🌱<br/><span class="text-xl">種小樹</span></button>
-    <button class="act-btn card text-4xl p-6 hover:bg-yellow-50 popin" data-ok="0">🛍️<br/><span class="text-xl">用很多塑膠袋</span></button>
-    <button class="act-btn card text-4xl p-6 hover:bg-yellow-50 popin" data-ok="1">💧<br/><span class="text-xl">省水省電</span></button>
-  </div>
-  <p id="level3-feedback" class="text-2xl text-center mt-4 font-bold text-green-700"></p>
-  <div class="text-center mt-4">
-    <button id="level3-next" class="big-btn bg-pink-400 text-white hide" onclick="showFinal()">看我的獎牌 🏅</button>
-  </div>
-</div>
+  <!-- 關卡 2：選一選 (30 pts) -->
+  <section id="level-2" class="card bg-white rounded-3xl shadow-xl p-6 w-full hide">
+    <div class="flex items-end gap-3 mb-4">
+      <svg width="80" height="80" viewBox="0 0 100 100" class="flex-shrink-0 sway"><use href="#sapling"/></svg>
+      <div class="bubble">
+        <p class="text-xl font-bold text-green-800">綠綠說：我來問你一個問題！</p>
+      </div>
+    </div>
+    <h2 class="text-2xl font-extrabold text-pink-600 text-center mb-5">第 2 關：選一選！ 🤔</h2>
 
-<!-- 成就頁 -->
-<div id="final" class="hide w-full max-w-2xl card mx-4 mt-6 text-center">
-  <svg width="220" height="220" viewBox="0 0 100 100" class="mx-auto shine">
-    <use href="#sapling"/>
-    <circle cx="50" cy="10" r="8" fill="#fbbf24"/>
-    <text x="50" y="14" text-anchor="middle" font-size="10" font-weight="900" fill="white">★</text>
-  </svg>
-  <h2 class="text-4xl font-extrabold text-green-800 mt-2">你是地球小英雄！</h2>
-  <p class="text-2xl mt-4 leading-relaxed">綠綠好開心！🌳<br/>你幫我長大、<br/>認識我的禮物、<br/>學會怎麼照顧地球！</p>
-  <div class="bg-yellow-100 rounded-2xl p-6 mt-6">
-    <h3 class="text-2xl font-bold text-amber-700">🏡 回家小任務</h3>
-    <p class="text-xl mt-2 leading-relaxed">
-      1. 跟家人一起找一棵家附近的<b>樹朋友</b>，幫它取名字！<br/>
-      2. 種一顆<b>綠豆或九層塔</b>，每天澆一點水！<br/>
-      3. 這星期做 <b>3 件愛地球的事</b>，請家人簽名！
+    <!-- Q1 -->
+    <div id="l2-q1-wrap">
+      <p class="text-xl font-bold text-center text-gray-700 mb-4">🌬️ 樹可以給我們什麼？</p>
+      <div class="grid grid-cols-2 gap-4" id="l2-q1-opts">
+        <button class="promise-card" data-val="air" onclick="l2Pick(1,this)">
+          <div class="text-6xl">🌬️</div>
+          <div class="text-xl font-bold mt-2">乾淨空氣</div>
+        </button>
+        <button class="promise-card" data-val="car" onclick="l2Pick(1,this)">
+          <div class="text-6xl">🚗</div>
+          <div class="text-xl font-bold mt-2">新車子</div>
+        </button>
+      </div>
+      <p id="l2-q1-fb" class="text-2xl text-center font-bold mt-3 hide"></p>
+    </div>
+
+    <!-- Q2 -->
+    <div id="l2-q2-wrap" class="mt-6 hide">
+      <p class="text-xl font-bold text-center text-gray-700 mb-4">😎 站在樹下，你會感覺怎樣？</p>
+      <div class="grid grid-cols-2 gap-4">
+        <button class="promise-card" data-val="cool" onclick="l2Pick(2,this)">
+          <div class="text-6xl">😎</div>
+          <div class="text-xl font-bold mt-2">涼涼快快</div>
+        </button>
+        <button class="promise-card" data-val="hot" onclick="l2Pick(2,this)">
+          <div class="text-6xl">🔥</div>
+          <div class="text-xl font-bold mt-2">熱熱難受</div>
+        </button>
+      </div>
+      <p id="l2-q2-fb" class="text-2xl text-center font-bold mt-3 hide"></p>
+    </div>
+
+    <!-- Q3 -->
+    <div id="l2-q3-wrap" class="mt-6 hide">
+      <p class="text-xl font-bold text-center text-gray-700 mb-4">🐦 樹是誰的家？</p>
+      <div class="grid grid-cols-2 gap-4">
+        <button class="promise-card" data-val="bird" onclick="l2Pick(3,this)">
+          <div class="text-6xl">🐦</div>
+          <div class="text-xl font-bold mt-2">小鳥</div>
+        </button>
+        <button class="promise-card" data-val="fish" onclick="l2Pick(3,this)">
+          <div class="text-6xl">🐟</div>
+          <div class="text-xl font-bold mt-2">小魚</div>
+        </button>
+      </div>
+      <p id="l2-q3-fb" class="text-2xl text-center font-bold mt-3 hide"></p>
+    </div>
+
+    <div class="flex justify-between mt-6 items-center">
+      <button class="btn-back" onclick="gotoLevel(1)">← 回上一頁</button>
+    </div>
+  </section>
+
+  <!-- 關卡 3：我的承諾 (15 pts) -->
+  <section id="level-3" class="card bg-white rounded-3xl shadow-xl p-6 w-full hide">
+    <div class="flex items-end gap-3 mb-4">
+      <svg width="80" height="80" viewBox="0 0 100 100" class="flex-shrink-0 sway"><use href="#sapling"/></svg>
+      <div class="bubble">
+        <p class="text-xl font-bold text-green-800">綠綠說：選 2 個你做得到的！</p>
+      </div>
+    </div>
+    <h2 class="text-2xl font-extrabold text-pink-600 text-center mb-1">第 3 關：我會做到！ 💪</h2>
+    <p class="text-lg text-center text-gray-500 mb-5">點一點你願意做的事（選 2 個）</p>
+    <div class="grid grid-cols-2 gap-4" id="l3-promises">
+      <button class="promise-card" data-id="p1" onclick="l3Toggle(this)">
+        <div class="text-5xl">🪣</div>
+        <div class="text-lg font-bold mt-2">給樹澆水</div>
+      </button>
+      <button class="promise-card" data-id="p2" onclick="l3Toggle(this)">
+        <div class="text-5xl">🚯</div>
+        <div class="text-lg font-bold mt-2">不在樹旁丟垃圾</div>
+      </button>
+      <button class="promise-card" data-id="p3" onclick="l3Toggle(this)">
+        <div class="text-5xl">🤗</div>
+        <div class="text-lg font-bold mt-2">抱抱大樹</div>
+      </button>
+      <button class="promise-card" data-id="p4" onclick="l3Toggle(this)">
+        <div class="text-5xl">🌱</div>
+        <div class="text-lg font-bold mt-2">種一棵小樹苗</div>
+      </button>
+    </div>
+    <p id="l3-hint" class="text-xl text-center text-gray-400 mt-4">選了 <span id="l3-count">0</span> 個</p>
+    <p id="l3-feedback" class="text-2xl text-center font-bold mt-2 hide"></p>
+    <div class="text-center mt-4">
+      <button id="l3-submit-btn" onclick="l3Submit()" class="big-btn bg-green-500 hover:bg-green-400 text-white" disabled>
+        我選好了！✅
+      </button>
+    </div>
+    <div class="flex justify-start mt-4">
+      <button class="btn-back" onclick="gotoLevel(2)">← 回上一頁</button>
+    </div>
+  </section>
+
+  <!-- Final：笑臉評分 (5 pts) -->
+  <section id="level-final" class="card bg-white rounded-3xl shadow-xl p-6 w-full hide">
+    <div class="flex items-end gap-3 mb-4">
+      <div class="shine inline-block">
+        <svg width="100" height="100" viewBox="0 0 100 100" class="bounce"><use href="#sapling"/></svg>
+      </div>
+      <div>
+        <div class="text-6xl">🏆🌳</div>
+        <h1 class="text-3xl font-extrabold text-green-800">你是地球小英雄！</h1>
+      </div>
+    </div>
+    <p class="text-2xl text-center text-gray-700 mt-2">
+      綠綠送你 <span class="text-green-500 font-bold">🌱 大樹徽章</span>！
     </p>
-  </div>
-  <button class="big-btn bg-green-500 text-white mt-6 bounce" onclick="location.reload()">再玩一次 🔄</button>
-</div>
+    <p class="text-3xl text-center font-extrabold text-emerald-600 mt-1">
+      得了 <span id="final-score">0</span> / 80 分！
+    </p>
+    <div class="bg-green-50 rounded-2xl p-5 mt-5 border-2 border-green-200">
+      <p class="text-xl font-bold text-green-700 mb-3 text-center">你覺得今天好玩嗎？</p>
+      <div class="flex justify-center gap-6" id="smiley-row">
+        <button class="text-6xl hover:scale-125 transition-transform" onclick="rateSmiley(1)" id="sm-1">😞</button>
+        <button class="text-6xl hover:scale-125 transition-transform" onclick="rateSmiley(2)" id="sm-2">😊</button>
+        <button class="text-6xl hover:scale-125 transition-transform" onclick="rateSmiley(3)" id="sm-3">🤩</button>
+      </div>
+      <p id="smiley-fb" class="text-xl text-center font-bold mt-3 hide"></p>
+      <p class="text-xl font-bold text-green-700 mb-3 mt-5 text-center">你最喜歡哪一關？</p>
+      <div class="flex flex-col gap-3" id="fav-opts">
+        <button class="promise-card text-left flex items-center gap-3" data-fav="1" onclick="pickFav(this)">
+          <span class="text-3xl">🌳</span>
+          <span class="text-lg font-bold">第 1 關：拖拖卡片</span>
+        </button>
+        <button class="promise-card text-left flex items-center gap-3" data-fav="2" onclick="pickFav(this)">
+          <span class="text-3xl">🤔</span>
+          <span class="text-lg font-bold">第 2 關：選一選</span>
+        </button>
+        <button class="promise-card text-left flex items-center gap-3" data-fav="3" onclick="pickFav(this)">
+          <span class="text-3xl">💪</span>
+          <span class="text-lg font-bold">第 3 關：我的承諾</span>
+        </button>
+      </div>
+      <p id="fav-fb" class="text-lg text-center text-gray-500 mt-2 hide"></p>
+    </div>
+    <div class="bg-green-50 rounded-2xl p-5 mt-5 border-2 border-green-300">
+      <p class="text-xl font-bold text-green-700">綠綠的小任務：</p>
+      <p class="text-lg text-gray-700 mt-2">
+        今天找一棵附近的<span class="text-green-600 font-bold">樹朋友</span>，<br/>
+        摸摸它的樹皮，聞聞葉子的香味！
+      </p>
+    </div>
+    <div class="flex justify-between mt-6 items-center">
+      <button class="btn-back" onclick="gotoLevel(3)">← 回上一頁</button>
+      <button onclick="gotoLevel(0)" class="big-btn bg-green-500 hover:bg-green-400 text-white">
+        再玩一次 🔁
+      </button>
+    </div>
+  </section>
+
+</main>
 
 <script>
-let currentLevel = 0;
-const totalLevels = 3;
+(() => {
+  const TOTAL_LEVELS = 3;
+  const S = { score: 0, current: 0, awarded: {} };
+  const el = id => document.getElementById(id);
 
-function renderProgress(lv) {
-  const bar = document.getElementById('progress-bar');
-  bar.innerHTML = '';
-  for (let i = 1; i <= totalLevels; i++) {
-    const dot = document.createElement('div');
-    dot.className = 'w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold ' +
-      (i <= lv ? 'bg-green-500 text-white shine' : 'bg-white/60 text-gray-400');
-    dot.textContent = i <= lv ? '★' : i;
-    bar.appendChild(dot);
-  }
-}
+  function addScore(pts) { S.score += pts; el('score-display').textContent = S.score; }
+  function awardOnce(key, pts) { if (!S.awarded[key]) { S.awarded[key] = true; addScore(pts); } }
 
-function startGame() {
-  document.getElementById('intro').classList.add('hide');
-  showLevel(1);
-}
-
-function showLevel(n) {
-  currentLevel = n;
-  renderProgress(n);
-  for (let i = 1; i <= totalLevels; i++) {
-    document.getElementById('level' + i).classList.toggle('hide', i !== n);
-  }
-  if (n === 1) setupLevel1();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function showFinal() {
-  for (let i = 1; i <= totalLevels; i++) document.getElementById('level' + i).classList.add('hide');
-  document.getElementById('final').classList.remove('hide');
-  renderProgress(totalLevels);
-  bigConfetti();
-}
-
-// ---------- 關卡 1：CO2 拖曳 ----------
-let co2Collected = 0;
-function setupLevel1() {
-  co2Collected = 0;
-  const dropzone = document.getElementById('dropzone1');
-  const drags = document.querySelectorAll('.draggable');
-  drags.forEach(el => {
-    // mouse / pointer
-    el.addEventListener('dragstart', e => {
-      e.dataTransfer.setData('text', 'co2');
+  function updateDots() {
+    const map = [
+      { dot: 'dot-1', level: 1 }, { dot: 'dot-2', level: 2 },
+      { dot: 'dot-3', level: 3 }, { dot: 'dot-f', level: 99 }
+    ];
+    map.forEach(({ dot, level }) => {
+      const d = el(dot);
+      d.classList.remove('done','active','todo');
+      if (level < S.current) d.classList.add('done');
+      else if (level === S.current || (level === 99 && S.current > TOTAL_LEVELS)) d.classList.add('active');
+      else d.classList.add('todo');
     });
-    // touch 支援
-    el.addEventListener('touchstart', e => {
-      e.preventDefault();
-      el.style.position = 'fixed';
-      el.style.zIndex = 1000;
-      moveTouch(el, e.touches[0]);
-    }, { passive: false });
-    el.addEventListener('touchmove', e => {
-      e.preventDefault();
-      moveTouch(el, e.touches[0]);
-    }, { passive: false });
-    el.addEventListener('touchend', e => {
-      const rect = dropzone.getBoundingClientRect();
-      const t = e.changedTouches[0];
-      if (t.clientX > rect.left && t.clientX < rect.right &&
-          t.clientY > rect.top && t.clientY < rect.bottom) {
-        consumeCO2(el);
-      } else {
-        el.style.position = 'absolute';
-        el.style.zIndex = '';
-      }
-    });
-    // 簡易點擊當備援（小朋友若不會拖）
-    el.addEventListener('click', () => consumeCO2(el));
-  });
-  dropzone.addEventListener('dragover', e => {
-    e.preventDefault();
-    dropzone.classList.add('dropzone-active');
-  });
-  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dropzone-active'));
-  dropzone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropzone.classList.remove('dropzone-active');
-    // 找到第一個還在的 draggable 消除
-    const remain = document.querySelectorAll('.draggable:not(.consumed)');
-    if (remain[0]) consumeCO2(remain[0]);
-  });
-}
-function moveTouch(el, t) {
-  el.style.left = (t.clientX - 25) + 'px';
-  el.style.top  = (t.clientY - 25) + 'px';
-}
-function consumeCO2(el) {
-  if (el.classList.contains('consumed')) return;
-  el.classList.add('consumed');
-  el.classList.remove('tap-hint');
-  // O2 浮上去
-  const o2 = document.createElementNS('http://www.w3.org/2000/svg','svg');
-  o2.setAttribute('width','50'); o2.setAttribute('height','50'); o2.setAttribute('viewBox','0 0 50 50');
-  o2.innerHTML = '<use href="#o2"/>';
-  o2.classList.add('float-up');
-  o2.style.position = 'absolute';
-  const dz = document.getElementById('dropzone1').getBoundingClientRect();
-  o2.style.left = (dz.left + 75) + 'px';
-  o2.style.top  = (dz.top + 20) + 'px';
-  o2.style.zIndex = 999;
-  document.body.appendChild(o2);
-  setTimeout(() => o2.remove(), 2000);
-  el.style.opacity = 0;
-  setTimeout(() => el.remove(), 400);
-  // 正回饋音效（視覺震動）
-  const sap = document.querySelector('#dropzone1 svg');
-  sap.classList.add('wiggle');
-  setTimeout(() => sap.classList.remove('wiggle'), 400);
-  smallConfetti();
-  co2Collected++;
-  if (co2Collected >= 3) {
-    document.getElementById('level1-feedback').classList.remove('hide');
-    document.getElementById('level1-next').classList.remove('hide');
-    bigConfetti();
+    for (let i = 1; i <= 3; i++) {
+      const ln = el('line-' + i);
+      if (ln) ln.style.background = (i < S.current) ? '#34d399' : '#e5e7eb';
+    }
   }
-}
 
-// ---------- 關卡 2：樹的禮物 ----------
-(function() {
-  const giftDiv = document.getElementById('gifts');
-  let correctCount = 0;
-  const totalCorrect = document.querySelectorAll('.gift-btn[data-ok="1"]').length;
-  giftDiv.addEventListener('click', e => {
-    const b = e.target.closest('.gift-btn');
-    if (!b || b.disabled) return;
-    const ok = b.dataset.ok === '1';
-    if (ok) {
-      b.classList.add('wiggle');
-      b.style.background = '#d1fae5';
-      b.disabled = true;
-      correctCount++;
-      smallConfetti();
-      if (correctCount >= totalCorrect) {
-        document.getElementById('level2-feedback').textContent = '太棒了！樹朋友給我們好多禮物 💚';
-        document.getElementById('level2-next').classList.remove('hide');
-        bigConfetti();
+  const SCREENS = ['intro','level-1','level-2','level-3','level-final'];
+  window.gotoLevel = function(n) {
+    SCREENS.forEach(s => el(s) && el(s).classList.add('hide'));
+    S.current = n; updateDots();
+    if (n === 0) { el('intro').classList.remove('hide'); el('intro').classList.add('popin'); }
+    else if (n >= 1 && n <= TOTAL_LEVELS) { const sec = el('level-' + n); sec.classList.remove('hide'); sec.classList.add('popin'); }
+    else { el('level-final').classList.remove('hide'); el('level-final').classList.add('popin'); el('final-score').textContent = S.score; confetti(); setTimeout(confetti, 600); }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  function confetti() {
+    const colors = ['#22c55e','#f472b6','#fbbf24','#60a5fa','#f97316','#a78bfa'];
+    for (let i = 0; i < 45; i++) {
+      const c = document.createElement('div'); c.className = 'confetti-piece';
+      c.style.left = (Math.random()*100)+'vw'; c.style.top = '40vh';
+      c.style.background = colors[i%colors.length]; c.style.borderRadius = Math.random()>0.5?'50%':'3px';
+      document.body.appendChild(c);
+      const dx=(Math.random()-0.5)*700,dy=(Math.random()-0.4)*700;
+      c.animate([{transform:'translate(0,0) rotate(0deg)',opacity:1},{transform:`translate(${dx}px,${dy}px) rotate(720deg)`,opacity:0}],{duration:1600,easing:'cubic-bezier(.17,.67,.83,.67)'});
+      setTimeout(()=>c.remove(),1700);
+    }
+  }
+
+  /* Level 1: 拖拉 (30 pts) */
+  const L1_ITEMS = [
+    { id:'sun',   emoji:'☀️', label:'陽光',     zone:'good' },
+    { id:'water', emoji:'🌧️', label:'雨水',     zone:'good' },
+    { id:'axe',   emoji:'🪓', label:'砍樹',     zone:'bad'  },
+    { id:'smog',  emoji:'🏭', label:'空氣污染', zone:'bad'  }
+  ];
+  let l1Correct = 0, dragged1 = null;
+
+  function loadLevel1() {
+    l1Correct = 0; dragged1 = null;
+    el('l1-feedback').classList.add('hide');
+    document.querySelectorAll('#level-1 .dz-placed').forEach(dz => dz.innerHTML = '');
+    const box = el('l1-items'); box.innerHTML = '';
+    L1_ITEMS.slice().sort(() => Math.random()-0.5).forEach(it => {
+      const d = document.createElement('div');
+      d.className = 'drag-item bg-white border-4 border-green-300 rounded-2xl p-4 text-center shadow-md w-32';
+      d.draggable = true; d.dataset.id = it.id; d.dataset.zone = it.zone;
+      d.innerHTML = `<div class="text-5xl">${it.emoji}</div><div class="text-base font-bold text-gray-700 mt-1">${it.label}</div>`;
+      d.addEventListener('dragstart', () => { dragged1 = d; d.classList.add('dragging'); });
+      d.addEventListener('dragend', () => d.classList.remove('dragging'));
+      d.addEventListener('click', () => {
+        if (!d.dataset.zone) return;
+        document.querySelectorAll('#l1-items .drag-item').forEach(x => x.classList.remove('ring-4','ring-green-400'));
+        dragged1 = d; d.classList.add('ring-4','ring-green-400');
+      });
+      box.appendChild(d);
+    });
+    document.querySelectorAll('#level-1 .drop-zone').forEach(zone => {
+      zone.ondragover = e => { e.preventDefault(); zone.classList.add('over'); };
+      zone.ondragleave = () => zone.classList.remove('over');
+      zone.ondrop = e => { e.preventDefault(); zone.classList.remove('over'); handleDrop1(zone); };
+      zone.onclick = () => { if (dragged1) handleDrop1(zone); };
+    });
+  }
+
+  function handleDrop1(zone) {
+    if (!dragged1) return;
+    const fb = el('l1-feedback');
+    const correct = dragged1.dataset.zone === zone.dataset.zone;
+    if (correct) {
+      dragged1.classList.remove('ring-4','ring-green-400','dragging');
+      dragged1.classList.add('popin'); dragged1.style.cursor = 'default';
+      dragged1.draggable = false; delete dragged1.dataset.zone;
+      zone.querySelector('.dz-placed').appendChild(dragged1);
+      l1Correct++;
+      fb.classList.remove('hide');
+      fb.textContent = `✨ 放對了！（${l1Correct}/${L1_ITEMS.length}）`;
+      fb.className = 'text-xl text-center font-bold mt-4 text-green-500';
+      if (l1Correct === L1_ITEMS.length) {
+        awardOnce('L1', 30);
+        fb.textContent = '🎉 全部放對了！綠綠好開心！';
+        fb.className = 'text-2xl text-center font-bold mt-4 text-green-500 popin';
+        confetti(); setTimeout(() => gotoLevel(2), 2000);
       }
     } else {
-      b.classList.add('wiggle');
-      document.getElementById('level2-feedback').textContent = '再試試看～那個不是樹給的喔 😊';
-      setTimeout(() => { b.classList.remove('wiggle'); }, 500);
+      dragged1.classList.add('wiggle');
+      setTimeout(() => { if(dragged1) dragged1.classList.remove('wiggle'); }, 400);
+      fb.classList.remove('hide'); fb.textContent = '😊 不對喔！再試試！';
+      fb.className = 'text-xl text-center font-bold mt-4 text-orange-500';
     }
-  });
-})();
-
-// ---------- 關卡 3：愛地球行為 ----------
-(function() {
-  const actDiv = document.getElementById('actions');
-  let correctCount = 0;
-  const totalCorrect = document.querySelectorAll('.act-btn[data-ok="1"]').length;
-  actDiv.addEventListener('click', e => {
-    const b = e.target.closest('.act-btn');
-    if (!b || b.disabled) return;
-    const ok = b.dataset.ok === '1';
-    if (ok) {
-      b.classList.add('wiggle');
-      b.style.background = '#fef9c3';
-      b.disabled = true;
-      correctCount++;
-      smallConfetti();
-      if (correctCount >= totalCorrect) {
-        document.getElementById('level3-feedback').textContent = '你真的是地球小英雄！🌍💚';
-        document.getElementById('level3-next').classList.remove('hide');
-        bigConfetti();
-      }
-    } else {
-      b.classList.add('wiggle');
-      document.getElementById('level3-feedback').textContent = '嗯～那個會讓地球不舒服，再想想 🌏';
-      setTimeout(() => { b.classList.remove('wiggle'); }, 500);
-    }
-  });
-})();
-
-// ---------- 彩帶 ----------
-function smallConfetti() {
-  const colors = ['#fbbf24','#22c55e','#38bdf8','#f472b6','#a78bfa'];
-  for (let i = 0; i < 12; i++) {
-    const c = document.createElement('div');
-    c.className = 'confetti';
-    c.style.background = colors[i % colors.length];
-    c.style.left = (window.innerWidth/2 + (Math.random()-0.5)*120) + 'px';
-    c.style.top = (window.innerHeight/2) + 'px';
-    document.body.appendChild(c);
-    const dx = (Math.random()-0.5)*400;
-    const dy = -Math.random()*300 - 100;
-    c.animate([
-      {transform:'translate(0,0) rotate(0)', opacity:1},
-      {transform:`translate(${dx}px, ${dy + 300}px) rotate(${Math.random()*720}deg)`, opacity:0}
-    ], {duration: 1200, easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish = () => c.remove();
+    dragged1 = null;
   }
-}
-function bigConfetti() {
-  const colors = ['#fbbf24','#22c55e','#38bdf8','#f472b6','#a78bfa','#fb7185'];
-  for (let i = 0; i < 60; i++) {
-    const c = document.createElement('div');
-    c.className = 'confetti';
-    c.style.background = colors[i % colors.length];
-    c.style.left = (Math.random()*window.innerWidth) + 'px';
-    c.style.top = '-20px';
-    document.body.appendChild(c);
-    c.animate([
-      {transform:'translateY(0) rotate(0)', opacity:1},
-      {transform:`translateY(${window.innerHeight+40}px) rotate(${Math.random()*720}deg)`, opacity:0.6}
-    ], {duration: 2000 + Math.random()*1500, easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish = () => c.remove();
-  }
-}
 
-// 初始
-renderProgress(0);
+  /* Level 2: 選一選 (30 pts) */
+  const L2_CORRECT = { 1: 'air', 2: 'cool', 3: 'bird' };
+  let l2Answered = 0;
+
+  window.l2Pick = function(qNum, btn) {
+    const opts = btn.closest('div[id$="-opts"], div.grid').querySelectorAll('button');
+    if (Array.from(opts).some(b => b.style.pointerEvents === 'none')) return;
+    const correct = btn.dataset.val === L2_CORRECT[qNum];
+    const fb = el('l2-q' + qNum + '-fb');
+    fb.classList.remove('hide');
+    fb.textContent = correct ? '🎉 答對啦！真厲害！' : '😊 哎呀！再想想～';
+    fb.className = correct ? 'text-2xl text-center font-bold mt-3 text-green-500 popin' : 'text-2xl text-center font-bold mt-3 text-orange-500';
+    opts.forEach(b => b.style.pointerEvents = 'none');
+    btn.style.border = correct ? '4px solid #34d399' : '4px solid #f87171';
+    btn.style.background = correct ? '#d1fae5' : '#fee2e2';
+    if (correct) awardOnce('L2-q' + qNum, 10);
+    l2Answered++;
+    const delay = 1200;
+    if (qNum === 1) setTimeout(() => { el('l2-q2-wrap').classList.remove('hide'); el('l2-q2-wrap').classList.add('popin'); }, delay);
+    else if (qNum === 2) setTimeout(() => { el('l2-q3-wrap').classList.remove('hide'); el('l2-q3-wrap').classList.add('popin'); }, delay);
+    else if (qNum === 3) setTimeout(() => gotoLevel(3), delay + 600);
+  };
+
+  function resetLevel2() {
+    l2Answered = 0;
+    ['l2-q2-wrap','l2-q3-wrap'].forEach(id => { el(id).classList.add('hide'); el(id).classList.remove('popin'); });
+    ['l2-q1-fb','l2-q2-fb','l2-q3-fb'].forEach(id => el(id).classList.add('hide'));
+    document.querySelectorAll('#level-2 button.promise-card').forEach(b => { b.style.pointerEvents=''; b.style.border=''; b.style.background=''; });
+  }
+
+  /* Level 3: 承諾 (15 pts) */
+  const l3Chosen = new Set();
+  window.l3Toggle = function(btn) {
+    if (btn.disabled) return;
+    const id = btn.dataset.id;
+    if (l3Chosen.has(id)) { l3Chosen.delete(id); btn.classList.remove('chosen'); }
+    else { l3Chosen.add(id); btn.classList.add('chosen'); }
+    el('l3-count').textContent = l3Chosen.size;
+    el('l3-submit-btn').disabled = l3Chosen.size < 2;
+    el('l3-feedback').classList.add('hide');
+  };
+  window.l3Submit = function() {
+    if (l3Chosen.size < 2) return;
+    awardOnce('L3', 15);
+    const fb = el('l3-feedback'); fb.classList.remove('hide');
+    fb.textContent = '🎉 綠綠謝謝你！你做得到！';
+    fb.className = 'text-2xl text-center font-bold mt-2 text-green-500 popin';
+    confetti();
+    document.querySelectorAll('#l3-promises button').forEach(b => b.disabled = true);
+    el('l3-submit-btn').disabled = true;
+    setTimeout(() => gotoLevel(TOTAL_LEVELS + 1), 2000);
+  };
+  function resetLevel3() {
+    l3Chosen.clear(); el('l3-count').textContent = '0';
+    el('l3-feedback').classList.add('hide'); el('l3-submit-btn').disabled = true;
+    document.querySelectorAll('#l3-promises button').forEach(b => { b.classList.remove('chosen'); b.disabled = false; });
+  }
+
+  /* Final: 笑臉 (5 pts) */
+  let smileyPicked = false, favPicked = false;
+  window.rateSmiley = function(val) {
+    ['sm-1','sm-2','sm-3'].forEach((id,i) => { el(id).style.opacity=(i+1<=val)?'1':'0.35'; el(id).style.transform=(i+1===val)?'scale(1.3)':''; });
+    const msgs=['😞 沒關係，下次再來！','😊 謝謝你的回覆！','🤩 哇，綠綠好高興！'];
+    const fb=el('smiley-fb'); fb.classList.remove('hide'); fb.textContent=msgs[val-1];
+    smileyPicked=true; checkFinalDone();
+  };
+  window.pickFav = function(btn) {
+    document.querySelectorAll('#fav-opts button').forEach(b => b.classList.remove('chosen'));
+    btn.classList.add('chosen'); el('fav-fb').classList.remove('hide'); el('fav-fb').textContent='✨ 記下來了！';
+    favPicked=true; checkFinalDone();
+  };
+  function checkFinalDone() {
+    if (smileyPicked && favPicked) { awardOnce('FINAL',5); el('final-score').textContent=S.score; el('score-display').textContent=S.score; }
+  }
+
+  const _orig = window.gotoLevel;
+  window.gotoLevel = function(n) {
+    if (n===1) loadLevel1(); if (n===2) resetLevel2(); if (n===3) resetLevel3();
+    _orig(n);
+  };
+
+  gotoLevel(0);
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

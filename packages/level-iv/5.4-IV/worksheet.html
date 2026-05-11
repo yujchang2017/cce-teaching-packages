@@ -2,224 +2,723 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>5.4-IV 能源消耗和碳排放 — 學習單（國中 13-15 歲）</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>能源碳排偵查員 | 5.4-IV 國中互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; max-width: 900px; margin: 20px auto; padding: 0 16px; color: #222; line-height: 1.7; }
-  h1 { color: #0b5394; border-bottom: 3px solid #0b5394; padding-bottom: 8px; }
-  h2 { color: #1155cc; margin-top: 28px; border-left: 6px solid #1155cc; padding-left: 10px; }
-  h3 { color: #333; }
-  .meta { background: #f0f4fa; padding: 10px 14px; border-radius: 6px; font-size: 0.95em; }
-  .box { border: 1px solid #bbb; border-radius: 6px; padding: 14px; margin: 14px 0; background: #fbfbfd; }
-  .depth { background: #fff4e5; border-left: 5px solid #ff9800; }
-  .basic { background: #e8f5e9; border-left: 5px solid #4caf50; }
-  .project { background: #e3f2fd; border-left: 5px solid #1976d2; }
-  .answer-line { border-bottom: 1px dashed #888; display: inline-block; min-width: 200px; height: 1.5em; }
-  table { border-collapse: collapse; width: 100%; margin: 10px 0; }
-  th, td { border: 1px solid #aaa; padding: 8px; text-align: left; vertical-align: top; }
-  th { background: #e8eef8; }
-  ul.checklist { list-style: none; padding-left: 0; }
-  ul.checklist li::before { content: "☐ "; margin-right: 4px; }
-  .tag { display: inline-block; padding: 2px 8px; background: #0b5394; color: white; border-radius: 10px; font-size: 0.8em; margin-right: 6px; }
-  .cer { background: #fff8e1; padding: 10px; border-radius: 4px; margin: 6px 0; }
-  footer { margin-top: 40px; font-size: 0.85em; color: #666; border-top: 1px solid #ccc; padding-top: 10px; }
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#e0f2fe,#fef3c7,#ede9fe); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:90px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#0b5394; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  svg.loop text { font-size:11px; pointer-events:none;}
+  svg.loop .loop-slot { cursor: pointer; }
+  svg.loop .loop-slot.over { fill:#fde68a; stroke-width:3; }
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.92rem;}
+  .opt:hover { background:#f8fafc; }
+  .opt.sel { border-color:#0b5394; background:#dbeafe;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.4rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
+<div class="max-w-4xl mx-auto">
 
-<h1>5.4-IV 能源消耗和碳排放 — 學習單</h1>
-
-<div class="meta">
-<strong>姓名</strong>：<span class="answer-line"></span>　　<strong>班級座號</strong>：<span class="answer-line" style="min-width:120px"></span>　　<strong>日期</strong>：<span class="answer-line" style="min-width:120px"></span><br>
-<strong>年段</strong>：13-15 歲（國中）　　<strong>對應 LO</strong>：1248-1260（共 13 條）　　<strong>資料驗證日</strong>：2026-04-16
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-blue-900">⚡ 能源碳排偵查員</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『能源政策分析師』：5 個任務，破解能源消耗與碳排放的關聯密碼。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">分析師積分</div>
+    <div class="text-2xl font-bold text-blue-700"><span id="score">0</span> / 80</div>
+  </div>
 </div>
 
-<h2>A. 基礎層｜認知打底（6 題，對應 LO1248, 1249, 1253, 1254）</h2>
-
-<div class="box basic">
-<h3>A1. 概念配對（選擇題）</h3>
-<ol>
-<li>2023 年全球一次能源需求首次突破多少 EJ？（A）420　（B）520　（C）<u>620</u>　（D）720</li>
-<li>化石燃料目前佔全球一次能源約多少％？（A）20%　（B）50%　（C）<u>80%</u>　（D）95%</li>
-<li>2023 全球再生能源新增裝置容量約多少 GW？（A）147　（B）<u>473</u>　（C）1,200　（D）3,870</li>
-<li>太陽光電 2010-2023 年 LCOE（均化成本）下降約多少？（A）30%　（B）60%　（C）<u>89%</u>　（D）100%</li>
-</ol>
-
-<h3>A2. 詞彙速配（連連看）</h3>
-<table>
-<tr><th>名詞</th><th>定義（填代號）</th></tr>
-<tr><td>① 一次能源</td><td>（　）將電廠所有成本平均分攤到每度電的指標</td></tr>
-<tr><td>② LCOE</td><td>（　）實際發電量 ÷（裝置容量 × 8760 h）</td></tr>
-<tr><td>③ 容量因子</td><td>（　）自然界中未加工的能源形式</td></tr>
-<tr><td>④ 後碳經濟</td><td>（　）生產與消費不再依賴化石燃料的經濟體</td></tr>
-</table>
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">配對</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">資料</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">論證</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">專題</span>
 </div>
 
-<h2>B. 資料詮釋題（對應 <span class="tag">深度 1／資料詮釋</span> LO1248, 1253）</h2>
+<!-- ===== T1: 能源種類配對（去直覺化 + 洗牌） ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔋</div>
+    <div>
+      <h2 class="text-xl font-bold text-blue-900">任務 1｜能源特性配對</h2>
+      <p class="text-sm text-slate-700 mt-1">把四種「能源類型」拖到正確的描述區。提示以技術特性呈現，請依能源轉換原理與排放特性推論，不要只憑直覺配對名稱。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：能源政策分析實習生 ｜ 10 分</p>
+    </div>
+  </div>
 
-<div class="box depth">
-<h3>B1. 並置兩張圖的矛盾</h3>
-<p><strong>情境</strong>：下列為兩個同年度（2023）的全球統計。</p>
-<ul>
-<li>圖甲：全球再生能源新增裝置容量 473 GW（史上最大年增）。</li>
-<li>圖乙：全球化石燃料 CO₂ 排放 37.4 億噸（仍比 2022 增加 0.8%，再創新高）。</li>
-</ul>
-<p>請回答：</p>
-<ol>
-<li>這兩張圖看起來矛盾嗎？你的第一印象是什麼？</li>
-<li>這兩件事「可以同時為真」的合理解釋是什麼？（請至少給 2 個原因）</li>
-<li>如果你只有一張圖可以放在校園海報上呼籲大家關注氣候，你會選哪一張？為什麼？（請從『傳達訊息』與『避免誤解』兩個角度說明）</li>
-</ol>
-<p>作答：<br><span class="answer-line" style="min-width:100%; display:block; height:3em"></span><span class="answer-line" style="min-width:100%; display:block; height:3em"></span><span class="answer-line" style="min-width:100%; display:block; height:3em"></span></p>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-blue-100 border-2 border-blue-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="solar">太陽光電</div>
+    <div class="drag-item bg-blue-100 border-2 border-blue-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="coal">燃煤發電</div>
+    <div class="drag-item bg-blue-100 border-2 border-blue-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="nuclear">核能發電</div>
+    <div class="drag-item bg-blue-100 border-2 border-blue-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="wind">離岸風電</div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="zones-box-1">
+    <div class="drop-zone p-3" data-accept="solar"><div class="font-bold text-slate-700 text-sm">特性 A<div class="text-xs text-slate-500 mt-1">均化發電成本（LCOE）2010-2023 年下降約 89%，現為最便宜的新能源之一；裝置後幾乎零碳排；缺點是間歇性，需搭配儲能或調度系統。</div></div></div>
+    <div class="drop-zone p-3" data-accept="coal"><div class="font-bold text-slate-700 text-sm">特性 B<div class="text-xs text-slate-500 mt-1">每度電碳排約 820 gCO₂e，是所有電源中最高；化石燃料燃燒同時釋放 SO₂、NOₓ、PM2.5；全球仍供應約 36% 電力，主因是燃料便宜且可穩定供電。</div></div></div>
+    <div class="drop-zone p-3" data-accept="nuclear"><div class="font-bold text-slate-700 text-sm">特性 C<div class="text-xs text-slate-500 mt-1">每度電全生命週期碳排約 12 gCO₂e，與風電相當；可 24 小時穩定輸出（基載電力）；爭議在於核廢料長期儲存風險與建設成本高。</div></div></div>
+    <div class="drop-zone p-3" data-accept="wind"><div class="font-bold text-slate-700 text-sm">特性 D<div class="text-xs text-slate-500 mt-1">設置於海上，風速穩定、容量因子可達 40-50%；臺灣 2023 年累積裝置容量達 2.25 GW，是亞洲最大離岸風電市場之一；每度電碳排約 12-14 gCO₂e。</div></div></div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <div class="nav-row">
+    <span></span>
+    <button id="btn-next-1" class="btn bg-blue-800 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T2: 資料詮釋 能源-排放矛盾 ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📊</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 2｜資料詮釋：再生能源成長 vs 碳排創新高的矛盾</h2>
+      <p class="text-sm text-slate-700 mt-1">2023 年全球再生能源新增裝置容量 473 GW（史上最大），但全球化石燃料 CO₂ 排放 374 億噸仍較 2022 年增加 0.8%。請解讀並作答。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：能源數據分析師 ｜ 15 分 ｜ <span class="chip bg-teal-100 text-teal-800">資料詮釋題</span></p>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 gap-3 max-w-xl mx-auto mb-4">
+    <div class="bg-green-50 rounded-lg p-3 text-center">
+      <div class="text-2xl font-bold text-green-700">473 GW</div>
+      <div class="text-xs text-slate-600 mt-1">2023 年再生能源新增裝置容量（史上最大）</div>
+      <div class="text-xs text-green-600 font-semibold mt-1">↑ 風電+太陽能主力</div>
+    </div>
+    <div class="bg-red-50 rounded-lg p-3 text-center">
+      <div class="text-2xl font-bold text-red-700">374 億噸</div>
+      <div class="text-xs text-slate-600 mt-1">2023 年全球 CO₂ 排放（再創新高）</div>
+      <div class="text-xs text-red-600 font-semibold mt-1">↑ +0.8% vs 2022</div>
+    </div>
+  </div>
+
+  <div class="mt-4 space-y-4">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q2-1｜再生能源大增，但碳排仍創新高。下列哪個解釋最合理？（5 分）</label>
+      <div class="space-y-1" id="q21">
+        <label class="block text-sm"><input type="radio" name="q21" value="A"> A. 再生能源統計數字是假的，根本沒有大幅增加</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="B"> B. 再生能源新增速度仍落後於全球能源需求增長速度，化石燃料總量仍在擴張</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="C"> C. 風電和太陽能其實也會排放大量 CO₂，所以數字才會這樣</label>
+      </div>
+      <p class="text-xs mt-1 text-slate-500 q21-fb"></p>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q2-2｜要讓再生能源真正取代化石燃料，<strong>勾選 2 項</strong>最關鍵的條件：（10 分）</label>
+      <div id="q22-opts" class="space-y-1">
+        <label class="opt"><input type="checkbox" data-correct="1"> A. 同步淘汰化石燃料，而非只是「加法」增加再生能源裝置</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> B. 每個家庭都要自己安裝太陽能板才能達成目標</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> C. 建立足夠的電網儲能與調度基礎設施，讓間歇性再生能源穩定供電</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> D. 等待技術完全成熟後再大規模部署，避免浪費資源</label>
+      </div>
+      <p id="q22-fb" class="text-xs mt-2"></p>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="1">← 上一步</button>
+    <button id="btn-next-2" class="btn bg-blue-800 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T3: 系統思考 能源-碳排-傑文斯悖論 ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-700">任務 3｜系統思考：傑文斯悖論反饋迴路</h2>
+      <p class="text-sm text-slate-700 mt-1">完成「能源效率提升 → 單位成本下降 → 能源使用量增加 → 總排放未降反升 → 效率提升的減排效果被抵銷」的正反饋循環。把 4 張卡片拖到正確位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：能源系統分析師 ｜ 15 分 ｜ <span class="chip bg-rose-100 text-rose-800">系統思考題</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 500 260" class="loop w-full bg-slate-50 rounded">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L0,10 L10,5 z" fill="#64748b"/></marker>
+    </defs>
+    <rect x="10" y="10" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="1"/>
+    <text x="85" y="40" text-anchor="middle" fill="#92400e" id="slot-1-text">（拖這裡）</text>
+    <rect x="340" y="10" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="2"/>
+    <text x="415" y="40" text-anchor="middle" fill="#92400e" id="slot-2-text">（拖這裡）</text>
+    <rect x="340" y="200" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="3"/>
+    <text x="415" y="230" text-anchor="middle" fill="#92400e" id="slot-3-text">（拖這裡）</text>
+    <rect x="10" y="200" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="4"/>
+    <text x="85" y="230" text-anchor="middle" fill="#92400e" id="slot-4-text">（拖這裡）</text>
+    <line x1="160" y1="35" x2="340" y2="35" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="415" y1="60" x2="415" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="340" y1="225" x2="160" y2="225" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="85" y1="200" x2="85" y2="60" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="250" y="130" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="bold">正反饋（+）</text>
+  </svg>
+  <p class="text-xs text-slate-500 mt-2 text-center">提示：傑文斯悖論說的是——效率提升讓能源「更便宜」後，人們用得更多。哪一張是技術起點，哪一張是讓消費再回頭增加的行為？</p>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3" id="loop-items">
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">能源消費總量增加、碳排未降</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">能源效率技術突破（如 LED、電動車）</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">技術門檻更低、效率競賽持續推進</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">單位能源成本下降、使用更普及</div>
+  </div>
+  <p id="loop-fb" class="mt-3 text-sm"></p>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="2">← 上一步</button>
+    <button id="btn-next-3" class="btn bg-blue-800 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T4: CER（含倫理主題） ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">✍️</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-700">任務 4｜CER 論證 Flash Card</h2>
+      <p class="text-sm text-slate-700 mt-1">議題（含倫理）：<strong>「再生能源大幅擴張，但碳排仍創新高。政府應優先加速再生能源部署、強制淘汰化石燃料，還是先解決能源貧窮？」</strong>三步驟組裝你的論證卡。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：能源政策倡議師 ｜ 20 分 ｜ <span class="chip bg-emerald-100 text-emerald-800">論證 + 倫理</span></p>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <p class="font-semibold text-sm mb-1">① 選擇你的主張 Claim（4 分）</p>
+    <div id="claim-opts">
+      <label class="opt"><input type="radio" name="claim" value="phase"> A. 應設定化石燃料淘汰時程，要求電廠在 2035 年前全面轉型，不能只靠「加法」增加再生能源。</label>
+      <label class="opt"><input type="radio" name="claim" value="storage"> B. 應優先投資電網儲能與智慧電網基礎設施，讓現有再生能源裝置容量能被充分利用。</label>
+      <label class="opt"><input type="radio" name="claim" value="equity"> C. 應先解決能源貧窮問題，讓所有人都能負擔電費，再推動再生能源轉型，兼顧公正轉型。</label>
+    </div>
+  </div>
+
+  <div id="evid-wrap" class="mb-3 hidden">
+    <p class="font-semibold text-sm mb-1">② 為你的主張挑出最有力的證據 Evidence（8 分）</p>
+    <div id="evid-opts"></div>
+    <p id="evid-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div id="reas-wrap" class="mb-3 hidden">
+    <p class="font-semibold text-sm mb-1">③ 為你的主張挑出最相符的推理 Reasoning（8 分）</p>
+    <div id="reas-opts"></div>
+    <p id="reas-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div id="cer-summary" class="bg-emerald-50 p-3 rounded text-sm hidden">
+    <p class="font-bold text-emerald-800 mb-1">✅ 你的 CER 卡完成：</p>
+    <p><strong>Claim：</strong><span id="sum-c"></span></p>
+    <p><strong>Evidence：</strong><span id="sum-e"></span></p>
+    <p><strong>Reasoning：</strong><span id="sum-r"></span></p>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="3">← 上一步</button>
+    <button id="btn-next-4" class="btn bg-blue-800 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T5: 校園節能提案 ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏫</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 5｜校園能源行動提案</h2>
+      <p class="text-sm text-slate-700 mt-1">選一個主題，組裝提案，再用 WSA 四面向自我檢核。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生能源行動提案人 ｜ 15 分 ｜ <span class="chip bg-amber-100 text-amber-800">專題式學習</span></p>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <p class="font-semibold text-sm mb-1">① 選擇你的提案主題</p>
+    <div id="proj-opts">
+      <label class="opt"><input type="radio" name="proj" value="solar"> ☀️ 校園太陽能板裝設計畫——自發自用</label>
+      <label class="opt"><input type="radio" name="proj" value="audit"> 📋 校園能源稽核行動——找出耗電黑洞</label>
+      <label class="opt"><input type="radio" name="proj" value="led"> 💡 全校 LED 燈具汰換計畫</label>
+      <label class="opt"><input type="radio" name="proj" value="monitor"> 📱 即時用電監測與資訊公開</label>
+    </div>
+  </div>
+
+  <div id="proj-detail" class="hidden bg-amber-50 p-3 rounded text-sm mb-3">
+    <p class="font-semibold text-amber-800 mb-1">② 預設方案（依主題）</p>
+    <p id="proj-problem" class="mb-1"></p>
+    <p id="proj-steps" class="mb-1"></p>
+    <p class="font-semibold mt-2">③ 挑一個 KPI：</p>
+    <div id="kpi-opts" class="mt-1"></div>
+  </div>
+
+  <div class="bg-indigo-50 p-3 rounded mb-3">
+    <p class="font-bold text-indigo-800 text-sm">🎯 WSA 四面向檢核（全勾才能解鎖下一關）</p>
+    <label class="block mt-1 text-sm"><input type="checkbox" class="wsa"> <strong>治理</strong>：我的提案會送學生議會/班聯會或校務會議</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>課程</strong>：我的提案可以跨科連結（自然/數學/社會/理化）</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>校園營運</strong>：我的提案改變了校園設備採購或能源管理流程</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>社群</strong>：我的提案會擴散到家庭或社區節能行動</label>
+  </div>
+  <p id="p-fb" class="text-xs"></p>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="4">← 上一步</button>
+    <button id="btn-next-5" class="btn bg-blue-800 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== Final + Reflection ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in">
+  <h2 class="text-3xl font-bold text-blue-900 mb-2 text-center">🏆 你完成了！</h2>
+  <p class="text-slate-700 mb-4 text-center">你已完成 5 個任務，從能源特性配對到校園節能提案。最後一站做個快速反思。</p>
+
+  <div class="grid grid-cols-5 gap-2 max-w-2xl mx-auto my-4">
+    <div class="p-2 text-center"><div class="text-3xl">🔋</div><div class="text-xs mt-1">能源配對家</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">📊</div><div class="text-xs mt-1">資料詮釋家</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">🔄</div><div class="text-xs mt-1">系統思考者</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">✍️</div><div class="text-xs mt-1">論證作者</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">🏫</div><div class="text-xs mt-1">行動提案人</div></div>
+  </div>
+
+  <div class="bg-fuchsia-50 rounded-xl p-4 max-w-2xl mx-auto">
+    <p class="font-bold text-fuchsia-800 mb-2">🧠 後設認知反思（5 分）</p>
+    <p class="text-sm font-semibold mt-2">Q1｜上這堂課前，你對能源與碳排放的了解程度：</p>
+    <div id="stars-before" class="mt-1">
+      <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+    </div>
+    <p class="text-sm font-semibold mt-3">Q2｜上完這堂課後，你的理解程度：</p>
+    <div id="stars-after" class="mt-1">
+      <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+    </div>
+    <p class="text-sm font-semibold mt-3">Q3｜對你影響最大的任務：</p>
+    <div id="impact-opts" class="mt-1">
+      <label class="opt"><input type="radio" name="impact" value="1"> 任務 1 能源特性配對</label>
+      <label class="opt"><input type="radio" name="impact" value="2"> 任務 2 再生能源矛盾資料</label>
+      <label class="opt"><input type="radio" name="impact" value="3"> 任務 3 傑文斯悖論迴路</label>
+      <label class="opt"><input type="radio" name="impact" value="4"> 任務 4 CER 論證</label>
+      <label class="opt"><input type="radio" name="impact" value="5"> 任務 5 校園提案</label>
+    </div>
+    <p id="reflect-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div class="mt-6 text-lg font-bold text-blue-700 text-center">最終分析師積分：<span id="final-score">0</span> / 80</div>
+  <div class="nav-row max-w-2xl mx-auto">
+    <button class="btn btn-back" data-back="5">← 回到任務 5</button>
+    <button onclick="location.reload()" class="btn bg-blue-800 text-white px-6 py-2 rounded-lg font-bold">再玩一次</button>
+  </div>
+</section>
+
 </div>
 
-<h2>C. CER 科學論證（對應 <span class="tag">深度 2／CER</span> LO1249, 1250）</h2>
+<script>
+(() => {
+  const TOTAL_LEVELS = 5;
+  const S = { score:0, current:1, awarded:{} };
+  const setScore = (n)=>{ S.score += n; document.getElementById('score').textContent = S.score; };
+  const awardOnce = (key, pts)=>{ if(!S.awarded[key]){ S.awarded[key]=true; setScore(pts); } };
 
-<div class="box depth">
-<h3>C1. 能源消耗與碳排的相關性</h3>
-<p><strong>主張（Claim）</strong>：「提高全球能源消費總量，就會提高全球碳排放總量。」請判斷此主張是否成立，並用資料卡中的數據進行論證。</p>
-<div class="cer">
-<strong>我的主張</strong>：<br>
-□ 完全成立　□ 部分成立（有條件）　□ 不成立<br>
-我的立場是：<br>
-<span class="answer-line" style="min-width:100%; display:block; height:2em"></span>
+  const updateDots = ()=>{
+    for(let i=1;i<=TOTAL_LEVELS;i++){
+      const d = document.getElementById('dot-'+i);
+      if(!d) continue;
+      d.classList.remove('active','done');
+      if(i < S.current) d.classList.add('done');
+      else if(i === S.current) d.classList.add('active');
+    }
+  };
 
-<strong>證據（Evidence）</strong>（至少引用 2 筆數據，標註資料卡 dp 編號）：<br>
-<span class="answer-line" style="min-width:100%; display:block; height:2em"></span>
-<span class="answer-line" style="min-width:100%; display:block; height:2em"></span>
+  const goto = (n)=>{
+    document.querySelectorAll('section[id^="level-"]').forEach(s=>s.classList.add('hidden-screen'));
+    S.current = n;
+    const next = document.getElementById('level-'+n) || document.getElementById('level-final');
+    next.classList.remove('hidden-screen');
+    if(next.id === 'level-final'){
+      for(let i=1;i<=TOTAL_LEVELS;i++){ const d=document.getElementById('dot-'+i); if(d){d.classList.remove('active');d.classList.add('done');} }
+      document.getElementById('final-score').textContent = S.score;
+    } else {
+      updateDots();
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
 
-<strong>推理（Reasoning）</strong>（解釋你的證據如何支持主張，並指出例外條件）：<br>
-<span class="answer-line" style="min-width:100%; display:block; height:2em"></span>
-<span class="answer-line" style="min-width:100%; display:block; height:2em"></span>
-<span class="answer-line" style="min-width:100%; display:block; height:2em"></span>
-</div>
-</div>
+  document.querySelectorAll('.btn-back').forEach(b=>{
+    b.onclick = ()=>goto(parseInt(b.dataset.back,10));
+  });
 
-<h2>D. 系統思考（對應 <span class="tag">深度 3／系統思考</span> LO1250, 1256）</h2>
+  const confetti = ()=>{
+    const colors=['#f59e0b','#10b981','#0b5394','#ec4899','#0ea5e9'];
+    for(let i=0;i<40;i++){
+      const el=document.createElement('div');
+      el.className='confetti';
+      el.style.left=Math.random()*100+'vw';
+      el.style.background=colors[i%colors.length];
+      el.style.animationDelay=(Math.random()*0.6)+'s';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),2500);
+    }
+  };
 
-<div class="box depth">
-<h3>D1. 能源-經濟-排放三角</h3>
-<p>請在下面方框中手繪一張『因果迴圈圖』，包含以下 6 個節點，並用箭頭標出『正向』（+）或『反向』（-）關係：</p>
-<p><strong>節點</strong>：①能源需求　②GDP 成長　③再生能源技術進步　④碳排放　⑤全球暖化　⑥政策減量目標</p>
-<p style="border: 2px dashed #888; min-height: 220px; padding: 10px;">（請在此畫圖）</p>
-<p>畫完後回答：</p>
-<ol>
-<li>你的圖中有幾個『正回饋迴圈』（放大效應）？幾個『負回饋迴圈』（制衡效應）？</li>
-<li>如果要『打斷』不希望看到的迴圈，你會從哪一條線下手？為什麼？（提示：哪一條最容易靠人為介入改變？）</li>
-</ol>
-<p><span class="answer-line" style="min-width:100%; display:block; height:3em"></span><span class="answer-line" style="min-width:100%; display:block; height:3em"></span></p>
-</div>
+  const shuffleChildren = (parent)=>{
+    const kids = Array.from(parent.children);
+    for(let i=kids.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      parent.appendChild(kids[j]);
+    }
+  };
 
-<h2>E. 倫理兩難（對應 <span class="tag">深度 4／倫理兩難</span> LO1256, 1259）</h2>
+  // ===== Task 1: Drag match =====
+  shuffleChildren(document.getElementById('items-box-1'));
+  shuffleChildren(document.getElementById('zones-box-1'));
 
-<div class="box depth">
-<h3>E1. 100 MW 光電場 vs 20 公頃生態林地</h3>
-<p><strong>情境</strong>：南部某山村要蓋一座 100 MW 地面型太陽光電場，預計可供 3 萬戶家庭一年用電、年減 CO₂ 約 15 萬噸。但場址 20 公頃是列為『生態敏感』的次生林，移除將影響當地蛇類與原生植物。地方民眾分為三派：支持（創造就業 + 綠能）、反對（護林）、以及要求『先改屋頂型、工廠屋頂、廢棄魚塭，再談』。</p>
-<p>請完成下表：</p>
-<table>
-<tr><th>立場</th><th>3 個主要論點</th><th>忽略了什麼？</th></tr>
-<tr><td>支持派</td><td><br><br></td><td><br></td></tr>
-<tr><td>反對派</td><td><br><br></td><td><br></td></tr>
-<tr><td>第三路線</td><td><br><br></td><td><br></td></tr>
-</table>
-<p><strong>你的最終選擇</strong>：　□ 支持　□ 反對　□ 第三路線　□ 其他：<span class="answer-line"></span></p>
-<p><strong>一句話理由</strong>：<span class="answer-line" style="min-width:100%; display:block; height:2em"></span></p>
-<p><strong>深度思考</strong>：如果投票的人裡，有人是當地住民、有人是都市用電者、有人是未來世代（尚未出生），他們的『一票』應該等值嗎？為什麼？<br><span class="answer-line" style="min-width:100%; display:block; height:3em"></span></p>
-</div>
+  (function(){
+    let dragged = null, done1 = 0, err1 = 0;
+    document.querySelectorAll('#items-box-1 .drag-item').forEach(it=>{
+      it.addEventListener('dragstart', ()=>{ dragged=it; it.classList.add('dragging'); });
+      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null; });
+    });
+    document.querySelectorAll('#zones-box-1 .drop-zone').forEach(z=>{
+      z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over');});
+      z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+      z.addEventListener('drop', e=>{
+        e.preventDefault(); z.classList.remove('over');
+        if(!dragged) return;
+        if(dragged.dataset.match === z.dataset.accept){
+          dragged.classList.add('pop');
+          z.appendChild(dragged);
+          dragged.setAttribute('draggable','false');
+          dragged.style.cursor='default';
+          done1++;
+          if(done1===4){
+            awardOnce('L1', 10 - Math.min(err1,5));
+            document.getElementById('btn-next-1').disabled=false;
+            document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 全部配對正確！各能源的 LCOE 與碳強度差異顯著，轉型路徑要考量技術特性與系統需求。</span>';
+            confetti();
+          }
+        } else {
+          z.classList.add('shake'); setTimeout(()=>z.classList.remove('shake'),400);
+          err1++;
+          document.getElementById('feedback-1').innerHTML='<span class="text-rose-600">❌ 再想想：哪個能源成本下降最快？哪個碳排最高？哪個能 24 小時穩定供電？</span>';
+        }
+      });
+    });
+  })();
+  document.getElementById('btn-next-1').onclick = ()=>goto(2);
 
-<h2>F. 開放反思 #1（對應 <span class="tag">深度 5a／開放反思</span> LO1251, 1257）</h2>
+  // ===== Task 2: Data interpretation =====
+  const btn2 = document.getElementById('btn-next-2');
+  const checkL2 = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked');
+    const checked = document.querySelectorAll('#q22-opts input:checked');
+    btn2.disabled = !(q21 && checked.length === 2);
+    const fb = document.getElementById('q22-fb');
+    if(checked.length === 2) fb.textContent = '已選 2 項，可以提交。';
+    else if(checked.length > 2) fb.textContent = '⚠️ 只能選 2 項，請再調整。';
+    else fb.textContent = `已選 ${checked.length}/2 項`;
+  };
+  document.querySelectorAll('input[name=q21]').forEach(r=>r.onchange=checkL2);
+  document.querySelectorAll('#q22-opts input').forEach(c=>c.onchange=checkL2);
+  btn2.onclick = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked').value;
+    const fb21 = document.querySelector('.q21-fb');
+    let p = 0;
+    if(q21==='B'){
+      fb21.textContent='✅ 正解 B：再生能源新增速度落後於能源需求增長速度，化石燃料總量仍在擴張。';
+      fb21.className='text-xs mt-1 text-emerald-700 q21-fb'; p+=5;
+    } else {
+      fb21.textContent='❌ 正解為 B。再生能源數據是真實的，風電和太陽能碳排也很低，問題在於化石燃料沒有同步減少。';
+      fb21.className='text-xs mt-1 text-rose-600 q21-fb';
+    }
+    const opts = document.querySelectorAll('#q22-opts input');
+    let correctChecked = 0, wrongChecked = 0;
+    opts.forEach(o=>{
+      const lbl = o.parentElement;
+      lbl.classList.remove('correct','wrong');
+      if(o.checked){
+        if(o.dataset.correct==='1'){ lbl.classList.add('correct'); correctChecked++;}
+        else { lbl.classList.add('wrong'); wrongChecked++;}
+      }
+    });
+    const fb22 = document.getElementById('q22-fb');
+    if(correctChecked===2 && wrongChecked===0){
+      p+=10;
+      fb22.innerHTML='<span class="text-emerald-700 font-bold">✅ 兩項都對！淘汰化石燃料與建立儲能基礎設施是能源轉型的雙重關鍵。</span>';
+    } else if(correctChecked===1 && wrongChecked===0){
+      p+=5;
+      fb22.innerHTML='<span class="text-amber-600">部分正確（1/2）。再選一項關鍵條件。</span>';
+    } else {
+      fb22.innerHTML='<span class="text-rose-600">❌ 正解為 A（同步淘汰化石燃料）與 C（建立儲能基礎設施）。</span>';
+    }
+    awardOnce('L2', p);
+    confetti();
+    goto(3);
+  };
 
-<div class="box depth">
-<h3>F1. 我家最『隱形』的能源浪費</h3>
-<p>走回家做一次 15 分鐘的『能源偵探』：打開所有插座、數電器、觀察哪些在不使用時仍有亮光或散熱（這就是『待機電力』，約佔家庭用電 7-10%）。</p>
-<ol>
-<li>我找到最意外的『吸血鬼負載』是：<span class="answer-line" style="min-width:70%"></span></li>
-<li>我估計它一年消耗：<span class="answer-line" style="min-width:30%"></span> 度電，約花費 <span class="answer-line" style="min-width:20%"></span> 元，排 <span class="answer-line" style="min-width:20%"></span> kg CO₂。（參考：1 度電 ~ 3 元 ~ 0.494 kg CO₂）</li>
-<li>我打算採取的具體行動是：<span class="answer-line" style="min-width:100%; display:block; height:2em"></span></li>
-<li>做這件事時，我最可能遇到的阻力是：<span class="answer-line" style="min-width:100%; display:block; height:2em"></span></li>
-</ol>
-</div>
+  // ===== Task 3: Feedback loop drag =====
+  shuffleChildren(document.getElementById('loop-items'));
+  (function(){
+    let dragged = null, loopCorrect = 0, loopErr = 0;
+    document.querySelectorAll('#loop-items .drag-item').forEach(it=>{
+      it.addEventListener('dragstart', ()=>{ dragged=it; it.classList.add('dragging'); });
+      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null; });
+    });
+    document.querySelectorAll('.loop-slot').forEach(s=>{
+      s.addEventListener('dragenter', e=>{ e.preventDefault(); s.classList.add('over');});
+      s.addEventListener('dragover', e=>{ e.preventDefault(); s.classList.add('over');});
+      s.addEventListener('dragleave', ()=>s.classList.remove('over'));
+      s.addEventListener('drop', e=>{
+        e.preventDefault(); s.classList.remove('over');
+        if(!dragged) return;
+        if(dragged.dataset.loop === s.dataset.slot){
+          const t = document.getElementById('slot-'+s.dataset.slot+'-text');
+          if(t) t.textContent = dragged.textContent;
+          dragged.style.visibility='hidden';
+          loopCorrect++;
+          if(loopCorrect===4){
+            awardOnce('L3', 15 - Math.min(loopErr,5));
+            document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 完成！傑文斯悖論：效率技術突破 → 單位成本下降使用更普及 → 能源消費總量增加碳排未降 → 技術門檻更低效率競賽持續 → 循環加強。</span>';
+            document.getElementById('btn-next-3').disabled=false;
+            confetti();
+          }
+        } else {
+          s.classList.add('shake'); setTimeout(()=>s.classList.remove('shake'),400);
+          loopErr++;
+          document.getElementById('loop-fb').innerHTML='<span class="text-rose-600">❌ 順序錯了。提示：從技術進步出發，最後要回到讓技術競賽繼續的市場條件。</span>';
+        }
+      });
+    });
+  })();
+  document.getElementById('btn-next-3').onclick = ()=>goto(4);
 
-<h2>G. 開放反思 #2（對應 <span class="tag">深度 5b／開放反思</span> LO1258, 1259）</h2>
+  // ===== Task 4: CER Flash Card =====
+  const claimBank = {
+    phase:   '應設定化石燃料淘汰時程，要求電廠在 2035 年前全面轉型，不能只靠「加法」增加再生能源。',
+    storage: '應優先投資電網儲能與智慧電網基礎設施，讓現有再生能源裝置容量能被充分利用。',
+    equity:  '應先解決能源貧窮問題，讓所有人都能負擔電費，再推動再生能源轉型，兼顧公正轉型。'
+  };
+  const evidBank = {
+    phase: [
+      {t:'Carbon Tracker 2023：全球現存化石燃料基礎設施若全部運行至壽命結束，將排放超過 2 倍的 1.5°C 碳預算；IEA 2021 表示不得再批准任何新化石燃料開發計畫才能達成淨零。', ok:true},
+      {t:'化石燃料很髒，應該禁止。', ok:false},
+      {t:'再生能源已經很便宜了。', ok:false},
+    ],
+    storage: [
+      {t:'IEA 2023：全球電池儲能裝置容量需在 2030 年前擴增 6 倍，才能支撐再生能源達到 60% 電力占比；臺灣 2023 年儲能容量僅 0.6 GW，遠低於離岸風電裝置需求的配套量。', ok:true},
+      {t:'儲能很重要。', ok:false},
+      {t:'電網要穩定。', ok:false},
+    ],
+    equity: [
+      {t:'臺灣 2023 年能源貧窮家庭（電費占收入 >10%）估計達 8 萬戶；南非轉型正義研究顯示，若未同步解決能源可負擔性，再生能源轉型成本將由弱勢家庭承擔，加劇不平等。', ok:true},
+      {t:'弱勢家庭需要幫助。', ok:false},
+      {t:'每個人都應該用得起電。', ok:false},
+    ]
+  };
+  const reasBank = {
+    phase: [
+      {t:'若現有化石燃料設施不提前退役，即使大量增加再生能源，碳排仍會持續累積；設定淘汰時程能釋放明確的市場訊號，讓業者提前規劃轉型，避免「擱淺資產」造成更大損失。', ok:true},
+      {t:'化石燃料發電廠應該關掉。', ok:false},
+      {t:'不淘汰就沒有意義。', ok:false},
+    ],
+    storage: [
+      {t:'間歇性再生能源的最大瓶頸在於電網穩定性；若儲能跟不上，再多的太陽能和風電都無法被充分利用，甚至被迫棄電；解決儲能問題能讓已投資的再生能源發揮最大效益。', ok:true},
+      {t:'儲能解決間歇性問題。', ok:false},
+      {t:'電網要能接得住再生能源。', ok:false},
+    ],
+    equity: [
+      {t:'能源轉型若增加電費，對依賴廉價電力的低收入戶衝擊最大；公正轉型要求在減碳的同時確保無人被拋下；先建立弱勢保障機制，才能讓社會支持轉型政策長期持續。', ok:true},
+      {t:'公平很重要。', ok:false},
+      {t:'弱勢家庭不該被犧牲。', ok:false},
+    ]
+  };
 
-<div class="box depth">
-<h3>G1. 文化規範訪談</h3>
-<p>訪問家中一位 40 歲以上成員（家長、祖父母、親戚），用下列問題各提一題，記錄他們的回答與你的反思。</p>
-<table>
-<tr><th>問題</th><th>對方的回答（摘要）</th><th>我的觀察／反思</th></tr>
-<tr><td>你覺得『冷氣開 26°C』合理嗎？為什麼？</td><td><br><br></td><td><br></td></tr>
-<tr><td>如果我們家屋頂可以裝太陽能板，你最擔心什麼？</td><td><br><br></td><td><br></td></tr>
-<tr><td>你覺得「下一代」在能源上會比我們過得好還是差？</td><td><br><br></td><td><br></td></tr>
-</table>
-<p><strong>綜合反思（150 字內）</strong>：這次訪談讓我看見哪些『代間』或『文化』的差異？這些差異可能如何影響臺灣的能源轉型？<br><span class="answer-line" style="min-width:100%; display:block; height:5em"></span></p>
-</div>
+  let chosenClaim = null, chosenEvidOk = false, chosenReasOk = false;
+  const evidWrap = document.getElementById('evid-wrap');
+  const reasWrap = document.getElementById('reas-wrap');
+  const cerSummary = document.getElementById('cer-summary');
+  const btn4 = document.getElementById('btn-next-4');
 
-<h2>H. 後設認知（對應 <span class="tag">深度 6／後設認知</span> 全單元綜整）</h2>
+  const renderOpts = (wrap, items, name, onPick)=>{
+    wrap.innerHTML = '';
+    const shuffled = items.slice().sort(()=>Math.random()-0.5);
+    shuffled.forEach((it)=>{
+      const lbl = document.createElement('label');
+      lbl.className = 'opt';
+      lbl.innerHTML = `<input type="radio" name="${name}"> ${it.t}`;
+      lbl.querySelector('input').onchange = ()=>{
+        wrap.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel','correct','wrong'));
+        lbl.classList.add(it.ok ? 'correct' : 'wrong');
+        onPick(it.ok, it.t);
+      };
+      wrap.appendChild(lbl);
+    });
+  };
 
-<div class="box depth">
-<h3>H1. 學習歷程回顧</h3>
-<p>請完成下列『三欄式後設認知檢查』：</p>
-<table>
-<tr><th>項目</th><th>內容</th></tr>
-<tr><td>我在本單元<strong>最意外</strong>的一個發現是……（並說明為什麼對我而言意外）</td><td><br><br></td></tr>
-<tr><td>我在本單元<strong>仍然不確定</strong>或不懂的概念是……（寫出具體問題）</td><td><br><br></td></tr>
-<tr><td>我打算<strong>改變的一個具體行為</strong>是……（要可觀察、可持續）</td><td><br><br></td></tr>
-<tr><td>我學習這個主題時<strong>最有效的方法</strong>是……（例：看圖表、實地量電表、辯論）</td><td><br><br></td></tr>
-<tr><td>如果重新學一次，我會<strong>怎麼調整策略</strong>？</td><td><br><br></td></tr>
-</table>
-<p><strong>自我評分</strong>（1-5）：我對本單元的掌握程度為 <span class="answer-line" style="min-width:80px"></span>　理由：<span class="answer-line" style="min-width:70%"></span></p>
-</div>
+  document.querySelectorAll('input[name=claim]').forEach(r=>{
+    r.onchange = ()=>{
+      chosenClaim = r.value;
+      document.querySelectorAll('#claim-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      awardOnce('L4-claim', 4);
+      evidWrap.classList.remove('hidden');
+      reasWrap.classList.add('hidden');
+      cerSummary.classList.add('hidden');
+      chosenEvidOk = false; chosenReasOk = false;
+      btn4.disabled = true;
+      let evText = '';
+      renderOpts(document.getElementById('evid-opts'), evidBank[chosenClaim], 'evid', (ok, t)=>{
+        chosenEvidOk = ok;
+        evText = t;
+        document.getElementById('evid-fb').innerHTML = ok
+          ? '<span class="text-emerald-700">✅ 這條證據含具體數據／權威來源，與你的主張一致。</span>'
+          : '<span class="text-rose-600">❌ 這條缺乏數據／與主張關聯弱。再選一次。</span>';
+        if(ok) awardOnce('L4-evid', 8);
+        reasWrap.classList.remove('hidden');
+        renderOpts(document.getElementById('reas-opts'), reasBank[chosenClaim], 'reas', (ok2, t2)=>{
+          chosenReasOk = ok2;
+          document.getElementById('reas-fb').innerHTML = ok2
+            ? '<span class="text-emerald-700">✅ 這條推理確實連結了證據與主張。</span>'
+            : '<span class="text-rose-600">❌ 這條沒有清楚解釋為什麼證據支持主張。再選一次。</span>';
+          if(ok2){
+            awardOnce('L4-reas', 8);
+            document.getElementById('sum-c').textContent = claimBank[chosenClaim];
+            document.getElementById('sum-e').textContent = evText;
+            document.getElementById('sum-r').textContent = t2;
+            cerSummary.classList.remove('hidden');
+            confetti();
+          }
+          btn4.disabled = !(chosenEvidOk && chosenReasOk);
+        });
+        btn4.disabled = !(chosenEvidOk && chosenReasOk);
+      });
+    };
+  });
+  btn4.onclick = ()=>goto(5);
 
-<h2>I. 專題任務｜能源創新地圖（跨節專題，對應 LO1260, 1256, 1259）</h2>
+  // ===== Task 5: 提案菜單 + WSA =====
+  const projBank = {
+    solar: {
+      problem: '現況問題：校舍屋頂閒置，未能利用太陽能發電；學校電費每年支出可觀，且全部來自化石燃料電網。',
+      steps: '行動步驟：① 向縣市政府申請「校園屋頂太陽能」補助方案；② 與廠商進行裝設可行性評估；③ 在電子看板顯示即時發電量與省電數據。',
+      kpis: ['完成裝設可行性報告並提交校務會議', '預估年發電量超過 5,000 度', '裝設後年省電費達 3 萬元以上']
+    },
+    audit: {
+      problem: '現況問題：學校不清楚哪些設備最耗電，無法針對性節能，缺乏用電基礎資料。',
+      steps: '行動步驟：① 組成「能源偵查小組」，逐間教室記錄設備耗電量；② 製作校園耗電地圖；③ 提出前三名耗電黑洞的改善建議報告。',
+      kpis: ['完成全校 100% 教室的能源稽核', '找出 3 個以上用電改善機會', '稽核報告導致至少 1 項設備汰換決策']
+    },
+    led: {
+      problem: '現況問題：部分教室仍使用舊型日光燈，耗電量是 LED 的 2-3 倍，且燈管含汞需特殊處理。',
+      steps: '行動步驟：① 盤查全校日光燈數量；② 申請節能補助進行 LED 汰換；③ 計算汰換後年省電量與碳排減少量並公告。',
+      kpis: ['半年內汰換 80% 以上舊型燈具', '年省電量達 10,000 度以上', '完成 LED 汰換前後碳排比較報告']
+    },
+    monitor: {
+      problem: '現況問題：學校用電數據不透明，師生無法即時了解耗電情況，缺乏節能行動的動力與依據。',
+      steps: '行動步驟：① 申請安裝智慧電表或用電監測系統；② 在公布欄或官網每月公告各樓層用電排行；③ 舉辦「節電班級競賽」並給予獎勵。',
+      kpis: ['建立每月用電公開制度', '競賽期間整體用電降低 10%', '節電冠軍班級用電降幅達 20%']
+    }
+  };
 
-<div class="box project">
-<h3>I1. 任務說明</h3>
-<p>以 3-4 人為一組，選定一個範圍（自家社區／學校所在行政區／整個臺灣），盤點 <strong>3 項能源創新</strong>，可以是：技術（光電、風電、儲能、氫能）、商業模式（社區共享、綠電憑證、虛擬電廠）、或政策（時間電價、建築能效標章、綠色金融）。</p>
+  const projDetail = document.getElementById('proj-detail');
+  let kpiPicked = false, projPicked = null;
+  document.querySelectorAll('input[name=proj]').forEach(r=>{
+    r.onchange = ()=>{
+      projPicked = r.value;
+      document.querySelectorAll('#proj-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      const d = projBank[projPicked];
+      document.getElementById('proj-problem').textContent = d.problem;
+      document.getElementById('proj-steps').textContent = d.steps;
+      const kpiBox = document.getElementById('kpi-opts');
+      kpiBox.innerHTML = '';
+      kpiPicked = false;
+      d.kpis.forEach((k)=>{
+        const lbl = document.createElement('label');
+        lbl.className='opt';
+        lbl.innerHTML = `<input type="radio" name="kpi"> ${k}`;
+        lbl.querySelector('input').onchange = ()=>{
+          document.querySelectorAll('#kpi-opts .opt').forEach(o=>o.classList.remove('sel'));
+          lbl.classList.add('sel');
+          kpiPicked = true;
+          checkP();
+        };
+        kpiBox.appendChild(lbl);
+      });
+      projDetail.classList.remove('hidden');
+      checkP();
+    };
+  });
 
-<h3>I2. 專題工作分配表</h3>
-<table>
-<tr><th>組員</th><th>負責項目</th><th>資料來源／聯絡對象</th><th>截稿日</th></tr>
-<tr><td><br></td><td><br></td><td><br></td><td><br></td></tr>
-<tr><td><br></td><td><br></td><td><br></td><td><br></td></tr>
-<tr><td><br></td><td><br></td><td><br></td><td><br></td></tr>
-<tr><td><br></td><td><br></td><td><br></td><td><br></td></tr>
-</table>
+  const btn5 = document.getElementById('btn-next-5');
+  function checkP(){
+    const wsaAll = document.querySelectorAll('.wsa:checked').length === 4;
+    const ok = projPicked && kpiPicked && wsaAll;
+    document.getElementById('p-fb').innerHTML = ok
+      ? '<span class="text-emerald-700 font-bold">✅ 提案組裝完成、WSA 四面向全勾！</span>'
+      : '<span class="text-slate-500">請：選主題 → 選 KPI → 勾 WSA 四面向</span>';
+    btn5.disabled = !ok;
+  }
+  document.querySelectorAll('.wsa').forEach(c=>c.onchange=checkP);
+  btn5.onclick = ()=>{ awardOnce('L5', 15); confetti(); goto(6); };
 
-<h3>I3. 三項創新摘要</h3>
-<table>
-<tr><th></th><th>創新 1</th><th>創新 2</th><th>創新 3</th></tr>
-<tr><td>名稱與類型</td><td></td><td></td><td></td></tr>
-<tr><td>技術原理（1 句話）</td><td></td><td></td><td></td></tr>
-<tr><td>預期效益（減排／服務人口）</td><td></td><td></td><td></td></tr>
-<tr><td>主要阻礙／挑戰</td><td></td><td></td><td></td></tr>
-<tr><td>我給的 1 個問題</td><td></td><td></td><td></td></tr>
-</table>
+  // ===== Final reflection =====
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+  const setStars = (wrapId, set)=>{
+    const wrap = document.getElementById(wrapId);
+    wrap.querySelectorAll('.star').forEach(s=>{
+      s.onclick = ()=>{
+        const v = parseInt(s.dataset.val,10);
+        set(v);
+        wrap.querySelectorAll('.star').forEach(x=>{
+          x.classList.toggle('on', parseInt(x.dataset.val,10) <= v);
+        });
+        checkReflect();
+      };
+    });
+  };
+  setStars('stars-before', v=>starBefore=v);
+  setStars('stars-after', v=>starAfter=v);
+  document.querySelectorAll('input[name=impact]').forEach(r=>{
+    r.onchange = ()=>{
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+  function checkReflect(){
+    const ok = starBefore>0 && starAfter>0 && impactPicked;
+    document.getElementById('reflect-fb').textContent = ok
+      ? '✅ 反思完成，獲得 5 分。'
+      : '請完成 3 題（前/後理解程度 + 影響最大任務）';
+    if(ok){
+      awardOnce('FINAL', 5);
+      document.getElementById('final-score').textContent = S.score;
+    }
+  }
+})();
+</script>
 
-<h3>I4. 班級能源轉型宣言 — 我的提案</h3>
-<ul class="checklist">
-<li>個人行動 #1：<span class="answer-line" style="min-width:70%"></span></li>
-<li>個人行動 #2：<span class="answer-line" style="min-width:70%"></span></li>
-<li>個人行動 #3：<span class="answer-line" style="min-width:70%"></span></li>
-<li>家庭行動 #1：<span class="answer-line" style="min-width:70%"></span></li>
-<li>家庭行動 #2：<span class="answer-line" style="min-width:70%"></span></li>
-<li>給學校或社區的 1 項建議：<span class="answer-line" style="min-width:70%"></span></li>
-</ul>
-<p><strong>我願意擔任</strong>：　□ 節能長　□ 資料彙整員　□ 學生會提案代表　□ 社區連絡人　□ 其他：<span class="answer-line"></span></p>
-</div>
-
-<h2>J. 延伸挑戰（選做，給學有餘力的同學）</h2>
-
-<div class="box">
-<ol>
-<li><strong>EN-ROADS 模擬</strong>：上 https://en-roads.climateinteractive.org/ 當一次『全球決策者』，調整政策滑桿試著把 2100 升溫拉回 1.5°C。記錄你用了哪 3 個主要策略。</li>
-<li><strong>電表追蹤</strong>：連續 4 週記錄家中電表每週讀數，畫成折線圖；分析是否有因改變行為而下降。</li>
-<li><strong>數字挑戰</strong>：查詢你家鄉的一座再生能源電廠（風機或光電廠），估算它一年發多少度、服務多少戶、取代多少煤。</li>
-<li><strong>批判閱讀</strong>：找一則最近的『綠電爭議』新聞，用 LO1256 的批判性理解框架拆解其中的利害關係人。</li>
-</ol>
-</div>
-
-<footer>
-資料依據：資料卡 5.4-IV（2026-04-16 驗證）。LO 13 條全覆蓋。深度題型 ≥6（資料詮釋、CER、系統思考、倫理兩難、開放反思×2、後設認知）+ 專題任務。WSA 整合：校園（節能長）× 社區（訪談、地圖）× 治理（提案代表）。
-</footer>
-
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
+</script>
 </body>
 </html>

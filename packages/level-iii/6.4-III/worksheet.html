@@ -1,278 +1,612 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>6.4-III 永續的生活空間｜EEWH 超級改造王</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>空間設計師阿築的一天 | 互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body{font-family:"Noto Sans TC","PingFang TC",system-ui,sans-serif;background:linear-gradient(135deg,#d1fae5 0%,#fef3c7 50%,#e0e7ff 100%);}
-  .badge-glow{animation:pulse 1.8s infinite}
-  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.7)}50%{box-shadow:0 0 0 18px rgba(16,185,129,0)}}
-  .shake{animation:shake .4s}
-  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-  .pop{animation:pop .35s}
-  @keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
-  .confetti{position:fixed;width:10px;height:16px;top:-20px;opacity:.9;pointer-events:none;z-index:9999;animation:fall 2.5s linear forwards}
-  @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
-  .dot{width:14px;height:14px;border-radius:50%;background:#d1d5db;display:inline-block;margin:0 4px;transition:all .3s}
-  .dot.active{background:#10b981;transform:scale(1.35)}
-  .stage{display:none}.stage.active{display:block}
-  .opt{transition:all .2s}.opt:hover{transform:translateY(-3px)}
-  .correct{background:#d1fae5!important;border-color:#10b981!important}
-  .wrong{background:#fee2e2!important;border-color:#ef4444!important}
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#d1fae5,#bbf7d0,#a5f3fc); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:110px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#059669; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.95rem;}
+  .opt:hover { background:#f0fdf4; }
+  .opt.sel { border-color:#059669; background:#d1fae5;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.5rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#059669;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
-<body class="min-h-screen py-8">
-<div class="max-w-5xl mx-auto px-4">
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 
-<header class="bg-white/80 backdrop-blur rounded-3xl shadow-xl p-6 mb-6 border-4 border-emerald-300">
-  <div class="flex items-center justify-between flex-wrap gap-3">
+<div class="max-w-3xl mx-auto">
+
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
     <div>
-      <h1 class="text-3xl md:text-4xl font-extrabold text-emerald-700">🏡 EEWH 超級改造王</h1>
-      <p class="text-gray-600 mt-1">UNESCO 6.4-III · 永續的生活空間 · 9-12 歲</p>
+      <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">🏠 空間設計師阿築的一天</h1>
+      <p class="text-sm text-slate-600 mt-1">幫阿築設計一個讓人舒服、又對地球友善的生活空間！</p>
     </div>
     <div class="text-right">
-      <p class="text-sm text-gray-500">任務進度</p>
-      <p class="text-lg font-bold text-emerald-600"><span id="progressText">第 0 / 6 關</span></p>
-      <div class="mt-2">
-        <span class="dot" data-s="1"></span><span class="dot" data-s="2"></span><span class="dot" data-s="3"></span>
-        <span class="dot" data-s="4"></span><span class="dot" data-s="5"></span><span class="dot" data-s="6"></span>
-      </div>
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
     </div>
   </div>
-  <div class="w-full bg-gray-200 rounded-full h-3 mt-4"><div id="bar" class="bg-gradient-to-r from-emerald-400 to-sky-500 h-3 rounded-full" style="width:0%"></div></div>
-</header>
 
-<section class="bg-gradient-to-br from-amber-100 to-orange-100 rounded-3xl p-6 mb-6 shadow-lg border-2 border-amber-300">
-  <h2 class="text-xl font-bold text-orange-700">📜 任務簡報：地球守護者你好！</h2>
-  <p class="mt-2 text-gray-700 leading-relaxed">我是<b>「綠屋頂松鼠小松」🐿️</b>，來自未來 2050 年的都市叢林。全球建築每年排放 <b class="text-red-600">34%</b> 的 CO₂，家戶空污每年奪走 <b class="text-red-600">2.9 百萬</b> 人的生命。需要你幫忙破解 6 道改造關卡，把我的家變回能呼吸的永續空間！完成即獲得「<b class="text-emerald-600">全校英雄徽章</b>」🏆</p>
-</section>
-
-<!-- 關 1 -->
-<section id="s1" class="stage active bg-white rounded-3xl shadow-xl p-6 mb-6">
-  <h3 class="text-2xl font-bold text-sky-700">關卡 1｜哪一間最永續？</h3>
-  <p class="text-gray-600 mt-1">以「生活品質、功能性、自然友善」三支柱判斷，哪一棟最接近永續生活空間？</p>
-  <div class="grid md:grid-cols-3 gap-3 mt-4">
-    <button class="opt q1 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🏙️ 24 小時冷氣的玻璃帷幕大樓</button>
-    <button class="opt q1 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="yes">📚 通風＋採光＋屋頂發電的北投圖書館</button>
-    <button class="opt q1 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🏚️ 沒窗、沒綠化的鐵皮加蓋</button>
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3 flex-wrap">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-2 text-sm text-slate-600">關卡 <span id="step-label">1</span> / 4</span>
   </div>
-  <p id="fb1" class="mt-3 text-sm"></p>
-</section>
 
-<!-- 關 2 數字偵探 -->
-<section id="s2" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
-  <h3 class="text-2xl font-bold text-sky-700">關卡 2｜數字偵探</h3>
-  <p class="text-gray-600 mt-1">全球「建築部門」（包含營運 + 建材）大約占能源相關 CO₂ 排放的多少？</p>
-  <div class="grid md:grid-cols-4 gap-3 mt-4">
-    <button class="opt q2 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🌱 約 5%</button>
-    <button class="opt q2 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🍃 約 15%</button>
-    <button class="opt q2 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="yes">🔥 約 34%</button>
-    <button class="opt q2 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🌋 約 70%</button>
-  </div>
-  <p id="fb2" class="mt-3 text-sm"></p>
-  <p class="mt-2 text-xs text-gray-500">📊 真實數據：UNEP / IEA Global Status Report for Buildings and Construction 2024</p>
-</section>
-
-<!-- 關 3 拖曳：EEWH 九指標分類 -->
-<section id="s3" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
-  <h3 class="text-2xl font-bold text-sky-700">關卡 3｜拖曳配對：EEWH 九指標 → 三支柱</h3>
-  <p class="text-gray-600 mt-1">把 6 個 EEWH 指標拖到對應的「三支柱」欄裡。</p>
-  <div class="grid md:grid-cols-2 gap-4 mt-4">
-    <div>
-      <p class="font-semibold mb-2">🎒 指標卡（可拖）</p>
-      <div id="pool" class="space-y-2">
-        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="quality">🫁 室內健康與環境</div>
-        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="nature">🦋 生物多樣性</div>
-        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="function">💡 日常節能</div>
-        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="nature">🌳 綠化量</div>
-        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="function">💧 水資源</div>
-        <div draggable="true" class="drag p-3 rounded-lg bg-yellow-100 border-2 border-yellow-300 cursor-move" data-k="quality">🧼 污水垃圾改善</div>
+  <!-- ===== Level 1: 配對 (15 pts) ===== -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🏗️</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 1：這個設計，友善還是不友善？</h2>
+        <p class="text-sm text-slate-700 mt-1">阿築說：「建造和使用空間的方式，會影響我們用多少電、水和資源！<b>友善設計</b>是讓陽光、通風、植物進來，減少浪費；<b>不友善設計</b>是讓空間消耗很多資源，不舒服又浪費。把卡片拖到對的籃子！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 15 分｜全部放對才能前往下一關</p>
       </div>
     </div>
-    <div>
-      <p class="font-semibold mb-2">🎯 三支柱欄位</p>
-      <div id="slots" class="space-y-2">
-        <div class="slot p-3 rounded-lg bg-sky-50 border-2 border-dashed border-sky-400 min-h-[80px]" data-k="quality"><b>🛋️ 生活品質</b>（拖入 2 張）</div>
-        <div class="slot p-3 rounded-lg bg-amber-50 border-2 border-dashed border-amber-400 min-h-[80px]" data-k="function"><b>⚙️ 功能性</b>（拖入 2 張）</div>
-        <div class="slot p-3 rounded-lg bg-emerald-50 border-2 border-dashed border-emerald-400 min-h-[80px]" data-k="nature"><b>🌿 自然友善</b>（拖入 2 張）</div>
-      </div>
-      <button id="check3" class="mt-3 bg-sky-500 text-white px-4 py-2 rounded-lg font-bold">檢查配對</button>
-      <p id="fb3" class="mt-2 text-sm"></p>
+
+    <div class="grid grid-cols-2 gap-3 my-3" id="items-box-1">
+      <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="good">🪟 大窗戶讓白天不需要開燈</div>
+      <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="bad">🔒 整天緊閉窗戶，只靠冷氣和燈泡</div>
+      <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="good">🌿 在教室角落放幾盆植物，讓空氣更新鮮</div>
+      <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="bad">🚿 洗手台的水龍頭一直滴水，沒有人修理</div>
+      <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="good">☔ 收集屋頂的雨水，用來澆花或沖馬桶</div>
+      <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="bad">🏚️ 舊家具壞了就全部換新，沒有嘗試修理</div>
     </div>
-  </div>
-</section>
 
-<!-- 關 4 碳帳本 -->
-<section id="s4" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
-  <h3 class="text-2xl font-bold text-sky-700">關卡 4｜有毒空氣偵查</h3>
-  <p class="text-gray-600 mt-1">WHO 建議兒童長期暴露 PM2.5 不超過 5 µg/m³，臺灣 2023 年年均值是？</p>
-  <div class="grid md:grid-cols-2 gap-3 mt-4">
-    <button class="opt q4 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">💚 約 3 µg/m³（比 WHO 還低）</button>
-    <button class="opt q4 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="yes">😷 約 13.7 µg/m³（超標 2.7 倍）</button>
-    <button class="opt q4 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">⚠️ 約 50 µg/m³</button>
-    <button class="opt q4 p-4 rounded-xl border-2 border-gray-200 bg-gray-50" data-a="no">🌋 超過 100 µg/m³</button>
-  </div>
-  <p id="fb4" class="mt-3 text-sm"></p>
-  <p class="mt-2 text-xs text-gray-500">📊 WHO Global Air Quality Guidelines 2021；環境部空氣品質監測年報 2023</p>
-</section>
+    <div class="grid grid-cols-2 gap-3" id="zones-box-1">
+      <div class="drop-zone bg-emerald-50 p-3" data-accept="good">
+        <div class="font-bold text-emerald-700 text-center mb-2">🌱 友善設計<br><span class="text-xs font-normal text-emerald-500">（省資源、舒適、環保）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-red-50 p-3" data-accept="bad">
+        <div class="font-bold text-red-700 text-center mb-2">⚠️ 不友善設計<br><span class="text-xs font-normal text-red-500">（浪費資源、不舒服）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+    </div>
 
-<!-- 關 5 情境角色 -->
-<section id="s5" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
-  <h3 class="text-2xl font-bold text-sky-700">關卡 5｜情境抉擇：班導說「屋頂種菜會漏水！」</h3>
-  <p class="text-gray-600 mt-1">你想幫學校推動屋頂綠化，班導持反對意見。你會怎麼回應？</p>
-  <div class="grid md:grid-cols-2 gap-3 mt-4">
-    <button class="opt q5 p-4 rounded-xl border-2 border-gray-200 bg-blue-50 text-left" data-a="A">A. 「好吧，那算了。」放棄提案。</button>
-    <button class="opt q5 p-4 rounded-xl border-2 border-gray-200 bg-blue-50 text-left" data-a="B">B. 「老師妳太落伍了！」大聲頂嘴。</button>
-    <button class="opt q5 p-4 rounded-xl border-2 border-gray-200 bg-blue-50 text-left" data-a="C">C. 「老師，綠屋頂可降溫 2-5°C、省 30% 空調電費，我們可以邀建築師來評估防水層！」</button>
-    <button class="opt q5 p-4 rounded-xl border-2 border-gray-200 bg-blue-50 text-left" data-a="D">D. 偷偷在陽台種，不告訴老師。</button>
-  </div>
-  <p id="fb5" class="mt-3 text-sm"></p>
-</section>
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <span></span>
+      <button id="btn-next-1" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>完成分類才能繼續 →</button>
+    </div>
+  </section>
 
-<!-- 關 6 WSA 4 checkbox -->
-<section id="s6" class="stage bg-white rounded-3xl shadow-xl p-6 mb-6">
-  <h3 class="text-2xl font-bold text-sky-700">關卡 6｜全校英雄行動（WSA 四面向）</h3>
-  <p class="text-gray-600 mt-1">勾選你願意挑戰的行動，四個都勾才能解鎖「全校英雄」徽章！🏆</p>
-  <div class="grid md:grid-cols-2 gap-3 mt-4">
-    <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 cursor-pointer"><input type="checkbox" class="wsa mt-1" data-k="curriculum"><div><b>📚 課程與學習</b><br><span class="text-sm">在自然課實地量測教室的 CO₂ 或 PM2.5，並用 EEWH 九指標寫一份體檢表。</span></div></label>
-    <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 cursor-pointer"><input type="checkbox" class="wsa mt-1" data-k="operations"><div><b>🏫 校園營運</b><br><span class="text-sm">加入「EEWH 小隊」推動教室 LED 換裝、屋頂綠化試點或開窗通風時段。</span></div></label>
-    <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 cursor-pointer"><input type="checkbox" class="wsa mt-1" data-k="community"><div><b>🏘️ 社區夥伴</b><br><span class="text-sm">和家人畫出社區「遮蔭地圖」；拜訪鄰近綠建築並分享照片給里辦。</span></div></label>
-    <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 cursor-pointer"><input type="checkbox" class="wsa mt-1" data-k="agency"><div><b>🗣️ 學生治理</b><br><span class="text-sm">向校長或家長會提案「校園 EEWH 改造計畫」，列出三項可行行動。</span></div></label>
-  </div>
-  <button id="finish" class="mt-5 bg-gradient-to-r from-emerald-500 to-sky-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg">解鎖全校英雄徽章 🏆</button>
-  <p id="fb6" class="mt-3 text-sm"></p>
-</section>
+  <!-- ===== Level 2: 看圖找答案 (20 pts) ===== -->
+  <section id="level-2" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">📊</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 2：看圖找答案</h2>
+        <p class="text-sm text-slate-700 mt-1">阿築調查了學校的教室，想知道「把窗戶打開通風」和「全程開冷氣」對室內溫度和用電的影響。仔細看圖，回答下面兩題！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜Q1 單選 5 分 + Q2 多選 15 分</p>
+      </div>
+    </div>
 
-<!-- 成果 -->
-<section id="result" class="hidden bg-gradient-to-br from-yellow-100 to-pink-100 rounded-3xl shadow-2xl p-8 mb-6 text-center border-4 border-yellow-400">
-  <div id="badge" class="inline-block badge-glow bg-gradient-to-br from-emerald-400 to-sky-500 text-white rounded-full w-40 h-40 flex items-center justify-center text-5xl shadow-2xl mx-auto">🏆</div>
-  <h2 class="text-3xl font-extrabold mt-4 text-emerald-700">恭喜！你是 6.4-III 全校英雄！</h2>
-  <p class="text-gray-700 mt-2">你記住了：建築排 34% CO₂、臺灣 PM2.5 超標 2.7 倍、綠屋頂可降溫 2-5°C。</p>
-  <div class="mt-6 text-left max-w-2xl mx-auto bg-white/70 rounded-2xl p-5">
-    <h3 class="font-bold text-lg text-sky-700">🧠 延伸思考（請與家人討論）</h3>
-    <ol class="list-decimal ml-6 mt-2 space-y-2 text-gray-700">
-      <li>如果所有新學校都強制做綠建築，會不會更貴？你覺得值得嗎？</li>
-      <li>舊公寓沒有預算改造，小孩可以先做哪 3 件事改善室內空氣？</li>
-      <li>你願意讓家裡冷氣夏天只設 26°C 嗎？可以用什麼替代方式更舒服？</li>
-    </ol>
-  </div>
-  <button onclick="window.print()" class="mt-5 bg-sky-600 text-white px-5 py-2 rounded-lg">🖨️ 列印我的英雄證書</button>
-</section>
+    <!-- SVG chart: ventilation vs AC comparison -->
+    <svg viewBox="0 0 400 180" class="w-full max-w-lg mx-auto block bg-slate-50 rounded-xl mb-4 border border-slate-200">
+      <!-- Axes -->
+      <line x1="60" y1="150" x2="390" y2="150" stroke="#475569" stroke-width="1.5"/>
+      <line x1="60" y1="20" x2="60" y2="150" stroke="#475569" stroke-width="1.5"/>
+      <!-- Y label -->
+      <text x="3" y="16" font-size="8" fill="#64748b">月用電(度)</text>
+      <text x="15" y="155" font-size="8" fill="#64748b">0</text>
+      <text x="10" y="110" font-size="8" fill="#64748b">100</text>
+      <text x="10" y="65" font-size="8" fill="#64748b">200</text>
+      <text x="10" y="28" font-size="8" fill="#64748b">300</text>
+      <!-- X labels -->
+      <text x="80" y="167" font-size="8" fill="#64748b">整天開冷氣</text>
+      <text x="210" y="167" font-size="8" fill="#64748b">早上通風</text>
+      <text x="300" y="167" font-size="8" fill="#64748b">多開窗+植物</text>
+      <!-- Grouped bars: electricity use -->
+      <rect x="80" y="35" width="55" height="115" fill="#f97316" rx="3"/>
+      <rect x="210" y="75" width="55" height="75" fill="#facc15" rx="3"/>
+      <rect x="310" y="105" width="55" height="45" fill="#4ade80" rx="3"/>
+      <!-- value labels -->
+      <text x="93" y="31" font-size="9" fill="#ea580c" font-weight="bold">280度</text>
+      <text x="223" y="71" font-size="9" fill="#ca8a04" font-weight="bold">180度</text>
+      <text x="323" y="101" font-size="9" fill="#16a34a" font-weight="bold">110度</text>
+      <!-- annotation -->
+      <text x="250" y="55" font-size="9" fill="#16a34a">省了 61%!</text>
+    </svg>
 
-<footer class="text-center text-xs text-gray-500 mt-6 pb-10">© 6.4-III UNESCO CCE · 數據 2026-04-16 驗證 · WHO / UNEP / IEA / IPCC / TCCIP / 環境部 EEWH</footer>
+    <!-- Q1 single choice -->
+    <div class="mb-5">
+      <p class="font-bold text-sm mb-2">📌 Q1：從這張圖可以看出什麼？（單選，5 分）</p>
+      <div id="q1-opts">
+        <label class="opt"><input type="radio" name="q1" value="0"> A. 整天開冷氣和多開窗戶的用電量幾乎一樣。</label>
+        <label class="opt"><input type="radio" name="q1" value="1"> B. 多開窗戶加上植物，比整天開冷氣省很多電。</label>
+        <label class="opt"><input type="radio" name="q1" value="0"> C. 整天開冷氣反而是最省電的方式。</label>
+      </div>
+      <p id="q1-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <!-- Q2 multi-select -->
+    <div class="mb-3">
+      <p class="font-bold text-sm mb-1">📌 Q2：要讓教室或家裡更涼快又省電，下面哪些方法有用？<br><span class="font-normal text-slate-500 text-xs">（勾出你覺得正確的，可以勾多個）</span></p>
+      <div id="q2-opts">
+        <label class="opt"><input type="checkbox" data-correct="1"> 🌳 在教室旁邊種樹，讓樹蔭遮住陽光</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 🪟 早上天氣涼時打開窗戶，讓風進來</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> 🔒 永遠把窗戶鎖緊，這樣最安全也最涼</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 🌿 放幾盆植物，可以幫忙調節室內溫度</label>
+      </div>
+      <p id="q2-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="1">← 上一關</button>
+      <button id="btn-next-2" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>提交答案 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 3: 推一推 (20 pts) ===== -->
+  <section id="level-3" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🔄</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 3：推一推！小改變讓家更舒服</h2>
+        <p class="text-sm text-slate-700 mt-1">阿築在家做了一個小改變——在陽台種了幾盆植物。這帶來了什麼連鎖效果？把下面四張卡片依照正確的順序，拖進 ① ② ③ ④ 四個格子！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜順序全對才得分</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row items-center justify-center gap-2 my-4" id="chain-slots">
+      <div class="drop-zone bg-emerald-50 p-3 w-full md:w-32 text-center" data-slot="1">
+        <div class="text-xs font-bold text-emerald-700 mb-1">① 起點</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-emerald-50 p-3 w-full md:w-32 text-center" data-slot="2">
+        <div class="text-xs font-bold text-emerald-700 mb-1">②</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-emerald-50 p-3 w-full md:w-32 text-center" data-slot="3">
+        <div class="text-xs font-bold text-emerald-700 mb-1">③</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-emerald-50 p-3 w-full md:w-32 text-center" data-slot="4">
+        <div class="text-xs font-bold text-emerald-700 mb-1">④ 結果</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 mt-2" id="chain-items">
+      <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="2">🌿 植物遮陽、吸熱，室內比較涼</div>
+      <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="4">💸 電費降低，家人也更開心</div>
+      <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="1">🌱 阿築在陽台種了幾盆植物</div>
+      <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="3">❄️ 不需要一直開冷氣，也覺得涼快</div>
+    </div>
+
+    <p id="l3-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="2">← 上一關</button>
+      <button id="btn-next-3" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>下一關 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 4: 我的行動 (20 pts) ===== -->
+  <section id="level-4" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">💪</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 4：我的空間改造行動</h2>
+        <p class="text-sm text-slate-700 mt-1">阿築說：「每個人都可以改造自己的生活空間，讓它更舒服又省資源！先選一個你想行動的方向！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜選主題 + 選行動 + 立下承諾</p>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <p class="font-bold text-sm mb-2">① 阿築最想改造哪個空間？（選一個）</p>
+      <div id="theme-opts">
+        <label class="opt"><input type="radio" name="theme" value="room"> 🛏️ 自己的房間（通風、採光、省電）</label>
+        <label class="opt"><input type="radio" name="theme" value="classroom"> 🏫 學校教室（植物、窗戶、節水）</label>
+        <label class="opt"><input type="radio" name="theme" value="outdoor"> 🌳 家裡的陽台或院子（綠化、雨水收集）</label>
+        <label class="opt"><input type="radio" name="theme" value="spread"> 📢 告訴大家怎麼改造友善空間</label>
+      </div>
+    </div>
+
+    <div id="action-wrap" class="hidden mb-4">
+      <p class="font-bold text-sm mb-2">② 以下三個做法，你覺得哪個最容易開始？（選一個）</p>
+      <div id="action-opts"></div>
+      <p id="action-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div id="promise-wrap" class="hidden bg-emerald-50 rounded-xl p-4 mb-3">
+      <p class="font-bold text-sm mb-2">③ 在你能做到的事情前打勾（至少選 2 個）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-emerald-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會在適合的時間打開窗戶，讓空氣流通</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-emerald-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會在家裡或教室裡養一盆植物</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-emerald-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會提醒家人修好漏水的水龍頭</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-emerald-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會把自己的房間整理好，讓陽光照進來</span>
+      </label>
+      <p id="promise-fb" class="text-xs mt-2 text-slate-500 min-h-[18px]"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="3">← 上一關</button>
+      <button id="btn-next-4" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>查看成果 🏆</button>
+    </div>
+  </section>
+
+  <!-- ===== Final: 反思 (5 pts) ===== -->
+  <section id="level-final" class="card p-6 hidden-screen fade-in">
+    <div class="text-6xl text-center pop">🏆</div>
+    <h2 class="text-2xl font-bold text-emerald-700 mt-2 text-center">恭喜你幫阿築設計出友善空間！</h2>
+    <p class="text-slate-700 mt-1 text-center">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> / 80 分</p>
+
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <div class="bg-sky-50 rounded-xl p-4 max-w-2xl mx-auto mb-4">
+      <p class="font-bold text-sky-700 mb-3">🤔 最後一步：快速反思（5 分）</p>
+
+      <p class="text-sm font-semibold mb-1">Q1｜上這堂課之前，你對「友善空間設計」的了解程度：</p>
+      <div id="stars-before" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q2｜上完這堂課後，你的了解程度：</p>
+      <div id="stars-after" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q3｜哪個關卡讓你印象最深刻？</p>
+      <div id="impact-opts">
+        <label class="opt"><input type="radio" name="impact" value="1"> 關卡 1：友善設計 vs 不友善設計配對</label>
+        <label class="opt"><input type="radio" name="impact" value="2"> 關卡 2：通風和冷氣用電比較圖</label>
+        <label class="opt"><input type="radio" name="impact" value="3"> 關卡 3：陽台植物帶來的連鎖效果</label>
+        <label class="opt"><input type="radio" name="impact" value="4"> 關卡 4：我的空間改造行動</label>
+      </div>
+      <p id="reflect-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div class="bg-yellow-50 rounded-xl p-4 text-left max-w-2xl mx-auto">
+      <h3 class="font-bold text-amber-700 mb-2">🧐 延伸思考小挑戰</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>如果你可以改造學校的一個角落，你會做什麼改變？為什麼？</li>
+        <li>家裡有沒有漏水、漏電，或一直開著的燈？怎麼處理可以省資源？</li>
+        <li>你願意和家人一起養一盆植物嗎？你想養什麼？放在哪裡？</li>
+      </ol>
+    </div>
+
+    <div class="nav-row max-w-2xl mx-auto mt-4">
+      <button class="btn btn-back" data-back="4">← 回到關卡 4</button>
+      <button onclick="location.reload()" class="btn bg-emerald-600 text-white py-2 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+    </div>
+  </section>
 
 </div>
 
 <script>
-let stage=1, score=0;
+(() => {
+  const TOTAL_LEVELS = 4;
+  const S = { score: 0, current: 1, awarded: {} };
+  const el = id => document.getElementById(id);
+  const setScore = n => { S.score += n; el('score').textContent = S.score; };
+  const awardOnce = (key, pts) => { if (!S.awarded[key]) { S.awarded[key] = true; setScore(pts); } };
 
-function setStage(n){
-  document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));
-  const el=document.getElementById('s'+n); if(el){el.classList.add('active'); el.scrollIntoView({behavior:'smooth'});}
-  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active', i<n));
-  document.getElementById('progressText').textContent='第 '+n+' / 6 關';
-  document.getElementById('bar').style.width=((n-1)/6*100)+'%';
-  stage=n;
-}
+  const updateDots = () => {
+    for (let i = 1; i <= TOTAL_LEVELS + 1; i++) {
+      const d = el('dot-' + i); if (!d) continue;
+      d.classList.remove('active','done');
+      if (i < S.current) d.classList.add('done');
+      else if (i === S.current) d.classList.add('active');
+    }
+  };
 
-function confetti(){
-  const colors=['#f59e0b','#10b981','#3b82f6','#ec4899','#8b5cf6'];
-  for(let i=0;i<40;i++){
-    const c=document.createElement('div');
-    c.className='confetti';
-    c.style.left=(Math.random()*100)+'vw';
-    c.style.background=colors[i%colors.length];
-    c.style.animationDelay=(Math.random()*0.6)+'s';
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3000);
-  }
-}
+  const gotoLevel = n => {
+    document.querySelectorAll('section[id^="level-"]').forEach(s => s.classList.add('hidden-screen'));
+    S.current = n; el('step-label').textContent = Math.min(n, 4);
+    const target = (n > TOTAL_LEVELS) ? el('level-final') : el('level-' + n);
+    target.classList.remove('hidden-screen'); target.classList.add('fade-in');
+    updateDots(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-// Q1
-document.querySelectorAll('.q1').forEach(b=>b.addEventListener('click',()=>{
-  const ok=b.dataset.a==='yes';
-  document.querySelectorAll('.q1').forEach(x=>x.disabled=true);
-  if(ok){ b.classList.add('correct'); document.getElementById('fb1').innerHTML='✅ 答對！北投圖書館靠自然通風＋採光＋屋頂發電，是公共綠建築經典案例。<span class="pop inline-block">🎉</span>'; score++; setTimeout(()=>setStage(2),900);}
-  else{ b.classList.add('wrong','shake'); document.getElementById('fb1').innerHTML='❌ 再想想！提示：永續≠豪華，也≠簡陋。正解是「📚 北投圖書館」。<br>點下一題繼續 →'; setTimeout(()=>setStage(2),1800);}
-}));
+  document.querySelectorAll('.btn-back').forEach(b => { b.onclick = () => gotoLevel(parseInt(b.dataset.back, 10)); });
 
-// Q2
-document.querySelectorAll('.q2').forEach(b=>b.addEventListener('click',()=>{
-  const ok=b.dataset.a==='yes';
-  document.querySelectorAll('.q2').forEach(x=>x.disabled=true);
-  if(ok){ b.classList.add('correct'); document.getElementById('fb2').innerHTML='✅ 答對！建築部門占全球能源相關 CO₂ 排放 <b>34%</b>，每三口 CO₂ 就有一口來自建築！'; score++; confetti(); setTimeout(()=>setStage(3),900);}
-  else{ b.classList.add('wrong','shake'); document.getElementById('fb2').innerHTML='❌ 正解是 <b>34%</b>。提示：建築包括水泥鋼筋 + 冷氣暖氣。'; setTimeout(()=>setStage(3),1800);}
-}));
+  const confetti = () => {
+    const colors = ['#059669','#10b981','#3b82f6','#f59e0b','#a855f7'];
+    for (let i = 0; i < 32; i++) {
+      const c = document.createElement('div'); c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw'; c.style.background = colors[i % colors.length];
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
+      document.body.appendChild(c); setTimeout(() => c.remove(), 2500);
+    }
+  };
 
-// Q3 drag
-let dragged=null;
-document.querySelectorAll('.drag').forEach(d=>{
-  d.addEventListener('dragstart',e=>{dragged=d;e.dataTransfer.effectAllowed='move';});
-});
-document.querySelectorAll('.slot').forEach(s=>{
-  s.addEventListener('dragover',e=>e.preventDefault());
-  s.addEventListener('drop',e=>{e.preventDefault(); if(dragged){ s.appendChild(dragged); }});
-});
-document.getElementById('check3').addEventListener('click',()=>{
-  const slots=document.querySelectorAll('#slots .slot');
-  let ok=true;
-  slots.forEach(sl=>{
-    const k=sl.dataset.k;
-    const items=sl.querySelectorAll('.drag');
-    if(items.length<2){ ok=false; sl.classList.add('wrong'); return; }
-    items.forEach(it=>{ if(it.dataset.k!==k){ ok=false; sl.classList.add('wrong'); } });
-    if(ok) sl.classList.add('correct');
+  const shuffleChildren = parent => {
+    const kids = Array.from(parent.children);
+    for (let i = kids.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); parent.appendChild(kids[j]); }
+  };
+
+  /* Level 1 */
+  shuffleChildren(el('items-box-1')); shuffleChildren(el('zones-box-1'));
+  let dragged1 = null, l1Correct = 0;
+  const total1 = document.querySelectorAll('#items-box-1 .drag-item').length;
+
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged1 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#items-box-1 .drag-item').forEach(x => x.classList.remove('ring-4','ring-emerald-400'));
+      item.classList.add('ring-4','ring-emerald-400'); dragged1 = item;
+    });
   });
-  if(ok){ document.getElementById('fb3').innerHTML='✅ 完美！三支柱對應 EEWH 指標：生活品質（室內健康、污水垃圾）、功能性（節能、水資源）、自然友善（生物多樣性、綠化量）。'; score++; confetti(); setTimeout(()=>setStage(4),1400);}
-  else{ document.getElementById('fb3').innerHTML='❌ 有些指標放錯家。提示：「生物多樣性、綠化量」屬於<b>自然友善</b>；「節能、水資源」屬於<b>功能性</b>。再試一次或點下一題。'; setTimeout(()=>setStage(4),2600);}
-});
 
-// Q4
-document.querySelectorAll('.q4').forEach(b=>b.addEventListener('click',()=>{
-  const ok=b.dataset.a==='yes';
-  document.querySelectorAll('.q4').forEach(x=>x.disabled=true);
-  if(ok){b.classList.add('correct'); document.getElementById('fb4').innerHTML='✅ 沒錯！臺灣 2023 年年均 <b>13.7 µg/m³</b>，超標 WHO 2.7 倍。兒童肺部更脆弱，開窗通風很重要！'; score++; setTimeout(()=>setStage(5),1100);}
-  else{b.classList.add('wrong','shake'); document.getElementById('fb4').innerHTML='❌ 正解是 13.7 µg/m³。你剛剛<b>太樂觀或太悲觀</b>了。臺灣空氣其實比 WHO 標準髒 2.7 倍！'; setTimeout(()=>setStage(5),1800);}
-}));
+  document.querySelectorAll('#zones-box-1 .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop1(zone); });
+    zone.addEventListener('click', () => { if (dragged1) handleDrop1(zone); });
+  });
 
-// Q5
-const fb5={
-  A:{ok:false,msg:'🙁 放棄就什麼也沒改變。用數據說話吧！'},
-  B:{ok:false,msg:'😬 頂嘴會讓老師更反對，訊息完全傳不到。'},
-  C:{ok:true, msg:'✅ 超棒！用「降溫 2-5°C、省 30% 空調、邀請專家」組合拳，正是 B1 論述 + B2 行動！'},
-  D:{ok:false,msg:'🫥 偷偷做無法推動整個校園改變。公開溝通才能成為全校英雄。'}
-};
-document.querySelectorAll('.q5').forEach(b=>b.addEventListener('click',()=>{
-  const r=fb5[b.dataset.a];
-  document.querySelectorAll('.q5').forEach(x=>x.disabled=true);
-  b.classList.add(r.ok?'correct':'wrong');
-  document.getElementById('fb5').innerHTML=r.msg;
-  if(r.ok){score++; confetti();}
-  setTimeout(()=>setStage(6),1400);
-}));
-
-// Q6 WSA
-document.getElementById('finish').addEventListener('click',()=>{
-  const checked=[...document.querySelectorAll('.wsa:checked')].map(x=>x.dataset.k);
-  const all=['curriculum','operations','community','agency'];
-  const allChecked=all.every(k=>checked.includes(k));
-  if(allChecked){
-    score++;
-    document.getElementById('fb6').innerHTML='✅ WSA 全打勾！你真的是<b>全校英雄</b>！';
-    document.getElementById('result').classList.remove('hidden');
-    document.querySelectorAll('.dot').forEach(d=>d.classList.add('active'));
-    document.getElementById('bar').style.width='100%';
-    document.getElementById('progressText').textContent='第 6 / 6 關 ✓';
-    confetti(); setTimeout(confetti,400); setTimeout(confetti,800);
-    document.getElementById('result').scrollIntoView({behavior:'smooth'});
-  } else {
-    document.getElementById('fb6').innerHTML='⚠️ 至少四個都勾才能成為「全校英雄」！因為真正的改變需要<b>課程 + 營運 + 社區 + 學生</b>全部出動。';
+  function handleDrop1(zone) {
+    if (!dragged1) return;
+    const fb = el('l1-feedback');
+    if (dragged1.dataset.match === zone.dataset.accept) {
+      zone.querySelector('.dz-items').appendChild(dragged1);
+      dragged1.setAttribute('draggable','false');
+      dragged1.classList.remove('ring-4','ring-emerald-400','bg-teal-100','border-teal-400');
+      dragged1.classList.add('bg-green-100','border-green-500','pop');
+      l1Correct++;
+      fb.textContent = '答對！ 👏'; fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+      confetti();
+      if (l1Correct === total1) {
+        awardOnce('L1', 15);
+        const btn = el('btn-next-1'); btn.disabled = false;
+        btn.className = 'btn bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(2);
+        fb.textContent = '全部答對！阿築為你拍手！🎉 +15 分';
+      }
+    } else {
+      dragged1.classList.add('shake'); setTimeout(() => dragged1.classList.remove('shake'), 400);
+      fb.textContent = '再想想！友善設計是讓陽光、通風和植物進來，省電省水 💡';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged1 = null;
   }
-});
 
-setStage(1);
+  /* Level 2 */
+  let q1Done = false, q2Done = false;
+  const checkL2ready = () => {
+    const ready = q1Done && q2Done; const btn = el('btn-next-2');
+    btn.disabled = !ready; if (ready) btn.className = 'btn bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=q1]').forEach(r => {
+    r.onchange = () => {
+      if (q1Done) return;
+      document.querySelectorAll('#q1-opts .opt').forEach(o => o.classList.remove('sel','correct','wrong'));
+      r.parentElement.classList.add(r.value === '1' ? 'correct' : 'wrong');
+      const fb = el('q1-fb');
+      if (r.value === '1') { fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 對！多開窗和植物省了 61% 的電。+5 分</span>'; awardOnce('L2-q1', 5); q1Done = true; }
+      else fb.innerHTML = '<span class="text-rose-600">❌ 再看看圖，哪根柱子最矮？</span>';
+      checkL2ready();
+    };
+  });
+
+  let q2Submitted = false;
+  document.querySelectorAll('#q2-opts input[type=checkbox]').forEach(cb => {
+    cb.onchange = () => {
+      if (q2Submitted) return;
+      const checked = document.querySelectorAll('#q2-opts input:checked');
+      const fb = el('q2-fb');
+      if (checked.length >= 1) { fb.textContent = `已選 ${checked.length} 項。覺得選好了嗎？`; q2Done = true; }
+      else q2Done = false;
+      checkL2ready();
+    };
+  });
+
+  el('btn-next-2').onclick = () => {
+    if (q2Submitted) { gotoLevel(3); return; }
+    q2Submitted = true;
+    const opts = document.querySelectorAll('#q2-opts input');
+    let correctCount = 0, wrongCount = 0;
+    opts.forEach(o => {
+      o.disabled = true; const lbl = o.parentElement;
+      if (o.checked) { if (o.dataset.correct === '1') { lbl.classList.add('correct'); correctCount++; } else { lbl.classList.add('wrong'); wrongCount++; } }
+    });
+    const pts = Math.max(0, correctCount * 5 - wrongCount * 5);
+    awardOnce('L2-q2', Math.min(pts, 15));
+    const fb = el('q2-fb');
+    if (wrongCount === 0 && correctCount >= 2) { fb.innerHTML = `<span class="text-emerald-700 font-bold">✅ 棒！勾對 ${correctCount} 項。+${Math.min(pts,15)} 分</span>`; confetti(); }
+    else if (correctCount >= 1) { fb.innerHTML = `<span class="text-amber-600">勾對 ${correctCount} 項、錯 ${wrongCount} 項。窗戶鎖緊反而更熱喔！</span>`; if (pts > 0) confetti(); }
+    else fb.innerHTML = '<span class="text-rose-600">❌ 都沒有勾到正確的！仔細想想哪些可以幫室內降溫。</span>';
+    el('btn-next-2').textContent = '繼續下一關 →';
+    el('btn-next-2').onclick = () => gotoLevel(3);
+  };
+
+  /* Level 3 */
+  shuffleChildren(el('chain-items'));
+  let dragged3 = null, l3SlotsFilled = 0;
+  const slotMap = {}, correctOrder = { '1':'1','2':'2','3':'3','4':'4' };
+
+  document.querySelectorAll('#chain-items .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged3 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#chain-items .drag-item').forEach(x => x.classList.remove('ring-4','ring-emerald-400'));
+      item.classList.add('ring-4','ring-emerald-400'); dragged3 = item;
+    });
+  });
+
+  document.querySelectorAll('#chain-slots .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop3(zone); });
+    zone.addEventListener('click', () => { if (dragged3) handleDrop3(zone); });
+  });
+
+  function handleDrop3(zone) {
+    if (!dragged3) return;
+    const slot = zone.dataset.slot, chainVal = dragged3.dataset.chain, fb = el('l3-feedback');
+    if (slotMap[slot]) { fb.textContent = '這格已經有卡片了！先試試其他格子。'; fb.className = 'mt-3 text-center font-bold min-h-[24px] text-amber-600'; dragged3 = null; return; }
+    if (correctOrder[slot] === chainVal) {
+      slotMap[slot] = chainVal;
+      const slotText = zone.querySelector('.slot-text');
+      slotText.textContent = dragged3.textContent.trim();
+      slotText.classList.remove('text-slate-400'); slotText.classList.add('text-slate-800','font-bold','pop');
+      zone.classList.add('bg-green-50'); zone.style.borderColor = '#10b981';
+      dragged3.style.visibility = 'hidden'; l3SlotsFilled++;
+      fb.textContent = '對了！ 🎉 繼續放下一張！'; fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600';
+      if (l3SlotsFilled === 4) {
+        awardOnce('L3', 20); fb.textContent = '完美！全部順序正確！ +20 分 🔥'; confetti();
+        const btn = el('btn-next-3'); btn.disabled = false;
+        btn.className = 'btn bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(4);
+      }
+    } else {
+      zone.classList.add('shake'); setTimeout(() => zone.classList.remove('shake'), 400);
+      fb.textContent = '順序不對喔！提示：第 ① 格是「阿築種了植物」。';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged3 = null;
+  }
+
+  /* Level 4 */
+  const actionBank = {
+    room: ['每天早上打開窗戶 30 分鐘，讓空氣流通', '把窗簾換成透光的款式，白天不用開燈', '整理書桌讓陽光照進來，不用開燈讀書'],
+    classroom: ['找老師幫忙在教室窗邊放一盆植物', '提醒同學下課時打開窗戶通風', '和班上同學一起觀察教室哪個角落最涼快'],
+    outdoor: ['在陽台放一個小水桶收集雨水用來澆花', '種一盆薄荷或蘆薈，簡單又容易養', '和家人一起清理陽台，讓空氣流通'],
+    spread: ['在班上介紹一個「讓教室更涼快」的好方法', '幫家人畫一張「哪裡可以省電省水」的地圖', '和同學聊聊家裡哪個地方最費電，一起想辦法']
+  };
+
+  let themePicked = null, actionPicked = false, promiseCount = 0;
+  const checkL4ready = () => {
+    const ready = themePicked && actionPicked && promiseCount >= 2;
+    const btn = el('btn-next-4'); btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=theme]').forEach(r => {
+    r.onchange = () => {
+      themePicked = r.value;
+      document.querySelectorAll('#theme-opts .opt').forEach(o => o.classList.remove('sel')); r.parentElement.classList.add('sel');
+      const wrap = el('action-wrap'), box = el('action-opts'); box.innerHTML = ''; actionPicked = false;
+      actionBank[themePicked].forEach(txt => {
+        const lbl = document.createElement('label'); lbl.className = 'opt';
+        lbl.innerHTML = `<input type="radio" name="action"> ${txt}`;
+        lbl.querySelector('input').onchange = () => {
+          document.querySelectorAll('#action-opts .opt').forEach(o => o.classList.remove('sel')); lbl.classList.add('sel');
+          actionPicked = true; el('action-fb').innerHTML = '<span class="text-emerald-700">✅ 好主意！繼續下一步～</span>';
+          el('promise-wrap').classList.remove('hidden'); checkL4ready();
+        };
+        box.appendChild(lbl);
+      });
+      wrap.classList.remove('hidden'); el('promise-wrap').classList.add('hidden'); checkL4ready();
+    };
+  });
+
+  document.querySelectorAll('.promise-cb').forEach(cb => {
+    cb.onchange = () => {
+      promiseCount = document.querySelectorAll('.promise-cb:checked').length;
+      const fb = el('promise-fb');
+      if (promiseCount < 2) fb.textContent = `已選 ${promiseCount}/4，請至少選 2 個 😊`;
+      else fb.textContent = `選了 ${promiseCount} 個承諾！太棒了！`;
+      checkL4ready();
+    };
+  });
+
+  el('btn-next-4').onclick = () => { awardOnce('L4', 20); confetti(); showFinal(); };
+
+  function showFinal() {
+    gotoLevel(TOTAL_LEVELS + 1); el('final-score').textContent = S.score;
+    const box = el('badges'); box.innerHTML = '';
+    const earned = [];
+    if (S.awarded['L1']) earned.push('🏗️ 設計分類達人');
+    if (S.awarded['L2-q1'] || S.awarded['L2-q2']) earned.push('📊 空間觀察家');
+    if (S.awarded['L3']) earned.push('🌿 植物連鎖思考王');
+    if (S.awarded['L4']) earned.push('🏠 友善空間行動者');
+    if (earned.length === 0) earned.push('🌟 空間設計師');
+    earned.forEach(b => {
+      const chip = document.createElement('span');
+      chip.className = 'bg-emerald-100 border-2 border-emerald-400 rounded-full px-3 py-1 text-sm font-bold pop';
+      chip.textContent = b; box.appendChild(chip);
+    });
+    confetti();
+  }
+
+  /* Final reflection */
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+  const setupStars = (wrapId, setter) => {
+    const wrap = el(wrapId);
+    wrap.querySelectorAll('.star').forEach(s => {
+      s.onclick = () => {
+        const v = parseInt(s.dataset.val, 10); setter(v);
+        wrap.querySelectorAll('.star').forEach(x => x.classList.toggle('on', parseInt(x.dataset.val,10) <= v));
+        checkReflect();
+      };
+    });
+  };
+  setupStars('stars-before', v => starBefore = v);
+  setupStars('stars-after', v => starAfter = v);
+
+  document.querySelectorAll('input[name=impact]').forEach(r => {
+    r.onchange = () => {
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o => o.classList.remove('sel')); r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+
+  function checkReflect() {
+    const ok = starBefore > 0 && starAfter > 0 && impactPicked;
+    const fb = el('reflect-fb');
+    if (ok) { fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 反思完成！+5 分 🌟</span>'; awardOnce('FINAL', 5); el('final-score').textContent = S.score; }
+    else fb.textContent = '請完成三題反思（★ 前後了解度 + 印象最深的關卡）';
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

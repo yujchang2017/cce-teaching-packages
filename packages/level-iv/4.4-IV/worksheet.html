@@ -3,229 +3,740 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>互聯互通的力量 | 國中韌性互動學習單</title>
+<title>互聯互通的力量 | 4.4-IV 國中韌性七特徵互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#dcfce7,#fef3c7,#fce7f3); min-height:100vh;}
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#d1fae5,#a7f3d0,#cffafe); min-height:100vh;}
   .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
   .btn { transition:all .18s; }
   .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
   .btn:disabled { opacity:.5; cursor:not-allowed;}
   .drag-item { cursor: grab; user-select:none;}
   .drag-item.dragging { opacity:.4; }
-  .drop-zone { min-height:60px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.5rem; padding:.5rem;}
-  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .drop-zone { min-height:100px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#a7f3d0; border-color:#059669;}
   .pop { animation: pop .5s ease;}
   @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#059669; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
   .fade-in { animation: fade .4s ease;}
   @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
-  textarea.cer { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem;}
   .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
-  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
-  .progress-dot.done { background:#10b981;}
-  .hidden-screen { display:none; }
+  svg.loop text { font-size:11px; pointer-events:none;}
+  svg.loop .loop-slot { cursor: pointer; }
+  svg.loop .loop-slot.over { fill:#a7f3d0; stroke-width:3; }
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.92rem;}
+  .opt:hover { background:#f8fafc; }
+  .opt.sel { border-color:#059669; background:#d1fae5;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.4rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
 <body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 <div class="max-w-4xl mx-auto">
 
-<!-- Header -->
 <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
   <div>
-    <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">🌿 互聯互通的力量</h1>
-    <p class="text-sm text-slate-600 mt-1">你是『韌性規劃師』：8 個任務，完成就是 Level 4 國中韌性公民。</p>
+    <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">🌐 互聯互通的力量</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『韌性系統設計師』：5 個任務，掌握韌性七特徵並設計校園韌性提案。</p>
   </div>
   <div class="text-right">
-    <div class="text-xs text-slate-500">韌性積分</div>
+    <div class="text-xs text-slate-500">韌性點數</div>
     <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
   </div>
 </div>
 
-<!-- Progress -->
 <div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
-  <div class="progress-dot" id="dot-1"></div><span class="text-xs">特徵</span>
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">韌性特徵</span>
   <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-2"></div><span class="text-xs">四場景</span>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">資料</span>
   <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-3"></div><span class="text-xs">資料詮釋</span>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">系統</span>
   <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-4"></div><span class="text-xs">系統思考</span>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">論證</span>
   <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-5"></div><span class="text-xs">倫理</span>
-  <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-6"></div><span class="text-xs">CER</span>
-  <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-7"></div><span class="text-xs">專題</span>
-  <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-8"></div><span class="text-xs">後設</span>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">專題</span>
 </div>
 
-<!-- ===== §1: 特徵配對（基礎層） ===== -->
-<section id="sec-1" class="card p-6 fade-in mb-4">
-  <h2 class="text-xl font-bold text-sky-700">任務 1｜韌性七特徵配對</h2>
-  <p class="text-sm text-slate-700 mt-1">把左邊『情境』拖到右邊『特徵』。角色：韌性規劃實習生 ｜ 10 分</p>
-  <div class="grid md:grid-cols-2 gap-4 mt-4">
+<!-- ===== T1: 韌性特徵配對 ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🎯</div>
     <div>
-      <h3 class="font-semibold mb-2">情境（拖曳）</h3>
-      <div id="bank1" class="space-y-2">
-        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="冗餘性">學校有兩條獨立供電線路</div>
-        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="適應能力">暑假高溫時把體育課移到早上</div>
-        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="穩健性">校舍耐震結構能承受 7 級地震</div>
-        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="靈活性">同一間大禮堂可當教室/避難所/投票所</div>
-        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="反應能力">警報響後 3 分鐘內完成全校疏散</div>
-        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="足智多謀">利用雨水桶 + 太陽能板應付停水停電</div>
-        <div class="drag-item card p-2 text-sm" draggable="true" data-ans="整合性">學校、里辦、醫療所共用風險資訊系統</div>
-      </div>
-    </div>
-    <div>
-      <h3 class="font-semibold mb-2">七大特徵</h3>
-      <div class="space-y-2">
-        <div class="drop-zone" data-key="適應能力"><b>適應能力</b></div>
-        <div class="drop-zone" data-key="穩健性"><b>穩健性</b></div>
-        <div class="drop-zone" data-key="冗餘性"><b>冗餘性</b></div>
-        <div class="drop-zone" data-key="靈活性"><b>靈活性</b></div>
-        <div class="drop-zone" data-key="反應能力"><b>反應能力</b></div>
-        <div class="drop-zone" data-key="足智多謀"><b>足智多謀</b></div>
-        <div class="drop-zone" data-key="整合性"><b>整合性</b></div>
-      </div>
+      <h2 class="text-xl font-bold text-emerald-700">任務 1｜韌性特徵配對</h2>
+      <p class="text-sm text-slate-700 mt-1">Rodin（2014）的韌性框架歸納七大特徵。把四張情境卡拖到正確的特徵區。描述中不含答案關鍵字，請依邏輯推論。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：韌性系統設計師 ｜ 10 分</p>
     </div>
   </div>
-  <button onclick="check1()" class="btn mt-4 bg-sky-600 text-white px-4 py-2 rounded-lg">檢查</button>
-  <div id="fb1" class="text-sm mt-2"></div>
-</section>
 
-<!-- ===== §2: 四場景實作（基礎層） ===== -->
-<section id="sec-2" class="card p-6 fade-in mb-4">
-  <h2 class="text-xl font-bold text-teal-700">任務 2｜四場景韌性設計</h2>
-  <p class="text-sm text-slate-700 mt-1">選一個場景，至少使用 3 個韌性特徵，寫出具體策略。10 分</p>
-  <select id="scene" class="border rounded p-2 mt-2">
-    <option>森林</option><option>學校</option><option>城市基礎設施</option><option>農場</option>
-  </select>
-  <textarea id="plan2" class="cer mt-2" rows="4" placeholder="例：我的場景是森林。我會使用：冗餘性（多樹種混合）、足智多謀（原民傳統管理）、整合性（林管處 + 部落共管）..."></textarea>
-  <button onclick="mark(2)" class="btn mt-2 bg-teal-600 text-white px-4 py-2 rounded-lg">完成</button>
-</section>
-
-<!-- ===== §3: 資料詮釋（深度 1／6） ===== -->
-<section id="sec-3" class="card p-6 fade-in mb-4">
-  <h2 class="text-xl font-bold text-amber-700">任務 3｜資料詮釋：強颱比例</h2>
-  <p class="text-sm text-slate-700 mt-1">TCCIP 資料：臺灣強颱比例 1961-1990 年 15% → 1991-2020 年 35%，2024 凱米颱風高雄月世界單日降雨 >900mm。<span class="chip bg-amber-100 text-amber-700">深度：資料詮釋</span></p>
-  <div class="mt-2 space-y-2">
-    <label class="block text-sm">(a) 用數字描述趨勢（至少 1 個百分比）：<textarea id="d3a" class="cer" rows="2"></textarea></label>
-    <label class="block text-sm">(b) 可能原因（≥2 個）：<textarea id="d3b" class="cer" rows="2"></textarea></label>
-    <label class="block text-sm">(c) 該優先強化哪 2 項韌性特徵？為什麼？<textarea id="d3c" class="cer" rows="2"></textarea></label>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="redundancy">情境 A</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="diversity">情境 B</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="integration">情境 C</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="adaptability">情境 D</div>
   </div>
-  <button onclick="mark(3)" class="btn mt-2 bg-amber-600 text-white px-4 py-2 rounded-lg">完成</button>
-</section>
 
-<!-- ===== §4: 系統思考（深度 2／6） ===== -->
-<section id="sec-4" class="card p-6 fade-in mb-4">
-  <h2 class="text-xl font-bold text-indigo-700">任務 4｜系統思考：因果迴圈</h2>
-  <p class="text-sm text-slate-700 mt-1">畫出『城市精簡主義 → 單一排水系統 → 強降雨淹水 → 災害成本上升 → 更多工程 → 更多不透水面 → ?』的迴圈，並標出 1 個干預點。<span class="chip bg-indigo-100 text-indigo-700">深度：系統思考</span></p>
-  <textarea id="d4" class="cer" rows="5" placeholder="用文字描述至少 5 個節點、箭頭（→）、正/負回饋（+/-），並指出：如果你是市長，會在哪個節點介入？為什麼？"></textarea>
-  <button onclick="mark(4)" class="btn mt-2 bg-indigo-600 text-white px-4 py-2 rounded-lg">完成</button>
-</section>
-
-<!-- ===== §5: 倫理兩難（深度 3／6） ===== -->
-<section id="sec-5" class="card p-6 fade-in mb-4">
-  <h2 class="text-xl font-bold text-rose-700">任務 5｜倫理兩難：傳統領域 vs 開發</h2>
-  <p class="text-sm text-slate-700 mt-1">保留原住民傳統領域、限制都市開發，對都市人公平嗎？<span class="chip bg-rose-100 text-rose-700">深度：倫理兩難</span></p>
-  <div class="mt-2 space-y-2">
-    <label class="block text-sm">我的立場：<textarea id="d5a" class="cer" rows="2"></textarea></label>
-    <label class="block text-sm">3 個支持理由（引用 dp5 的 80%/6% 或 MOE 0044 被忽視的生態智慧）：<textarea id="d5b" class="cer" rows="3"></textarea></label>
-    <label class="block text-sm">對方最強的反駁 + 我如何回應：<textarea id="d5c" class="cer" rows="3"></textarea></label>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="zones-box-1">
+    <div class="drop-zone p-3" data-accept="redundancy"><div class="font-bold text-slate-700 text-sm">特徵 α<div class="text-xs text-slate-500 mt-1">社區有三條不同路線可供疏散，即使其中一條因坍方封閉，其餘兩條仍能讓居民安全撤離——描述備份與多重保障的設計邏輯。</div></div></div>
+    <div class="drop-zone p-3" data-accept="diversity"><div class="font-bold text-slate-700 text-sm">特徵 β<div class="text-xs text-slate-500 mt-1">電力供應同時來自電網、太陽能板與備用柴油發電機；三者技術原理不同，不可能被同一個故障同時擊倒。</div></div></div>
+    <div class="drop-zone p-3" data-accept="integration"><div class="font-bold text-slate-700 text-sm">特徵 γ<div class="text-xs text-slate-500 mt-1">氣象局、縣市防災中心與里辦公室透過同一個資料平台共享即時雨量數據，各單位不再各自為政。</div></div></div>
+    <div class="drop-zone p-3" data-accept="adaptability"><div class="font-bold text-slate-700 text-sm">特徵 δ<div class="text-xs text-slate-500 mt-1">原本針對颱風設計的避難所，災後評估發現需改造為也能應對高溫熱浪的冷卻站——根據新型態威脅調整功能。</div></div></div>
   </div>
-  <button onclick="mark(5)" class="btn mt-2 bg-rose-600 text-white px-4 py-2 rounded-lg">完成</button>
-</section>
-
-<!-- ===== §6: CER 論證（深度 4／6） ===== -->
-<section id="sec-6" class="card p-6 fade-in mb-4">
-  <h2 class="text-xl font-bold text-purple-700">任務 6｜CER 論證：冗餘值得嗎？</h2>
-  <p class="text-sm text-slate-700 mt-1">主張 Claim-證據 Evidence-理由 Reasoning：『學校預算應投入 20% 用於冗餘系統』是否合理？<span class="chip bg-purple-100 text-purple-700">深度：CER 論證</span></p>
-  <div class="mt-2 space-y-2">
-    <label class="block text-sm">Claim（我的主張，1 句）：<textarea id="d6a" class="cer" rows="1"></textarea></label>
-    <label class="block text-sm">Evidence（至少 1 項資料，如 dp7 花蓮 403 分級復建、dp1 IPCC 33-36 億脆弱人口）：<textarea id="d6b" class="cer" rows="2"></textarea></label>
-    <label class="block text-sm">Reasoning（連結資料與主張的邏輯）：<textarea id="d6c" class="cer" rows="3"></textarea></label>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <div class="nav-row">
+    <span></span>
+    <button id="btn-next-1" class="btn bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
   </div>
-  <button onclick="mark(6)" class="btn mt-2 bg-purple-600 text-white px-4 py-2 rounded-lg">完成</button>
 </section>
 
-<!-- ===== §7: 開放反思 ① + 專題任務（深度 5／6） ===== -->
-<section id="sec-7" class="card p-6 fade-in mb-4">
-  <h2 class="text-xl font-bold text-emerald-700">任務 7｜專題：學校韌性提案書 + 開放反思</h2>
-  <p class="text-sm text-slate-700 mt-1">WSA 四面向至少覆蓋 2 個。<span class="chip bg-emerald-100 text-emerald-700">深度：專題任務 + 開放反思 #1</span></p>
-  <div class="mt-2 space-y-2">
-    <label class="block text-sm">① 現況盤點（學校最脆弱的 1-2 處）：<textarea id="d7a" class="cer" rows="2"></textarea></label>
-    <label class="block text-sm">② 策略（對應 ≥3 項韌性特徵）：<textarea id="d7b" class="cer" rows="3"></textarea></label>
-    <label class="block text-sm">③ WSA 覆蓋（勾選並各寫一句）：
-      <div class="grid grid-cols-2 gap-1 text-xs mt-1">
-        <label><input type="checkbox" id="wsa-g"> 治理 Governance</label>
-        <label><input type="checkbox" id="wsa-c"> 課程 Curriculum</label>
-        <label><input type="checkbox" id="wsa-o"> 營運 Operations</label>
-        <label><input type="checkbox" id="wsa-s"> 社群 Community</label>
+<!-- ===== T2: 資料詮釋 韌性城市指標 ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📈</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 2｜資料詮釋：韌性投資回報率</h2>
+      <p class="text-sm text-slate-700 mt-1">UN-Habitat 2022：韌性城市每投入 1 美元，可避免 4–15 美元的未來災害損失；提前佈局韌性基礎設施的城市，恢復時間比未投資者快 60%。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：城市規劃顧問 ｜ 15 分 ｜ <span class="chip bg-teal-100 text-teal-800">資料詮釋題</span></p>
+    </div>
+  </div>
+
+  <!-- SVG grouped bar: 三種城市類型 × 恢復時間（週） & 損失倍數 -->
+  <svg viewBox="0 0 420 195" class="w-full max-w-xl mx-auto block bg-slate-50 rounded">
+    <line x1="50" y1="165" x2="405" y2="165" stroke="#334155" stroke-width="1"/>
+    <line x1="50" y1="20" x2="50" y2="165" stroke="#334155" stroke-width="1"/>
+    <text x="5" y="25" font-size="9">100</text>
+    <text x="8" y="93" font-size="9">50</text>
+    <text x="8" y="165" font-size="9">0</text>
+    <line x1="48" y1="93" x2="405" y2="93" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4"/>
+    <!-- 高韌性城市 -->
+    <rect x="65" y="130" width="28" height="35" fill="#059669"/>
+    <text x="79" y="122" text-anchor="middle" font-size="8" fill="#059669">20</text>
+    <rect x="95" y="112" width="28" height="53" fill="#34d399"/>
+    <text x="109" y="104" text-anchor="middle" font-size="8" fill="#059669">30</text>
+    <text x="109" y="181" text-anchor="middle" font-size="8">高韌性</text>
+    <!-- 中韌性城市 -->
+    <rect x="185" y="80" width="28" height="85" fill="#0284c7"/>
+    <text x="199" y="72" text-anchor="middle" font-size="8" fill="#0284c7">48</text>
+    <rect x="215" y="60" width="28" height="105" fill="#7dd3fc"/>
+    <text x="229" y="52" text-anchor="middle" font-size="8" fill="#0284c7">60</text>
+    <text x="222" y="181" text-anchor="middle" font-size="8">中韌性</text>
+    <!-- 低韌性城市 -->
+    <rect x="305" y="40" width="28" height="125" fill="#dc2626"/>
+    <text x="319" y="32" text-anchor="middle" font-size="8" fill="#dc2626">71</text>
+    <rect x="335" y="20" width="28" height="145" fill="#fca5a5"/>
+    <text x="349" y="12" text-anchor="middle" font-size="8" fill="#dc2626">82</text>
+    <text x="342" y="181" text-anchor="middle" font-size="8">低韌性</text>
+    <!-- 圖例 -->
+    <rect x="55" y="2" width="10" height="8" fill="#059669"/><text x="68" y="10" font-size="8">恢復週數</text>
+    <rect x="120" y="2" width="10" height="8" fill="#34d399"/><text x="133" y="10" font-size="8">損失指數</text>
+  </svg>
+
+  <div class="mt-4 space-y-4">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q2-1｜比較三類城市，下列何者最符合圖表趨勢？（5 分）</label>
+      <div class="space-y-1" id="q21">
+        <label class="block text-sm"><input type="radio" name="q21" value="A"> A. 三類城市的恢復時間與損失差異不大，韌性投資效益不明顯</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="B"> B. 韌性程度越高，恢復時間越短且損失越低；高韌性城市比低韌性城市快 3 倍以上</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="C"> C. 只有損失指數有差異，恢復時間在各類城市中幾乎相同</label>
       </div>
-      <textarea id="d7c" class="cer mt-1" rows="2" placeholder="各面向具體做什麼"></textarea>
-    </label>
-    <label class="block text-sm">④ 開放反思：如果這個提案 10 年後成功了，你希望學校變成什麼樣？（≥3 句）<textarea id="d7d" class="cer" rows="3"></textarea></label>
+      <p class="text-xs mt-1 text-slate-500 q21-fb"></p>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q2-2｜依據上圖及文字說明，<strong>勾選 2 項</strong>最能支持「提前投資韌性基礎設施」的論點：（10 分）</label>
+      <div id="q22-opts" class="space-y-1">
+        <label class="opt"><input type="checkbox" data-correct="1"> A. 每投入 1 美元可避免 4–15 美元未來損失，長期效益遠超前期成本</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> B. 韌性投資主要是為了讓城市看起來現代化，與災害損失關係不大</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> C. 提前佈局韌性基礎設施的城市恢復時間縮短 60%，大幅降低社經停擺成本</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> D. 等災害發生後再重建反而可以獲得國際援助，比預防投資更划算</label>
+      </div>
+      <p id="q22-fb" class="text-xs mt-2"></p>
+    </div>
   </div>
-  <button onclick="mark(7)" class="btn mt-2 bg-emerald-600 text-white px-4 py-2 rounded-lg">完成</button>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="1">← 上一步</button>
+    <button id="btn-next-2" class="btn bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+  </div>
 </section>
 
-<!-- ===== §8: 後設認知反思（深度 6／6） + 開放反思 ② ===== -->
-<section id="sec-8" class="card p-6 fade-in mb-4">
-  <h2 class="text-xl font-bold text-slate-700">任務 8｜後設認知反思 + 開放延伸</h2>
-  <p class="text-sm text-slate-700 mt-1"><span class="chip bg-slate-200 text-slate-700">深度：後設認知 + 開放反思 #2</span></p>
-  <div class="mt-2 space-y-2">
-    <label class="block text-sm">(a) 上課前，我對『韌性』的想法是：<textarea id="d8a" class="cer" rows="2"></textarea></label>
-    <label class="block text-sm">(b) 現在我的想法是：<textarea id="d8b" class="cer" rows="2"></textarea></label>
-    <label class="block text-sm">(c) 最關鍵的轉變是哪一個資料/故事/圖像？為什麼？<textarea id="d8c" class="cer" rows="2"></textarea></label>
-    <label class="block text-sm">(d) 開放延伸：你願意為韌性付出多少『效率代價』？舉個人生活的例子（≥50 字）<textarea id="d8d" class="cer" rows="3"></textarea></label>
+<!-- ===== T3: 系統思考 連結不足的脆弱循環 ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-cyan-700">任務 3｜系統思考：孤島效應脆弱環</h2>
+      <p class="text-sm text-slate-700 mt-1">完成「系統孤島 → 脆弱性自我強化」的正反饋循環圖：把 4 張卡片拖到正確位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統分析師 ｜ 15 分 ｜ <span class="chip bg-cyan-100 text-cyan-800">系統思考題</span></p>
+    </div>
   </div>
-  <button onclick="mark(8)" class="btn mt-2 bg-slate-600 text-white px-4 py-2 rounded-lg">完成</button>
+
+  <svg viewBox="0 0 500 260" class="loop w-full bg-slate-50 rounded">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L0,10 L10,5 z" fill="#64748b"/></marker>
+    </defs>
+    <rect x="10" y="10" width="165" height="50" rx="8" fill="#d1fae5" stroke="#059669" class="loop-slot" data-slot="1"/>
+    <text x="92" y="40" text-anchor="middle" fill="#065f46" id="slot-1-text">（拖這裡）</text>
+    <rect x="325" y="10" width="165" height="50" rx="8" fill="#d1fae5" stroke="#059669" class="loop-slot" data-slot="2"/>
+    <text x="407" y="40" text-anchor="middle" fill="#065f46" id="slot-2-text">（拖這裡）</text>
+    <rect x="325" y="200" width="165" height="50" rx="8" fill="#d1fae5" stroke="#059669" class="loop-slot" data-slot="3"/>
+    <text x="407" y="228" text-anchor="middle" fill="#065f46" id="slot-3-text">（拖這裡）</text>
+    <rect x="10" y="200" width="165" height="50" rx="8" fill="#d1fae5" stroke="#059669" class="loop-slot" data-slot="4"/>
+    <text x="92" y="228" text-anchor="middle" fill="#065f46" id="slot-4-text">（拖這裡）</text>
+    <line x1="175" y1="35" x2="325" y2="35" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="407" y1="60" x2="407" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="325" y1="225" x2="175" y2="225" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="92" y1="200" x2="92" y2="60" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="250" y="130" text-anchor="middle" font-size="13" fill="#059669" font-weight="bold">孤島效應脆弱環</text>
+    <text x="250" y="148" text-anchor="middle" font-size="10" fill="#059669">（正反饋 ↺）</text>
+  </svg>
+  <p class="text-xs text-slate-500 mt-2 text-center">提示：從「各系統單獨運作，缺乏資訊共享」開始，最後一張使孤島問題繼續強化。</p>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3" id="loop-items">
+    <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">跨部門協調失敗，災害損失擴大</div>
+    <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">各系統單獨運作，缺乏資訊共享</div>
+    <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">各單位更加保護「地盤」，整合更難</div>
+    <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">預警訊號無法跨組織傳遞，反應延遲</div>
+  </div>
+  <p id="loop-fb" class="mt-3 text-sm"></p>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="2">← 上一步</button>
+    <button id="btn-next-3" class="btn bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
 </section>
 
-<div class="card p-4 text-center mt-4">
-  <p class="text-sm text-slate-600">完成全部 8 任務並提交給老師，你就是 Level 4 國中韌性公民 🌟</p>
-</div>
+<!-- ===== T4: CER（含倫理主題） ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">✍️</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-700">任務 4｜CER 論證 Flash Card</h2>
+      <p class="text-sm text-slate-700 mt-1">議題（含倫理）：<strong>「建構城市韌性時，誰應該有優先發言權？政府、企業還是社區居民？」</strong>三步驟組裝你的論證卡。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：韌性治理顧問 ｜ 20 分 ｜ <span class="chip bg-emerald-100 text-emerald-800">論證 + 倫理</span></p>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <p class="font-semibold text-sm mb-1">① 選擇你的主張 Claim（4 分）</p>
+    <div id="claim-opts">
+      <label class="opt"><input type="radio" name="claim" value="community"> A. 社區居民應有優先發言權，因為他們最了解當地脆弱點且承擔最大風險。</label>
+      <label class="opt"><input type="radio" name="claim" value="govt"> B. 政府應主導韌性規劃，因為只有公部門具備跨域協調與資源調配能力。</label>
+      <label class="opt"><input type="radio" name="claim" value="multi"> C. 韌性建構需要政府、企業與社區三方共同治理，任何單一主體都不完整。</label>
+    </div>
+  </div>
+
+  <div id="evid-wrap" class="mb-3 hidden">
+    <p class="font-semibold text-sm mb-1">② 為你的主張挑出最有力的證據 Evidence（8 分）</p>
+    <div id="evid-opts"></div>
+    <p id="evid-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div id="reas-wrap" class="mb-3 hidden">
+    <p class="font-semibold text-sm mb-1">③ 為你的主張挑出最相符的推理 Reasoning（8 分）</p>
+    <div id="reas-opts"></div>
+    <p id="reas-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div id="cer-summary" class="bg-emerald-50 p-3 rounded text-sm hidden">
+    <p class="font-bold text-emerald-800 mb-1">✅ 你的 CER 卡完成：</p>
+    <p><strong>Claim：</strong><span id="sum-c"></span></p>
+    <p><strong>Evidence：</strong><span id="sum-e"></span></p>
+    <p><strong>Reasoning：</strong><span id="sum-r"></span></p>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="3">← 上一步</button>
+    <button id="btn-next-4" class="btn bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T5: 校園韌性網絡提案 ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏫</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 5｜校園韌性網絡提案書</h2>
+      <p class="text-sm text-slate-700 mt-1">選一個主題，組裝提案，再用 WSA 四面向自我檢核。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生韌性系統設計師 ｜ 15 分 ｜ <span class="chip bg-amber-100 text-amber-800">專題式學習</span></p>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <p class="font-semibold text-sm mb-1">① 選擇你的提案主題</p>
+    <div id="proj-opts">
+      <label class="opt"><input type="radio" name="proj" value="redundancy"> 🔁 校園備援電力與飲水韌性計畫（備援特徵）</label>
+      <label class="opt"><input type="radio" name="proj" value="diversity"> 🌈 校園能源多元化提案（太陽能 + 市電雙系統）</label>
+      <label class="opt"><input type="radio" name="proj" value="integration"> 🔗 校際韌性資訊共享平台（整合特徵）</label>
+      <label class="opt"><input type="radio" name="proj" value="adaptability"> 🔄 校園多功能避難空間轉型計畫（調適特徵）</label>
+    </div>
+  </div>
+
+  <div id="proj-detail" class="hidden bg-amber-50 p-3 rounded text-sm mb-3">
+    <p class="font-semibold text-amber-800 mb-1">② 預設方案（依主題）</p>
+    <p id="proj-problem" class="mb-1"></p>
+    <p id="proj-steps" class="mb-1"></p>
+    <p class="font-semibold mt-2">③ 挑一個 KPI：</p>
+    <div id="kpi-opts" class="mt-1"></div>
+  </div>
+
+  <div class="bg-indigo-50 p-3 rounded mb-3">
+    <p class="font-bold text-indigo-800 text-sm">🎯 WSA 四面向檢核（全勾才能解鎖下一關）</p>
+    <label class="block mt-1 text-sm"><input type="checkbox" class="wsa"> <strong>治理</strong>：我的提案會送學生議會/班聯會或校務會議</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>課程</strong>：我的提案可以跨科連結（自然/社會/數學/科技）</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>校園營運</strong>：我的提案改變了校園硬體/制度/採購</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>社群</strong>：我的提案會擴散到鄰近社區或其他學校</label>
+  </div>
+  <p id="p-fb" class="text-xs"></p>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="4">← 上一步</button>
+    <button id="btn-next-5" class="btn bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== Final + Reflection ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in">
+  <h2 class="text-3xl font-bold text-emerald-700 mb-2 text-center">🏆 你完成了！</h2>
+  <p class="text-slate-700 mb-4 text-center">你已完成 5 個任務，從韌性特徵辨識到校園韌性系統提案。最後一站做個快速反思。</p>
+
+  <div class="grid grid-cols-5 gap-2 max-w-2xl mx-auto my-4">
+    <div class="p-2 text-center"><div class="text-3xl">🎯</div><div class="text-xs mt-1">韌性設計師</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">📈</div><div class="text-xs mt-1">城市規劃師</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">🔄</div><div class="text-xs mt-1">系統分析師</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">✍️</div><div class="text-xs mt-1">治理顧問</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">🏫</div><div class="text-xs mt-1">韌性提案人</div></div>
+  </div>
+
+  <div class="bg-fuchsia-50 rounded-xl p-4 max-w-2xl mx-auto">
+    <p class="font-bold text-fuchsia-800 mb-2">🧠 後設認知反思（5 分）</p>
+    <p class="text-sm font-semibold mt-2">Q1｜上這堂課前，你對韌性系統的了解程度：</p>
+    <div id="stars-before" class="mt-1">
+      <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+    </div>
+    <p class="text-sm font-semibold mt-3">Q2｜上完這堂課後，你的理解程度：</p>
+    <div id="stars-after" class="mt-1">
+      <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+    </div>
+    <p class="text-sm font-semibold mt-3">Q3｜對你影響最大的任務：</p>
+    <div id="impact-opts" class="mt-1">
+      <label class="opt"><input type="radio" name="impact" value="1"> 任務 1 韌性特徵配對</label>
+      <label class="opt"><input type="radio" name="impact" value="2"> 任務 2 韌性投資資料詮釋</label>
+      <label class="opt"><input type="radio" name="impact" value="3"> 任務 3 孤島效應系統思考</label>
+      <label class="opt"><input type="radio" name="impact" value="4"> 任務 4 韌性治理 CER 論證</label>
+      <label class="opt"><input type="radio" name="impact" value="5"> 任務 5 校園韌性提案</label>
+    </div>
+    <p id="reflect-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div class="mt-6 text-lg font-bold text-emerald-600 text-center">最終韌性點數：<span id="final-score">0</span> / 80</div>
+  <div class="nav-row max-w-2xl mx-auto">
+    <button class="btn btn-back" data-back="5">← 回到任務 5</button>
+    <button onclick="location.reload()" class="btn bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold">再玩一次</button>
+  </div>
+</section>
 
 </div>
 
 <script>
-let score = 0;
-const setDot = (i, done=true) => { const d=document.getElementById('dot-'+i); if(d && done) d.classList.add('done'); };
-const setScore = (add) => { score += add; document.getElementById('score').textContent = score; };
+(() => {
+  const TOTAL_LEVELS = 5;
+  const S = { score:0, current:1, awarded:{} };
+  const setScore = (n)=>{ S.score += n; document.getElementById('score').textContent = S.score; };
+  const awardOnce = (key, pts)=>{ if(!S.awarded[key]){ S.awarded[key]=true; setScore(pts); } };
 
-// Drag-drop for §1
-document.querySelectorAll('#bank1 .drag-item').forEach(el => {
-  el.addEventListener('dragstart', e => { e.dataTransfer.setData('text', el.dataset.ans); el.classList.add('dragging'); e.dataTransfer.setData('id', el.textContent); });
-  el.addEventListener('dragend', () => el.classList.remove('dragging'));
-});
-document.querySelectorAll('#sec-1 .drop-zone').forEach(z => {
-  z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('over'); });
-  z.addEventListener('dragleave', () => z.classList.remove('over'));
-  z.addEventListener('drop', e => {
-    e.preventDefault(); z.classList.remove('over');
-    const ans = e.dataTransfer.getData('text');
-    const dragging = document.querySelector('.dragging');
-    if (dragging) { z.appendChild(dragging); dragging.dataset.dropped = ans; }
+  const updateDots = ()=>{
+    for(let i=1;i<=TOTAL_LEVELS;i++){
+      const d = document.getElementById('dot-'+i);
+      if(!d) continue;
+      d.classList.remove('active','done');
+      if(i < S.current) d.classList.add('done');
+      else if(i === S.current) d.classList.add('active');
+    }
+  };
+
+  const goto = (n)=>{
+    document.querySelectorAll('section[id^="level-"]').forEach(s=>s.classList.add('hidden-screen'));
+    S.current = n;
+    const next = document.getElementById('level-'+n) || document.getElementById('level-final');
+    next.classList.remove('hidden-screen');
+    if(next.id === 'level-final'){
+      for(let i=1;i<=TOTAL_LEVELS;i++){ const d=document.getElementById('dot-'+i); if(d){d.classList.remove('active');d.classList.add('done');} }
+      document.getElementById('final-score').textContent = S.score;
+    } else {
+      updateDots();
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+
+  document.querySelectorAll('.btn-back').forEach(b=>{
+    b.onclick = ()=>goto(parseInt(b.dataset.back,10));
   });
-});
-function check1(){
-  let correct = 0, total = 0;
-  document.querySelectorAll('#sec-1 .drop-zone').forEach(z => {
-    z.querySelectorAll('.drag-item').forEach(item => {
-      total++;
-      if (item.dataset.ans === z.dataset.key) correct++;
+
+  const confetti = ()=>{
+    const colors=['#059669','#10b981','#f59e0b','#06b6d4','#6366f1'];
+    for(let i=0;i<40;i++){
+      const el=document.createElement('div');
+      el.className='confetti';
+      el.style.left=Math.random()*100+'vw';
+      el.style.background=colors[i%colors.length];
+      el.style.animationDelay=(Math.random()*0.6)+'s';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),2500);
+    }
+  };
+
+  const shuffleChildren = (parent)=>{
+    const kids = Array.from(parent.children);
+    for(let i=kids.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      parent.appendChild(kids[j]);
+    }
+  };
+
+  // ===== Task 1: Drag match =====
+  shuffleChildren(document.getElementById('items-box-1'));
+  shuffleChildren(document.getElementById('zones-box-1'));
+
+  (function(){
+    let dragged = null, done1 = 0, err1 = 0;
+    document.querySelectorAll('#items-box-1 .drag-item').forEach(it=>{
+      it.addEventListener('dragstart', ()=>{ dragged=it; it.classList.add('dragging'); });
+      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null; });
     });
+    document.querySelectorAll('#zones-box-1 .drop-zone').forEach(z=>{
+      z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over');});
+      z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+      z.addEventListener('drop', e=>{
+        e.preventDefault(); z.classList.remove('over');
+        if(!dragged) return;
+        if(dragged.dataset.match === z.dataset.accept){
+          dragged.classList.add('pop');
+          z.appendChild(dragged);
+          dragged.setAttribute('draggable','false');
+          dragged.style.cursor='default';
+          done1++;
+          if(done1===4){
+            awardOnce('L1', 10 - Math.min(err1,5));
+            document.getElementById('btn-next-1').disabled=false;
+            document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 全部配對正確！α 備援、β 多元性、γ 整合、δ 調適能力——韌性四大支柱！</span>';
+            confetti();
+          }
+        } else {
+          z.classList.add('shake'); setTimeout(()=>z.classList.remove('shake'),400);
+          err1++;
+          document.getElementById('feedback-1').innerHTML='<span class="text-emerald-600">❌ 再想想：α 強調多備份路線，β 強調技術類型不同，γ 強調跨組織資訊流通，δ 強調功能可重新定義。</span>';
+        }
+      });
+    });
+  })();
+  document.getElementById('btn-next-1').onclick = ()=>goto(2);
+
+  // ===== Task 2 =====
+  const btn2 = document.getElementById('btn-next-2');
+  const checkL2 = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked');
+    const checked = document.querySelectorAll('#q22-opts input:checked');
+    btn2.disabled = !(q21 && checked.length === 2);
+    const fb = document.getElementById('q22-fb');
+    if(checked.length === 2) fb.textContent = '已選 2 項，可以提交。';
+    else if(checked.length > 2) fb.textContent = '⚠️ 只能選 2 項，請再調整。';
+    else fb.textContent = `已選 ${checked.length}/2 項`;
+  };
+  document.querySelectorAll('input[name=q21]').forEach(r=>r.onchange=checkL2);
+  document.querySelectorAll('#q22-opts input').forEach(c=>c.onchange=checkL2);
+  btn2.onclick = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked').value;
+    const fb21 = document.querySelector('.q21-fb');
+    let p = 0;
+    if(q21==='B'){
+      fb21.textContent='✅ 正解 B：圖表顯示高韌性城市恢復週數（20）遠低於低韌性（71），差距超過 3 倍，損失也明顯更低。';
+      fb21.className='text-xs mt-1 text-emerald-700 q21-fb'; p+=5;
+    } else {
+      fb21.textContent='❌ 正解為 B。圖表清楚顯示三類城市在恢復週數與損失指數上均有顯著差距。';
+      fb21.className='text-xs mt-1 text-rose-600 q21-fb';
+    }
+    const opts = document.querySelectorAll('#q22-opts input');
+    let correctChecked = 0, wrongChecked = 0;
+    opts.forEach(o=>{
+      const lbl = o.parentElement;
+      lbl.classList.remove('correct','wrong');
+      if(o.checked){
+        if(o.dataset.correct==='1'){ lbl.classList.add('correct'); correctChecked++;}
+        else { lbl.classList.add('wrong'); wrongChecked++;}
+      }
+    });
+    const fb22 = document.getElementById('q22-fb');
+    if(correctChecked===2 && wrongChecked===0){
+      p+=10;
+      fb22.innerHTML='<span class="text-emerald-700 font-bold">✅ 兩項都對！投資回報率高（A）與恢復時間縮短 60%（C）是最直接有力的論點。</span>';
+    } else if(correctChecked===1 && wrongChecked===0){
+      p+=5;
+      fb22.innerHTML='<span class="text-amber-600">部分正確（1/2）。再選一項合理論點。</span>';
+    } else {
+      fb22.innerHTML='<span class="text-rose-600">❌ 正解為 A（投資回報率高）與 C（恢復時間縮短）。</span>';
+    }
+    awardOnce('L2', p);
+    confetti();
+    goto(3);
+  };
+
+  // ===== Task 3: Feedback loop =====
+  shuffleChildren(document.getElementById('loop-items'));
+  (function(){
+    let dragged = null, loopCorrect = 0, loopErr = 0;
+    document.querySelectorAll('#loop-items .drag-item').forEach(it=>{
+      it.addEventListener('dragstart', ()=>{ dragged=it; it.classList.add('dragging'); });
+      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null; });
+    });
+    document.querySelectorAll('.loop-slot').forEach(s=>{
+      s.addEventListener('dragenter', e=>{ e.preventDefault(); s.classList.add('over');});
+      s.addEventListener('dragover', e=>{ e.preventDefault(); s.classList.add('over');});
+      s.addEventListener('dragleave', ()=>s.classList.remove('over'));
+      s.addEventListener('drop', e=>{
+        e.preventDefault(); s.classList.remove('over');
+        if(!dragged) return;
+        if(dragged.dataset.loop === s.dataset.slot){
+          const t = document.getElementById('slot-'+s.dataset.slot+'-text');
+          if(t) t.textContent = dragged.textContent;
+          dragged.style.visibility='hidden';
+          loopCorrect++;
+          if(loopCorrect===4){
+            awardOnce('L3', 15 - Math.min(loopErr,5));
+            document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 完成！孤島效應：各系統孤立 → 預警延遲 → 協調失敗 → 各守地盤 → 整合更難。</span>';
+            document.getElementById('btn-next-3').disabled=false;
+            confetti();
+          }
+        } else {
+          s.classList.add('shake'); setTimeout(()=>s.classList.remove('shake'),400);
+          loopErr++;
+          document.getElementById('loop-fb').innerHTML='<span class="text-rose-600">❌ 順序錯了。提示：資訊不共享 → 預警如何傳遞？預警延遲 → 協調結果如何？協調失敗 → 各單位態度？</span>';
+        }
+      });
+    });
+  })();
+  document.getElementById('btn-next-3').onclick = ()=>goto(4);
+
+  // ===== Task 4: CER =====
+  const claimBank = {
+    community: '社區居民應有優先發言權，因為他們最了解當地脆弱點且承擔最大風險。',
+    govt:      '政府應主導韌性規劃，因為只有公部門具備跨域協調與資源調配能力。',
+    multi:     '韌性建構需要政府、企業與社區三方共同治理，任何單一主體都不完整。'
+  };
+  const evidBank = {
+    community: [
+      {t:'洛克菲勒基金會韌性城市計畫（2019）：納入在地社區知識的韌性計畫，實施後社區滿意度達 87%，相比專家主導計畫高 34 個百分點；在地知識識別出規劃圖未標示的 23 處脆弱點。', ok:true},
+      {t:'社區的人最清楚自己的需要。', ok:false},
+      {t:'居民參與讓計畫更民主。', ok:false},
+    ],
+    govt: [
+      {t:'UNDRR《仙台框架》2015–2030：跨國比較顯示，有完整政府主導韌性框架的國家，人均災害死亡率比無框架國家低 65%；政府整合協調平均節省 30% 救災成本。', ok:true},
+      {t:'政府有權力和資源應該負責。', ok:false},
+      {t:'政府比較專業可以統籌。', ok:false},
+    ],
+    multi: [
+      {t:'亞洲開發銀行 2021：分析 50 個亞洲城市韌性計畫，三方共治（政府 + 企業 + 社區）的計畫平均韌性指數比單一主導高 42%，且長期可持續性顯著更高。', ok:true},
+      {t:'三方合作比一方強。', ok:false},
+      {t:'多元參與是好的民主精神。', ok:false},
+    ]
+  };
+  const reasBank = {
+    community: [
+      {t:'韌性規劃的核心目的是保護最脆弱者；若這些人無發言權，計畫將傾向保護已有資源者；在地知識也是無法被遠端規劃取代的資訊資源，忽略它將導致系統性盲點。', ok:true},
+      {t:'最受影響的人應該最有聲音。', ok:false},
+      {t:'在地知識比外來專家更準確。', ok:false},
+    ],
+    govt: [
+      {t:'韌性需要跨系統整合，而整合需要合法權力與強制協調能力；企業以利潤為先、社區視野有限，只有政府能在利益衝突中做出具約束力的資源分配決策。', ok:true},
+      {t:'政府有法律授權所以應該主導。', ok:false},
+      {t:'沒有政府就沒有人負責。', ok:false},
+    ],
+    multi: [
+      {t:'韌性的七大特徵（備援、多元、整合、調適等）需要不同主體分別貢獻：政府提供整合與規則、企業提供技術與資金、社區提供在地知識；缺少任何一方都會產生系統盲點。', ok:true},
+      {t:'三方各有優點應該合作。', ok:false},
+      {t:'任何單方面的決策都可能有偏差。', ok:false},
+    ]
+  };
+
+  let chosenClaim = null, chosenEvidOk = false, chosenReasOk = false, evText = '';
+  const evidWrap = document.getElementById('evid-wrap');
+  const reasWrap = document.getElementById('reas-wrap');
+  const cerSummary = document.getElementById('cer-summary');
+  const btn4 = document.getElementById('btn-next-4');
+
+  const renderOpts = (wrap, items, name, onPick)=>{
+    wrap.innerHTML = '';
+    const shuffled = items.slice().sort(()=>Math.random()-0.5);
+    shuffled.forEach((it)=>{
+      const lbl = document.createElement('label');
+      lbl.className = 'opt';
+      lbl.innerHTML = `<input type="radio" name="${name}"> ${it.t}`;
+      lbl.querySelector('input').onchange = ()=>{
+        wrap.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel','correct','wrong'));
+        lbl.classList.add(it.ok ? 'correct' : 'wrong');
+        onPick(it.ok, it.t);
+      };
+      wrap.appendChild(lbl);
+    });
+  };
+
+  document.querySelectorAll('input[name=claim]').forEach(r=>{
+    r.onchange = ()=>{
+      chosenClaim = r.value;
+      document.querySelectorAll('#claim-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      awardOnce('L4-claim', 4);
+      evidWrap.classList.remove('hidden');
+      reasWrap.classList.add('hidden');
+      cerSummary.classList.add('hidden');
+      chosenEvidOk = false; chosenReasOk = false;
+      btn4.disabled = true;
+      renderOpts(document.getElementById('evid-opts'), evidBank[chosenClaim], 'evid', (ok, t)=>{
+        chosenEvidOk = ok; evText = t;
+        document.getElementById('evid-fb').innerHTML = ok
+          ? '<span class="text-emerald-700">✅ 這條證據含具體數據／權威來源，與你的主張一致。</span>'
+          : '<span class="text-rose-600">❌ 這條缺乏數據／與主張關聯弱。再選一次。</span>';
+        if(ok) awardOnce('L4-evid', 8);
+        reasWrap.classList.remove('hidden');
+        renderOpts(document.getElementById('reas-opts'), reasBank[chosenClaim], 'reas', (ok2, t2)=>{
+          chosenReasOk = ok2;
+          document.getElementById('reas-fb').innerHTML = ok2
+            ? '<span class="text-emerald-700">✅ 這條推理確實連結了證據與主張。</span>'
+            : '<span class="text-rose-600">❌ 這條沒有清楚解釋為什麼證據支持主張。再選一次。</span>';
+          if(ok2){
+            awardOnce('L4-reas', 8);
+            document.getElementById('sum-c').textContent = claimBank[chosenClaim];
+            document.getElementById('sum-e').textContent = evText;
+            document.getElementById('sum-r').textContent = t2;
+            cerSummary.classList.remove('hidden');
+            confetti();
+          }
+          btn4.disabled = !(chosenEvidOk && chosenReasOk);
+        });
+        btn4.disabled = !(chosenEvidOk && chosenReasOk);
+      });
+    };
   });
-  const fb = document.getElementById('fb1');
-  fb.textContent = `正確 ${correct}/${total}`;
-  if (correct >= 6) { fb.className='text-green-600 text-sm mt-2'; setDot(1); setScore(10); }
-  else { fb.className='text-red-600 text-sm mt-2'; }
-}
-function mark(i){
-  setDot(i); setScore(10);
-  alert('已記錄任務 '+i+'。繼續下一題！');
-}
+  btn4.onclick = ()=>goto(5);
+
+  // ===== Task 5: 提案菜單 + WSA =====
+  const projBank = {
+    redundancy: {
+      problem: '現況問題：學校停電或停水時無法維持基本運作，師生缺乏備援機制。',
+      steps: '行動步驟：① 盤查校園用電、飲水的單一失效點；② 提案安裝備用發電設備與雨水收集桶；③ 建立停電 / 停水應變 SOP 並演練。',
+      kpis: ['備援設備完工後可支撐校園緊急運作 72 小時', '每學期至少演練備援啟動程序一次', '備援 SOP 納入新生訓練']
+    },
+    diversity: {
+      problem: '現況問題：校園電力 100% 依賴市電，颱風或地震斷電後立即失能。',
+      steps: '行動步驟：① 評估屋頂太陽能裝設可行性；② 提案「雙系統」（太陽能 + 市電）切換機制；③ 記錄校園年用電量與潛在太陽能發電量對比。',
+      kpis: ['太陽能裝置可覆蓋校園 20% 日常用電', '完成雙系統切換測試並達 100% 成功率', '提案納入校園永續發展計畫']
+    },
+    integration: {
+      problem: '現況問題：鄰近學校之間缺乏資訊共享，遇災害各自應變效率低落。',
+      steps: '行動步驟：① 與鄰近 2–3 所學校建立「韌性聯盟」；② 建立共用通報群組與資源盤點表；③ 每學期舉辦一次聯合桌上演練。',
+      kpis: ['建立 3 校以上資訊共享平台', '聯盟學校互相備援物資清單完成率 100%', '聯合演練後各校應變時間縮短 30%']
+    },
+    adaptability: {
+      problem: '現況問題：校園避難所僅針對地震颱風設計，無法因應高溫熱浪等新型態災害。',
+      steps: '行動步驟：① 評估現有避難所在高溫日的降溫能力；② 提案加裝遮陽、通風與飲水設施；③ 修訂緊急應變計畫納入熱浪情境。',
+      kpis: ['改造後避難所高溫日室內溫度降低 3°C', '熱浪情境應變 SOP 完成並師生皆知', '提案複製至社區活動中心']
+    }
+  };
+
+  const projDetail = document.getElementById('proj-detail');
+  let kpiPicked = false, projPicked = null;
+  document.querySelectorAll('input[name=proj]').forEach(r=>{
+    r.onchange = ()=>{
+      projPicked = r.value;
+      document.querySelectorAll('#proj-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      const d = projBank[projPicked];
+      document.getElementById('proj-problem').textContent = d.problem;
+      document.getElementById('proj-steps').textContent = d.steps;
+      const kpiBox = document.getElementById('kpi-opts');
+      kpiBox.innerHTML = '';
+      kpiPicked = false;
+      d.kpis.forEach((k)=>{
+        const lbl = document.createElement('label');
+        lbl.className='opt';
+        lbl.innerHTML = `<input type="radio" name="kpi"> ${k}`;
+        lbl.querySelector('input').onchange = ()=>{
+          document.querySelectorAll('#kpi-opts .opt').forEach(o=>o.classList.remove('sel'));
+          lbl.classList.add('sel');
+          kpiPicked = true;
+          checkP();
+        };
+        kpiBox.appendChild(lbl);
+      });
+      projDetail.classList.remove('hidden');
+      checkP();
+    };
+  });
+
+  const btn5 = document.getElementById('btn-next-5');
+  function checkP(){
+    const wsaAll = document.querySelectorAll('.wsa:checked').length === 4;
+    const ok = projPicked && kpiPicked && wsaAll;
+    document.getElementById('p-fb').innerHTML = ok
+      ? '<span class="text-emerald-700 font-bold">✅ 提案組裝完成、WSA 四面向全勾！</span>'
+      : '<span class="text-slate-500">請：選主題 → 選 KPI → 勾 WSA 四面向</span>';
+    btn5.disabled = !ok;
+  }
+  document.querySelectorAll('.wsa').forEach(c=>c.onchange=checkP);
+  btn5.onclick = ()=>{ awardOnce('L5', 15); confetti(); goto(6); };
+
+  // ===== Final reflection =====
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+  const setStars = (wrapId, set)=>{
+    const wrap = document.getElementById(wrapId);
+    wrap.querySelectorAll('.star').forEach(s=>{
+      s.onclick = ()=>{
+        const v = parseInt(s.dataset.val,10);
+        set(v);
+        wrap.querySelectorAll('.star').forEach(x=>{
+          x.classList.toggle('on', parseInt(x.dataset.val,10) <= v);
+        });
+        checkReflect();
+      };
+    });
+  };
+  setStars('stars-before', v=>starBefore=v);
+  setStars('stars-after', v=>starAfter=v);
+  document.querySelectorAll('input[name=impact]').forEach(r=>{
+    r.onchange = ()=>{
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+  function checkReflect(){
+    const ok = starBefore>0 && starAfter>0 && impactPicked;
+    document.getElementById('reflect-fb').textContent = ok
+      ? '✅ 反思完成，獲得 5 分。'
+      : '請完成 3 題（前/後理解程度 + 影響最大任務）';
+    if(ok){
+      awardOnce('FINAL', 5);
+      document.getElementById('final-score').textContent = S.score;
+    }
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

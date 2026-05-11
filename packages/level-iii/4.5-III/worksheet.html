@@ -1,340 +1,729 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>校園氣候英雄 — 4.5-III 互動學習單</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>校園氣候英雄 | 互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#fef3c7 0%,#fecaca 50%,#c7d2fe 100%); min-height:100vh; }
-  .card { transition: transform .2s; }
-  .card:hover { transform: translateY(-2px); }
-  .feedback-pop { animation: pop .4s ease-out; }
-  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#fef3c7,#fecaca); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:100px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
   .shake { animation: shake .4s; }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
-  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; z-index:50;}
-  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
-  .progress-dot.done { background: #10b981; transform: scale(1.2); }
-  .progress-dot.active { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,.25); }
-  .badge { animation: glow 2s infinite alternate; }
-  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
-  .hidden-step { display: none; }
-  .star { cursor:pointer; font-size:1.75rem; color:#d1d5db; transition:transform .15s; }
-  .star.on { color:#f59e0b; transform:scale(1.15);}
-  .countdown { font-family: "Courier New", monospace; font-variant-numeric: tabular-nums; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#ef4444; transform:scale(1.3);}
+  .progress-dot.done { background:#dc2626;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.95rem;}
+  .opt:hover { background:#fff1f2; }
+  .opt.sel { border-color:#ef4444; background:#fee2e2;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.5rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
+  .sq-btn { display:block; width:100%; text-align:left; padding:.6rem .8rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.9rem; transition:background .15s;}
+  .sq-btn:hover { background:#fff1f2; }
 </style>
 </head>
-<body class="text-gray-800">
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 
-<header class="bg-gradient-to-r from-amber-500 to-red-500 text-white p-6 shadow-lg">
-  <div class="max-w-5xl mx-auto">
-    <h1 class="text-3xl md:text-4xl font-extrabold">⏰ 校園氣候英雄 — 我們的學校不能再等</h1>
-    <p class="mt-2 text-amber-50">UNESCO 4.5-III ｜ 9-12 歲 ｜ 一起讓學校成為氣候行動的第一現場！</p>
-    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
-      <div class="progress-dot active" id="dot1"></div>
-      <div class="progress-dot" id="dot2"></div>
-      <div class="progress-dot" id="dot3"></div>
-      <div class="progress-dot" id="dot4"></div>
-      <div class="progress-dot" id="dot5"></div>
-      <div class="progress-dot" id="dot6"></div>
-    </div>
-    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
-  </div>
-</header>
+<div class="max-w-3xl mx-auto">
 
-<main class="max-w-5xl mx-auto p-4 md:p-6">
-
-<!-- 角色情境 -->
-<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <div class="flex items-start gap-4">
-    <div class="text-6xl">🦸</div>
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
     <div>
-      <h2 class="text-2xl font-bold text-red-600">任務簡報：你被選為「校園氣候英雄」！</h2>
-      <p class="mt-2 leading-relaxed">嗨！我是地球小 Earth，科學家 IPCC 告訴我們：<strong class="text-red-600">全球排放必須在 2030 年前比 2019 年減少 43%</strong>。學校是 1.5 億學生每天生活的地方，也是最重要的行動現場。完成 6 個關卡，拿到「校園氣候英雄」徽章，加入 UNESCO 全球 <strong>90+ 個國家、1,000+ 個機構</strong> 的行動網絡！</p>
-      <div class="mt-3 bg-amber-50 border-l-4 border-amber-400 p-3 rounded">
-        <p class="text-sm">⏳ 距離 2030 只剩 <span id="cd" class="countdown font-bold text-red-600">計算中…</span></p>
+      <h1 class="text-2xl md:text-3xl font-bold text-red-600">🦸 校園氣候英雄</h1>
+      <p class="text-sm text-slate-600 mt-1">跟著小 Earth，讓你的學校成為氣候行動的第一現場！</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-red-600"><span id="score">0</span> / 80</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3 flex-wrap">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-2 text-sm text-slate-600">關卡 <span id="step-label">1</span> / 4</span>
+  </div>
+
+  <!-- ===== Level 1: 校園行動配對 (15 pts) ===== -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🔍</div>
+      <div>
+        <h2 class="text-xl font-bold text-red-700">關卡 1：猜猜看！這件事屬於哪個方向？</h2>
+        <p class="text-sm text-slate-700 mt-1">小 Earth 說：「讓學校變成氣候英雄，需要從 4 個方向一起努力！」把下面 8 個行動拖到對應的方向！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 15 分｜全部放對才能前往下一關</p>
       </div>
-      <button onclick="startMission()" class="mt-4 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 🚀</button>
     </div>
-  </div>
-</section>
 
-<!-- §1 校園偵探（填空/選擇）-->
-<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-blue-700">🔍 §1 關卡 1：校園偵探 — 我們學校做了什麼？</h2>
-  <p class="mt-2 text-gray-600">回到家前先訪問老師或查學校官網。把你找到的答案填上，沒查到也沒關係，寫「待查」！</p>
-  <div class="grid md:grid-cols-2 gap-3 mt-4">
-    <label class="block"><span class="text-sm text-gray-700">1. 學校是否有氣候 / 永續 / 環境計畫？</span>
-      <input id="i1_1" class="mt-1 w-full border-2 rounded-lg p-2" placeholder="例：有，在學校官網永續專區" /></label>
-    <label class="block"><span class="text-sm text-gray-700">2. 是否宣布過「氣候緊急狀態」？</span>
-      <input id="i1_2" class="mt-1 w-full border-2 rounded-lg p-2" placeholder="有 / 沒有 / 不清楚" /></label>
-    <label class="block"><span class="text-sm text-gray-700">3. 班級冷氣通常設幾度？</span>
-      <input id="i1_3" type="number" class="mt-1 w-full border-2 rounded-lg p-2" placeholder="建議 26-28 ℃" /></label>
-    <label class="block"><span class="text-sm text-gray-700">4. 校園大約有幾棵樹？</span>
-      <input id="i1_4" class="mt-1 w-full border-2 rounded-lg p-2" placeholder="估計：" /></label>
-    <label class="block"><span class="text-sm text-gray-700">5. 是否參加「臺美生態學校夥伴計畫」？</span>
-      <input id="i1_5" class="mt-1 w-full border-2 rounded-lg p-2" placeholder="有 / 沒有 / 不清楚" /></label>
-    <label class="block"><span class="text-sm text-gray-700">6. 今年環教 4 小時如何安排？</span>
-      <input id="i1_6" class="mt-1 w-full border-2 rounded-lg p-2" placeholder="例：校外教學 + 演講" /></label>
-  </div>
-  <button onclick="submitLevel1()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full">完成調查 ➜</button>
-  <div id="q1-feedback" class="mt-4"></div>
-</section>
-
-<!-- §2 WSA 四面向檢核（互動 1：星星量表）-->
-<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-emerald-700">🌿 §2 關卡 2：Whole School Approach 四面向體檢</h2>
-  <p class="mt-2 text-gray-600">UNESCO Greening Education Partnership 有 <strong>90+ 國家 / 1,000+ 機構</strong> 採用「全校取徑」。請用 1–4 顆星，為你的學校打分。</p>
-  <div class="grid md:grid-cols-2 gap-4 mt-4" id="wsaGrid">
-    <div class="border-2 rounded-xl p-4 bg-green-50">
-      <p class="font-bold text-green-700">① 課程（Curriculum）</p>
-      <p class="text-xs text-gray-600 mb-2">氣候/永續有沒有融入自然、社會、語文、綜合各科？</p>
-      <div class="stars" data-axis="curriculum"></div>
+    <!-- Drag items -->
+    <div class="grid grid-cols-2 gap-2 my-3" id="items-box-1">
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="cur">📚 在自然課討論氣候變化</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="cur">🎨 畫一張「我心中的地球」海報</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="ops">💡 教室離開就關燈</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="ops">♻️ 設置班級資源回收箱</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="com">🤝 邀請家長一起參加校園環境日</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="com">🏘️ 社區打掃撿垃圾活動</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="stu">🙋 在班會提出省電建議</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="stu">📣 報名學生會氣候代表</div>
     </div>
-    <div class="border-2 rounded-xl p-4 bg-blue-50">
-      <p class="font-bold text-blue-700">② 校園營運（Campus Operations）</p>
-      <p class="text-xs text-gray-600 mb-2">節能、照明、伙食、交通、綠化有系統管理嗎？</p>
-      <div class="stars" data-axis="campus"></div>
+
+    <!-- Drop zones -->
+    <div class="grid grid-cols-2 gap-2" id="zones-box-1">
+      <div class="drop-zone bg-blue-50 p-2" data-accept="cur">
+        <div class="font-bold text-blue-700 text-center text-sm mb-1">📖 課程學習<br><span class="text-xs font-normal text-blue-500">（在課堂裡學）</span></div>
+        <div class="dz-items flex flex-wrap gap-1 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-green-50 p-2" data-accept="ops">
+        <div class="font-bold text-green-700 text-center text-sm mb-1">🏫 校園運作<br><span class="text-xs font-normal text-green-500">（改善校園環境）</span></div>
+        <div class="dz-items flex flex-wrap gap-1 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-amber-50 p-2" data-accept="com">
+        <div class="font-bold text-amber-700 text-center text-sm mb-1">🌍 社區連結<br><span class="text-xs font-normal text-amber-500">（走出校門合作）</span></div>
+        <div class="dz-items flex flex-wrap gap-1 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-purple-50 p-2" data-accept="stu">
+        <div class="font-bold text-purple-700 text-center text-sm mb-1">🙋 學生聲音<br><span class="text-xs font-normal text-purple-500">（同學主動提案）</span></div>
+        <div class="dz-items flex flex-wrap gap-1 justify-center"></div>
+      </div>
     </div>
-    <div class="border-2 rounded-xl p-4 bg-yellow-50">
-      <p class="font-bold text-yellow-700">③ 社區連結（Community）</p>
-      <p class="text-xs text-gray-600 mb-2">有和家長、NGO、里長、其他學校合作嗎？</p>
-      <div class="stars" data-axis="community"></div>
+
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <span></span>
+      <button id="btn-next-1" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>完成分類才能繼續 →</button>
     </div>
-    <div class="border-2 rounded-xl p-4 bg-purple-50">
-      <p class="font-bold text-purple-700">④ 學生治理（Student Voice）</p>
-      <p class="text-xs text-gray-600 mb-2">學生有發言權、提案管道嗎？</p>
-      <div class="stars" data-axis="voice"></div>
+  </section>
+
+  <!-- ===== Level 2: 看圖找答案 (20 pts) ===== -->
+  <section id="level-2" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">📊</div>
+      <div>
+        <h2 class="text-xl font-bold text-red-700">關卡 2：看圖找答案</h2>
+        <p class="text-sm text-slate-700 mt-1">小 Earth 說：「先看懂問題，才能想辦法！」看一張臺灣氣溫變化圖，回答兩題！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜Q1 單選 5 分 + Q2 多選 15 分</p>
+      </div>
     </div>
-  </div>
-  <p class="mt-3 text-sm">📌 必填 4 個面向才能繼續！</p>
-  <button onclick="submitLevel2()" class="mt-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full">提交體檢 ➜</button>
-  <div id="q2-feedback" class="mt-4"></div>
-</section>
 
-<!-- §3 數據判讀（互動 2：拖曳/選擇）-->
-<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-indigo-700">📊 §3 關卡 3：關鍵數據連連看</h2>
-  <p class="mt-2 text-gray-600">把數字點擊正確的說明。做對會有動畫獎勵，做錯會有小提示！</p>
-  <div class="grid grid-cols-3 gap-3 mt-4 text-center" id="dataNumbers">
-    <button class="data-num p-3 rounded-xl bg-red-100 text-red-700 font-bold text-xl" data-ans="ipcc">43%</button>
-    <button class="data-num p-3 rounded-xl bg-amber-100 text-amber-700 font-bold text-xl" data-ans="tw2050">2050</button>
-    <button class="data-num p-3 rounded-xl bg-green-100 text-green-700 font-bold text-xl" data-ans="law">4 小時</button>
-    <button class="data-num p-3 rounded-xl bg-blue-100 text-blue-700 font-bold text-xl" data-ans="gep">1,000+</button>
-    <button class="data-num p-3 rounded-xl bg-pink-100 text-pink-700 font-bold text-xl" data-ans="tw16">1.6℃</button>
-    <button class="data-num p-3 rounded-xl bg-purple-100 text-purple-700 font-bold text-xl" data-ans="ac">6%</button>
-  </div>
-  <div class="mt-5" id="dataQuestions"></div>
-  <div id="q3-feedback" class="mt-4"></div>
-</section>
+    <svg viewBox="0 0 400 180" class="w-full max-w-lg mx-auto block bg-slate-50 rounded-xl mb-4 border border-slate-200">
+      <line x1="50" y1="150" x2="390" y2="150" stroke="#475569" stroke-width="1.5"/>
+      <line x1="50" y1="20" x2="50" y2="150" stroke="#475569" stroke-width="1.5"/>
+      <text x="5" y="24" font-size="9" fill="#64748b">°C</text>
+      <text x="10" y="155" font-size="9" fill="#64748b">22</text>
+      <text x="10" y="105" font-size="9" fill="#64748b">22.5</text>
+      <text x="10" y="55" font-size="9" fill="#64748b">23</text>
+      <text x="48" y="167" font-size="9" fill="#64748b">1910</text>
+      <text x="150" y="167" font-size="9" fill="#64748b">1950</text>
+      <text x="260" y="167" font-size="9" fill="#64748b">1990</text>
+      <text x="345" y="167" font-size="9" fill="#64748b">2020</text>
+      <polyline fill="none" stroke="#ef4444" stroke-width="2.5"
+        points="50,140 70,138 90,136 110,142 130,132 155,130 175,134 195,126 215,122 235,124 255,116 275,108 295,112 315,98 335,92 360,85 385,75"/>
+      <text x="250" y="42" font-size="10" fill="#dc2626" font-weight="bold">↗ 約 +1.6°C</text>
+      <text x="250" y="54" font-size="9" fill="#94a3b8">（110 年來，資料：TCCIP）</text>
+    </svg>
 
-<!-- §4 給校長的信（互動 3：表單填寫 + 評分）-->
-<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-orange-700">✉️ §4 關卡 4：給校長的一封信</h2>
-  <p class="mt-2 text-gray-600">用 WSA 其中 1 個面向，提出具體改進建議。四欄都要填！</p>
-  <div class="grid md:grid-cols-2 gap-3 mt-4">
-    <label class="block"><span class="text-sm font-semibold">(1) 我們觀察到的現況：</span>
-      <textarea id="i4_1" class="mt-1 w-full border-2 rounded-lg p-2 h-20" placeholder="例：教室冷氣常設 22℃…"></textarea></label>
-    <label class="block"><span class="text-sm font-semibold">(2) 支持的數據（挑 1）：</span>
-      <select id="i4_2" class="mt-1 w-full border-2 rounded-lg p-2">
-        <option value="">-- 選擇 --</option>
-        <option>IPCC 2030 前需減 43%</option>
-        <option>臺灣 2050 淨零目標</option>
-        <option>臺灣百年升溫 1.6℃</option>
-        <option>冷氣每升 1℃ 省電 6%</option>
-        <option>環教法規定每年 4 小時</option>
-        <option>UNESCO GEP 1,000+ 機構</option>
-      </select></label>
-    <label class="block"><span class="text-sm font-semibold">(3) 具體建議：</span>
-      <textarea id="i4_3" class="mt-1 w-full border-2 rounded-lg p-2 h-20" placeholder="例：訂定冷氣統一設 26℃…"></textarea></label>
-    <label class="block"><span class="text-sm font-semibold">(4) 我們班能負責：</span>
-      <textarea id="i4_4" class="mt-1 w-full border-2 rounded-lg p-2 h-20" placeholder="例：輪值檢查員每週五回報…"></textarea></label>
-  </div>
-  <button onclick="submitLevel4()" class="mt-3 bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-6 rounded-full">送出提案 ➜</button>
-  <div id="q4-feedback" class="mt-4"></div>
-</section>
-
-<!-- §5 WSA 4-checkbox 承諾（WSA slide）-->
-<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-teal-700">🌏 §5 關卡 5：我要落實 WSA 全校取徑</h2>
-  <p class="mt-2 text-gray-600">勾選你本學期願意投入的面向（至少 2 個才能繼續）：</p>
-  <div class="space-y-2 mt-3">
-    <label class="flex items-center gap-2 p-2 border-2 rounded-lg hover:bg-green-50"><input type="checkbox" class="wsa-cb w-5 h-5" value="課程"/> <span>① 課程 — 在班會做 1 次氣候分享</span></label>
-    <label class="flex items-center gap-2 p-2 border-2 rounded-lg hover:bg-blue-50"><input type="checkbox" class="wsa-cb w-5 h-5" value="營運"/> <span>② 校園營運 — 輪值檢查冷氣 / 關燈</span></label>
-    <label class="flex items-center gap-2 p-2 border-2 rounded-lg hover:bg-yellow-50"><input type="checkbox" class="wsa-cb w-5 h-5" value="社區"/> <span>③ 社區連結 — 邀請家長共做 1 項行動</span></label>
-    <label class="flex items-center gap-2 p-2 border-2 rounded-lg hover:bg-purple-50"><input type="checkbox" class="wsa-cb w-5 h-5" value="治理"/> <span>④ 學生治理 — 向班級或校方提案</span></label>
-  </div>
-  <button onclick="submitLevel5()" class="mt-4 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full">簽下承諾 ➜</button>
-  <div id="q5-feedback" class="mt-4"></div>
-</section>
-
-<!-- §6 全校英雄徽章 + 希望牆 -->
-<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-pink-700">🏅 §6 關卡 6：授予「全校英雄」徽章 + 希望牆</h2>
-  <div class="text-center my-4">
-    <div id="hero-badge" class="badge inline-block bg-gradient-to-br from-yellow-300 to-orange-500 text-white font-extrabold py-6 px-10 rounded-full shadow-xl text-2xl">
-      🌟 校園氣候英雄 🌟<br><span class="text-sm">School Climate Hero</span>
+    <!-- Q1 -->
+    <div class="mb-5">
+      <p class="font-bold text-sm mb-2">📌 Q1：這張圖最主要在說什麼？（單選，5 分）</p>
+      <div id="q1-opts">
+        <label class="opt"><input type="radio" name="q1" value="0"> A. 台灣氣溫每年都差不多，沒有變化。</label>
+        <label class="opt"><input type="radio" name="q1" value="1"> B. 台灣整體氣溫在 110 年間慢慢升高，但每年有一點起伏。</label>
+        <label class="opt"><input type="radio" name="q1" value="0"> C. 台灣氣溫在 1980 年之後突然跳降，近年很冷。</label>
+      </div>
+      <p id="q1-fb" class="text-xs mt-2 min-h-[18px]"></p>
     </div>
-  </div>
-  <label class="block mt-6"><span class="text-sm font-semibold">寫下你對 2030 年本校的希望：</span>
-    <textarea id="i6_hope" class="mt-1 w-full border-2 rounded-lg p-3 h-24" placeholder="2030 年，我希望我們學校……"></textarea></label>
-  <button onclick="finish()" class="mt-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-6 rounded-full">完成任務並慶祝！🎉</button>
-  <div id="final-msg" class="mt-4"></div>
-</section>
 
-</main>
+    <!-- Q2 -->
+    <div class="mb-3">
+      <p class="font-bold text-sm mb-1">📌 Q2：氣溫升高可能在學校生活中造成哪些影響？<br><span class="font-normal text-slate-500 text-xs">（勾出你覺得有可能是真的）</span></p>
+      <div id="q2-opts">
+        <label class="opt"><input type="checkbox" data-correct="1"> 🥵 運動會或下課時更容易中暑</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 💡 教室冷氣開更久，學校電費變高</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> ❄️ 氣溫升高讓冬天變得更冷更長</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 🌸 校園植物開花的時間比以前改變了</label>
+      </div>
+      <p id="q2-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
 
-<footer class="text-center text-xs text-gray-500 pb-6">資料來源：IPCC AR6 (2023) · UNESCO GEP · 臺灣 TCCIP / 環境部 · 國發會 2050 路徑 · 最後驗證 2026-04-16</footer>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="1">← 上一關</button>
+      <button id="btn-next-2" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>提交答案 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 3: 推一推 — 校園情境 Stance Picker (20 pts) ===== -->
+  <section id="level-3" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">💡</div>
+      <div>
+        <h2 class="text-xl font-bold text-red-700">關卡 3：推一推！你會怎麼做？</h2>
+        <p class="text-sm text-slate-700 mt-1">在學校遇到這些情境，哪個做法最好？每題 7 分！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分（答對 3 題共 21 分，最多給 20 分）</p>
+      </div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="bg-red-50 rounded-xl p-4 mb-4" id="sq-0" data-answered="0">
+      <p class="font-bold text-sm text-red-800 mb-2">💡 情境 1：下課後，你發現教室的電燈和冷氣還開著，但同學都去操場了。</p>
+      <p class="text-xs text-slate-500 mb-2">你會怎麼做？</p>
+      <button class="sq-btn" data-q="0" data-correct="0">A. 不管它，反正下堂課還要用。</button>
+      <button class="sq-btn" data-q="0" data-correct="1">B. 主動去把燈和冷氣關掉，順便提醒同學以後記得關。</button>
+      <button class="sq-btn" data-q="0" data-correct="0">C. 告訴老師，讓老師去處理。</button>
+      <button class="sq-btn" data-q="0" data-correct="0">D. 拍下來發給同學看，說他們太浪費了。</button>
+    </div>
+
+    <!-- Q2 -->
+    <div class="bg-amber-50 rounded-xl p-4 mb-4" id="sq-1" data-answered="0">
+      <p class="font-bold text-sm text-amber-800 mb-2">🗑️ 情境 2：你看到有同學把可回收的寶特瓶丟進垃圾桶，而不是資源回收桶。</p>
+      <p class="text-xs text-slate-500 mb-2">你會怎麼做？</p>
+      <button class="sq-btn" data-q="1" data-correct="0">A. 當作沒看到，不想惹麻煩。</button>
+      <button class="sq-btn" data-q="1" data-correct="0">B. 大聲罵他：「你這樣很沒環保意識！」</button>
+      <button class="sq-btn" data-q="1" data-correct="1">C. 友善地說：「那個可以丟回收桶喔，這樣可以再利用！」</button>
+      <button class="sq-btn" data-q="1" data-correct="0">D. 幫他把垃圾桶的寶特瓶拿出來，但什麼都不說。</button>
+    </div>
+
+    <!-- Q3 -->
+    <div class="bg-purple-50 rounded-xl p-4 mb-4" id="sq-2" data-answered="0">
+      <p class="font-bold text-sm text-purple-800 mb-2">🙋 情境 3：老師說班會可以提出一個想法改善校園環境。</p>
+      <p class="text-xs text-slate-500 mb-2">你最想提哪種建議？</p>
+      <button class="sq-btn" data-q="2" data-correct="0">A. 「我們可以每天多玩一節課。」</button>
+      <button class="sq-btn" data-q="2" data-correct="0">B. 「不要再有氣候教育了，很無聊。」</button>
+      <button class="sq-btn" data-q="2" data-correct="1">C. 「我們可以設立『氣候小偵探』輪值，每週檢查教室用電和資源回收。」</button>
+      <button class="sq-btn" data-q="2" data-correct="0">D. 「買更多冷氣，這樣夏天更涼快。」</button>
+    </div>
+
+    <p id="l3-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="2">← 上一關</button>
+      <button id="btn-next-3" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>下一關 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 4: 我的行動 (20 pts) ===== -->
+  <section id="level-4" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🌍</div>
+      <div>
+        <h2 class="text-xl font-bold text-red-700">關卡 4：我的校園英雄計畫</h2>
+        <p class="text-sm text-slate-700 mt-1">小 Earth 說：「每個同學都可以從一件小事開始！先選你最想從哪個方向行動。」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜選主題 + 選行動 + 立下承諾</p>
+      </div>
+    </div>
+
+    <!-- Step 1: 選主題 -->
+    <div class="mb-4">
+      <p class="font-bold text-sm mb-2">① 你最想從哪個方向開始？（選一個）</p>
+      <div id="theme-opts">
+        <label class="opt"><input type="radio" name="theme" value="energy"> 💡 節省學校電力（讓冷氣、電燈更有效率）</label>
+        <label class="opt"><input type="radio" name="theme" value="waste"> ♻️ 減少校園垃圾（資源回收、少用一次性品）</label>
+        <label class="opt"><input type="radio" name="theme" value="green"> 🌿 讓校園更綠（種植物、愛護大自然）</label>
+        <label class="opt"><input type="radio" name="theme" value="spread"> 📢 傳播知識（讓更多同學和家人知道）</label>
+      </div>
+    </div>
+
+    <!-- Step 2: 選行動 -->
+    <div id="action-wrap" class="hidden mb-4">
+      <p class="font-bold text-sm mb-2">② 以下三個做法，你覺得哪個最容易開始？（選一個）</p>
+      <div id="action-opts"></div>
+      <p id="action-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <!-- Step 3: 承諾 -->
+    <div id="promise-wrap" class="hidden bg-red-50 rounded-xl p-4 mb-3">
+      <p class="font-bold text-sm mb-2">③ 在你能做到的事情前打勾（至少選 2 個）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-red-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會跟家人分享今天學到的一件事</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-red-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會主動觀察教室或家裡的用電和用水</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-red-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會邀請一個同學一起做這件事</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-red-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">下次在班會，我願意提出一個環境改善的想法</span>
+      </label>
+      <p id="promise-fb" class="text-xs mt-2 text-slate-500 min-h-[18px]"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="3">← 上一關</button>
+      <button id="btn-next-4" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>查看成果 🏆</button>
+    </div>
+  </section>
+
+  <!-- ===== Final: 反思 (5 pts) ===== -->
+  <section id="level-final" class="card p-6 hidden-screen fade-in">
+    <div class="text-6xl text-center pop">🌟</div>
+    <h2 class="text-2xl font-bold text-red-600 mt-2 text-center">恭喜你成為校園氣候英雄！</h2>
+    <p class="text-slate-700 mt-1 text-center">最終分數：<span id="final-score" class="text-3xl font-bold text-red-600">0</span> / 80 分</p>
+
+    <!-- Badges -->
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <!-- Reflection -->
+    <div class="bg-red-50 rounded-xl p-4 max-w-2xl mx-auto mb-4">
+      <p class="font-bold text-red-700 mb-3">🤔 最後一步：快速反思（5 分）</p>
+
+      <p class="text-sm font-semibold mb-1">Q1｜上這堂課之前，你對校園氣候行動的了解程度：</p>
+      <div id="stars-before" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q2｜上完這堂課後，你的了解程度：</p>
+      <div id="stars-after" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q3｜哪個關卡讓你印象最深刻？</p>
+      <div id="impact-opts">
+        <label class="opt"><input type="radio" name="impact" value="1"> 關卡 1：校園行動分類</label>
+        <label class="opt"><input type="radio" name="impact" value="2"> 關卡 2：看臺灣氣溫圖</label>
+        <label class="opt"><input type="radio" name="impact" value="3"> 關卡 3：校園情境推一推</label>
+        <label class="opt"><input type="radio" name="impact" value="4"> 關卡 4：我的校園英雄計畫</label>
+      </div>
+      <p id="reflect-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <!-- Extension -->
+    <div class="bg-yellow-50 rounded-xl p-4 text-left max-w-2xl mx-auto">
+      <h3 class="font-bold text-amber-700 mb-2">🧐 延伸思考小挑戰</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>你的學校目前在節電、回收、綠化這三件事上，各做得怎麼樣？你覺得哪個最需要加強？</li>
+        <li>如果讓你當「校園氣候小隊長」一週，你第一件想做的事是什麼？</li>
+        <li>你願意找哪個同學或家人一起參與你剛才選的行動？</li>
+      </ol>
+    </div>
+
+    <div class="nav-row max-w-2xl mx-auto mt-4">
+      <button class="btn btn-back" data-back="4">← 回到關卡 4</button>
+      <button onclick="location.reload()" class="btn bg-red-500 text-white py-2 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+    </div>
+  </section>
+
+</div><!-- /max-w-3xl -->
 
 <script>
-// --- 倒數計時 2030-01-01 ---
-function updateCountdown(){
-  const t=new Date("2030-01-01T00:00:00").getTime()-Date.now();
-  if(t<=0){document.getElementById('cd').textContent='時間到！';return;}
-  const d=Math.floor(t/86400000), h=Math.floor(t/3600000)%24, m=Math.floor(t/60000)%60;
-  document.getElementById('cd').textContent=`${d} 天 ${h} 時 ${m} 分`;
-}
-setInterval(updateCountdown,60000); updateCountdown();
+(() => {
+  const TOTAL_LEVELS = 4;
+  const S = { score: 0, current: 1, awarded: {} };
+  const el = id => document.getElementById(id);
 
-// --- 進度 ---
-let current=1, totalLevels=6;
-function setProgress(n){
-  current=n;
-  for(let i=1;i<=totalLevels;i++){
-    const d=document.getElementById('dot'+i);
-    d.classList.remove('active','done');
-    if(i<n) d.classList.add('done');
-    else if(i===n) d.classList.add('active');
-  }
-  document.getElementById('progressText').textContent=`第 ${Math.min(n,totalLevels)} / ${totalLevels} 關`;
-}
-function show(id){document.getElementById(id).classList.remove('hidden-step');}
-function hide(id){document.getElementById(id).classList.add('hidden-step');}
+  const setScore = n => { S.score += n; el('score').textContent = S.score; };
+  const awardOnce = (key, pts) => { if (!S.awarded[key]) { S.awarded[key] = true; setScore(pts); } };
 
-function startMission(){hide('intro');show('level1');setProgress(1);window.scrollTo({top:0,behavior:'smooth'});}
-
-// --- §1 ---
-function submitLevel1(){
-  const vals=[1,2,3,4,5,6].map(i=>document.getElementById('i1_'+i).value.trim());
-  const filled=vals.filter(v=>v.length>0).length;
-  const fb=document.getElementById('q1-feedback');
-  if(filled<4){fb.innerHTML='<p class="text-red-600 shake">⚠️ 至少填 4 項才算完成調查，寫「待查」也可以！</p>';return;}
-  fb.innerHTML=`<p class="text-green-700 feedback-pop">✅ 太棒了，你完成了 ${filled} 項偵探調查！</p>`;
-  setTimeout(()=>{hide('level1');show('level2');setProgress(2);initStars();window.scrollTo({top:0,behavior:'smooth'});},800);
-}
-
-// --- §2 stars ---
-const wsaScore={};
-function initStars(){
-  document.querySelectorAll('.stars').forEach(div=>{
-    if(div.children.length) return;
-    div.innerHTML='';
-    for(let i=1;i<=4;i++){
-      const s=document.createElement('span');
-      s.className='star'; s.textContent='★'; s.dataset.v=i;
-      s.onclick=()=>{
-        const axis=div.dataset.axis; wsaScore[axis]=i;
-        [...div.children].forEach((c,idx)=>c.classList.toggle('on', idx<i));
-      };
-      div.appendChild(s);
+  const updateDots = () => {
+    for (let i = 1; i <= TOTAL_LEVELS + 1; i++) {
+      const d = el('dot-' + i); if (!d) continue;
+      d.classList.remove('active', 'done');
+      if (i < S.current) d.classList.add('done');
+      else if (i === S.current) d.classList.add('active');
     }
+  };
+
+  const gotoLevel = n => {
+    document.querySelectorAll('section[id^="level-"]').forEach(s => s.classList.add('hidden-screen'));
+    S.current = n;
+    el('step-label').textContent = Math.min(n, 4);
+    const target = (n > TOTAL_LEVELS) ? el('level-final') : el('level-' + n);
+    target.classList.remove('hidden-screen');
+    target.classList.add('fade-in');
+    updateDots();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  document.querySelectorAll('.btn-back').forEach(b => {
+    b.onclick = () => gotoLevel(parseInt(b.dataset.back, 10));
   });
-}
-function submitLevel2(){
-  const fb=document.getElementById('q2-feedback');
-  const n=Object.keys(wsaScore).length;
-  if(n<4){fb.innerHTML='<p class="text-red-600 shake">⚠️ 請為 4 個面向都打分。</p>';return;}
-  const total=Object.values(wsaScore).reduce((a,b)=>a+b,0);
-  let judge= total>=13?'你們學校已是明星級行動者！':(total>=9?'學校有做但還有空間進步。':'缺口很大，正是提案的好時機！');
-  fb.innerHTML=`<p class="text-green-700 feedback-pop">✅ 總分 ${total} / 16 ｜ ${judge}</p>`;
-  setTimeout(()=>{hide('level2');show('level3');setProgress(3);initDataQ();window.scrollTo({top:0,behavior:'smooth'});},900);
-}
 
-// --- §3 data match ---
-const dataQset=[
-  {key:'ipcc', q:'IPCC 說全球排放必須在 2030 前，相較 2019 減少多少？'},
-  {key:'tw2050',q:'臺灣訂定的國家淨零目標年是？'},
-  {key:'law',  q:'臺灣環境教育法規定每人每年至少幾小時？'},
-  {key:'gep',  q:'UNESCO Greening Education Partnership 有多少個機構承諾？'},
-  {key:'tw16', q:'臺灣近 110 年平均升溫約多少？'},
-  {key:'ac',   q:'冷氣每調高 1℃ 約可省幾 % 的電？'},
-];
-let dqIdx=0, dqCorrect=0;
-function initDataQ(){ dqIdx=0; dqCorrect=0; renderDataQ();
-  document.querySelectorAll('.data-num').forEach(btn=>{
-    btn.onclick=()=>handleDataClick(btn);
+  const confetti = () => {
+    const colors = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#a855f7'];
+    for (let i = 0; i < 32; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[i % colors.length];
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 2500);
+    }
+  };
+
+  const shuffleChildren = parent => {
+    const kids = Array.from(parent.children);
+    for (let i = kids.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      parent.appendChild(kids[j]);
+    }
+  };
+
+  /* =====================================================
+     Level 1: 校園行動配對 drag-drop (15 pts)
+     ===================================================== */
+  shuffleChildren(el('items-box-1'));
+  shuffleChildren(el('zones-box-1'));
+
+  let dragged1 = null;
+  let l1Correct = 0;
+  const total1 = document.querySelectorAll('#items-box-1 .drag-item').length;
+
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged1 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => { item.classList.remove('dragging'); });
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#items-box-1 .drag-item').forEach(x => x.classList.remove('ring-4', 'ring-red-400'));
+      item.classList.add('ring-4', 'ring-red-400');
+      dragged1 = item;
+    });
   });
-}
-function renderDataQ(){
-  const box=document.getElementById('dataQuestions');
-  if(dqIdx>=dataQset.length){
-    box.innerHTML=`<p class="text-green-700 font-bold feedback-pop">🎯 完成！${dqCorrect} / ${dataQset.length} 正確</p>`;
-    setTimeout(()=>{hide('level3');show('level4');setProgress(4);window.scrollTo({top:0,behavior:'smooth'});},1000);
-    return;
-  }
-  box.innerHTML=`<div class="p-4 bg-gray-100 rounded-xl"><p class="font-semibold">題目 ${dqIdx+1} / ${dataQset.length}</p><p class="mt-1">${dataQset[dqIdx].q}</p><p class="text-xs text-gray-500 mt-1">點上方數字按鈕作答</p></div>`;
-}
-function handleDataClick(btn){
-  const fb=document.getElementById('q3-feedback');
-  if(dqIdx>=dataQset.length) return;
-  if(btn.dataset.ans===dataQset[dqIdx].key){
-    dqCorrect++;
-    fb.innerHTML='<p class="text-green-700 feedback-pop">✅ 答對！下一題。</p>';
-    btn.disabled=true; btn.classList.add('opacity-50');
-    dqIdx++; setTimeout(()=>{fb.innerHTML='';renderDataQ();},500);
-  } else {
-    btn.classList.add('shake');
-    fb.innerHTML='<p class="text-orange-600">💡 再想一下：題目在找最符合的那個數字。</p>';
-    setTimeout(()=>btn.classList.remove('shake'),400);
-  }
-}
 
-// --- §4 ---
-function submitLevel4(){
-  const v1=document.getElementById('i4_1').value.trim();
-  const v2=document.getElementById('i4_2').value;
-  const v3=document.getElementById('i4_3').value.trim();
-  const v4=document.getElementById('i4_4').value.trim();
-  const fb=document.getElementById('q4-feedback');
-  if(!v1||!v2||!v3||!v4){fb.innerHTML='<p class="text-red-600 shake">⚠️ 四欄都要填才算完整提案！</p>';return;}
-  let score=0;
-  if(v1.length>=10) score++;
-  if(v2) score++;
-  if(v3.length>=10) score++;
-  if(v4.length>=5) score++;
-  fb.innerHTML=`<p class="text-green-700 feedback-pop">✅ 完整度 ${score}/4！這就是真實的公民行動。</p>`;
-  setTimeout(()=>{hide('level4');show('level5');setProgress(5);window.scrollTo({top:0,behavior:'smooth'});},900);
-}
+  document.querySelectorAll('#zones-box-1 .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop1(zone); });
+    zone.addEventListener('click', () => { if (dragged1) handleDrop1(zone); });
+  });
 
-// --- §5 ---
-function submitLevel5(){
-  const cbs=[...document.querySelectorAll('.wsa-cb')].filter(c=>c.checked);
-  const fb=document.getElementById('q5-feedback');
-  if(cbs.length<2){fb.innerHTML='<p class="text-red-600 shake">⚠️ 至少勾選 2 個面向（真正的全校取徑不能只做一件事）。</p>';return;}
-  fb.innerHTML=`<p class="text-green-700 feedback-pop">✅ 你承諾了 ${cbs.length} 個面向，向 Whole School Approach 邁進！</p>`;
-  setTimeout(()=>{hide('level5');show('level6');setProgress(6);window.scrollTo({top:0,behavior:'smooth'});},900);
-}
-
-// --- §6 finish ---
-function finish(){
-  const hope=document.getElementById('i6_hope').value.trim();
-  if(hope.length<5){document.getElementById('final-msg').innerHTML='<p class="text-red-600 shake">⚠️ 至少寫一句希望吧！</p>';return;}
-  document.getElementById('final-msg').innerHTML='<p class="text-pink-700 font-bold feedback-pop text-lg">🎉 恭喜成為校園氣候英雄！你的希望已加入全球 UNESCO Greening Education 網絡。</p>';
-  confetti();
-}
-function confetti(){
-  const colors=['#fbbf24','#ef4444','#10b981','#3b82f6','#a855f7'];
-  for(let i=0;i<60;i++){
-    const c=document.createElement('div'); c.className='confetti';
-    c.style.left=(Math.random()*100)+'vw';
-    c.style.background=colors[Math.floor(Math.random()*colors.length)];
-    c.style.animationDelay=(Math.random()*0.8)+'s';
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3000);
+  function handleDrop1(zone) {
+    if (!dragged1) return;
+    const fb = el('l1-feedback');
+    if (dragged1.dataset.match === zone.dataset.accept) {
+      zone.querySelector('.dz-items').appendChild(dragged1);
+      dragged1.setAttribute('draggable', 'false');
+      dragged1.classList.remove('ring-4', 'ring-red-400');
+      dragged1.classList.add('bg-green-100', 'border-green-500', 'pop');
+      l1Correct++;
+      fb.textContent = '答對！ 👏';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-red-600 pop';
+      confetti();
+      if (l1Correct === total1) {
+        awardOnce('L1', 15);
+        const btn = el('btn-next-1');
+        btn.disabled = false;
+        btn.className = 'btn bg-red-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(2);
+        fb.textContent = '全部答對！你是校園英雄！🎉 +15 分';
+      }
+    } else {
+      dragged1.classList.add('shake');
+      setTimeout(() => dragged1.classList.remove('shake'), 400);
+      fb.textContent = '再想想！提示：「學生聲音」是指同學主動提案或發言喔 💡';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged1 = null;
   }
-}
+
+  /* =====================================================
+     Level 2: 看圖找答案 (Q1:5pts Q2:15pts = 20)
+     ===================================================== */
+  let q1Done = false, q2Done = false;
+  const checkL2ready = () => {
+    const ready = q1Done && q2Done;
+    const btn = el('btn-next-2');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-red-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=q1]').forEach(r => {
+    r.onchange = () => {
+      if (q1Done) return;
+      document.querySelectorAll('#q1-opts .opt').forEach(o => o.classList.remove('sel', 'correct', 'wrong'));
+      r.parentElement.classList.add(r.value === '1' ? 'correct' : 'wrong');
+      const fb = el('q1-fb');
+      if (r.value === '1') {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 對了！整體往上升，每年有小起伏。+5 分</span>';
+        awardOnce('L2-q1', 5);
+        q1Done = true;
+      } else {
+        fb.innerHTML = '<span class="text-rose-600">❌ 再看看圖，整體線條往哪個方向走？</span>';
+      }
+      checkL2ready();
+    };
+  });
+
+  let q2Submitted = false;
+  document.querySelectorAll('#q2-opts input[type=checkbox]').forEach(cb => {
+    cb.onchange = () => {
+      if (q2Submitted) return;
+      const checked = document.querySelectorAll('#q2-opts input:checked');
+      const fb = el('q2-fb');
+      if (checked.length >= 1) { fb.textContent = `已選 ${checked.length} 項。覺得都選好了可以提交～`; q2Done = true; }
+      else { q2Done = false; }
+      checkL2ready();
+    };
+  });
+
+  el('btn-next-2').onclick = () => {
+    if (q2Submitted) { gotoLevel(3); return; }
+    q2Submitted = true;
+    const opts = document.querySelectorAll('#q2-opts input');
+    let correctCount = 0, wrongCount = 0;
+    opts.forEach(o => {
+      o.disabled = true;
+      const lbl = o.parentElement;
+      if (o.checked) {
+        if (o.dataset.correct === '1') { lbl.classList.add('correct'); correctCount++; }
+        else { lbl.classList.add('wrong'); wrongCount++; }
+      }
+    });
+    const pts = Math.max(0, correctCount * 5 - wrongCount * 5);
+    awardOnce('L2-q2', Math.min(pts, 15));
+    const fb = el('q2-fb');
+    if (wrongCount === 0 && correctCount >= 2) {
+      fb.innerHTML = `<span class="text-emerald-700 font-bold">✅ 觀察得很好！勾對 ${correctCount} 項。+${Math.min(pts,15)} 分</span>`;
+      confetti();
+    } else if (correctCount >= 1) {
+      fb.innerHTML = `<span class="text-amber-600">勾對 ${correctCount} 項、錯 ${wrongCount} 項。注意：氣溫升高讓冬天縮短，不是變更長更冷喔！</span>`;
+      if (pts > 0) confetti();
+    } else {
+      fb.innerHTML = '<span class="text-rose-600">❌ 都沒有勾到正確的！請看看每張選項的說明。</span>';
+    }
+    el('btn-next-2').textContent = '繼續下一關 →';
+    el('btn-next-2').onclick = () => gotoLevel(3);
+  };
+
+  /* =====================================================
+     Level 3: 校園情境 Stance Picker (20 pts)
+     ===================================================== */
+  let stanceScore = 0;
+  let stanceDone = [false, false, false];
+
+  document.querySelectorAll('.sq-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const q = parseInt(btn.dataset.q, 10);
+      const box = el('sq-' + q);
+      if (box.dataset.answered === '1') return;
+      box.dataset.answered = '1';
+      const isCorrect = btn.dataset.correct === '1';
+      const fb = el('l3-feedback');
+
+      if (isCorrect) {
+        btn.style.background = '#d1fae5';
+        btn.style.borderColor = '#10b981';
+        btn.style.fontWeight = 'bold';
+        stanceScore += 7;
+        stanceDone[q] = true;
+        fb.textContent = '答對！ 🎉 這就是校園英雄的做法！';
+        fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+        confetti();
+      } else {
+        btn.style.background = '#fee2e2';
+        btn.style.borderColor = '#ef4444';
+        box.querySelectorAll('.sq-btn').forEach(b => {
+          if (b.dataset.correct === '1') {
+            b.style.background = '#d1fae5';
+            b.style.borderColor = '#10b981';
+            b.style.fontWeight = 'bold';
+          }
+        });
+        fb.textContent = '再想想！最好的行動是：主動且友善，同時讓別人也學到。';
+        fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+      }
+
+      box.querySelectorAll('.sq-btn').forEach(b => { b.style.cursor = 'default'; b.style.pointerEvents = 'none'; });
+
+      if (stanceDone.every(Boolean)) {
+        const pts = Math.min(stanceScore, 20);
+        awardOnce('L3', pts);
+        fb.textContent = `全部完成！得到 +${pts} 分 🌟`;
+        fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+        const btn3 = el('btn-next-3');
+        btn3.disabled = false;
+        btn3.className = 'btn bg-red-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn3.onclick = () => gotoLevel(4);
+      }
+    });
+  });
+
+  /* =====================================================
+     Level 4: 我的校園英雄計畫 (20 pts)
+     ===================================================== */
+  const actionBank = {
+    energy: [
+      '下課離開教室時，主動去把燈和冷氣關掉',
+      '幫班上設計「省電小偵探」輪值表，每天負責檢查',
+      '觀察家裡哪些電器最耗電，告訴家人怎麼節省'
+    ],
+    waste: [
+      '自己帶環保杯和餐具，不用一次性塑膠',
+      '在班上設置分類回收桶，並告訴同學怎麼分類',
+      '便當或點心的包裝盡量選擇少的，或帶自己的容器'
+    ],
+    green: [
+      '在教室窗台種一盆小植物，觀察它的成長',
+      '下課時去校園找一棵樹，觀察它的葉子和枝條',
+      '告訴同學不要踩踏草地，讓植物好好生長'
+    ],
+    spread: [
+      '在班上分享今天印象最深的一個關卡',
+      '回家跟爸媽說「你知道台灣 110 年升溫 1.6°C 嗎？」',
+      '邀請一個朋友下次一起做關燈或資源回收'
+    ]
+  };
+
+  let themePicked = null, actionPicked = false, promiseCount = 0;
+
+  const checkL4ready = () => {
+    const ready = themePicked && actionPicked && promiseCount >= 2;
+    const btn = el('btn-next-4');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-red-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=theme]').forEach(r => {
+    r.onchange = () => {
+      themePicked = r.value;
+      document.querySelectorAll('#theme-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      const wrap = el('action-wrap');
+      const box = el('action-opts');
+      box.innerHTML = '';
+      actionPicked = false;
+      actionBank[themePicked].forEach(txt => {
+        const lbl = document.createElement('label');
+        lbl.className = 'opt';
+        lbl.innerHTML = `<input type="radio" name="action"> ${txt}`;
+        lbl.querySelector('input').onchange = () => {
+          document.querySelectorAll('#action-opts .opt').forEach(o => o.classList.remove('sel'));
+          lbl.classList.add('sel');
+          actionPicked = true;
+          el('action-fb').innerHTML = '<span class="text-red-700">✅ 好主意！繼續下一步～</span>';
+          el('promise-wrap').classList.remove('hidden');
+          checkL4ready();
+        };
+        box.appendChild(lbl);
+      });
+      wrap.classList.remove('hidden');
+      el('promise-wrap').classList.add('hidden');
+      checkL4ready();
+    };
+  });
+
+  document.querySelectorAll('.promise-cb').forEach(cb => {
+    cb.onchange = () => {
+      promiseCount = document.querySelectorAll('.promise-cb:checked').length;
+      const fb = el('promise-fb');
+      if (promiseCount < 2) fb.textContent = `已選 ${promiseCount}/4，請至少選 2 個 😊`;
+      else fb.textContent = `選了 ${promiseCount} 個承諾！太棒了！`;
+      checkL4ready();
+    };
+  });
+
+  el('btn-next-4').onclick = () => {
+    awardOnce('L4', 20);
+    confetti();
+    showFinal();
+  };
+
+  /* =====================================================
+     Final screen
+     ===================================================== */
+  function showFinal() {
+    gotoLevel(TOTAL_LEVELS + 1);
+    el('final-score').textContent = S.score;
+    const box = el('badges');
+    box.innerHTML = '';
+    const earned = [];
+    if (S.awarded['L1']) earned.push('🏫 四方向達人');
+    if (S.awarded['L2-q1'] || S.awarded['L2-q2']) earned.push('📊 數據觀察家');
+    if (S.awarded['L3']) earned.push('💡 校園行動王');
+    if (S.awarded['L4']) earned.push('🌍 氣候英雄');
+    if (earned.length === 0) earned.push('🦸 校園小英雄');
+    earned.forEach(b => {
+      const chip = document.createElement('span');
+      chip.className = 'bg-red-100 border-2 border-red-400 rounded-full px-3 py-1 text-sm font-bold pop';
+      chip.textContent = b;
+      box.appendChild(chip);
+    });
+    confetti();
+  }
+
+  /* =====================================================
+     Final reflection (5 pts)
+     ===================================================== */
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+
+  const setupStars = (wrapId, setter) => {
+    const wrap = el(wrapId);
+    wrap.querySelectorAll('.star').forEach(s => {
+      s.onclick = () => {
+        const v = parseInt(s.dataset.val, 10);
+        setter(v);
+        wrap.querySelectorAll('.star').forEach(x => {
+          x.classList.toggle('on', parseInt(x.dataset.val, 10) <= v);
+        });
+        checkReflect();
+      };
+    });
+  };
+  setupStars('stars-before', v => starBefore = v);
+  setupStars('stars-after', v => starAfter = v);
+
+  document.querySelectorAll('input[name=impact]').forEach(r => {
+    r.onchange = () => {
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+
+  function checkReflect() {
+    const ok = starBefore > 0 && starAfter > 0 && impactPicked;
+    const fb = el('reflect-fb');
+    if (ok) {
+      fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 反思完成！+5 分 🌟</span>';
+      awardOnce('FINAL', 5);
+      el('final-score').textContent = S.score;
+    } else {
+      fb.textContent = '請完成三題反思（★ 前後了解度 + 印象最深的關卡）';
+    }
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

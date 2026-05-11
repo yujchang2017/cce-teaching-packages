@@ -1,429 +1,619 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>零廢棄小戰士 — 6.7-III 互動學習單</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>零垃圾小英雄阿廢的一天 | 互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#ecfccb 0%,#d1fae5 50%,#fef3c7 100%); min-height:100vh; }
-  .card { transition: transform .2s; }
-  .card:hover { transform: translateY(-2px); }
-  .feedback-pop { animation: pop .4s ease-out; }
-  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#fce7f3,#fbcfe8,#fde68a); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:110px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
   .shake { animation: shake .4s; }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
-  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; z-index:9999; }
-  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
-  .progress-dot.done { background: #10b981; transform: scale(1.2); }
-  .progress-dot.active { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,.25); }
-  .drag-item { cursor: grab; user-select: none; }
-  .drag-item.dragging { opacity: .4; }
-  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
-  .badge-glow { animation: glow 2s infinite alternate; }
-  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
-  .hidden-step { display: none; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#db2777; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.95rem;}
+  .opt:hover { background:#fdf2f8; }
+  .opt.sel { border-color:#db2777; background:#fce7f3;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.5rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#db2777;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
-<body class="text-gray-800">
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 
-<header class="bg-gradient-to-r from-green-600 to-lime-500 text-white p-6 shadow-lg">
-  <div class="max-w-5xl mx-auto">
-    <h1 class="text-3xl md:text-4xl font-extrabold">♻️ 零廢棄小戰士</h1>
-    <p class="mt-2 text-lime-50">UNESCO 6.7-III ｜ 9-12 歲 ｜ 從垃圾到黑金的冒險！</p>
-    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
-      <div class="progress-dot active" id="dot1"></div>
-      <div class="progress-dot" id="dot2"></div>
-      <div class="progress-dot" id="dot3"></div>
-      <div class="progress-dot" id="dot4"></div>
-      <div class="progress-dot" id="dot5"></div>
-      <div class="progress-dot" id="dot6"></div>
-    </div>
-    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
-  </div>
-</header>
+<div class="max-w-3xl mx-auto">
 
-<main class="max-w-5xl mx-auto p-4 md:p-6">
-
-<!-- 情境角色 -->
-<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <div class="flex items-start gap-4">
-    <div class="text-6xl">🦸</div>
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
     <div>
-      <h2 class="text-2xl font-bold text-green-700">任務簡報：學校廚餘桶滿出來了！</h2>
-      <p class="mt-2 leading-relaxed">嗨！我是<strong>環保隊長小綠</strong>。今天學校午餐後，廚餘桶又滿出來了！台灣每人每天要丟掉約 <strong class="text-red-600">1 公斤</strong> 垃圾，全球每年產生 <strong class="text-red-600">23 億公噸</strong>！你願意接下 6 個關卡任務，幫學校變成零廢棄校園，解鎖「<span class="text-yellow-600 font-bold">零廢棄全校英雄</span>」徽章嗎？</p>
-      <button onclick="startMission()" class="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 ♻️</button>
+      <h1 class="text-2xl md:text-3xl font-bold text-pink-600">♻️ 零垃圾小英雄阿廢的一天</h1>
+      <p class="text-sm text-slate-600 mt-1">幫阿廢學會怎麼讓垃圾越來越少，讓地球的垃圾山變小！</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
     </div>
   </div>
-</section>
 
-<!-- 關卡 1：垃圾的一生（連連看分解時間）-->
-<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-blue-700">⏳ 關卡 1：垃圾的一生 — 分解時間大考驗</h2>
-  <p class="mt-2 text-gray-600">點一點，猜猜看這些東西埋進土裡要多久才會分解（真實數據 dp5）：</p>
-  <div class="space-y-3 mt-4" id="decompose">
-    <div class="flex items-center gap-3">
-      <span class="text-3xl">🍎</span><span class="w-32">蘋果核</span>
-      <select class="q-dec flex-1 p-2 border-2 rounded" data-ans="2">
-        <option value="">請選擇</option>
-        <option value="2">約 2 個月</option>
-        <option value="80">80 年</option>
-        <option value="500">500 年</option>
-        <option value="1000000">100 萬年</option>
-      </select>
-    </div>
-    <div class="flex items-center gap-3">
-      <span class="text-3xl">🥤</span><span class="w-32">鋁罐</span>
-      <select class="q-dec flex-1 p-2 border-2 rounded" data-ans="80">
-        <option value="">請選擇</option>
-        <option value="2">約 2 個月</option>
-        <option value="80">80-200 年</option>
-        <option value="500">500 年</option>
-        <option value="1000000">100 萬年</option>
-      </select>
-    </div>
-    <div class="flex items-center gap-3">
-      <span class="text-3xl">🛍️</span><span class="w-32">塑膠袋</span>
-      <select class="q-dec flex-1 p-2 border-2 rounded" data-ans="500">
-        <option value="">請選擇</option>
-        <option value="2">約 2 個月</option>
-        <option value="80">80 年</option>
-        <option value="500">10-1000 年</option>
-        <option value="1000000">100 萬年</option>
-      </select>
-    </div>
-    <div class="flex items-center gap-3">
-      <span class="text-3xl">🍾</span><span class="w-32">玻璃瓶</span>
-      <select class="q-dec flex-1 p-2 border-2 rounded" data-ans="1000000">
-        <option value="">請選擇</option>
-        <option value="2">約 2 個月</option>
-        <option value="80">80 年</option>
-        <option value="500">500 年</option>
-        <option value="1000000">超過 100 萬年</option>
-      </select>
-    </div>
-  </div>
-  <button onclick="checkL1()" class="mt-5 bg-blue-600 text-white font-bold py-2 px-5 rounded-full">提交答案</button>
-  <div id="l1-fb" class="mt-4"></div>
-</section>
-
-<!-- 關卡 2：分類大師（拖曳）-->
-<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-teal-700">🧺 關卡 2：分類大師 — 垃圾要去哪裡？</h2>
-  <p class="mt-2 text-gray-600">台灣 4 合 1 回收率已超過 <strong>55%</strong>（dp1, dp7）！幫這些垃圾找到正確的家：</p>
-
-  <div class="flex flex-wrap gap-3 mt-4" id="trashPool">
-    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="recycle">🥤 寶特瓶</div>
-    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="compost">🍌 香蕉皮</div>
-    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="recycle">📰 舊報紙</div>
-    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="general">🚬 菸蒂</div>
-    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="compost">🍂 落葉</div>
-    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="recycle">🥫 鋁罐</div>
-    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="general">🧻 用過衛生紙</div>
-    <div class="drag-item bg-yellow-100 px-4 py-2 rounded-full shadow" draggable="true" data-type="compost">🍚 剩飯</div>
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3 flex-wrap">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-2 text-sm text-slate-600">關卡 <span id="step-label">1</span> / 4</span>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5">
-    <div class="drop-zone min-h-28 p-3 border-4 border-dashed border-blue-400 rounded-xl bg-blue-50" data-accept="recycle">
-      <h3 class="font-bold text-blue-700">♻️ 資源回收</h3>
-      <div class="mt-2 flex flex-wrap gap-2 zone-items"></div>
-    </div>
-    <div class="drop-zone min-h-28 p-3 border-4 border-dashed border-amber-500 rounded-xl bg-amber-50" data-accept="compost">
-      <h3 class="font-bold text-amber-700">🌱 廚餘／堆肥</h3>
-      <div class="mt-2 flex flex-wrap gap-2 zone-items"></div>
-    </div>
-    <div class="drop-zone min-h-28 p-3 border-4 border-dashed border-gray-500 rounded-xl bg-gray-100" data-accept="general">
-      <h3 class="font-bold text-gray-700">🗑️ 一般垃圾</h3>
-      <div class="mt-2 flex flex-wrap gap-2 zone-items"></div>
-    </div>
-  </div>
-  <button onclick="checkL2()" class="mt-5 bg-teal-600 text-white font-bold py-2 px-5 rounded-full">檢查分類</button>
-  <div id="l2-fb" class="mt-4"></div>
-</section>
-
-<!-- 關卡 3：堆肥實驗室 -->
-<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-amber-700">🧪 關卡 3：堆肥實驗室 — 配出完美黑金！</h2>
-  <p class="mt-2 text-gray-600">堆肥需要 <strong>綠色料（濕、氮）</strong> + <strong>褐色料（乾、碳）</strong> + 空氣 + 水。最佳比例約 <strong>綠 1 : 褐 3</strong>。家庭堆肥可減少 <strong>30%</strong> 垃圾（dp4），並提升土壤保水力 <strong>20%</strong>（dp6）！</p>
-  <div class="grid grid-cols-2 gap-4 mt-4">
-    <div>
-      <label class="font-bold text-green-700">綠色料（份）</label>
-      <input type="range" id="greenAmt" min="0" max="6" value="1" class="w-full">
-      <div id="greenVal" class="text-center text-lg">1</div>
-    </div>
-    <div>
-      <label class="font-bold text-amber-700">褐色料（份）</label>
-      <input type="range" id="brownAmt" min="0" max="6" value="3" class="w-full">
-      <div id="brownVal" class="text-center text-lg">3</div>
-    </div>
-  </div>
-  <div class="mt-4 text-center">
-    <div id="compostBox" class="inline-block p-5 rounded-full bg-amber-200 text-5xl">🪣</div>
-    <div id="l3-result" class="mt-3 font-bold"></div>
-  </div>
-  <button onclick="checkL3()" class="mt-3 bg-amber-600 text-white font-bold py-2 px-5 rounded-full">啟動發酵！</button>
-  <div id="l3-fb" class="mt-4"></div>
-</section>
-
-<!-- 關卡 4：5R 英雄任務 -->
-<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-purple-700">🦸 關卡 4：5R 英雄任務</h2>
-  <p class="mt-2 text-gray-600">每個情境選出最棒的 R 行動：</p>
-  <div class="space-y-4 mt-4" id="r5">
-    <div class="p-3 bg-purple-50 rounded-xl">
-      <p class="font-semibold">① 媽媽要買飲料，老闆給你吸管。你說：</p>
-      <div class="flex flex-wrap gap-2 mt-2">
-        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="1">Refuse 拒用</button>
-        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="0">Recycle 回收</button>
-        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="0">Repair 維修</button>
+  <!-- ===== Level 1: 配對 (15 pts) ===== -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🗑️</div>
+      <div>
+        <h2 class="text-xl font-bold text-pink-700">關卡 1：這樣處理垃圾，對還是不對？</h2>
+        <p class="text-sm text-slate-700 mt-1">阿廢說：「垃圾的處理方式，會決定它是繼續活著還是被埋起來！<b>零廢棄做法</b>是讓東西被重新使用、修理或回收；<b>增加垃圾的做法</b>是直接丟掉、不分類、不回收。把卡片拖到正確的籃子！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 15 分｜全部放對才能前往下一關</p>
       </div>
     </div>
-    <div class="p-3 bg-purple-50 rounded-xl">
-      <p class="font-semibold">② 哥哥的書包壞掉一條帶子。你建議：</p>
-      <div class="flex flex-wrap gap-2 mt-2">
-        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="0">直接丟掉買新的</button>
-        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="1">Repair 找裁縫修</button>
-        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="0">Refuse 拒用</button>
+
+    <div class="grid grid-cols-2 gap-3 my-3" id="items-box-1">
+      <div class="drag-item bg-pink-100 border-2 border-pink-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="good">♻️ 寶特瓶洗乾淨，放入回收桶</div>
+      <div class="drag-item bg-pink-100 border-2 border-pink-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="bad">🗑️ 紙盒、鐵罐、塑膠全部混在一起丟</div>
+      <div class="drag-item bg-pink-100 border-2 border-pink-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="good">🧸 玩具壞了送去修理，而不是直接丟</div>
+      <div class="drag-item bg-pink-100 border-2 border-pink-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="bad">📦 網購收到的紙箱，用完直接壓扁丟垃圾桶</div>
+      <div class="drag-item bg-pink-100 border-2 border-pink-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="good">👕 舊衣服不穿了，整理好捐給需要的人</div>
+      <div class="drag-item bg-pink-100 border-2 border-pink-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="bad">🍌 廚餘和一般垃圾混在一起，沒有分開</div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3" id="zones-box-1">
+      <div class="drop-zone bg-emerald-50 p-3" data-accept="good">
+        <div class="font-bold text-emerald-700 text-center mb-2">✅ 零廢棄做法<br><span class="text-xs font-normal text-emerald-500">（回收、修理、再利用）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-red-50 p-3" data-accept="bad">
+        <div class="font-bold text-red-700 text-center mb-2">❌ 增加垃圾的做法<br><span class="text-xs font-normal text-red-500">（不分類、隨便丟）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
       </div>
     </div>
-    <div class="p-3 bg-purple-50 rounded-xl">
-      <p class="font-semibold">③ 午餐剩下很多菜。你建議：</p>
-      <div class="flex flex-wrap gap-2 mt-2">
-        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="0">丟一般垃圾</button>
-        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="1">Reduce＋廚餘桶做堆肥</button>
-        <button class="q5 px-3 py-1 border-2 rounded-full" data-ans="0">埋到操場</button>
+
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <span></span>
+      <button id="btn-next-1" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>完成分類才能繼續 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 2: 看圖找答案 (20 pts) ===== -->
+  <section id="level-2" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">📊</div>
+      <div>
+        <h2 class="text-xl font-bold text-pink-700">關卡 2：看圖找答案</h2>
+        <p class="text-sm text-slate-700 mt-1">阿廢調查了班上同學一週丟掉的垃圾，把垃圾分成幾種類型。仔細看圖，回答下面兩題！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜Q1 單選 5 分 + Q2 多選 15 分</p>
       </div>
     </div>
-  </div>
-  <div id="l4-fb" class="mt-4"></div>
-</section>
 
-<!-- 關卡 5：全球垃圾特派員 -->
-<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-rose-700">🌍 關卡 5：全球垃圾特派員</h2>
-  <p class="mt-2 text-gray-600">全球每年浪費 <strong>10.5 億公噸</strong>食物，等於所有食物的 <strong>1/5</strong>（dp3）。許多國家的小孩甚至住在垃圾山附近撿回收物維生。你被派到肯亞的姊妹校做視訊交流，請選出最有同理心、最有幫助的一句話：</p>
-  <div class="space-y-3 mt-4" id="emp">
-    <button class="qe w-full text-left p-3 border-2 rounded-xl" data-ans="0">「你們國家好髒，趕快像我們一樣就好。」</button>
-    <button class="qe w-full text-left p-3 border-2 rounded-xl" data-ans="1">「我想聽聽你們怎麼重複使用東西，我可以分享台灣 4 合 1 回收的經驗，我們互相學習！」</button>
-    <button class="qe w-full text-left p-3 border-2 rounded-xl" data-ans="0">「這不關我的事。」</button>
-    <button class="qe w-full text-left p-3 border-2 rounded-xl" data-ans="0">「台灣很先進，我們不需要學你們。」</button>
-  </div>
-  <div id="l5-fb" class="mt-4"></div>
-</section>
+    <!-- SVG chart: types of waste (pie/bar) -->
+    <svg viewBox="0 0 400 180" class="w-full max-w-lg mx-auto block bg-slate-50 rounded-xl mb-4 border border-slate-200">
+      <!-- Axes -->
+      <line x1="55" y1="150" x2="390" y2="150" stroke="#475569" stroke-width="1.5"/>
+      <line x1="55" y1="20" x2="55" y2="150" stroke="#475569" stroke-width="1.5"/>
+      <!-- Y labels -->
+      <text x="5" y="16" font-size="8" fill="#64748b">佔比(%)</text>
+      <text x="15" y="153" font-size="8" fill="#64748b">0</text>
+      <text x="10" y="103" font-size="8" fill="#64748b">25</text>
+      <text x="10" y="53" font-size="8" fill="#64748b">50</text>
+      <text x="10" y="23" font-size="8" fill="#64748b">65</text>
+      <!-- X labels -->
+      <text x="62" y="167" font-size="7.5" fill="#64748b">廚餘</text>
+      <text x="108" y="167" font-size="7.5" fill="#64748b">塑膠袋</text>
+      <text x="158" y="167" font-size="7.5" fill="#64748b">紙類</text>
+      <text x="213" y="167" font-size="7.5" fill="#64748b">寶特瓶</text>
+      <text x="273" y="167" font-size="7.5" fill="#64748b">其他</text>
+      <!-- Bars -->
+      <rect x="62" y="28" width="35" height="122" fill="#f97316" rx="3"/>
+      <rect x="110" y="78" width="35" height="72" fill="#fb923c" rx="3"/>
+      <rect x="160" y="103" width="35" height="47" fill="#fbbf24" rx="3"/>
+      <rect x="215" y="118" width="35" height="32" fill="#a3e635" rx="3"/>
+      <rect x="275" y="123" width="35" height="27" fill="#94a3b8" rx="3"/>
+      <!-- value labels -->
+      <text x="66" y="24" font-size="9" fill="#ea580c" font-weight="bold">61%</text>
+      <text x="114" y="74" font-size="9" fill="#c2410c" font-weight="bold">36%</text>
+      <text x="164" y="99" font-size="9" fill="#a16207" font-weight="bold">24%</text>
+      <text x="219" y="114" font-size="9" fill="#4d7c0f" font-weight="bold">16%</text>
+      <text x="279" y="119" font-size="9" fill="#475569" font-weight="bold">13%</text>
+      <!-- annotation -->
+      <text x="180" y="40" font-size="9" fill="#dc2626">廚餘最多！</text>
+      <text x="180" y="50" font-size="9" fill="#dc2626">↙ 可以減少</text>
+    </svg>
 
-<!-- 關卡 6：WSA 全校行動 4-Checkbox -->
-<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-emerald-700">🏫 關卡 6：全校行動挑戰（WSA 四面向）</h2>
-  <p class="mt-2 text-gray-600">勾選你承諾要做的 4 件事，全選即可解鎖「<strong class="text-yellow-600">零廢棄全校英雄</strong>」徽章！</p>
-  <div class="space-y-3 mt-4">
-    <label class="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl cursor-pointer">
-      <input type="checkbox" class="wsa w-5 h-5 mt-1" data-dim="curriculum">
-      <span><strong>📚 課程整合</strong>：下次上課提議「做班級堆肥實驗」或「廢棄物量秤重挑戰」</span>
-    </label>
-    <label class="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl cursor-pointer">
-      <input type="checkbox" class="wsa w-5 h-5 mt-1" data-dim="campus">
-      <span><strong>🏫 校園營運</strong>：每天帶自己的餐盒 + 監督班上 4 色分類桶</span>
-    </label>
-    <label class="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl cursor-pointer">
-      <input type="checkbox" class="wsa w-5 h-5 mt-1" data-dim="community">
-      <span><strong>🤝 社區連結</strong>：本週在家教一位大人正確分類（或參加社區環保日）</span>
-    </label>
-    <label class="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl cursor-pointer">
-      <input type="checkbox" class="wsa w-5 h-5 mt-1" data-dim="agency">
-      <span><strong>🙋 學生治理</strong>：自願當班級環保小尖兵，或提案「校園零廢棄」行動</span>
-    </label>
-  </div>
-  <button onclick="checkWSA()" class="mt-5 bg-emerald-600 text-white font-bold py-2 px-5 rounded-full">完成挑戰！</button>
-  <div id="l6-fb" class="mt-4"></div>
-</section>
+    <!-- Q1 single choice -->
+    <div class="mb-5">
+      <p class="font-bold text-sm mb-2">📌 Q1：從這張圖可以看出什麼？（單選，5 分）</p>
+      <div id="q1-opts">
+        <label class="opt"><input type="radio" name="q1" value="0"> A. 寶特瓶是班上同學丟最多的垃圾。</label>
+        <label class="opt"><input type="radio" name="q1" value="1"> B. 廚餘（剩菜剩飯）是垃圾中佔比最高的一種。</label>
+        <label class="opt"><input type="radio" name="q1" value="0"> C. 塑膠袋和紙類的垃圾量幾乎一樣多。</label>
+      </div>
+      <p id="q1-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
 
-<!-- 終極徽章 -->
-<section id="finale" class="hidden-step card bg-gradient-to-br from-yellow-200 via-amber-200 to-lime-200 rounded-2xl shadow-2xl p-8 mb-6 text-center">
-  <div class="text-8xl mb-2 badge-glow inline-block">🏅</div>
-  <h2 class="text-3xl font-extrabold text-amber-800">恭喜！你是零廢棄全校英雄！</h2>
-  <p class="mt-3 text-lg">你已完成 6 關挑戰，成為<strong>校園 × 家庭 × 社區 × 全球</strong>的零廢棄守護者！</p>
-  <p class="mt-3 text-sm text-gray-700">記得：台灣回收率 &gt;55% 已經很棒，但我們可以做更好！每個小行動，都是一噸垃圾減量的開始。</p>
-  <button onclick="celebrate()" class="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-8 rounded-full shadow-lg text-lg">🎉 再次慶祝！</button>
-</section>
+    <!-- Q2 multi-select -->
+    <div class="mb-3">
+      <p class="font-bold text-sm mb-1">📌 Q2：要讓這些垃圾變少，下面哪些方法有用？<br><span class="font-normal text-slate-500 text-xs">（勾出你覺得正確的，可以勾多個）</span></p>
+      <div id="q2-opts">
+        <label class="opt"><input type="checkbox" data-correct="1"> 🍽️ 午餐吃多少點多少，減少廚餘</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 🛍️ 自備購物袋，不要每次都拿塑膠袋</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> 🗑️ 把全部垃圾都壓進一個大袋子，省地方</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> ♻️ 寶特瓶、紙盒洗乾淨後分類回收</label>
+      </div>
+      <p id="q2-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
 
-</main>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="1">← 上一關</button>
+      <button id="btn-next-2" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>提交答案 →</button>
+    </div>
+  </section>
 
-<footer class="text-center text-xs text-gray-500 p-4">
-  資料來源：環境部資源循環署、UNEP GWMO 2024、UN SDG 12、US EPA Composting｜最後驗證 2026-04-16
-</footer>
+  <!-- ===== Level 3: 推一推 (20 pts) ===== -->
+  <section id="level-3" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🔄</div>
+      <div>
+        <h2 class="text-xl font-bold text-pink-700">關卡 3：推一推！一個空瓶的旅程</h2>
+        <p class="text-sm text-slate-700 mt-1">阿廢喝完了一瓶飲料，空寶特瓶接下來怎麼了？把下面四張卡片依照正確的順序，拖進 ① ② ③ ④ 四個格子！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜順序全對才得分</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row items-center justify-center gap-2 my-4" id="chain-slots">
+      <div class="drop-zone bg-pink-50 p-3 w-full md:w-32 text-center" data-slot="1">
+        <div class="text-xs font-bold text-pink-700 mb-1">① 起點</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-pink-50 p-3 w-full md:w-32 text-center" data-slot="2">
+        <div class="text-xs font-bold text-pink-700 mb-1">②</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-pink-50 p-3 w-full md:w-32 text-center" data-slot="3">
+        <div class="text-xs font-bold text-pink-700 mb-1">③</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-pink-50 p-3 w-full md:w-32 text-center" data-slot="4">
+        <div class="text-xs font-bold text-pink-700 mb-1">④ 結果</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 mt-2" id="chain-items">
+      <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="2">🚿 阿廢把空瓶沖洗乾淨，壓扁</div>
+      <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="4">🧵 被做成新的瓶子或衣服，繼續被使用</div>
+      <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="1">🥤 阿廢喝完了一瓶飲料，空瓶在手上</div>
+      <div class="drag-item bg-rose-100 border-2 border-rose-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="3">♻️ 放入資源回收桶，工廠把它融化再製造</div>
+    </div>
+
+    <p id="l3-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="2">← 上一關</button>
+      <button id="btn-next-3" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>下一關 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 4: 我的行動 (20 pts) ===== -->
+  <section id="level-4" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">💪</div>
+      <div>
+        <h2 class="text-xl font-bold text-pink-700">關卡 4：我的零廢棄行動</h2>
+        <p class="text-sm text-slate-700 mt-1">阿廢說：「每個人每天都可以減少一點垃圾！先選一個你想行動的方向！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜選主題 + 選行動 + 立下承諾</p>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <p class="font-bold text-sm mb-2">① 阿廢最想從哪裡開始減少垃圾？（選一個）</p>
+      <div id="theme-opts">
+        <label class="opt"><input type="radio" name="theme" value="recycle"> ♻️ 資源回收（分類、洗乾淨、放對桶子）</label>
+        <label class="opt"><input type="radio" name="theme" value="reduce"> 🛍️ 減少用到的垃圾（自備袋子、杯子、餐具）</label>
+        <label class="opt"><input type="radio" name="theme" value="reuse"> 🔧 修理和再利用（壞了先修，舊東西換新用法）</label>
+        <label class="opt"><input type="radio" name="theme" value="spread"> 📢 告訴大家怎麼減少垃圾</label>
+      </div>
+    </div>
+
+    <div id="action-wrap" class="hidden mb-4">
+      <p class="font-bold text-sm mb-2">② 以下三個做法，你覺得哪個最容易開始？（選一個）</p>
+      <div id="action-opts"></div>
+      <p id="action-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div id="promise-wrap" class="hidden bg-pink-50 rounded-xl p-4 mb-3">
+      <p class="font-bold text-sm mb-2">③ 在你能做到的事情前打勾（至少選 2 個）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-pink-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會把寶特瓶和紙盒洗乾淨後放入回收桶</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-pink-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會出門帶自己的袋子，不拿塑膠袋</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-pink-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會把用不到但還好的東西整理出來，問問能不能給別人</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-pink-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會觀察自己一週製造了多少垃圾，記錄下來</span>
+      </label>
+      <p id="promise-fb" class="text-xs mt-2 text-slate-500 min-h-[18px]"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="3">← 上一關</button>
+      <button id="btn-next-4" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>查看成果 🏆</button>
+    </div>
+  </section>
+
+  <!-- ===== Final: 反思 (5 pts) ===== -->
+  <section id="level-final" class="card p-6 hidden-screen fade-in">
+    <div class="text-6xl text-center pop">🏆</div>
+    <h2 class="text-2xl font-bold text-pink-600 mt-2 text-center">恭喜你幫阿廢成為零垃圾小英雄！</h2>
+    <p class="text-slate-700 mt-1 text-center">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> / 80 分</p>
+
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <div class="bg-sky-50 rounded-xl p-4 max-w-2xl mx-auto mb-4">
+      <p class="font-bold text-sky-700 mb-3">🤔 最後一步：快速反思（5 分）</p>
+
+      <p class="text-sm font-semibold mb-1">Q1｜上這堂課之前，你對「零廢棄」的了解程度：</p>
+      <div id="stars-before" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q2｜上完這堂課後，你的了解程度：</p>
+      <div id="stars-after" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q3｜哪個關卡讓你印象最深刻？</p>
+      <div id="impact-opts">
+        <label class="opt"><input type="radio" name="impact" value="1"> 關卡 1：零廢棄做法 vs 增加垃圾的做法</label>
+        <label class="opt"><input type="radio" name="impact" value="2"> 關卡 2：班上垃圾種類比例圖</label>
+        <label class="opt"><input type="radio" name="impact" value="3"> 關卡 3：空寶特瓶的新旅程</label>
+        <label class="opt"><input type="radio" name="impact" value="4"> 關卡 4：我的零廢棄行動</label>
+      </div>
+      <p id="reflect-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div class="bg-yellow-50 rounded-xl p-4 text-left max-w-2xl mx-auto">
+      <h3 class="font-bold text-amber-700 mb-2">🧐 延伸思考小挑戰</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>你家一週大概丟幾袋垃圾？如果多做一件事（分類或減少廚餘），可以少丟幾袋？</li>
+        <li>學校或家附近有沒有可以把舊東西送給別人、或交換的地方？你願意去試試看嗎？</li>
+        <li>你願意記錄自己一週製造了多少垃圾嗎？你覺得哪種垃圾最容易減少？</li>
+      </ol>
+    </div>
+
+    <div class="nav-row max-w-2xl mx-auto mt-4">
+      <button class="btn btn-back" data-back="4">← 回到關卡 4</button>
+      <button onclick="location.reload()" class="btn bg-pink-500 text-white py-2 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+    </div>
+  </section>
+
+</div>
 
 <script>
-let current = 1;
-const total = 6;
-function show(idx){
-  ['intro','level1','level2','level3','level4','level5','level6','finale'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.classList.add('hidden-step');
-  });
-  const map = {1:'level1',2:'level2',3:'level3',4:'level4',5:'level5',6:'level6',7:'finale'};
-  document.getElementById(map[idx]).classList.remove('hidden-step');
-  for(let i=1;i<=total;i++){
-    const d = document.getElementById('dot'+i);
-    d.classList.remove('active','done');
-    if(i<idx) d.classList.add('done');
-    else if(i===idx) d.classList.add('active');
-  }
-  document.getElementById('progressText').innerText = idx<=total ? ('第 '+idx+' / '+total+' 關') : '🎉 全部完成！';
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-function startMission(){
-  document.getElementById('intro').classList.add('hidden-step');
-  current = 1; show(1);
-}
-function next(){ current++; show(current); }
-function fb(id, ok, msg){
-  const el = document.getElementById(id);
-  el.innerHTML = '<div class="feedback-pop p-3 rounded-xl '+(ok?'bg-green-100 text-green-800':'bg-red-100 text-red-800')+'">'+msg+'</div>';
-  if(!ok) el.classList.add('shake'), setTimeout(()=>el.classList.remove('shake'),500);
-}
-// Level 1
-function checkL1(){
-  const qs = document.querySelectorAll('.q-dec');
-  let correct = 0, total=qs.length;
-  qs.forEach(q=>{ if(q.value===q.dataset.ans) correct++; });
-  if(correct===total){
-    fb('l1-fb', true, '🌟 全對！塑膠袋和玻璃瓶比你的曾曾曾孫活得還久——減量比回收更重要！');
-    setTimeout(next, 1500);
-  } else {
-    fb('l1-fb', false, '💡 再想想：蘋果核 2 個月、鋁罐 80-200 年、塑膠袋 10-1000 年、玻璃瓶 &gt;100 萬年。你答對 '+correct+'/'+total+'，再試試！');
-  }
-}
-// Level 2 drag-drop
-let dragEl = null;
-document.addEventListener('dragstart', e=>{
-  if(e.target.classList.contains('drag-item')){
-    dragEl = e.target; e.target.classList.add('dragging');
-  }
-});
-document.addEventListener('dragend', e=>{
-  if(e.target.classList.contains('drag-item')) e.target.classList.remove('dragging');
-});
-document.querySelectorAll('.drop-zone').forEach(z=>{
-  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
-  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
-  z.addEventListener('drop', e=>{
-    e.preventDefault(); z.classList.remove('over');
-    if(dragEl){ z.querySelector('.zone-items').appendChild(dragEl); }
-  });
-});
-function checkL2(){
-  const items = document.querySelectorAll('#trashPool .drag-item, .zone-items .drag-item');
-  let correct=0, placed=0, total=8;
-  document.querySelectorAll('.drop-zone').forEach(z=>{
-    const accept = z.dataset.accept;
-    z.querySelectorAll('.drag-item').forEach(it=>{
-      placed++;
-      if(it.dataset.type===accept) correct++;
-    });
-  });
-  if(placed<total){
-    fb('l2-fb', false, '還有東西沒分類喔！把所有物品都拖到垃圾桶裡。');
-    return;
-  }
-  if(correct===total){
-    fb('l2-fb', true, '♻️ 你是分類大師！台灣 4 合 1 回收系統自 1998 年以來成長超過 10 倍，靠的就是像你這樣認真的人！');
-    setTimeout(next, 1500);
-  } else {
-    fb('l2-fb', false, '💡 你答對 '+correct+'/'+total+'。提示：菸蒂、用過衛生紙屬一般垃圾；果皮落葉屬廚餘/堆肥；瓶罐紙張屬資源回收。');
-  }
-}
-// Level 3 compost slider
-const g = document.getElementById('greenAmt'), b = document.getElementById('brownAmt');
-function updSlider(){ document.getElementById('greenVal').innerText = g.value; document.getElementById('brownVal').innerText = b.value; }
-g.addEventListener('input', updSlider); b.addEventListener('input', updSlider);
-function checkL3(){
-  const gv = parseInt(g.value), bv = parseInt(b.value);
-  const ratio = bv/Math.max(gv,0.1);
-  const box = document.getElementById('compostBox');
-  const result = document.getElementById('l3-result');
-  if(gv===0 || bv===0){
-    box.innerText = '🪣'; result.innerText='缺一味：綠色料和褐色料都要有！'; result.className='mt-3 font-bold text-red-600';
-    fb('l3-fb', false, '🌱 堆肥需要綠色（濕/氮）＋褐色（乾/碳）一起合作，缺一不可。');
-  } else if(ratio>=2 && ratio<=4){
-    box.innerText='🌱'; result.innerText='✅ 完美配比！黑金誕生！';
-    result.className='mt-3 font-bold text-green-700';
-    fb('l3-fb', true, '🎉 完美！約 1:3 比例加上空氣與濕度，2-3 個月就會變成富含養分的腐植質，家庭減量 30%、土壤保水力提升 20%！');
-    setTimeout(next, 1800);
-  } else if(ratio>4){
-    box.innerText='🍂'; result.innerText='太乾！分解會變慢'; result.className='mt-3 font-bold text-amber-600';
-    fb('l3-fb', false, '褐色料太多了，微生物會餓肚子。試試綠:褐 = 1:3。');
-  } else {
-    box.innerText='💧'; result.innerText='太濕會發臭！'; result.className='mt-3 font-bold text-rose-600';
-    fb('l3-fb', false, '綠色料太多會滋生異味。加一些落葉、碎紙、木屑平衡一下！');
-  }
-}
-updSlider();
-// Level 4
-document.querySelectorAll('.q5').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const parent = btn.closest('.p-3');
-    parent.querySelectorAll('.q5').forEach(b=>b.classList.remove('bg-green-200','bg-red-200','border-green-500','border-red-500'));
-    if(btn.dataset.ans==='1'){
-      btn.classList.add('bg-green-200','border-green-500');
-    } else {
-      btn.classList.add('bg-red-200','border-red-500');
+(() => {
+  const TOTAL_LEVELS = 4;
+  const S = { score: 0, current: 1, awarded: {} };
+  const el = id => document.getElementById(id);
+  const setScore = n => { S.score += n; el('score').textContent = S.score; };
+  const awardOnce = (key, pts) => { if (!S.awarded[key]) { S.awarded[key] = true; setScore(pts); } };
+
+  const updateDots = () => {
+    for (let i = 1; i <= TOTAL_LEVELS + 1; i++) {
+      const d = el('dot-' + i); if (!d) continue;
+      d.classList.remove('active','done');
+      if (i < S.current) d.classList.add('done');
+      else if (i === S.current) d.classList.add('active');
     }
-    // check all answered
-    const allQ = document.querySelectorAll('#r5 .p-3');
-    let correct=0, answered=0;
-    allQ.forEach(p=>{
-      const sel = p.querySelector('.bg-green-200, .bg-red-200');
-      if(sel) answered++;
-      if(sel && sel.classList.contains('bg-green-200')) correct++;
+  };
+
+  const gotoLevel = n => {
+    document.querySelectorAll('section[id^="level-"]').forEach(s => s.classList.add('hidden-screen'));
+    S.current = n; el('step-label').textContent = Math.min(n, 4);
+    const target = (n > TOTAL_LEVELS) ? el('level-final') : el('level-' + n);
+    target.classList.remove('hidden-screen'); target.classList.add('fade-in');
+    updateDots(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  document.querySelectorAll('.btn-back').forEach(b => { b.onclick = () => gotoLevel(parseInt(b.dataset.back, 10)); });
+
+  const confetti = () => {
+    const colors = ['#db2777','#10b981','#f59e0b','#3b82f6','#a855f7'];
+    for (let i = 0; i < 32; i++) {
+      const c = document.createElement('div'); c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw'; c.style.background = colors[i % colors.length];
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
+      document.body.appendChild(c); setTimeout(() => c.remove(), 2500);
+    }
+  };
+
+  const shuffleChildren = parent => {
+    const kids = Array.from(parent.children);
+    for (let i = kids.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); parent.appendChild(kids[j]); }
+  };
+
+  /* Level 1 */
+  shuffleChildren(el('items-box-1')); shuffleChildren(el('zones-box-1'));
+  let dragged1 = null, l1Correct = 0;
+  const total1 = document.querySelectorAll('#items-box-1 .drag-item').length;
+
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged1 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#items-box-1 .drag-item').forEach(x => x.classList.remove('ring-4','ring-pink-400'));
+      item.classList.add('ring-4','ring-pink-400'); dragged1 = item;
     });
-    if(answered===allQ.length){
-      if(correct===allQ.length){
-        fb('l4-fb', true, '🦸 你是 5R 英雄！Reduce>Reuse>Repair>Refuse>Recycle 五招全通！');
-        setTimeout(next, 1500);
-      } else {
-        fb('l4-fb', false, '再想想：拒用吸管=Refuse；修書包=Repair；廚餘做堆肥=Reduce 送去焚化的量。再試試！');
+  });
+
+  document.querySelectorAll('#zones-box-1 .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop1(zone); });
+    zone.addEventListener('click', () => { if (dragged1) handleDrop1(zone); });
+  });
+
+  function handleDrop1(zone) {
+    if (!dragged1) return;
+    const fb = el('l1-feedback');
+    if (dragged1.dataset.match === zone.dataset.accept) {
+      zone.querySelector('.dz-items').appendChild(dragged1);
+      dragged1.setAttribute('draggable','false');
+      dragged1.classList.remove('ring-4','ring-pink-400','bg-pink-100','border-pink-400');
+      dragged1.classList.add('bg-green-100','border-green-500','pop');
+      l1Correct++;
+      fb.textContent = '答對！ 👏'; fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+      confetti();
+      if (l1Correct === total1) {
+        awardOnce('L1', 15);
+        const btn = el('btn-next-1'); btn.disabled = false;
+        btn.className = 'btn bg-pink-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(2);
+        fb.textContent = '全部答對！阿廢為你拍手！🎉 +15 分';
       }
-    }
-  });
-});
-// Level 5
-document.querySelectorAll('.qe').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    if(btn.dataset.ans==='1'){
-      btn.classList.add('bg-green-200','border-green-500');
-      fb('l5-fb', true, '🌍 好棒！真正的國際夥伴關係是「互相學習」——這就是 UN SDG 12 的精神！');
-      setTimeout(next, 1800);
     } else {
-      btn.classList.add('bg-red-200','border-red-500');
-      fb('l5-fb', false, '同理心提示：垃圾問題不是他們的錯，全球每年浪費 10.5 億噸食物也有我們的責任。我們互相學習，不互相貶低。');
+      dragged1.classList.add('shake'); setTimeout(() => dragged1.classList.remove('shake'), 400);
+      fb.textContent = '再想想！零廢棄是「回收、修理、再利用」；增加垃圾是「隨便丟、不分類」 💡';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
     }
+    dragged1 = null;
+  }
+
+  /* Level 2 */
+  let q1Done = false, q2Done = false;
+  const checkL2ready = () => {
+    const ready = q1Done && q2Done; const btn = el('btn-next-2');
+    btn.disabled = !ready; if (ready) btn.className = 'btn bg-pink-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=q1]').forEach(r => {
+    r.onchange = () => {
+      if (q1Done) return;
+      document.querySelectorAll('#q1-opts .opt').forEach(o => o.classList.remove('sel','correct','wrong'));
+      r.parentElement.classList.add(r.value === '1' ? 'correct' : 'wrong');
+      const fb = el('q1-fb');
+      if (r.value === '1') { fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 對！廚餘佔了最高比例（61%）。+5 分</span>'; awardOnce('L2-q1', 5); q1Done = true; }
+      else fb.innerHTML = '<span class="text-rose-600">❌ 再看看圖，哪根柱子最高？</span>';
+      checkL2ready();
+    };
   });
-});
-// Level 6 WSA
-function checkWSA(){
-  const boxes = document.querySelectorAll('.wsa');
-  const checked = Array.from(boxes).filter(b=>b.checked).length;
-  if(checked===4){
-    fb('l6-fb', true, '🏆 四面向全通！你正式晉升「零廢棄全校英雄」！');
-    setTimeout(()=>{ show(7); celebrate(); }, 1500);
-  } else {
-    fb('l6-fb', false, '再想想：課程／營運／社區／學生治理四個面向缺一不可——這就是 Whole School Approach。目前只勾選 '+checked+'/4。');
+
+  let q2Submitted = false;
+  document.querySelectorAll('#q2-opts input[type=checkbox]').forEach(cb => {
+    cb.onchange = () => {
+      if (q2Submitted) return;
+      const checked = document.querySelectorAll('#q2-opts input:checked');
+      const fb = el('q2-fb');
+      if (checked.length >= 1) { fb.textContent = `已選 ${checked.length} 項。覺得選好了嗎？`; q2Done = true; }
+      else q2Done = false;
+      checkL2ready();
+    };
+  });
+
+  el('btn-next-2').onclick = () => {
+    if (q2Submitted) { gotoLevel(3); return; }
+    q2Submitted = true;
+    const opts = document.querySelectorAll('#q2-opts input');
+    let correctCount = 0, wrongCount = 0;
+    opts.forEach(o => {
+      o.disabled = true; const lbl = o.parentElement;
+      if (o.checked) { if (o.dataset.correct === '1') { lbl.classList.add('correct'); correctCount++; } else { lbl.classList.add('wrong'); wrongCount++; } }
+    });
+    const pts = Math.max(0, correctCount * 5 - wrongCount * 5);
+    awardOnce('L2-q2', Math.min(pts, 15));
+    const fb = el('q2-fb');
+    if (wrongCount === 0 && correctCount >= 2) { fb.innerHTML = `<span class="text-emerald-700 font-bold">✅ 棒！勾對 ${correctCount} 項。+${Math.min(pts,15)} 分</span>`; confetti(); }
+    else if (correctCount >= 1) { fb.innerHTML = `<span class="text-amber-600">勾對 ${correctCount} 項、錯 ${wrongCount} 項。把全部垃圾混在一起反而更難回收喔！</span>`; if (pts > 0) confetti(); }
+    else fb.innerHTML = '<span class="text-rose-600">❌ 都沒有勾到正確的！仔細想想哪些做法可以讓垃圾變少。</span>';
+    el('btn-next-2').textContent = '繼續下一關 →';
+    el('btn-next-2').onclick = () => gotoLevel(3);
+  };
+
+  /* Level 3 */
+  shuffleChildren(el('chain-items'));
+  let dragged3 = null, l3SlotsFilled = 0;
+  const slotMap = {}, correctOrder = { '1':'1','2':'2','3':'3','4':'4' };
+
+  document.querySelectorAll('#chain-items .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged3 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#chain-items .drag-item').forEach(x => x.classList.remove('ring-4','ring-pink-400'));
+      item.classList.add('ring-4','ring-pink-400'); dragged3 = item;
+    });
+  });
+
+  document.querySelectorAll('#chain-slots .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop3(zone); });
+    zone.addEventListener('click', () => { if (dragged3) handleDrop3(zone); });
+  });
+
+  function handleDrop3(zone) {
+    if (!dragged3) return;
+    const slot = zone.dataset.slot, chainVal = dragged3.dataset.chain, fb = el('l3-feedback');
+    if (slotMap[slot]) { fb.textContent = '這格已經有卡片了！先試試其他格子。'; fb.className = 'mt-3 text-center font-bold min-h-[24px] text-amber-600'; dragged3 = null; return; }
+    if (correctOrder[slot] === chainVal) {
+      slotMap[slot] = chainVal;
+      const slotText = zone.querySelector('.slot-text');
+      slotText.textContent = dragged3.textContent.trim();
+      slotText.classList.remove('text-slate-400'); slotText.classList.add('text-slate-800','font-bold','pop');
+      zone.classList.add('bg-green-50'); zone.style.borderColor = '#10b981';
+      dragged3.style.visibility = 'hidden'; l3SlotsFilled++;
+      fb.textContent = '對了！ 🎉 繼續放下一張！'; fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600';
+      if (l3SlotsFilled === 4) {
+        awardOnce('L3', 20); fb.textContent = '完美！全部順序正確！ +20 分 🔥'; confetti();
+        const btn = el('btn-next-3'); btn.disabled = false;
+        btn.className = 'btn bg-pink-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(4);
+      }
+    } else {
+      zone.classList.add('shake'); setTimeout(() => zone.classList.remove('shake'), 400);
+      fb.textContent = '順序不對喔！提示：第 ① 格是「阿廢喝完飲料，空瓶在手上」。';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged3 = null;
   }
-}
-// confetti
-function celebrate(){
-  const colors = ['#fbbf24','#10b981','#3b82f6','#ef4444','#a855f7','#ec4899'];
-  for(let i=0;i<80;i++){
-    const c = document.createElement('div');
-    c.className='confetti';
-    c.style.left = Math.random()*100+'vw';
-    c.style.background = colors[Math.floor(Math.random()*colors.length)];
-    c.style.animationDelay = (Math.random()*0.6)+'s';
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(), 3000);
+
+  /* Level 4 */
+  const actionBank = {
+    recycle: ['今天開始把寶特瓶和紙盒分開放，不混在垃圾桶', '把要回收的東西先沖洗一下，讓它乾淨好回收', '幫家裡準備一個「回收專用桶」放在廚房旁邊'],
+    reduce: ['出門自己帶一個環保袋，不拿塑膠袋', '去便利商店買東西時告訴店員「不用袋子」', '帶自己的水壺出門，不買瓶裝水'],
+    reuse: ['家裡舊紙箱留起來，下次裝東西用', '玻璃罐洗乾淨，用來裝鉛筆或收納小東西', '舊T恤剪一剪，做成擦桌子的抹布'],
+    spread: ['告訴家人怎麼分辨哪些垃圾可以回收', '在班上分享「廚餘是垃圾最大宗」這件事', '和同學一起設計一張「班級回收提醒海報」']
+  };
+
+  let themePicked = null, actionPicked = false, promiseCount = 0;
+  const checkL4ready = () => {
+    const ready = themePicked && actionPicked && promiseCount >= 2;
+    const btn = el('btn-next-4'); btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-pink-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=theme]').forEach(r => {
+    r.onchange = () => {
+      themePicked = r.value;
+      document.querySelectorAll('#theme-opts .opt').forEach(o => o.classList.remove('sel')); r.parentElement.classList.add('sel');
+      const wrap = el('action-wrap'), box = el('action-opts'); box.innerHTML = ''; actionPicked = false;
+      actionBank[themePicked].forEach(txt => {
+        const lbl = document.createElement('label'); lbl.className = 'opt';
+        lbl.innerHTML = `<input type="radio" name="action"> ${txt}`;
+        lbl.querySelector('input').onchange = () => {
+          document.querySelectorAll('#action-opts .opt').forEach(o => o.classList.remove('sel')); lbl.classList.add('sel');
+          actionPicked = true; el('action-fb').innerHTML = '<span class="text-emerald-700">✅ 好主意！繼續下一步～</span>';
+          el('promise-wrap').classList.remove('hidden'); checkL4ready();
+        };
+        box.appendChild(lbl);
+      });
+      wrap.classList.remove('hidden'); el('promise-wrap').classList.add('hidden'); checkL4ready();
+    };
+  });
+
+  document.querySelectorAll('.promise-cb').forEach(cb => {
+    cb.onchange = () => {
+      promiseCount = document.querySelectorAll('.promise-cb:checked').length;
+      const fb = el('promise-fb');
+      if (promiseCount < 2) fb.textContent = `已選 ${promiseCount}/4，請至少選 2 個 😊`;
+      else fb.textContent = `選了 ${promiseCount} 個承諾！太棒了！`;
+      checkL4ready();
+    };
+  });
+
+  el('btn-next-4').onclick = () => { awardOnce('L4', 20); confetti(); showFinal(); };
+
+  function showFinal() {
+    gotoLevel(TOTAL_LEVELS + 1); el('final-score').textContent = S.score;
+    const box = el('badges'); box.innerHTML = '';
+    const earned = [];
+    if (S.awarded['L1']) earned.push('♻️ 垃圾分類達人');
+    if (S.awarded['L2-q1'] || S.awarded['L2-q2']) earned.push('📊 廢棄物觀察家');
+    if (S.awarded['L3']) earned.push('🥤 寶特瓶旅程思考王');
+    if (S.awarded['L4']) earned.push('🌍 零廢棄行動者');
+    if (earned.length === 0) earned.push('🌟 零垃圾小英雄');
+    earned.forEach(b => {
+      const chip = document.createElement('span');
+      chip.className = 'bg-pink-100 border-2 border-pink-400 rounded-full px-3 py-1 text-sm font-bold pop';
+      chip.textContent = b; box.appendChild(chip);
+    });
+    confetti();
   }
-}
+
+  /* Final reflection */
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+  const setupStars = (wrapId, setter) => {
+    const wrap = el(wrapId);
+    wrap.querySelectorAll('.star').forEach(s => {
+      s.onclick = () => {
+        const v = parseInt(s.dataset.val, 10); setter(v);
+        wrap.querySelectorAll('.star').forEach(x => x.classList.toggle('on', parseInt(x.dataset.val,10) <= v));
+        checkReflect();
+      };
+    });
+  };
+  setupStars('stars-before', v => starBefore = v);
+  setupStars('stars-after', v => starAfter = v);
+
+  document.querySelectorAll('input[name=impact]').forEach(r => {
+    r.onchange = () => {
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o => o.classList.remove('sel')); r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+
+  function checkReflect() {
+    const ok = starBefore > 0 && starAfter > 0 && impactPicked;
+    const fb = el('reflect-fb');
+    if (ok) { fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 反思完成！+5 分 🌟</span>'; awardOnce('FINAL', 5); el('final-score').textContent = S.score; }
+    else fb.textContent = '請完成三題反思（★ 前後了解度 + 印象最深的關卡）';
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

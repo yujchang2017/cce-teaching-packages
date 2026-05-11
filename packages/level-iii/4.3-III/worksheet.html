@@ -1,478 +1,723 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>氣候情緒小勇者 — 4.3-III 互動學習單</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣候情緒小勇者 | 互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#fef3c7 0%,#d1fae5 50%,#dbeafe 100%); min-height:100vh; }
-  .card { transition: transform .2s; }
-  .card:hover { transform: translateY(-2px); }
-  .feedback-pop { animation: pop .4s ease-out; }
-  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#fef3c7,#d1fae5); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:100px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
   .shake { animation: shake .4s; }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
-  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; z-index: 9999; }
-  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
-  .progress-dot.done { background: #10b981; transform: scale(1.2); }
-  .progress-dot.active { background: #f59e0b; box-shadow: 0 0 0 4px rgba(245,158,11,.25); }
-  .drag-item { cursor: grab; user-select: none; }
-  .drag-item.dragging { opacity: .4; }
-  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
-  .badge { animation: glow 2s infinite alternate; }
-  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
-  .hidden-step { display: none; }
-  .emo-slider { -webkit-appearance:none; width:100%; height:18px; border-radius:9999px;
-    background: linear-gradient(90deg,#93c5fd,#c4b5fd,#fda4af,#fcd34d,#86efac); outline:none; }
-  .emo-slider::-webkit-slider-thumb { -webkit-appearance:none; width:30px; height:30px; border-radius:50%; background:#fff; border:3px solid #f59e0b; cursor:pointer; }
-  .breath-circle { width:180px; height:180px; border-radius:50%; background:radial-gradient(#a7f3d0,#6ee7b7); margin:0 auto; transition:transform 4s ease-in-out; }
-  .breath-circle.inhale { transform: scale(1.4); }
-  .breath-circle.hold { transform: scale(1.4); }
-  .breath-circle.exhale { transform: scale(0.7); }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#10b981; transform:scale(1.3);}
+  .progress-dot.done { background:#059669;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.95rem;}
+  .opt:hover { background:#f0fdf4; }
+  .opt.sel { border-color:#10b981; background:#d1fae5;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.5rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
+  .sq-btn { display:block; width:100%; text-align:left; padding:.6rem .8rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.9rem; transition:background .15s;}
+  .sq-btn:hover { background:#f0fdf4; }
 </style>
 </head>
-<body class="text-gray-800">
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 
-<header class="bg-gradient-to-r from-amber-500 via-green-500 to-blue-500 text-white p-6 shadow-lg">
-  <div class="max-w-5xl mx-auto">
-    <h1 class="text-3xl md:text-4xl font-extrabold">🌿 氣候情緒小勇者</h1>
-    <p class="mt-2 text-amber-50">UNESCO 4.3-III ｜ 9-12 歲 ｜ 我有情緒，我有方法，我也有希望</p>
-    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
-      <div class="progress-dot active" id="dot1"></div>
-      <div class="progress-dot" id="dot2"></div>
-      <div class="progress-dot" id="dot3"></div>
-      <div class="progress-dot" id="dot4"></div>
-      <div class="progress-dot" id="dot5"></div>
-      <div class="progress-dot" id="dot6"></div>
-    </div>
-    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
-  </div>
-</header>
+<div class="max-w-3xl mx-auto">
 
-<main class="max-w-5xl mx-auto p-4 md:p-6">
-
-<!-- 角色與情境 -->
-<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <div class="flex items-start gap-4">
-    <div class="text-6xl">🐢</div>
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
     <div>
-      <h2 class="text-2xl font-bold text-green-700">任務簡報：你是「情緒守門員」！</h2>
-      <p class="mt-2 leading-relaxed">嗨！我是情緒小龜 🐢。全世界有 <strong class="text-amber-600">59%</strong> 的哥哥姊姊和你一樣，曾因氣候變遷感到擔心。好消息是：<strong>你不孤單，而且你可以學會 4 個超棒工具</strong>。通過 6 個關卡，你會拿到「全校英雄」徽章，還能幫同學和家人照顧情緒！</p>
-      <p class="mt-2 text-sm text-gray-500">資料來源：Lancet Planetary Health 2021；WHO 2022；APA 2022。</p>
-      <button onclick="startMission()" class="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 🛡️</button>
+      <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">🌿 氣候情緒小勇者</h1>
+      <p class="text-sm text-slate-600 mt-1">幫小綠學會 4 個情緒工具，成為同學的好後盾！</p>
     </div>
-  </div>
-</section>
-
-<!-- §1 情緒溫度計 -->
-<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-purple-700">🌡️ 關卡 1：情緒溫度計</h2>
-  <p class="mt-2 text-gray-600">看完氣候新聞，你心裡的感覺比較像哪一種？先選主要情緒，再拉動下方滑桿調整強度（0-10）。</p>
-  <div class="grid grid-cols-3 md:grid-cols-6 gap-2 mt-4" id="emoGrid">
-    <button class="emo-btn p-3 rounded-xl border-2 border-purple-200 hover:bg-purple-50" data-emo="焦慮">😰 焦慮</button>
-    <button class="emo-btn p-3 rounded-xl border-2 border-blue-200 hover:bg-blue-50" data-emo="悲傷">😢 悲傷</button>
-    <button class="emo-btn p-3 rounded-xl border-2 border-red-200 hover:bg-red-50" data-emo="憤怒">😠 憤怒</button>
-    <button class="emo-btn p-3 rounded-xl border-2 border-gray-200 hover:bg-gray-50" data-emo="沮喪">😔 沮喪</button>
-    <button class="emo-btn p-3 rounded-xl border-2 border-yellow-200 hover:bg-yellow-50" data-emo="希望">🌟 希望</button>
-    <button class="emo-btn p-3 rounded-xl border-2 border-green-200 hover:bg-green-50" data-emo="賦權">💪 賦權</button>
-  </div>
-  <div class="mt-4">
-    <label class="text-sm text-gray-600">情緒強度（0 完全平靜 → 10 非常強烈）</label>
-    <input type="range" min="0" max="10" value="5" id="emoSlider" class="emo-slider mt-2" />
-    <p class="mt-1 text-center font-bold text-lg" id="emoReading">請先選一種情緒</p>
-  </div>
-  <div class="mt-4 bg-amber-50 p-3 rounded-lg text-sm">
-    <strong>💡 小知識：</strong>UNESCO 把氣候情緒分成 6 種核心情緒，<strong>能為情緒命名</strong>，是照顧自己的第一步！
-  </div>
-  <button onclick="submitEmo()" class="mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full">提交並前往關卡 2 →</button>
-  <div id="emo-feedback" class="mt-4"></div>
-</section>
-
-<!-- §2 4 工具箱（拖曳）-->
-<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-blue-700">🧰 關卡 2：4 個建設性工具箱</h2>
-  <p class="mt-2 text-gray-600">美國心理學會 APA 建議 4 種建設性應對策略。把下面的做法拖到正確的工具箱：</p>
-  <div class="mt-4 p-3 bg-blue-50 rounded-lg">
-    <p class="font-bold text-sm">🎒 可拖曳的做法：</p>
-    <div class="flex flex-wrap gap-2 mt-2" id="dragSource">
-      <div class="drag-item bg-white border-2 border-dashed border-blue-400 px-3 py-2 rounded-lg" draggable="true" data-tool="mind">4-7-8 呼吸</div>
-      <div class="drag-item bg-white border-2 border-dashed border-green-400 px-3 py-2 rounded-lg" draggable="true" data-tool="nature">校園樹下坐 10 分鐘</div>
-      <div class="drag-item bg-white border-2 border-dashed border-orange-400 px-3 py-2 rounded-lg" draggable="true" data-tool="talk">找阿嬤聊感受</div>
-      <div class="drag-item bg-white border-2 border-dashed border-red-400 px-3 py-2 rounded-lg" draggable="true" data-tool="action">自備水壺</div>
-      <div class="drag-item bg-white border-2 border-dashed border-blue-400 px-3 py-2 rounded-lg" draggable="true" data-tool="mind">身體掃描</div>
-      <div class="drag-item bg-white border-2 border-dashed border-green-400 px-3 py-2 rounded-lg" draggable="true" data-tool="nature">公園觀察鳥叫</div>
-      <div class="drag-item bg-white border-2 border-dashed border-orange-400 px-3 py-2 rounded-lg" draggable="true" data-tool="talk">寫信給好朋友</div>
-      <div class="drag-item bg-white border-2 border-dashed border-red-400 px-3 py-2 rounded-lg" draggable="true" data-tool="action">報名學校環境日</div>
-    </div>
-  </div>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-    <div class="drop-zone bg-blue-50 border-2 border-blue-300 rounded-xl p-4 min-h-[140px]" data-tool="mind">
-      <p class="font-bold text-blue-700">🧘 正念</p>
-      <p class="text-xs text-gray-500 mt-1">把注意力拉回呼吸／身體</p>
-      <div class="mt-2 space-y-1" data-bin></div>
-    </div>
-    <div class="drop-zone bg-green-50 border-2 border-green-300 rounded-xl p-4 min-h-[140px]" data-tool="nature">
-      <p class="font-bold text-green-700">🌳 自然連結</p>
-      <p class="text-xs text-gray-500 mt-1">每週 120 分鐘效果最佳</p>
-      <div class="mt-2 space-y-1" data-bin></div>
-    </div>
-    <div class="drop-zone bg-orange-50 border-2 border-orange-300 rounded-xl p-4 min-h-[140px]" data-tool="talk">
-      <p class="font-bold text-orange-700">💬 與人交談</p>
-      <p class="text-xs text-gray-500 mt-1">被聽見比被解決重要</p>
-      <div class="mt-2 space-y-1" data-bin></div>
-    </div>
-    <div class="drop-zone bg-red-50 border-2 border-red-300 rounded-xl p-4 min-h-[140px]" data-tool="action">
-      <p class="font-bold text-red-700">✊ 採取行動</p>
-      <p class="text-xs text-gray-500 mt-1">小行動 → 能動感 ↑</p>
-      <div class="mt-2 space-y-1" data-bin></div>
-    </div>
-  </div>
-  <button onclick="checkDrag()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full">檢查分類 ✅</button>
-  <div id="drag-feedback" class="mt-4"></div>
-</section>
-
-<!-- §3 積極傾聽選擇題 -->
-<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-orange-700">👂 關卡 3：積極傾聽練習</h2>
-  <p class="mt-2 text-gray-600">情境：<strong>小芸說：「我昨晚看到凱米颱風的新聞，好擔心阿嬤的家會淹水，睡不著。」</strong></p>
-  <p class="mt-2 text-gray-600">下面哪個回應最符合「積極傾聽 = 不打斷、不給建議、只回感受」的精神？</p>
-  <div class="space-y-3 mt-4">
-    <button class="l3 w-full text-left p-4 border-2 border-orange-200 rounded-xl hover:bg-orange-50" data-ans="0">A. 「你要告訴阿嬤搬家啊，住低窪地區很危險！」</button>
-    <button class="l3 w-full text-left p-4 border-2 border-orange-200 rounded-xl hover:bg-orange-50" data-ans="0">B. 「新聞都誇大，別想太多，睡一覺就好。」</button>
-    <button class="l3 w-full text-left p-4 border-2 border-orange-200 rounded-xl hover:bg-orange-50" data-ans="1">C. 「我聽到你很擔心阿嬤，睡不著讓你很辛苦，我在這裡陪你。」</button>
-    <button class="l3 w-full text-left p-4 border-2 border-orange-200 rounded-xl hover:bg-orange-50" data-ans="0">D. 「這是你的自己的問題，我沒遇過這種事耶。」</button>
-  </div>
-  <div class="mt-4 bg-orange-50 p-3 rounded-lg text-sm">
-    <strong>💡 提醒：</strong>依 WHO 2022 資料，<strong>15-30%</strong> 的災後兒童有情緒困擾，<strong>陪伴＋傾聽</strong>比急著解決更有療癒力。
-  </div>
-  <div id="l3-feedback" class="mt-4"></div>
-</section>
-
-<!-- §4 自然日記（互動） -->
-<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-green-700">📓 關卡 4：自然日記 + 4-7-8 呼吸體驗</h2>
-  <p class="mt-2 text-gray-600">先跟著圓圈做一次 4-7-8 呼吸，再完成自然日記。</p>
-
-  <div class="my-5">
-    <div id="breathCircle" class="breath-circle flex items-center justify-center text-white text-xl font-bold">準備</div>
-    <p class="text-center mt-3 text-lg font-semibold text-green-800" id="breathText">按下按鈕開始</p>
-    <div class="text-center mt-2">
-      <button onclick="startBreath()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full">🌬️ 開始 3 輪呼吸</button>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
     </div>
   </div>
 
-  <div class="mt-4 p-4 bg-green-50 rounded-lg">
-    <p class="font-bold text-green-800 mb-2">🍃 我的自然日記（選一個最有感覺的）</p>
-    <div class="space-y-2">
-      <label class="flex gap-2"><input type="radio" name="nature" value="tree" /> 🌳 校園某棵大樹下</label>
-      <label class="flex gap-2"><input type="radio" name="nature" value="park" /> 🏞️ 社區公園</label>
-      <label class="flex gap-2"><input type="radio" name="nature" value="beach" /> 🌊 海邊／河邊</label>
-      <label class="flex gap-2"><input type="radio" name="nature" value="balcony" /> 🪴 自家陽台綠植</label>
-    </div>
-    <p class="mt-3 text-sm text-gray-600">📊 研究顯示，每週 <strong class="text-green-700">120 分鐘</strong> 的自然接觸，就能明顯提升心理幸福感（Nature, 2019）。</p>
-    <textarea id="natureNote" rows="3" placeholder="用 3 句寫下：我在那裡看到 / 聽到 / 摸到 什麼？" class="w-full mt-3 p-3 border-2 border-green-300 rounded-lg"></textarea>
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3 flex-wrap">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-2 text-sm text-slate-600">關卡 <span id="step-label">1</span> / 4</span>
   </div>
 
-  <button onclick="submitNature()" class="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full">提交日記 📝</button>
-  <div id="l4-feedback" class="mt-4"></div>
-</section>
-
-<!-- §5 個人情緒照顧計畫 -->
-<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-amber-700">📋 關卡 5：我的氣候情緒照顧計畫</h2>
-  <p class="mt-2 text-gray-600">把今天學的 4 個工具變成你專屬的計畫！</p>
-  <div class="grid md:grid-cols-2 gap-4 mt-4">
-    <div class="p-4 bg-blue-50 rounded-xl border-2 border-blue-200">
-      <p class="font-bold text-blue-700">🧘 ① 我會用的正念方法</p>
-      <select id="p1" class="w-full mt-2 p-2 rounded border">
-        <option value="">請選擇…</option>
-        <option>4-7-8 呼吸法</option>
-        <option>身體掃描</option>
-        <option>走路禪（慢走 5 分鐘）</option>
-        <option>3 分鐘冥想鐘</option>
-      </select>
-    </div>
-    <div class="p-4 bg-green-50 rounded-xl border-2 border-green-200">
-      <p class="font-bold text-green-700">🌳 ② 我的 120 分鐘／週自然地點</p>
-      <input id="p2" placeholder="例：校園榕樹下 + 週末景美溪畔" class="w-full mt-2 p-2 rounded border" />
-    </div>
-    <div class="p-4 bg-orange-50 rounded-xl border-2 border-orange-200">
-      <p class="font-bold text-orange-700">💬 ③ 我想找誰聊</p>
-      <input id="p3" placeholder="例：阿嬤、導師、好朋友小芸" class="w-full mt-2 p-2 rounded border" />
-    </div>
-    <div class="p-4 bg-red-50 rounded-xl border-2 border-red-200">
-      <p class="font-bold text-red-700">✊ ④ 我要做的一個小行動</p>
-      <input id="p4" placeholder="例：自備水壺一週、勸家人少開車" class="w-full mt-2 p-2 rounded border" />
-    </div>
-  </div>
-  <button onclick="submitPlan()" class="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded-full">存下我的計畫 💾</button>
-  <div id="l5-feedback" class="mt-4"></div>
-</section>
-
-<!-- §6 WSA 全校挑戰 -->
-<section id="level6" class="hidden-step card bg-gradient-to-br from-amber-100 to-green-100 rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-amber-800">🏫 關卡 6：Whole School Approach 全校挑戰</h2>
-  <p class="mt-2 text-gray-700">請勾選你願意推動 / 參與的 <strong>全部 4 個面向</strong>，解鎖「全校英雄」徽章：</p>
-  <div class="space-y-3 mt-4">
-    <label class="flex items-start gap-3 p-4 border-2 border-blue-200 rounded-xl cursor-pointer hover:bg-blue-50">
-      <input type="checkbox" class="wsa mt-1" data-aspect="curriculum" />
+  <!-- ===== Level 1: 情緒配對 (15 pts) ===== -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🐢</div>
       <div>
-        <p class="font-bold text-blue-700">📚 ① 課程整合 Curriculum</p>
-        <p class="text-sm">在健康課寫情緒日記、藝術課做氣候情緒詩畫展、音樂課合唱「希望之歌」。</p>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 1：猜猜看！情緒住哪個籃子？</h2>
+        <p class="text-sm text-slate-700 mt-1">小綠說：「看完颱風新聞，我心情很複雜。」把下面 6 種情緒卡片，拖到對應的籃子吧！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 15 分｜全部放對才能前往下一關</p>
       </div>
-    </label>
-    <label class="flex items-start gap-3 p-4 border-2 border-green-200 rounded-xl cursor-pointer hover:bg-green-50">
-      <input type="checkbox" class="wsa mt-1" data-aspect="operations" />
+    </div>
+
+    <!-- Drag items -->
+    <div class="grid grid-cols-2 gap-3 my-3" id="items-box-1">
+      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="worry">😰 擔心</div>
+      <div class="drag-item bg-blue-100 border-2 border-blue-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="worry">😢 難過</div>
+      <div class="drag-item bg-red-100 border-2 border-red-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="active">😠 生氣（想改變！）</div>
+      <div class="drag-item bg-gray-100 border-2 border-gray-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="worry">😔 沮喪</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-500 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="active">🌟 充滿希望</div>
+      <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="active">💪 想要行動</div>
+    </div>
+
+    <!-- Drop zones -->
+    <div class="grid grid-cols-2 gap-3" id="zones-box-1">
+      <div class="drop-zone bg-blue-50 p-3" data-accept="worry">
+        <div class="font-bold text-blue-700 text-center mb-2">😟 擔心/沮喪類<br><span class="text-xs font-normal text-blue-500">（讓心情往下）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-green-50 p-3" data-accept="active">
+        <div class="font-bold text-green-700 text-center mb-2">💚 積極/行動類<br><span class="text-xs font-normal text-green-500">（讓心情往前走）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+    </div>
+
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <span></span>
+      <button id="btn-next-1" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>完成分類才能繼續 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 2: 看圖找答案 (20 pts) ===== -->
+  <section id="level-2" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">📊</div>
       <div>
-        <p class="font-bold text-green-700">🏫 ② 校園營運 Campus Operations</p>
-        <p class="text-sm">設立「心情回收站」匿名信箱、校園寧靜角（植栽＋坐墊）、每週五 3 分鐘全校呼吸鐘。</p>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 2：看圖找答案</h2>
+        <p class="text-sm text-slate-700 mt-1">小綠找到一張臺灣氣溫變化圖（1910–2020）。仔細看圖，回答下面兩題！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜Q1 單選 5 分 + Q2 多選 15 分</p>
       </div>
-    </label>
-    <label class="flex items-start gap-3 p-4 border-2 border-orange-200 rounded-xl cursor-pointer hover:bg-orange-50">
-      <input type="checkbox" class="wsa mt-1" data-aspect="community" />
+    </div>
+
+    <!-- SVG chart -->
+    <svg viewBox="0 0 400 180" class="w-full max-w-lg mx-auto block bg-slate-50 rounded-xl mb-4 border border-slate-200">
+      <line x1="50" y1="150" x2="390" y2="150" stroke="#475569" stroke-width="1.5"/>
+      <line x1="50" y1="20" x2="50" y2="150" stroke="#475569" stroke-width="1.5"/>
+      <text x="5" y="24" font-size="9" fill="#64748b">°C</text>
+      <text x="10" y="155" font-size="9" fill="#64748b">22</text>
+      <text x="10" y="105" font-size="9" fill="#64748b">22.5</text>
+      <text x="10" y="55" font-size="9" fill="#64748b">23</text>
+      <text x="48" y="167" font-size="9" fill="#64748b">1910</text>
+      <text x="150" y="167" font-size="9" fill="#64748b">1950</text>
+      <text x="260" y="167" font-size="9" fill="#64748b">1990</text>
+      <text x="345" y="167" font-size="9" fill="#64748b">2020</text>
+      <polyline fill="none" stroke="#10b981" stroke-width="2.5"
+        points="50,140 70,138 90,136 110,142 130,132 155,130 175,134 195,126 215,122 235,124 255,116 275,108 295,112 315,98 335,92 360,85 385,75"/>
+      <text x="250" y="42" font-size="10" fill="#dc2626" font-weight="bold">↗ 約 +1.6°C</text>
+      <text x="250" y="54" font-size="9" fill="#94a3b8">（110 年來，資料：TCCIP）</text>
+    </svg>
+
+    <!-- Q1 -->
+    <div class="mb-5">
+      <p class="font-bold text-sm mb-2">📌 Q1：從這張圖可以看出什麼？（單選，5 分）</p>
+      <div id="q1-opts">
+        <label class="opt"><input type="radio" name="q1" value="0"> A. 台灣每一年溫度都完全一樣，沒有任何變化。</label>
+        <label class="opt"><input type="radio" name="q1" value="1"> B. 整體溫度慢慢升高，但每年還是會有一點上下起伏。</label>
+        <label class="opt"><input type="radio" name="q1" value="0"> C. 1950 年之後突然大跳升，1950 年前完全不變。</label>
+      </div>
+      <p id="q1-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <!-- Q2 -->
+    <div class="mb-3">
+      <p class="font-bold text-sm mb-1">📌 Q2：天氣變熱可能讓你在生活中遇到哪些事？<br><span class="font-normal text-slate-500 text-xs">（勾出你覺得有可能是真的，可以勾多個）</span></p>
+      <div id="q2-opts">
+        <label class="opt"><input type="checkbox" data-correct="1"> 😥 夏天更熱更悶，睡覺睡不好</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 🌧️ 有時候暴雨特別猛，下課不能出去玩</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> ❄️ 冬天越來越長、越來越冷</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 🌸 聽阿公說，以前開學時候比現在涼很多</label>
+      </div>
+      <p id="q2-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="1">← 上一關</button>
+      <button id="btn-next-2" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>提交答案 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 3: 推一推 — 積極傾聽 Stance Picker (20 pts) ===== -->
+  <section id="level-3" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">👂</div>
       <div>
-        <p class="font-bold text-orange-700">🤝 ③ 社區連結 Community</p>
-        <p class="text-sm">邀請心理師 / 輔導員到校開氣候情緒工作坊，與家長會合辦「家庭自然 120 分鐘」週末倡議。</p>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 3：推一推！怎麼幫朋友？</h2>
+        <p class="text-sm text-slate-700 mt-1">小綠的朋友說了悶悶的話。幫小綠選出最好的回應方式，每題 7 分！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分（答對 3 題共 21 分，最多給 20 分）</p>
       </div>
-    </label>
-    <label class="flex items-start gap-3 p-4 border-2 border-purple-200 rounded-xl cursor-pointer hover:bg-purple-50">
-      <input type="checkbox" class="wsa mt-1" data-aspect="agency" />
+    </div>
+
+    <!-- Q1 -->
+    <div class="bg-emerald-50 rounded-xl p-4 mb-4" id="sq-0" data-answered="0">
+      <p class="font-bold text-sm text-emerald-800 mb-2">😰 情境 1：小芸說「昨晚看颱風新聞，很擔心阿嬤家會淹水，睡不著。」</p>
+      <p class="text-xs text-slate-500 mb-2">哪個回應最能讓小芸感覺被聽見？</p>
+      <button class="sq-btn" data-q="0" data-correct="0">A. 「告訴阿嬤快搬家！住低窪很危險。」</button>
+      <button class="sq-btn" data-q="0" data-correct="0">B. 「新聞都誇大啦，別想太多，睡覺就好。」</button>
+      <button class="sq-btn" data-q="0" data-correct="1">C. 「聽起來你很擔心阿嬤，睡不著好辛苦，我陪你說說話。」</button>
+      <button class="sq-btn" data-q="0" data-correct="0">D. 「我不太了解你的感覺，我都沒遇過。」</button>
+    </div>
+
+    <!-- Q2 -->
+    <div class="bg-amber-50 rounded-xl p-4 mb-4" id="sq-1" data-answered="0">
+      <p class="font-bold text-sm text-amber-800 mb-2">😔 情境 2：小偉說「天氣越來越熱，感覺我們什麼都做不了。」</p>
+      <p class="text-xs text-slate-500 mb-2">哪個回應最好？</p>
+      <button class="sq-btn" data-q="1" data-correct="0">A. 「真的啊！以後地球一定會毀掉。」</button>
+      <button class="sq-btn" data-q="1" data-correct="0">B. 「你太悲觀了，不要一直想壞的事。」</button>
+      <button class="sq-btn" data-q="1" data-correct="1">C. 「我懂那種無力感很難受。你知道嗎，很多小朋友一起行動其實很有力！」</button>
+      <button class="sq-btn" data-q="1" data-correct="0">D. 「我沒有這種感覺，你想太多了。」</button>
+    </div>
+
+    <!-- Q3 -->
+    <div class="bg-blue-50 rounded-xl p-4 mb-4" id="sq-2" data-answered="0">
+      <p class="font-bold text-sm text-blue-800 mb-2">😢 情境 3：小梅說「新聞說北極熊快要絕種，好難過。」</p>
+      <p class="text-xs text-slate-500 mb-2">哪個回應最能給她希望？</p>
+      <button class="sq-btn" data-q="2" data-correct="0">A. 「那就不要看新聞嘛！」</button>
+      <button class="sq-btn" data-q="2" data-correct="1">B. 「你有這種難過的感覺很正常，表示你很有同理心。我們可以一起想想能做什麼。」</button>
+      <button class="sq-btn" data-q="2" data-correct="0">C. 「北極熊跟你有什麼關係？別管了！」</button>
+      <button class="sq-btn" data-q="2" data-correct="0">D. 「反正我們小孩做什麼都沒用。」</button>
+    </div>
+
+    <p id="l3-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="2">← 上一關</button>
+      <button id="btn-next-3" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>下一關 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 4: 我的行動 (20 pts) ===== -->
+  <section id="level-4" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🌱</div>
       <div>
-        <p class="font-bold text-purple-700">🙋 ④ 學生治理 Student Voice</p>
-        <p class="text-sm">報名「情緒守門員」培訓、學生會主辦「10/10 氣候情緒週」、向校務會議提案設置校園寧靜角。</p>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 4：我的情緒照顧方案</h2>
+        <p class="text-sm text-slate-700 mt-1">小綠說：「知道情緒了，現在來選一個你最想嘗試的工具！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜選主題 + 選行動 + 立下承諾</p>
       </div>
-    </label>
-  </div>
-  <button onclick="checkWSA()" class="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-8 rounded-full shadow-lg">提交挑戰 🏆</button>
-  <div id="wsa-feedback" class="mt-4"></div>
-</section>
+    </div>
 
-<!-- 徽章成果 -->
-<section id="result" class="hidden-step card bg-gradient-to-br from-yellow-100 to-amber-200 rounded-2xl shadow-2xl p-8 mb-6 text-center">
-  <div class="text-7xl mb-3 badge inline-block rounded-full bg-white p-6">🏆</div>
-  <h2 class="text-3xl font-extrabold text-amber-800">全校英雄 徽章解鎖！</h2>
-  <p class="mt-3 text-lg">你學會了 <strong>6 種氣候情緒</strong>、<strong>APA 4 工具箱</strong>、<strong>積極傾聽</strong>、<strong>每週 120 分鐘自然處方</strong>、個人情緒照顧計畫，還推動了全校 4 面向行動！</p>
+    <!-- Step 1: 選主題 -->
+    <div class="mb-4">
+      <p class="font-bold text-sm mb-2">① 你現在最想用哪個工具照顧情緒？（選一個）</p>
+      <div id="theme-opts">
+        <label class="opt"><input type="radio" name="theme" value="breath"> 🌬️ 呼吸放鬆（心跳快時先停下來）</label>
+        <label class="opt"><input type="radio" name="theme" value="nature"> 🌳 自然連結（去校園或公園感受一下）</label>
+        <label class="opt"><input type="radio" name="theme" value="talk"> 💬 找人說說（讓自己被聽見）</label>
+        <label class="opt"><input type="radio" name="theme" value="action"> ✊ 做點小事（讓自己感覺有力量）</label>
+      </div>
+    </div>
 
-  <div class="bg-white rounded-xl p-5 mt-5 text-left">
-    <h3 class="font-bold text-green-700 text-xl mb-2">🌱 三個延伸思考（帶回家跟家人討論）</h3>
-    <ol class="list-decimal ml-6 space-y-2">
-      <li>過去一週，我感受到最強烈的氣候情緒是什麼？為它取一個名字（例：焦慮像灰色的雲）。</li>
-      <li>我可以每天花 17 分鐘（每週 120 分鐘）在哪個自然角落？寫下 3 個具體地點。</li>
-      <li>我想邀請誰一起做一件小行動？寫一張便條給他 / 她。</li>
-    </ol>
-  </div>
+    <!-- Step 2: 選行動 -->
+    <div id="action-wrap" class="hidden mb-4">
+      <p class="font-bold text-sm mb-2">② 以下三個做法，你覺得哪個最容易開始？（選一個）</p>
+      <div id="action-opts"></div>
+      <p id="action-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
 
-  <div class="bg-white rounded-xl p-5 mt-5 text-left">
-    <h3 class="font-bold text-blue-700 text-xl mb-2">📝 我的個人情緒照顧計畫（整理）</h3>
-    <table class="w-full text-sm border-collapse">
-      <tr class="bg-blue-50"><th class="border p-2 w-1/3">工具</th><th class="border p-2">我的選擇</th></tr>
-      <tr><td class="border p-2">🧘 正念</td><td class="border p-2" id="r1">—</td></tr>
-      <tr><td class="border p-2">🌳 自然地點</td><td class="border p-2" id="r2">—</td></tr>
-      <tr><td class="border p-2">💬 想聊的人</td><td class="border p-2" id="r3">—</td></tr>
-      <tr><td class="border p-2">✊ 一個小行動</td><td class="border p-2" id="r4">—</td></tr>
-    </table>
-    <p class="mt-3 text-sm text-gray-600">📊 研究來源：Lancet Planetary Health 2021（59%／45% 青年氣候焦慮）、WHO 2022、APA 2022、Nature Scientific Reports 2019（120 分鐘）、Yale Climate Communication（希望 &gt; 恐懼）。</p>
-  </div>
+    <!-- Step 3: 承諾 -->
+    <div id="promise-wrap" class="hidden bg-emerald-50 rounded-xl p-4 mb-3">
+      <p class="font-bold text-sm mb-2">③ 在你能做到的事情前打勾（至少選 2 個）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-emerald-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會跟家人分享今天學到的情緒工具</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-emerald-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">下次心情不好時，我會先試試今天選的工具</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-emerald-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">同學難過時，我會嘗試積極傾聽而不急著給建議</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-emerald-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會在校園或家裡找一個讓自己放鬆的自然角落</span>
+      </label>
+      <p id="promise-fb" class="text-xs mt-2 text-slate-500 min-h-[18px]"></p>
+    </div>
 
-  <button onclick="window.print()" class="mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full">🖨️ 列印成果頁</button>
-  <button onclick="location.reload()" class="mt-5 ml-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full">🔄 重新挑戰</button>
-</section>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="3">← 上一關</button>
+      <button id="btn-next-4" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>查看成果 🏆</button>
+    </div>
+  </section>
 
-<footer class="text-center text-xs text-gray-500 pb-6">
-  資料來源：Lancet Planetary Health (Hickman 2021)、WHO Mental Health & Climate Change 2022、APA 2022、UNESCO Greening Curriculum Guidance、Yale Climate Communication、Nature Scientific Reports 2019、教育部 MOE 防災教育資訊網。教學套件 UNESCO 4.3-III ｜ 驗證日 2026-04-16
-</footer>
+  <!-- ===== Final: 反思 (5 pts) ===== -->
+  <section id="level-final" class="card p-6 hidden-screen fade-in">
+    <div class="text-6xl text-center pop">🌟</div>
+    <h2 class="text-2xl font-bold text-emerald-600 mt-2 text-center">恭喜你幫小綠完成任務！</h2>
+    <p class="text-slate-700 mt-1 text-center">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> / 80 分</p>
 
-</main>
+    <!-- Badges -->
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <!-- Reflection -->
+    <div class="bg-emerald-50 rounded-xl p-4 max-w-2xl mx-auto mb-4">
+      <p class="font-bold text-emerald-700 mb-3">🤔 最後一步：快速反思（5 分）</p>
+
+      <p class="text-sm font-semibold mb-1">Q1｜上這堂課之前，你對情緒工具的了解程度：</p>
+      <div id="stars-before" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q2｜上完這堂課後，你的了解程度：</p>
+      <div id="stars-after" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q3｜哪個關卡讓你印象最深刻？</p>
+      <div id="impact-opts">
+        <label class="opt"><input type="radio" name="impact" value="1"> 關卡 1：情緒配對</label>
+        <label class="opt"><input type="radio" name="impact" value="2"> 關卡 2：看臺灣氣溫圖</label>
+        <label class="opt"><input type="radio" name="impact" value="3"> 關卡 3：怎麼幫朋友</label>
+        <label class="opt"><input type="radio" name="impact" value="4"> 關卡 4：我的情緒照顧方案</label>
+      </div>
+      <p id="reflect-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <!-- Extension -->
+    <div class="bg-amber-50 rounded-xl p-4 text-left max-w-2xl mx-auto">
+      <h3 class="font-bold text-amber-700 mb-2">🧐 延伸思考小挑戰</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>下次心情不好時，你會先試哪一個工具？為什麼？</li>
+        <li>你身邊有沒有常常把壞情緒悶在心裡的朋友？你可以怎麼當他的小勇者？</li>
+        <li>校園裡有哪個角落讓你感覺最放鬆？你願意帶同學一起去嗎？</li>
+      </ol>
+    </div>
+
+    <div class="nav-row max-w-2xl mx-auto mt-4">
+      <button class="btn btn-back" data-back="4">← 回到關卡 4</button>
+      <button onclick="location.reload()" class="btn bg-emerald-500 text-white py-2 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+    </div>
+  </section>
+
+</div><!-- /max-w-3xl -->
 
 <script>
-// ---------- 進度控制 ----------
-let currentStep = 0;
-const steps = ['intro','level1','level2','level3','level4','level5','level6','result'];
-function showStep(i){
-  steps.forEach((s,idx)=>{
-    const el = document.getElementById(s);
-    if(!el) return;
-    if(idx===i) el.classList.remove('hidden-step');
-    else el.classList.add('hidden-step');
-  });
-  for(let k=1;k<=6;k++){
-    const d=document.getElementById('dot'+k);
-    d.classList.remove('done','active');
-    if(k < i) d.classList.add('done');
-    else if(k === i) d.classList.add('active');
-  }
-  const pt = document.getElementById('progressText');
-  if(i>=1 && i<=6) pt.textContent = `第 ${i} / 6 關`;
-  else if(i===7) pt.textContent = '完成！';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function startMission(){ currentStep=1; showStep(1); }
+(() => {
+  const TOTAL_LEVELS = 4;
+  const S = { score: 0, current: 1, awarded: {} };
+  const el = id => document.getElementById(id);
 
-// ---------- confetti ----------
-function confetti(){
-  const colors=['#fbbf24','#10b981','#3b82f6','#ef4444','#a78bfa','#f97316'];
-  for(let i=0;i<40;i++){
-    const c=document.createElement('div');
-    c.className='confetti';
-    c.style.left=Math.random()*100+'vw';
-    c.style.background=colors[Math.floor(Math.random()*colors.length)];
-    c.style.animationDelay=(Math.random()*0.5)+'s';
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3000);
-  }
-}
+  const setScore = n => { S.score += n; el('score').textContent = S.score; };
+  const awardOnce = (key, pts) => { if (!S.awarded[key]) { S.awarded[key] = true; setScore(pts); } };
 
-// ---------- §1 情緒溫度計 ----------
-let selectedEmo=null;
-document.querySelectorAll('.emo-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.emo-btn').forEach(b=>b.classList.remove('ring-4','ring-amber-400'));
-    btn.classList.add('ring-4','ring-amber-400');
-    selectedEmo=btn.dataset.emo;
-    updateReading();
-  });
-});
-document.getElementById('emoSlider').addEventListener('input',updateReading);
-function updateReading(){
-  const v=document.getElementById('emoSlider').value;
-  if(!selectedEmo){document.getElementById('emoReading').textContent='請先選一種情緒';return;}
-  document.getElementById('emoReading').textContent=`我感到「${selectedEmo}」強度 ${v} / 10`;
-}
-function submitEmo(){
-  const fb=document.getElementById('emo-feedback');
-  if(!selectedEmo){
-    fb.innerHTML='<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 請先選一種情緒喔！記得：任何情緒都是正常的。</div>';
-    return;
-  }
-  fb.innerHTML=`<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 做得好！你為情緒命名了：「${selectedEmo}」。研究顯示，能說出情緒就能讓大腦理智區活化，情緒強度就會下降。你不孤單——全球 59% 的青年也有類似感受（Lancet, 2021）。</div>`;
-  confetti();
-  setTimeout(()=>{currentStep=2;showStep(2);},1600);
-}
+  const updateDots = () => {
+    for (let i = 1; i <= TOTAL_LEVELS + 1; i++) {
+      const d = el('dot-' + i); if (!d) continue;
+      d.classList.remove('active', 'done');
+      if (i < S.current) d.classList.add('done');
+      else if (i === S.current) d.classList.add('active');
+    }
+  };
 
-// ---------- §2 拖曳 ----------
-let dragged=null;
-document.querySelectorAll('.drag-item').forEach(el=>{
-  el.addEventListener('dragstart',e=>{dragged=el;el.classList.add('dragging');});
-  el.addEventListener('dragend',e=>{el.classList.remove('dragging');});
-});
-document.querySelectorAll('.drop-zone').forEach(z=>{
-  z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over');});
-  z.addEventListener('dragleave',e=>{z.classList.remove('over');});
-  z.addEventListener('drop',e=>{
-    e.preventDefault();z.classList.remove('over');
-    if(!dragged)return;
-    const bin=z.querySelector('[data-bin]');
-    bin.appendChild(dragged);
+  const gotoLevel = n => {
+    document.querySelectorAll('section[id^="level-"]').forEach(s => s.classList.add('hidden-screen'));
+    S.current = n;
+    el('step-label').textContent = Math.min(n, 4);
+    const target = (n > TOTAL_LEVELS) ? el('level-final') : el('level-' + n);
+    target.classList.remove('hidden-screen');
+    target.classList.add('fade-in');
+    updateDots();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  document.querySelectorAll('.btn-back').forEach(b => {
+    b.onclick = () => gotoLevel(parseInt(b.dataset.back, 10));
   });
-});
-function checkDrag(){
-  const fb=document.getElementById('drag-feedback');
-  let correct=0,total=0,wrong=[];
-  document.querySelectorAll('.drop-zone').forEach(z=>{
-    const zoneTool=z.dataset.tool;
-    z.querySelectorAll('.drag-item').forEach(it=>{
-      total++;
-      if(it.dataset.tool===zoneTool) correct++;
-      else wrong.push(it.textContent);
+
+  const confetti = () => {
+    const colors = ['#10b981', '#f59e0b', '#3b82f6', '#ef4444', '#a855f7'];
+    for (let i = 0; i < 32; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[i % colors.length];
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 2500);
+    }
+  };
+
+  const shuffleChildren = parent => {
+    const kids = Array.from(parent.children);
+    for (let i = kids.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      parent.appendChild(kids[j]);
+    }
+  };
+
+  /* =====================================================
+     Level 1: 情緒配對 drag-drop (15 pts)
+     ===================================================== */
+  shuffleChildren(el('items-box-1'));
+  shuffleChildren(el('zones-box-1'));
+
+  let dragged1 = null;
+  let l1Correct = 0;
+  const total1 = document.querySelectorAll('#items-box-1 .drag-item').length;
+
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged1 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => { item.classList.remove('dragging'); });
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#items-box-1 .drag-item').forEach(x => x.classList.remove('ring-4', 'ring-emerald-400'));
+      item.classList.add('ring-4', 'ring-emerald-400');
+      dragged1 = item;
     });
   });
-  const remaining=document.querySelectorAll('#dragSource .drag-item').length;
-  if(remaining>0){
-    fb.innerHTML='<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 還有 '+remaining+' 個做法還沒拖進工具箱，試試看！</div>';
-    return;
-  }
-  if(correct===total && total===8){
-    fb.innerHTML='<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 全部正確！APA 4 工具箱：正念、自然連結、與人交談、採取行動，你都掌握了。這是美國心理學會官方推薦的建設性應對策略。</div>';
-    confetti();
-    setTimeout(()=>{currentStep=3;showStep(3);},1600);
-  } else {
-    fb.innerHTML='<div class="feedback-pop bg-orange-100 border-l-4 border-orange-500 p-3 rounded">💡 答對 '+correct+'/'+total+'！提示：4-7-8 呼吸和身體掃描是「正念」；樹下和公園是「自然連結」；找人聊是「交談」；自備水壺和報名環境日是「行動」。再試一次吧！</div>';
-  }
-}
 
-// ---------- §3 積極傾聽 ----------
-document.querySelectorAll('.l3').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const fb=document.getElementById('l3-feedback');
-    if(btn.dataset.ans==='1'){
-      fb.innerHTML='<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 答對了！C 選項做到了「不打斷、不給建議、只回感受 + 陪伴」。這就是積極傾聽的精神。WHO 指出，被好好聽見的孩子，情緒復原速度更快。</div>';
-      confetti();
-      setTimeout(()=>{currentStep=4;showStep(4);},1700);
-    } else {
-      btn.classList.add('shake');
-      fb.innerHTML='<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再想想！A 急著給建議、B 否定感受、D 把問題推開，都不是積極傾聽。提示：最好的回應只描述「我聽到你說…你感覺…」。</div>';
-    }
+  document.querySelectorAll('#zones-box-1 .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop1(zone); });
+    zone.addEventListener('click', () => { if (dragged1) handleDrop1(zone); });
   });
-});
 
-// ---------- §4 呼吸 + 自然日記 ----------
-function startBreath(){
-  const circle=document.getElementById('breathCircle');
-  const txt=document.getElementById('breathText');
-  let round=0;
-  function cycle(){
-    if(round>=3){txt.textContent='✅ 3 輪完成！感覺到心跳變慢了嗎？';circle.classList.remove('inhale','hold','exhale');circle.textContent='完成';return;}
-    txt.textContent='吸氣 4 秒…';circle.className='breath-circle inhale';circle.textContent='吸';
-    setTimeout(()=>{
-      txt.textContent='屏息 7 秒…';circle.className='breath-circle hold';circle.textContent='停';
-      setTimeout(()=>{
-        txt.textContent='吐氣 8 秒…';circle.className='breath-circle exhale';circle.textContent='吐';
-        setTimeout(()=>{round++;cycle();},8000);
-      },7000);
-    },4000);
+  function handleDrop1(zone) {
+    if (!dragged1) return;
+    const fb = el('l1-feedback');
+    if (dragged1.dataset.match === zone.dataset.accept) {
+      zone.querySelector('.dz-items').appendChild(dragged1);
+      dragged1.setAttribute('draggable', 'false');
+      dragged1.classList.remove('ring-4', 'ring-emerald-400');
+      dragged1.classList.add('bg-green-100', 'border-green-500', 'pop');
+      l1Correct++;
+      fb.textContent = '答對！ 👏';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+      confetti();
+      if (l1Correct === total1) {
+        awardOnce('L1', 15);
+        const btn = el('btn-next-1');
+        btn.disabled = false;
+        btn.className = 'btn bg-emerald-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(2);
+        fb.textContent = '全部答對！小綠為你鼓掌！🎉 +15 分';
+      }
+    } else {
+      dragged1.classList.add('shake');
+      setTimeout(() => dragged1.classList.remove('shake'), 400);
+      fb.textContent = '再想想！提示：生氣有時候代表你想改變，所以是「積極/行動類」喔 💡';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged1 = null;
   }
-  cycle();
-}
-function submitNature(){
-  const fb=document.getElementById('l4-feedback');
-  const place=document.querySelector('input[name="nature"]:checked');
-  const note=document.getElementById('natureNote').value.trim();
-  if(!place){fb.innerHTML='<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 請先選一個自然地點！</div>';return;}
-  if(note.length<5){fb.innerHTML='<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 寫一點點就好！試試「我看到... / 聽到... / 摸到...」。</div>';return;}
-  fb.innerHTML='<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌿 太棒了！你已經完成一段自然連結練習。記得：每週累積 120 分鐘就能顯著改善情緒（Nature, 2019）。</div>';
-  confetti();
-  setTimeout(()=>{currentStep=5;showStep(5);},1600);
-}
 
-// ---------- §5 個人計畫 ----------
-function submitPlan(){
-  const fb=document.getElementById('l5-feedback');
-  const p1=document.getElementById('p1').value;
-  const p2=document.getElementById('p2').value.trim();
-  const p3=document.getElementById('p3').value.trim();
-  const p4=document.getElementById('p4').value.trim();
-  if(!p1||!p2||!p3||!p4){
-    fb.innerHTML='<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 4 個格子都要填喔！提示：具體一點，例如「校園榕樹下」比「學校」好。</div>';
-    return;
-  }
-  document.getElementById('r1').textContent=p1;
-  document.getElementById('r2').textContent=p2;
-  document.getElementById('r3').textContent=p3;
-  document.getElementById('r4').textContent=p4;
-  fb.innerHTML='<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">💚 計畫完成！你已經把 APA 4 個工具變成專屬於你的「氣候情緒照顧計畫」。最後一關：邀請全校一起行動！</div>';
-  confetti();
-  setTimeout(()=>{currentStep=6;showStep(6);},1700);
-}
+  /* =====================================================
+     Level 2: 看圖找答案 (Q1:5pts Q2:15pts = 20)
+     ===================================================== */
+  let q1Done = false, q2Done = false;
+  const checkL2ready = () => {
+    const ready = q1Done && q2Done;
+    const btn = el('btn-next-2');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-emerald-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
 
-// ---------- §6 WSA ----------
-function checkWSA(){
-  const fb=document.getElementById('wsa-feedback');
-  const boxes=document.querySelectorAll('.wsa');
-  const checked=[...boxes].filter(b=>b.checked);
-  const aspects=checked.map(b=>b.dataset.aspect);
-  const need=['curriculum','operations','community','agency'];
-  const miss=need.filter(a=>!aspects.includes(a));
-  if(miss.length===0){
-    fb.innerHTML='<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🏆 恭喜！你勾選了全部 4 個 WSA 面向，解鎖「全校英雄」徽章！</div>';
-    confetti();setTimeout(confetti,400);setTimeout(confetti,800);
-    setTimeout(()=>{currentStep=7;showStep(7);},2000);
-  } else {
-    const nameMap={curriculum:'課程整合',operations:'校園營運',community:'社區連結',agency:'學生治理'};
-    fb.innerHTML='<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 還缺：<strong>'+miss.map(a=>nameMap[a]).join('、')+'</strong>。記得——情緒照顧不是你一個人的事，全校一起才會更溫暖！</div>';
+  document.querySelectorAll('input[name=q1]').forEach(r => {
+    r.onchange = () => {
+      if (q1Done) return;
+      document.querySelectorAll('#q1-opts .opt').forEach(o => o.classList.remove('sel', 'correct', 'wrong'));
+      r.parentElement.classList.add(r.value === '1' ? 'correct' : 'wrong');
+      const fb = el('q1-fb');
+      if (r.value === '1') {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 對了！整體往上升，每年還是有起伏。+5 分</span>';
+        awardOnce('L2-q1', 5);
+        q1Done = true;
+      } else {
+        fb.innerHTML = '<span class="text-rose-600">❌ 再看看圖，整體線條的方向是往哪裡走？</span>';
+      }
+      checkL2ready();
+    };
+  });
+
+  let q2Submitted = false;
+  document.querySelectorAll('#q2-opts input[type=checkbox]').forEach(cb => {
+    cb.onchange = () => {
+      if (q2Submitted) return;
+      const checked = document.querySelectorAll('#q2-opts input:checked');
+      const fb = el('q2-fb');
+      if (checked.length >= 1) { fb.textContent = `已選 ${checked.length} 項。覺得都選好了可以提交～`; q2Done = true; }
+      else { q2Done = false; }
+      checkL2ready();
+    };
+  });
+
+  el('btn-next-2').onclick = () => {
+    if (q2Submitted) { gotoLevel(3); return; }
+    q2Submitted = true;
+    const opts = document.querySelectorAll('#q2-opts input');
+    let correctCount = 0, wrongCount = 0;
+    opts.forEach(o => {
+      o.disabled = true;
+      const lbl = o.parentElement;
+      if (o.checked) {
+        if (o.dataset.correct === '1') { lbl.classList.add('correct'); correctCount++; }
+        else { lbl.classList.add('wrong'); wrongCount++; }
+      }
+    });
+    const pts = Math.max(0, correctCount * 5 - wrongCount * 5);
+    awardOnce('L2-q2', Math.min(pts, 15));
+    const fb = el('q2-fb');
+    if (wrongCount === 0 && correctCount >= 2) {
+      fb.innerHTML = `<span class="text-emerald-700 font-bold">✅ 觀察得很好！勾對 ${correctCount} 項。+${Math.min(pts,15)} 分</span>`;
+      confetti();
+    } else if (correctCount >= 1) {
+      fb.innerHTML = `<span class="text-amber-600">勾對 ${correctCount} 項、錯 ${wrongCount} 項。注意：最近幾年並不是越來越冷喔！</span>`;
+      if (pts > 0) confetti();
+    } else {
+      fb.innerHTML = '<span class="text-rose-600">❌ 都沒有勾到正確的！請看看每張選項的說明。</span>';
+    }
+    el('btn-next-2').textContent = '繼續下一關 →';
+    el('btn-next-2').onclick = () => gotoLevel(3);
+  };
+
+  /* =====================================================
+     Level 3: 積極傾聽 Stance Picker (20 pts)
+     ===================================================== */
+  let stanceScore = 0;
+  let stanceDone = [false, false, false];
+
+  document.querySelectorAll('.sq-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const q = parseInt(btn.dataset.q, 10);
+      const box = el('sq-' + q);
+      if (box.dataset.answered === '1') return;
+      box.dataset.answered = '1';
+      const isCorrect = btn.dataset.correct === '1';
+      const fb = el('l3-feedback');
+
+      if (isCorrect) {
+        btn.style.background = '#d1fae5';
+        btn.style.borderColor = '#10b981';
+        btn.style.fontWeight = 'bold';
+        stanceScore += 7;
+        stanceDone[q] = true;
+        fb.textContent = '答對！ 🎉 積極傾聽的精神：先同理感受，再提供支持！';
+        fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+        confetti();
+      } else {
+        btn.style.background = '#fee2e2';
+        btn.style.borderColor = '#ef4444';
+        // Show correct answer
+        box.querySelectorAll('.sq-btn').forEach(b => {
+          if (b.dataset.correct === '1') {
+            b.style.background = '#d1fae5';
+            b.style.borderColor = '#10b981';
+            b.style.fontWeight = 'bold';
+          }
+        });
+        fb.textContent = '再想想！最好的回應是先說「我聽到你…感覺…」，再陪伴。';
+        fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+      }
+
+      // Disable all buttons in this question
+      box.querySelectorAll('.sq-btn').forEach(b => { b.style.cursor = 'default'; b.style.pointerEvents = 'none'; });
+
+      // Check if all 3 done
+      if (stanceDone.every(Boolean)) {
+        const pts = Math.min(stanceScore, 20);
+        awardOnce('L3', pts);
+        fb.textContent = `全部完成！得到 +${pts} 分 🌟`;
+        fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+        const btn3 = el('btn-next-3');
+        btn3.disabled = false;
+        btn3.className = 'btn bg-emerald-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn3.onclick = () => gotoLevel(4);
+      }
+    });
+  });
+
+  /* =====================================================
+     Level 4: 我的情緒照顧方案 (20 pts)
+     ===================================================== */
+  const actionBank = {
+    breath: [
+      '試試 4-7-8 呼吸法（吸 4 秒、停 7 秒、吐 8 秒）',
+      '閉上眼睛，感受腳踩在地上的感覺，數到 10',
+      '慢慢喝一杯水，感受水進入身體的溫度'
+    ],
+    nature: [
+      '在校園找一棵大樹，靜靜坐在樹下 5 分鐘',
+      '觀察身邊的一朵花或一隻蟲，用手機拍下來',
+      '下課時踩踩草地，感受草的軟軟觸感'
+    ],
+    talk: [
+      '找一個信任的朋友，說「我最近有點悶，可以聽我說嗎？」',
+      '在家跟阿公阿嬤說「今天學校發生了一件讓我擔心的事…」',
+      '把心情寫成一張小紙條給老師，讓他知道你的感受'
+    ],
+    action: [
+      '帶一個環保杯去學校，每次看到就想到自己在行動',
+      '邀請一個同學一起把教室燈關掉，或把水龍頭關緊',
+      '在班上分享一件關於氣候的好消息或有趣的事'
+    ]
+  };
+
+  let themePicked = null, actionPicked = false, promiseCount = 0;
+
+  const checkL4ready = () => {
+    const ready = themePicked && actionPicked && promiseCount >= 2;
+    const btn = el('btn-next-4');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-emerald-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=theme]').forEach(r => {
+    r.onchange = () => {
+      themePicked = r.value;
+      document.querySelectorAll('#theme-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      const wrap = el('action-wrap');
+      const box = el('action-opts');
+      box.innerHTML = '';
+      actionPicked = false;
+      actionBank[themePicked].forEach(txt => {
+        const lbl = document.createElement('label');
+        lbl.className = 'opt';
+        lbl.innerHTML = `<input type="radio" name="action"> ${txt}`;
+        lbl.querySelector('input').onchange = () => {
+          document.querySelectorAll('#action-opts .opt').forEach(o => o.classList.remove('sel'));
+          lbl.classList.add('sel');
+          actionPicked = true;
+          el('action-fb').innerHTML = '<span class="text-emerald-700">✅ 好選擇！繼續下一步～</span>';
+          el('promise-wrap').classList.remove('hidden');
+          checkL4ready();
+        };
+        box.appendChild(lbl);
+      });
+      wrap.classList.remove('hidden');
+      el('promise-wrap').classList.add('hidden');
+      checkL4ready();
+    };
+  });
+
+  document.querySelectorAll('.promise-cb').forEach(cb => {
+    cb.onchange = () => {
+      promiseCount = document.querySelectorAll('.promise-cb:checked').length;
+      const fb = el('promise-fb');
+      if (promiseCount < 2) fb.textContent = `已選 ${promiseCount}/4，請至少選 2 個 😊`;
+      else fb.textContent = `選了 ${promiseCount} 個承諾！太棒了！`;
+      checkL4ready();
+    };
+  });
+
+  el('btn-next-4').onclick = () => {
+    awardOnce('L4', 20);
+    confetti();
+    showFinal();
+  };
+
+  /* =====================================================
+     Final screen
+     ===================================================== */
+  function showFinal() {
+    gotoLevel(TOTAL_LEVELS + 1);
+    el('final-score').textContent = S.score;
+    const box = el('badges');
+    box.innerHTML = '';
+    const earned = [];
+    if (S.awarded['L1']) earned.push('🌿 情緒命名達人');
+    if (S.awarded['L2-q1'] || S.awarded['L2-q2']) earned.push('📊 數據觀察家');
+    if (S.awarded['L3']) earned.push('👂 積極傾聽勇者');
+    if (S.awarded['L4']) earned.push('🌱 行動照顧者');
+    if (earned.length === 0) earned.push('🐢 氣候情緒小勇者');
+    earned.forEach(b => {
+      const chip = document.createElement('span');
+      chip.className = 'bg-emerald-100 border-2 border-emerald-400 rounded-full px-3 py-1 text-sm font-bold pop';
+      chip.textContent = b;
+      box.appendChild(chip);
+    });
+    confetti();
   }
-}
+
+  /* =====================================================
+     Final reflection (5 pts)
+     ===================================================== */
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+
+  const setupStars = (wrapId, setter) => {
+    const wrap = el(wrapId);
+    wrap.querySelectorAll('.star').forEach(s => {
+      s.onclick = () => {
+        const v = parseInt(s.dataset.val, 10);
+        setter(v);
+        wrap.querySelectorAll('.star').forEach(x => {
+          x.classList.toggle('on', parseInt(x.dataset.val, 10) <= v);
+        });
+        checkReflect();
+      };
+    });
+  };
+  setupStars('stars-before', v => starBefore = v);
+  setupStars('stars-after', v => starAfter = v);
+
+  document.querySelectorAll('input[name=impact]').forEach(r => {
+    r.onchange = () => {
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+
+  function checkReflect() {
+    const ok = starBefore > 0 && starAfter > 0 && impactPicked;
+    const fb = el('reflect-fb');
+    if (ok) {
+      fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 反思完成！+5 分 🌟</span>';
+      awardOnce('FINAL', 5);
+      el('final-score').textContent = S.score;
+    } else {
+      fb.textContent = '請完成三題反思（★ 前後了解度 + 印象最深的關卡）';
+    }
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

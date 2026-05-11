@@ -27,22 +27,32 @@
   .progress-dot.done { background:#10b981;}
   .fade-in { animation: fade .4s ease;}
   @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
-  textarea.cer { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem;}
   .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
-  .badge-lock { filter:grayscale(1); opacity:.35;}
   svg.loop text { font-size:11px; pointer-events:none;}
   svg.loop .loop-slot { cursor: pointer; }
   svg.loop .loop-slot.over { fill:#fde68a; stroke-width:3; }
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.92rem;}
+  .opt:hover { background:#f8fafc; }
+  .opt.sel { border-color:#6366f1; background:#eef2ff;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.4rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
 <body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 <div class="max-w-4xl mx-auto">
 
-<!-- Header -->
 <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
   <div>
     <h1 class="text-2xl md:text-3xl font-bold text-indigo-700">🌏 1.5°C 的抉擇</h1>
-    <p class="text-sm text-slate-600 mt-1">你是『氣候智庫研究員』：8 個任務，走完你就是 Level 4 國中氣候公民。</p>
+    <p class="text-sm text-slate-600 mt-1">你是『氣候智庫研究員』：5 個任務，走完你就是 Level 4 國中氣候公民。</p>
   </div>
   <div class="text-right">
     <div class="text-xs text-slate-500">智庫積分</div>
@@ -50,101 +60,57 @@
   </div>
 </div>
 
-<!-- Progress -->
 <div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
   <div class="progress-dot active" id="dot-1"></div><span class="text-xs">觀測</span>
   <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-2"></div><span class="text-xs">IPCC</span>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">資料</span>
   <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-3"></div><span class="text-xs">資料詮釋</span>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">系統</span>
   <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-4"></div><span class="text-xs">系統</span>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">論證</span>
   <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-5"></div><span class="text-xs">倫理</span>
-  <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-6"></div><span class="text-xs">論證</span>
-  <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-7"></div><span class="text-xs">專題</span>
-  <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-8"></div><span class="text-xs">後設</span>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">專題</span>
 </div>
 
-<!-- ===== Level 1: 觀測配對 ===== -->
+<!-- ===== Task 1: 觀測網拼圖 ===== -->
 <section id="level-1" class="card p-6 fade-in">
   <div class="flex items-start gap-3 mb-3">
     <div class="text-4xl">🛰️</div>
     <div>
       <h2 class="text-xl font-bold text-sky-700">任務 1｜觀測網拼圖</h2>
-      <p class="text-sm text-slate-700 mt-1">拖曳下方『觀測方式』到正確的『測量項目』區。科學家用四層觀測網監測氣候：陸地、海洋、大氣、太空。</p>
+      <p class="text-sm text-slate-700 mt-1">把下方四種『觀測儀器』拖到正確的『觀測任務』區。每段描述都不直接告訴你答案，請依儀器原理推論。</p>
       <p class="text-xs text-slate-500 mt-1">角色：氣候資料組實習生 ｜ 10 分</p>
     </div>
   </div>
 
   <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-1">
-    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="land">🌡️ 地面氣象站</div>
-    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="ocean">🌊 Argo 浮標</div>
-    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="atmos">🎈 探空氣球</div>
-    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="sat">🛰️ 氣象衛星</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="land">地面氣象站</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="ocean">Argo 浮標</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="atmos">探空氣球</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="sat">氣象衛星</div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-    <div class="drop-zone p-3" data-accept="land"><div class="font-bold text-slate-700 text-sm">🏙️ 地表溫度、濕度、風（全球 10,000+ 站）</div></div>
-    <div class="drop-zone p-3" data-accept="ocean"><div class="font-bold text-slate-700 text-sm">🐟 海水 0-2000m 溫度與鹽度（全球 3,800+ 個）</div></div>
-    <div class="drop-zone p-3" data-accept="atmos"><div class="font-bold text-slate-700 text-sm">☁️ 高空溫度/濕度剖面（每日全球 1,800 次）</div></div>
-    <div class="drop-zone p-3" data-accept="sat"><div class="font-bold text-slate-700 text-sm">🌏 全球雲圖、海溫、冰蓋覆蓋（Himawari/NOAA）</div></div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="zones-box-1">
+    <div class="drop-zone p-3" data-accept="ocean"><div class="font-bold text-slate-700 text-sm">A. 全球約 3,800 個感測單元，每 10 天浮到表面回傳一次資料，是研究能量儲存的關鍵。</div></div>
+    <div class="drop-zone p-3" data-accept="atmos"><div class="font-bold text-slate-700 text-sm">B. 由氦氣推升至同溫層，每日全球進行約 1,800 次的垂直剖面取樣。</div></div>
+    <div class="drop-zone p-3" data-accept="land"><div class="font-bold text-slate-700 text-sm">C. 全球約 10,000 個固定點位逐分鐘記錄，是 IPCC 用來定義全球均溫的核心觀測網。</div></div>
+    <div class="drop-zone p-3" data-accept="sat"><div class="font-bold text-slate-700 text-sm">D. 從 36,000 公里高的軌道上，每 10 分鐘掃描一次亞太地區的雲系與冰蓋。</div></div>
   </div>
   <div id="feedback-1" class="mt-3 text-sm"></div>
-  <button id="btn-next-1" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  <div class="nav-row">
+    <span></span>
+    <button id="btn-next-1" class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
 </section>
 
-<!-- ===== Level 2: IPCC 數據選擇 ===== -->
+<!-- ===== Task 2: 資料詮釋 ===== -->
 <section id="level-2" class="card p-6 hidden-screen fade-in">
-  <div class="flex items-start gap-3 mb-3">
-    <div class="text-4xl">📊</div>
-    <div>
-      <h2 class="text-xl font-bold text-violet-700">任務 2｜IPCC 報告快測</h2>
-      <p class="text-sm text-slate-700 mt-1">分析 IPCC AR6 三個關鍵陳述，判斷是否正確。</p>
-      <p class="text-xs text-slate-500 mt-1">角色：政策簡報撰稿員 ｜ 10 分</p>
-    </div>
-  </div>
-
-  <div class="space-y-3" id="q2-box">
-    <div class="quiz-item border rounded-lg p-3" data-correct="F">
-      <p class="font-semibold">① IPCC 自己做原創氣候實驗，發表研究成果。</p>
-      <div class="flex gap-2 mt-2">
-        <button class="btn btn-ans bg-emerald-500 text-white px-4 py-1 rounded" data-ans="T">正確</button>
-        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded" data-ans="F">錯誤</button>
-      </div>
-      <p class="hint text-xs text-slate-500 mt-2 hidden"></p>
-    </div>
-    <div class="quiz-item border rounded-lg p-3" data-correct="T">
-      <p class="font-semibold">② 2011–2020 年全球升溫已比工業革命前高約 1.1°C。</p>
-      <div class="flex gap-2 mt-2">
-        <button class="btn btn-ans bg-emerald-500 text-white px-4 py-1 rounded" data-ans="T">正確</button>
-        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded" data-ans="F">錯誤</button>
-      </div>
-      <p class="hint text-xs text-slate-500 mt-2 hidden"></p>
-    </div>
-    <div class="quiz-item border rounded-lg p-3" data-correct="F">
-      <p class="font-semibold">③ 巴黎協定對未達標的國家會由國際法院判罰金。</p>
-      <div class="flex gap-2 mt-2">
-        <button class="btn btn-ans bg-emerald-500 text-white px-4 py-1 rounded" data-ans="T">正確</button>
-        <button class="btn btn-ans bg-rose-500 text-white px-4 py-1 rounded" data-ans="F">錯誤</button>
-      </div>
-      <p class="hint text-xs text-slate-500 mt-2 hidden"></p>
-    </div>
-  </div>
-  <button id="btn-next-2" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
-</section>
-
-<!-- ===== Level 3: 資料詮釋 ===== -->
-<section id="level-3" class="card p-6 hidden-screen fade-in">
   <div class="flex items-start gap-3 mb-3">
     <div class="text-4xl">📈</div>
     <div>
-      <h2 class="text-xl font-bold text-teal-700">任務 3｜資料詮釋（臺灣升溫）</h2>
-      <p class="text-sm text-slate-700 mt-1">下方是 TCCIP 公布的臺灣 1910-2020 年均溫趨勢。請解讀資料並作答。</p>
-      <p class="text-xs text-slate-500 mt-1">角色：資料科學家 ｜ 10 分 ｜ <span class="chip bg-amber-100 text-amber-800">資料詮釋題</span></p>
+      <h2 class="text-xl font-bold text-teal-700">任務 2｜資料詮釋（臺灣升溫）</h2>
+      <p class="text-sm text-slate-700 mt-1">TCCIP 公布的臺灣 1910-2020 年均溫趨勢。請解讀資料並作答。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：資料科學家 ｜ 15 分 ｜ <span class="chip bg-amber-100 text-amber-800">資料詮釋題</span></p>
     </div>
   </div>
   <svg viewBox="0 0 400 180" class="w-full max-w-xl mx-auto block bg-slate-50 rounded">
@@ -153,43 +119,50 @@
     <text x="5" y="25" font-size="10">°C</text>
     <text x="20" y="155" font-size="10">22</text>
     <text x="20" y="85" font-size="10">23</text>
-    <text x="20" y="155" font-size="10"></text>
     <text x="40" y="170" font-size="10">1910</text>
     <text x="150" y="170" font-size="10">1950</text>
     <text x="260" y="170" font-size="10">1990</text>
     <text x="340" y="170" font-size="10">2020</text>
-    <!-- noisy rising line -->
     <polyline fill="none" stroke="#0ea5e9" stroke-width="2"
       points="40,140 60,138 80,136 100,142 120,132 140,130 160,134 180,126 200,122 220,124 240,116 260,108 280,112 300,98 320,92 340,88 360,78 380,70"/>
     <text x="260" y="40" font-size="10" fill="#0ea5e9">↗ 約 +1.6°C (110 年)</text>
   </svg>
 
-  <div class="mt-4 space-y-3">
+  <div class="mt-4 space-y-4">
     <div>
-      <label class="block text-sm font-semibold mb-1">Q3-1｜以下哪個陳述最符合圖中趨勢？（4 分）</label>
-      <div class="space-y-1" id="q31">
-        <label class="block text-sm"><input type="radio" name="q31" value="A"> A. 每年都上升，從無下降年份</label>
-        <label class="block text-sm"><input type="radio" name="q31" value="B"> B. 長期趨勢上升，但有年際起伏，1970 後加速</label>
-        <label class="block text-sm"><input type="radio" name="q31" value="C"> C. 1950 前無變化，1950 後才開始升</label>
+      <label class="block text-sm font-semibold mb-1">Q2-1｜以下哪個陳述最符合圖中趨勢？（5 分）</label>
+      <div class="space-y-1" id="q21">
+        <label class="block text-sm"><input type="radio" name="q21" value="A"> A. 每年都上升，從無下降年份</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="B"> B. 長期趨勢上升，但有年際起伏，1970 後加速</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="C"> C. 1950 前無變化，1950 後才開始升</label>
       </div>
-      <p class="text-xs mt-1 text-slate-500 q31-fb"></p>
+      <p class="text-xs mt-1 text-slate-500 q21-fb"></p>
     </div>
     <div>
-      <label class="block text-sm font-semibold mb-1">Q3-2｜臺灣升溫速度約為全球 2 倍。請<strong>推論可能原因</strong>（至少 2 項，各 50 字內說明）：（6 分）</label>
-      <textarea class="cer" id="q32" rows="3" placeholder="原因 1（含簡短說明）…&#10;原因 2（含簡短說明）…"></textarea>
+      <label class="block text-sm font-semibold mb-1">Q2-2｜臺灣升溫速度約為全球 2 倍。<strong>勾選 2 項</strong>最合理的因素：（10 分）</label>
+      <div id="q22-opts" class="space-y-1">
+        <label class="opt"><input type="checkbox" data-correct="1"> A. 都市熱島效應放大局地觀測站附近的升溫</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> B. 因為臺灣靠近赤道，本來就比較熱</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> C. 海溫上升透過邊界層加熱沿岸陸地</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> D. 因為臺灣人口多，所以排放也大，升溫就快</label>
+      </div>
+      <p id="q22-fb" class="text-xs mt-2"></p>
     </div>
   </div>
-  <button id="btn-next-3" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="1">← 上一步</button>
+    <button id="btn-next-2" class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+  </div>
 </section>
 
-<!-- ===== Level 4: 系統思考（反饋循環） ===== -->
-<section id="level-4" class="card p-6 hidden-screen fade-in">
+<!-- ===== Task 3: 系統思考 反饋循環 ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
   <div class="flex items-start gap-3 mb-3">
     <div class="text-4xl">🔄</div>
     <div>
-      <h2 class="text-xl font-bold text-orange-700">任務 4｜系統思考：反饋循環</h2>
-      <p class="text-sm text-slate-700 mt-1">完成『北極海冰融化』的正反饋循環圖：把 4 張卡片拖到正確位置。</p>
-      <p class="text-xs text-slate-500 mt-1">角色：系統分析師 ｜ 10 分 ｜ <span class="chip bg-rose-100 text-rose-800">系統思考題</span></p>
+      <h2 class="text-xl font-bold text-orange-700">任務 3｜系統思考：反饋循環</h2>
+      <p class="text-sm text-slate-700 mt-1">完成『北極海冰融化』的正反饋循環圖：把 4 張卡片拖到正確位置。順序需依箭頭流向推論。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統分析師 ｜ 15 分 ｜ <span class="chip bg-rose-100 text-rose-800">系統思考題</span></p>
     </div>
   </div>
 
@@ -198,16 +171,16 @@
       <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L0,10 L10,5 z" fill="#64748b"/></marker>
     </defs>
     <rect x="10" y="10" width="140" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="1"/>
-    <text x="80" y="40" text-anchor="middle" fill="#92400e" id="slot-1-text">（拖這裡 1）</text>
+    <text x="80" y="40" text-anchor="middle" fill="#92400e" id="slot-1-text">（拖這裡）</text>
 
     <rect x="350" y="10" width="140" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="2"/>
-    <text x="420" y="40" text-anchor="middle" fill="#92400e" id="slot-2-text">（拖這裡 2）</text>
+    <text x="420" y="40" text-anchor="middle" fill="#92400e" id="slot-2-text">（拖這裡）</text>
 
     <rect x="350" y="200" width="140" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="3"/>
-    <text x="420" y="230" text-anchor="middle" fill="#92400e" id="slot-3-text">（拖這裡 3）</text>
+    <text x="420" y="230" text-anchor="middle" fill="#92400e" id="slot-3-text">（拖這裡）</text>
 
     <rect x="10" y="200" width="140" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="4"/>
-    <text x="80" y="230" text-anchor="middle" fill="#92400e" id="slot-4-text">（拖這裡 4）</text>
+    <text x="80" y="230" text-anchor="middle" fill="#92400e" id="slot-4-text">（拖這裡）</text>
 
     <line x1="150" y1="35" x2="350" y2="35" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
     <line x1="420" y1="60" x2="420" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
@@ -216,169 +189,187 @@
     <text x="250" y="130" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="bold">正反饋（+）</text>
   </svg>
 
+  <p class="text-xs text-slate-500 mt-2 text-center">提示：思考因果鏈──哪一張是「起點」？哪一張會「再回頭加強起點」？</p>
+
   <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3" id="loop-items">
-    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">① 氣溫升高</div>
-    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">② 海冰融化</div>
-    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">③ 反射率下降</div>
-    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">④ 吸收更多太陽熱</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">反射率下降</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">氣溫升高</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">吸收更多太陽熱</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">海冰融化</div>
   </div>
   <p id="loop-fb" class="mt-3 text-sm"></p>
-  <button id="btn-next-4" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="2">← 上一步</button>
+    <button id="btn-next-3" class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
 </section>
 
-<!-- ===== Level 5: 倫理兩難 ===== -->
-<section id="level-5" class="card p-6 hidden-screen fade-in">
-  <div class="flex items-start gap-3 mb-3">
-    <div class="text-4xl">⚖️</div>
-    <div>
-      <h2 class="text-xl font-bold text-pink-700">任務 5｜倫理兩難：歷史排放責任</h2>
-      <p class="text-sm text-slate-700 mt-1">情境：G 國（已開發國家）工業化 200 年，累積排放佔全球一半，現已富有。H 國（開發中國家）剛起步，想蓋火力電廠脫貧。G 國在 COP 上要求 H 國立即停止新建燃煤。</p>
-      <p class="text-xs text-slate-500 mt-1">角色：青年外交官 ｜ 10 分 ｜ <span class="chip bg-pink-100 text-pink-800">倫理兩難題</span> <span class="chip bg-violet-100 text-violet-800">開放式反思</span></p>
-    </div>
-  </div>
-  <div class="mb-3">
-    <label class="block text-sm font-semibold mb-1">你的立場與理由（請寫 50 字以上；沒有標準答案，但需有論點）：</label>
-    <textarea class="cer" id="q5" rows="5" placeholder="例如：我認為…（立場）。因為…（引用一項資料或原則，如 CBDR 共同但差異責任）。所以…（推論結論）。"></textarea>
-    <p class="text-xs mt-1 text-slate-500">提示關鍵詞：共同但差異責任 CBDR、氣候正義、歷史累積排放、氣候融資、脫貧權利</p>
-    <p id="q5-fb" class="text-xs mt-1"></p>
-  </div>
-  <button id="btn-next-5" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
-</section>
-
-<!-- ===== Level 6: 論證寫作 CER ===== -->
-<section id="level-6" class="card p-6 hidden-screen fade-in">
+<!-- ===== Task 4: CER（含倫理主題） ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
   <div class="flex items-start gap-3 mb-3">
     <div class="text-4xl">✍️</div>
     <div>
-      <h2 class="text-xl font-bold text-emerald-700">任務 6｜CER 論證寫作</h2>
-      <p class="text-sm text-slate-700 mt-1">請以 CER 結構（主張 Claim + 證據 Evidence + 理由 Reasoning）回答：<strong>「1.5°C 目標還來得及嗎？」</strong></p>
-      <p class="text-xs text-slate-500 mt-1">角色：氣候專欄作者 ｜ 10 分 ｜ <span class="chip bg-emerald-100 text-emerald-800">論證寫作題</span></p>
+      <h2 class="text-xl font-bold text-emerald-700">任務 4｜CER 論證 Flash Card</h2>
+      <p class="text-sm text-slate-700 mt-1">議題（含倫理）：<strong>「面對歷史排放不平等，1.5°C 該如何分配減量責任？」</strong>三步驟組裝你的論證卡。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：氣候專欄作者 ｜ 20 分 ｜ <span class="chip bg-emerald-100 text-emerald-800">論證 + 倫理</span></p>
     </div>
   </div>
 
-  <div class="bg-slate-50 p-3 rounded text-xs mb-3">
-    <strong>範例（關於能源轉型）</strong>：
-    <br><strong>C</strong>：臺灣應加速再生能源發展。
-    <br><strong>E</strong>：2023 年再生能源僅佔發電約 9-10%，2050 淨零目標要求提升至 60-70%（環境部）。
-    <br><strong>R</strong>：兩者差距極大，若不提前布局，電力轉型將與 2050 時程脫節，導致產業競爭力下降（CBAM）與減碳目標失敗。
+  <div class="mb-3">
+    <p class="font-semibold text-sm mb-1">① 選擇你的主張 Claim（4 分）</p>
+    <div id="claim-opts">
+      <label class="opt"><input type="radio" name="claim" value="cbdr"> A. 應依「共同但差異責任 CBDR」：歷史排放多的國家先減更多、出更多錢。</label>
+      <label class="opt"><input type="radio" name="claim" value="equal"> B. 為了達 1.5°C，全球應一視同仁立即停建新燃煤，不能再等。</label>
+      <label class="opt"><input type="radio" name="claim" value="finance"> C. 已開發國家須先提供氣候融資與技術轉移，才有資格要求發展中國家減量。</label>
+    </div>
   </div>
 
-  <div class="space-y-2">
-    <label class="block text-sm font-semibold">你的主張 Claim（10-30 字）</label>
-    <textarea class="cer" id="cer-c" rows="2" placeholder="我認為 1.5°C 目標…"></textarea>
-    <label class="block text-sm font-semibold">你的證據 Evidence（至少引用 1 項資料，含數字）</label>
-    <textarea class="cer" id="cer-e" rows="3" placeholder="依據 IPCC/UNEP/TCCIP 的資料…（例如：UNEP 2023 指出 NDC 全達成僅能限制升溫 2.1-2.8°C）"></textarea>
-    <label class="block text-sm font-semibold">你的理由 Reasoning（解釋證據如何支持主張）</label>
-    <textarea class="cer" id="cer-r" rows="3" placeholder="這表示…因此…"></textarea>
+  <div id="evid-wrap" class="mb-3 hidden">
+    <p class="font-semibold text-sm mb-1">② 為你的主張挑出最有力的證據 Evidence（8 分）</p>
+    <div id="evid-opts"></div>
+    <p id="evid-fb" class="text-xs mt-2"></p>
   </div>
-  <p id="cer-fb" class="mt-2 text-xs"></p>
-  <button id="btn-next-6" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+
+  <div id="reas-wrap" class="mb-3 hidden">
+    <p class="font-semibold text-sm mb-1">③ 為你的主張挑出最相符的推理 Reasoning（8 分）</p>
+    <div id="reas-opts"></div>
+    <p id="reas-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div id="cer-summary" class="bg-emerald-50 p-3 rounded text-sm hidden">
+    <p class="font-bold text-emerald-800 mb-1">✅ 你的 CER 卡完成：</p>
+    <p><strong>Claim：</strong><span id="sum-c"></span></p>
+    <p><strong>Evidence：</strong><span id="sum-e"></span></p>
+    <p><strong>Reasoning：</strong><span id="sum-r"></span></p>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="3">← 上一步</button>
+    <button id="btn-next-4" class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
 </section>
 
-<!-- ===== Level 7: 專題任務（校園減碳提案） + WSA ===== -->
-<section id="level-7" class="card p-6 hidden-screen fade-in">
+<!-- ===== Task 5: 校園減碳提案 ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
   <div class="flex items-start gap-3 mb-3">
     <div class="text-4xl">🏫</div>
     <div>
-      <h2 class="text-xl font-bold text-amber-700">任務 7｜專題：校園減碳提案書</h2>
-      <p class="text-sm text-slate-700 mt-1">為你的學校設計一份減碳提案，送交學生氣候委員會。請完成結構模板 + 下方 WSA 四面向檢核。</p>
+      <h2 class="text-xl font-bold text-amber-700">任務 5｜校園減碳提案</h2>
+      <p class="text-sm text-slate-700 mt-1">選一個主題，組裝提案，再用 WSA 四面向自我檢核。</p>
       <p class="text-xs text-slate-500 mt-1">角色：學生氣候委員會提案人 ｜ 15 分 ｜ <span class="chip bg-amber-100 text-amber-800">專題式學習</span></p>
     </div>
   </div>
 
-  <div class="space-y-2 mb-4">
-    <label class="block text-sm font-semibold">① 提案標題（動詞+對象，例：教室加裝感應燈）</label>
-    <input id="p-title" class="cer" placeholder="例：推動校園午餐無肉星期一">
-    <label class="block text-sm font-semibold">② 現況問題（50 字）</label>
-    <textarea class="cer" id="p-problem" rows="2"></textarea>
-    <label class="block text-sm font-semibold">③ 主張 Claim + 證據 Evidence + 理由 Reasoning（100 字以上）</label>
-    <textarea class="cer" id="p-cer" rows="4"></textarea>
-    <label class="block text-sm font-semibold">④ 具體行動步驟（至少 3 步）</label>
-    <textarea class="cer" id="p-steps" rows="3" placeholder="1. …&#10;2. …&#10;3. …"></textarea>
-    <label class="block text-sm font-semibold">⑤ 預期成效指標（可量化）</label>
-    <input id="p-kpi" class="cer" placeholder="例：半年內午餐蔬食餐次達 20%">
+  <div class="mb-3">
+    <p class="font-semibold text-sm mb-1">① 選擇你的提案主題</p>
+    <div id="proj-opts">
+      <label class="opt"><input type="radio" name="proj" value="light"> 💡 教室照明感應化（白天自然光、無人關燈）</label>
+      <label class="opt"><input type="radio" name="proj" value="lunch"> 🥬 推動每週一蔬食午餐</label>
+      <label class="opt"><input type="radio" name="proj" value="commute"> 🚲 校園共乘與步行通勤行動</label>
+      <label class="opt"><input type="radio" name="proj" value="paper"> 📄 學校無紙化評量推動計畫</label>
+    </div>
+  </div>
+
+  <div id="proj-detail" class="hidden bg-amber-50 p-3 rounded text-sm mb-3">
+    <p class="font-semibold text-amber-800 mb-1">② 預設方案（依主題）</p>
+    <p id="proj-problem" class="mb-1"></p>
+    <p id="proj-steps" class="mb-1"></p>
+    <p class="font-semibold mt-2">③ 挑一個 KPI：</p>
+    <div id="kpi-opts" class="mt-1"></div>
   </div>
 
   <div class="bg-indigo-50 p-3 rounded mb-3">
-    <p class="font-bold text-indigo-800 text-sm">🎯 WSA Challenge 四面向檢核（全勾才能解鎖下一關）</p>
+    <p class="font-bold text-indigo-800 text-sm">🎯 WSA 四面向檢核（全勾才能解鎖下一關）</p>
     <label class="block mt-1 text-sm"><input type="checkbox" class="wsa"> <strong>治理</strong>：我的提案會送學生議會/班聯會或校務會議</label>
     <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>課程</strong>：我的提案可以跨科連結（社會/自然/英文/數學）</label>
     <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>校園營運</strong>：我的提案改變了校園硬體/作業流程/採購</label>
     <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>社群</strong>：我的提案會擴散到家庭或社區</label>
   </div>
   <p id="p-fb" class="text-xs"></p>
-  <button id="btn-next-7" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="4">← 上一步</button>
+    <button id="btn-next-5" class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
 </section>
 
-<!-- ===== Level 8: 後設認知 ===== -->
-<section id="level-8" class="card p-6 hidden-screen fade-in">
-  <div class="flex items-start gap-3 mb-3">
-    <div class="text-4xl">🧠</div>
-    <div>
-      <h2 class="text-xl font-bold text-fuchsia-700">任務 8｜後設認知反思</h2>
-      <p class="text-sm text-slate-700 mt-1">最後一站。想一想：你怎麼想？</p>
-      <p class="text-xs text-slate-500 mt-1">角色：自我觀察員 ｜ 5 分 ｜ <span class="chip bg-fuchsia-100 text-fuchsia-800">後設認知題</span> <span class="chip bg-violet-100 text-violet-800">開放式反思</span></p>
+<!-- ===== Final + Reflection ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in">
+  <h2 class="text-3xl font-bold text-indigo-700 mb-2 text-center">🏆 你完成了！</h2>
+  <p class="text-slate-700 mb-4 text-center">你已經完成 5 個任務，從觀測到專題提案。最後一站做個快速反思。</p>
+
+  <div class="grid grid-cols-5 gap-2 max-w-2xl mx-auto my-4">
+    <div class="p-2 text-center"><div class="text-3xl">🛰️</div><div class="text-xs mt-1">資料蒐集家</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">📈</div><div class="text-xs mt-1">資料詮釋家</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">🔄</div><div class="text-xs mt-1">系統思考者</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">✍️</div><div class="text-xs mt-1">論證作者</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">🏫</div><div class="text-xs mt-1">學生提案人</div></div>
+  </div>
+
+  <div class="bg-fuchsia-50 rounded-xl p-4 max-w-2xl mx-auto">
+    <p class="font-bold text-fuchsia-800 mb-2">🧠 後設認知反思（5 分）</p>
+    <p class="text-sm font-semibold mt-2">Q1｜上這堂課前，你對氣候變遷的關注度：</p>
+    <div id="stars-before" class="mt-1">
+      <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
     </div>
+    <p class="text-sm font-semibold mt-3">Q2｜上完這堂課後，你的關注度：</p>
+    <div id="stars-after" class="mt-1">
+      <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+    </div>
+    <p class="text-sm font-semibold mt-3">Q3｜對你影響最大的任務：</p>
+    <div id="impact-opts" class="mt-1">
+      <label class="opt"><input type="radio" name="impact" value="1"> 任務 1 觀測網拼圖</label>
+      <label class="opt"><input type="radio" name="impact" value="2"> 任務 2 臺灣升溫資料</label>
+      <label class="opt"><input type="radio" name="impact" value="3"> 任務 3 反饋循環</label>
+      <label class="opt"><input type="radio" name="impact" value="4"> 任務 4 CER 論證</label>
+      <label class="opt"><input type="radio" name="impact" value="5"> 任務 5 校園提案</label>
+    </div>
+    <p id="reflect-fb" class="text-xs mt-2"></p>
   </div>
 
-  <div class="space-y-2">
-    <label class="block text-sm font-semibold">Q8-1｜上這堂課之前，你對氣候變遷的想法是什麼？（50 字以上）</label>
-    <textarea class="cer" id="m-before" rows="3"></textarea>
-    <label class="block text-sm font-semibold">Q8-2｜現在你的想法是什麼？有沒有改變？為什麼？（50 字以上）</label>
-    <textarea class="cer" id="m-after" rows="3"></textarea>
-    <label class="block text-sm font-semibold">Q8-3｜哪個資料、討論或任務對你影響最大？</label>
-    <input id="m-key" class="cer" placeholder="例：看到臺灣升溫是全球 2 倍的資料">
+  <div class="mt-6 text-lg font-bold text-emerald-600 text-center">最終智庫積分：<span id="final-score">0</span> / 80</div>
+  <div class="nav-row max-w-2xl mx-auto">
+    <button class="btn btn-back" data-back="5">← 回到任務 5</button>
+    <button onclick="location.reload()" class="btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold">再玩一次</button>
   </div>
-  <p id="m-fb" class="mt-2 text-xs"></p>
-  <button id="btn-finish" class="btn mt-4 bg-emerald-600 text-white px-8 py-2 rounded-lg font-bold" disabled>完成任務 🎉</button>
-</section>
-
-<!-- ===== Final Summary ===== -->
-<section id="level-final" class="card p-6 hidden-screen fade-in text-center">
-  <h2 class="text-3xl font-bold text-indigo-700 mb-2">🏆 你完成了！</h2>
-  <p class="text-slate-700 mb-4">你已經完成 8 個任務，從觀測、IPCC、資料詮釋、系統思考、倫理兩難、論證、專題到後設反思。</p>
-  <div class="grid grid-cols-3 md:grid-cols-4 gap-2 max-w-2xl mx-auto my-4">
-    <div class="p-2"><div class="text-3xl">🛰️</div><div class="text-xs mt-1">資料蒐集家</div></div>
-    <div class="p-2"><div class="text-3xl">📊</div><div class="text-xs mt-1">政策讀者</div></div>
-    <div class="p-2"><div class="text-3xl">📈</div><div class="text-xs mt-1">資料詮釋家</div></div>
-    <div class="p-2"><div class="text-3xl">🔄</div><div class="text-xs mt-1">系統思考者</div></div>
-    <div class="p-2"><div class="text-3xl">⚖️</div><div class="text-xs mt-1">倫理思辨家</div></div>
-    <div class="p-2"><div class="text-3xl">✍️</div><div class="text-xs mt-1">論證作者</div></div>
-    <div class="p-2"><div class="text-3xl">🏫</div><div class="text-xs mt-1">學生提案人</div></div>
-    <div class="p-2"><div class="text-3xl">🧠</div><div class="text-xs mt-1">後設學習者</div></div>
-  </div>
-  <div class="bg-amber-50 rounded-xl p-4 max-w-2xl mx-auto text-left">
-    <p class="font-bold text-amber-800 mb-2">🎯 三個沒有標準答案的問題（帶回家繼續想）</p>
-    <ol class="list-decimal list-inside text-sm space-y-1 text-slate-700">
-      <li>如果 1.5°C 守不住，下一個目標該是 2°C 還是 3°C？你怎麼權衡？</li>
-      <li>『地球工程（噴氣溶膠降溫）』你支持研究嗎？道德風險是什麼？</li>
-      <li>你這個年紀最該優先：少排碳、要求家人改、還是參與公共倡議？</li>
-    </ol>
-  </div>
-  <div class="mt-6 text-lg font-bold text-emerald-600">最終智庫積分：<span id="final-score">0</span> / 80</div>
-  <button onclick="location.reload()" class="btn mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold">再玩一次</button>
 </section>
 
 </div>
 
 <script>
 (() => {
-  const S = { score:0, current:1 };
+  const TOTAL_LEVELS = 5;
+  const S = { score:0, current:1, awarded:{} };
   const setScore = (n)=>{ S.score += n; document.getElementById('score').textContent = S.score; };
-  const goto = (n)=>{
-    document.getElementById('level-'+S.current).classList.add('hidden-screen');
-    S.current = n;
-    const next = document.getElementById('level-'+n) || document.getElementById('level-final');
-    next.classList.remove('hidden-screen');
-    for(let i=1;i<=8;i++){
+  const awardOnce = (key, pts)=>{ if(!S.awarded[key]){ S.awarded[key]=true; setScore(pts); } };
+
+  const updateDots = ()=>{
+    for(let i=1;i<=TOTAL_LEVELS;i++){
       const d = document.getElementById('dot-'+i);
       if(!d) continue;
       d.classList.remove('active','done');
-      if(i < n) d.classList.add('done');
-      else if(i === n) d.classList.add('active');
+      if(i < S.current) d.classList.add('done');
+      else if(i === S.current) d.classList.add('active');
+    }
+  };
+
+  const goto = (n)=>{
+    document.querySelectorAll('section[id^="level-"]').forEach(s=>s.classList.add('hidden-screen'));
+    S.current = n;
+    const next = document.getElementById('level-'+n) || document.getElementById('level-final');
+    next.classList.remove('hidden-screen');
+    if(next.id === 'level-final'){
+      for(let i=1;i<=TOTAL_LEVELS;i++){ const d=document.getElementById('dot-'+i); if(d){d.classList.remove('active');d.classList.add('done');} }
+      document.getElementById('final-score').textContent = S.score;
+    } else {
+      updateDots();
     }
     window.scrollTo({top:0,behavior:'smooth'});
   };
+
+  document.querySelectorAll('.btn-back').forEach(b=>{
+    b.onclick = ()=>goto(parseInt(b.dataset.back,10));
+  });
+
   const confetti = ()=>{
     const colors=['#f59e0b','#10b981','#6366f1','#ec4899','#0ea5e9'];
     for(let i=0;i<40;i++){
@@ -392,7 +383,18 @@
     }
   };
 
-  // ===== Level 1: Drag match =====
+  const shuffleChildren = (parent)=>{
+    const kids = Array.from(parent.children);
+    for(let i=kids.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      parent.appendChild(kids[j]);
+    }
+  };
+
+  // ===== Task 1: Drag match =====
+  shuffleChildren(document.getElementById('items-box-1'));
+  shuffleChildren(document.getElementById('zones-box-1'));
+
   const setupDrag = (container, zones, onComplete) => {
     let dragged = null;
     container.querySelectorAll('.drag-item').forEach(it=>{
@@ -425,65 +427,68 @@
   const zones1 = box1.querySelectorAll('.drop-zone');
   let done1 = 0, err1 = 0;
   setupDrag(box1, zones1, ok=>{
-    if(ok){ done1++; if(done1===4){ setScore(10-Math.min(err1,5)); document.getElementById('btn-next-1').disabled=false; document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 全部配對正確！觀測網靠多層資料交叉驗證。</span>'; confetti(); } }
-    else { err1++; document.getElementById('feedback-1').innerHTML='<span class="text-rose-600">❌ 提示：Argo 測海水、衛星看全球雲圖、探空氣球量高空大氣、地面站測地表。再試試。</span>'; }
+    if(ok){
+      done1++;
+      if(done1===4){
+        awardOnce('L1', 10 - Math.min(err1,5));
+        document.getElementById('btn-next-1').disabled=false;
+        document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 全部配對正確！觀測網靠多層資料交叉驗證。</span>';
+        confetti();
+      }
+    } else {
+      err1++;
+      document.getElementById('feedback-1').innerHTML='<span class="text-rose-600">❌ 再想想每種儀器運作的高度、位置與頻率。</span>';
+    }
   });
   document.getElementById('btn-next-1').onclick = ()=>goto(2);
 
-  // ===== Level 2: TF quiz =====
-  const hints2 = {
-    0:'IPCC 不做原創研究，只審閱並統整全球已發表文獻。',
-    1:'正確。AR6 綜合報告（2023）陳述 2011–2020 相較 1850–1900 升溫約 1.1°C。',
-    2:'巴黎協定無強制懲罰，靠透明化、同儕壓力、全球盤點推動。'
+  // ===== Task 2: Data interpretation =====
+  const btn2 = document.getElementById('btn-next-2');
+  const checkL2 = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked');
+    const checked = document.querySelectorAll('#q22-opts input:checked');
+    btn2.disabled = !(q21 && checked.length === 2);
+    const fb = document.getElementById('q22-fb');
+    if(checked.length === 2) fb.textContent = '已選 2 項，可以提交。';
+    else if(checked.length > 2) fb.textContent = '⚠️ 只能選 2 項，請再調整。';
+    else fb.textContent = `已選 ${checked.length}/2 項`;
   };
-  let q2done = 0;
-  document.querySelectorAll('#q2-box .quiz-item').forEach((item, idx)=>{
-    item.querySelectorAll('.btn-ans').forEach(b=>{
-      b.onclick = ()=>{
-        if(item.dataset.locked) return;
-        const ok = b.dataset.ans === item.dataset.correct;
-        const hint = item.querySelector('.hint');
-        hint.classList.remove('hidden');
-        if(ok){
-          b.classList.add('pop');
-          hint.textContent = '✅ '+hints2[idx];
-          hint.className='hint text-xs mt-2 text-emerald-700';
-          item.dataset.locked='1';
-          setScore(3);
-          q2done++;
-          if(q2done===3){ document.getElementById('btn-next-2').disabled=false; confetti(); setScore(1);}
-        } else {
-          item.classList.add('shake'); setTimeout(()=>item.classList.remove('shake'),400);
-          hint.textContent = '❌ 再想想：'+hints2[idx];
-          hint.className='hint text-xs mt-2 text-rose-600';
-        }
-      };
-    });
-  });
-  document.getElementById('btn-next-2').onclick = ()=>goto(3);
-
-  // ===== Level 3: Data interpretation =====
-  const btn3 = document.getElementById('btn-next-3');
-  const checkL3 = ()=>{
-    const q31 = document.querySelector('input[name=q31]:checked');
-    const q32 = document.getElementById('q32').value.trim();
-    btn3.disabled = !(q31 && q32.length>=30);
-  };
-  document.querySelectorAll('input[name=q31]').forEach(r=>r.onchange=checkL3);
-  document.getElementById('q32').oninput = checkL3;
-  btn3.onclick = ()=>{
-    const q31 = document.querySelector('input[name=q31]:checked').value;
-    const fb = document.querySelector('.q31-fb');
+  document.querySelectorAll('input[name=q21]').forEach(r=>r.onchange=checkL2);
+  document.querySelectorAll('#q22-opts input').forEach(c=>c.onchange=checkL2);
+  btn2.onclick = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked').value;
+    const fb21 = document.querySelector('.q21-fb');
     let p = 0;
-    if(q31==='B'){ fb.textContent='✅ 正解 B：長期上升但有年際起伏，1970 後加速。'; fb.className='text-xs mt-1 text-emerald-700 q31-fb'; p+=4;}
-    else { fb.textContent='❌ 正解為 B。A 錯是因為單年可能下降；C 錯是因為 1910-1950 也有緩慢上升。'; fb.className='text-xs mt-1 text-rose-600 q31-fb';}
-    if(document.getElementById('q32').value.length>=30) p+=6;
-    setScore(p);
+    if(q21==='B'){ fb21.textContent='✅ 正解 B：長期上升但有年際起伏，1970 後加速。'; fb21.className='text-xs mt-1 text-emerald-700 q21-fb'; p+=5;}
+    else { fb21.textContent='❌ 正解為 B。A 錯是因為單年可能下降；C 錯是因為 1910-1950 也有緩慢上升。'; fb21.className='text-xs mt-1 text-rose-600 q21-fb';}
+
+    const opts = document.querySelectorAll('#q22-opts input');
+    let correctChecked = 0, wrongChecked = 0;
+    opts.forEach(o=>{
+      const lbl = o.parentElement;
+      lbl.classList.remove('correct','wrong');
+      if(o.checked){
+        if(o.dataset.correct==='1'){ lbl.classList.add('correct'); correctChecked++;}
+        else { lbl.classList.add('wrong'); wrongChecked++;}
+      }
+    });
+    const fb22 = document.getElementById('q22-fb');
+    if(correctChecked===2 && wrongChecked===0){
+      p+=10;
+      fb22.innerHTML='<span class="text-emerald-700 font-bold">✅ 兩項都對！都市熱島與海溫上升都是合理推論。</span>';
+    } else if(correctChecked===1 && wrongChecked===0){
+      p+=5;
+      fb22.innerHTML='<span class="text-amber-600">部分正確（1/2）。再選一項合理因素。</span>';
+    } else {
+      fb22.innerHTML='<span class="text-rose-600">❌ 正解為 A（都市熱島）與 C（海溫上升透過邊界層加熱）。</span>';
+    }
+    awardOnce('L2', p);
     confetti();
-    goto(4);
+    goto(3);
   };
 
-  // ===== Level 4: Feedback loop drag =====
+  // ===== Task 3: Feedback loop drag =====
+  shuffleChildren(document.getElementById('loop-items'));
   const slots = document.querySelectorAll('.loop-slot');
   const loopItems = document.querySelectorAll('#loop-items .drag-item');
   let loopCorrect = 0, loopErr = 0;
@@ -507,80 +512,231 @@
         dragged2.style.visibility='hidden';
         loopCorrect++;
         if(loopCorrect===4){
-          setScore(10-Math.min(loopErr,5));
-          document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 完成！這是典型正反饋：升溫 → 冰融 → 反射率降 → 吸熱更多 → 再升溫。</span>';
-          document.getElementById('btn-next-4').disabled=false;
+          awardOnce('L3', 15 - Math.min(loopErr,5));
+          document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 完成！正反饋：升溫 → 冰融 → 反射率降 → 吸熱更多 → 再升溫。</span>';
+          document.getElementById('btn-next-3').disabled=false;
           confetti();
         }
       } else {
         s.classList.add('shake'); setTimeout(()=>s.classList.remove('shake'),400);
         loopErr++;
-        document.getElementById('loop-fb').innerHTML='<span class="text-rose-600">❌ 順序錯了。提示：從『氣溫升高』開始，想想這會先造成什麼？</span>';
+        document.getElementById('loop-fb').innerHTML='<span class="text-rose-600">❌ 順序錯了。提示：第一張是「起點」，最後一張會回頭再加強起點。</span>';
       }
     });
   });
-  document.getElementById('btn-next-4').onclick = ()=>goto(5);
+  document.getElementById('btn-next-3').onclick = ()=>goto(4);
 
-  // ===== Level 5: Ethics =====
+  // ===== Task 4: CER Flash Card =====
+  const claimBank = {
+    cbdr:    '應依「共同但差異責任 CBDR」：歷史排放多的國家先減更多、出更多錢。',
+    equal:   '為了達 1.5°C，全球應一視同仁立即停建新燃煤，不能再等。',
+    finance: '已開發國家須先提供氣候融資與技術轉移，才有資格要求發展中國家減量。'
+  };
+  const evidBank = {
+    cbdr: [
+      {t:'2023 年 OECD 統計：歷史累積 CO₂ 排放，G7 國家合計約佔全球 40%，但今日人口僅佔 10%。', ok:true},
+      {t:'某新聞說已開發國家很有錢。', ok:false},
+      {t:'我覺得這樣比較公平。', ok:false},
+    ],
+    equal: [
+      {t:'UNEP 2023 排放差距報告：以目前 NDC 推估，1.5°C 將在 2030 前突破，再不加速減量就回不去。', ok:true},
+      {t:'巴黎協定的目標是 1.5°C。', ok:false},
+      {t:'大家都應該一起做。', ok:false},
+    ],
+    finance: [
+      {t:'COP28 共識：每年 1,000 億美元氣候融資承諾迄今未完全到位，發展中國家 NDC 達成率受此牽動。', ok:true},
+      {t:'有錢人就應該幫忙。', ok:false},
+      {t:'技術會自然轉移。', ok:false},
+    ]
+  };
+  const reasBank = {
+    cbdr: [
+      {t:'若全球均攤減量，會讓尚未發展的國家失去脫貧空間；CBDR 反映了「污染者付費」的倫理原則。', ok:true},
+      {t:'富國本來就該多付。', ok:false},
+      {t:'歷史的事情就過去了。', ok:false},
+    ],
+    equal: [
+      {t:'碳預算逼近耗盡時，唯有所有來源同時減量才能避開臨界點；歷史責任可透過融資補償，但時間不允許再分階段。', ok:true},
+      {t:'規則一致就會公平。', ok:false},
+      {t:'其他國家都這樣。', ok:false},
+    ],
+    finance: [
+      {t:'技術與資金是減量的物質基礎，沒有它，發展中國家無論意願多高都做不到；融資先到，行動才能落地。', ok:true},
+      {t:'有錢人應該付錢。', ok:false},
+      {t:'反正富國錢多。', ok:false},
+    ]
+  };
+
+  let chosenClaim = null, chosenEvidOk = false, chosenReasOk = false;
+  const evidWrap = document.getElementById('evid-wrap');
+  const reasWrap = document.getElementById('reas-wrap');
+  const cerSummary = document.getElementById('cer-summary');
+  const btn4 = document.getElementById('btn-next-4');
+
+  const renderOpts = (wrap, items, name, onPick)=>{
+    wrap.innerHTML = '';
+    const shuffled = items.slice().sort(()=>Math.random()-0.5);
+    shuffled.forEach((it)=>{
+      const lbl = document.createElement('label');
+      lbl.className = 'opt';
+      lbl.innerHTML = `<input type="radio" name="${name}"> ${it.t}`;
+      lbl.querySelector('input').onchange = ()=>{
+        wrap.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel','correct','wrong'));
+        lbl.classList.add(it.ok ? 'correct' : 'wrong');
+        onPick(it.ok);
+      };
+      wrap.appendChild(lbl);
+    });
+  };
+
+  document.querySelectorAll('input[name=claim]').forEach(r=>{
+    r.onchange = ()=>{
+      chosenClaim = r.value;
+      document.querySelectorAll('#claim-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      awardOnce('L4-claim', 4);
+      evidWrap.classList.remove('hidden');
+      reasWrap.classList.add('hidden');
+      cerSummary.classList.add('hidden');
+      chosenEvidOk = false; chosenReasOk = false;
+      btn4.disabled = true;
+      renderOpts(document.getElementById('evid-opts'), evidBank[chosenClaim], 'evid', ok=>{
+        chosenEvidOk = ok;
+        document.getElementById('evid-fb').innerHTML = ok
+          ? '<span class="text-emerald-700">✅ 這條證據含具體數據／權威來源，與你的主張一致。</span>'
+          : '<span class="text-rose-600">❌ 這條缺乏數據／與主張關聯弱。再選一次。</span>';
+        if(ok) awardOnce('L4-evid', 8);
+        reasWrap.classList.remove('hidden');
+        renderOpts(document.getElementById('reas-opts'), reasBank[chosenClaim], 'reas', ok2=>{
+          chosenReasOk = ok2;
+          document.getElementById('reas-fb').innerHTML = ok2
+            ? '<span class="text-emerald-700">✅ 這條推理確實連結了證據與主張。</span>'
+            : '<span class="text-rose-600">❌ 這條沒有清楚解釋為什麼證據支持主張。再選一次。</span>';
+          if(ok2){
+            awardOnce('L4-reas', 8);
+            document.getElementById('sum-c').textContent = claimBank[chosenClaim];
+            const evChosen = Array.from(document.querySelectorAll('#evid-opts .opt')).find(o=>o.classList.contains('correct'));
+            const rsChosen = Array.from(document.querySelectorAll('#reas-opts .opt')).find(o=>o.classList.contains('correct'));
+            if(evChosen) document.getElementById('sum-e').textContent = evChosen.textContent.trim();
+            if(rsChosen) document.getElementById('sum-r').textContent = rsChosen.textContent.trim();
+            cerSummary.classList.remove('hidden');
+            confetti();
+          }
+          btn4.disabled = !(chosenEvidOk && chosenReasOk);
+        });
+        btn4.disabled = !(chosenEvidOk && chosenReasOk);
+      });
+    };
+  });
+  btn4.onclick = ()=>goto(5);
+
+  // ===== Task 5: 提案菜單 + WSA =====
+  const projBank = {
+    light: {
+      problem: '現況問題：教室白天即使陽光充足仍開全燈，下課後常忘記關燈。',
+      steps: '行動步驟：① 走廊與廁所裝感應燈；② 教室靠窗排採白天無燈試行週；③ 製作節能海報。',
+      kpis: ['半年內試行班級用電量下降 10%', '校園感應燈覆蓋率達 60%', '全校節能海報製作 30 張']
+    },
+    lunch: {
+      problem: '現況問題：午餐每日皆有肉，畜牧業排放占食物碳足跡大宗。',
+      steps: '行動步驟：① 與午餐供應商討論週一蔬食菜單；② 班級辦蔬食試吃週；③ 製作蔬食食譜小冊。',
+      kpis: ['半年內午餐蔬食餐次達 20%', '蔬食日學生滿意度 ≥ 70%', '製作 5 道在地食材食譜']
+    },
+    commute: {
+      problem: '現況問題：上下學家長私家車接送多，校門口塞車與短程怠速排放高。',
+      steps: '行動步驟：① 建立鄰里共乘群組；② 步行＋大眾運輸獎勵章；③ 開放校門口腳踏車停車區。',
+      kpis: ['半年內步行/共乘比例提升 15%', '校門口交通壅塞時段縮短 30%', '腳踏車通勤人數成長一倍']
+    },
+    paper: {
+      problem: '現況問題：學校評量、講義仍以紙本為主，列印與廢紙量大。',
+      steps: '行動步驟：① 評量逐步轉用線上題庫；② 學生使用雙面與草稿紙；③ 製作回收紙工作站。',
+      kpis: ['半年內列印量下降 25%', '線上評量比例達 40%', '回收紙再利用率 ≥ 50%']
+    }
+  };
+
+  const projDetail = document.getElementById('proj-detail');
+  let kpiPicked = false, projPicked = null;
+  document.querySelectorAll('input[name=proj]').forEach(r=>{
+    r.onchange = ()=>{
+      projPicked = r.value;
+      document.querySelectorAll('#proj-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      const d = projBank[projPicked];
+      document.getElementById('proj-problem').textContent = d.problem;
+      document.getElementById('proj-steps').textContent = d.steps;
+      const kpiBox = document.getElementById('kpi-opts');
+      kpiBox.innerHTML = '';
+      kpiPicked = false;
+      d.kpis.forEach((k)=>{
+        const lbl = document.createElement('label');
+        lbl.className='opt';
+        lbl.innerHTML = `<input type="radio" name="kpi"> ${k}`;
+        lbl.querySelector('input').onchange = ()=>{
+          document.querySelectorAll('#kpi-opts .opt').forEach(o=>o.classList.remove('sel'));
+          lbl.classList.add('sel');
+          kpiPicked = true;
+          checkP();
+        };
+        kpiBox.appendChild(lbl);
+      });
+      projDetail.classList.remove('hidden');
+      checkP();
+    };
+  });
+
   const btn5 = document.getElementById('btn-next-5');
-  document.getElementById('q5').oninput = (e)=>{
-    const len = e.target.value.trim().length;
-    document.getElementById('q5-fb').textContent = `已寫 ${len} 字（需 50 字以上）`;
-    btn5.disabled = len < 50;
-  };
-  btn5.onclick = ()=>{ setScore(10); confetti(); goto(6);};
-
-  // ===== Level 6: CER =====
-  const btn6 = document.getElementById('btn-next-6');
-  const checkCER = ()=>{
-    const c = document.getElementById('cer-c').value.trim();
-    const e = document.getElementById('cer-e').value.trim();
-    const r = document.getElementById('cer-r').value.trim();
-    const hasNum = /\d/.test(e);
-    const ok = c.length>=10 && e.length>=30 && r.length>=30 && hasNum;
-    document.getElementById('cer-fb').innerHTML = ok ? '<span class="text-emerald-700">✅ CER 結構完整且證據含數字。</span>' : `<span class="text-slate-500">Claim ${c.length}/10｜Evidence ${e.length}/30（需含數字）｜Reasoning ${r.length}/30</span>`;
-    btn6.disabled = !ok;
-  };
-  ['cer-c','cer-e','cer-r'].forEach(id=>document.getElementById(id).oninput=checkCER);
-  btn6.onclick = ()=>{ setScore(10); confetti(); goto(7);};
-
-  // ===== Level 7: Project + WSA =====
-  const btn7 = document.getElementById('btn-next-7');
-  const checkP = ()=>{
-    const ok =
-      document.getElementById('p-title').value.trim().length>=5 &&
-      document.getElementById('p-problem').value.trim().length>=30 &&
-      document.getElementById('p-cer').value.trim().length>=80 &&
-      document.getElementById('p-steps').value.trim().length>=20 &&
-      document.getElementById('p-kpi').value.trim().length>=5 &&
-      document.querySelectorAll('.wsa:checked').length === 4;
-    document.getElementById('p-fb').innerHTML = ok ? '<span class="text-emerald-700">✅ 提案完整、WSA 四面向全覆蓋！</span>' : '<span class="text-slate-500">請完成五個欄位 + WSA 四項全勾選</span>';
-    btn7.disabled = !ok;
-  };
-  ['p-title','p-problem','p-cer','p-steps','p-kpi'].forEach(id=>document.getElementById(id).oninput=checkP);
+  function checkP(){
+    const wsaAll = document.querySelectorAll('.wsa:checked').length === 4;
+    const ok = projPicked && kpiPicked && wsaAll;
+    document.getElementById('p-fb').innerHTML = ok
+      ? '<span class="text-emerald-700 font-bold">✅ 提案組裝完成、WSA 四面向全勾！</span>'
+      : '<span class="text-slate-500">請：選主題 → 選 KPI → 勾 WSA 四面向</span>';
+    btn5.disabled = !ok;
+  }
   document.querySelectorAll('.wsa').forEach(c=>c.onchange=checkP);
-  btn7.onclick = ()=>{ setScore(15); confetti(); goto(8);};
+  btn5.onclick = ()=>{ awardOnce('L5', 15); confetti(); goto(6); };
 
-  // ===== Level 8: Metacognition =====
-  const btnF = document.getElementById('btn-finish');
-  const checkM = ()=>{
-    const ok =
-      document.getElementById('m-before').value.trim().length>=50 &&
-      document.getElementById('m-after').value.trim().length>=50 &&
-      document.getElementById('m-key').value.trim().length>=3;
-    document.getElementById('m-fb').textContent = ok ? '✅ 可以完成任務。' : '請完成三題（前後想法皆 50 字以上）';
-    btnF.disabled = !ok;
+  // ===== Final reflection =====
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+  const setStars = (wrapId, set)=>{
+    const wrap = document.getElementById(wrapId);
+    wrap.querySelectorAll('.star').forEach(s=>{
+      s.onclick = ()=>{
+        const v = parseInt(s.dataset.val,10);
+        set(v);
+        wrap.querySelectorAll('.star').forEach(x=>{
+          x.classList.toggle('on', parseInt(x.dataset.val,10) <= v);
+        });
+        checkReflect();
+      };
+    });
   };
-  ['m-before','m-after','m-key'].forEach(id=>document.getElementById(id).oninput=checkM);
-  btnF.onclick = ()=>{
-    setScore(5);
-    document.getElementById('final-score').textContent = S.score;
-    document.getElementById('level-8').classList.add('hidden-screen');
-    document.getElementById('level-final').classList.remove('hidden-screen');
-    for(let i=1;i<=8;i++){ const d=document.getElementById('dot-'+i); if(d){d.classList.remove('active');d.classList.add('done');}}
-    confetti(); setTimeout(confetti,500); setTimeout(confetti,1000);
-    window.scrollTo({top:0,behavior:'smooth'});
-  };
+  setStars('stars-before', v=>starBefore=v);
+  setStars('stars-after', v=>starAfter=v);
+  document.querySelectorAll('input[name=impact]').forEach(r=>{
+    r.onchange = ()=>{
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+  function checkReflect(){
+    const ok = starBefore>0 && starAfter>0 && impactPicked;
+    document.getElementById('reflect-fb').textContent = ok
+      ? '✅ 反思完成，獲得 5 分。'
+      : '請完成 3 題（前/後關注度 + 影響最大任務）';
+    if(ok){
+      awardOnce('FINAL', 5);
+      document.getElementById('final-score').textContent = S.score;
+    }
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
 })();
 </script>
 </body>

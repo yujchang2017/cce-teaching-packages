@@ -1,169 +1,732 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>5.1-IV 負外部性與政策工具 · 互動學習單</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>負外部性偵查員 | 5.1-IV 國中互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-body{font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;max-width:880px;margin:2rem auto;padding:1rem;line-height:1.7;color:#222;background:#fafaf7}
-h1{color:#1a6f4a;border-bottom:3px solid #1a6f4a;padding-bottom:.4rem}
-h2{color:#b84e1d;margin-top:2rem;border-left:6px solid #b84e1d;padding-left:.6rem}
-.box{background:#fff;border:1px solid #ddd;border-radius:8px;padding:1rem;margin:1rem 0;box-shadow:0 2px 6px rgba(0,0,0,.04)}
-.tag{display:inline-block;background:#1a6f4a;color:#fff;font-size:.8rem;padding:.15rem .5rem;border-radius:4px;margin-right:.4rem}
-.tag.eth{background:#c0392b}
-.tag.sys{background:#2874a6}
-.tag.cer{background:#7d3c98}
-.tag.dat{background:#d68910}
-.tag.meta{background:#515a5a}
-.tag.open{background:#117a65}
-.tag.proj{background:#b7950b}
-textarea{width:100%;min-height:90px;border:1px solid #bbb;border-radius:6px;padding:.6rem;font-family:inherit;font-size:1rem}
-input[type=text],input[type=number]{border:1px solid #bbb;border-radius:4px;padding:.3rem .5rem;font-size:1rem}
-.data{background:#eef6ec;padding:.6rem;border-left:4px solid #1a6f4a;margin:.6rem 0}
-button{background:#1a6f4a;color:#fff;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-size:1rem}
-button:hover{background:#134f35}
-.feedback{margin-top:.6rem;padding:.6rem;border-radius:6px;display:none}
-.feedback.show{display:block;background:#fff8e1;border:1px solid #d4ac0d}
-ol li{margin:.3rem 0}
-table{border-collapse:collapse;width:100%;margin:.6rem 0}
-th,td{border:1px solid #ccc;padding:.4rem;text-align:left}
-th{background:#f0ece2}
-.rubric{background:#f7f3e9;padding:.6rem;border-radius:6px;font-size:.9rem}
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#d1fae5,#fef3c7,#fee2e2); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:90px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#1a6f4a; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  svg.loop text { font-size:11px; pointer-events:none;}
+  svg.loop .loop-slot { cursor: pointer; }
+  svg.loop .loop-slot.over { fill:#fde68a; stroke-width:3; }
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.92rem;}
+  .opt:hover { background:#f8fafc; }
+  .opt.sel { border-color:#1a6f4a; background:#d1fae5;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.4rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
+<div class="max-w-4xl mx-auto">
 
-<h1>5.1-IV 互動學習單：經濟成長與負外部性</h1>
-<p><strong>適用年齡</strong>：13-15 歲　｜　<strong>完成時間</strong>：約 60-80 分鐘　｜　<strong>驗證日期</strong>：2026-04-16</p>
-<p>本單包含 <strong>6 類深度題目</strong>：開放反思、系統思考、倫理兩難、CER（主張-證據-推理）、資料詮釋、後設認知，另附專題任務。點『檢查提示』會顯示教師建議回答要點——但請先自己思考！</p>
-
-<!-- 1. 開放反思 ≥2 -->
-<h2>一、開放反思題（請至少各寫 120 字）</h2>
-
-<div class="box">
-<span class="tag open">開放反思 ①</span>
-<p><strong>Q1</strong>　請描述過去一週內，你自己（或家人）有哪 3 項消費行為可能產生了負外部性？分別是影響到誰、以什麼方式？你當時知道嗎？現在的感覺是什麼？</p>
-<textarea id="q1"></textarea>
-<button onclick="toggle('fb1')">檢查提示</button>
-<div id="fb1" class="feedback">示例可能涵蓋：買手搖飲（塑膠杯→垃圾處理成本、影響海洋生物）、搭爸媽的車上學（PM2.5→路上行人）、網購衣服退貨（物流碳排→所有人）。重點是辨識『第三方』與『間接性』。</div>
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-green-800">💸 負外部性偵查員</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『政策分析研究員』：5 個任務，走完你就是 Level 4 國中永續公民。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">研究員積分</div>
+    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
+  </div>
 </div>
 
-<div class="box">
-<span class="tag open">開放反思 ②</span>
-<p><strong>Q2</strong>　如果你是縣市長，你會優先推動哪一項減少負外部性的政策？為什麼不是另外三個？你預期會遇到哪些反對聲音？</p>
-<textarea id="q2"></textarea>
-<button onclick="toggle('fb2')">檢查提示</button>
-<div id="fb2" class="feedback">優秀答案會(1)具體指名政策（例：校區周邊禁怠速），(2) 用數據支持（例 PM2.5 12.8 μg/m³），(3) 誠實預見反對（接送家長、計程車業者），(4) 提出溝通或配套（宣導、設下客區）。</div>
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">配對</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">資料</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">論證</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">專題</span>
 </div>
 
-<!-- 2. 系統思考 ≥1 -->
-<h2>二、系統思考題</h2>
+<!-- ===== T1: 政策工具配對（去直覺化 + 洗牌） ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔍</div>
+    <div>
+      <h2 class="text-xl font-bold text-green-800">任務 1｜政策工具配對</h2>
+      <p class="text-sm text-slate-700 mt-1">把四種「政策工具」拖到正確的描述區。提示以機制性敘述呈現，請依政策原理推論，不要被名稱誘導。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：政策分析實習生 ｜ 10 分</p>
+    </div>
+  </div>
 
-<div class="box">
-<span class="tag sys">系統思考 ①</span>
-<p><strong>Q3</strong>　請畫出或用文字描述『政府提高碳費』的 <strong>正負兩條因果迴路</strong>（至少各 4 個節點）。舉例：碳費↑ → 企業減排投資↑ → 排放↓ → 空污↓ → ... 請也指出可能的『反彈效應』或『意外後果』。</p>
-<textarea id="q3" style="min-height:140px"></textarea>
-<button onclick="toggle('fb3')">檢查提示</button>
-<div id="fb3" class="feedback">正迴圈範例：碳費↑→減排技術投資↑→減排成本↓→再減排↑（增強）。負迴圈：碳費↑→產品漲價→弱勢家庭負擔↑→政治反彈→碳費調降→回到原點（平衡/倒退）。反彈效應：能源效率提升→價格↓→消費↑，抵銷節能（傑文斯悖論）。</div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="tax">碳費／碳稅</div>
+    <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="ets">排放交易</div>
+    <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="reg">命令控制</div>
+    <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="sub">補貼誘因</div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="zones-box-1">
+    <div class="drop-zone p-3" data-accept="tax"><div class="font-bold text-slate-700 text-sm">機制 A<div class="text-xs text-slate-500 mt-1">政府對每單位污染排放收取固定金額，使外部成本內部化；排放者可自行決定是否減排或繳費，臺灣目前設定 300 元/噸 CO₂e。</div></div></div>
+    <div class="drop-zone p-3" data-accept="ets"><div class="font-bold text-slate-700 text-sm">機制 B<div class="text-xs text-slate-500 mt-1">政府設定總量上限，發放或拍賣許可證，企業可在市場上買賣，減排成本低者多減並賣出餘額；歐盟 ETS 為全球最大交易體系。</div></div></div>
+    <div class="drop-zone p-3" data-accept="reg"><div class="font-bold text-slate-700 text-sm">機制 C<div class="text-xs text-slate-500 mt-1">政府直接規定排放標準或禁止特定行為，業者須達標否則罰款；無彈性但執行明確，常見於空污或食安管制。</div></div></div>
+    <div class="drop-zone p-3" data-accept="sub"><div class="font-bold text-slate-700 text-sm">機制 D<div class="text-xs text-slate-500 mt-1">政府提供財務支持，降低低排放方案的採用成本，使其相對傳統選擇更具競爭力；電動車購車補助、太陽能裝設補助皆屬此類。</div></div></div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <div class="nav-row">
+    <span></span>
+    <button id="btn-next-1" class="btn bg-green-700 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T2: 資料詮釋 碳定價比較 ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📊</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 2｜資料詮釋：各國碳定價比較</h2>
+      <p class="text-sm text-slate-700 mt-1">世界銀行 2024 年碳定價現況報告：各國／地區碳價水準與減排成效。請解讀資料並作答。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：資料分析師 ｜ 15 分 ｜ <span class="chip bg-teal-100 text-teal-800">資料詮釋題</span></p>
+    </div>
+  </div>
+  <svg viewBox="0 0 420 200" class="w-full max-w-xl mx-auto block bg-slate-50 rounded">
+    <line x1="50" y1="170" x2="410" y2="170" stroke="#334155" stroke-width="1"/>
+    <line x1="50" y1="20" x2="50" y2="170" stroke="#334155" stroke-width="1"/>
+    <text x="5" y="25" font-size="9">元/噸</text>
+    <!-- Bars -->
+    <rect x="70"  y="160" width="40" height="10"  fill="#dc2626"/>
+    <rect x="130" y="85"  width="40" height="85"  fill="#f59e0b"/>
+    <rect x="190" y="45"  width="40" height="125" fill="#0ea5e9"/>
+    <rect x="250" y="25"  width="40" height="145" fill="#10b981"/>
+    <!-- Labels -->
+    <text x="90"  y="185" text-anchor="middle" font-size="8" fill="#334155">臺灣 300</text>
+    <text x="150" y="185" text-anchor="middle" font-size="8" fill="#334155">中國 100</text>
+    <text x="210" y="185" text-anchor="middle" font-size="8" fill="#334155">EU ~2500</text>
+    <text x="270" y="185" text-anchor="middle" font-size="8" fill="#334155">瑞典 ~4100</text>
+    <!-- Y-axis -->
+    <text x="35" y="170" font-size="8" text-anchor="end">0</text>
+    <text x="35" y="100" font-size="8" text-anchor="end">2000</text>
+    <text x="35" y="45"  font-size="8" text-anchor="end">4000</text>
+    <text x="200" y="42" font-size="9" fill="#10b981">瑞典：1990→2022 排放 -33%，GDP +108%</text>
+  </svg>
+
+  <div class="mt-4 space-y-4">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q2-1｜下列哪個陳述最符合圖中資訊？（5 分）</label>
+      <div class="space-y-1" id="q21">
+        <label class="block text-sm"><input type="radio" name="q21" value="A"> A. 碳價越高，GDP 必然下降，所以臺灣維持低碳費是正確的</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="B"> B. 高碳價並不必然傷害經濟，瑞典案例顯示減排與成長可以並行</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="C"> C. 臺灣碳費雖低，但排放量也最少，所以不需要提高</label>
+      </div>
+      <p class="text-xs mt-1 text-slate-500 q21-fb"></p>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q2-2｜臺灣碳費 300 元/噸遠低於社會碳成本（約 5,000-6,000 元/噸）。<strong>勾選 2 項</strong>最可能造成的後果：（10 分）</label>
+      <div id="q22-opts" class="space-y-1">
+        <label class="opt"><input type="checkbox" data-correct="1"> A. 排放者缺乏足夠誘因投資減排技術，維持高碳路徑</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> B. 低碳費讓所有消費者立即感受到空污改善</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> C. 外部成本由全民（含未來世代）承擔，而非排放者</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> D. 低碳費能吸引更多綠色外資進入臺灣</label>
+      </div>
+      <p id="q22-fb" class="text-xs mt-2"></p>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="1">← 上一步</button>
+    <button id="btn-next-2" class="btn bg-green-700 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T3: 系統思考 碳費正反饋迴路 ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-700">任務 3｜系統思考：碳費提高的反饋迴路</h2>
+      <p class="text-sm text-slate-700 mt-1">完成「碳費提高 → 企業減排投資 → 排放下降 → 空污改善 → 社會支持增加 → 碳費進一步提高」的正反饋循環圖。把 4 張卡片拖到正確位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統分析師 ｜ 15 分 ｜ <span class="chip bg-rose-100 text-rose-800">系統思考題</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 500 260" class="loop w-full bg-slate-50 rounded">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L0,10 L10,5 z" fill="#64748b"/></marker>
+    </defs>
+    <rect x="10" y="10" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="1"/>
+    <text x="85" y="40" text-anchor="middle" fill="#92400e" id="slot-1-text">（拖這裡）</text>
+    <rect x="340" y="10" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="2"/>
+    <text x="415" y="40" text-anchor="middle" fill="#92400e" id="slot-2-text">（拖這裡）</text>
+    <rect x="340" y="200" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="3"/>
+    <text x="415" y="230" text-anchor="middle" fill="#92400e" id="slot-3-text">（拖這裡）</text>
+    <rect x="10" y="200" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="4"/>
+    <text x="85" y="230" text-anchor="middle" fill="#92400e" id="slot-4-text">（拖這裡）</text>
+    <line x1="160" y1="35" x2="340" y2="35" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="415" y1="60" x2="415" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="340" y1="225" x2="160" y2="225" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="85" y1="200" x2="85" y2="60" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="250" y="130" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="bold">正反饋（+）</text>
+  </svg>
+  <p class="text-xs text-slate-500 mt-2 text-center">提示：哪一張是「政策起點」？哪一張最終會回頭讓社會願意支持更高碳費？</p>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3" id="loop-items">
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">空污與碳排改善</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">碳費提高</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">社會支持氣候政策增加</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">企業加速投資減排技術</div>
+  </div>
+  <p id="loop-fb" class="mt-3 text-sm"></p>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="2">← 上一步</button>
+    <button id="btn-next-3" class="btn bg-green-700 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T4: CER（含倫理主題） ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">✍️</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-700">任務 4｜CER 論證 Flash Card</h2>
+      <p class="text-sm text-slate-700 mt-1">議題（含倫理）：<strong>「臺灣碳費 300 元/噸是否需要大幅調升？如何在減排與衝擊弱勢之間取得平衡？」</strong>三步驟組裝你的論證卡。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：政策倡議分析師 ｜ 20 分 ｜ <span class="chip bg-emerald-100 text-emerald-800">論證 + 倫理</span></p>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <p class="font-semibold text-sm mb-1">① 選擇你的主張 Claim（4 分）</p>
+    <div id="claim-opts">
+      <label class="opt"><input type="radio" name="claim" value="raise"> A. 應立即大幅提高碳費至接近社會碳成本，並用碳紅利直接發還給弱勢家庭。</label>
+      <label class="opt"><input type="radio" name="claim" value="gradual"> B. 應逐步調升碳費，搭配轉型期輔導基金，避免產業出走與就業衝擊。</label>
+      <label class="opt"><input type="radio" name="claim" value="ets"> C. 應優先擴大排放交易制度（ETS），讓市場決定碳價，政府不宜直接設定費率。</label>
+    </div>
+  </div>
+
+  <div id="evid-wrap" class="mb-3 hidden">
+    <p class="font-semibold text-sm mb-1">② 為你的主張挑出最有力的證據 Evidence（8 分）</p>
+    <div id="evid-opts"></div>
+    <p id="evid-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div id="reas-wrap" class="mb-3 hidden">
+    <p class="font-semibold text-sm mb-1">③ 為你的主張挑出最相符的推理 Reasoning（8 分）</p>
+    <div id="reas-opts"></div>
+    <p id="reas-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div id="cer-summary" class="bg-emerald-50 p-3 rounded text-sm hidden">
+    <p class="font-bold text-emerald-800 mb-1">✅ 你的 CER 卡完成：</p>
+    <p><strong>Claim：</strong><span id="sum-c"></span></p>
+    <p><strong>Evidence：</strong><span id="sum-e"></span></p>
+    <p><strong>Reasoning：</strong><span id="sum-r"></span></p>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="3">← 上一步</button>
+    <button id="btn-next-4" class="btn bg-green-700 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T5: 校園減碳提案 ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏫</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 5｜校園負外部性行動提案</h2>
+      <p class="text-sm text-slate-700 mt-1">選一個主題，組裝提案，再用 WSA 四面向自我檢核。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生政策倡議提案人 ｜ 15 分 ｜ <span class="chip bg-amber-100 text-amber-800">專題式學習</span></p>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <p class="font-semibold text-sm mb-1">① 選擇你的提案主題</p>
+    <div id="proj-opts">
+      <label class="opt"><input type="radio" name="proj" value="carpool"> 🚗 減少家長接送怠速排放——推動共乘與步行通勤</label>
+      <label class="opt"><input type="radio" name="proj" value="canteen"> 🥘 學校餐廳減少紙盒，改用可重複使用餐具</label>
+      <label class="opt"><input type="radio" name="proj" value="ac"> ❄️ 教室冷氣溫度管理與節電行動</label>
+      <label class="opt"><input type="radio" name="proj" value="plastic"> 🧴 校園一次性塑膠減量計畫</label>
+    </div>
+  </div>
+
+  <div id="proj-detail" class="hidden bg-amber-50 p-3 rounded text-sm mb-3">
+    <p class="font-semibold text-amber-800 mb-1">② 預設方案（依主題）</p>
+    <p id="proj-problem" class="mb-1"></p>
+    <p id="proj-steps" class="mb-1"></p>
+    <p class="font-semibold mt-2">③ 挑一個 KPI：</p>
+    <div id="kpi-opts" class="mt-1"></div>
+  </div>
+
+  <div class="bg-indigo-50 p-3 rounded mb-3">
+    <p class="font-bold text-indigo-800 text-sm">🎯 WSA 四面向檢核（全勾才能解鎖下一關）</p>
+    <label class="block mt-1 text-sm"><input type="checkbox" class="wsa"> <strong>治理</strong>：我的提案會送學生議會/班聯會或校務會議</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>課程</strong>：我的提案可以跨科連結（社會/自然/公民/數學）</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>校園營運</strong>：我的提案改變了校園採購或作業流程</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>社群</strong>：我的提案會擴散到家庭或社區</label>
+  </div>
+  <p id="p-fb" class="text-xs"></p>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="4">← 上一步</button>
+    <button id="btn-next-5" class="btn bg-green-700 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== Final + Reflection ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in">
+  <h2 class="text-3xl font-bold text-green-800 mb-2 text-center">🏆 你完成了！</h2>
+  <p class="text-slate-700 mb-4 text-center">你已完成 5 個任務，從政策配對到校園倡議。最後一站做個快速反思。</p>
+
+  <div class="grid grid-cols-5 gap-2 max-w-2xl mx-auto my-4">
+    <div class="p-2 text-center"><div class="text-3xl">🔍</div><div class="text-xs mt-1">政策配對者</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">📊</div><div class="text-xs mt-1">資料詮釋家</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">🔄</div><div class="text-xs mt-1">系統思考者</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">✍️</div><div class="text-xs mt-1">論證作者</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">🏫</div><div class="text-xs mt-1">學生提案人</div></div>
+  </div>
+
+  <div class="bg-fuchsia-50 rounded-xl p-4 max-w-2xl mx-auto">
+    <p class="font-bold text-fuchsia-800 mb-2">🧠 後設認知反思（5 分）</p>
+    <p class="text-sm font-semibold mt-2">Q1｜上這堂課前，你對負外部性與碳定價的了解程度：</p>
+    <div id="stars-before" class="mt-1">
+      <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+    </div>
+    <p class="text-sm font-semibold mt-3">Q2｜上完這堂課後，你的理解程度：</p>
+    <div id="stars-after" class="mt-1">
+      <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+    </div>
+    <p class="text-sm font-semibold mt-3">Q3｜對你影響最大的任務：</p>
+    <div id="impact-opts" class="mt-1">
+      <label class="opt"><input type="radio" name="impact" value="1"> 任務 1 政策工具配對</label>
+      <label class="opt"><input type="radio" name="impact" value="2"> 任務 2 碳定價資料</label>
+      <label class="opt"><input type="radio" name="impact" value="3"> 任務 3 碳費反饋迴路</label>
+      <label class="opt"><input type="radio" name="impact" value="4"> 任務 4 CER 論證</label>
+      <label class="opt"><input type="radio" name="impact" value="5"> 任務 5 校園提案</label>
+    </div>
+    <p id="reflect-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div class="mt-6 text-lg font-bold text-emerald-600 text-center">最終研究員積分：<span id="final-score">0</span> / 80</div>
+  <div class="nav-row max-w-2xl mx-auto">
+    <button class="btn btn-back" data-back="5">← 回到任務 5</button>
+    <button onclick="location.reload()" class="btn bg-green-700 text-white px-6 py-2 rounded-lg font-bold">再玩一次</button>
+  </div>
+</section>
+
 </div>
-
-<!-- 3. 倫理兩難 ≥1 -->
-<h2>三、倫理兩難題</h2>
-
-<div class="box">
-<span class="tag eth">倫理兩難 ①</span>
-<p><strong>Q4</strong>　情境：家境清寒的小雅家中，爸爸開 20 年老舊機車送外送，政府為減空污決定禁止老舊機車進入市區，但補助金額不足以買新車。你是市長，會如何處理？請列出 <strong>至少 3 個利害關係人</strong>、<strong>2 個可能方案</strong>、<strong>你的選擇與理由</strong>。</p>
-<textarea id="q4" style="min-height:140px"></textarea>
-<button onclick="toggle('fb4')">檢查提示</button>
-<div id="fb4" class="feedback">利害關係人：小雅家、市區居民（呼吸權）、汰換業者、外送平台、未來世代。方案 A：延後 2 年並加碼補助清寒家庭（公正轉型）；方案 B：禁令＋提供電動機車租賃給弱勢；方案 C：只限特定尖峰時段。沒有完美答案，但須展現『公正轉型』思維。</div>
-</div>
-
-<!-- 4. CER ≥1 -->
-<h2>四、CER（主張-證據-推理）</h2>
-
-<div class="box">
-<span class="tag cer">CER ①</span>
-<p><strong>Q5</strong>　題目：<em>「台灣目前碳費 300 元/公噸 CO₂e 是否足夠？」</em>請撰寫一段 CER 段落：(1) 主張（Claim）一句話、(2) 至少 <strong>3 筆證據</strong>（含數據與來源）、(3) 推理（Reasoning）連結證據如何支持主張、(4) 反方觀點與你的回應。</p>
-<div class="data">參考數據：台灣 300 元/噸｜歐盟 ETS 約 2,500 元/噸｜瑞典 約 4,100 元/噸｜學界估社會碳成本 5,000-6,000 元/噸｜台灣 281 家業者、占全國排放約 54%</div>
-<textarea id="q5" style="min-height:160px"></textarea>
-<button onclick="toggle('fb5')">檢查提示</button>
-<div id="fb5" class="feedback">優秀 CER 範例：主張—「300 元不足，應逐步調升並擴大涵蓋對象」。證據—(a) 低於歐盟 2,500 及社會碳成本 5,000；(b) 僅 281 家、未涵蓋交通住商；(c) 瑞典 130 美元下排放仍減 33% 且 GDP 成長。推理—價格訊號不夠強無法驅動投資；涵蓋率低會讓未被納入的部門免責。反方—擔心衝擊弱勢與競爭力；回應—可用碳紅利返還、CBAM 回饋機制保護競爭力。</div>
-</div>
-
-<!-- 5. 資料詮釋 ≥1 -->
-<h2>五、資料詮釋題</h2>
-
-<div class="box">
-<span class="tag dat">資料詮釋 ①</span>
-<p><strong>Q6</strong>　閱讀下表後回答：</p>
-<table>
-<tr><th>國家/區域</th><th>碳定價 (元台幣/噸)</th><th>涵蓋比例</th><th>1990→2022 排放變化</th><th>同期 GDP 變化</th></tr>
-<tr><td>瑞典</td><td>約 4,100</td><td>約 40%</td><td>-33%</td><td>+108%</td></tr>
-<tr><td>歐盟（平均）</td><td>約 2,500</td><td>約 40%</td><td>-32%</td><td>+62%</td></tr>
-<tr><td>中國</td><td>約 350</td><td>約 40%</td><td>+300%（尚在追減中）</td><td>+3,500%</td></tr>
-<tr><td>台灣</td><td>300（2025 起）</td><td>約 54%</td><td>+97%（1990→2022）</td><td>+500%</td></tr>
-<tr><td>美國（無聯邦碳價）</td><td>0</td><td>&lt; 10%（部分州）</td><td>-5%</td><td>+100%</td></tr>
-</table>
-<p><strong>6-1</strong>　比較瑞典與中國，你觀察到什麼？是否表示『碳價越高越有效』？</p>
-<textarea id="q6a"></textarea>
-<p><strong>6-2</strong>　美國沒有聯邦碳價，為什麼排放仍減少？有哪些可能原因？</p>
-<textarea id="q6b"></textarea>
-<p><strong>6-3</strong>　台灣 300 元看起來高於中國 350 元（相近），但你覺得兩者意義是否相同？</p>
-<textarea id="q6c"></textarea>
-<button onclick="toggle('fb6')">檢查提示</button>
-<div id="fb6" class="feedback">6-1：瑞典高價＋長時間（30 年）；中國是發展中國家、起點低，單看趨勢不能下絕對結論。要考量發展階段。6-2：替代因素—頁岩氣取代燃煤、州級政策（加州 cap-and-trade）、再生能源成本下降。6-3：中國 350 元是 ETS 市場價，彈性較大；台灣 300 元是行政費率。且台灣所得高，對比人均負擔更低。</div>
-</div>
-
-<!-- 6. 後設認知 ≥1 -->
-<h2>六、後設認知題</h2>
-
-<div class="box">
-<span class="tag meta">後設認知 ①</span>
-<p><strong>Q7</strong>　回顧整份學習單，回答：</p>
-<ol>
-<li>上課前，我對『外部性』的理解是：<br><input type="text" style="width:90%" id="m1"></li>
-<li>上完課後，我的理解改變為：<br><input type="text" style="width:90%" id="m2"></li>
-<li>我最不確定／仍有疑問的是：<br><input type="text" style="width:90%" id="m3"></li>
-<li>為了弄懂這個疑問，我下一步打算：<br><input type="text" style="width:90%" id="m4"></li>
-<li>我對這次學習的信心（1-5 分）：<input type="number" min="1" max="5" id="m5" style="width:60px"></li>
-</ol>
-</div>
-
-<!-- 專題任務 -->
-<h2>七、專題任務：班級政策提案</h2>
-
-<div class="box">
-<span class="tag proj">專題任務</span>
-<p><strong>Q8</strong>　4-5 人一組，為你們班／學校設計一項『減少負外部性』的政策提案，於班會或學生自治會提出。</p>
-<p><strong>任選主題</strong>：(A) 校園碳費模擬制　(B) 剩食清潔費　(C) 自備餐具/杯獎勵方案　(D) 校門接送禁怠速　(E) 自選</p>
-<p><strong>格式（PDCA）</strong>：</p>
-<ol>
-<li><strong>現況（Plan）</strong>：提出至少 2 筆校園數據（電費、廢棄物量、接送車輛數……）</li>
-<li><strong>目標（Plan）</strong>：1 年內量化目標（減少 X%、節省 Y 元）</li>
-<li><strong>工具（Do）</strong>：選擇稅/費、補貼、法規、ETS 中哪一類？為什麼？</li>
-<li><strong>評估（Check）</strong>：設 2 個 KPI（量化指標）＋ 1 個公平性檢查（誰可能被弱勢？）</li>
-<li><strong>改善（Act）</strong>：若成效不佳如何調整？</li>
-<li><strong>外部連結</strong>：寫一封致里長/地方議員的信（≥150 字），說明提案並請求支持。</li>
-</ol>
-<textarea id="q8" style="min-height:220px"></textarea>
-<div class="rubric"><strong>評分 rubric（總 20 分）</strong>：數據具體 4｜目標明確可量化 3｜工具選擇有理由 3｜KPI 與公平性檢查 4｜改善機制 2｜信件結構與說服力 4</div>
-</div>
-
-<div style="text-align:center;margin:2rem 0">
-<button onclick="saveAll()">儲存我的答案（下載 .txt）</button>
-</div>
-
-<hr>
-<p style="font-size:.85rem;color:#666">© 2026 UNESCO ESD Teaching Pack 5.1-IV ｜ 資料來源：IPCC AR6 WG3、World Bank 2024、台灣環境部氣候變遷署、WHO、OECD、UNEP ｜ last_verified: 2026-04-16</p>
 
 <script>
-function toggle(id){var e=document.getElementById(id);e.classList.toggle('show')}
-function saveAll(){
-  var ids=['q1','q2','q3','q4','q5','q6a','q6b','q6c','q8','m1','m2','m3','m4','m5'];
-  var out='5.1-IV 學習單答案\n完成時間: '+new Date().toLocaleString()+'\n\n';
-  ids.forEach(function(k){var el=document.getElementById(k);if(el)out+='['+k+']\n'+el.value+'\n\n'});
-  var blob=new Blob([out],{type:'text/plain;charset=utf-8'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='5.1-IV_worksheet_answers.txt';a.click();
-}
+(() => {
+  const TOTAL_LEVELS = 5;
+  const S = { score:0, current:1, awarded:{} };
+  const setScore = (n)=>{ S.score += n; document.getElementById('score').textContent = S.score; };
+  const awardOnce = (key, pts)=>{ if(!S.awarded[key]){ S.awarded[key]=true; setScore(pts); } };
+
+  const updateDots = ()=>{
+    for(let i=1;i<=TOTAL_LEVELS;i++){
+      const d = document.getElementById('dot-'+i);
+      if(!d) continue;
+      d.classList.remove('active','done');
+      if(i < S.current) d.classList.add('done');
+      else if(i === S.current) d.classList.add('active');
+    }
+  };
+
+  const goto = (n)=>{
+    document.querySelectorAll('section[id^="level-"]').forEach(s=>s.classList.add('hidden-screen'));
+    S.current = n;
+    const next = document.getElementById('level-'+n) || document.getElementById('level-final');
+    next.classList.remove('hidden-screen');
+    if(next.id === 'level-final'){
+      for(let i=1;i<=TOTAL_LEVELS;i++){ const d=document.getElementById('dot-'+i); if(d){d.classList.remove('active');d.classList.add('done');} }
+      document.getElementById('final-score').textContent = S.score;
+    } else {
+      updateDots();
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+
+  document.querySelectorAll('.btn-back').forEach(b=>{
+    b.onclick = ()=>goto(parseInt(b.dataset.back,10));
+  });
+
+  const confetti = ()=>{
+    const colors=['#f59e0b','#10b981','#1a6f4a','#ec4899','#0ea5e9'];
+    for(let i=0;i<40;i++){
+      const el=document.createElement('div');
+      el.className='confetti';
+      el.style.left=Math.random()*100+'vw';
+      el.style.background=colors[i%colors.length];
+      el.style.animationDelay=(Math.random()*0.6)+'s';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),2500);
+    }
+  };
+
+  const shuffleChildren = (parent)=>{
+    const kids = Array.from(parent.children);
+    for(let i=kids.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      parent.appendChild(kids[j]);
+    }
+  };
+
+  // ===== Task 1: Drag match =====
+  shuffleChildren(document.getElementById('items-box-1'));
+  shuffleChildren(document.getElementById('zones-box-1'));
+
+  (function(){
+    let dragged = null, done1 = 0, err1 = 0;
+    document.querySelectorAll('#items-box-1 .drag-item').forEach(it=>{
+      it.addEventListener('dragstart', ()=>{ dragged=it; it.classList.add('dragging'); });
+      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null; });
+    });
+    document.querySelectorAll('#zones-box-1 .drop-zone').forEach(z=>{
+      z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over');});
+      z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+      z.addEventListener('drop', e=>{
+        e.preventDefault(); z.classList.remove('over');
+        if(!dragged) return;
+        if(dragged.dataset.match === z.dataset.accept){
+          dragged.classList.add('pop');
+          z.appendChild(dragged);
+          dragged.setAttribute('draggable','false');
+          dragged.style.cursor='default';
+          done1++;
+          if(done1===4){
+            awardOnce('L1', 10 - Math.min(err1,5));
+            document.getElementById('btn-next-1').disabled=false;
+            document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 全部配對正確！四種政策工具各有優缺，碳稅簡單可預測，ETS 有總量保障，命令控制明確，補貼兼顧彈性。</span>';
+            confetti();
+          }
+        } else {
+          z.classList.add('shake'); setTimeout(()=>z.classList.remove('shake'),400);
+          err1++;
+          document.getElementById('feedback-1').innerHTML='<span class="text-rose-600">❌ 再想想：每種工具的核心機制是「定價」、「總量限制」、「法規強制」，還是「正向誘因」？</span>';
+        }
+      });
+    });
+  })();
+  document.getElementById('btn-next-1').onclick = ()=>goto(2);
+
+  // ===== Task 2: Data interpretation =====
+  const btn2 = document.getElementById('btn-next-2');
+  const checkL2 = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked');
+    const checked = document.querySelectorAll('#q22-opts input:checked');
+    btn2.disabled = !(q21 && checked.length === 2);
+    const fb = document.getElementById('q22-fb');
+    if(checked.length === 2) fb.textContent = '已選 2 項，可以提交。';
+    else if(checked.length > 2) fb.textContent = '⚠️ 只能選 2 項，請再調整。';
+    else fb.textContent = `已選 ${checked.length}/2 項`;
+  };
+  document.querySelectorAll('input[name=q21]').forEach(r=>r.onchange=checkL2);
+  document.querySelectorAll('#q22-opts input').forEach(c=>c.onchange=checkL2);
+  btn2.onclick = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked').value;
+    const fb21 = document.querySelector('.q21-fb');
+    let p = 0;
+    if(q21==='B'){
+      fb21.textContent='✅ 正解 B：瑞典案例顯示高碳價並不必然傷害經濟，排放與成長可以並行。';
+      fb21.className='text-xs mt-1 text-emerald-700 q21-fb'; p+=5;
+    } else {
+      fb21.textContent='❌ 正解為 B。瑞典 30 年間 GDP 成長 108% 的同時，排放下降 33%。';
+      fb21.className='text-xs mt-1 text-rose-600 q21-fb';
+    }
+    const opts = document.querySelectorAll('#q22-opts input');
+    let correctChecked = 0, wrongChecked = 0;
+    opts.forEach(o=>{
+      const lbl = o.parentElement;
+      lbl.classList.remove('correct','wrong');
+      if(o.checked){
+        if(o.dataset.correct==='1'){ lbl.classList.add('correct'); correctChecked++;}
+        else { lbl.classList.add('wrong'); wrongChecked++;}
+      }
+    });
+    const fb22 = document.getElementById('q22-fb');
+    if(correctChecked===2 && wrongChecked===0){
+      p+=10;
+      fb22.innerHTML='<span class="text-emerald-700 font-bold">✅ 兩項都對！低碳費讓外部成本由全民承擔，且減排誘因不足。</span>';
+    } else if(correctChecked===1 && wrongChecked===0){
+      p+=5;
+      fb22.innerHTML='<span class="text-amber-600">部分正確（1/2）。再選一項合理後果。</span>';
+    } else {
+      fb22.innerHTML='<span class="text-rose-600">❌ 正解為 A（減排誘因不足）與 C（外部成本轉嫁全民）。</span>';
+    }
+    awardOnce('L2', p);
+    confetti();
+    goto(3);
+  };
+
+  // ===== Task 3: Feedback loop drag =====
+  shuffleChildren(document.getElementById('loop-items'));
+  (function(){
+    let dragged = null, loopCorrect = 0, loopErr = 0;
+    document.querySelectorAll('#loop-items .drag-item').forEach(it=>{
+      it.addEventListener('dragstart', ()=>{ dragged=it; it.classList.add('dragging'); });
+      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null; });
+    });
+    document.querySelectorAll('.loop-slot').forEach(s=>{
+      s.addEventListener('dragenter', e=>{ e.preventDefault(); s.classList.add('over');});
+      s.addEventListener('dragover', e=>{ e.preventDefault(); s.classList.add('over');});
+      s.addEventListener('dragleave', ()=>s.classList.remove('over'));
+      s.addEventListener('drop', e=>{
+        e.preventDefault(); s.classList.remove('over');
+        if(!dragged) return;
+        if(dragged.dataset.loop === s.dataset.slot){
+          const t = document.getElementById('slot-'+s.dataset.slot+'-text');
+          if(t) t.textContent = dragged.textContent;
+          dragged.style.visibility='hidden';
+          loopCorrect++;
+          if(loopCorrect===4){
+            awardOnce('L3', 15 - Math.min(loopErr,5));
+            document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 完成！正反饋：碳費提高 → 企業加速減排投資 → 空污與碳排改善 → 社會支持增加 → 碳費得以進一步提高。</span>';
+            document.getElementById('btn-next-3').disabled=false;
+            confetti();
+          }
+        } else {
+          s.classList.add('shake'); setTimeout(()=>s.classList.remove('shake'),400);
+          loopErr++;
+          document.getElementById('loop-fb').innerHTML='<span class="text-rose-600">❌ 順序錯了。提示：第一張是政府的政策行動，最後一張是讓政策得以持續強化的社會條件。</span>';
+        }
+      });
+    });
+  })();
+  document.getElementById('btn-next-3').onclick = ()=>goto(4);
+
+  // ===== Task 4: CER Flash Card =====
+  const claimBank = {
+    raise:   '應立即大幅提高碳費至接近社會碳成本，並用碳紅利直接發還給弱勢家庭。',
+    gradual: '應逐步調升碳費，搭配轉型期輔導基金，避免產業出走與就業衝擊。',
+    ets:     '應優先擴大排放交易制度（ETS），讓市場決定碳價，政府不宜直接設定費率。'
+  };
+  const evidBank = {
+    raise: [
+      {t:'世界銀行 2024 年報告：臺灣碳費 300 元/噸遠低於學界估算的社會碳成本（每噸 5,000–6,000 元），代表每排一噸，市場成本仍低估逾 10 倍；加拿大採「碳紅利」直接發還低收入戶，抵銷對弱勢的衝擊。', ok:true},
+      {t:'我覺得碳費應該高一點。', ok:false},
+      {t:'其他國家的碳費也很高。', ok:false},
+    ],
+    gradual: [
+      {t:'臺灣環境部試算：若碳費在 5 年內逐步調至 2,000 元/噸，搭配輔導基金，受影響行業（水泥、鋼鐵）轉型期失業率估增不超過 0.2%，同時減排約 8%；德國「碳價路徑」採類似漸進設計。', ok:true},
+      {t:'慢慢來比較不傷人。', ok:false},
+      {t:'激進政策會讓人不開心。', ok:false},
+    ],
+    ets: [
+      {t:'歐盟 ETS 自 2005 年啟動，歷經多次改革，2023 年碳價達 85 歐元/噸，涵蓋電力與工業占 EU 排放 40%；市場機制讓減排成本最低的業者率先行動，整體效率優於固定稅率。', ok:true},
+      {t:'市場決定比較公平。', ok:false},
+      {t:'政府不應該干預。', ok:false},
+    ]
+  };
+  const reasBank = {
+    raise: [
+      {t:'社會碳成本代表每排一噸實際造成的長期損害；若碳費遠低於此，市場訊號失真，企業無法做出正確的減排投資決策；碳紅利設計確保弱勢受益，兼顧公正轉型。', ok:true},
+      {t:'碳費高了大家就會減排。', ok:false},
+      {t:'弱勢家庭需要保護。', ok:false},
+    ],
+    gradual: [
+      {t:'過快調升可能觸發產業外移（碳洩漏），反而導致全球排放不降反升；漸進路徑給企業投資窗口，輔導基金確保就業，兩者合力才能讓政策在政治上持續，不因下一次選舉被推翻。', ok:true},
+      {t:'慢慢來是最好的。', ok:false},
+      {t:'政策要有耐心。', ok:false},
+    ],
+    ets: [
+      {t:'ETS 設定總量上限保障減排目標；市場定價讓成本最低的減排率先發生，整體社會成本最小；與碳稅相比，ETS 更能確保絕對排放量不超標，適合需要明確碳預算的情境。', ok:true},
+      {t:'市場最有效率。', ok:false},
+      {t:'ETS 很多國家都有。', ok:false},
+    ]
+  };
+
+  let chosenClaim = null, chosenEvidOk = false, chosenReasOk = false;
+  const evidWrap = document.getElementById('evid-wrap');
+  const reasWrap = document.getElementById('reas-wrap');
+  const cerSummary = document.getElementById('cer-summary');
+  const btn4 = document.getElementById('btn-next-4');
+
+  const renderOpts = (wrap, items, name, onPick)=>{
+    wrap.innerHTML = '';
+    const shuffled = items.slice().sort(()=>Math.random()-0.5);
+    shuffled.forEach((it)=>{
+      const lbl = document.createElement('label');
+      lbl.className = 'opt';
+      lbl.innerHTML = `<input type="radio" name="${name}"> ${it.t}`;
+      lbl.querySelector('input').onchange = ()=>{
+        wrap.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel','correct','wrong'));
+        lbl.classList.add(it.ok ? 'correct' : 'wrong');
+        onPick(it.ok, it.t);
+      };
+      wrap.appendChild(lbl);
+    });
+  };
+
+  document.querySelectorAll('input[name=claim]').forEach(r=>{
+    r.onchange = ()=>{
+      chosenClaim = r.value;
+      document.querySelectorAll('#claim-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      awardOnce('L4-claim', 4);
+      evidWrap.classList.remove('hidden');
+      reasWrap.classList.add('hidden');
+      cerSummary.classList.add('hidden');
+      chosenEvidOk = false; chosenReasOk = false;
+      btn4.disabled = true;
+      let evText = '';
+      renderOpts(document.getElementById('evid-opts'), evidBank[chosenClaim], 'evid', (ok, t)=>{
+        chosenEvidOk = ok;
+        evText = t;
+        document.getElementById('evid-fb').innerHTML = ok
+          ? '<span class="text-emerald-700">✅ 這條證據含具體數據／權威來源，與你的主張一致。</span>'
+          : '<span class="text-rose-600">❌ 這條缺乏數據／與主張關聯弱。再選一次。</span>';
+        if(ok) awardOnce('L4-evid', 8);
+        reasWrap.classList.remove('hidden');
+        renderOpts(document.getElementById('reas-opts'), reasBank[chosenClaim], 'reas', (ok2, t2)=>{
+          chosenReasOk = ok2;
+          document.getElementById('reas-fb').innerHTML = ok2
+            ? '<span class="text-emerald-700">✅ 這條推理確實連結了證據與主張。</span>'
+            : '<span class="text-rose-600">❌ 這條沒有清楚解釋為什麼證據支持主張。再選一次。</span>';
+          if(ok2){
+            awardOnce('L4-reas', 8);
+            document.getElementById('sum-c').textContent = claimBank[chosenClaim];
+            document.getElementById('sum-e').textContent = evText;
+            document.getElementById('sum-r').textContent = t2;
+            cerSummary.classList.remove('hidden');
+            confetti();
+          }
+          btn4.disabled = !(chosenEvidOk && chosenReasOk);
+        });
+        btn4.disabled = !(chosenEvidOk && chosenReasOk);
+      });
+    };
+  });
+  btn4.onclick = ()=>goto(5);
+
+  // ===== Task 5: 提案菜單 + WSA =====
+  const projBank = {
+    carpool: {
+      problem: '現況問題：上下學家長私家車接送多，校門口塞車與短程怠速排放高，產生 PM2.5 等負外部性。',
+      steps: '行動步驟：① 建立鄰里共乘 Line 群組；② 步行＋大眾運輸獎勵章；③ 開放校門口腳踏車停車區並製作通勤地圖。',
+      kpis: ['半年內步行/共乘比例提升 15%', '校門口交通壅塞時段縮短 30%', '腳踏車通勤人數成長一倍']
+    },
+    canteen: {
+      problem: '現況問題：學校餐廳使用大量一次性紙盒與餐具，廢棄物處理成本與環境成本由全社會承擔。',
+      steps: '行動步驟：① 推行自備餐具折扣方案；② 採購可重複使用餐具並建立清洗流程；③ 製作廢棄物月報告板。',
+      kpis: ['半年內紙盒使用量下降 40%', '自備餐具比例達 50%', '垃圾量每週減少 10 公斤']
+    },
+    ac: {
+      problem: '現況問題：教室冷氣常過度使用（設定低於 26°C），無人時也未關閉，電力消耗產生額外碳排。',
+      steps: '行動步驟：① 制定班級「26°C 約定」並張貼提示；② 設立節電班級排行榜；③ 爭取安裝感應式電源控制。',
+      kpis: ['半年內班級用電量下降 15%', '全校採用 26°C 以上冷氣設定比例達 80%', '達標班級獲得永續標章']
+    },
+    plastic: {
+      problem: '現況問題：校園內一次性塑膠（塑膠袋、吸管、包裝膜）使用量大，塑膠微粒污染土壤與水域。',
+      steps: '行動步驟：① 校園商店禁售一次性塑膠吸管；② 製作「塑膠旅程」展板；③ 推動班級自備環保袋競賽。',
+      kpis: ['半年內校園一次性塑膠廢棄物減少 30%', '環保袋使用率達 60%', '完成 1 場塑膠教育闖關活動']
+    }
+  };
+
+  const projDetail = document.getElementById('proj-detail');
+  let kpiPicked = false, projPicked = null;
+  document.querySelectorAll('input[name=proj]').forEach(r=>{
+    r.onchange = ()=>{
+      projPicked = r.value;
+      document.querySelectorAll('#proj-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      const d = projBank[projPicked];
+      document.getElementById('proj-problem').textContent = d.problem;
+      document.getElementById('proj-steps').textContent = d.steps;
+      const kpiBox = document.getElementById('kpi-opts');
+      kpiBox.innerHTML = '';
+      kpiPicked = false;
+      d.kpis.forEach((k)=>{
+        const lbl = document.createElement('label');
+        lbl.className='opt';
+        lbl.innerHTML = `<input type="radio" name="kpi"> ${k}`;
+        lbl.querySelector('input').onchange = ()=>{
+          document.querySelectorAll('#kpi-opts .opt').forEach(o=>o.classList.remove('sel'));
+          lbl.classList.add('sel');
+          kpiPicked = true;
+          checkP();
+        };
+        kpiBox.appendChild(lbl);
+      });
+      projDetail.classList.remove('hidden');
+      checkP();
+    };
+  });
+
+  const btn5 = document.getElementById('btn-next-5');
+  function checkP(){
+    const wsaAll = document.querySelectorAll('.wsa:checked').length === 4;
+    const ok = projPicked && kpiPicked && wsaAll;
+    document.getElementById('p-fb').innerHTML = ok
+      ? '<span class="text-emerald-700 font-bold">✅ 提案組裝完成、WSA 四面向全勾！</span>'
+      : '<span class="text-slate-500">請：選主題 → 選 KPI → 勾 WSA 四面向</span>';
+    btn5.disabled = !ok;
+  }
+  document.querySelectorAll('.wsa').forEach(c=>c.onchange=checkP);
+  btn5.onclick = ()=>{ awardOnce('L5', 15); confetti(); goto(6); };
+
+  // ===== Final reflection =====
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+  const setStars = (wrapId, set)=>{
+    const wrap = document.getElementById(wrapId);
+    wrap.querySelectorAll('.star').forEach(s=>{
+      s.onclick = ()=>{
+        const v = parseInt(s.dataset.val,10);
+        set(v);
+        wrap.querySelectorAll('.star').forEach(x=>{
+          x.classList.toggle('on', parseInt(x.dataset.val,10) <= v);
+        });
+        checkReflect();
+      };
+    });
+  };
+  setStars('stars-before', v=>starBefore=v);
+  setStars('stars-after', v=>starAfter=v);
+  document.querySelectorAll('input[name=impact]').forEach(r=>{
+    r.onchange = ()=>{
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+  function checkReflect(){
+    const ok = starBefore>0 && starAfter>0 && impactPicked;
+    document.getElementById('reflect-fb').textContent = ok
+      ? '✅ 反思完成，獲得 5 分。'
+      : '請完成 3 題（前/後理解程度 + 影響最大任務）';
+    if(ok){
+      awardOnce('FINAL', 5);
+      document.getElementById('final-score').textContent = S.score;
+    }
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

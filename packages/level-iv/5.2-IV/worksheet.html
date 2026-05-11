@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>從丟掉到再轉一圈 | 5.2-IV 循環經濟互動學習單</title>
+<title>循環偵探 | 5.2-IV 國中循環經濟互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#d1fae5,#fef3c7,#dbeafe); min-height:100vh;}
@@ -13,285 +13,717 @@
   .btn:disabled { opacity:.5; cursor:not-allowed;}
   .drag-item { cursor: grab; user-select:none;}
   .drag-item.dragging { opacity:.4; }
-  .drop-zone { min-height:70px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone { min-height:90px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
   .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
   .pop { animation: pop .5s ease;}
   @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
   .hidden-screen { display:none; }
   .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
-  .progress-dot.active { background:#10b981; transform:scale(1.3);}
-  .progress-dot.done { background:#059669;}
+  .progress-dot.active { background:#059669; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
   .fade-in { animation: fade .4s ease;}
   @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
-  textarea { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem;}
-  .tag { display:inline-block; padding:2px 8px; border-radius:9999px; font-size:.7rem; font-weight:600;}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  svg.loop text { font-size:11px; pointer-events:none;}
+  svg.loop .loop-slot { cursor: pointer; }
+  svg.loop .loop-slot.over { fill:#fde68a; stroke-width:3; }
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.92rem;}
+  .opt:hover { background:#f8fafc; }
+  .opt.sel { border-color:#059669; background:#d1fae5;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.4rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
 <body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 <div class="max-w-4xl mx-auto">
 
-  <!-- Header -->
-  <div class="card p-6 mb-4">
-    <div class="flex items-center justify-between mb-2">
-      <h1 class="text-2xl md:text-3xl font-bold text-emerald-800">♻️ 從丟掉到再轉一圈</h1>
-      <span class="tag bg-emerald-100 text-emerald-700">5.2-IV · 13-15 歲</span>
-    </div>
-    <p class="text-slate-600 text-sm">一份 8 關卡、含深度思考與專題任務的國中循環經濟學習單。最後可下載你的作答。</p>
-    <div class="flex gap-2 mt-4" id="progress-bar"></div>
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-emerald-800">♻️ 循環偵探</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『循環經濟偵探』：5 個任務，追蹤物品從誕生到再生的旅程。</p>
   </div>
-
-  <!-- Station 1: 情境導入 + 開放反思 #1 -->
-  <div class="card p-6 mb-4 station" data-station="1">
-    <h2 class="text-xl font-bold text-emerald-700 mb-2">關 1／熱身：你丟掉了什麼？<span class="tag bg-amber-100 text-amber-700 ml-2">開放反思</span></h2>
-    <p class="text-sm text-slate-600 mb-3">回想今天早上到現在，你丟掉的「第一樣東西」是什麼？寫下它的來歷與去向。</p>
-    <label class="block text-sm font-semibold text-slate-700 mt-2">我丟掉的東西：</label>
-    <input id="q1a" class="border rounded-lg px-2 py-1 w-full" placeholder="例如：早餐店塑膠袋">
-    <label class="block text-sm font-semibold text-slate-700 mt-3">它從哪裡來（原料/生產國推測）？丟了之後可能去哪裡？</label>
-    <textarea id="q1b" rows="3" placeholder="寫下你的推測與感受"></textarea>
-    <button class="btn bg-emerald-600 text-white px-4 py-2 rounded-lg mt-3" onclick="next(1)">完成並前往關 2</button>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">偵探積分</div>
+    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
   </div>
+</div>
 
-  <!-- Station 2: 資料詮釋 -->
-  <div class="card p-6 mb-4 station hidden-screen" data-station="2">
-    <h2 class="text-xl font-bold text-emerald-700 mb-2">關 2／數字會說話<span class="tag bg-blue-100 text-blue-700 ml-2">資料詮釋</span></h2>
-    <div class="bg-slate-50 rounded-lg p-3 text-sm mb-3">
-      <p><strong>Circularity Gap Report 2024</strong>：</p>
-      <ul class="list-disc list-inside text-slate-700">
-        <li>2018 年全球循環率 9.1%</li>
-        <li>2023 年全球循環率 <strong>7.2%</strong>（5 年下降約 21%）</li>
-        <li>2018–2023 全球消耗原料 &gt; 500 Gt（= 1900 年至今總量的 28%）</li>
-      </ul>
-    </div>
-    <p class="text-sm font-semibold text-slate-700 mb-1">Q2-1 下列哪一句才是『對這組數據的正確解讀』？</p>
-    <div class="flex flex-col gap-2 text-sm">
-      <label><input type="radio" name="q2a" value="a"> (A) 回收做得越多，循環率越低。</label>
-      <label><input type="radio" name="q2a" value="b"> (B) 消耗速度超過回收速度，因此『分母』成長更快。</label>
-      <label><input type="radio" name="q2a" value="c"> (C) 人類已經回收 92% 的廢棄物。</label>
-    </div>
-    <p class="mt-2 text-xs text-red-600 hidden" id="q2a-fb"></p>
-    <label class="block text-sm font-semibold text-slate-700 mt-4">Q2-2 用一句話解釋：為什麼『循環率』和『回收量』不一樣？</label>
-    <textarea id="q2b" rows="2"></textarea>
-    <button class="btn bg-emerald-600 text-white px-4 py-2 rounded-lg mt-3" onclick="checkQ2()">檢核並前往關 3</button>
-  </div>
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">配對</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">資料</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">論證</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">專題</span>
+</div>
 
-  <!-- Station 3: 5R 排序（拖曳）+ 後設認知 -->
-  <div class="card p-6 mb-4 station hidden-screen" data-station="3">
-    <h2 class="text-xl font-bold text-emerald-700 mb-2">關 3／5R 階梯排序<span class="tag bg-indigo-100 text-indigo-700 ml-2">後設認知</span></h2>
-    <p class="text-sm text-slate-600 mb-3">把 5 個 R 從『最優先』到『最末端』拖到正確位置。</p>
-    <div id="pool" class="flex flex-wrap gap-2 mb-3"></div>
-    <div id="slots" class="grid grid-cols-1 md:grid-cols-5 gap-2"></div>
-    <p id="q3-fb" class="text-sm mt-3"></p>
-    <label class="block text-sm font-semibold text-slate-700 mt-4">Q3 後設認知：你在排序時『心裡卡住』的地方是什麼？你是怎麼想通的？</label>
-    <textarea id="q3meta" rows="3" placeholder="描述你的思考過程與修正"></textarea>
-    <button class="btn bg-emerald-600 text-white px-4 py-2 rounded-lg mt-3" onclick="next(3)">完成並前往關 4</button>
-  </div>
-
-  <!-- Station 4: 系統思考 -->
-  <div class="card p-6 mb-4 station hidden-screen" data-station="4">
-    <h2 class="text-xl font-bold text-emerald-700 mb-2">關 4／一件 T 恤的系統地圖<span class="tag bg-purple-100 text-purple-700 ml-2">系統思考</span></h2>
-    <p class="text-sm text-slate-600 mb-3">列出一件快時尚 T 恤從『棉田→焚化爐』可能經過的 5 個環節，並在每一環標出一個**環境／社會代價**。</p>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-      <input class="border rounded px-2 py-1" id="q4-1" placeholder="環節 1：例 棉花種植｜代價：用水量大">
-      <input class="border rounded px-2 py-1" id="q4-2" placeholder="環節 2：">
-      <input class="border rounded px-2 py-1" id="q4-3" placeholder="環節 3：">
-      <input class="border rounded px-2 py-1" id="q4-4" placeholder="環節 4：">
-      <input class="border rounded px-2 py-1" id="q4-5" placeholder="環節 5：">
-    </div>
-    <label class="block text-sm font-semibold text-slate-700 mt-4">Q4 進階：在這 5 個代價中，哪一個是消費者『看得見』、哪些是『被藏起來的外部成本』？</label>
-    <textarea id="q4b" rows="3"></textarea>
-    <button class="btn bg-emerald-600 text-white px-4 py-2 rounded-lg mt-3" onclick="next(4)">完成並前往關 5</button>
-  </div>
-
-  <!-- Station 5: 倫理兩難 -->
-  <div class="card p-6 mb-4 station hidden-screen" data-station="5">
-    <h2 class="text-xl font-bold text-emerald-700 mb-2">關 5／倫理兩難：維修 or 換新？<span class="tag bg-rose-100 text-rose-700 ml-2">倫理兩難</span></h2>
-    <div class="bg-slate-50 rounded p-3 text-sm mb-3">
-      你的手機壞了第 3 年：維修 2,500 元、保固 3 個月；新機 8,000 元、功能更好、分期 0 利率。<br>
-      家人說『新的划算』；環保社團說『撐 2 年才環保』；同學都換新機。
-    </div>
-    <label class="block text-sm font-semibold text-slate-700">Q5-1 你的選擇：</label>
-    <div class="flex gap-3 text-sm mt-1">
-      <label><input type="radio" name="q5" value="repair"> 維修</label>
-      <label><input type="radio" name="q5" value="new"> 買新機</label>
-      <label><input type="radio" name="q5" value="second"> 買二手</label>
-      <label><input type="radio" name="q5" value="other"> 其他</label>
-    </div>
-    <label class="block text-sm font-semibold text-slate-700 mt-3">Q5-2 列出至少『1 個支持你選擇的理由』與『1 個反對你選擇的理由』。</label>
-    <textarea id="q5b" rows="3" placeholder="支持：…／反對：…"></textarea>
-    <label class="block text-sm font-semibold text-slate-700 mt-3">Q5-3 若價格之外再加上『碳排量標示』，會改變你的決定嗎？為什麼？</label>
-    <textarea id="q5c" rows="2"></textarea>
-    <button class="btn bg-emerald-600 text-white px-4 py-2 rounded-lg mt-3" onclick="next(5)">完成並前往關 6</button>
-  </div>
-
-  <!-- Station 6: CER -->
-  <div class="card p-6 mb-4 station hidden-screen" data-station="6">
-    <h2 class="text-xl font-bold text-emerald-700 mb-2">關 6／CER 主張-證據-推理<span class="tag bg-cyan-100 text-cyan-700 ml-2">CER</span></h2>
-    <p class="text-sm text-slate-600 mb-2">題目：臺灣是否應該學韓國，全面推動『智慧廚餘量計費』？</p>
-    <div class="bg-slate-50 rounded p-3 text-sm mb-3">
-      <p><strong>可用證據：</strong></p>
-      <ul class="list-disc list-inside text-slate-700">
-        <li>韓國 2013 實施後廚餘回收率由 2% → 95%；年省 5.2 億美元（NPOst 2015）。</li>
-        <li>臺灣 1998–2018 垃圾清運量減少 60%、回收率達 60.56%（環境部）。</li>
-        <li>臺灣夏季高溫潮濕，廚餘易腐；公寓社區空間受限。</li>
-      </ul>
-    </div>
-    <label class="block text-sm font-semibold text-slate-700">C 主張（你的立場）：</label>
-    <textarea id="q6c" rows="1"></textarea>
-    <label class="block text-sm font-semibold text-slate-700 mt-2">E 證據（至少 2 項，可使用上方數據）：</label>
-    <textarea id="q6e" rows="3"></textarea>
-    <label class="block text-sm font-semibold text-slate-700 mt-2">R 推理（證據如何支持主張？）：</label>
-    <textarea id="q6r" rows="3"></textarea>
-    <button class="btn bg-emerald-600 text-white px-4 py-2 rounded-lg mt-3" onclick="next(6)">完成並前往關 7</button>
-  </div>
-
-  <!-- Station 7: 開放反思 #2 -->
-  <div class="card p-6 mb-4 station hidden-screen" data-station="7">
-    <h2 class="text-xl font-bold text-emerald-700 mb-2">關 7／未來的你<span class="tag bg-amber-100 text-amber-700 ml-2">開放反思</span></h2>
-    <label class="block text-sm font-semibold text-slate-700">Q7-1 想像 2050 年，若全球仍走線性經濟，你 40 歲的生活會像什麼？用 3 句話描述一天。</label>
-    <textarea id="q7a" rows="4"></textarea>
-    <label class="block text-sm font-semibold text-slate-700 mt-3">Q7-2 若改走循環經濟呢？再寫 3 句話。</label>
-    <textarea id="q7b" rows="4"></textarea>
-    <button class="btn bg-emerald-600 text-white px-4 py-2 rounded-lg mt-3" onclick="next(7)">前往專題任務</button>
-  </div>
-
-  <!-- Station 8: 專題任務 -->
-  <div class="card p-6 mb-4 station hidden-screen" data-station="8">
-    <h2 class="text-xl font-bold text-emerald-700 mb-2">關 8／專題任務：校園循環提案</h2>
-    <p class="text-sm text-slate-600 mb-3">最後一關：用 PREP 架構寫一則可提交學生自治會的校園循環政策。</p>
-    <label class="block text-sm font-semibold text-slate-700">Point 主張（你提議什麼？）：</label>
-    <textarea id="q8p" rows="2" placeholder="例：全校自備水壺享熱水免費..."></textarea>
-    <label class="block text-sm font-semibold text-slate-700 mt-2">Reason 理由（為什麼要做？引用 1 個數據）：</label>
-    <textarea id="q8r" rows="2"></textarea>
-    <label class="block text-sm font-semibold text-slate-700 mt-2">Example 案例（國內外有哪個類似成功例？）：</label>
-    <textarea id="q8e" rows="2"></textarea>
-    <label class="block text-sm font-semibold text-slate-700 mt-2">Plan 計畫（4 週內怎麼做？誰負責？）：</label>
-    <textarea id="q8pl" rows="3"></textarea>
-    <div class="flex gap-2 mt-4">
-      <button class="btn bg-emerald-600 text-white px-4 py-2 rounded-lg" onclick="finish()">完成並顯示總結</button>
-      <button class="btn bg-blue-600 text-white px-4 py-2 rounded-lg" onclick="download()">下載我的作答</button>
+<!-- ===== T1: 5R 層級配對（去直覺化 + 洗牌） ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔍</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-800">任務 1｜循環層級配對</h2>
+      <p class="text-sm text-slate-700 mt-1">把四個「循環策略」拖到正確的機制描述區。提示以行為結果描述，請依減廢優先原則推論，不要憑名稱猜答案。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：循環經濟偵探實習生 ｜ 10 分</p>
     </div>
   </div>
 
-  <!-- Summary -->
-  <div class="card p-6 mb-4 station hidden-screen" data-station="9">
-    <h2 class="text-2xl font-bold text-emerald-700 mb-3">🎉 完成！</h2>
-    <p class="text-slate-700">你已通過 8 關、涵蓋開放反思、系統思考、倫理兩難、CER、資料詮釋、後設認知與專題任務。</p>
-    <p class="text-slate-700 mt-2">下一步：將你的『校園循環提案』帶到課堂上，與小組討論後提交給學生自治會。記得回訪 3 週後看看你的行動發生了什麼改變。</p>
-    <button class="btn bg-emerald-600 text-white px-4 py-2 rounded-lg mt-4" onclick="download()">下載我的作答 JSON</button>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="refuse">拒用（Refuse）</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="repair">修復（Repair）</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="reuse">再使用（Reuse）</div>
+    <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="recycle">回收（Recycle）</div>
   </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="zones-box-1">
+    <div class="drop-zone p-3" data-accept="refuse"><div class="font-bold text-slate-700 text-sm">層級 A<div class="text-xs text-slate-500 mt-1">在廢棄物產生前就消滅需求——最理想的循環策略，代表根本不消耗資源；例如拒絕接受不需要的一次性贈品。</div></div></div>
+    <div class="drop-zone p-3" data-accept="repair"><div class="font-bold text-slate-700 text-sm">層級 B<div class="text-xs text-slate-500 mt-1">物品功能損壞後以技術使其恢復，延長產品壽命，避免提前報廢；比製造新品耗用更少原料與能源。</div></div></div>
+    <div class="drop-zone p-3" data-accept="reuse"><div class="font-bold text-slate-700 text-sm">層級 C<div class="text-xs text-slate-500 mt-1">物品保持原形，轉移給其他使用者繼續使用，不需要再加工；二手市場、共享平台都屬此類。</div></div></div>
+    <div class="drop-zone p-3" data-accept="recycle"><div class="font-bold text-slate-700 text-sm">層級 D<div class="text-xs text-slate-500 mt-1">物品拆解後，原料重新進入生產流程；會消耗能源與水，且材料可能降級，屬於循環末端選項。</div></div></div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <div class="nav-row">
+    <span></span>
+    <button id="btn-next-1" class="btn bg-emerald-700 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T2: 資料詮釋 全球循環率 ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📊</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 2｜資料詮釋：全球循環率趨勢</h2>
+      <p class="text-sm text-slate-700 mt-1">Circularity Gap Report 2024：2018-2023 年全球循環率從 9.1% 下降至 7.2%，同期原料消耗超過 500 Gt。請解讀並作答。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：資料分析師 ｜ 15 分 ｜ <span class="chip bg-teal-100 text-teal-800">資料詮釋題</span></p>
+    </div>
+  </div>
+  <svg viewBox="0 0 420 200" class="w-full max-w-xl mx-auto block bg-slate-50 rounded">
+    <line x1="50" y1="170" x2="410" y2="170" stroke="#334155" stroke-width="1"/>
+    <line x1="50" y1="20" x2="50" y2="170" stroke="#334155" stroke-width="1"/>
+    <text x="5" y="25" font-size="9">%</text>
+    <text x="5" y="80" font-size="9">9.1</text>
+    <text x="5" y="120" font-size="9">7.2</text>
+    <text x="50"  y="188" font-size="9">2018</text>
+    <text x="360" y="188" font-size="9">2023</text>
+    <!-- Declining line -->
+    <polyline fill="none" stroke="#059669" stroke-width="2.5"
+      points="60,75 120,82 180,90 240,100 310,110 380,118"/>
+    <!-- Annotation -->
+    <text x="140" y="55" font-size="9" fill="#dc2626">同期「循環經濟」討論量 ×3</text>
+    <text x="140" y="67" font-size="9" fill="#dc2626">循環率卻從 9.1% 跌至 7.2%</text>
+    <line x1="50" y1="118" x2="400" y2="118" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="402" y="121" font-size="8" fill="#94a3b8">7.2%</text>
+  </svg>
+
+  <div class="mt-4 space-y-4">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q2-1｜下列哪個陳述最符合圖中趨勢？（5 分）</label>
+      <div class="space-y-1" id="q21">
+        <label class="block text-sm"><input type="radio" name="q21" value="A"> A. 循環率下降表示人類的回收量減少了</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="B"> B. 原料消耗成長速度超過循環再利用速度，導致循環率分母擴大而下降</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="C"> C. 循環率下降證明循環經濟政策失敗，應全面放棄</label>
+      </div>
+      <p class="text-xs mt-1 text-slate-500 q21-fb"></p>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q2-2｜循環率持續下降，<strong>勾選 2 項</strong>最可能的根本原因：（10 分）</label>
+      <div id="q22-opts" class="space-y-1">
+        <label class="opt"><input type="checkbox" data-correct="1"> A. 線性經濟模式下，產品被設計為快速丟棄而非修復或再利用</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> B. 消費者太懶，不願意做資源回收</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> C. 全球原料開採速度遠超過循環體系的處理能力</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> D. 循環經濟只適用於已開發國家，開發中國家無法實施</label>
+      </div>
+      <p id="q22-fb" class="text-xs mt-2"></p>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="1">← 上一步</button>
+    <button id="btn-next-2" class="btn bg-emerald-700 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T3: 系統思考 快時尚正反饋迴路 ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-orange-700">任務 3｜系統思考：快時尚正反饋迴路</h2>
+      <p class="text-sm text-slate-700 mt-1">完成「低價衣物 → 購買量增加 → 更快丟棄 → 廢紡織物堆積 → 焚化與掩埋增加 → 環境成本外部化 → 競爭壓力維持低價」的正反饋循環。把 4 張卡片拖到正確位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統分析師 ｜ 15 分 ｜ <span class="chip bg-rose-100 text-rose-800">系統思考題</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 500 260" class="loop w-full bg-slate-50 rounded">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L0,10 L10,5 z" fill="#64748b"/></marker>
+    </defs>
+    <rect x="10" y="10" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="1"/>
+    <text x="85" y="40" text-anchor="middle" fill="#92400e" id="slot-1-text">（拖這裡）</text>
+    <rect x="340" y="10" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="2"/>
+    <text x="415" y="40" text-anchor="middle" fill="#92400e" id="slot-2-text">（拖這裡）</text>
+    <rect x="340" y="200" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="3"/>
+    <text x="415" y="230" text-anchor="middle" fill="#92400e" id="slot-3-text">（拖這裡）</text>
+    <rect x="10" y="200" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="4"/>
+    <text x="85" y="230" text-anchor="middle" fill="#92400e" id="slot-4-text">（拖這裡）</text>
+    <line x1="160" y1="35" x2="340" y2="35" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="415" y1="60" x2="415" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="340" y1="225" x2="160" y2="225" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="85" y1="200" x2="85" y2="60" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="250" y="130" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="bold">正反饋（+）</text>
+  </svg>
+  <p class="text-xs text-slate-500 mt-2 text-center">提示：哪一張是快時尚商業模式的「起點設計」？哪一張會回頭讓這個商業模式得以持續？</p>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3" id="loop-items">
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">廢紡織物焚化掩埋增加</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">低價設計、縮短流行週期</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">環境成本外部化，品牌維持低價競爭</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">購買量增加、衣物快速丟棄</div>
+  </div>
+  <p id="loop-fb" class="mt-3 text-sm"></p>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="2">← 上一步</button>
+    <button id="btn-next-3" class="btn bg-emerald-700 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T4: CER（含倫理主題） ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">✍️</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-700">任務 4｜CER 論證 Flash Card</h2>
+      <p class="text-sm text-slate-700 mt-1">議題（含倫理）：<strong>「全球循環率僅 7.2%，政府應如何強制推動循環經濟，同時兼顧低收入者的消費可近性？」</strong>三步驟組裝你的論證卡。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：循環政策倡議師 ｜ 20 分 ｜ <span class="chip bg-emerald-100 text-emerald-800">論證 + 倫理</span></p>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <p class="font-semibold text-sm mb-1">① 選擇你的主張 Claim（4 分）</p>
+    <div id="claim-opts">
+      <label class="opt"><input type="radio" name="claim" value="epr"> A. 應立法推行「延伸生產者責任（EPR）」，要求品牌承擔產品全生命週期的回收成本。</label>
+      <label class="opt"><input type="radio" name="claim" value="tax"> B. 應對一次性塑膠與快時尚商品課徵環境稅，收入用於補助二手市場與維修服務。</label>
+      <label class="opt"><input type="radio" name="claim" value="design"> C. 應強制產品設計符合「可拆解、可升級、可修復」標準，讓循環從設計階段就發生。</label>
+    </div>
+  </div>
+
+  <div id="evid-wrap" class="mb-3 hidden">
+    <p class="font-semibold text-sm mb-1">② 為你的主張挑出最有力的證據 Evidence（8 分）</p>
+    <div id="evid-opts"></div>
+    <p id="evid-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div id="reas-wrap" class="mb-3 hidden">
+    <p class="font-semibold text-sm mb-1">③ 為你的主張挑出最相符的推理 Reasoning（8 分）</p>
+    <div id="reas-opts"></div>
+    <p id="reas-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div id="cer-summary" class="bg-emerald-50 p-3 rounded text-sm hidden">
+    <p class="font-bold text-emerald-800 mb-1">✅ 你的 CER 卡完成：</p>
+    <p><strong>Claim：</strong><span id="sum-c"></span></p>
+    <p><strong>Evidence：</strong><span id="sum-e"></span></p>
+    <p><strong>Reasoning：</strong><span id="sum-r"></span></p>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="3">← 上一步</button>
+    <button id="btn-next-4" class="btn bg-emerald-700 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T5: 校園循環提案 ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏫</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 5｜校園循環行動提案</h2>
+      <p class="text-sm text-slate-700 mt-1">選一個主題，組裝提案，再用 WSA 四面向自我檢核。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生循環行動提案人 ｜ 15 分 ｜ <span class="chip bg-amber-100 text-amber-800">專題式學習</span></p>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <p class="font-semibold text-sm mb-1">① 選擇你的提案主題</p>
+    <div id="proj-opts">
+      <label class="opt"><input type="radio" name="proj" value="repair"> 🔧 校園維修站——修好不丟、延長物命</label>
+      <label class="opt"><input type="radio" name="proj" value="swap"> 👕 教科書與文具交換市集</label>
+      <label class="opt"><input type="radio" name="proj" value="compost"> 🍱 廚餘堆肥計畫——廚餘變黑金</label>
+      <label class="opt"><input type="radio" name="proj" value="upcycle"> 🎨 廢物升級再造（Upcycling）課程</label>
+    </div>
+  </div>
+
+  <div id="proj-detail" class="hidden bg-amber-50 p-3 rounded text-sm mb-3">
+    <p class="font-semibold text-amber-800 mb-1">② 預設方案（依主題）</p>
+    <p id="proj-problem" class="mb-1"></p>
+    <p id="proj-steps" class="mb-1"></p>
+    <p class="font-semibold mt-2">③ 挑一個 KPI：</p>
+    <div id="kpi-opts" class="mt-1"></div>
+  </div>
+
+  <div class="bg-indigo-50 p-3 rounded mb-3">
+    <p class="font-bold text-indigo-800 text-sm">🎯 WSA 四面向檢核（全勾才能解鎖下一關）</p>
+    <label class="block mt-1 text-sm"><input type="checkbox" class="wsa"> <strong>治理</strong>：我的提案會送學生議會/班聯會或校務會議</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>課程</strong>：我的提案可以跨科連結（自然/家政/美術/社會）</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>校園營運</strong>：我的提案改變了校園採購或廢棄物管理流程</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>社群</strong>：我的提案會擴散到家庭或在地社區</label>
+  </div>
+  <p id="p-fb" class="text-xs"></p>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="4">← 上一步</button>
+    <button id="btn-next-5" class="btn bg-emerald-700 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== Final + Reflection ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in">
+  <h2 class="text-3xl font-bold text-emerald-800 mb-2 text-center">🏆 你完成了！</h2>
+  <p class="text-slate-700 mb-4 text-center">你已完成 5 個任務，從循環層級配對到校園提案。最後一站做個快速反思。</p>
+
+  <div class="grid grid-cols-5 gap-2 max-w-2xl mx-auto my-4">
+    <div class="p-2 text-center"><div class="text-3xl">🔍</div><div class="text-xs mt-1">循環層級家</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">📊</div><div class="text-xs mt-1">資料詮釋家</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">🔄</div><div class="text-xs mt-1">系統思考者</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">✍️</div><div class="text-xs mt-1">論證作者</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">🏫</div><div class="text-xs mt-1">行動提案人</div></div>
+  </div>
+
+  <div class="bg-fuchsia-50 rounded-xl p-4 max-w-2xl mx-auto">
+    <p class="font-bold text-fuchsia-800 mb-2">🧠 後設認知反思（5 分）</p>
+    <p class="text-sm font-semibold mt-2">Q1｜上這堂課前，你對循環經濟的了解程度：</p>
+    <div id="stars-before" class="mt-1">
+      <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+    </div>
+    <p class="text-sm font-semibold mt-3">Q2｜上完這堂課後，你的理解程度：</p>
+    <div id="stars-after" class="mt-1">
+      <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+    </div>
+    <p class="text-sm font-semibold mt-3">Q3｜對你影響最大的任務：</p>
+    <div id="impact-opts" class="mt-1">
+      <label class="opt"><input type="radio" name="impact" value="1"> 任務 1 循環層級配對</label>
+      <label class="opt"><input type="radio" name="impact" value="2"> 任務 2 全球循環率資料</label>
+      <label class="opt"><input type="radio" name="impact" value="3"> 任務 3 快時尚反饋迴路</label>
+      <label class="opt"><input type="radio" name="impact" value="4"> 任務 4 CER 論證</label>
+      <label class="opt"><input type="radio" name="impact" value="5"> 任務 5 校園提案</label>
+    </div>
+    <p id="reflect-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div class="mt-6 text-lg font-bold text-emerald-600 text-center">最終偵探積分：<span id="final-score">0</span> / 80</div>
+  <div class="nav-row max-w-2xl mx-auto">
+    <button class="btn btn-back" data-back="5">← 回到任務 5</button>
+    <button onclick="location.reload()" class="btn bg-emerald-700 text-white px-6 py-2 rounded-lg font-bold">再玩一次</button>
+  </div>
+</section>
 
 </div>
 
 <script>
-const TOTAL = 8;
-let current = 1;
-const answers = {};
+(() => {
+  const TOTAL_LEVELS = 5;
+  const S = { score:0, current:1, awarded:{} };
+  const setScore = (n)=>{ S.score += n; document.getElementById('score').textContent = S.score; };
+  const awardOnce = (key, pts)=>{ if(!S.awarded[key]){ S.awarded[key]=true; setScore(pts); } };
 
-function renderProgress(){
-  const bar = document.getElementById('progress-bar');
-  bar.innerHTML = '';
-  for(let i=1; i<=TOTAL; i++){
-    const d = document.createElement('div');
-    d.className = 'progress-dot' + (i<current?' done':(i===current?' active':''));
-    bar.appendChild(d);
-  }
-}
+  const updateDots = ()=>{
+    for(let i=1;i<=TOTAL_LEVELS;i++){
+      const d = document.getElementById('dot-'+i);
+      if(!d) continue;
+      d.classList.remove('active','done');
+      if(i < S.current) d.classList.add('done');
+      else if(i === S.current) d.classList.add('active');
+    }
+  };
 
-function showStation(n){
-  document.querySelectorAll('.station').forEach(s => s.classList.add('hidden-screen'));
-  const t = document.querySelector(`[data-station="${n}"]`);
-  if(t){ t.classList.remove('hidden-screen'); t.classList.add('fade-in'); window.scrollTo({top:t.offsetTop-20, behavior:'smooth'}); }
-  renderProgress();
-}
+  const goto = (n)=>{
+    document.querySelectorAll('section[id^="level-"]').forEach(s=>s.classList.add('hidden-screen'));
+    S.current = n;
+    const next = document.getElementById('level-'+n) || document.getElementById('level-final');
+    next.classList.remove('hidden-screen');
+    if(next.id === 'level-final'){
+      for(let i=1;i<=TOTAL_LEVELS;i++){ const d=document.getElementById('dot-'+i); if(d){d.classList.remove('active');d.classList.add('done');} }
+      document.getElementById('final-score').textContent = S.score;
+    } else {
+      updateDots();
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
 
-function next(from){
-  collect(from);
-  current = from + 1;
-  if(current === 3) initDrag();
-  showStation(current);
-}
-
-function collect(n){
-  if(n===1){ answers.q1 = { item: val('q1a'), trace: val('q1b') }; }
-  if(n===2){ answers.q2 = { correct: document.querySelector('input[name=q2a]:checked')?.value, explain: val('q2b') }; }
-  if(n===3){ answers.q3 = { order: getOrder(), meta: val('q3meta') }; }
-  if(n===4){ answers.q4 = { stages: [val('q4-1'),val('q4-2'),val('q4-3'),val('q4-4'),val('q4-5')], externality: val('q4b') }; }
-  if(n===5){ answers.q5 = { choice: document.querySelector('input[name=q5]:checked')?.value, reasons: val('q5b'), carbon: val('q5c') }; }
-  if(n===6){ answers.q6 = { C: val('q6c'), E: val('q6e'), R: val('q6r') }; }
-  if(n===7){ answers.q7 = { linear: val('q7a'), circular: val('q7b') }; }
-  if(n===8){ answers.q8 = { P: val('q8p'), R: val('q8r'), E: val('q8e'), Plan: val('q8pl') }; }
-}
-function val(id){ return document.getElementById(id)?.value || ''; }
-
-function checkQ2(){
-  const v = document.querySelector('input[name=q2a]:checked')?.value;
-  const fb = document.getElementById('q2a-fb');
-  fb.classList.remove('hidden');
-  if(v==='b'){ fb.textContent = '✅ 正確！因為『分子（回收量）』成長不及『分母（總消耗）』。'; fb.className='text-sm mt-2 text-emerald-600'; next(2);}
-  else { fb.textContent = '再想想：循環率 = 再生料 / 總用料。若總用料成長更快…'; fb.className='text-sm mt-2 text-red-600';}
-}
-
-const RS = [
-  {id:'refuse', text:'Refuse 拒用', rank:1},
-  {id:'reduce', text:'Reduce 減量', rank:2},
-  {id:'reuse',  text:'Reuse 再利用', rank:3},
-  {id:'repurpose', text:'Repurpose 重新賦予用途', rank:4},
-  {id:'recycle', text:'Recycle 回收', rank:5},
-];
-function initDrag(){
-  const pool = document.getElementById('pool');
-  const slots = document.getElementById('slots');
-  pool.innerHTML = ''; slots.innerHTML = '';
-  const shuffled = [...RS].sort(()=>Math.random()-0.5);
-  shuffled.forEach(r=>{
-    const el = document.createElement('div');
-    el.className = 'drag-item bg-indigo-100 text-indigo-800 px-3 py-2 rounded-lg shadow font-semibold text-sm';
-    el.draggable = true; el.dataset.id = r.id; el.textContent = r.text;
-    el.addEventListener('dragstart', e=>{ e.dataTransfer.setData('id', r.id); el.classList.add('dragging');});
-    el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
-    pool.appendChild(el);
+  document.querySelectorAll('.btn-back').forEach(b=>{
+    b.onclick = ()=>goto(parseInt(b.dataset.back,10));
   });
-  for(let i=1;i<=5;i++){
-    const s = document.createElement('div');
-    s.className = 'drop-zone flex items-center justify-center text-slate-400 text-sm';
-    s.dataset.pos = i; s.textContent = '優先度 '+i;
-    s.addEventListener('dragover', e=>{ e.preventDefault(); s.classList.add('over');});
-    s.addEventListener('dragleave', ()=> s.classList.remove('over'));
-    s.addEventListener('drop', e=>{
-      e.preventDefault(); s.classList.remove('over');
-      const id = e.dataTransfer.getData('id');
-      const orig = document.querySelector(`[data-id="${id}"]`);
-      if(orig){ s.innerHTML=''; s.appendChild(orig); }
-      checkOrder();
+
+  const confetti = ()=>{
+    const colors=['#f59e0b','#10b981','#059669','#ec4899','#0ea5e9'];
+    for(let i=0;i<40;i++){
+      const el=document.createElement('div');
+      el.className='confetti';
+      el.style.left=Math.random()*100+'vw';
+      el.style.background=colors[i%colors.length];
+      el.style.animationDelay=(Math.random()*0.6)+'s';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),2500);
+    }
+  };
+
+  const shuffleChildren = (parent)=>{
+    const kids = Array.from(parent.children);
+    for(let i=kids.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      parent.appendChild(kids[j]);
+    }
+  };
+
+  // ===== Task 1: Drag match =====
+  shuffleChildren(document.getElementById('items-box-1'));
+  shuffleChildren(document.getElementById('zones-box-1'));
+
+  (function(){
+    let dragged = null, done1 = 0, err1 = 0;
+    document.querySelectorAll('#items-box-1 .drag-item').forEach(it=>{
+      it.addEventListener('dragstart', ()=>{ dragged=it; it.classList.add('dragging'); });
+      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null; });
     });
-    slots.appendChild(s);
-  }
-}
-function getOrder(){
-  const slots = document.querySelectorAll('#slots .drop-zone');
-  return Array.from(slots).map(s => s.querySelector('.drag-item')?.dataset.id || null);
-}
-function checkOrder(){
-  const fb = document.getElementById('q3-fb');
-  const order = getOrder();
-  if(order.every(x=>x)){
-    const correct = order.every((id,i)=> RS.find(r=>r.id===id).rank === i+1);
-    fb.textContent = correct ? '✅ 完全正確！Refuse → Reduce → Reuse → Repurpose → Recycle。' : '⚠️ 再想想：提示是『越上游越有效』。';
-    fb.className = correct ? 'text-emerald-600 text-sm mt-3' : 'text-amber-600 text-sm mt-3';
-  }
-}
+    document.querySelectorAll('#zones-box-1 .drop-zone').forEach(z=>{
+      z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over');});
+      z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+      z.addEventListener('drop', e=>{
+        e.preventDefault(); z.classList.remove('over');
+        if(!dragged) return;
+        if(dragged.dataset.match === z.dataset.accept){
+          dragged.classList.add('pop');
+          z.appendChild(dragged);
+          dragged.setAttribute('draggable','false');
+          dragged.style.cursor='default';
+          done1++;
+          if(done1===4){
+            awardOnce('L1', 10 - Math.min(err1,5));
+            document.getElementById('btn-next-1').disabled=false;
+            document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 全部配對正確！5R 優先順序：Refuse → Repair → Reuse → Recycle，循環末端才考慮回收。</span>';
+            confetti();
+          }
+        } else {
+          z.classList.add('shake'); setTimeout(()=>z.classList.remove('shake'),400);
+          err1++;
+          document.getElementById('feedback-1').innerHTML='<span class="text-rose-600">❌ 再想想：哪個策略連廢棄物都不產生？哪個才是真正的「末端處理」？</span>';
+        }
+      });
+    });
+  })();
+  document.getElementById('btn-next-1').onclick = ()=>goto(2);
 
-function finish(){ collect(8); showStation(9); current=9; renderProgress(); }
-function download(){
-  collect(current);
-  const blob = new Blob([JSON.stringify(answers, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'worksheet_5.2-IV_answers.json';
-  a.click();
-}
+  // ===== Task 2: Data interpretation =====
+  const btn2 = document.getElementById('btn-next-2');
+  const checkL2 = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked');
+    const checked = document.querySelectorAll('#q22-opts input:checked');
+    btn2.disabled = !(q21 && checked.length === 2);
+    const fb = document.getElementById('q22-fb');
+    if(checked.length === 2) fb.textContent = '已選 2 項，可以提交。';
+    else if(checked.length > 2) fb.textContent = '⚠️ 只能選 2 項，請再調整。';
+    else fb.textContent = `已選 ${checked.length}/2 項`;
+  };
+  document.querySelectorAll('input[name=q21]').forEach(r=>r.onchange=checkL2);
+  document.querySelectorAll('#q22-opts input').forEach(c=>c.onchange=checkL2);
+  btn2.onclick = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked').value;
+    const fb21 = document.querySelector('.q21-fb');
+    let p = 0;
+    if(q21==='B'){
+      fb21.textContent='✅ 正解 B：原料消耗成長速度超過循環再利用速度，分母擴大導致循環率下降。';
+      fb21.className='text-xs mt-1 text-emerald-700 q21-fb'; p+=5;
+    } else {
+      fb21.textContent='❌ 正解為 B。循環率 = 循環量 ÷ 總消耗量，分母快速成長是關鍵。';
+      fb21.className='text-xs mt-1 text-rose-600 q21-fb';
+    }
+    const opts = document.querySelectorAll('#q22-opts input');
+    let correctChecked = 0, wrongChecked = 0;
+    opts.forEach(o=>{
+      const lbl = o.parentElement;
+      lbl.classList.remove('correct','wrong');
+      if(o.checked){
+        if(o.dataset.correct==='1'){ lbl.classList.add('correct'); correctChecked++;}
+        else { lbl.classList.add('wrong'); wrongChecked++;}
+      }
+    });
+    const fb22 = document.getElementById('q22-fb');
+    if(correctChecked===2 && wrongChecked===0){
+      p+=10;
+      fb22.innerHTML='<span class="text-emerald-700 font-bold">✅ 兩項都對！線性設計與原料開採速度是循環率低落的結構性原因。</span>';
+    } else if(correctChecked===1 && wrongChecked===0){
+      p+=5;
+      fb22.innerHTML='<span class="text-amber-600">部分正確（1/2）。再選一項結構性原因。</span>';
+    } else {
+      fb22.innerHTML='<span class="text-rose-600">❌ 正解為 A（線性設計）與 C（原料開採速度）。</span>';
+    }
+    awardOnce('L2', p);
+    confetti();
+    goto(3);
+  };
 
-showStation(1);
+  // ===== Task 3: Feedback loop drag =====
+  shuffleChildren(document.getElementById('loop-items'));
+  (function(){
+    let dragged = null, loopCorrect = 0, loopErr = 0;
+    document.querySelectorAll('#loop-items .drag-item').forEach(it=>{
+      it.addEventListener('dragstart', ()=>{ dragged=it; it.classList.add('dragging'); });
+      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null; });
+    });
+    document.querySelectorAll('.loop-slot').forEach(s=>{
+      s.addEventListener('dragenter', e=>{ e.preventDefault(); s.classList.add('over');});
+      s.addEventListener('dragover', e=>{ e.preventDefault(); s.classList.add('over');});
+      s.addEventListener('dragleave', ()=>s.classList.remove('over'));
+      s.addEventListener('drop', e=>{
+        e.preventDefault(); s.classList.remove('over');
+        if(!dragged) return;
+        if(dragged.dataset.loop === s.dataset.slot){
+          const t = document.getElementById('slot-'+s.dataset.slot+'-text');
+          if(t) t.textContent = dragged.textContent;
+          dragged.style.visibility='hidden';
+          loopCorrect++;
+          if(loopCorrect===4){
+            awardOnce('L3', 15 - Math.min(loopErr,5));
+            document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 完成！快時尚正反饋：低價設計 → 購買量增加快速丟棄 → 廢紡織物焚化掩埋增加 → 環境成本外部化維持低價 → 循環加強。</span>';
+            document.getElementById('btn-next-3').disabled=false;
+            confetti();
+          }
+        } else {
+          s.classList.add('shake'); setTimeout(()=>s.classList.remove('shake'),400);
+          loopErr++;
+          document.getElementById('loop-fb').innerHTML='<span class="text-rose-600">❌ 順序錯了。提示：從商業模式的設計端開始，最後一張要回頭讓這個模式的低價邏輯持續。</span>';
+        }
+      });
+    });
+  })();
+  document.getElementById('btn-next-3').onclick = ()=>goto(4);
+
+  // ===== Task 4: CER Flash Card =====
+  const claimBank = {
+    epr:    '應立法推行「延伸生產者責任（EPR）」，要求品牌承擔產品全生命週期的回收成本。',
+    tax:    '應對一次性塑膠與快時尚商品課徵環境稅，收入用於補助二手市場與維修服務。',
+    design: '應強制產品設計符合「可拆解、可升級、可修復」標準，讓循環從設計階段就發生。'
+  };
+  const evidBank = {
+    epr: [
+      {t:'歐盟 2024 年廢棄電子電器指令（WEEE）：EPR 制度使歐盟電子廢棄物回收率提升至 45%；法國 2020 年推行快時尚 EPR，品牌需支付廢舊衣物回收費用，首年回收量提升 18%。', ok:true},
+      {t:'EPR 聽起來很合理。', ok:false},
+      {t:'品牌應該負責。', ok:false},
+    ],
+    tax: [
+      {t:'英國 2022 年塑膠包裝稅：對每噸含再生料低於 30% 的塑膠包裝徵收 200 英鎊，第一年使再生塑膠需求增加 10%；瑞典維修稅減半後，電器維修量成長 35%。', ok:true},
+      {t:'稅是好政策。', ok:false},
+      {t:'應該用錢補貼二手市場。', ok:false},
+    ],
+    design: [
+      {t:'歐盟「生態設計法規」（Ecodesign for Sustainable Products Regulation, 2024）要求手機、平板、電視必須保修 5-7 年且提供備用零件；研究顯示設計階段決定了產品 80% 的環境衝擊。', ok:true},
+      {t:'設計很重要。', ok:false},
+      {t:'產品要耐用。', ok:false},
+    ]
+  };
+  const reasBank = {
+    epr: [
+      {t:'EPR 讓外部成本由製造者承擔，而非全民納稅人；這改變了商業誘因，使品牌在設計時就考慮回收成本，是從源頭解決線性經濟的系統性工具，也兼顧了公正轉型原則。', ok:true},
+      {t:'品牌賺了錢就要負責。', ok:false},
+      {t:'廢棄物是品牌的問題。', ok:false},
+    ],
+    tax: [
+      {t:'環境稅讓一次性商品的真實成本反映在價格上，縮小其相對二手或耐用品的價格優勢；補助維修與二手服務則確保低收入者仍能取得可負擔的商品，兼顧效率與公平。', ok:true},
+      {t:'稅讓東西變貴大家就不買了。', ok:false},
+      {t:'徵稅最簡單。', ok:false},
+    ],
+    design: [
+      {t:'若產品設計之初就無法拆解，再多的回收政策都只能處理末端；設計標準強制從上游改變，使「先不廢棄」成為預設選項，也為維修產業創造就業，支持公正轉型。', ok:true},
+      {t:'好的設計很重要。', ok:false},
+      {t:'設計師應該更用心。', ok:false},
+    ]
+  };
+
+  let chosenClaim = null, chosenEvidOk = false, chosenReasOk = false;
+  const evidWrap = document.getElementById('evid-wrap');
+  const reasWrap = document.getElementById('reas-wrap');
+  const cerSummary = document.getElementById('cer-summary');
+  const btn4 = document.getElementById('btn-next-4');
+
+  const renderOpts = (wrap, items, name, onPick)=>{
+    wrap.innerHTML = '';
+    const shuffled = items.slice().sort(()=>Math.random()-0.5);
+    shuffled.forEach((it)=>{
+      const lbl = document.createElement('label');
+      lbl.className = 'opt';
+      lbl.innerHTML = `<input type="radio" name="${name}"> ${it.t}`;
+      lbl.querySelector('input').onchange = ()=>{
+        wrap.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel','correct','wrong'));
+        lbl.classList.add(it.ok ? 'correct' : 'wrong');
+        onPick(it.ok, it.t);
+      };
+      wrap.appendChild(lbl);
+    });
+  };
+
+  document.querySelectorAll('input[name=claim]').forEach(r=>{
+    r.onchange = ()=>{
+      chosenClaim = r.value;
+      document.querySelectorAll('#claim-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      awardOnce('L4-claim', 4);
+      evidWrap.classList.remove('hidden');
+      reasWrap.classList.add('hidden');
+      cerSummary.classList.add('hidden');
+      chosenEvidOk = false; chosenReasOk = false;
+      btn4.disabled = true;
+      let evText = '';
+      renderOpts(document.getElementById('evid-opts'), evidBank[chosenClaim], 'evid', (ok, t)=>{
+        chosenEvidOk = ok;
+        evText = t;
+        document.getElementById('evid-fb').innerHTML = ok
+          ? '<span class="text-emerald-700">✅ 這條證據含具體數據／權威來源，與你的主張一致。</span>'
+          : '<span class="text-rose-600">❌ 這條缺乏數據／與主張關聯弱。再選一次。</span>';
+        if(ok) awardOnce('L4-evid', 8);
+        reasWrap.classList.remove('hidden');
+        renderOpts(document.getElementById('reas-opts'), reasBank[chosenClaim], 'reas', (ok2, t2)=>{
+          chosenReasOk = ok2;
+          document.getElementById('reas-fb').innerHTML = ok2
+            ? '<span class="text-emerald-700">✅ 這條推理確實連結了證據與主張。</span>'
+            : '<span class="text-rose-600">❌ 這條沒有清楚解釋為什麼證據支持主張。再選一次。</span>';
+          if(ok2){
+            awardOnce('L4-reas', 8);
+            document.getElementById('sum-c').textContent = claimBank[chosenClaim];
+            document.getElementById('sum-e').textContent = evText;
+            document.getElementById('sum-r').textContent = t2;
+            cerSummary.classList.remove('hidden');
+            confetti();
+          }
+          btn4.disabled = !(chosenEvidOk && chosenReasOk);
+        });
+        btn4.disabled = !(chosenEvidOk && chosenReasOk);
+      });
+    };
+  });
+  btn4.onclick = ()=>goto(5);
+
+  // ===== Task 5: 提案菜單 + WSA =====
+  const projBank = {
+    repair: {
+      problem: '現況問題：校園內破損的椅子、電子設備和文具常被直接丟棄，未嘗試維修，造成資源浪費。',
+      steps: '行動步驟：① 設立校園維修工作坊，定期開放；② 招募有技能的學生和家長志工擔任「修復師」；③ 建立線上預約與維修日誌系統。',
+      kpis: ['半年內維修物品達 50 件', '避免丟棄物品重量累計 ≥ 20 公斤', '培訓 10 名學生維修師']
+    },
+    swap: {
+      problem: '現況問題：教科書每年更換，舊書大量堆積；文具購買後閒置率高，造成浪費與消費負擔。',
+      steps: '行動步驟：① 每學期末舉辦教科書與文具交換市集；② 建立學校二手物品清單平台；③ 設置常設二手書角落。',
+      kpis: ['每學期成功媒合 100 件以上物品', '節省學生家庭購買費用 ≥ 5,000 元', '舊教科書再利用率達 60%']
+    },
+    compost: {
+      problem: '現況問題：午餐剩食每日數十公斤直送掩埋場，分解產生甲烷，且浪費土壤養分。',
+      steps: '行動步驟：① 設置三色廚餘分類桶；② 與在地農場或社區菜園合作堆肥；③ 製作堆肥成果月報告板。',
+      kpis: ['半年內廚餘再利用率達 60%', '化肥採購量下降 30%', '推動全校 80% 班級參與廚餘分類']
+    },
+    upcycle: {
+      problem: '現況問題：藝術課和手工課後產生大量廢料，包括布料、紙板、塑膠等，直接進入垃圾桶。',
+      steps: '行動步驟：① 開設跨科「廢物升級再造」選修課或社團；② 舉辦 Upcycling 成果展；③ 將作品義賣，收入捐給環境團體。',
+      kpis: ['一學年完成 30 件以上升級再造作品', '使用廢料重量累計 ≥ 15 公斤', '義賣收入 ≥ 3,000 元']
+    }
+  };
+
+  const projDetail = document.getElementById('proj-detail');
+  let kpiPicked = false, projPicked = null;
+  document.querySelectorAll('input[name=proj]').forEach(r=>{
+    r.onchange = ()=>{
+      projPicked = r.value;
+      document.querySelectorAll('#proj-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      const d = projBank[projPicked];
+      document.getElementById('proj-problem').textContent = d.problem;
+      document.getElementById('proj-steps').textContent = d.steps;
+      const kpiBox = document.getElementById('kpi-opts');
+      kpiBox.innerHTML = '';
+      kpiPicked = false;
+      d.kpis.forEach((k)=>{
+        const lbl = document.createElement('label');
+        lbl.className='opt';
+        lbl.innerHTML = `<input type="radio" name="kpi"> ${k}`;
+        lbl.querySelector('input').onchange = ()=>{
+          document.querySelectorAll('#kpi-opts .opt').forEach(o=>o.classList.remove('sel'));
+          lbl.classList.add('sel');
+          kpiPicked = true;
+          checkP();
+        };
+        kpiBox.appendChild(lbl);
+      });
+      projDetail.classList.remove('hidden');
+      checkP();
+    };
+  });
+
+  const btn5 = document.getElementById('btn-next-5');
+  function checkP(){
+    const wsaAll = document.querySelectorAll('.wsa:checked').length === 4;
+    const ok = projPicked && kpiPicked && wsaAll;
+    document.getElementById('p-fb').innerHTML = ok
+      ? '<span class="text-emerald-700 font-bold">✅ 提案組裝完成、WSA 四面向全勾！</span>'
+      : '<span class="text-slate-500">請：選主題 → 選 KPI → 勾 WSA 四面向</span>';
+    btn5.disabled = !ok;
+  }
+  document.querySelectorAll('.wsa').forEach(c=>c.onchange=checkP);
+  btn5.onclick = ()=>{ awardOnce('L5', 15); confetti(); goto(6); };
+
+  // ===== Final reflection =====
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+  const setStars = (wrapId, set)=>{
+    const wrap = document.getElementById(wrapId);
+    wrap.querySelectorAll('.star').forEach(s=>{
+      s.onclick = ()=>{
+        const v = parseInt(s.dataset.val,10);
+        set(v);
+        wrap.querySelectorAll('.star').forEach(x=>{
+          x.classList.toggle('on', parseInt(x.dataset.val,10) <= v);
+        });
+        checkReflect();
+      };
+    });
+  };
+  setStars('stars-before', v=>starBefore=v);
+  setStars('stars-after', v=>starAfter=v);
+  document.querySelectorAll('input[name=impact]').forEach(r=>{
+    r.onchange = ()=>{
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+  function checkReflect(){
+    const ok = starBefore>0 && starAfter>0 && impactPicked;
+    document.getElementById('reflect-fb').textContent = ok
+      ? '✅ 反思完成，獲得 5 分。'
+      : '請完成 3 題（前/後理解程度 + 影響最大任務）';
+    if(ok){
+      awardOnce('FINAL', 5);
+      document.getElementById('final-score').textContent = S.score;
+    }
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

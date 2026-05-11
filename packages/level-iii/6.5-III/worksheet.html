@@ -1,298 +1,620 @@
-<!doctype html>
-<html lang="zh-TW">
+<!DOCTYPE html>
+<html lang="zh-Hant">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>6.5-III 永續交通｜小小交通偵探任務卡</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>交通小達人阿行的一天 | 互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <style>
-  body { font-family: "Noto Sans TC", system-ui, sans-serif; background: linear-gradient(135deg,#e0f2fe,#dcfce7); }
-  .card { background: rgba(255,255,255,.92); border-radius: 1rem; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
-  .chip { display:inline-block; padding:.2rem .6rem; border-radius:9999px; font-size:.75rem; margin-right:.25rem; }
-  .badge { display:inline-flex; align-items:center; gap:.25rem; padding:.35rem .7rem; border-radius:9999px; font-weight:700; }
-  .progress-outer { background:#e5e7eb; border-radius:9999px; height:14px; overflow:hidden; }
-  .progress-inner { height:100%; background:linear-gradient(90deg,#34d399,#10b981); transition: width .4s ease; }
-  .wrong { background:#fee2e2 !important; }
-  .right { background:#dcfce7 !important; }
-  .drag { cursor:grab; user-select:none; }
-  .drop { min-height:60px; border:2px dashed #94a3b8; border-radius:.75rem; padding:.5rem; }
-  .drop.over { border-color:#10b981; background:#ecfdf5; }
-  .hint-bubble { background:#fef3c7; border-left:4px solid #f59e0b; padding:.5rem .75rem; border-radius:.5rem; margin-top:.5rem; font-size:.9rem; }
-  details summary { cursor:pointer; }
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#dbeafe,#bfdbfe,#c7d2fe); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:110px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#3b82f6; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.95rem;}
+  .opt:hover { background:#eff6ff; }
+  .opt.sel { border-color:#3b82f6; background:#dbeafe;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.5rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#3b82f6;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
 <body class="p-4 md:p-8">
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 
-  <!-- 頂部進度條 + 角色 -->
-  <section class="card p-5">
-    <div class="flex items-center gap-3 mb-3">
-      <div class="text-4xl">🕵️</div>
+<div class="max-w-3xl mx-auto">
+
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-blue-600">🚲 交通小達人阿行的一天</h1>
+      <p class="text-sm text-slate-600 mt-1">幫阿行找到上下學最聰明、最環保的交通方式！</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3 flex-wrap">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-2 text-sm text-slate-600">關卡 <span id="step-label">1</span> / 4</span>
+  </div>
+
+  <!-- ===== Level 1: 配對 (15 pts) ===== -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🗺️</div>
       <div>
-        <h1 class="text-2xl md:text-3xl font-extrabold text-emerald-700">小小交通偵探任務卡</h1>
-        <p class="text-slate-600">情境：你是「永續交通偵探隊」新任隊員 <b id="playerName">小綠</b>，要協助市長破解「每天塞車冒煙」之謎，完成 5 關拿徽章！</p>
+        <h2 class="text-xl font-bold text-blue-700">關卡 1：這種交通方式，友善還是不友善？</h2>
+        <p class="text-sm text-slate-700 mt-1">阿行說：「上下學的方式，會影響空氣品質和地球的溫度！<b>友善交通</b>是走路、騎車、搭公車這種比較不排廢氣的方式；<b>不友善交通</b>是一個人坐一台車，排出很多廢氣。把卡片拖到正確的籃子！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 15 分｜全部放對才能前往下一關</p>
       </div>
     </div>
-    <label class="text-sm">取個代號：<input id="nameInput" class="border rounded px-2 py-1" placeholder="小綠" /></label>
-    <button onclick="setName()" class="ml-2 px-3 py-1 bg-emerald-500 text-white rounded">確認</button>
-    <div class="mt-4">
-      <div class="flex justify-between text-xs text-slate-500"><span>任務進度</span><span id="progTxt">0 / 5 關</span></div>
-      <div class="progress-outer mt-1"><div id="progBar" class="progress-inner" style="width:0%"></div></div>
+
+    <div class="grid grid-cols-2 gap-3 my-3" id="items-box-1">
+      <div class="drag-item bg-blue-100 border-2 border-blue-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="good">🚶 走路上學，距離不遠時</div>
+      <div class="drag-item bg-blue-100 border-2 border-blue-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="bad">🚗 一個人坐一台汽車上下學</div>
+      <div class="drag-item bg-blue-100 border-2 border-blue-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="good">🚌 搭公車或校車，很多人共乘</div>
+      <div class="drag-item bg-blue-100 border-2 border-blue-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="bad">🛵 爸媽開機車繞很遠的路送到學校門口</div>
+      <div class="drag-item bg-blue-100 border-2 border-blue-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="good">🚲 騎腳踏車上學，省油又運動</div>
+      <div class="drag-item bg-blue-100 border-2 border-blue-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="bad">🚙 去離家很近的便利商店，也要爸媽開車</div>
     </div>
-    <div id="badges" class="mt-3 flex flex-wrap gap-2"></div>
-  </section>
 
-  <!-- 關卡 1：需要 vs 想要 → 必要交通 vs 可替代交通 -->
-  <section class="card p-5">
-    <h2 class="text-xl font-bold text-sky-700">第 1 關｜交通大分類（拖曳）</h2>
-    <p class="text-slate-600 text-sm">把交通方式拖到「永續」或「不永續」欄。</p>
-    <div class="grid md:grid-cols-2 gap-3 mt-3">
-      <div class="drop" id="sust" data-type="sust"><b class="text-emerald-700">永續 ✅</b></div>
-      <div class="drop" id="unsust" data-type="unsust"><b class="text-rose-700">較不永續 ⚠️</b></div>
+    <div class="grid grid-cols-2 gap-3" id="zones-box-1">
+      <div class="drop-zone bg-sky-50 p-3" data-accept="good">
+        <div class="font-bold text-sky-700 text-center mb-2">🌿 友善交通<br><span class="text-xs font-normal text-sky-500">（少排廢氣、對空氣好）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-red-50 p-3" data-accept="bad">
+        <div class="font-bold text-red-700 text-center mb-2">💨 不友善交通<br><span class="text-xs font-normal text-red-500">（排很多廢氣、費油）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
     </div>
-    <div id="pool" class="mt-4 flex flex-wrap gap-2">
-      <span class="drag chip bg-white border" draggable="true" data-a="sust">🚶 走路</span>
-      <span class="drag chip bg-white border" draggable="true" data-a="sust">🚲 自行車</span>
-      <span class="drag chip bg-white border" draggable="true" data-a="sust">🚇 捷運</span>
-      <span class="drag chip bg-white border" draggable="true" data-a="sust">🚌 公車</span>
-      <span class="drag chip bg-white border" draggable="true" data-a="sust">🚆 火車/鐵路貨運</span>
-      <span class="drag chip bg-white border" draggable="true" data-a="sust">🧑‍🤝‍🧑 共乘電動車</span>
-      <span class="drag chip bg-white border" draggable="true" data-a="unsust">🏎️ 單人開汽油車</span>
-      <span class="drag chip bg-white border" draggable="true" data-a="unsust">🛵 單人騎汽油機車</span>
-      <span class="drag chip bg-white border" draggable="true" data-a="unsust">✈️ 短程飛機</span>
+
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <span></span>
+      <button id="btn-next-1" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>完成分類才能繼續 →</button>
     </div>
-    <button onclick="checkLvl1()" class="mt-3 px-4 py-2 bg-sky-500 text-white rounded">檢查答案</button>
-    <div id="hint1" class="hint-bubble hidden"></div>
   </section>
 
-  <!-- 關卡 2：排序碳排（dp3 真實數據） -->
-  <section class="card p-5">
-    <h2 class="text-xl font-bold text-amber-700">第 2 關｜碳煙囪排排站（真實數據）</h2>
-    <p class="text-slate-600 text-sm">每人每公里 CO₂ 排放量（g）請由低到高排列：</p>
-    <ul id="rankList" class="mt-3 space-y-2">
-      <li class="drag p-2 bg-amber-100 rounded border" draggable="true" data-v="0">🚶 步行（0 g）</li>
-      <li class="drag p-2 bg-amber-100 rounded border" draggable="true" data-v="30">🚇 捷運（30 g）</li>
-      <li class="drag p-2 bg-amber-100 rounded border" draggable="true" data-v="85">🚌 公車（85 g）</li>
-      <li class="drag p-2 bg-amber-100 rounded border" draggable="true" data-v="200">🚗 單人汽車（200 g）</li>
-      <li class="drag p-2 bg-amber-100 rounded border" draggable="true" data-v="275">✈️ 短程飛機（275 g）</li>
-    </ul>
-    <p class="text-xs text-slate-500 mt-2">提示：可用滑鼠拖曳或點兩下來「上移」。</p>
-    <button onclick="checkLvl2()" class="mt-3 px-4 py-2 bg-amber-500 text-white rounded">檢查排序</button>
-    <div id="hint2" class="hint-bubble hidden"></div>
-    <p class="mt-2 text-xs text-slate-500">資料來源：IEA Transport Tracking 2024；UK BEIS Conversion Factors。</p>
-  </section>
-
-  <!-- 關卡 3：減碳計算（真實數據 dp5） -->
-  <section class="card p-5">
-    <h2 class="text-xl font-bold text-indigo-700">第 3 關｜減碳計算機</h2>
-    <p class="text-slate-600 text-sm">你家到學校來回 <input id="km" type="number" value="5" class="w-20 border rounded px-2"/> 公里。下週有 <input id="days" type="number" value="3" class="w-16 border rounded px-2"/> 天你把開車改成「走路＋捷運」。</p>
-    <p class="mt-2">每次替代可減約 <b>0.17 kg CO₂／km</b>（汽車 200 g − 捷運 30 g ≈ 170 g）。</p>
-    <button onclick="calcLvl3()" class="mt-2 px-4 py-2 bg-indigo-500 text-white rounded">計算減碳量</button>
-    <p class="mt-3" id="lvl3out"></p>
-    <div id="hint3" class="hint-bubble hidden"></div>
-  </section>
-
-  <!-- 關卡 4：迷思測驗（引導錯答） -->
-  <section class="card p-5">
-    <h2 class="text-xl font-bold text-rose-700">第 4 關｜迷思破解測驗</h2>
-    <div class="space-y-3 mt-2" id="quiz"></div>
-    <button onclick="checkLvl4()" class="mt-3 px-4 py-2 bg-rose-500 text-white rounded">送出</button>
-    <div id="hint4" class="hint-bubble hidden"></div>
-  </section>
-
-  <!-- 關卡 5：WSA 全校途徑 四面向 Checkbox + 全校英雄徽章 -->
-  <section class="card p-5">
-    <h2 class="text-xl font-bold text-emerald-700">第 5 關｜WSA 全校永續交通藍圖 ◆</h2>
-    <p class="text-slate-600 text-sm">要成為「全校英雄」，四個面向每個至少選 1 項，並寫下具體行動：</p>
-    <div class="grid md:grid-cols-2 gap-3 mt-3">
-      <label class="flex items-start gap-2 bg-sky-50 p-3 rounded"><input type="checkbox" class="wsa" data-f="curr" /> <div><b>① 課程與教學</b><br/><textarea class="w-full mt-1 border rounded p-1 text-sm" placeholder="例：製作 3 分鐘交通碳排簡報給低年級"></textarea></div></label>
-      <label class="flex items-start gap-2 bg-emerald-50 p-3 rounded"><input type="checkbox" class="wsa" data-f="camp" /> <div><b>② 校園運作</b><br/><textarea class="w-full mt-1 border rounded p-1 text-sm" placeholder="例：設計校門口友善步行／單車動線"></textarea></div></label>
-      <label class="flex items-start gap-2 bg-amber-50 p-3 rounded"><input type="checkbox" class="wsa" data-f="comm" /> <div><b>③ 社群參與</b><br/><textarea class="w-full mt-1 border rounded p-1 text-sm" placeholder="例：家長共乘揪團卡、走路上學小隊"></textarea></div></label>
-      <label class="flex items-start gap-2 bg-indigo-50 p-3 rounded"><input type="checkbox" class="wsa" data-f="gov" /> <div><b>④ 治理與政策</b><br/><textarea class="w-full mt-1 border rounded p-1 text-sm" placeholder="例：起草班級永續交通公約 3 條"></textarea></div></label>
+  <!-- ===== Level 2: 看圖找答案 (20 pts) ===== -->
+  <section id="level-2" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">📊</div>
+      <div>
+        <h2 class="text-xl font-bold text-blue-700">關卡 2：看圖找答案</h2>
+        <p class="text-sm text-slate-700 mt-1">阿行調查了各種交通方式，比較「同樣距離 1 公里，每個人排出多少廢氣」。仔細看圖，回答下面兩題！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜Q1 單選 5 分 + Q2 多選 15 分</p>
+      </div>
     </div>
-    <button onclick="checkLvl5()" class="mt-3 px-4 py-2 bg-emerald-600 text-white rounded">申請『全校英雄徽章』</button>
-    <div id="hint5" class="hint-bubble hidden"></div>
+
+    <!-- SVG chart: CO2 per km per person by transport mode -->
+    <svg viewBox="0 0 400 185" class="w-full max-w-lg mx-auto block bg-slate-50 rounded-xl mb-4 border border-slate-200">
+      <!-- Axes -->
+      <line x1="55" y1="155" x2="390" y2="155" stroke="#475569" stroke-width="1.5"/>
+      <line x1="55" y1="20" x2="55" y2="155" stroke="#475569" stroke-width="1.5"/>
+      <!-- Y label -->
+      <text x="2" y="16" font-size="7" fill="#64748b">廢氣量</text>
+      <text x="2" y="24" font-size="7" fill="#64748b">（克/人/公里）</text>
+      <text x="15" y="158" font-size="8" fill="#64748b">0</text>
+      <text x="10" y="120" font-size="8" fill="#64748b">50</text>
+      <text x="6" y="82" font-size="8" fill="#64748b">100</text>
+      <text x="6" y="44" font-size="8" fill="#64748b">150</text>
+      <!-- X labels -->
+      <text x="62" y="173" font-size="7" fill="#64748b">走路</text>
+      <text x="104" y="173" font-size="7" fill="#64748b">腳踏車</text>
+      <text x="153" y="173" font-size="7" fill="#64748b">公車</text>
+      <text x="203" y="173" font-size="7" fill="#64748b">機車</text>
+      <text x="255" y="173" font-size="7" fill="#64748b">共乘汽車</text>
+      <text x="315" y="173" font-size="7" fill="#64748b">一人一車</text>
+      <!-- Bars -->
+      <rect x="62" y="153" width="28" height="2" fill="#4ade80" rx="2"/>
+      <rect x="110" y="153" width="28" height="2" fill="#4ade80" rx="2"/>
+      <rect x="158" y="123" width="28" height="32" fill="#86efac" rx="2"/>
+      <rect x="208" y="103" width="28" height="52" fill="#facc15" rx="2"/>
+      <rect x="258" y="83" width="28" height="72" fill="#fb923c" rx="2"/>
+      <rect x="318" y="38" width="28" height="117" fill="#ef4444" rx="2"/>
+      <!-- value labels -->
+      <text x="63" y="150" font-size="8" fill="#16a34a" font-weight="bold">0</text>
+      <text x="111" y="150" font-size="8" fill="#16a34a" font-weight="bold">0</text>
+      <text x="159" y="120" font-size="8" fill="#15803d" font-weight="bold">21g</text>
+      <text x="209" y="100" font-size="8" fill="#a16207" font-weight="bold">72g</text>
+      <text x="259" y="80" font-size="8" fill="#c2410c" font-weight="bold">97g</text>
+      <text x="319" y="35" font-size="8" fill="#b91c1c" font-weight="bold">170g</text>
+    </svg>
+
+    <!-- Q1 single choice -->
+    <div class="mb-5">
+      <p class="font-bold text-sm mb-2">📌 Q1：從這張圖可以看出什麼？（單選，5 分）</p>
+      <div id="q1-opts">
+        <label class="opt"><input type="radio" name="q1" value="0"> A. 機車比汽車排出更多廢氣。</label>
+        <label class="opt"><input type="radio" name="q1" value="1"> B. 走路和騎腳踏車幾乎不排廢氣，一人一車汽車排最多。</label>
+        <label class="opt"><input type="radio" name="q1" value="0"> C. 公車和一人一車的廢氣排放量差不多。</label>
+      </div>
+      <p id="q1-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <!-- Q2 multi-select -->
+    <div class="mb-3">
+      <p class="font-bold text-sm mb-1">📌 Q2：如果更多人選擇友善交通，可能會有什麼好處？<br><span class="font-normal text-slate-500 text-xs">（勾出你覺得正確的，可以勾多個）</span></p>
+      <div id="q2-opts">
+        <label class="opt"><input type="checkbox" data-correct="1"> 🌬️ 空氣比較新鮮，比較不嗆鼻子</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 🏃 走路或騎腳踏車還可以順便運動</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> 🚗 路上的車子會越來越多，更塞車</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 💰 搭公車或走路比較省錢，不用買汽油</label>
+      </div>
+      <p id="q2-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="1">← 上一關</button>
+      <button id="btn-next-2" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>提交答案 →</button>
+    </div>
   </section>
 
-  <!-- 家庭倡議卡 -->
-  <section class="card p-5">
-    <h2 class="text-xl font-bold text-slate-700">家庭倡議任務</h2>
-    <p class="text-sm text-slate-600">用 ≥2 個數據說服家人嘗試永續交通，寫下你的 30 秒話術：</p>
-    <textarea class="w-full border rounded p-2 mt-2" rows="3" placeholder="例：爸媽，交通占台灣 13–14% 碳排，如果我們改走路上學，每次 5 km 可減 0.85 kg CO₂，我還能達成 WHO 每日 60 分鐘運動……"></textarea>
+  <!-- ===== Level 3: 推一推 (20 pts) ===== -->
+  <section id="level-3" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🔄</div>
+      <div>
+        <h2 class="text-xl font-bold text-blue-700">關卡 3：推一推！一個改變帶來什麼？</h2>
+        <p class="text-sm text-slate-700 mt-1">阿行決定改騎腳踏車上學，而不是請爸媽開車。這個改變帶來了什麼連鎖效果？把下面四張卡片依照正確的順序，拖進 ① ② ③ ④ 四個格子！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜順序全對才得分</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row items-center justify-center gap-2 my-4" id="chain-slots">
+      <div class="drop-zone bg-blue-50 p-3 w-full md:w-32 text-center" data-slot="1">
+        <div class="text-xs font-bold text-blue-700 mb-1">① 起點</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-blue-50 p-3 w-full md:w-32 text-center" data-slot="2">
+        <div class="text-xs font-bold text-blue-700 mb-1">②</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-blue-50 p-3 w-full md:w-32 text-center" data-slot="3">
+        <div class="text-xs font-bold text-blue-700 mb-1">③</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-blue-50 p-3 w-full md:w-32 text-center" data-slot="4">
+        <div class="text-xs font-bold text-blue-700 mb-1">④ 結果</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 mt-2" id="chain-items">
+      <div class="drag-item bg-indigo-100 border-2 border-indigo-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="2">🚲 每天騎腳踏車，不排廢氣也運動</div>
+      <div class="drag-item bg-indigo-100 border-2 border-indigo-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="4">😊 身體更健康，空氣也更好</div>
+      <div class="drag-item bg-indigo-100 border-2 border-indigo-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="1">💡 阿行決定騎腳踏車上學</div>
+      <div class="drag-item bg-indigo-100 border-2 border-indigo-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="3">🌿 路上少一台車，附近空氣變乾淨</div>
+    </div>
+
+    <p id="l3-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="2">← 上一關</button>
+      <button id="btn-next-3" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>下一關 →</button>
+    </div>
   </section>
 
-  <!-- 擴充資料與術語 -->
-  <section class="card p-5">
-    <h2 class="text-xl font-bold text-slate-700">延伸學習（真實數據）</h2>
-    <ul class="list-disc pl-6 text-sm space-y-1">
-      <li>dp1 IPCC AR6：全球交通 = 15% GHG，道路占 70%。</li>
-      <li>dp2 台灣交通 = 13–14% GHG；機車 1,400 萬輛、每千人 620 輛。</li>
-      <li>dp5 北捷 200 萬人次/日；YouBike 累計 10 億次。</li>
-      <li>dp6 WHO：兒少每日 60 分鐘活動；走路上學達一半。</li>
-    </ul>
-    <details class="mt-3"><summary class="text-sky-700 font-semibold">📘 關鍵字小辭典</summary>
-      <ul class="mt-2 text-sm list-disc pl-6">
-        <li><b>永續交通</b>：對環境衝擊小、能源效率高、對所有人公平。</li>
-        <li><b>主動通勤</b>：走路、騎車等身體當動力。</li>
-        <li><b>碳排放因子</b>：每公里每人的 GHG 排放量。</li>
-        <li><b>15 分鐘城市</b>：生活所需 15 分鐘可達。</li>
-      </ul>
-    </details>
+  <!-- ===== Level 4: 我的行動 (20 pts) ===== -->
+  <section id="level-4" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">💪</div>
+      <div>
+        <h2 class="text-xl font-bold text-blue-700">關卡 4：我的友善交通行動</h2>
+        <p class="text-sm text-slate-700 mt-1">阿行說：「每一趟出門，我們都可以做出更友善的選擇！先選一個你想行動的方向！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜選主題 + 選行動 + 立下承諾</p>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <p class="font-bold text-sm mb-2">① 阿行最想從哪裡開始改變交通方式？（選一個）</p>
+      <div id="theme-opts">
+        <label class="opt"><input type="radio" name="theme" value="school"> 🎒 上下學的路（走路、騎車、搭公車）</label>
+        <label class="opt"><input type="radio" name="theme" value="nearby"> 🏪 去附近的地方（便利商店、公園、補習班）</label>
+        <label class="opt"><input type="radio" name="theme" value="weekend"> 🏖️ 假日出遊（搭大眾運輸代替開車）</label>
+        <label class="opt"><input type="radio" name="theme" value="spread"> 📢 告訴大家怎麼選友善交通</label>
+      </div>
+    </div>
+
+    <div id="action-wrap" class="hidden mb-4">
+      <p class="font-bold text-sm mb-2">② 以下三個做法，你覺得哪個最容易開始？（選一個）</p>
+      <div id="action-opts"></div>
+      <p id="action-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div id="promise-wrap" class="hidden bg-blue-50 rounded-xl p-4 mb-3">
+      <p class="font-bold text-sm mb-2">③ 在你能做到的事情前打勾（至少選 2 個）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-blue-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會試著走路或騎腳踏車去附近的地方</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-blue-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會跟爸媽說「不遠的地方我可以自己走過去」</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-blue-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會跟同學一起規劃怎麼搭公車或一起騎車</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-blue-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會觀察自己一週用了哪些交通方式，記錄下來</span>
+      </label>
+      <p id="promise-fb" class="text-xs mt-2 text-slate-500 min-h-[18px]"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="3">← 上一關</button>
+      <button id="btn-next-4" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>查看成果 🏆</button>
+    </div>
   </section>
+
+  <!-- ===== Final: 反思 (5 pts) ===== -->
+  <section id="level-final" class="card p-6 hidden-screen fade-in">
+    <div class="text-6xl text-center pop">🏆</div>
+    <h2 class="text-2xl font-bold text-blue-600 mt-2 text-center">恭喜你幫阿行成為交通小達人！</h2>
+    <p class="text-slate-700 mt-1 text-center">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> / 80 分</p>
+
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <div class="bg-sky-50 rounded-xl p-4 max-w-2xl mx-auto mb-4">
+      <p class="font-bold text-sky-700 mb-3">🤔 最後一步：快速反思（5 分）</p>
+
+      <p class="text-sm font-semibold mb-1">Q1｜上這堂課之前，你對「友善交通」的了解程度：</p>
+      <div id="stars-before" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q2｜上完這堂課後，你的了解程度：</p>
+      <div id="stars-after" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q3｜哪個關卡讓你印象最深刻？</p>
+      <div id="impact-opts">
+        <label class="opt"><input type="radio" name="impact" value="1"> 關卡 1：友善交通 vs 不友善交通配對</label>
+        <label class="opt"><input type="radio" name="impact" value="2"> 關卡 2：各種交通方式的廢氣比較圖</label>
+        <label class="opt"><input type="radio" name="impact" value="3"> 關卡 3：騎腳踏車帶來的連鎖效果</label>
+        <label class="opt"><input type="radio" name="impact" value="4"> 關卡 4：我的友善交通行動</label>
+      </div>
+      <p id="reflect-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div class="bg-yellow-50 rounded-xl p-4 text-left max-w-2xl mx-auto">
+      <h3 class="font-bold text-amber-700 mb-2">🧐 延伸思考小挑戰</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>你家附近有公車站或捷運站嗎？想一想，下次出門可以試試看搭嗎？</li>
+        <li>如果全班同學改成走路或騎車上學，你覺得學校附近的空氣會有什麼變化？</li>
+        <li>你願意邀請爸媽和你一起計畫一次「不開車的假日出遊」嗎？可以怎麼去？</li>
+      </ol>
+    </div>
+
+    <div class="nav-row max-w-2xl mx-auto mt-4">
+      <button class="btn btn-back" data-back="4">← 回到關卡 4</button>
+      <button onclick="location.reload()" class="btn bg-blue-500 text-white py-2 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+    </div>
+  </section>
+
 </div>
 
 <script>
-  let progress = 0;
-  const totalLvl = 5;
-  const earned = new Set();
+(() => {
+  const TOTAL_LEVELS = 4;
+  const S = { score: 0, current: 1, awarded: {} };
+  const el = id => document.getElementById(id);
+  const setScore = n => { S.score += n; el('score').textContent = S.score; };
+  const awardOnce = (key, pts) => { if (!S.awarded[key]) { S.awarded[key] = true; setScore(pts); } };
 
-  function setName(){
-    const v = document.getElementById('nameInput').value.trim();
-    if(v) document.getElementById('playerName').textContent = v;
-  }
-  function updateProg(){
-    const pct = Math.round(progress/totalLvl*100);
-    document.getElementById('progBar').style.width = pct+'%';
-    document.getElementById('progTxt').textContent = progress+' / '+totalLvl+' 關';
-    if(progress===totalLvl){
-      confetti({particleCount:180, spread:80, origin:{y:.6}});
+  const updateDots = () => {
+    for (let i = 1; i <= TOTAL_LEVELS + 1; i++) {
+      const d = el('dot-' + i); if (!d) continue;
+      d.classList.remove('active','done');
+      if (i < S.current) d.classList.add('done');
+      else if (i === S.current) d.classList.add('active');
     }
-  }
-  function award(id, label, color){
-    if(earned.has(id)) return;
-    earned.add(id);
-    progress++;
-    const el = document.createElement('span');
-    el.className = 'badge';
-    el.style.background = color;
-    el.style.color = '#fff';
-    el.innerHTML = '🏅 '+label;
-    document.getElementById('badges').appendChild(el);
-    confetti({particleCount:60, spread:55, origin:{y:.7}});
-    updateProg();
-  }
-  function showHint(id, txt){
-    const el = document.getElementById(id);
-    el.textContent = '💡 '+txt;
-    el.classList.remove('hidden');
-  }
+  };
 
-  /* 拖曳 Lvl1 */
-  document.querySelectorAll('.drag[data-a]').forEach(el=>{
-    el.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text', el.dataset.a + '|' + el.outerHTML); setTimeout(()=>el.style.display='none',0);});
-    el.addEventListener('dragend', e=>{ el.style.display=''; });
-  });
-  document.querySelectorAll('.drop').forEach(zone=>{
-    zone.addEventListener('dragover', e=>{e.preventDefault(); zone.classList.add('over');});
-    zone.addEventListener('dragleave', e=>zone.classList.remove('over'));
-    zone.addEventListener('drop', e=>{
-      e.preventDefault(); zone.classList.remove('over');
-      const [ans, html] = e.dataTransfer.getData('text').split('|');
-      const tmp = document.createElement('div'); tmp.innerHTML = html;
-      const chip = tmp.firstChild;
-      chip.dataset.placed = zone.dataset.type;
-      zone.appendChild(chip);
-      // rebind drag on placed chip
-      chip.addEventListener('dragstart', ev=>{ ev.dataTransfer.setData('text', chip.dataset.a + '|' + chip.outerHTML); setTimeout(()=>chip.style.display='none',0);});
+  const gotoLevel = n => {
+    document.querySelectorAll('section[id^="level-"]').forEach(s => s.classList.add('hidden-screen'));
+    S.current = n; el('step-label').textContent = Math.min(n, 4);
+    const target = (n > TOTAL_LEVELS) ? el('level-final') : el('level-' + n);
+    target.classList.remove('hidden-screen'); target.classList.add('fade-in');
+    updateDots(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  document.querySelectorAll('.btn-back').forEach(b => { b.onclick = () => gotoLevel(parseInt(b.dataset.back, 10)); });
+
+  const confetti = () => {
+    const colors = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6'];
+    for (let i = 0; i < 32; i++) {
+      const c = document.createElement('div'); c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw'; c.style.background = colors[i % colors.length];
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
+      document.body.appendChild(c); setTimeout(() => c.remove(), 2500);
+    }
+  };
+
+  const shuffleChildren = parent => {
+    const kids = Array.from(parent.children);
+    for (let i = kids.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); parent.appendChild(kids[j]); }
+  };
+
+  /* Level 1 */
+  shuffleChildren(el('items-box-1')); shuffleChildren(el('zones-box-1'));
+  let dragged1 = null, l1Correct = 0;
+  const total1 = document.querySelectorAll('#items-box-1 .drag-item').length;
+
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged1 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#items-box-1 .drag-item').forEach(x => x.classList.remove('ring-4','ring-blue-400'));
+      item.classList.add('ring-4','ring-blue-400'); dragged1 = item;
     });
   });
-  function checkLvl1(){
-    const chips = document.querySelectorAll('[data-placed]');
-    let ok=0, total=0, miss=[];
-    document.querySelectorAll('.drag[data-a]').forEach(c=>{
-      if(!c.dataset.placed) return;
-      total++;
-      if(c.dataset.placed===c.dataset.a){ ok++; c.classList.add('right'); c.classList.remove('wrong'); }
-      else { c.classList.add('wrong'); c.classList.remove('right'); miss.push(c.textContent.trim()); }
-    });
-    if(total < 9){ showHint('hint1','還有卡片沒拖！請全部放入後再檢查。'); return; }
-    if(ok===total){ showHint('hint1','太棒了！走路、自行車、大眾運輸是最永續的選項。'); award('b1','分類達人','#0ea5e9'); }
-    else { showHint('hint1','再想想：短程飛機＆單人開車碳排非常高；共乘電動車比單人汽油車永續。錯的：'+miss.join('、')); }
-  }
 
-  /* Lvl2 排序：點兩下上移 */
-  document.querySelectorAll('#rankList .drag').forEach(li=>{
-    li.addEventListener('dblclick', ()=>{
-      const p = li.parentNode, prev = li.previousElementSibling;
-      if(prev) p.insertBefore(li, prev);
-    });
-    li.setAttribute('draggable','true');
-    li.addEventListener('dragstart', e=> e.dataTransfer.setData('text', li.dataset.v));
-    li.addEventListener('dragover', e=>e.preventDefault());
-    li.addEventListener('drop', e=>{
-      e.preventDefault();
-      const v = e.dataTransfer.getData('text');
-      const src = [...document.querySelectorAll('#rankList .drag')].find(x=>x.dataset.v===v);
-      if(src && src!==li) li.parentNode.insertBefore(src, li);
-    });
+  document.querySelectorAll('#zones-box-1 .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop1(zone); });
+    zone.addEventListener('click', () => { if (dragged1) handleDrop1(zone); });
   });
-  function checkLvl2(){
-    const vals = [...document.querySelectorAll('#rankList .drag')].map(x=>+x.dataset.v);
-    const sorted = vals.every((v,i,a)=> i===0 || a[i-1] <= v);
-    if(sorted){ showHint('hint2','完美！從 0 → 275 g，排放差了將近 10 倍。'); award('b2','數據排序王','#f59e0b'); }
-    else { showHint('hint2','提示：飛機最高，步行最低；捷運<公車<汽車。試著用兩隻眼睛比較 g 值！'); }
-  }
 
-  /* Lvl3 計算 */
-  function calcLvl3(){
-    const km = +document.getElementById('km').value || 0;
-    const d = +document.getElementById('days').value || 0;
-    const saved = (km * 0.17 * d).toFixed(2);
-    const weeks = (saved*52/1000).toFixed(2);
-    document.getElementById('lvl3out').innerHTML =
-      `🌱 一週可減約 <b>${saved} kg CO₂</b>，一年約 <b>${(saved*52).toFixed(1)} kg</b>，等於種 <b>${weeks}</b> 棵小樹一年吸收量！`;
-    if(km>0 && d>0){ showHint('hint3','算得不錯！試著把挑戰拉長到 5 天，看看減量翻倍。'); award('b3','減碳計算機','#6366f1'); }
-    else { showHint('hint3','請輸入公里數與天數再按計算。'); }
-  }
-
-  /* Lvl4 Quiz */
-  const Q = [
-    {q:'電動車＝完全零碳？', opts:['對','錯'], a:1, hint:'電池製造仍耗資源；電動車低碳 50–70%，但不是零。'},
-    {q:'走路太慢不實用？', opts:['對','錯'], a:1, hint:'3 km 內走路常常比開車＋找停車位更快。'},
-    {q:'小孩不能影響家庭交通選擇？', opts:['對','錯'], a:1, hint:'兒童是家庭決策的重要影響者，提出建議常能改變全家。'},
-    {q:'大眾運輸每人每公里碳排比私人汽車低多少？', opts:['1/2','1/5 到 1/10','完全一樣'], a:1, hint:'以北捷 30 g vs 汽車 200 g 為例，約為 1/7。'}
-  ];
-  const qbox = document.getElementById('quiz');
-  Q.forEach((q,i)=>{
-    const html = `<div class="p-3 bg-rose-50 rounded"><p><b>Q${i+1}. ${q.q}</b></p>`+
-      q.opts.map((o,j)=>`<label class="mr-3"><input type="radio" name="q${i}" value="${j}"/> ${o}</label>`).join('')+
-      `<p class="text-xs text-slate-500 mt-1" id="fb${i}"></p></div>`;
-    qbox.insertAdjacentHTML('beforeend', html);
-  });
-  function checkLvl4(){
-    let ok=0;
-    Q.forEach((q,i)=>{
-      const sel = document.querySelector(`input[name=q${i}]:checked`);
-      const fb = document.getElementById('fb'+i);
-      if(!sel){ fb.textContent='（未作答）'; return; }
-      if(+sel.value===q.a){ fb.innerHTML='<span class="text-emerald-700">✅ 正確</span>'; ok++; }
-      else { fb.innerHTML='❌ '+q.hint; }
-    });
-    if(ok===Q.length){ showHint('hint4','全對！你已成功破解迷思。'); award('b4','迷思破解者','#e11d48'); }
-    else { showHint('hint4',`答對 ${ok}/${Q.length}。看紅字提示再試一次！`); }
-  }
-
-  /* Lvl5 WSA */
-  function checkLvl5(){
-    const boxes = [...document.querySelectorAll('.wsa')];
-    const texts = [...document.querySelectorAll('section.card textarea')];
-    const wsaTexts = texts.slice(0,4);
-    const allChecked = boxes.every(b=>b.checked);
-    const allFilled = wsaTexts.every(t=>t.value.trim().length>3);
-    if(allChecked && allFilled){
-      showHint('hint5','申請通過！你完成了 WSA 四面向 — 課程、校園、社群、治理。');
-      award('b5','WSA 全校英雄 🌟','#059669');
-      confetti({particleCount:250, spread:100, origin:{y:.5}, colors:['#10b981','#0ea5e9','#f59e0b','#e11d48']});
+  function handleDrop1(zone) {
+    if (!dragged1) return;
+    const fb = el('l1-feedback');
+    if (dragged1.dataset.match === zone.dataset.accept) {
+      zone.querySelector('.dz-items').appendChild(dragged1);
+      dragged1.setAttribute('draggable','false');
+      dragged1.classList.remove('ring-4','ring-blue-400','bg-blue-100','border-blue-400');
+      dragged1.classList.add('bg-green-100','border-green-500','pop');
+      l1Correct++;
+      fb.textContent = '答對！ 👏'; fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+      confetti();
+      if (l1Correct === total1) {
+        awardOnce('L1', 15);
+        const btn = el('btn-next-1'); btn.disabled = false;
+        btn.className = 'btn bg-blue-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(2);
+        fb.textContent = '全部答對！阿行為你拍手！🎉 +15 分';
+      }
     } else {
-      const miss = [];
-      if(!allChecked) miss.push('勾選四個面向');
-      if(!allFilled) miss.push('每個面向都要寫具體行動（>3 字）');
-      showHint('hint5','還差一點：'+miss.join('；'));
+      dragged1.classList.add('shake'); setTimeout(() => dragged1.classList.remove('shake'), 400);
+      fb.textContent = '再想想！友善交通是「少排廢氣」，走路、騎車、共乘都算 💡';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
     }
+    dragged1 = null;
   }
 
-  updateProg();
+  /* Level 2 */
+  let q1Done = false, q2Done = false;
+  const checkL2ready = () => {
+    const ready = q1Done && q2Done; const btn = el('btn-next-2');
+    btn.disabled = !ready; if (ready) btn.className = 'btn bg-blue-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=q1]').forEach(r => {
+    r.onchange = () => {
+      if (q1Done) return;
+      document.querySelectorAll('#q1-opts .opt').forEach(o => o.classList.remove('sel','correct','wrong'));
+      r.parentElement.classList.add(r.value === '1' ? 'correct' : 'wrong');
+      const fb = el('q1-fb');
+      if (r.value === '1') { fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 對！走路和腳踏車幾乎是零排放。+5 分</span>'; awardOnce('L2-q1', 5); q1Done = true; }
+      else fb.innerHTML = '<span class="text-rose-600">❌ 再看看圖，哪兩根柱子幾乎高度是 0？</span>';
+      checkL2ready();
+    };
+  });
+
+  let q2Submitted = false;
+  document.querySelectorAll('#q2-opts input[type=checkbox]').forEach(cb => {
+    cb.onchange = () => {
+      if (q2Submitted) return;
+      const checked = document.querySelectorAll('#q2-opts input:checked');
+      const fb = el('q2-fb');
+      if (checked.length >= 1) { fb.textContent = `已選 ${checked.length} 項。覺得選好了嗎？`; q2Done = true; }
+      else q2Done = false;
+      checkL2ready();
+    };
+  });
+
+  el('btn-next-2').onclick = () => {
+    if (q2Submitted) { gotoLevel(3); return; }
+    q2Submitted = true;
+    const opts = document.querySelectorAll('#q2-opts input');
+    let correctCount = 0, wrongCount = 0;
+    opts.forEach(o => {
+      o.disabled = true; const lbl = o.parentElement;
+      if (o.checked) { if (o.dataset.correct === '1') { lbl.classList.add('correct'); correctCount++; } else { lbl.classList.add('wrong'); wrongCount++; } }
+    });
+    const pts = Math.max(0, correctCount * 5 - wrongCount * 5);
+    awardOnce('L2-q2', Math.min(pts, 15));
+    const fb = el('q2-fb');
+    if (wrongCount === 0 && correctCount >= 2) { fb.innerHTML = `<span class="text-emerald-700 font-bold">✅ 棒！勾對 ${correctCount} 項。+${Math.min(pts,15)} 分</span>`; confetti(); }
+    else if (correctCount >= 1) { fb.innerHTML = `<span class="text-amber-600">勾對 ${correctCount} 項、錯 ${wrongCount} 項。大家改用腳踏車，車子反而會變少喔！</span>`; if (pts > 0) confetti(); }
+    else fb.innerHTML = '<span class="text-rose-600">❌ 都沒有勾到正確的！仔細想想什麼是友善交通的好處。</span>';
+    el('btn-next-2').textContent = '繼續下一關 →';
+    el('btn-next-2').onclick = () => gotoLevel(3);
+  };
+
+  /* Level 3 */
+  shuffleChildren(el('chain-items'));
+  let dragged3 = null, l3SlotsFilled = 0;
+  const slotMap = {}, correctOrder = { '1':'1','2':'2','3':'3','4':'4' };
+
+  document.querySelectorAll('#chain-items .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged3 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#chain-items .drag-item').forEach(x => x.classList.remove('ring-4','ring-blue-400'));
+      item.classList.add('ring-4','ring-blue-400'); dragged3 = item;
+    });
+  });
+
+  document.querySelectorAll('#chain-slots .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop3(zone); });
+    zone.addEventListener('click', () => { if (dragged3) handleDrop3(zone); });
+  });
+
+  function handleDrop3(zone) {
+    if (!dragged3) return;
+    const slot = zone.dataset.slot, chainVal = dragged3.dataset.chain, fb = el('l3-feedback');
+    if (slotMap[slot]) { fb.textContent = '這格已經有卡片了！先試試其他格子。'; fb.className = 'mt-3 text-center font-bold min-h-[24px] text-amber-600'; dragged3 = null; return; }
+    if (correctOrder[slot] === chainVal) {
+      slotMap[slot] = chainVal;
+      const slotText = zone.querySelector('.slot-text');
+      slotText.textContent = dragged3.textContent.trim();
+      slotText.classList.remove('text-slate-400'); slotText.classList.add('text-slate-800','font-bold','pop');
+      zone.classList.add('bg-green-50'); zone.style.borderColor = '#10b981';
+      dragged3.style.visibility = 'hidden'; l3SlotsFilled++;
+      fb.textContent = '對了！ 🎉 繼續放下一張！'; fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600';
+      if (l3SlotsFilled === 4) {
+        awardOnce('L3', 20); fb.textContent = '完美！全部順序正確！ +20 分 🔥'; confetti();
+        const btn = el('btn-next-3'); btn.disabled = false;
+        btn.className = 'btn bg-blue-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(4);
+      }
+    } else {
+      zone.classList.add('shake'); setTimeout(() => zone.classList.remove('shake'), 400);
+      fb.textContent = '順序不對喔！提示：第 ① 格是「阿行決定騎腳踏車」。';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged3 = null;
+  }
+
+  /* Level 4 */
+  const actionBank = {
+    school: ['試試看走路上學一次，感受一下時間和感覺', '和住附近的同學約好一起騎腳踏車上學', '調查一下搭公車上學要多久，回家跟爸媽說'],
+    nearby: ['去離家不遠的地方時，告訴爸媽「我走路去就好了」', '和爸媽一起看看哪些地方走路不超過 15 分鐘', '和朋友相約走路去公園，順便聊天'],
+    weekend: ['下次出遊前，先查一下有沒有公車或捷運可以搭', '提議和家人坐火車或公車去一個沒去過的地方', '規劃一趟「不開車的假日半日遊」，和爸媽一起討論'],
+    spread: ['告訴班上同學走路或騎車上學的好處', '做一張「學校附近步行地圖」，標出好走的路線', '和同學討論哪些地方大家可以一起搭公車']
+  };
+
+  let themePicked = null, actionPicked = false, promiseCount = 0;
+  const checkL4ready = () => {
+    const ready = themePicked && actionPicked && promiseCount >= 2;
+    const btn = el('btn-next-4'); btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-blue-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=theme]').forEach(r => {
+    r.onchange = () => {
+      themePicked = r.value;
+      document.querySelectorAll('#theme-opts .opt').forEach(o => o.classList.remove('sel')); r.parentElement.classList.add('sel');
+      const wrap = el('action-wrap'), box = el('action-opts'); box.innerHTML = ''; actionPicked = false;
+      actionBank[themePicked].forEach(txt => {
+        const lbl = document.createElement('label'); lbl.className = 'opt';
+        lbl.innerHTML = `<input type="radio" name="action"> ${txt}`;
+        lbl.querySelector('input').onchange = () => {
+          document.querySelectorAll('#action-opts .opt').forEach(o => o.classList.remove('sel')); lbl.classList.add('sel');
+          actionPicked = true; el('action-fb').innerHTML = '<span class="text-emerald-700">✅ 好主意！繼續下一步～</span>';
+          el('promise-wrap').classList.remove('hidden'); checkL4ready();
+        };
+        box.appendChild(lbl);
+      });
+      wrap.classList.remove('hidden'); el('promise-wrap').classList.add('hidden'); checkL4ready();
+    };
+  });
+
+  document.querySelectorAll('.promise-cb').forEach(cb => {
+    cb.onchange = () => {
+      promiseCount = document.querySelectorAll('.promise-cb:checked').length;
+      const fb = el('promise-fb');
+      if (promiseCount < 2) fb.textContent = `已選 ${promiseCount}/4，請至少選 2 個 😊`;
+      else fb.textContent = `選了 ${promiseCount} 個承諾！太棒了！`;
+      checkL4ready();
+    };
+  });
+
+  el('btn-next-4').onclick = () => { awardOnce('L4', 20); confetti(); showFinal(); };
+
+  function showFinal() {
+    gotoLevel(TOTAL_LEVELS + 1); el('final-score').textContent = S.score;
+    const box = el('badges'); box.innerHTML = '';
+    const earned = [];
+    if (S.awarded['L1']) earned.push('🚲 交通分類達人');
+    if (S.awarded['L2-q1'] || S.awarded['L2-q2']) earned.push('📊 廢氣觀察家');
+    if (S.awarded['L3']) earned.push('🌿 連鎖效果思考王');
+    if (S.awarded['L4']) earned.push('🚌 友善交通行動者');
+    if (earned.length === 0) earned.push('🌟 交通小達人');
+    earned.forEach(b => {
+      const chip = document.createElement('span');
+      chip.className = 'bg-blue-100 border-2 border-blue-400 rounded-full px-3 py-1 text-sm font-bold pop';
+      chip.textContent = b; box.appendChild(chip);
+    });
+    confetti();
+  }
+
+  /* Final reflection */
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+  const setupStars = (wrapId, setter) => {
+    const wrap = el(wrapId);
+    wrap.querySelectorAll('.star').forEach(s => {
+      s.onclick = () => {
+        const v = parseInt(s.dataset.val, 10); setter(v);
+        wrap.querySelectorAll('.star').forEach(x => x.classList.toggle('on', parseInt(x.dataset.val,10) <= v));
+        checkReflect();
+      };
+    });
+  };
+  setupStars('stars-before', v => starBefore = v);
+  setupStars('stars-after', v => starAfter = v);
+
+  document.querySelectorAll('input[name=impact]').forEach(r => {
+    r.onchange = () => {
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o => o.classList.remove('sel')); r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+
+  function checkReflect() {
+    const ok = starBefore > 0 && starAfter > 0 && impactPicked;
+    const fb = el('reflect-fb');
+    if (ok) { fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 反思完成！+5 分 🌟</span>'; awardOnce('FINAL', 5); el('final-score').textContent = S.score; }
+    else fb.textContent = '請完成三題反思（★ 前後了解度 + 印象最深的關卡）';
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

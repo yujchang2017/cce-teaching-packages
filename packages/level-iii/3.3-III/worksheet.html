@@ -1,266 +1,691 @@
-<!doctype html>
-<html lang="zh-TW">
+<!DOCTYPE html>
+<html lang="zh-Hant">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>3.3-III 時光機大冒險 ｜ 殖民、工業化與氣候正義</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>時光機大冒險小旭的旅程 | 互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <style>
-  body{font-family:"Noto Sans TC","PingFang TC",system-ui,sans-serif}
-  .card{transition:transform .2s, box-shadow .2s}
-  .card:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(0,0,0,.08)}
-  .badge{animation:pop .5s ease-out}
-  @keyframes pop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
-  .pg{height:12px;background:#e5e7eb;border-radius:999px;overflow:hidden}
-  .pg > div{height:100%;background:linear-gradient(90deg,#f59e0b,#ef4444);transition:width .4s}
-  .tab-on{background:#1e3a8a;color:#fff}
-  details summary::-webkit-details-marker{display:none}
-  details[open] summary .arr{transform:rotate(90deg)}
-  .arr{display:inline-block;transition:transform .2s}
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#fef3c7,#fde8d8,#e0e7ff); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:110px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#f59e0b; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.95rem;}
+  .opt:hover { background:#fefce8; }
+  .opt.sel { border-color:#f59e0b; background:#fef3c7;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.5rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
-<body class="bg-amber-50 text-gray-800">
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 
-<header class="bg-gradient-to-r from-orange-700 via-red-600 to-rose-700 text-white p-6 shadow-lg">
-  <h1 class="text-3xl font-bold">時光機大冒險 <span class="text-yellow-200">🕰️</span></h1>
-  <p class="mt-1 opacity-90">UNESCO 3.3-III｜殖民、工業化與氣候正義｜9-12 歲</p>
-  <div class="mt-4 flex items-center gap-3">
-    <span class="text-sm">進度</span>
-    <div class="pg flex-1 max-w-xl"><div id="pgBar" style="width:0%"></div></div>
-    <span id="pgTxt" class="text-sm font-bold">0 / 5 關</span>
-  </div>
-  <p class="mt-2 text-sm">角色：你是「歷史偵探」！解開 5 個關卡，領取 <b>全校英雄徽章</b> 🏅</p>
-</header>
+<div class="max-w-3xl mx-auto">
 
-<main class="max-w-5xl mx-auto p-6 space-y-8">
-
-<!-- 情境角色 -->
-<section class="bg-white rounded-2xl p-6 shadow">
-  <h2 class="text-xl font-bold text-orange-800">🎭 你的任務情境</h2>
-  <p class="mt-2">2050 年，聯合國邀請你擔任「歷史氣候偵探」。你要搭時光機回到 1760 年、1882 年、1930 年、2022 年，找出氣候不正義的源頭，最後帶回一份行動建議書給台灣政府。準備好了嗎？</p>
-</section>
-
-<!-- 關卡 1：歷史排放拼圖 -->
-<section id="s1" class="card bg-white rounded-2xl p-6 shadow">
-  <h2 class="text-xl font-bold text-rose-800">🧩 關卡 1：歷史排放大拼圖（互動一）</h2>
-  <p class="text-sm text-gray-600 mt-1">把下列國家拖到對應的歷史排放占比。</p>
-  <div class="grid md:grid-cols-2 gap-4 mt-4">
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
     <div>
-      <p class="font-semibold mb-2">國家卡</p>
-      <div id="bank" class="flex flex-wrap gap-2"></div>
+      <h1 class="text-2xl md:text-3xl font-bold text-orange-700">🕰️ 時光機大冒險小旭的旅程</h1>
+      <p class="text-sm text-slate-600 mt-1">搭時光機和小旭一起找出氣候問題的來龍去脈，成為歷史偵探！</p>
     </div>
-    <div>
-      <p class="font-semibold mb-2">放到正確的比例（1751-至今）</p>
-      <div class="space-y-2">
-        <div class="drop border-2 border-dashed rounded-lg p-3" data-ans="美國">25% ⟵ <span class="slot text-gray-400">放這裡</span></div>
-        <div class="drop border-2 border-dashed rounded-lg p-3" data-ans="歐盟">22% ⟵ <span class="slot text-gray-400">放這裡</span></div>
-        <div class="drop border-2 border-dashed rounded-lg p-3" data-ans="非洲">&lt; 3% ⟵ <span class="slot text-gray-400">放這裡</span></div>
-        <div class="drop border-2 border-dashed rounded-lg p-3" data-ans="英國(1882前)">1882 前 &gt; 50% ⟵ <span class="slot text-gray-400">放這裡</span></div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3 flex-wrap">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-2 text-sm text-slate-600">關卡 <span id="step-label">1</span> / 4</span>
+  </div>
+
+  <!-- ===== Level 1: 時代 vs 影響 配對 (15 pts) ===== -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🕰️</div>
+      <div>
+        <h2 class="text-xl font-bold text-orange-700">關卡 1：時光機配對——哪個時代留下了什麼？</h2>
+        <p class="text-sm text-slate-700 mt-1">小旭坐上時光機，發現不同年代的人類生活方式，對地球的影響很不一樣！把卡片拖到正確的年代籃子裡。</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 15 分｜全部放對才能前往下一關</p>
       </div>
     </div>
-  </div>
-  <p class="mt-3 text-sm"><b>真實數據來源</b>：Our World in Data / Global Carbon Project（dp1, dp2, dp3）</p>
-  <div id="hint1" class="hidden mt-2 p-3 bg-amber-100 rounded text-sm">💡 提示：工業革命從哪個國家開始？那個國家在 1882 前排了很多！</div>
-  <button onclick="check1()" class="mt-3 px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700">提交答案</button>
-  <div id="fb1" class="mt-2"></div>
-</section>
 
-<!-- 關卡 2：時間軸連連看 -->
-<section id="s2" class="card bg-white rounded-2xl p-6 shadow">
-  <h2 class="text-xl font-bold text-amber-800">⏱️ 關卡 2：台灣歷史時間軸（互動二）</h2>
-  <p class="text-sm text-gray-600 mt-1">為每個年代選擇正確的事件（單選題）</p>
-  <div class="space-y-4 mt-4">
-    <div>
-      <p class="font-semibold">① 1895 年</p>
-      <div class="flex flex-col gap-1 mt-1">
-        <label><input type="radio" name="q2_1" value="a"> A. 台灣獨立建國</label>
-        <label><input type="radio" name="q2_1" value="b"> B. 日治開始，定位「工業日本、農業台灣」</label>
-        <label><input type="radio" name="q2_1" value="c"> C. 台灣加入聯合國</label>
+    <!-- Drag items -->
+    <div class="grid grid-cols-2 gap-3 my-3" id="items-box-1">
+      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="old">🐎 人們靠馬車、牛耕田，幾乎不燒煤</div>
+      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="now">🚗 全球有超過 10 億輛車在跑</div>
+      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="old">🌳 森林幾乎沒被砍，空氣很清新</div>
+      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="now">🏭 工廠和電廠每天燒大量化石燃料</div>
+      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="old">🧺 衣服手工做、很少丟棄，垃圾很少</div>
+      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="now">👕 快時尚讓人們每年丟掉幾十億件衣服</div>
+    </div>
+
+    <!-- Drop zones -->
+    <div class="grid grid-cols-2 gap-3" id="zones-box-1">
+      <div class="drop-zone bg-green-50 p-3" data-accept="old">
+        <div class="font-bold text-green-700 text-center mb-2">🌿 以前的生活方式<br><span class="text-xs font-normal text-green-500">（大約 200 年前以前）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-orange-50 p-3" data-accept="now">
+        <div class="font-bold text-orange-700 text-center mb-2">🏙️ 現代的生活方式<br><span class="text-xs font-normal text-orange-500">（工業化之後到現在）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
       </div>
     </div>
-    <div>
-      <p class="font-semibold">② 1930 年代</p>
-      <div class="flex flex-col gap-1 mt-1">
-        <label><input type="radio" name="q2_2" value="a"> A. 原住民族「集團移住」政策，被迫遷離山林</label>
-        <label><input type="radio" name="q2_2" value="b"> B. 台灣第一間核電廠啟用</label>
-        <label><input type="radio" name="q2_2" value="c"> C. 捷運開通</label>
+
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <span></span>
+      <button id="btn-next-1" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>完成分類才能繼續 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 2: 看圖找答案 (20 pts) ===== -->
+  <section id="level-2" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">📈</div>
+      <div>
+        <h2 class="text-xl font-bold text-orange-700">關卡 2：看圖找答案</h2>
+        <p class="text-sm text-slate-700 mt-1">小旭找到一張圖，顯示全球二氧化碳排放量從 200 年前到現在的變化。仔細看，回答兩題！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜Q1 單選 5 分 + Q2 多選 15 分</p>
       </div>
     </div>
-    <div>
-      <p class="font-semibold">③ 1960-1980 年代</p>
-      <div class="flex flex-col gap-1 mt-1">
-        <label><input type="radio" name="q2_3" value="a"> A. 綠能全面取代化石燃料</label>
-        <label><input type="radio" name="q2_3" value="b"> B. 台灣以石化紡織等高耗能產業經濟起飛</label>
-        <label><input type="radio" name="q2_3" value="c"> C. 全國推行素食運動</label>
+
+    <!-- SVG: CO2 emission timeline -->
+    <svg viewBox="0 0 400 190" class="w-full max-w-lg mx-auto block bg-slate-50 rounded-xl mb-4 border border-slate-200">
+      <text x="200" y="18" font-size="11" fill="#475569" text-anchor="middle" font-weight="bold">全球碳排放量變化趨勢（示意圖）</text>
+      <!-- Axes -->
+      <line x1="50" y1="155" x2="380" y2="155" stroke="#475569" stroke-width="1.5"/>
+      <line x1="50" y1="30" x2="50" y2="155" stroke="#475569" stroke-width="1.5"/>
+      <!-- X labels -->
+      <text x="50" y="170" font-size="9" fill="#64748b" text-anchor="middle">1800</text>
+      <text x="130" y="170" font-size="9" fill="#64748b" text-anchor="middle">1850</text>
+      <text x="210" y="170" font-size="9" fill="#64748b" text-anchor="middle">1900</text>
+      <text x="295" y="170" font-size="9" fill="#64748b" text-anchor="middle">1950</text>
+      <text x="375" y="170" font-size="9" fill="#64748b" text-anchor="middle">2020</text>
+      <!-- Y labels -->
+      <text x="5" y="158" font-size="9" fill="#64748b">少</text>
+      <text x="5" y="40" font-size="9" fill="#64748b">多</text>
+      <!-- Emission curve (exponential-like) -->
+      <polyline fill="none" stroke="#ef4444" stroke-width="2.5"
+        points="50,152 80,151 110,150 140,148 170,145 200,140 230,128 260,108 295,78 340,48 375,32"/>
+      <!-- Key annotation -->
+      <text x="260" y="44" font-size="10" fill="#dc2626" font-weight="bold">急速上升！</text>
+      <text x="260" y="56" font-size="9" fill="#94a3b8">（大量使用化石燃料）</text>
+      <!-- Arrow pointing at steep rise -->
+      <line x1="270" y1="60" x2="310" y2="72" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arr)"/>
+    </svg>
+
+    <!-- Q1: Single choice -->
+    <div class="mb-5">
+      <p class="font-bold text-sm mb-2">📌 Q1：從這張圖可以看出什麼？（單選，5 分）</p>
+      <div id="q1-opts">
+        <label class="opt"><input type="radio" name="q1" value="0"> A. 以前的人排放比現在多，因為他們燒更多木柴。</label>
+        <label class="opt"><input type="radio" name="q1" value="1"> B. 大約從工廠和機器大量使用以後，碳排放才急速增加。</label>
+        <label class="opt"><input type="radio" name="q1" value="0"> C. 排放量一直都一樣，沒有什麼變化。</label>
+      </div>
+      <p id="q1-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <!-- Q2: Multi-select -->
+    <div class="mb-3">
+      <p class="font-bold text-sm mb-1">📌 Q2：下面哪些是讓碳排放在現代快速增加的原因？<br><span class="font-normal text-slate-500 text-xs">（可以勾多個你覺得有道理的）</span></p>
+      <div id="q2-opts">
+        <label class="opt"><input type="checkbox" data-correct="1"> 🏭 越來越多工廠用燃煤發電</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> ✈️ 搭飛機和開車的人越來越多</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> 🐄 農村的牛變多了（牛打嗝也排碳，但這不是最主要原因）</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 🛍️ 大量生產和購買東西，製造過程消耗大量能源</label>
+      </div>
+      <p id="q2-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="1">← 上一關</button>
+      <button id="btn-next-2" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>提交答案 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 3: 推一推！誰的責任比較大？ (20 pts) ===== -->
+  <section id="level-3" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🤔</div>
+      <div>
+        <h2 class="text-xl font-bold text-orange-700">關卡 3：推一推！誰的責任比較大？</h2>
+        <p class="text-sm text-slate-700 mt-1">小旭說：「從時光機回來，我發現排放問題已經累積了很久。那麼，現在應該怎麼辦呢？」選一個你最認同的說法！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜選擇最合理的做法</p>
       </div>
     </div>
-  </div>
-  <p class="mt-3 text-sm"><b>真實數據來源</b>：國家發展委員會台灣經濟發展史（dp6, dp7）</p>
-  <button onclick="check2()" class="mt-3 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700">提交答案</button>
-  <div id="fb2" class="mt-2"></div>
-</section>
 
-<!-- 關卡 3：翹翹板滑桿（互動三） -->
-<section id="s3" class="card bg-white rounded-2xl p-6 shadow">
-  <h2 class="text-xl font-bold text-blue-800">⚖️ 關卡 3：公平翹翹板（互動三）</h2>
-  <p class="text-sm text-gray-600 mt-1">滑動下列滑桿，看看「排放」與「受害」之間的落差有多大。</p>
-  <div class="mt-4 space-y-4">
-    <div>
-      <label class="font-semibold">最低度開發國家（LDCs）46 國：占全球人口？</label>
-      <input id="s3a" type="range" min="1" max="30" value="14" class="w-full">
-      <p>你的答案：<b id="s3av">14</b>%　(真實：14%)</p>
+    <div class="flex flex-col gap-3 my-4" id="l3-choices">
+      <button class="btn text-left p-4 bg-slate-100 border-2 border-slate-300 rounded-xl hover:bg-orange-50 hover:border-orange-300" data-c="a">
+        <span class="font-bold">A.</span> 過去的事不用管！現在只要每個人都一起從零開始就好了。
+      </button>
+      <button class="btn text-left p-4 bg-slate-100 border-2 border-slate-300 rounded-xl hover:bg-orange-50 hover:border-orange-300" data-c="b">
+        <span class="font-bold">B.</span> 工業化更早、排了更多的地方，應該負多一點責任來幫助受害的地方；排得少的人，也可以從身邊小事開始改變。
+      </button>
+      <button class="btn text-left p-4 bg-slate-100 border-2 border-slate-300 rounded-xl hover:bg-orange-50 hover:border-orange-300" data-c="c">
+        <span class="font-bold">C.</span> 這都是大人的問題，小孩子什麼都不用做。
+      </button>
     </div>
-    <div>
-      <label class="font-semibold">LDCs 占全球碳排放？</label>
-      <input id="s3b" type="range" min="0" max="20" value="1" class="w-full">
-      <p>你的答案：<b id="s3bv">1</b>%　(真實：1%)</p>
+
+    <div id="l3-story" class="bg-amber-50 rounded-xl p-4 min-h-[60px] text-sm text-slate-700"></div>
+    <p id="l3-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="2">← 上一關</button>
+      <button id="btn-next-3" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>下一關 →</button>
     </div>
-    <div>
-      <label class="font-semibold">LDCs 氣候災害死亡率是其他國家的幾倍？</label>
-      <input id="s3c" type="range" min="1" max="30" value="15" class="w-full">
-      <p>你的答案：<b id="s3cv">15</b> 倍　(真實：15 倍)</p>
+  </section>
+
+  <!-- ===== Level 4: 我的行動 (20 pts) ===== -->
+  <section id="level-4" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">💪</div>
+      <div>
+        <h2 class="text-xl font-bold text-orange-700">關卡 4：我的行動方案</h2>
+        <p class="text-sm text-slate-700 mt-1">小旭說：「了解歷史很重要，但改變從現在開始！先選你最想行動的方向，再選最適合你的做法！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜選主題 + 選行動 + 立下承諾</p>
+      </div>
     </div>
-  </div>
-  <p class="mt-3 text-sm"><b>真實數據來源</b>：UN OHRLLS；IPCC AR6 WGII（dp5）</p>
-  <details class="mt-3"><summary class="cursor-pointer text-blue-700"><span class="arr">▶</span> 點我看反思提示</summary>
-    <div class="mt-2 p-3 bg-blue-50 rounded text-sm">排越少、死越多——這是歷史遺留下的結構。現在我們能做什麼？</div>
-  </details>
-  <button onclick="check3()" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">確認完成</button>
-  <div id="fb3" class="mt-2"></div>
-</section>
 
-<!-- 關卡 4：迷思終結者（引導錯答） -->
-<section id="s4" class="card bg-white rounded-2xl p-6 shadow">
-  <h2 class="text-xl font-bold text-purple-800">🔍 關卡 4：迷思終結者</h2>
-  <p class="text-sm text-gray-600 mt-1">選出「錯誤」的說法（單選）</p>
-  <div class="mt-3 space-y-2">
-    <label class="block p-2 rounded hover:bg-purple-50"><input type="radio" name="q4" value="a"> A. 工業化國家現在減碳就好，過去的排放不用算。</label>
-    <label class="block p-2 rounded hover:bg-purple-50"><input type="radio" name="q4" value="b"> B. IPCC AR6 已把殖民列為氣候脆弱度的成因之一。</label>
-    <label class="block p-2 rounded hover:bg-purple-50"><input type="radio" name="q4" value="c"> C. 2022 年 COP27 成立「損失與損害基金」。</label>
-    <label class="block p-2 rounded hover:bg-purple-50"><input type="radio" name="q4" value="d"> D. CO2 在大氣中停留很久，歷史排放對今天仍有影響。</label>
-  </div>
-  <button onclick="check4()" class="mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">提交</button>
-  <div id="fb4" class="mt-2"></div>
-</section>
+    <!-- Step 1: 選主題 -->
+    <div class="mb-4">
+      <p class="font-bold text-sm mb-2">① 你最想先從哪個方向開始？（選一個）</p>
+      <div id="theme-opts">
+        <label class="opt"><input type="radio" name="theme" value="reduce"> ♻️ 減少消費和浪費，從便當、衣服、玩具開始</label>
+        <label class="opt"><input type="radio" name="theme" value="energy"> ⚡ 減少家裡的用電，少用高耗電的東西</label>
+        <label class="opt"><input type="radio" name="theme" value="transport"> 🚶 上下學或出門改用更省能源的方式</label>
+        <label class="opt"><input type="radio" name="theme" value="share"> 📖 把今天學到的「歷史和氣候」故事告訴別人</label>
+      </div>
+    </div>
 
-<!-- 關卡 5：WSA 全校英雄行動設計 -->
-<section id="s5" class="card bg-gradient-to-br from-emerald-50 to-sky-50 rounded-2xl p-6 shadow border-2 border-emerald-300">
-  <h2 class="text-xl font-bold text-emerald-800">🏅 關卡 5：全校英雄行動設計（WSA 四面向）</h2>
-  <p class="text-sm text-gray-700 mt-1">勾選你今天承諾要推動的行動——四面向至少各勾 1 項，才能領徽章！</p>
-  <div class="grid md:grid-cols-2 gap-3 mt-4">
-    <label class="p-3 bg-white rounded-lg border flex gap-2"><input class="wsa" data-dim="gov" type="checkbox"><span><b>治理 Governance</b>：在班會提議把節能獎金優先補助需要的同學</span></label>
-    <label class="p-3 bg-white rounded-lg border flex gap-2"><input class="wsa" data-dim="edu" type="checkbox"><span><b>教學 Teaching & Learning</b>：在班級佈告欄張貼「歷史排放小故事」</span></label>
-    <label class="p-3 bg-white rounded-lg border flex gap-2"><input class="wsa" data-dim="ops" type="checkbox"><span><b>校園 Campus & Operations</b>：為教室冷氣標示「公平使用原則」</span></label>
-    <label class="p-3 bg-white rounded-lg border flex gap-2"><input class="wsa" data-dim="com" type="checkbox"><span><b>社區 Community Partnerships</b>：邀請在地原住民長者到校分享</span></label>
-  </div>
-  <div class="mt-4">
-    <label class="font-semibold">寫一句「給台灣決策者」的話：</label>
-    <textarea id="advocacy" class="w-full mt-1 p-2 border rounded" rows="2" placeholder="例：請把受害最深的人放在決策桌前。"></textarea>
-  </div>
-  <button onclick="check5()" class="mt-3 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">完成任務，領徽章！</button>
-  <div id="fb5" class="mt-2"></div>
-</section>
+    <!-- Step 2: 選行動 -->
+    <div id="action-wrap" class="hidden mb-4">
+      <p class="font-bold text-sm mb-2">② 這三個做法哪個最容易開始？（選一個）</p>
+      <div id="action-opts"></div>
+      <p id="action-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
 
-<!-- 徽章區 -->
-<section id="badgeBox" class="hidden text-center p-8 bg-yellow-100 rounded-2xl shadow-lg">
-  <div class="badge inline-block text-7xl">🏅</div>
-  <h3 class="text-2xl font-bold text-amber-900 mt-2">你獲得「全校英雄徽章」！</h3>
-  <p class="mt-1">你已經是讓世界變對的歷史偵探。</p>
-  <p class="mt-2 italic text-amber-800">「我們不為過去負責，但為未來負責。」</p>
-</section>
+    <!-- Step 3: 承諾 -->
+    <div id="promise-wrap" class="hidden bg-amber-50 rounded-xl p-4 mb-3">
+      <p class="font-bold text-sm mb-2">③ 在你能做到的事前打勾（至少選 2 個）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-amber-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會跟家人分享今天搭時光機發現的事</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-amber-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會記錄一週家裡最耗電的一件事，想辦法改善</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-amber-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會邀請同學一起做今天選的行動</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-amber-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會持續觀察身邊的消費和浪費，減少不必要的購買</span>
+      </label>
+      <p id="promise-fb" class="text-xs mt-2 text-slate-500 min-h-[18px]"></p>
+    </div>
 
-<footer class="text-center text-sm text-gray-500 py-6">資料來源：IPCC AR6 / Our World in Data / UN OHRLLS / UNFCCC / 國發會｜驗證日：2026-04-16</footer>
-</main>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="3">← 上一關</button>
+      <button id="btn-next-4" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>查看成果 🏆</button>
+    </div>
+  </section>
+
+  <!-- ===== Final: 反思 (5 pts) ===== -->
+  <section id="level-final" class="card p-6 hidden-screen fade-in">
+    <div class="text-6xl text-center pop">🏆</div>
+    <h2 class="text-2xl font-bold text-orange-700 mt-2 text-center">恭喜你和小旭完成時光機旅程！</h2>
+    <p class="text-slate-700 mt-1 text-center">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> / 80 分</p>
+
+    <!-- Badges -->
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <!-- Reflection (5 pts) -->
+    <div class="bg-amber-50 rounded-xl p-4 max-w-2xl mx-auto mb-4">
+      <p class="font-bold text-amber-700 mb-3">🤔 最後一步：快速反思（5 分）</p>
+
+      <p class="text-sm font-semibold mb-1">Q1｜上這堂課之前，你對「生活方式和氣候的關係」了解多少：</p>
+      <div id="stars-before" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q2｜上完這堂課後，你的了解程度：</p>
+      <div id="stars-after" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q3｜哪個關卡讓你印象最深刻？</p>
+      <div id="impact-opts">
+        <label class="opt"><input type="radio" name="impact" value="1"> 關卡 1：時代生活方式配對</label>
+        <label class="opt"><input type="radio" name="impact" value="2"> 關卡 2：碳排放趨勢圖</label>
+        <label class="opt"><input type="radio" name="impact" value="3"> 關卡 3：誰的責任比較大？</label>
+        <label class="opt"><input type="radio" name="impact" value="4"> 關卡 4：我的行動方案</label>
+      </div>
+      <p id="reflect-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <!-- Extension questions -->
+    <div class="bg-yellow-50 rounded-xl p-4 text-left max-w-2xl mx-auto">
+      <h3 class="font-bold text-amber-700 mb-2">🧐 延伸思考小挑戰</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>如果你爺爺奶奶小時候的生活方式，和現在很不一樣——你覺得哪個對地球更好？為什麼？</li>
+        <li>你家一週裡最常買的東西是什麼？這些東西從哪裡來、怎麼製造的，對環境有什麼影響？</li>
+        <li>如果你可以帶一件「現代發明」回到 100 年前，你會選什麼？為什麼？</li>
+      </ol>
+    </div>
+
+    <div class="nav-row max-w-2xl mx-auto mt-4">
+      <button class="btn btn-back" data-back="4">← 回到關卡 4</button>
+      <button onclick="location.reload()" class="btn bg-orange-500 text-white py-2 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+    </div>
+  </section>
+
+</div><!-- /max-w-3xl -->
 
 <script>
-const state={p1:false,p2:false,p3:false,p4:false,p5:false};
-function updatePg(){
-  const done=Object.values(state).filter(Boolean).length;
-  document.getElementById('pgBar').style.width=(done*20)+'%';
-  document.getElementById('pgTxt').textContent=done+' / 5 關';
-  if(done===5) fireBadge();
-}
-function fireBadge(){
-  document.getElementById('badgeBox').classList.remove('hidden');
-  if(window.confetti) confetti({particleCount:150,spread:80,origin:{y:.6}});
-  document.getElementById('badgeBox').scrollIntoView({behavior:'smooth'});
-}
+(() => {
+  /* ===================================================
+     Core state  (TOTAL_LEVELS = 4)
+     =================================================== */
+  const TOTAL_LEVELS = 4;
+  const S = { score: 0, current: 1, awarded: {} };
+  const el = id => document.getElementById(id);
 
-// 關卡 1：拖拉
-const answers=['美國','歐盟','非洲','英國(1882前)'];
-const bank=document.getElementById('bank');
-answers.slice().sort(()=>Math.random()-.5).forEach(a=>{
-  const el=document.createElement('div');
-  el.textContent=a;el.draggable=true;el.dataset.v=a;
-  el.className='px-3 py-2 bg-rose-100 rounded-lg cursor-move border border-rose-300';
-  el.addEventListener('dragstart',e=>e.dataTransfer.setData('text',a));
-  bank.appendChild(el);
-});
-document.querySelectorAll('.drop').forEach(d=>{
-  d.addEventListener('dragover',e=>e.preventDefault());
-  d.addEventListener('drop',e=>{
-    e.preventDefault();
-    const v=e.dataTransfer.getData('text');
-    d.querySelector('.slot').textContent=v;
-    d.querySelector('.slot').classList.remove('text-gray-400');
-    d.querySelector('.slot').classList.add('font-bold','text-rose-700');
-    d.dataset.got=v;
+  const setScore = n => { S.score += n; el('score').textContent = S.score; };
+  const awardOnce = (key, pts) => { if (!S.awarded[key]) { S.awarded[key] = true; setScore(pts); } };
+
+  const updateDots = () => {
+    for (let i = 1; i <= TOTAL_LEVELS + 1; i++) {
+      const d = el('dot-' + i);
+      if (!d) continue;
+      d.classList.remove('active', 'done');
+      if (i < S.current) d.classList.add('done');
+      else if (i === S.current) d.classList.add('active');
+    }
+  };
+
+  const gotoLevel = n => {
+    document.querySelectorAll('section[id^="level-"]').forEach(s => s.classList.add('hidden-screen'));
+    S.current = n;
+    el('step-label').textContent = Math.min(n, 4);
+    const target = (n > TOTAL_LEVELS) ? el('level-final') : el('level-' + n);
+    target.classList.remove('hidden-screen');
+    target.classList.add('fade-in');
+    updateDots();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Back buttons
+  document.querySelectorAll('.btn-back').forEach(b => {
+    b.onclick = () => gotoLevel(parseInt(b.dataset.back, 10));
   });
-});
-function check1(){
-  const drops=[...document.querySelectorAll('.drop')];
-  const correct=drops.every(d=>d.dataset.got===d.dataset.ans);
-  const fb=document.getElementById('fb1');
-  if(correct){fb.innerHTML='<span class="text-green-700 font-bold">✅ 正確！你發現了歷史排放的真相。</span>';state.p1=true;updatePg();}
-  else{fb.innerHTML='<span class="text-red-700">❌ 還沒對。<b>提示</b>：工業革命從英國開始，所以 1882 前英國最多。再試試！</span>';document.getElementById('hint1').classList.remove('hidden');}
-}
 
-// 關卡 2
-function check2(){
-  const a1=document.querySelector('input[name=q2_1]:checked')?.value;
-  const a2=document.querySelector('input[name=q2_2]:checked')?.value;
-  const a3=document.querySelector('input[name=q2_3]:checked')?.value;
-  const fb=document.getElementById('fb2');
-  if(a1==='b'&&a2==='a'&&a3==='b'){fb.innerHTML='<span class="text-green-700 font-bold">✅ 全對！台灣歷史偵探認證 ✓</span>';state.p2=true;updatePg();}
-  else{
-    const wrong=[];if(a1!=='b')wrong.push('① 1895 是日治開始');if(a2!=='a')wrong.push('② 1930 是集團移住');if(a3!=='b')wrong.push('③ 1960-80 是石化紡織');
-    fb.innerHTML='<span class="text-red-700">❌ 有錯。提示：'+wrong.join('；')+'。再看一次簡報第 10-11 張！</span>';
+  // Confetti
+  const confetti = () => {
+    const colors = ['#f59e0b', '#ef4444', '#10b981', '#3b82f6', '#8b5cf6'];
+    for (let i = 0; i < 32; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[i % colors.length];
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 2500);
+    }
+  };
+
+  const shuffleChildren = parent => {
+    const kids = Array.from(parent.children);
+    for (let i = kids.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      parent.appendChild(kids[j]);
+    }
+  };
+
+  /* =====================================================
+     Level 1: 時代配對 drag-drop (15 pts)
+     ===================================================== */
+  shuffleChildren(el('items-box-1'));
+  shuffleChildren(el('zones-box-1'));
+
+  let dragged1 = null;
+  let l1Correct = 0;
+  const total1 = document.querySelectorAll('#items-box-1 .drag-item').length;
+
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged1 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => { item.classList.remove('dragging'); });
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#items-box-1 .drag-item').forEach(x => x.classList.remove('ring-4', 'ring-amber-400'));
+      item.classList.add('ring-4', 'ring-amber-400');
+      dragged1 = item;
+    });
+  });
+
+  document.querySelectorAll('#zones-box-1 .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop1(zone); });
+    zone.addEventListener('click', () => { if (dragged1) handleDrop1(zone); });
+  });
+
+  function handleDrop1(zone) {
+    if (!dragged1) return;
+    const fb = el('l1-feedback');
+    if (dragged1.dataset.match === zone.dataset.accept) {
+      zone.querySelector('.dz-items').appendChild(dragged1);
+      dragged1.setAttribute('draggable', 'false');
+      dragged1.classList.remove('ring-4', 'ring-amber-400', 'bg-amber-100', 'border-amber-400');
+      dragged1.classList.add('bg-green-100', 'border-green-500', 'pop');
+      l1Correct++;
+      fb.textContent = '答對！ 👏';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+      confetti();
+      if (l1Correct === total1) {
+        awardOnce('L1', 15);
+        const btn = el('btn-next-1');
+        btn.disabled = false;
+        btn.className = 'btn bg-orange-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(2);
+        fb.textContent = '全部答對！小旭說你是真正的歷史偵探！🎉 +15 分';
+      }
+    } else {
+      dragged1.classList.add('shake');
+      setTimeout(() => dragged1.classList.remove('shake'), 400);
+      fb.textContent = '再想想！提示：馬車和手工是以前的，工廠和飛機是現代的💡';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged1 = null;
   }
-}
 
-// 關卡 3
-['a','b','c'].forEach(k=>{
-  const s=document.getElementById('s3'+k);
-  s.addEventListener('input',()=>document.getElementById('s3'+k+'v').textContent=s.value);
-});
-function check3(){
-  const fb=document.getElementById('fb3');
-  const a=+document.getElementById('s3a').value,b=+document.getElementById('s3b').value,c=+document.getElementById('s3c').value;
-  if(Math.abs(a-14)<=2&&Math.abs(b-1)<=1&&Math.abs(c-15)<=2){
-    fb.innerHTML='<span class="text-green-700 font-bold">✅ 你感受到不對稱了！排 1% 卻死 15 倍。</span>';state.p3=true;updatePg();
-  }else{fb.innerHTML='<span class="text-red-700">❌ 再想想。真實數字：人口 14%、排放 1%、死亡 15 倍。</span>';}
-}
+  /* =====================================================
+     Level 2: 看圖找答案 (Q1:5pts  Q2:15pts = 20)
+     ===================================================== */
+  let q1Done = false, q2Done = false;
+  const checkL2ready = () => {
+    const ready = q1Done && q2Done;
+    const btn = el('btn-next-2');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-orange-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
 
-// 關卡 4
-function check4(){
-  const v=document.querySelector('input[name=q4]:checked')?.value;
-  const fb=document.getElementById('fb4');
-  if(v==='a'){fb.innerHTML='<span class="text-green-700 font-bold">✅ 對！CO2 在大氣停留 100-1000 年，歷史排放仍在暖化今天。</span>';state.p4=true;updatePg();}
-  else if(!v){fb.innerHTML='<span class="text-amber-700">請先選一個。</span>';}
-  else{fb.innerHTML='<span class="text-red-700">❌ 這是正確說法。提示：找「過去排放不用算」的那句。</span>';}
-}
+  document.querySelectorAll('input[name=q1]').forEach(r => {
+    r.onchange = () => {
+      if (q1Done) return;
+      document.querySelectorAll('#q1-opts .opt').forEach(o => o.classList.remove('sel', 'correct', 'wrong'));
+      r.parentElement.classList.add(r.value === '1' ? 'correct' : 'wrong');
+      const fb = el('q1-fb');
+      if (r.value === '1') {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 對了！大量使用工廠和機器以後，排放才急速增加。+5 分</span>';
+        awardOnce('L2-q1', 5);
+        q1Done = true;
+      } else {
+        fb.innerHTML = '<span class="text-rose-600">❌ 再看看曲線，哪個時期開始急速上升？</span>';
+      }
+      checkL2ready();
+    };
+  });
 
-// 關卡 5
-function check5(){
-  const dims=['gov','edu','ops','com'];
-  const got=dims.every(d=>document.querySelector('.wsa[data-dim='+d+']').checked);
-  const adv=document.getElementById('advocacy').value.trim();
-  const fb=document.getElementById('fb5');
-  if(got&&adv.length>=5){fb.innerHTML='<span class="text-green-700 font-bold">✅ 四面向都勾選 + 有倡議！全校英雄誕生 🏅</span>';state.p5=true;updatePg();}
-  else if(!got){fb.innerHTML='<span class="text-red-700">❌ WSA 四面向至少各勾 1 項。</span>';}
-  else{fb.innerHTML='<span class="text-red-700">❌ 倡議句至少 5 字。</span>';}
-}
+  let q2Submitted = false;
+  document.querySelectorAll('#q2-opts input[type=checkbox]').forEach(cb => {
+    cb.onchange = () => {
+      if (q2Submitted) return;
+      const checked = document.querySelectorAll('#q2-opts input:checked');
+      const fb = el('q2-fb');
+      if (checked.length >= 1) {
+        fb.textContent = `已選 ${checked.length} 項。都選好了可以提交～`;
+        q2Done = true;
+      } else { q2Done = false; }
+      checkL2ready();
+    };
+  });
+
+  el('btn-next-2').onclick = () => {
+    if (q2Submitted) { gotoLevel(3); return; }
+    q2Submitted = true;
+    const opts = document.querySelectorAll('#q2-opts input');
+    let correctCount = 0, wrongCount = 0;
+    opts.forEach(o => {
+      o.disabled = true;
+      const lbl = o.parentElement;
+      if (o.checked) {
+        if (o.dataset.correct === '1') { lbl.classList.add('correct'); correctCount++; }
+        else { lbl.classList.add('wrong'); wrongCount++; }
+      }
+    });
+    const pts = Math.max(0, correctCount * 5 - wrongCount * 5);
+    awardOnce('L2-q2', Math.min(pts, 15));
+    const fb = el('q2-fb');
+    if (wrongCount === 0 && correctCount >= 2) {
+      fb.innerHTML = `<span class="text-emerald-700 font-bold">✅ 觀察得很好！勾對 ${correctCount} 項。+${Math.min(pts,15)} 分</span>`;
+      confetti();
+    } else if (correctCount >= 1) {
+      fb.innerHTML = `<span class="text-amber-600">勾對 ${correctCount} 項、錯 ${wrongCount} 項。牛打嗝也是排放，但不是最主要原因喔！</span>`;
+      if (pts > 0) confetti();
+    } else {
+      fb.innerHTML = '<span class="text-rose-600">❌ 再想想看，什麼讓工業時代開始大量排放？</span>';
+    }
+    el('btn-next-2').textContent = '繼續下一關 →';
+    el('btn-next-2').onclick = () => gotoLevel(3);
+  };
+
+  /* =====================================================
+     Level 3: 推一推！(20 pts — stance picker)
+     ===================================================== */
+  const stories3 = {
+    a: { pts: 0, text: '😟 小旭說：「過去的累積排放仍然在影響今天的氣候。完全忽視歷史，就像同學作業只交一半，卻說之前的部分不算，這樣公平嗎？」（+0 分）', cls: 'text-rose-600' },
+    b: { pts: 20, text: '🌟 小旭說：「這是最合理的想法！歷史排放多的地方負多一點，歷史排放少的人也可以從小事做起改變自己——這叫做「共同但有差別的責任」，每個人都很重要！ +20 分」', cls: 'text-emerald-700' },
+    c: { pts: 0, text: '😟 小旭說：「小孩子雖然沒有造成大部分問題，但也有能力改變！你今天學到的知識，就是你能做到的第一步。況且大人也是從小孩長大的！」（+0 分）', cls: 'text-rose-600' }
+  };
+
+  document.querySelectorAll('#l3-choices .btn').forEach(btn => {
+    btn.onclick = () => {
+      if (el('level-3').dataset.answered) return;
+      el('level-3').dataset.answered = '1';
+      const s = stories3[btn.dataset.c];
+      const story = el('l3-story');
+      story.textContent = s.text;
+      story.className = 'bg-amber-50 rounded-xl p-4 min-h-[60px] text-sm font-bold fade-in ' + s.cls;
+      document.querySelectorAll('#l3-choices .btn').forEach(b => b.disabled = true);
+      btn.classList.add('ring-4', 'ring-orange-400');
+      awardOnce('L3', s.pts);
+      if (s.pts > 0) confetti();
+      const nxt = el('btn-next-3');
+      nxt.disabled = false;
+      nxt.className = 'btn bg-orange-500 text-white px-6 py-2 rounded-xl font-bold';
+      nxt.onclick = () => gotoLevel(4);
+    };
+  });
+
+  /* =====================================================
+     Level 4: 我的行動 (20 pts)
+     ===================================================== */
+  const actionBank = {
+    reduce: [
+      '便當盒自己帶，減少每天的一次性包裝盒和塑膠袋',
+      '舊衣服不要馬上丟，和同學或鄰居交換，或送給需要的人',
+      '下次買東西前，先想一想：「我真的需要嗎？還是只是想要？」'
+    ],
+    energy: [
+      '每天離開房間前把電燈和電扇關掉，養成習慣',
+      '和家人討論：哪一台電器最耗電？怎麼減少使用？',
+      '家裡洗澡水溫不要太高，或縮短洗澡時間'
+    ],
+    transport: [
+      '上下學如果距離近，改成走路或騎腳踏車',
+      '出門請爸媽幫忙時，看看能不能改成搭公車或捷運',
+      '和住在附近的同學約好一起上學，減少來回接送的車次'
+    ],
+    share: [
+      '在家吃飯時，說一個「時光機發現」的故事給家人聽',
+      '畫一張小圖或寫一張小卡，記錄現代生活和以前的差異',
+      '告訴一個好朋友：「你知道以前的人幾乎不排放嗎？」'
+    ]
+  };
+
+  let themePicked = null, actionPicked = false, promiseCount = 0;
+
+  const checkL4ready = () => {
+    const ready = themePicked && actionPicked && promiseCount >= 2;
+    const btn = el('btn-next-4');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-orange-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=theme]').forEach(r => {
+    r.onchange = () => {
+      themePicked = r.value;
+      document.querySelectorAll('#theme-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      const wrap = el('action-wrap');
+      const box = el('action-opts');
+      box.innerHTML = '';
+      actionPicked = false;
+      actionBank[themePicked].forEach(txt => {
+        const lbl = document.createElement('label');
+        lbl.className = 'opt';
+        lbl.innerHTML = `<input type="radio" name="action"> ${txt}`;
+        lbl.querySelector('input').onchange = () => {
+          document.querySelectorAll('#action-opts .opt').forEach(o => o.classList.remove('sel'));
+          lbl.classList.add('sel');
+          actionPicked = true;
+          el('action-fb').innerHTML = '<span class="text-emerald-700">✅ 好主意！繼續下一步～</span>';
+          el('promise-wrap').classList.remove('hidden');
+          checkL4ready();
+        };
+        box.appendChild(lbl);
+      });
+      wrap.classList.remove('hidden');
+      el('promise-wrap').classList.add('hidden');
+      checkL4ready();
+    };
+  });
+
+  document.querySelectorAll('.promise-cb').forEach(cb => {
+    cb.onchange = () => {
+      promiseCount = document.querySelectorAll('.promise-cb:checked').length;
+      const fb = el('promise-fb');
+      if (promiseCount < 2) fb.textContent = `已選 ${promiseCount}/4，請至少選 2 個 😊`;
+      else fb.textContent = `選了 ${promiseCount} 個承諾！太棒了！`;
+      checkL4ready();
+    };
+  });
+
+  el('btn-next-4').onclick = () => {
+    awardOnce('L4', 20);
+    confetti();
+    showFinal();
+  };
+
+  /* =====================================================
+     Final screen
+     ===================================================== */
+  function showFinal() {
+    gotoLevel(TOTAL_LEVELS + 1);
+    el('final-score').textContent = S.score;
+    const box = el('badges');
+    box.innerHTML = '';
+    const earned = [];
+    if (S.awarded['L1']) earned.push('🕰️ 時光機偵探');
+    if (S.awarded['L2-q1'] || S.awarded['L2-q2']) earned.push('📈 數據觀察家');
+    if (S.awarded['L3']) earned.push('⚖️ 責任思考王');
+    if (S.awarded['L4']) earned.push('🌱 行動實踐者');
+    if (earned.length === 0) earned.push('🕰️ 歷史冒險員');
+    earned.forEach(b => {
+      const chip = document.createElement('span');
+      chip.className = 'bg-amber-100 border-2 border-amber-400 rounded-full px-3 py-1 text-sm font-bold pop';
+      chip.textContent = b;
+      box.appendChild(chip);
+    });
+    confetti();
+  }
+
+  /* =====================================================
+     Final reflection (5 pts)
+     ===================================================== */
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+
+  const setupStars = (wrapId, setter) => {
+    const wrap = el(wrapId);
+    wrap.querySelectorAll('.star').forEach(s => {
+      s.onclick = () => {
+        const v = parseInt(s.dataset.val, 10);
+        setter(v);
+        wrap.querySelectorAll('.star').forEach(x => {
+          x.classList.toggle('on', parseInt(x.dataset.val, 10) <= v);
+        });
+        checkReflect();
+      };
+    });
+  };
+  setupStars('stars-before', v => starBefore = v);
+  setupStars('stars-after', v => starAfter = v);
+
+  document.querySelectorAll('input[name=impact]').forEach(r => {
+    r.onchange = () => {
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+
+  function checkReflect() {
+    const ok = starBefore > 0 && starAfter > 0 && impactPicked;
+    const fb = el('reflect-fb');
+    if (ok) {
+      fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 反思完成！+5 分 🌟</span>';
+      awardOnce('FINAL', 5);
+      el('final-score').textContent = S.score;
+    } else {
+      fb.textContent = '請完成三題反思（★ 前後了解度 + 印象最深的關卡）';
+    }
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

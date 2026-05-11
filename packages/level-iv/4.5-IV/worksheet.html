@@ -2,177 +2,739 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>4.5-IV 學習單｜緊迫性與社區氣候行動（國中 13–15 歲）</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>現在就行動 | 4.5-IV 國中緊迫性與社區氣候行動互動學習單</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-body{font-family:"Noto Sans TC",Arial,sans-serif;max-width:860px;margin:24px auto;padding:0 18px;color:#222;line-height:1.65}
-h1{border-bottom:3px solid #1f7a4c;padding-bottom:8px;color:#1f7a4c}
-h2{background:#eef6f0;border-left:6px solid #1f7a4c;padding:6px 12px;margin-top:28px}
-h3{color:#0b5d3b;margin-bottom:4px}
-.box{border:1px solid #ccc;border-radius:8px;padding:12px 16px;margin:10px 0;background:#fafafa}
-.warn{background:#fff4e5;border-left:5px solid #d97706}
-.data{background:#eef5ff;border-left:5px solid #1e40af}
-.meta{background:#f3f0fb;border-left:5px solid #5b21b6}
-textarea{width:100%;min-height:70px;font-family:inherit;font-size:15px;padding:8px;border:1px solid #bbb;border-radius:6px}
-input[type=text],input[type=number]{width:60%;padding:6px;border:1px solid #bbb;border-radius:6px}
-table{border-collapse:collapse;width:100%;margin:10px 0}
-th,td{border:1px solid #aaa;padding:6px 8px;text-align:left;vertical-align:top}
-th{background:#e8f1ec}
-.label{display:inline-block;min-width:110px;font-weight:bold;color:#0b5d3b}
-.tag{display:inline-block;background:#1f7a4c;color:#fff;font-size:12px;padding:2px 8px;border-radius:10px;margin-right:4px}
-.hint{color:#555;font-size:13px}
-.qopen{background:#fffbea;border-left:5px solid #ca8a04}
-.qsystem{background:#ecfdf5;border-left:5px solid #047857}
-.qethics{background:#fef2f2;border-left:5px solid #b91c1c}
-.qcer{background:#eff6ff;border-left:5px solid #1d4ed8}
-.qdata{background:#f0f9ff;border-left:5px solid #0369a1}
-.qmeta{background:#faf5ff;border-left:5px solid #6d28d9}
-.project{background:#fff7ed;border:2px dashed #ea580c;padding:14px;border-radius:10px}
+  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#f0fdf4,#dcfce7,#d1fae5); min-height:100vh;}
+  .card { background:white; border-radius:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+  .btn { transition:all .18s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none;}
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:100px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#bbf7d0; border-color:#16a34a;}
+  .pop { animation: pop .5s ease;}
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
+  .shake { animation: shake .4s;}
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
+  .progress-dot.active { background:#16a34a; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
+  .fade-in { animation: fade .4s ease;}
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
+  svg.loop text { font-size:11px; pointer-events:none;}
+  svg.loop .loop-slot { cursor: pointer; }
+  svg.loop .loop-slot.over { fill:#bbf7d0; stroke-width:3; }
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.92rem;}
+  .opt:hover { background:#f8fafc; }
+  .opt.sel { border-color:#16a34a; background:#f0fdf4;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.4rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
-<body>
-<h1>4.5-IV 學習單｜緊迫性與社區氣候行動</h1>
-<p><span class="tag">國中 13–15 歲</span><span class="tag">4 × 45 分鐘</span><span class="tag">驗證日 2026-04-16</span></p>
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
+<div class="max-w-4xl mx-auto">
 
-<div class="box">
-<b>姓名：</b><input type="text"> &nbsp;&nbsp;
-<b>班級座號：</b><input type="text"> &nbsp;&nbsp;
-<b>日期：</b><input type="text">
+<div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-green-700">🌿 現在就行動</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『社區氣候行動催化師』：5 個任務，理解緊迫性並設計真實的社區氣候行動。</p>
+  </div>
+  <div class="text-right">
+    <div class="text-xs text-slate-500">行動點數</div>
+    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
+  </div>
 </div>
 
-<h2>A. 基礎層（Level III 同級必答）</h2>
-<h3>A1 名詞配對（每格 1 分）</h3>
-<table>
-<tr><th>名詞</th><th>我寫的定義（自己的話）</th></tr>
-<tr><td>氣候緊急狀態</td><td><textarea></textarea></td></tr>
-<tr><td>社區氣候行動計畫（CCAP）</td><td><textarea></textarea></td></tr>
-<tr><td>減緩 vs 調適</td><td><textarea></textarea></td></tr>
-<tr><td>國家自主貢獻（NDC）</td><td><textarea></textarea></td></tr>
-<tr><td>共同利益（co-benefits）</td><td><textarea></textarea></td></tr>
-</table>
-
-<h3>A2 事實檢核（是／否＋簡短理由）</h3>
-<ol>
-<li>巴黎協定對未達標國家有國際罰款機制。（是／否，因為：<input type="text">）</li>
-<li>臺灣過去 110 年升溫速度約為全球平均的 2 倍。（是／否，因為：<input type="text">）</li>
-<li>『淨零排放』就是完全不再排放任何溫室氣體。（是／否，因為：<input type="text">）</li>
-</ol>
-
-<h2>B. 深度層 — 6 類進階問題</h2>
-
-<h3 class="qopen">B1｜開放反思（1/2）</h3>
-<div class="box qopen">
-<b>題目</b>：上完本單元後，你對『個人行動』的看法有什麼變化？請具體指出『之前我以為…，現在我認為…』，並舉一個生活中的例子。（≥ 120 字）
-<textarea></textarea>
+<div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">行動障礙</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">資料</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-3"></div><span class="text-xs">系統</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">論證</span>
+  <div class="h-1 w-4 bg-slate-300"></div>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">專題</span>
 </div>
 
-<h3 class="qopen">B2｜開放反思（2/2）</h3>
-<div class="box qopen">
-<b>題目</b>：在『氣候行動』這件事上，你覺得自己最大的阻力是什麼（時間、知識、資源、同儕、家人、自我效能感）？你打算如何與這股阻力共處？（≥ 100 字）
-<textarea></textarea>
+<!-- ===== T1: 社區行動障礙配對 ===== -->
+<section id="level-1" class="card p-6 fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🎯</div>
+    <div>
+      <h2 class="text-xl font-bold text-green-700">任務 1｜社區行動障礙配對</h2>
+      <p class="text-sm text-slate-700 mt-1">社區氣候行動面臨四種常見障礙。把四張情境卡拖到正確的障礙類型區。描述中不含答案關鍵字，請依邏輯推論。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：社區組織分析師 ｜ 10 分</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="urgency">情境 A</div>
+    <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="agency">情境 B</div>
+    <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="collective">情境 C</div>
+    <div class="drag-item bg-green-100 border-2 border-green-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="systemic">情境 D</div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="zones-box-1">
+    <div class="drop-zone p-3" data-accept="urgency"><div class="font-bold text-slate-700 text-sm">障礙 α<div class="text-xs text-slate-500 mt-1">「颱風明年才會變強、海平面 2050 年才上升，現在改變會影響我的生活品質，不急。」——把需要立即因應的問題當成遙遠未來的事而延後行動。</div></div></div>
+    <div class="drop-zone p-3" data-accept="agency"><div class="font-bold text-slate-700 text-sm">障礙 β<div class="text-xs text-slate-500 mt-1">「全球碳排這麼多，我一個人或一個社區能做什麼？就算我做了也完全改變不了什麼。」——認為個人或小團體的行動沒有意義而放棄。</div></div></div>
+    <div class="drop-zone p-3" data-accept="collective"><div class="font-bold text-slate-700 text-sm">障礙 γ<div class="text-xs text-slate-500 mt-1">「大家都在等別人先做，反正我一個人的努力也不夠；要是大家都這樣想就什麼都不會改變。」——個人在等待他人行動而形成的僵局。</div></div></div>
+    <div class="drop-zone p-3" data-accept="systemic"><div class="font-bold text-slate-700 text-sm">障礙 δ<div class="text-xs text-slate-500 mt-1">「我們社區想裝太陽能，但要跨越地方政府、電力公司、建築法規三道牆，光申請就讓人放棄。」——制度與結構層面的阻礙讓行動難以啟動。</div></div></div>
+  </div>
+  <div id="feedback-1" class="mt-3 text-sm"></div>
+  <div class="nav-row">
+    <span></span>
+    <button id="btn-next-1" class="btn bg-green-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T2: 資料詮釋 1.5°C 碳預算與行動窗口 ===== -->
+<section id="level-2" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">📈</div>
+    <div>
+      <h2 class="text-xl font-bold text-teal-700">任務 2｜資料詮釋：1.5°C 碳預算與行動窗口</h2>
+      <p class="text-sm text-slate-700 mt-1">IPCC AR6（2023）：若要有 50% 機率維持 1.5°C，全球剩餘碳預算約 500 GtCO₂；以 2023 年排放速率計算，約 12 年耗盡。社區行動可在局部減少能耗、影響政策。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：氣候政策分析師 ｜ 15 分 ｜ <span class="chip bg-teal-100 text-teal-800">資料詮釋題</span></p>
+    </div>
+  </div>
+
+  <!-- SVG: 碳預算耗盡時間軸 + 社區行動貢獻 -->
+  <svg viewBox="0 0 420 185" class="w-full max-w-xl mx-auto block bg-slate-50 rounded">
+    <!-- 時間軸 -->
+    <line x1="40" y1="100" x2="395" y2="100" stroke="#334155" stroke-width="2"/>
+    <!-- 2023 起點 -->
+    <circle cx="60" cy="100" r="5" fill="#16a34a"/>
+    <text x="60" y="118" text-anchor="middle" font-size="9">2023</text>
+    <!-- 碳預算耗盡 ~2035 (BAU) -->
+    <circle cx="240" cy="100" r="5" fill="#dc2626"/>
+    <text x="240" y="118" text-anchor="middle" font-size="9">~2035</text>
+    <text x="240" y="130" text-anchor="middle" font-size="8" fill="#dc2626">BAU耗盡</text>
+    <!-- 若行動延後 ~2028 -->
+    <circle cx="390" cy="100" r="5" fill="#f59e0b"/>
+    <text x="370" y="118" text-anchor="middle" font-size="9">~2047+</text>
+    <text x="370" y="130" text-anchor="middle" font-size="8" fill="#059669">積極減排可達</text>
+    <!-- 碳預算條 -->
+    <rect x="60" y="70" width="180" height="22" fill="#fca5a5" rx="4"/>
+    <text x="150" y="85" text-anchor="middle" font-size="9" fill="#991b1b">BAU: 500 GtCO₂ ÷ 42/年 ≈ 12 年</text>
+    <rect x="60" y="42" width="330" height="22" fill="#bbf7d0" rx="4"/>
+    <text x="225" y="57" text-anchor="middle" font-size="9" fill="#14532d">積極行動: 降至 25/年 → 延長至 20+ 年</text>
+    <!-- 標示 -->
+    <text x="220" y="18" text-anchor="middle" font-size="10" fill="#16a34a" font-weight="bold">↑ 行動窗口越早越寬</text>
+    <!-- 圖例 -->
+    <rect x="42" y="148" width="10" height="8" fill="#fca5a5"/>
+    <text x="55" y="156" font-size="8">BAU 情境</text>
+    <rect x="110" y="148" width="10" height="8" fill="#bbf7d0"/>
+    <text x="123" y="156" font-size="8">積極減排情境</text>
+  </svg>
+
+  <div class="mt-4 space-y-4">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q2-1｜依據圖表與文字，以下哪一項最符合「行動窗口」的概念？（5 分）</label>
+      <div class="space-y-1" id="q21">
+        <label class="block text-sm"><input type="radio" name="q21" value="A"> A. 碳預算已耗盡，行動已無意義，只能適應</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="B"> B. 現在積極減排可將碳預算窗口從約 12 年延長至 20 年以上，每一年的行動都改變窗口大小</label>
+        <label class="block text-sm"><input type="radio" name="q21" value="C"> C. 行動窗口只對大國有意義，社區等小單位的行動無法影響全球碳預算</label>
+      </div>
+      <p class="text-xs mt-1 text-slate-500 q21-fb"></p>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Q2-2｜依據上圖，<strong>勾選 2 項</strong>最能說明為何「社區行動現在就很重要」：（10 分）</label>
+      <div id="q22-opts" class="space-y-1">
+        <label class="opt"><input type="checkbox" data-correct="1"> A. 碳預算剩餘有限（約 12 年 BAU），拖延行動會直接縮短窗口、提高超標風險</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> B. 社區行動不影響全球碳排，所以現不現在行動結果一樣</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> C. 社區能源行動（如屋頂太陽能、減少閒置用電）累積起來可改變地方政策，形成向上擴散效應</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> D. 等科技進步後再行動比現在更有效，不需要急</label>
+      </div>
+      <p id="q22-fb" class="text-xs mt-2"></p>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="1">← 上一步</button>
+    <button id="btn-next-2" class="btn bg-green-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T3: 系統思考 拖延 → 鎖定效應 ===== -->
+<section id="level-3" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🔄</div>
+    <div>
+      <h2 class="text-xl font-bold text-lime-700">任務 3｜系統思考：延遲行動的鎖定環</h2>
+      <p class="text-sm text-slate-700 mt-1">完成「延遲行動 → 化石基礎設施鎖定 → 更難轉型」的正反饋循環圖：把 4 張卡片拖到正確位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統分析師 ｜ 15 分 ｜ <span class="chip bg-lime-100 text-lime-800">系統思考題</span></p>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 500 260" class="loop w-full bg-slate-50 rounded">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L0,10 L10,5 z" fill="#64748b"/></marker>
+    </defs>
+    <rect x="10" y="10" width="165" height="50" rx="8" fill="#f0fdf4" stroke="#16a34a" class="loop-slot" data-slot="1"/>
+    <text x="92" y="40" text-anchor="middle" fill="#14532d" id="slot-1-text">（拖這裡）</text>
+    <rect x="325" y="10" width="165" height="50" rx="8" fill="#f0fdf4" stroke="#16a34a" class="loop-slot" data-slot="2"/>
+    <text x="407" y="40" text-anchor="middle" fill="#14532d" id="slot-2-text">（拖這裡）</text>
+    <rect x="325" y="200" width="165" height="50" rx="8" fill="#f0fdf4" stroke="#16a34a" class="loop-slot" data-slot="3"/>
+    <text x="407" y="228" text-anchor="middle" fill="#14532d" id="slot-3-text">（拖這裡）</text>
+    <rect x="10" y="200" width="165" height="50" rx="8" fill="#f0fdf4" stroke="#16a34a" class="loop-slot" data-slot="4"/>
+    <text x="92" y="228" text-anchor="middle" fill="#14532d" id="slot-4-text">（拖這裡）</text>
+    <line x1="175" y1="35" x2="325" y2="35" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="407" y1="60" x2="407" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="325" y1="225" x2="175" y2="225" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="92" y1="200" x2="92" y2="60" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="250" y="130" text-anchor="middle" font-size="13" fill="#16a34a" font-weight="bold">延遲行動的鎖定環</text>
+    <text x="250" y="148" text-anchor="middle" font-size="10" fill="#16a34a">（正反饋 ↺）</text>
+  </svg>
+  <p class="text-xs text-slate-500 mt-2 text-center">提示：從「氣候行動被延後決策」開始，最後一張讓「延後決策」更難被改變。</p>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3" id="loop-items">
+    <div class="drag-item bg-lime-100 border-2 border-lime-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">既有利益集團阻力增強，政策更難改變</div>
+    <div class="drag-item bg-lime-100 border-2 border-lime-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">氣候行動被延後決策</div>
+    <div class="drag-item bg-lime-100 border-2 border-lime-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">行動成本與難度持續上升，拖延成為慣性</div>
+    <div class="drag-item bg-lime-100 border-2 border-lime-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">化石燃料基礎設施持續擴張並鎖定</div>
+  </div>
+  <p id="loop-fb" class="mt-3 text-sm"></p>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="2">← 上一步</button>
+    <button id="btn-next-3" class="btn bg-green-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T4: CER（含倫理主題） ===== -->
+<section id="level-4" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">✍️</div>
+    <div>
+      <h2 class="text-xl font-bold text-emerald-700">任務 4｜CER 論證 Flash Card</h2>
+      <p class="text-sm text-slate-700 mt-1">議題（含倫理）：<strong>「在氣候緊迫下，青年是否有道德責任採取社區行動，即使成效有限？」</strong>三步驟組裝你的論證卡。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：青年氣候倡議者 ｜ 20 分 ｜ <span class="chip bg-emerald-100 text-emerald-800">論證 + 倫理</span></p>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <p class="font-semibold text-sm mb-1">① 選擇你的主張 Claim（4 分）</p>
+    <div id="claim-opts">
+      <label class="opt"><input type="radio" name="claim" value="yes"> A. 有道德責任：青年雖非排放主因，但集體行動是打破延遲循環的必要手段。</label>
+      <label class="opt"><input type="radio" name="claim" value="partial"> B. 部分責任：青年行動有價值，但主要責任在政府與企業，不應過度歸責年輕世代。</label>
+      <label class="opt"><input type="radio" name="claim" value="no"> C. 無道德責任：在成效有限的情況下，強迫青年行動是將成人失敗的責任轉嫁給下一代。</label>
+    </div>
+  </div>
+
+  <div id="evid-wrap" class="mb-3 hidden">
+    <p class="font-semibold text-sm mb-1">② 為你的主張挑出最有力的證據 Evidence（8 分）</p>
+    <div id="evid-opts"></div>
+    <p id="evid-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div id="reas-wrap" class="mb-3 hidden">
+    <p class="font-semibold text-sm mb-1">③ 為你的主張挑出最相符的推理 Reasoning（8 分）</p>
+    <div id="reas-opts"></div>
+    <p id="reas-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div id="cer-summary" class="bg-emerald-50 p-3 rounded text-sm hidden">
+    <p class="font-bold text-emerald-800 mb-1">✅ 你的 CER 卡完成：</p>
+    <p><strong>Claim：</strong><span id="sum-c"></span></p>
+    <p><strong>Evidence：</strong><span id="sum-e"></span></p>
+    <p><strong>Reasoning：</strong><span id="sum-r"></span></p>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="3">← 上一步</button>
+    <button id="btn-next-4" class="btn bg-green-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== T5: 社區氣候行動提案 ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-4xl">🏫</div>
+    <div>
+      <h2 class="text-xl font-bold text-amber-700">任務 5｜社區氣候行動提案書</h2>
+      <p class="text-sm text-slate-700 mt-1">選一個主題，組裝提案，再用 WSA 四面向自我檢核。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生社區行動催化師 ｜ 15 分 ｜ <span class="chip bg-amber-100 text-amber-800">專題式學習</span></p>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <p class="font-semibold text-sm mb-1">① 選擇你的提案主題</p>
+    <div id="proj-opts">
+      <label class="opt"><input type="radio" name="proj" value="energy"> ⚡ 社區節能挑戰：30 天家庭碳排追蹤行動</label>
+      <label class="opt"><input type="radio" name="proj" value="food"> 🥗 校園低碳飲食週：減少食物浪費與肉食碳排</label>
+      <label class="opt"><input type="radio" name="proj" value="green"> 🌱 社區綠化行動：種植本地樹種與屋頂菜園</label>
+      <label class="opt"><input type="radio" name="proj" value="policy"> 📋 青年氣候倡議：向里辦/市議員提交氣候行動請願</label>
+    </div>
+  </div>
+
+  <div id="proj-detail" class="hidden bg-amber-50 p-3 rounded text-sm mb-3">
+    <p class="font-semibold text-amber-800 mb-1">② 預設方案（依主題）</p>
+    <p id="proj-problem" class="mb-1"></p>
+    <p id="proj-steps" class="mb-1"></p>
+    <p class="font-semibold mt-2">③ 挑一個 KPI：</p>
+    <div id="kpi-opts" class="mt-1"></div>
+  </div>
+
+  <div class="bg-indigo-50 p-3 rounded mb-3">
+    <p class="font-bold text-indigo-800 text-sm">🎯 WSA 四面向檢核（全勾才能解鎖下一關）</p>
+    <label class="block mt-1 text-sm"><input type="checkbox" class="wsa"> <strong>治理</strong>：我的提案會送學生議會/班聯會或里辦/市議員</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>課程</strong>：我的提案可以跨科連結（自然/數學/社會/家政）</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>校園營運</strong>：我的提案改變了校園採購/空間/制度</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>社群</strong>：我的提案會擴散到家庭或社區，形成向外影響</label>
+  </div>
+  <p id="p-fb" class="text-xs"></p>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="4">← 上一步</button>
+    <button id="btn-next-5" class="btn bg-green-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
+</section>
+
+<!-- ===== Final + Reflection ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in">
+  <h2 class="text-3xl font-bold text-green-700 mb-2 text-center">🏆 你完成了！</h2>
+  <p class="text-slate-700 mb-4 text-center">你已完成 5 個任務，從辨識行動障礙到設計真實的社區氣候行動提案。最後一站做個快速反思。</p>
+
+  <div class="grid grid-cols-5 gap-2 max-w-2xl mx-auto my-4">
+    <div class="p-2 text-center"><div class="text-3xl">🎯</div><div class="text-xs mt-1">組織分析師</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">📈</div><div class="text-xs mt-1">政策分析師</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">🔄</div><div class="text-xs mt-1">系統分析師</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">✍️</div><div class="text-xs mt-1">氣候倡議者</div></div>
+    <div class="p-2 text-center"><div class="text-3xl">🏫</div><div class="text-xs mt-1">行動催化師</div></div>
+  </div>
+
+  <div class="bg-fuchsia-50 rounded-xl p-4 max-w-2xl mx-auto">
+    <p class="font-bold text-fuchsia-800 mb-2">🧠 後設認知反思（5 分）</p>
+    <p class="text-sm font-semibold mt-2">Q1｜上這堂課前，你對氣候行動緊迫性的了解程度：</p>
+    <div id="stars-before" class="mt-1">
+      <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+    </div>
+    <p class="text-sm font-semibold mt-3">Q2｜上完這堂課後，你的理解程度：</p>
+    <div id="stars-after" class="mt-1">
+      <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+    </div>
+    <p class="text-sm font-semibold mt-3">Q3｜對你影響最大的任務：</p>
+    <div id="impact-opts" class="mt-1">
+      <label class="opt"><input type="radio" name="impact" value="1"> 任務 1 行動障礙配對</label>
+      <label class="opt"><input type="radio" name="impact" value="2"> 任務 2 碳預算資料詮釋</label>
+      <label class="opt"><input type="radio" name="impact" value="3"> 任務 3 鎖定環系統思考</label>
+      <label class="opt"><input type="radio" name="impact" value="4"> 任務 4 青年責任 CER 論證</label>
+      <label class="opt"><input type="radio" name="impact" value="5"> 任務 5 社區行動提案</label>
+    </div>
+    <p id="reflect-fb" class="text-xs mt-2"></p>
+  </div>
+
+  <div class="mt-6 text-lg font-bold text-green-600 text-center">最終行動點數：<span id="final-score">0</span> / 80</div>
+  <div class="nav-row max-w-2xl mx-auto">
+    <button class="btn btn-back" data-back="5">← 回到任務 5</button>
+    <button onclick="location.reload()" class="btn bg-green-600 text-white px-6 py-2 rounded-lg font-bold">再玩一次</button>
+  </div>
+</section>
+
 </div>
 
-<h3 class="qsystem">B3｜系統思考</h3>
-<div class="box qsystem">
-<b>情境</b>：某縣市決定在社區主要幹道設置自行車道。<br>
-<b>任務</b>：畫出 1 張因果迴路圖（Causal Loop Diagram），至少含 5 個節點（例如：自行車使用量、私家車數量、空氣品質、居民健康、商家營收、政府支持度），標示正／負回饋關係，並指出 1 個『平衡迴路』或『增強迴路』。<br>
-<textarea style="min-height:140px"></textarea>
-<span class="hint">（可手繪拍照貼於此處；文字描述亦可）</span>
-</div>
+<script>
+(() => {
+  const TOTAL_LEVELS = 5;
+  const S = { score:0, current:1, awarded:{} };
+  const setScore = (n)=>{ S.score += n; document.getElementById('score').textContent = S.score; };
+  const awardOnce = (key, pts)=>{ if(!S.awarded[key]){ S.awarded[key]=true; setScore(pts); } };
 
-<h3 class="qethics">B4｜倫理兩難</h3>
-<div class="box qethics">
-<b>情境</b>：你所在縣市今年多了 5 億預算，可二選一投入：<br>
-（A）長照擴點，今年就能服務 2,000 位獨居老人。<br>
-（B）氣候調適基礎設施（防洪、遮蔭、熱浪預警），保護未來 10 年內約 50,000 位居民免受極端氣候衝擊。<br>
-<b>任務</b>：<br>
-1. 你選 (A) 還是 (B)？<br>
-<textarea style="min-height:50px"></textarea>
-2. 寫出至少 2 個支持你選擇的理由。<br>
-<textarea></textarea>
-3. 寫出 1 個『反對你選擇』的最強論點，並說明你如何回應。<br>
-<textarea></textarea>
-4. 有沒有『共同利益』讓 A 與 B 可以部分整合？舉 1 個例子。<br>
-<textarea></textarea>
-</div>
+  const updateDots = ()=>{
+    for(let i=1;i<=TOTAL_LEVELS;i++){
+      const d = document.getElementById('dot-'+i);
+      if(!d) continue;
+      d.classList.remove('active','done');
+      if(i < S.current) d.classList.add('done');
+      else if(i === S.current) d.classList.add('active');
+    }
+  };
 
-<h3 class="qcer">B5｜CER 論證（Claim-Evidence-Reasoning）</h3>
-<div class="box qcer">
-<b>探究問題</b>：『你所在的縣市目前對氣候行動的緊迫程度足夠嗎？』<br>
-依教案第 3 節的 5 項指標（宣告、計畫、預算、減量目標、公民參與），0–3 分×5 項＝最高 15 分。<br>
-<table>
-<tr><th>指標</th><th>我給分（0–3）</th><th>證據（官方文件／新聞／連結）</th></tr>
-<tr><td>氣候緊急宣告</td><td><input type="number" min="0" max="3"></td><td><input type="text"></td></tr>
-<tr><td>氣候行動計畫</td><td><input type="number" min="0" max="3"></td><td><input type="text"></td></tr>
-<tr><td>專屬預算</td><td><input type="number" min="0" max="3"></td><td><input type="text"></td></tr>
-<tr><td>減量目標（對標巴黎協定）</td><td><input type="number" min="0" max="3"></td><td><input type="text"></td></tr>
-<tr><td>公民參與</td><td><input type="number" min="0" max="3"></td><td><input type="text"></td></tr>
-</table>
-<b>總分：</b><input type="number" min="0" max="15"> / 15<br><br>
-<b>Claim（主張）</b>：<textarea style="min-height:50px"></textarea>
-<b>Evidence（證據）</b>：<textarea></textarea>
-<b>Reasoning（推論：為什麼這證據支持這個主張？）</b>：<textarea></textarea>
-</div>
+  const goto = (n)=>{
+    document.querySelectorAll('section[id^="level-"]').forEach(s=>s.classList.add('hidden-screen'));
+    S.current = n;
+    const next = document.getElementById('level-'+n) || document.getElementById('level-final');
+    next.classList.remove('hidden-screen');
+    if(next.id === 'level-final'){
+      for(let i=1;i<=TOTAL_LEVELS;i++){ const d=document.getElementById('dot-'+i); if(d){d.classList.remove('active');d.classList.add('done');} }
+      document.getElementById('final-score').textContent = S.score;
+    } else {
+      updateDots();
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
 
-<h3 class="qdata">B6｜資料詮釋</h3>
-<div class="box qdata data">
-<b>資料表</b>（示意；實際以最新環境部／TCCIP 為準）：<br>
-<table>
-<tr><th>縣市（示意）</th><th>氣候專責單位</th><th>氣候行動計畫</th><th>氣候相關預算佔歲出比</th><th>2030 減量目標（相對 2005）</th></tr>
-<tr><td>甲市</td><td>有</td><td>有（2022 版）</td><td>3.8%</td><td>28%</td></tr>
-<tr><td>乙市</td><td>有</td><td>無</td><td>0.9%</td><td>未公告</td></tr>
-<tr><td>丙縣</td><td>無</td><td>有（2020 版，未更新）</td><td>1.7%</td><td>23%</td></tr>
-</table>
-<ol>
-<li>三者中哪一個『看起來』最緊迫？依哪些指標？<br><textarea></textarea></li>
-<li>哪個數字可能『誤導』你？為什麼？（提示：佔比高不等於做得好）<br><textarea></textarea></li>
-<li>若只能再問 1 個問題幫助判斷，你會問什麼？<br><input type="text" style="width:90%"></li>
-</ol>
-</div>
+  document.querySelectorAll('.btn-back').forEach(b=>{
+    b.onclick = ()=>goto(parseInt(b.dataset.back,10));
+  });
 
-<h3 class="qmeta">B7｜後設認知</h3>
-<div class="box qmeta meta">
-回答以下 4 個思考監控問題：
-<ol>
-<li>本單元最顛覆我直覺的一點是：<textarea></textarea></li>
-<li>我目前最無法說服自己、還有疑問的地方是：<textarea></textarea></li>
-<li>我最想挑戰（反駁）老師或課本的哪一點？為什麼？<textarea></textarea></li>
-<li>我接下來會在哪個行動上做具體改變？<textarea></textarea></li>
-</ol>
-</div>
+  const confetti = ()=>{
+    const colors=['#16a34a','#10b981','#f59e0b','#06b6d4','#84cc16'];
+    for(let i=0;i<40;i++){
+      const el=document.createElement('div');
+      el.className='confetti';
+      el.style.left=Math.random()*100+'vw';
+      el.style.background=colors[i%colors.length];
+      el.style.animationDelay=(Math.random()*0.6)+'s';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),2500);
+    }
+  };
 
-<h2>C. 專題任務｜社區氣候提案書（2 週）</h2>
-<div class="project">
-<b>任務</b>：以 4–5 人小組為單位，選定你就讀學校或居住社區，完成一份『社區氣候提案書』，內容含：<br>
-<ol>
-<li><b>現況體檢</b>（用 B5 的 5 項指標評分＋證據）。</li>
-<li><b>問題定義</b>（聚焦 1 個可動手改善的在地氣候議題，例：校門口熱壓力／社區淹水熱點／廚餘處理）。</li>
-<li><b>SMART 行動方案</b>（Specific / Measurable / Achievable / Relevant / Time-bound）。</li>
-<li><b>共同利益</b>（列出至少 2 項非氣候面向好處，如健康、空氣、經濟、社區凝聚）。</li>
-<li><b>利害關係人地圖</b>（誰支持？誰可能反對？怎麼對話？）</li>
-<li><b>投遞對象</b>（校長／家長會／里長／議員／縣市府信箱擇一），並記錄投遞結果。</li>
-</ol>
-<b>提交格式</b>：1 頁 A4 提案書 + 3 分鐘口頭發表（或 90 秒影片）。<br>
-<b>評分量規</b>：
-<table>
-<tr><th>向度</th><th>3 優</th><th>2 良</th><th>1 尚可</th></tr>
-<tr><td>資料證據</td><td>引用 ≥3 筆官方資料</td><td>引用 2 筆</td><td>引用 ≤1 筆或來源不明</td></tr>
-<tr><td>SMART 完整度</td><td>5 項皆具體</td><td>缺 1–2 項</td><td>缺 ≥3 項</td></tr>
-<tr><td>共同利益</td><td>列出 ≥3 項並說明</td><td>列出 2 項</td><td>列出 ≤1 項</td></tr>
-<tr><td>可行性</td><td>已聯繫具體對象</td><td>已列出對象</td><td>對象模糊</td></tr>
-<tr><td>團隊合作</td><td>每人有明確貢獻</td><td>多數人有貢獻</td><td>貢獻不均</td></tr>
-</table>
-</div>
+  const shuffleChildren = (parent)=>{
+    const kids = Array.from(parent.children);
+    for(let i=kids.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      parent.appendChild(kids[j]);
+    }
+  };
 
-<h2>D. 我的行動承諾</h2>
-<div class="box warn">
-未來 2 週內，我會採取的 1 個社區尺度（非僅個人）氣候行動是：<br>
-<textarea></textarea>
-我會如何衡量自己有沒有做到？<br>
-<textarea></textarea>
-</div>
+  // ===== Task 1: Drag match =====
+  shuffleChildren(document.getElementById('items-box-1'));
+  shuffleChildren(document.getElementById('zones-box-1'));
 
-<footer style="margin-top:30px;color:#777;font-size:12px;border-top:1px solid #ccc;padding-top:10px">
-資料來源：IPCC AR6 SYR (2023)、UNFCCC Paris Agreement、臺灣環境部氣候變遷署、TCCIP、Global Covenant of Mayors；教材參考 map.csv row 15、79；RAG 本地文獻 0159、0092、0076。最後驗證：2026-04-16。
-</footer>
+  (function(){
+    let dragged = null, done1 = 0, err1 = 0;
+    document.querySelectorAll('#items-box-1 .drag-item').forEach(it=>{
+      it.addEventListener('dragstart', ()=>{ dragged=it; it.classList.add('dragging'); });
+      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null; });
+    });
+    document.querySelectorAll('#zones-box-1 .drop-zone').forEach(z=>{
+      z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over');});
+      z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+      z.addEventListener('drop', e=>{
+        e.preventDefault(); z.classList.remove('over');
+        if(!dragged) return;
+        if(dragged.dataset.match === z.dataset.accept){
+          dragged.classList.add('pop');
+          z.appendChild(dragged);
+          dragged.setAttribute('draggable','false');
+          dragged.style.cursor='default';
+          done1++;
+          if(done1===4){
+            awardOnce('L1', 10 - Math.min(err1,5));
+            document.getElementById('btn-next-1').disabled=false;
+            document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 全部配對正確！α 緊迫性低估、β 效能感不足、γ 集體行動困境、δ 系統性制度障礙。</span>';
+            confetti();
+          }
+        } else {
+          z.classList.add('shake'); setTimeout(()=>z.classList.remove('shake'),400);
+          err1++;
+          document.getElementById('feedback-1').innerHTML='<span class="text-green-700">❌ 再想想：α 是覺得問題遙遠而延後，β 是個人覺得無力，γ 是等別人先動，δ 是制度壁壘。</span>';
+        }
+      });
+    });
+  })();
+  document.getElementById('btn-next-1').onclick = ()=>goto(2);
+
+  // ===== Task 2 =====
+  const btn2 = document.getElementById('btn-next-2');
+  const checkL2 = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked');
+    const checked = document.querySelectorAll('#q22-opts input:checked');
+    btn2.disabled = !(q21 && checked.length === 2);
+    const fb = document.getElementById('q22-fb');
+    if(checked.length === 2) fb.textContent = '已選 2 項，可以提交。';
+    else if(checked.length > 2) fb.textContent = '⚠️ 只能選 2 項，請再調整。';
+    else fb.textContent = `已選 ${checked.length}/2 項`;
+  };
+  document.querySelectorAll('input[name=q21]').forEach(r=>r.onchange=checkL2);
+  document.querySelectorAll('#q22-opts input').forEach(c=>c.onchange=checkL2);
+  btn2.onclick = ()=>{
+    const q21 = document.querySelector('input[name=q21]:checked').value;
+    const fb21 = document.querySelector('.q21-fb');
+    let p = 0;
+    if(q21==='B'){
+      fb21.textContent='✅ 正解 B：積極減排可延長窗口，每一年的行動都改變碳預算耗盡的時間。';
+      fb21.className='text-xs mt-1 text-emerald-700 q21-fb'; p+=5;
+    } else {
+      fb21.textContent='❌ 正解為 B。A 過於悲觀，C 忽略累積效應。圖表顯示行動可顯著延長窗口。';
+      fb21.className='text-xs mt-1 text-rose-600 q21-fb';
+    }
+    const opts = document.querySelectorAll('#q22-opts input');
+    let correctChecked = 0, wrongChecked = 0;
+    opts.forEach(o=>{
+      const lbl = o.parentElement;
+      lbl.classList.remove('correct','wrong');
+      if(o.checked){
+        if(o.dataset.correct==='1'){ lbl.classList.add('correct'); correctChecked++;}
+        else { lbl.classList.add('wrong'); wrongChecked++;}
+      }
+    });
+    const fb22 = document.getElementById('q22-fb');
+    if(correctChecked===2 && wrongChecked===0){
+      p+=10;
+      fb22.innerHTML='<span class="text-emerald-700 font-bold">✅ 兩項都對！碳預算有限（A）與社區行動的向上擴散效應（C）是最直接的理由。</span>';
+    } else if(correctChecked===1 && wrongChecked===0){
+      p+=5;
+      fb22.innerHTML='<span class="text-amber-600">部分正確（1/2）。再選一項合理論點。</span>';
+    } else {
+      fb22.innerHTML='<span class="text-rose-600">❌ 正解為 A（碳預算有限不能拖延）與 C（社區行動有擴散效應）。</span>';
+    }
+    awardOnce('L2', p);
+    confetti();
+    goto(3);
+  };
+
+  // ===== Task 3: Feedback loop =====
+  shuffleChildren(document.getElementById('loop-items'));
+  (function(){
+    let dragged = null, loopCorrect = 0, loopErr = 0;
+    document.querySelectorAll('#loop-items .drag-item').forEach(it=>{
+      it.addEventListener('dragstart', ()=>{ dragged=it; it.classList.add('dragging'); });
+      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null; });
+    });
+    document.querySelectorAll('.loop-slot').forEach(s=>{
+      s.addEventListener('dragenter', e=>{ e.preventDefault(); s.classList.add('over');});
+      s.addEventListener('dragover', e=>{ e.preventDefault(); s.classList.add('over');});
+      s.addEventListener('dragleave', ()=>s.classList.remove('over'));
+      s.addEventListener('drop', e=>{
+        e.preventDefault(); s.classList.remove('over');
+        if(!dragged) return;
+        if(dragged.dataset.loop === s.dataset.slot){
+          const t = document.getElementById('slot-'+s.dataset.slot+'-text');
+          if(t) t.textContent = dragged.textContent;
+          dragged.style.visibility='hidden';
+          loopCorrect++;
+          if(loopCorrect===4){
+            awardOnce('L3', 15 - Math.min(loopErr,5));
+            document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 完成！鎖定環：延遲行動 → 化石設施擴張鎖定 → 利益集團阻力增強 → 行動成本上升 → 更難啟動。</span>';
+            document.getElementById('btn-next-3').disabled=false;
+            confetti();
+          }
+        } else {
+          s.classList.add('shake'); setTimeout(()=>s.classList.remove('shake'),400);
+          loopErr++;
+          document.getElementById('loop-fb').innerHTML='<span class="text-rose-600">❌ 順序錯了。提示：延遲 → 設施如何擴張？設施擴張 → 阻力如何？阻力增強 → 行動難度如何？</span>';
+        }
+      });
+    });
+  })();
+  document.getElementById('btn-next-3').onclick = ()=>goto(4);
+
+  // ===== Task 4: CER =====
+  const claimBank = {
+    yes:     '有道德責任：青年雖非排放主因，但集體行動是打破延遲循環的必要手段。',
+    partial: '部分責任：青年行動有價值，但主要責任在政府與企業，不應過度歸責年輕世代。',
+    no:      '無道德責任：在成效有限的情況下，強迫青年行動是將成人失敗的責任轉嫁給下一代。'
+  };
+  const evidBank = {
+    yes: [
+      {t:'全球青年氣候行動（2019 氣候罷課）：超過 160 個國家 400 萬人參與，多國政府在罷課後數週內宣布強化氣候目標；IPCC AR6 亦指出社會運動是推動政策轉型的關鍵槓桿。', ok:true},
+      {t:'青年很有能量應該行動。', ok:false},
+      {t:'年輕人是未來所以要負責。', ok:false},
+    ],
+    partial: [
+      {t:'Carbon Disclosure Project 2017：100 家企業貢獻全球 71% 碳排；IPCC AR6：政府政策組合是達成 2°C 目標的最關鍵決定因素，遠大於個體行為改變。', ok:true},
+      {t:'主要是大公司的問題。', ok:false},
+      {t:'政府應該負最多責任。', ok:false},
+    ],
+    no: [
+      {t:'Hickman 2021（Lancet）：59% 青年已因氣候焦慮影響日常功能；Gardiner（2011）氣候倫理：將氣候責任歸咎給未造成問題的世代，是將代際不公義延續給受害者。', ok:true},
+      {t:'青年沒有排放所以不應該負責。', ok:false},
+      {t:'強迫青年行動是不公平的。', ok:false},
+    ]
+  };
+  const reasBank = {
+    yes: [
+      {t:'鎖定效應研究顯示：延遲行動讓化石基礎設施逐年擴張，未來轉型成本呈指數增長；青年集體行動打破政治慣性是目前最具時效性的槓桿，即使單次效應有限，累積效應可改變政策軌跡。', ok:true},
+      {t:'大家都要一起行動。', ok:false},
+      {t:'青年是未來所以應該負責現在。', ok:false},
+    ],
+    partial: [
+      {t:'責任應與影響力成正比；青年行動雖有倡議價值，但在缺乏系統性政策支持下，個體行動效益遠低於政府與企業的規模效應；公平原則要求責任歸屬與排放能力對應。', ok:true},
+      {t:'責任要看誰造成問題。', ok:false},
+      {t:'有能力的才應該付出更多。', ok:false},
+    ],
+    no: [
+      {t:'道德責任的基礎是能力與因果關係；青年對氣候危機既無主要因果責任也無主要政策影響力；在已承受心理負擔的情況下再施加道德壓力，違反不加害原則，是代際不公義的延伸。', ok:true},
+      {t:'青年沒有製造問題所以不應承擔。', ok:false},
+      {t:'逼年輕人行動是不公平的。', ok:false},
+    ]
+  };
+
+  let chosenClaim = null, chosenEvidOk = false, chosenReasOk = false, evText = '';
+  const evidWrap = document.getElementById('evid-wrap');
+  const reasWrap = document.getElementById('reas-wrap');
+  const cerSummary = document.getElementById('cer-summary');
+  const btn4 = document.getElementById('btn-next-4');
+
+  const renderOpts = (wrap, items, name, onPick)=>{
+    wrap.innerHTML = '';
+    const shuffled = items.slice().sort(()=>Math.random()-0.5);
+    shuffled.forEach((it)=>{
+      const lbl = document.createElement('label');
+      lbl.className = 'opt';
+      lbl.innerHTML = `<input type="radio" name="${name}"> ${it.t}`;
+      lbl.querySelector('input').onchange = ()=>{
+        wrap.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel','correct','wrong'));
+        lbl.classList.add(it.ok ? 'correct' : 'wrong');
+        onPick(it.ok, it.t);
+      };
+      wrap.appendChild(lbl);
+    });
+  };
+
+  document.querySelectorAll('input[name=claim]').forEach(r=>{
+    r.onchange = ()=>{
+      chosenClaim = r.value;
+      document.querySelectorAll('#claim-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      awardOnce('L4-claim', 4);
+      evidWrap.classList.remove('hidden');
+      reasWrap.classList.add('hidden');
+      cerSummary.classList.add('hidden');
+      chosenEvidOk = false; chosenReasOk = false;
+      btn4.disabled = true;
+      renderOpts(document.getElementById('evid-opts'), evidBank[chosenClaim], 'evid', (ok, t)=>{
+        chosenEvidOk = ok; evText = t;
+        document.getElementById('evid-fb').innerHTML = ok
+          ? '<span class="text-emerald-700">✅ 這條證據含具體數據／權威來源，與你的主張一致。</span>'
+          : '<span class="text-rose-600">❌ 這條缺乏數據／與主張關聯弱。再選一次。</span>';
+        if(ok) awardOnce('L4-evid', 8);
+        reasWrap.classList.remove('hidden');
+        renderOpts(document.getElementById('reas-opts'), reasBank[chosenClaim], 'reas', (ok2, t2)=>{
+          chosenReasOk = ok2;
+          document.getElementById('reas-fb').innerHTML = ok2
+            ? '<span class="text-emerald-700">✅ 這條推理確實連結了證據與主張。</span>'
+            : '<span class="text-rose-600">❌ 這條沒有清楚解釋為什麼證據支持主張。再選一次。</span>';
+          if(ok2){
+            awardOnce('L4-reas', 8);
+            document.getElementById('sum-c').textContent = claimBank[chosenClaim];
+            document.getElementById('sum-e').textContent = evText;
+            document.getElementById('sum-r').textContent = t2;
+            cerSummary.classList.remove('hidden');
+            confetti();
+          }
+          btn4.disabled = !(chosenEvidOk && chosenReasOk);
+        });
+        btn4.disabled = !(chosenEvidOk && chosenReasOk);
+      });
+    };
+  });
+  btn4.onclick = ()=>goto(5);
+
+  // ===== Task 5: 提案菜單 + WSA =====
+  const projBank = {
+    energy: {
+      problem: '現況問題：家庭用電習慣不透明，居民對自身碳足跡缺乏具體認知，難以改變行為。',
+      steps: '行動步驟：① 設計 30 天家庭用電記錄表，追蹤每日用電量；② 計算碳排放並與班級平均比較；③ 提出並實施至少 3 項減少耗能的行動，記錄成效。',
+      kpis: ['30 天後家庭月用電量平均降低 10%', '參與者 100% 完成碳足跡計算', '行動成果於班級發表並擴散至家長']
+    },
+    food: {
+      problem: '現況問題：校園午餐食物浪費嚴重，肉食比例高，學生對飲食碳排缺乏意識。',
+      steps: '行動步驟：① 調查一週午餐食物浪費量與肉食比例；② 辦理低碳飲食週（增加蔬食選項、減少包裝）；③ 計算低碳飲食週的碳排節省量並公告。',
+      kpis: ['低碳飲食週食物浪費量減少 30%', '蔬食選擇率提升至 40% 以上', '活動後學生飲食碳排知識測驗得分提升 20%']
+    },
+    green: {
+      problem: '現況問題：社區綠覆率低，缺乏本地植物，高溫日熱島效應嚴重。',
+      steps: '行動步驟：① 調查社區適合種植的本地樹種並聯繫苗圃；② 與里辦合作辦理社區植樹日；③ 建立屋頂菜園試驗區，記錄生長與降溫成效。',
+      kpis: ['一年內新增 20 株本地樹種', '屋頂菜園試驗區降溫成效達 2°C', '種植活動吸引 50 名以上社區居民參與']
+    },
+    policy: {
+      problem: '現況問題：青年在地方氣候政策決策中缺乏發聲管道，政策制定者不了解青年需求。',
+      steps: '行動步驟：① 調查班上同學對社區氣候問題的優先排序；② 撰寫青年氣候行動請願書（含具體政策建議）；③ 向里辦、市議員或縣市府提交並追蹤回應。',
+      kpis: ['請願書獲得 100 人以上連署', '收到里辦或議員正式回應', '提案進入地方政策討論議程']
+    }
+  };
+
+  const projDetail = document.getElementById('proj-detail');
+  let kpiPicked = false, projPicked = null;
+  document.querySelectorAll('input[name=proj]').forEach(r=>{
+    r.onchange = ()=>{
+      projPicked = r.value;
+      document.querySelectorAll('#proj-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      const d = projBank[projPicked];
+      document.getElementById('proj-problem').textContent = d.problem;
+      document.getElementById('proj-steps').textContent = d.steps;
+      const kpiBox = document.getElementById('kpi-opts');
+      kpiBox.innerHTML = '';
+      kpiPicked = false;
+      d.kpis.forEach((k)=>{
+        const lbl = document.createElement('label');
+        lbl.className='opt';
+        lbl.innerHTML = `<input type="radio" name="kpi"> ${k}`;
+        lbl.querySelector('input').onchange = ()=>{
+          document.querySelectorAll('#kpi-opts .opt').forEach(o=>o.classList.remove('sel'));
+          lbl.classList.add('sel');
+          kpiPicked = true;
+          checkP();
+        };
+        kpiBox.appendChild(lbl);
+      });
+      projDetail.classList.remove('hidden');
+      checkP();
+    };
+  });
+
+  const btn5 = document.getElementById('btn-next-5');
+  function checkP(){
+    const wsaAll = document.querySelectorAll('.wsa:checked').length === 4;
+    const ok = projPicked && kpiPicked && wsaAll;
+    document.getElementById('p-fb').innerHTML = ok
+      ? '<span class="text-emerald-700 font-bold">✅ 提案組裝完成、WSA 四面向全勾！</span>'
+      : '<span class="text-slate-500">請：選主題 → 選 KPI → 勾 WSA 四面向</span>';
+    btn5.disabled = !ok;
+  }
+  document.querySelectorAll('.wsa').forEach(c=>c.onchange=checkP);
+  btn5.onclick = ()=>{ awardOnce('L5', 15); confetti(); goto(6); };
+
+  // ===== Final reflection =====
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+  const setStars = (wrapId, set)=>{
+    const wrap = document.getElementById(wrapId);
+    wrap.querySelectorAll('.star').forEach(s=>{
+      s.onclick = ()=>{
+        const v = parseInt(s.dataset.val,10);
+        set(v);
+        wrap.querySelectorAll('.star').forEach(x=>{
+          x.classList.toggle('on', parseInt(x.dataset.val,10) <= v);
+        });
+        checkReflect();
+      };
+    });
+  };
+  setStars('stars-before', v=>starBefore=v);
+  setStars('stars-after', v=>starAfter=v);
+  document.querySelectorAll('input[name=impact]').forEach(r=>{
+    r.onchange = ()=>{
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o=>o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+  function checkReflect(){
+    const ok = starBefore>0 && starAfter>0 && impactPicked;
+    document.getElementById('reflect-fb').textContent = ok
+      ? '✅ 反思完成，獲得 5 分。'
+      : '請完成 3 題（前/後理解程度 + 影響最大任務）';
+    if(ok){
+      awardOnce('FINAL', 5);
+      document.getElementById('final-score').textContent = S.score;
+    }
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
+</script>
 </body>
 </html>

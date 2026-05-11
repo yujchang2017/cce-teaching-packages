@@ -1,392 +1,732 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>自然連結小探員 — 6.1-III 互動學習單</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自然小探員阿葉的一天 | 互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background: linear-gradient(135deg,#d1fae5 0%,#a7f3d0 40%,#fde68a 100%); min-height:100vh; }
-  .card { transition: transform .2s; }
-  .card:hover { transform: translateY(-2px); }
-  .feedback-pop { animation: pop .4s ease-out; }
-  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#d1fae5,#a7f3d0,#fde68a); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
+  .btn { transition:all .2s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
+  .drag-item { cursor: grab; user-select:none; }
+  .drag-item.dragging { opacity:.4; }
+  .drop-zone { min-height:110px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
+  .pop { animation: pop .5s ease; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
   .shake { animation: shake .4s; }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
-  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; animation: fall 2.5s linear forwards; z-index:9999; }
-  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-  .progress-dot { width: 14px; height: 14px; border-radius: 9999px; background: #cbd5e1; transition: all .3s; }
-  .progress-dot.done { background: #10b981; transform: scale(1.2); }
-  .progress-dot.active { background: #059669; box-shadow: 0 0 0 4px rgba(5,150,105,.25); }
-  .drag-item { cursor: grab; user-select: none; }
-  .drag-item.dragging { opacity: .4; }
-  .drop-zone.over { background: #fef08a !important; border-color:#eab308 !important; }
-  .badge { animation: glow 2s infinite alternate; }
-  @keyframes glow { from { box-shadow: 0 0 10px #fbbf24; } to { box-shadow: 0 0 30px #f59e0b; } }
-  .hidden-step { display: none; }
-  .leaf-bounce { animation: bounce 1.2s infinite; display:inline-block; }
-  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
+  .hidden-screen { display:none; }
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
+  .progress-dot.active { background:#10b981; transform:scale(1.3);}
+  .progress-dot.done { background:#059669;}
+  .fade-in { animation: fade .4s ease; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.95rem;}
+  .opt:hover { background:#f0fdf4; }
+  .opt.sel { border-color:#10b981; background:#d1fae5;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.5rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
-<body class="text-gray-800">
+<body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 
-<header class="bg-gradient-to-r from-emerald-600 to-green-500 text-white p-6 shadow-lg">
-  <div class="max-w-5xl mx-auto">
-    <h1 class="text-3xl md:text-4xl font-extrabold">🌿 自然連結小探員</h1>
-    <p class="mt-2 text-emerald-50">UNESCO 6.1-III ｜ 9-12 歲 ｜ 走出教室，打開你的五感與六條路徑！</p>
-    <div id="progressBar" class="flex gap-2 mt-4" aria-label="關卡進度">
-      <div class="progress-dot active" id="dot1"></div>
-      <div class="progress-dot" id="dot2"></div>
-      <div class="progress-dot" id="dot3"></div>
-      <div class="progress-dot" id="dot4"></div>
-      <div class="progress-dot" id="dot5"></div>
-      <div class="progress-dot" id="dot6"></div>
-    </div>
-    <p class="text-sm mt-2" id="progressText">第 1 / 6 關</p>
-  </div>
-</header>
+<div class="max-w-3xl mx-auto">
 
-<main class="max-w-5xl mx-auto p-4 md:p-6">
-
-<!-- 角色與情境故事 -->
-<section id="intro" class="card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <div class="flex items-start gap-4">
-    <div class="text-6xl leaf-bounce">🦉</div>
+  <!-- Header -->
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
     <div>
-      <h2 class="text-2xl font-bold text-emerald-700">任務簡報：加入「自然連結小探員」！</h2>
-      <p class="mt-2 leading-relaxed">嗨！我是校園老樟樹裡的貓頭鷹「老樟」，我發現最近小朋友都愛待在室內。其實科學家說，每週在大自然至少 <strong class="text-emerald-700">120 分鐘</strong>，心情和健康都會變好！你的任務是通過 6 個關卡，解鎖「全校英雄」徽章，幫全校找回與自然的連結！</p>
-      <button onclick="startMission()" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full shadow">接下任務 🌱</button>
+      <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">🌿 自然小探員阿葉的一天</h1>
+      <p class="text-sm text-slate-600 mt-1">幫阿葉完成四個自然任務，成為校園自然英雄！</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
     </div>
   </div>
-</section>
 
-<!-- 關卡 1：每週自然時間（情境選擇）-->
-<section id="level1" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-emerald-700">⏰ 關卡 1：每週多久在自然才夠？</h2>
-  <p class="mt-2 text-gray-600">White 等 2019 年的研究（真實數據！）發現，每週在自然中達到一個「門檻時間」，自覺健康與幸福感才會明顯提升。你猜是多少？</p>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-    <button class="q1-opt p-4 border-2 border-emerald-200 rounded-xl hover:bg-emerald-50" data-ans="0">30 分鐘</button>
-    <button class="q1-opt p-4 border-2 border-emerald-200 rounded-xl hover:bg-emerald-50" data-ans="0">60 分鐘</button>
-    <button class="q1-opt p-4 border-2 border-emerald-200 rounded-xl hover:bg-emerald-50" data-ans="1">120 分鐘</button>
-    <button class="q1-opt p-4 border-2 border-emerald-200 rounded-xl hover:bg-emerald-50" data-ans="0">300 分鐘</button>
-  </div>
-  <div id="q1-feedback" class="mt-4"></div>
-</section>
-
-<!-- 關卡 2：六條路徑拖曳配對 -->
-<section id="level2" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-teal-700">🧭 關卡 2：六條路徑 — 幫活動找到對的路徑</h2>
-  <p class="mt-2 text-gray-600">UNESCO 提到六條連結自然的路徑。請把下方活動拖到正確的路徑：</p>
-
-  <div class="flex flex-wrap gap-3 mt-4" id="actPool">
-    <div class="drag-item bg-pink-100 px-4 py-2 rounded-full shadow" draggable="true" data-p="sense">👂 閉眼聽校園 30 秒聲音</div>
-    <div class="drag-item bg-rose-100 px-4 py-2 rounded-full shadow" draggable="true" data-p="emotion">🌳 幫校園的樹取名字</div>
-    <div class="drag-item bg-amber-100 px-4 py-2 rounded-full shadow" draggable="true" data-p="time">📅 每週六上午爬山 2 小時</div>
-    <div class="drag-item bg-sky-100 px-4 py-2 rounded-full shadow" draggable="true" data-p="meaning">📜 想像老樟樹見過的歷史</div>
-    <div class="drag-item bg-green-100 px-4 py-2 rounded-full shadow" draggable="true" data-p="care">♻️ 週末淨灘撿海廢</div>
-    <div class="drag-item bg-purple-100 px-4 py-2 rounded-full shadow" draggable="true" data-p="explore">🔍 用放大鏡觀察螞蟻窩</div>
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3 flex-wrap">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-2 text-sm text-slate-600">關卡 <span id="step-label">1</span> / 4</span>
   </div>
 
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-6">
-    <div class="drop-zone min-h-[110px] border-2 border-dashed border-pink-400 bg-pink-50 rounded-xl p-3" data-p="sense"><p class="font-bold text-pink-700">👁️ 感官接觸</p><div class="drop-content flex flex-wrap gap-1 mt-2"></div></div>
-    <div class="drop-zone min-h-[110px] border-2 border-dashed border-rose-400 bg-rose-50 rounded-xl p-3" data-p="emotion"><p class="font-bold text-rose-700">💖 情感連結</p><div class="drop-content flex flex-wrap gap-1 mt-2"></div></div>
-    <div class="drop-zone min-h-[110px] border-2 border-dashed border-amber-400 bg-amber-50 rounded-xl p-3" data-p="time"><p class="font-bold text-amber-700">⏳ 花時間</p><div class="drop-content flex flex-wrap gap-1 mt-2"></div></div>
-    <div class="drop-zone min-h-[110px] border-2 border-dashed border-sky-400 bg-sky-50 rounded-xl p-3" data-p="meaning"><p class="font-bold text-sky-700">💡 思考意義</p><div class="drop-content flex flex-wrap gap-1 mt-2"></div></div>
-    <div class="drop-zone min-h-[110px] border-2 border-dashed border-green-400 bg-green-50 rounded-xl p-3" data-p="care"><p class="font-bold text-green-700">🌱 關愛行動</p><div class="drop-content flex flex-wrap gap-1 mt-2"></div></div>
-    <div class="drop-zone min-h-[110px] border-2 border-dashed border-purple-400 bg-purple-50 rounded-xl p-3" data-p="explore"><p class="font-bold text-purple-700">🧭 探索發現</p><div class="drop-content flex flex-wrap gap-1 mt-2"></div></div>
-  </div>
-  <div id="q2-feedback" class="mt-4"></div>
-  <button onclick="checkLevel2()" class="mt-3 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full">檢查答案</button>
-</section>
-
-<!-- 關卡 3：森林 vs. 都市 身體反應 -->
-<section id="level3" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-lime-700">🌲 關卡 3：森林浴 — 身體真的會變？</h2>
-  <p class="mt-2 text-gray-600">日本 Park 等 2010 年研究（真實數據！）：森林 vs. 都市散步後，身體指標不一樣。請選出正確答案：</p>
-  <div id="foQs" class="space-y-4 mt-4">
-    <div class="q3 border rounded-xl p-3" data-ans="down">
-      <p class="font-semibold">Q1：在森林散步後，壓力荷爾蒙（皮質醇）會？</p>
-      <div class="flex gap-2 mt-2 flex-wrap">
-        <button class="q3-opt px-3 py-1 border rounded-full" data-v="up">上升</button>
-        <button class="q3-opt px-3 py-1 border rounded-full" data-v="down">下降約 12-15%</button>
-        <button class="q3-opt px-3 py-1 border rounded-full" data-v="same">沒變化</button>
+  <!-- ===== Level 1: 六條路徑配對 (15 pts) ===== -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🌳</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 1：六條親近自然的路徑</h2>
+        <p class="text-sm text-slate-700 mt-1">阿葉說：「科學家說，每週在大自然至少 <b>120 分鐘</b>，心情和健康都會變好！有六條路徑可以幫我們親近自然，把卡片拖到正確的路徑籃子裡！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 15 分｜全部放對才能前往下一關</p>
       </div>
     </div>
-    <div class="q3 border rounded-xl p-3" data-ans="down">
-      <p class="font-semibold">Q2：在森林散步後，心率和血壓的趨勢是？</p>
-      <div class="flex gap-2 mt-2 flex-wrap">
-        <button class="q3-opt px-3 py-1 border rounded-full" data-v="up">上升</button>
-        <button class="q3-opt px-3 py-1 border rounded-full" data-v="down">下降</button>
-        <button class="q3-opt px-3 py-1 border rounded-full" data-v="same">沒變化</button>
+
+    <div class="grid grid-cols-2 gap-3 my-3" id="items-box-1">
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="sense">👂 閉眼聽校園 30 秒聲音</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="emotion">🌳 幫校園的樹取名字</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="care">🌱 幫花圃澆水</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="explore">🔍 用放大鏡觀察螞蟻</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="time">🌄 每週末爬山 2 小時</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="meaning">💭 想老樟樹見過哪些事</div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="zones-box-1">
+      <div class="drop-zone bg-pink-50 p-3" data-accept="sense">
+        <div class="font-bold text-pink-700 text-center mb-2">👁️ 感官接觸<br><span class="text-xs font-normal text-pink-400">（用五感感受）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-rose-50 p-3" data-accept="emotion">
+        <div class="font-bold text-rose-700 text-center mb-2">💖 情感連結<br><span class="text-xs font-normal text-rose-400">（有感情的互動）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-amber-50 p-3" data-accept="time">
+        <div class="font-bold text-amber-700 text-center mb-2">⏳ 花時間<br><span class="text-xs font-normal text-amber-400">（持續在戶外）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-sky-50 p-3" data-accept="meaning">
+        <div class="font-bold text-sky-700 text-center mb-2">💡 思考意義<br><span class="text-xs font-normal text-sky-400">（想一想背後故事）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-green-50 p-3" data-accept="care">
+        <div class="font-bold text-green-700 text-center mb-2">🌱 關愛行動<br><span class="text-xs font-normal text-green-400">（幫助自然）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-purple-50 p-3" data-accept="explore">
+        <div class="font-bold text-purple-700 text-center mb-2">🧭 探索發現<br><span class="text-xs font-normal text-purple-400">（觀察找答案）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
       </div>
     </div>
-    <div class="q3 border rounded-xl p-3" data-ans="yes">
-      <p class="font-semibold">Q3：WHO 建議 5-17 歲兒童每天至少 60 分鐘身體活動，在戶外完成可以同時達成心理減壓與身體活動嗎？</p>
-      <div class="flex gap-2 mt-2 flex-wrap">
-        <button class="q3-opt px-3 py-1 border rounded-full" data-v="yes">是，一舉兩得</button>
-        <button class="q3-opt px-3 py-1 border rounded-full" data-v="no">不行，要分開</button>
+
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <span></span>
+      <button id="btn-next-1" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>完成分類才能繼續 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 2: 看圖找答案 (20 pts) ===== -->
+  <section id="level-2" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">📊</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 2：看圖找答案</h2>
+        <p class="text-sm text-slate-700 mt-1">阿葉找到一張「每週戶外時間 vs 幸福感」的研究圖表。仔細看圖，回答下面兩題！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜Q1 單選 5 分 + Q2 多選 15 分</p>
       </div>
     </div>
-  </div>
-  <div id="q3-feedback" class="mt-4"></div>
-</section>
 
-<!-- 關卡 4：校園綠地達 WHO 標準？（填空計算）-->
-<section id="level4" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-green-700">📐 關卡 4：校園綠地達標嗎？</h2>
-  <p class="mt-2 text-gray-600">WHO 建議每人至少 <strong>9 平方公尺</strong> 綠地，理想 <strong>50 平方公尺</strong>。假設某國小的校園綠地面積為 <strong>3,600 m²</strong>，全校共 <strong>600 人</strong>，計算每人平均綠地，並判斷是否達標。</p>
-  <div class="mt-4 bg-green-50 p-4 rounded-xl">
-    <label class="block font-semibold">每人綠地 = 3600 ÷ 600 = ？ 平方公尺</label>
-    <input id="q4input" type="number" class="mt-2 w-40 p-2 border-2 border-green-300 rounded-lg" placeholder="輸入數字" />
-    <button onclick="checkLevel4()" class="ml-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-5 rounded-full">送出</button>
-  </div>
-  <div id="q4-feedback" class="mt-4"></div>
-</section>
+    <!-- Simple SVG chart -->
+    <svg viewBox="0 0 400 180" class="w-full max-w-lg mx-auto block bg-slate-50 rounded-xl mb-4 border border-slate-200">
+      <line x1="50" y1="150" x2="390" y2="150" stroke="#475569" stroke-width="1.5"/>
+      <line x1="50" y1="20" x2="50" y2="150" stroke="#475569" stroke-width="1.5"/>
+      <text x="5" y="24" font-size="9" fill="#64748b">分</text>
+      <text x="10" y="155" font-size="9" fill="#64748b">60</text>
+      <text x="10" y="105" font-size="9" fill="#64748b">70</text>
+      <text x="10" y="55" font-size="9" fill="#64748b">80</text>
+      <text x="48" y="167" font-size="9" fill="#64748b">0分</text>
+      <text x="120" y="167" font-size="9" fill="#64748b">60分</text>
+      <text x="195" y="167" font-size="9" fill="#64748b">120分</text>
+      <text x="280" y="167" font-size="9" fill="#64748b">180分</text>
+      <polyline fill="none" stroke="#10b981" stroke-width="2.5"
+        points="50,145 110,138 180,95 240,80 310,78 380,77"/>
+      <line x1="180" y1="20" x2="180" y2="150" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4"/>
+      <text x="185" y="35" font-size="9" fill="#d97706" font-weight="bold">↑ 120分門檻</text>
+      <text x="185" y="47" font-size="9" fill="#94a3b8">幸福感明顯提升</text>
+      <text x="25" y="12" font-size="8" fill="#94a3b8">幸福感</text>
+      <text x="130" y="167" font-size="8" fill="#94a3b8">（White 2019, Scientific Reports）</text>
+    </svg>
 
-<!-- 關卡 5：情境抉擇 — 週末同學揪你去哪？-->
-<section id="level5" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6">
-  <h2 class="text-xl font-bold text-purple-700">🎭 關卡 5：週末的抉擇</h2>
-  <p class="mt-2 text-gray-600">這週末同學揪你出去，你會建議怎麼做？每個選擇都沒有對錯，但後果不同。</p>
-  <div class="space-y-3 mt-4">
-    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="A">A. 整天在家打電動、追劇</button>
-    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="B">B. 去百貨公司逛 4 小時</button>
-    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="C">C. 去附近公園野餐、觀察昆蟲 2 小時</button>
-    <button class="choice w-full text-left p-4 border-2 rounded-xl hover:bg-purple-50" data-c="D">D. 去國家公園健行一整天，用 iNaturalist 拍 5 種生物</button>
-  </div>
-  <div id="q5-feedback" class="mt-4"></div>
-</section>
-
-<!-- 關卡 6：全校行動挑戰（WSA 四面向）-->
-<section id="level6" class="hidden-step card bg-white rounded-2xl shadow-lg p-6 mb-6 border-4 border-amber-400">
-  <h2 class="text-xl font-bold text-amber-700">🏫 關卡 6：全校行動挑戰（Whole School Approach）</h2>
-  <p class="mt-2 text-gray-700">四個面向，一起把學校變成與自然連結的家。請勾選你「本學期會嘗試」的行動，四項全勾，解鎖「全校英雄」徽章！</p>
-  <div class="grid md:grid-cols-2 gap-4 mt-4">
-    <label class="flex items-start gap-3 p-4 border-2 border-blue-200 rounded-xl cursor-pointer hover:bg-blue-50">
-      <input type="checkbox" class="wsa mt-1" data-aspect="curriculum" />
-      <div>
-        <p class="font-bold text-blue-700">📚 課程整合</p>
-        <p class="text-sm">閱讀 1 本生態文學（吳明益、劉克襄）+ 健體課做 1 次「森林浴」深呼吸練習。</p>
+    <!-- Q1 -->
+    <div class="mb-5">
+      <p class="font-bold text-sm mb-2">📌 Q1：從這張圖可以看出什麼？（單選，5 分）</p>
+      <div id="q1-opts">
+        <label class="opt"><input type="radio" name="q1" value="0"> A. 在自然中待越久，幸福感就越高，沒有任何門檻。</label>
+        <label class="opt"><input type="radio" name="q1" value="1"> B. 每週約 120 分鐘是關鍵點，超過後幸福感才明顯變好。</label>
+        <label class="opt"><input type="radio" name="q1" value="0"> C. 0 到 60 分鐘和 120 到 180 分鐘的效果完全一樣。</label>
       </div>
-    </label>
-    <label class="flex items-start gap-3 p-4 border-2 border-green-200 rounded-xl cursor-pointer hover:bg-green-50">
-      <input type="checkbox" class="wsa mt-1" data-aspect="operations" />
-      <div>
-        <p class="font-bold text-green-700">🌳 校園營運</p>
-        <p class="text-sm">推動校園「靜心花園」或雨水花園，綠化量朝 WHO 9 m²／人 目標努力。</p>
+      <p id="q1-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <!-- Q2 -->
+    <div class="mb-3">
+      <p class="font-bold text-sm mb-1">📌 Q2：以下哪些是親近自然可能帶來的好處？<br><span class="font-normal text-slate-500 text-xs">（勾出你覺得有可能是真的，可以勾多個）</span></p>
+      <div id="q2-opts">
+        <label class="opt"><input type="checkbox" data-correct="1"> 😊 心情變好、壓力變小</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 💪 增加運動量、身體更健康</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> 📱 螢幕使用時間自動增加</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 🌟 注意力和專注力變更好</label>
       </div>
-    </label>
-    <label class="flex items-start gap-3 p-4 border-2 border-orange-200 rounded-xl cursor-pointer hover:bg-orange-50">
-      <input type="checkbox" class="wsa mt-1" data-aspect="community" />
+      <p id="q2-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="1">← 上一關</button>
+      <button id="btn-next-2" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>提交答案 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 3: 推一推 / 自然時光鏈 (20 pts) ===== -->
+  <section id="level-3" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🔄</div>
       <div>
-        <p class="font-bold text-orange-700">🤝 社區連結</p>
-        <p class="text-sm">邀請國家公園解說員或原住民長者到校分享；家庭一起週末戶外活動。</p>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 3：推一推！自然與我的關係</h2>
+        <p class="text-sm text-slate-700 mt-1">阿葉發現，親近自然是一連串的骨牌效應！把下面四張卡片依照正確的順序，拖進 ① ② ③ ④ 四個格子裡！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜順序全對才得分</p>
       </div>
-    </label>
-    <label class="flex items-start gap-3 p-4 border-2 border-purple-200 rounded-xl cursor-pointer hover:bg-purple-50">
-      <input type="checkbox" class="wsa mt-1" data-aspect="agency" />
+    </div>
+
+    <div class="flex flex-col md:flex-row items-center justify-center gap-2 my-4" id="chain-slots">
+      <div class="drop-zone bg-green-50 p-3 w-full md:w-32 text-center" data-slot="1">
+        <div class="text-xs font-bold text-green-700 mb-1">① 起點</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-green-50 p-3 w-full md:w-32 text-center" data-slot="2">
+        <div class="text-xs font-bold text-green-700 mb-1">②</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-green-50 p-3 w-full md:w-32 text-center" data-slot="3">
+        <div class="text-xs font-bold text-green-700 mb-1">③</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-green-50 p-3 w-full md:w-32 text-center" data-slot="4">
+        <div class="text-xs font-bold text-green-700 mb-1">④ 結果</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 mt-2" id="chain-items">
+      <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="3">😌 心情放鬆、壓力減少</div>
+      <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="1">📱 每天都待在室內，很少出門</div>
+      <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="4">🌍 更想保護自然、愛護地球</div>
+      <div class="drag-item bg-emerald-100 border-2 border-emerald-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="2">🌳 嘗試走到校園操場或公園</div>
+    </div>
+
+    <p id="l3-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="2">← 上一關</button>
+      <button id="btn-next-3" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>下一關 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 4: 我的行動 (20 pts) ===== -->
+  <section id="level-4" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">💪</div>
       <div>
-        <p class="font-bold text-purple-700">🙋 學生治理</p>
-        <p class="text-sm">當「自然大使」，每天帶 1 次下課 5 分鐘戶外呼吸課；用 iNaturalist 做班級觀察專案。</p>
+        <h2 class="text-xl font-bold text-emerald-700">關卡 4：我的自然行動方案</h2>
+        <p class="text-sm text-slate-700 mt-1">阿葉說：「找到喜歡的親近自然方式，從今天開始行動！先選一個方向，再選行動！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜選主題 + 選行動 + 立下承諾</p>
       </div>
-    </label>
-  </div>
-  <button onclick="checkWSA()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full shadow-lg">提交挑戰 🏆</button>
-  <div id="wsa-feedback" class="mt-4"></div>
-</section>
+    </div>
 
-<!-- 徽章與成果 -->
-<section id="result" class="hidden-step card bg-gradient-to-br from-yellow-100 to-amber-200 rounded-2xl shadow-2xl p-8 mb-6 text-center">
-  <div class="text-7xl mb-3 badge inline-block rounded-full bg-white p-6">🏆</div>
-  <h2 class="text-3xl font-extrabold text-amber-800">全校英雄 徽章解鎖！</h2>
-  <p class="mt-3 text-lg">你已經學到：每週 <strong>120 分鐘</strong> 的自然門檻、森林浴讓皮質醇降 <strong>12-15%</strong>、WHO <strong>9 m²</strong> 綠地標準、台灣 <strong>9 座國家公園</strong>、綠地 <strong>10% 降溫 1°C</strong>，以及六條連結自然的路徑！</p>
+    <div class="mb-4">
+      <p class="font-bold text-sm mb-2">① 阿葉最想從哪裡開始？（選一個）</p>
+      <div id="theme-opts">
+        <label class="opt"><input type="radio" name="theme" value="campus"> 🏫 在學校：利用下課時間到操場、花圃觀察</label>
+        <label class="opt"><input type="radio" name="theme" value="home"> 🏠 在家裡：陽台種盆栽、觀察窗外的鳥或昆蟲</label>
+        <label class="opt"><input type="radio" name="theme" value="weekend"> 🌄 週末：和家人去公園、山上或海邊</label>
+        <label class="opt"><input type="radio" name="theme" value="spread"> 📢 分享：邀同學一起發現校園自然</label>
+      </div>
+    </div>
 
-  <div class="bg-white rounded-xl p-5 mt-5 text-left">
-    <h3 class="font-bold text-emerald-700 text-xl mb-2">🌱 三個延伸思考（帶回家想想）</h3>
-    <ol class="list-decimal ml-6 space-y-2">
-      <li>如果家裡要搬家，你會希望新家附近有什麼自然元素？為什麼？把你的理由畫成一張「理想家園地圖」。</li>
-      <li>從家到學校的路上，找一個「小地方」（公園角落、牆角、水溝邊）連續觀察一週，記錄至少 3 種生物，並想想怎麼讓那裡更適合生物居住。</li>
-      <li>十年後你想做什麼工作？那份工作可以怎麼跟「讓更多人親近自然」連結？（提示：每種職業都可以！醫生、工程師、YouTuber、農夫、老師…）</li>
-    </ol>
-  </div>
+    <div id="action-wrap" class="hidden mb-4">
+      <p class="font-bold text-sm mb-2">② 以下三個做法，你覺得哪個最容易開始？（選一個）</p>
+      <div id="action-opts"></div>
+      <p id="action-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
 
-  <button onclick="window.print()" class="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full">🖨️ 列印成果頁</button>
-  <button onclick="location.reload()" class="mt-5 ml-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full">🔄 重新挑戰</button>
-</section>
+    <div id="promise-wrap" class="hidden bg-green-50 rounded-xl p-4 mb-3">
+      <p class="font-bold text-sm mb-2">③ 在你能做到的事情前打勾（至少選 2 個）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-green-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會把今天學的路徑，在課外試試一種</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-green-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我每週至少有一次在戶外待 30 分鐘以上</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-green-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會跟家人分享「120 分鐘自然門檻」這件事</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-green-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會觀察至少一種校園或家附近的動植物</span>
+      </label>
+      <p id="promise-fb" class="text-xs mt-2 text-slate-500 min-h-[18px]"></p>
+    </div>
 
-<footer class="text-center text-xs text-gray-500 pb-6">
-  資料來源：White et al. 2019 Scientific Reports、Park et al. 2010、WHO Europe 2016、WHO 身體活動指引 2020、US EPA、PHE 2020、內政部國家公園署。教學套件 UNESCO 6.1-III ｜ 驗證日 2026-04-16
-</footer>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="3">← 上一關</button>
+      <button id="btn-next-4" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>查看成果 🏆</button>
+    </div>
+  </section>
 
-</main>
+  <!-- ===== Final: 反思 (5 pts) ===== -->
+  <section id="level-final" class="card p-6 hidden-screen fade-in">
+    <div class="text-6xl text-center pop">🏆</div>
+    <h2 class="text-2xl font-bold text-emerald-600 mt-2 text-center">恭喜你幫阿葉完成任務！</h2>
+    <p class="text-slate-700 mt-1 text-center">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> / 80 分</p>
+
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <div class="bg-green-50 rounded-xl p-4 max-w-2xl mx-auto mb-4">
+      <p class="font-bold text-green-700 mb-3">🤔 最後一步：快速反思（5 分）</p>
+
+      <p class="text-sm font-semibold mb-1">Q1｜上這堂課之前，你多常親近大自然：</p>
+      <div id="stars-before" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q2｜上完這堂課後，你想親近自然的程度：</p>
+      <div id="stars-after" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q3｜哪個關卡讓你印象最深刻？</p>
+      <div id="impact-opts">
+        <label class="opt"><input type="radio" name="impact" value="1"> 關卡 1：六條路徑配對</label>
+        <label class="opt"><input type="radio" name="impact" value="2"> 關卡 2：看圖分析研究</label>
+        <label class="opt"><input type="radio" name="impact" value="3"> 關卡 3：推骨牌因果鏈</label>
+        <label class="opt"><input type="radio" name="impact" value="4"> 關卡 4：我的行動方案</label>
+      </div>
+      <p id="reflect-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div class="bg-yellow-50 rounded-xl p-4 text-left max-w-2xl mx-auto">
+      <h3 class="font-bold text-amber-700 mb-2">🧐 延伸思考小挑戰</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>從家到學校的路上，有沒有一個「小角落」（公園、牆角、水溝邊）可以連續觀察一週？</li>
+        <li>家裡大人最常做什麼事讓你待在室內？你可以邀請他們一起出去嗎？</li>
+        <li>你願意邀哪個同學一起到操場觀察自然 15 分鐘？你會怎麼開口？</li>
+      </ol>
+    </div>
+
+    <div class="nav-row max-w-2xl mx-auto mt-4">
+      <button class="btn btn-back" data-back="4">← 回到關卡 4</button>
+      <button onclick="location.reload()" class="btn bg-emerald-500 text-white py-2 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+    </div>
+  </section>
+
+</div>
 
 <script>
-let currentStep = 0;
-const steps = ['intro','level1','level2','level3','level4','level5','level6','result'];
+(() => {
+  const TOTAL_LEVELS = 4;
+  const S = { score: 0, current: 1, awarded: {} };
+  const el = id => document.getElementById(id);
 
-function showStep(i){
-  steps.forEach((s,idx)=>{
-    const el = document.getElementById(s);
-    if(!el) return;
-    if(idx===i) el.classList.remove('hidden-step');
-    else el.classList.add('hidden-step');
-  });
-  for(let k=1;k<=6;k++){
-    const d=document.getElementById('dot'+k);
-    d.classList.remove('done','active');
-    if(k < i) d.classList.add('done');
-    else if(k === i) d.classList.add('active');
-  }
-  const pt = document.getElementById('progressText');
-  if(i>=1 && i<=6) pt.textContent = `第 ${i} / 6 關`;
-  else if(i===7) pt.textContent = '完成！';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function startMission(){ currentStep=1; showStep(1); }
+  const setScore = n => { S.score += n; el('score').textContent = S.score; };
+  const awardOnce = (key, pts) => { if (!S.awarded[key]) { S.awarded[key] = true; setScore(pts); } };
 
-// Level 1
-document.querySelectorAll('.q1-opt').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const fb = document.getElementById('q1-feedback');
-    if(btn.dataset.ans==='1'){
-      fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎉 答對了！White 2019 研究指出 <strong>120 分鐘/週</strong> 是自覺健康效益的門檻，一天算 17 分鐘就達標，可以分次累積。</div>';
-      confetti();
-      setTimeout(()=>{currentStep=2;showStep(2);},1500);
-    } else {
-      btn.classList.add('shake');
-      fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再想想！提示：一週 7 天，每天平均 17 分鐘剛好達標——一次下課 10 分鐘到草地走走，加起來就夠了。</div>';
+  const updateDots = () => {
+    for (let i = 1; i <= TOTAL_LEVELS + 1; i++) {
+      const d = el('dot-' + i); if (!d) continue;
+      d.classList.remove('active', 'done');
+      if (i < S.current) d.classList.add('done');
+      else if (i === S.current) d.classList.add('active');
     }
-  });
-});
+  };
 
-// Level 2 — drag & drop
-let dragged = null;
-document.querySelectorAll('.drag-item').forEach(el=>{
-  el.addEventListener('dragstart', e=>{ dragged=el; el.classList.add('dragging'); });
-  el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); });
-});
-document.querySelectorAll('.drop-zone').forEach(z=>{
-  z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
-  z.addEventListener('dragleave', ()=> z.classList.remove('over'));
-  z.addEventListener('drop', e=>{
-    e.preventDefault(); z.classList.remove('over');
-    if(dragged){ z.querySelector('.drop-content').appendChild(dragged); }
+  const gotoLevel = n => {
+    document.querySelectorAll('section[id^="level-"]').forEach(s => s.classList.add('hidden-screen'));
+    S.current = n;
+    el('step-label').textContent = Math.min(n, 4);
+    const target = (n > TOTAL_LEVELS) ? el('level-final') : el('level-' + n);
+    target.classList.remove('hidden-screen');
+    target.classList.add('fade-in');
+    updateDots();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  document.querySelectorAll('.btn-back').forEach(b => {
+    b.onclick = () => gotoLevel(parseInt(b.dataset.back, 10));
   });
-});
-function checkLevel2(){
-  const zones = document.querySelectorAll('#level2 .drop-zone');
-  let correct=0, total=6;
-  zones.forEach(z=>{
-    const p = z.dataset.p;
-    z.querySelectorAll('.drop-content .drag-item').forEach(it=>{
-      if(it.dataset.p===p) correct++;
+
+  const confetti = () => {
+    const colors = ['#10b981', '#f59e0b', '#3b82f6', '#ef4444', '#a855f7'];
+    for (let i = 0; i < 32; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[i % colors.length];
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 2500);
+    }
+  };
+
+  const shuffleChildren = parent => {
+    const kids = Array.from(parent.children);
+    for (let i = kids.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      parent.appendChild(kids[j]);
+    }
+  };
+
+  /* ===== Level 1: 六條路徑 drag-drop (15 pts) ===== */
+  shuffleChildren(el('items-box-1'));
+  shuffleChildren(el('zones-box-1'));
+
+  let dragged1 = null;
+  let l1Correct = 0;
+  const total1 = document.querySelectorAll('#items-box-1 .drag-item').length;
+
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged1 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => { item.classList.remove('dragging'); });
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#items-box-1 .drag-item').forEach(x => x.classList.remove('ring-4', 'ring-emerald-400'));
+      item.classList.add('ring-4', 'ring-emerald-400');
+      dragged1 = item;
     });
   });
-  const fb = document.getElementById('q2-feedback');
-  if(correct===total){
-    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌟 六條路徑全部配對正確！感官、情感、時間、意義、關愛、探索——你都認識了！</div>';
-    confetti();
-    setTimeout(()=>{currentStep=3;showStep(3);},1600);
-  } else {
-    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 你答對 ${correct}/${total}。提示：聽聲音＝感官；淨灘＝關愛；放大鏡觀察＝探索；幫樹取名＝情感。</div>`;
-  }
-}
 
-// Level 3
-let q3Correct=0, q3Total=3;
-document.querySelectorAll('.q3-opt').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const parent = btn.closest('.q3');
-    if(parent.dataset.answered) return;
-    const ans = parent.dataset.ans;
-    if(btn.dataset.v===ans){
-      btn.classList.add('bg-green-400','text-white');
-      q3Correct++;
+  document.querySelectorAll('#zones-box-1 .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop1(zone); });
+    zone.addEventListener('click', () => { if (dragged1) handleDrop1(zone); });
+  });
+
+  function handleDrop1(zone) {
+    if (!dragged1) return;
+    const fb = el('l1-feedback');
+    if (dragged1.dataset.match === zone.dataset.accept) {
+      zone.querySelector('.dz-items').appendChild(dragged1);
+      dragged1.setAttribute('draggable', 'false');
+      dragged1.classList.remove('ring-4', 'ring-emerald-400', 'bg-yellow-100', 'border-yellow-400');
+      dragged1.classList.add('bg-green-100', 'border-green-500', 'pop');
+      l1Correct++;
+      fb.textContent = '答對！ 👏';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+      confetti();
+      if (l1Correct === total1) {
+        awardOnce('L1', 15);
+        const btn = el('btn-next-1');
+        btn.disabled = false;
+        btn.className = 'btn bg-emerald-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(2);
+        fb.textContent = '六條路徑全部配對正確！阿葉超開心！🎉 +15 分';
+      }
     } else {
-      btn.classList.add('bg-red-300','text-white','shake');
-      const correctBtn = parent.querySelector(`.q3-opt[data-v="${ans}"]`);
-      if(correctBtn) correctBtn.classList.add('bg-green-400','text-white');
+      dragged1.classList.add('shake');
+      setTimeout(() => dragged1.classList.remove('shake'), 400);
+      fb.textContent = '再想想！提示：聽聲音＝感官；澆水＝關愛；放大鏡觀察＝探索 💡';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
     }
-    parent.dataset.answered='1';
-    checkQ3Done();
+    dragged1 = null;
+  }
+
+  /* ===== Level 2: 看圖找答案 (Q1:5pts Q2:15pts = 20) ===== */
+  let q1Done = false, q2Done = false;
+  const checkL2ready = () => {
+    const ready = q1Done && q2Done;
+    const btn = el('btn-next-2');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-emerald-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=q1]').forEach(r => {
+    r.onchange = () => {
+      if (q1Done) return;
+      document.querySelectorAll('#q1-opts .opt').forEach(o => o.classList.remove('sel', 'correct', 'wrong'));
+      r.parentElement.classList.add(r.value === '1' ? 'correct' : 'wrong');
+      const fb = el('q1-fb');
+      if (r.value === '1') {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 對了！120 分鐘是關鍵門檻，超過後效益才明顯。+5 分</span>';
+        awardOnce('L2-q1', 5);
+        q1Done = true;
+      } else {
+        fb.innerHTML = '<span class="text-rose-600">❌ 再看看圖，哪裡有明顯的轉折點？</span>';
+      }
+      checkL2ready();
+    };
   });
-});
-function checkQ3Done(){
-  const answered = document.querySelectorAll('#level3 .q3[data-answered="1"]').length;
-  if(answered===q3Total){
-    document.getElementById('q3-feedback').innerHTML =
-      `<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🌲 你答對 ${q3Correct}/${q3Total}！森林真的讓身體放鬆，數據說話。</div>`;
-    confetti();
-    setTimeout(()=>{currentStep=4;showStep(4);},1500);
-  }
-}
 
-// Level 4 — 計算題
-function checkLevel4(){
-  const v = parseFloat(document.getElementById('q4input').value);
-  const fb = document.getElementById('q4-feedback');
-  if(isNaN(v)){
-    fb.innerHTML = '<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 請輸入一個數字。</div>';
-    return;
-  }
-  if(Math.abs(v-6)<0.01){
-    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-3 rounded">🎯 正確！每人 <strong>6 m²</strong>，<strong>還沒達到 WHO 9 m² 的最低標準</strong>！你們可以提出種更多樹、設置屋頂花園的提案。</div>';
-    confetti();
-    setTimeout(()=>{currentStep=5;showStep(5);},1800);
-  } else {
-    fb.innerHTML = `<div class="feedback-pop bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded">💡 再算算：3600 ÷ 600 = ？（提示：答案是一位數）</div>`;
-  }
-}
-
-// Level 5 — choice consequences
-const choiceFeedback = {
-  A: { tone:'warn', text:'⚠️ 整天室內對身體和心情都不好。0 分鐘 < 120 分鐘門檻，久坐也不利健康。建議加入 1 小時戶外時間。' },
-  B: { tone:'warn', text:'🏬 雖然動了，但百貨公司不算自然環境，無法獲得綠地減壓效益，還可能買太多東西。' },
-  C: { tone:'ok', text:'🌳 很棒！2 小時公園時間剛好達 120 分鐘門檻，一次就達標本週目標，還能練習感官和探索路徑。' },
-  D: { tone:'best', text:'🌟 最佳選擇！國家公園一日遊同時滿足「時間、感官、探索、關愛（公民科學）」四條路徑，還貢獻科學資料！' }
-};
-document.querySelectorAll('.choice').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    if(document.getElementById('level5').dataset.answered) return;
-    document.getElementById('level5').dataset.answered='1';
-    const c = choiceFeedback[btn.dataset.c];
-    const color = c.tone==='best'?'green':(c.tone==='ok'?'blue':'yellow');
-    btn.classList.add('bg-'+color+'-100','border-'+color+'-500');
-    document.getElementById('q5-feedback').innerHTML =
-      `<div class="feedback-pop bg-${color}-100 border-l-4 border-${color}-500 p-3 rounded">${c.text}</div>`;
-    if(c.tone==='best') confetti();
-    setTimeout(()=>{currentStep=6;showStep(6);},2200);
+  let q2Submitted = false;
+  document.querySelectorAll('#q2-opts input[type=checkbox]').forEach(cb => {
+    cb.onchange = () => {
+      if (q2Submitted) return;
+      const checked = document.querySelectorAll('#q2-opts input:checked');
+      const fb = el('q2-fb');
+      if (checked.length >= 1) {
+        fb.textContent = `已選 ${checked.length} 項。覺得都選好了嗎？可以先提交～`;
+        q2Done = true;
+      } else { q2Done = false; }
+      checkL2ready();
+    };
   });
-});
 
-// Level 6 — WSA
-function checkWSA(){
-  const boxes = document.querySelectorAll('.wsa');
-  const all = Array.from(boxes).every(b=>b.checked);
-  const fb = document.getElementById('wsa-feedback');
-  if(all){
-    fb.innerHTML = '<div class="feedback-pop bg-green-100 border-l-4 border-green-500 p-4 rounded text-lg">🏅 四面向全勾選！你就是我們班的全校英雄！</div>';
-    confetti(60);
-    setTimeout(()=>{currentStep=7;showStep(7);},1800);
-  } else {
-    const cnt = Array.from(boxes).filter(b=>b.checked).length;
-    fb.innerHTML = `<div class="feedback-pop bg-amber-100 border-l-4 border-amber-500 p-3 rounded">你選了 ${cnt}/4 個面向。全校英雄需要「課程、校園、社區、學生」四面向一起行動，每個都很重要！再想想你可以怎麼參與剩下的面向？</div>`;
-  }
-}
+  el('btn-next-2').onclick = () => {
+    if (q2Submitted) { gotoLevel(3); return; }
+    q2Submitted = true;
+    const opts = document.querySelectorAll('#q2-opts input');
+    let correctCount = 0, wrongCount = 0;
+    opts.forEach(o => {
+      o.disabled = true;
+      const lbl = o.parentElement;
+      if (o.checked) {
+        if (o.dataset.correct === '1') { lbl.classList.add('correct'); correctCount++; }
+        else { lbl.classList.add('wrong'); wrongCount++; }
+      }
+    });
+    const pts = Math.max(0, correctCount * 5 - wrongCount * 5);
+    awardOnce('L2-q2', Math.min(pts, 15));
+    const fb = el('q2-fb');
+    if (wrongCount === 0 && correctCount >= 2) {
+      fb.innerHTML = `<span class="text-emerald-700 font-bold">✅ 觀察得很好！勾對 ${correctCount} 項。+${Math.min(pts,15)} 分</span>`;
+      confetti();
+    } else if (correctCount >= 1) {
+      fb.innerHTML = `<span class="text-amber-600">勾對 ${correctCount} 項、錯 ${wrongCount} 項。螢幕使用時間不會因出門而自動增加喔！</span>`;
+      if (pts > 0) confetti();
+    } else {
+      fb.innerHTML = '<span class="text-rose-600">❌ 都沒有勾到正確的！請看看每張選項的說明。</span>';
+    }
+    el('btn-next-2').textContent = '繼續下一關 →';
+    el('btn-next-2').onclick = () => gotoLevel(3);
+  };
 
-// Confetti
-function confetti(n=30){
-  const colors=['#34d399','#fbbf24','#60a5fa','#f87171','#a78bfa'];
-  for(let i=0;i<n;i++){
-    const c=document.createElement('div');
-    c.className='confetti';
-    c.style.left=Math.random()*100+'vw';
-    c.style.top='-20px';
-    c.style.background=colors[i%colors.length];
-    c.style.animationDelay=(Math.random()*0.5)+'s';
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3000);
+  /* ===== Level 3: 骨牌鏈 drag-to-slot (20 pts) ===== */
+  shuffleChildren(el('chain-items'));
+
+  let dragged3 = null;
+  let l3SlotsFilled = 0;
+  const slotMap = {};
+  const correctOrder = { '1': '1', '2': '2', '3': '3', '4': '4' };
+
+  document.querySelectorAll('#chain-items .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged3 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#chain-items .drag-item').forEach(x => x.classList.remove('ring-4', 'ring-emerald-400'));
+      item.classList.add('ring-4', 'ring-emerald-400');
+      dragged3 = item;
+    });
+  });
+
+  document.querySelectorAll('#chain-slots .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop3(zone); });
+    zone.addEventListener('click', () => { if (dragged3) handleDrop3(zone); });
+  });
+
+  function handleDrop3(zone) {
+    if (!dragged3) return;
+    const slot = zone.dataset.slot;
+    const chainVal = dragged3.dataset.chain;
+    const fb = el('l3-feedback');
+    if (slotMap[slot]) {
+      fb.textContent = '這格已經有卡片了！先試試其他格子。';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-amber-600';
+      dragged3 = null; return;
+    }
+    if (correctOrder[slot] === chainVal) {
+      slotMap[slot] = chainVal;
+      const slotText = zone.querySelector('.slot-text');
+      slotText.textContent = dragged3.textContent.trim();
+      slotText.classList.remove('text-slate-400');
+      slotText.classList.add('text-slate-800', 'font-bold', 'pop');
+      zone.classList.add('bg-green-50');
+      zone.style.borderColor = '#10b981';
+      dragged3.style.visibility = 'hidden';
+      l3SlotsFilled++;
+      fb.textContent = '對了！ 🎉 繼續放下一張！';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600';
+      if (l3SlotsFilled === 4) {
+        awardOnce('L3', 20);
+        fb.textContent = '完美！因果鏈全對！ +20 分 🌿';
+        confetti();
+        const btn = el('btn-next-3');
+        btn.disabled = false;
+        btn.className = 'btn bg-emerald-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(4);
+      }
+    } else {
+      zone.classList.add('shake');
+      setTimeout(() => zone.classList.remove('shake'), 400);
+      fb.textContent = '順序不對喔！提示：第 ① 格是「一直待在室內」的問題。';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged3 = null;
   }
-}
+
+  /* ===== Level 4: 我的行動 (20 pts) ===== */
+  const actionBank = {
+    campus: [
+      '下課時去操場數一數看到幾種植物或小動物',
+      '找同學一起去花圃觀察昆蟲 10 分鐘',
+      '在自然課報告一種校園裡的生物'
+    ],
+    home: [
+      '在陽台或窗台放一盆植物，每天觀察它的變化',
+      '早上起床先觀察窗外的天空、樹葉或鳥',
+      '在家附近找一棵樹，每週記錄它的樣子'
+    ],
+    weekend: [
+      '和家人一起去附近公園走一小時，觀察 5 種生物',
+      '帶相機或手機拍下三種沒見過的植物或動物',
+      '去海邊、山上或農場，用感官體驗大自然'
+    ],
+    spread: [
+      '在班上分享今天學到最有趣的「六條路徑」之一',
+      '邀請好友下課一起去校園找自然的秘密角落',
+      '跟家人說「每週 120 分鐘的自然門檻」這件事'
+    ]
+  };
+
+  let themePicked = null, actionPicked = false, promiseCount = 0;
+
+  const checkL4ready = () => {
+    const ready = themePicked && actionPicked && promiseCount >= 2;
+    const btn = el('btn-next-4');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-emerald-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=theme]').forEach(r => {
+    r.onchange = () => {
+      themePicked = r.value;
+      document.querySelectorAll('#theme-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      const wrap = el('action-wrap');
+      const box = el('action-opts');
+      box.innerHTML = '';
+      actionPicked = false;
+      actionBank[themePicked].forEach(txt => {
+        const lbl = document.createElement('label');
+        lbl.className = 'opt';
+        lbl.innerHTML = `<input type="radio" name="action"> ${txt}`;
+        lbl.querySelector('input').onchange = () => {
+          document.querySelectorAll('#action-opts .opt').forEach(o => o.classList.remove('sel'));
+          lbl.classList.add('sel');
+          actionPicked = true;
+          el('action-fb').innerHTML = '<span class="text-emerald-700">✅ 好選擇！繼續下一步～</span>';
+          el('promise-wrap').classList.remove('hidden');
+          checkL4ready();
+        };
+        box.appendChild(lbl);
+      });
+      wrap.classList.remove('hidden');
+      el('promise-wrap').classList.add('hidden');
+      checkL4ready();
+    };
+  });
+
+  document.querySelectorAll('.promise-cb').forEach(cb => {
+    cb.onchange = () => {
+      promiseCount = document.querySelectorAll('.promise-cb:checked').length;
+      const fb = el('promise-fb');
+      if (promiseCount < 2) fb.textContent = `已選 ${promiseCount}/4，請至少選 2 個 😊`;
+      else fb.textContent = `選了 ${promiseCount} 個承諾！太棒了！`;
+      checkL4ready();
+    };
+  });
+
+  el('btn-next-4').onclick = () => {
+    awardOnce('L4', 20);
+    confetti();
+    showFinal();
+  };
+
+  /* ===== Final screen ===== */
+  function showFinal() {
+    gotoLevel(TOTAL_LEVELS + 1);
+    el('final-score').textContent = S.score;
+    const box = el('badges');
+    box.innerHTML = '';
+    const earned = [];
+    if (S.awarded['L1']) earned.push('🌿 路徑配對達人');
+    if (S.awarded['L2-q1'] || S.awarded['L2-q2']) earned.push('📊 研究小偵探');
+    if (S.awarded['L3']) earned.push('🔗 因果鏈思考王');
+    if (S.awarded['L4']) earned.push('🌱 自然行動者');
+    if (earned.length === 0) earned.push('🦉 自然小探員');
+    earned.forEach(b => {
+      const chip = document.createElement('span');
+      chip.className = 'bg-green-100 border-2 border-green-400 rounded-full px-3 py-1 text-sm font-bold pop';
+      chip.textContent = b;
+      box.appendChild(chip);
+    });
+    confetti();
+  }
+
+  /* ===== Final reflection (5 pts) ===== */
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+
+  const setupStars = (wrapId, setter) => {
+    const wrap = el(wrapId);
+    wrap.querySelectorAll('.star').forEach(s => {
+      s.onclick = () => {
+        const v = parseInt(s.dataset.val, 10);
+        setter(v);
+        wrap.querySelectorAll('.star').forEach(x => {
+          x.classList.toggle('on', parseInt(x.dataset.val, 10) <= v);
+        });
+        checkReflect();
+      };
+    });
+  };
+  setupStars('stars-before', v => starBefore = v);
+  setupStars('stars-after', v => starAfter = v);
+
+  document.querySelectorAll('input[name=impact]').forEach(r => {
+    r.onchange = () => {
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+
+  function checkReflect() {
+    const ok = starBefore > 0 && starAfter > 0 && impactPicked;
+    const fb = el('reflect-fb');
+    if (ok) {
+      fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 反思完成！+5 分 🌟</span>';
+      awardOnce('FINAL', 5);
+      el('final-score').textContent = S.score;
+    } else {
+      fb.textContent = '請完成三題反思（★ 前後程度 + 印象最深的關卡）';
+    }
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

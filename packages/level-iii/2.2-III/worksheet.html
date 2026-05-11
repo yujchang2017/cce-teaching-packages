@@ -6,14 +6,15 @@
 <title>小小演化學家的時間大冒險 | 互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#d1fae5,#ddd6fe,#fde68a); min-height:100vh;}
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#ede9fe,#d1fae5); min-height:100vh;}
   .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
   .btn { transition:all .2s; }
-  .btn:hover { transform: translateY(-2px); }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
   .drag-item { cursor: grab; user-select:none; }
   .drag-item.dragging { opacity:.4; }
-  .drop-zone { min-height:110px; transition: background .2s; }
-  .drop-zone.over { background:#fde68a; }
+  .drop-zone { min-height:110px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
   .pop { animation: pop .5s ease; }
   @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
   .shake { animation: shake .4s; }
@@ -26,418 +27,671 @@
   .progress-dot.done { background:#10b981;}
   .fade-in { animation: fade .4s ease; }
   @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
-  .moth { display:inline-block; width:42px; height:30px; margin:4px; border-radius:50% 50% 20% 20%; cursor:pointer; transition: all .2s; }
-  .moth.caught { opacity:0; transform: scale(0);}
-  .seq-slot { background:#ede9fe; border:2px dashed #8b5cf6; border-radius:.75rem; min-height:64px; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#6d28d9;}
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.95rem;}
+  .opt:hover { background:#faf5ff; }
+  .opt.sel { border-color:#8b5cf6; background:#ede9fe;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.5rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
 <body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 
 <div class="max-w-3xl mx-auto">
 
   <!-- Header -->
   <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
     <div>
-      <h1 class="text-2xl md:text-3xl font-bold text-purple-700">🦖 小小演化學家的時間大冒險</h1>
-      <p class="text-sm text-slate-600 mt-1">陪小小演化學家艾拉走過 38 億年，解開演化四大謎題！</p>
+      <h1 class="text-2xl md:text-3xl font-bold text-purple-700">🦕 小小演化學家的時間大冒險</h1>
+      <p class="text-sm text-slate-600 mt-1">和艾拉一起走過 38 億年，解開生命演化的四大謎題！</p>
     </div>
     <div class="text-right">
       <div class="text-xs text-slate-500">目前分數</div>
-      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> 分</div>
-      <div class="text-xs text-slate-500 mt-1">徽章：<span id="badges">—</span></div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
     </div>
   </div>
 
   <!-- Progress -->
-  <div class="card p-4 mb-4 flex items-center justify-center gap-2">
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3 flex-wrap">
     <div class="progress-dot active" id="dot-1"></div>
-    <div class="h-1 w-6 bg-slate-300"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
     <div class="progress-dot" id="dot-2"></div>
-    <div class="h-1 w-6 bg-slate-300"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
     <div class="progress-dot" id="dot-3"></div>
-    <div class="h-1 w-6 bg-slate-300"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
     <div class="progress-dot" id="dot-4"></div>
-    <div class="h-1 w-6 bg-slate-300"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
     <div class="progress-dot" id="dot-5"></div>
-    <div class="h-1 w-6 bg-slate-300"></div>
-    <div class="progress-dot" id="dot-6"></div>
-    <span class="ml-3 text-sm text-slate-600">關卡 <span id="step">1</span>/5</span>
+    <span class="ml-2 text-sm text-slate-600">關卡 <span id="step-label">1</span> / 4</span>
   </div>
 
-  <!-- Intro story -->
-  <div class="card p-4 mb-4 bg-gradient-to-r from-purple-50 to-emerald-50">
-    <p class="text-sm text-slate-700">🎒 <b>角色</b>：你是剛加入「時間研究社」的小研究員，今天社長艾拉要帶你回到 38 億年前的地球，一路走到現在的臺灣，解開 5 道關卡＋全校英雄挑戰，就能獲得「演化學家勳章」！</p>
-  </div>
-
-  <!-- Level 1: 演化序列排排隊 -->
+  <!-- ===== Level 1: 演化特徵配對 (15 pts) ===== -->
   <section id="level-1" class="card p-6 fade-in">
-    <div class="flex items-start gap-3 mb-3">
-      <div class="text-4xl">🌱</div>
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🦕</div>
       <div>
-        <h2 class="text-xl font-bold text-emerald-700">關卡 1：生命演化序列</h2>
-        <p class="text-sm text-slate-700 mt-1">艾拉說：「生命不是一次長出來的！請把『動物演化序列』的 5 個卡片，從最早到最晚依序拖進正確位置。提示：魚比兩棲早、哺乳是最後登場的明星。」</p>
+        <h2 class="text-xl font-bold text-purple-700">關卡 1：誰的特徵？</h2>
+        <p class="text-sm text-slate-700 mt-1">艾拉說：「演化讓不同的動物長出不同的身體特徵！把這些特徵卡片拖到正確的動物分類，幫我完成演化研究！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 15 分｜全部放對才能前往下一關</p>
       </div>
     </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-2 my-4" id="seq-items">
-      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold" draggable="true" data-order="1">🐟 魚類</div>
-      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold" draggable="true" data-order="3">🦎 爬蟲類</div>
-      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold" draggable="true" data-order="5">🐻 哺乳類</div>
-      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold" draggable="true" data-order="2">🐸 兩棲類</div>
-      <div class="drag-item bg-amber-100 border-2 border-amber-400 rounded-xl p-3 text-center font-bold" draggable="true" data-order="4">🐦 鳥類</div>
+    <!-- Drag items -->
+    <div class="grid grid-cols-2 gap-3 my-3" id="items-box-1">
+      <div class="drag-item bg-purple-100 border-2 border-purple-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="bird">🪶 有羽毛、會飛</div>
+      <div class="drag-item bg-purple-100 border-2 border-purple-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="fish">🐟 用鰓呼吸、有魚鱗</div>
+      <div class="drag-item bg-purple-100 border-2 border-purple-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="bird">🥚 在樹上築巢產卵</div>
+      <div class="drag-item bg-purple-100 border-2 border-purple-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="fish">🌊 住在水裡，用尾巴游泳</div>
+      <div class="drag-item bg-purple-100 border-2 border-purple-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="bird">🐦 體溫不隨環境改變（恆溫）</div>
+      <div class="drag-item bg-purple-100 border-2 border-purple-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="fish">❄️ 體溫會隨水溫改變（變溫）</div>
     </div>
 
-    <div class="grid grid-cols-5 gap-2 mb-4">
-      <div class="seq-slot drop-zone" data-order="1">第 1</div>
-      <div class="seq-slot drop-zone" data-order="2">第 2</div>
-      <div class="seq-slot drop-zone" data-order="3">第 3</div>
-      <div class="seq-slot drop-zone" data-order="4">第 4</div>
-      <div class="seq-slot drop-zone" data-order="5">第 5</div>
+    <!-- Drop zones -->
+    <div class="grid grid-cols-2 gap-3" id="zones-box-1">
+      <div class="drop-zone bg-sky-50 p-3" data-accept="bird">
+        <div class="font-bold text-sky-700 text-center mb-2">🐦 鳥類的特徵<br><span class="text-xs font-normal text-sky-500">（校園常見：麻雀、白頭翁）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-blue-50 p-3" data-accept="fish">
+        <div class="font-bold text-blue-700 text-center mb-2">🐟 魚類的特徵<br><span class="text-xs font-normal text-blue-500">（臺灣溪流常見魚）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
     </div>
 
-    <button id="check1" class="btn bg-emerald-500 text-white font-bold px-6 py-2 rounded-full">檢查答案</button>
-    <div id="fb1" class="mt-3 text-sm"></div>
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <span></span>
+      <button id="btn-next-1" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>完成分類才能繼續 →</button>
+    </div>
   </section>
 
-  <!-- Level 2: 樺尺蛾大逃殺 -->
-  <section id="level-2" class="card p-6 fade-in hidden-screen">
-    <div class="flex items-start gap-3 mb-3">
-      <div class="text-4xl">🦋</div>
+  <!-- ===== Level 2: 看圖找答案 (20 pts) ===== -->
+  <section id="level-2" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">⏳</div>
       <div>
-        <h2 class="text-xl font-bold text-slate-700">關卡 2：樺尺蛾大逃殺（天擇實戰）</h2>
-        <p class="text-sm text-slate-700 mt-1">艾拉說：「工業革命讓樹幹變黑，大約 50 年內曼徹斯特的蛾就從淺色變深色為主。現在樹幹是深色的，你扮演鳥——10 秒內抓 5 隻最容易看到的蛾！」<small class="text-slate-500 block mt-1">資料：data_card dp2</small></p>
+        <h2 class="text-xl font-bold text-purple-700">關卡 2：生命演化時間軸</h2>
+        <p class="text-sm text-slate-700 mt-1">艾拉畫了一條「地球生命時間軸」，從最早的生命到現在。仔細看，回答問題！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜Q1 單選 5 分 + Q2 多選 15 分</p>
       </div>
     </div>
 
-    <div id="moth-field" class="card bg-slate-800 p-4 mb-3" style="min-height:220px; display:flex; flex-wrap:wrap; justify-content:center; align-items:center;"></div>
+    <!-- Timeline SVG -->
+    <svg viewBox="0 0 420 180" class="w-full max-w-lg mx-auto block bg-slate-50 rounded-xl mb-4 border border-slate-200">
+      <!-- Main timeline line -->
+      <line x1="30" y1="90" x2="400" y2="90" stroke="#475569" stroke-width="3"/>
+      <!-- Arrow -->
+      <polygon points="400,86 410,90 400,94" fill="#475569"/>
+      <!-- Events -->
+      <circle cx="50" cy="90" r="8" fill="#6ee7b7"/>
+      <text x="50" y="78" font-size="8" fill="#065f46" text-anchor="middle">38 億年前</text>
+      <text x="50" y="110" font-size="8" fill="#065f46" text-anchor="middle">最早的</text>
+      <text x="50" y="120" font-size="8" fill="#065f46" text-anchor="middle">單細胞生物</text>
 
-    <div class="flex items-center gap-4 mb-3">
-      <button id="start-moth" class="btn bg-purple-600 text-white font-bold px-6 py-2 rounded-full">開始 10 秒！</button>
-      <div>剩餘：<span id="timer">10</span> 秒｜抓到：<span id="caught">0</span>/5</div>
+      <circle cx="130" cy="90" r="8" fill="#93c5fd"/>
+      <text x="130" y="78" font-size="8" fill="#1e40af" text-anchor="middle">5 億年前</text>
+      <text x="130" y="110" font-size="8" fill="#1e40af" text-anchor="middle">魚類出現</text>
+
+      <circle cx="210" cy="90" r="8" fill="#fca5a5"/>
+      <text x="210" y="78" font-size="8" fill="#991b1b" text-anchor="middle">3.5 億年前</text>
+      <text x="210" y="110" font-size="8" fill="#991b1b" text-anchor="middle">兩棲類上陸</text>
+
+      <circle cx="290" cy="90" r="8" fill="#fcd34d"/>
+      <text x="290" y="78" font-size="8" fill="#92400e" text-anchor="middle">2.5 億年前</text>
+      <text x="290" y="110" font-size="8" fill="#92400e" text-anchor="middle">恐龍時代</text>
+
+      <circle cx="370" cy="90" r="8" fill="#c4b5fd"/>
+      <text x="370" y="78" font-size="8" fill="#4c1d95" text-anchor="middle">200 萬年前</text>
+      <text x="370" y="110" font-size="8" fill="#4c1d95" text-anchor="middle">人類祖先</text>
+
+      <text x="220" y="20" font-size="10" fill="#475569" font-weight="bold" text-anchor="middle">地球生命演化時間軸（示意）</text>
+      <text x="405" y="95" font-size="9" fill="#475569">現在</text>
+    </svg>
+
+    <!-- Q1 -->
+    <div class="mb-5">
+      <p class="font-bold text-sm mb-2">📌 Q1：從時間軸看，哪一類生物是最早出現在地球上的？（單選，5 分）</p>
+      <div id="q1-opts">
+        <label class="opt"><input type="radio" name="q1" value="0"> A. 人類祖先</label>
+        <label class="opt"><input type="radio" name="q1" value="1"> B. 單細胞生物（肉眼看不到的超小生物）</label>
+        <label class="opt"><input type="radio" name="q1" value="0"> C. 恐龍</label>
+      </div>
+      <p id="q1-fb" class="text-xs mt-2 min-h-[18px]"></p>
     </div>
-    <div id="fb2" class="mt-3 text-sm"></div>
+
+    <!-- Q2 -->
+    <div class="mb-3">
+      <p class="font-bold text-sm mb-1">📌 Q2：你覺得演化告訴我們哪些事？<br><span class="font-normal text-slate-500 text-xs">（勾出你覺得有道理的，可以勾多個）</span></p>
+      <div id="q2-opts">
+        <label class="opt"><input type="checkbox" data-correct="1"> 🌱 生物需要很長很長的時間才會慢慢改變</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 🐸 臺灣的青蛙和魚，都是從很古老的祖先慢慢演化來的</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> 🏃 人類和其他動物沒有任何關係，是突然出現的</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 🌍 不同的環境讓生物演化出不同的特徵，才有這麼多種生物</label>
+      </div>
+      <p id="q2-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="1">← 上一關</button>
+      <button id="btn-next-2" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>提交答案 →</button>
+    </div>
   </section>
 
-  <!-- Level 3: 適應 vs 演化分類 -->
-  <section id="level-3" class="card p-6 fade-in hidden-screen">
-    <div class="flex items-start gap-3 mb-3">
-      <div class="text-4xl">🔍</div>
+  <!-- ===== Level 3: 推一推 (20 pts) ===== -->
+  <section id="level-3" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🔄</div>
       <div>
-        <h2 class="text-xl font-bold text-sky-700">關卡 3：適應 or 演化？</h2>
-        <p class="text-sm text-slate-700 mt-1">艾拉說：「一個是個體一生（秒–年），一個是族群世代（數千–數百萬年）。把下面 6 張情境卡拖到正確分類！」<small class="text-slate-500 block mt-1">資料：data_card dp6</small></p>
+        <h2 class="text-xl font-bold text-purple-700">關卡 3：北極熊怎麼變白的？</h2>
+        <p class="text-sm text-slate-700 mt-1">艾拉說：「演化不是一天發生的——是一步一步來！把這四張卡片按照演化的步驟，拖進正確的格子，看看北極熊如何在幾萬年間變成白色！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜順序全對才得分</p>
       </div>
     </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-4" id="adapt-items">
-      <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-3 text-sm font-bold" draggable="true" data-type="adapt">🌞 夏天曬黑</div>
-      <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-3 text-sm font-bold" draggable="true" data-type="evolve">🐻‍❄️ 北極熊族群白毛基因變多</div>
-      <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-3 text-sm font-bold" draggable="true" data-type="adapt">💪 練球長出肌肉</div>
-      <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-3 text-sm font-bold" draggable="true" data-type="evolve">🐦 達爾文雀的喙形狀世代改變</div>
-      <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-3 text-sm font-bold" draggable="true" data-type="adapt">🏔️ 登山時呼吸變快</div>
-      <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-3 text-sm font-bold" draggable="true" data-type="evolve">🌵 仙人掌葉退化成刺（千萬年）</div>
+    <!-- Chain slots -->
+    <div class="flex flex-col md:flex-row items-center justify-center gap-2 my-4" id="chain-slots">
+      <div class="drop-zone bg-purple-50 p-3 w-full md:w-32 text-center" data-slot="1">
+        <div class="text-xs font-bold text-purple-700 mb-1">① 起點</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-purple-50 p-3 w-full md:w-32 text-center" data-slot="2">
+        <div class="text-xs font-bold text-purple-700 mb-1">②</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-purple-50 p-3 w-full md:w-32 text-center" data-slot="3">
+        <div class="text-xs font-bold text-purple-700 mb-1">③</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-purple-50 p-3 w-full md:w-32 text-center" data-slot="4">
+        <div class="text-xs font-bold text-purple-700 mb-1">④ 結果</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <div class="drop-zone bg-sky-50 border-2 border-dashed border-sky-400 rounded-xl p-3" data-type="adapt">
-        <p class="text-center font-bold text-sky-700">適應（個體一生）</p>
-      </div>
-      <div class="drop-zone bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-xl p-3" data-type="evolve">
-        <p class="text-center font-bold text-emerald-700">演化（族群世代）</p>
-      </div>
+    <!-- Chain drag items -->
+    <div class="grid grid-cols-2 gap-3 mt-2" id="chain-items">
+      <div class="drag-item bg-violet-100 border-2 border-violet-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="3">⬜ 白色的熊在雪地更好躲藏、打獵成功</div>
+      <div class="drag-item bg-violet-100 border-2 border-violet-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="1">🐻 古代的熊住進了又冷又白的北極</div>
+      <div class="drag-item bg-violet-100 border-2 border-violet-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="4">🐻‍❄️ 幾萬年後，北極熊幾乎都變成白色了</div>
+      <div class="drag-item bg-violet-100 border-2 border-violet-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="2">🎲 有些熊天生毛色比較淺（像摸彩票）</div>
     </div>
 
-    <button id="check3" class="btn bg-emerald-500 text-white font-bold px-6 py-2 rounded-full mt-4">檢查答案</button>
-    <div id="fb3" class="mt-3 text-sm"></div>
+    <p id="l3-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="2">← 上一關</button>
+      <button id="btn-next-3" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>下一關 →</button>
+    </div>
   </section>
 
-  <!-- Level 4: 臺灣特有種數據題 -->
-  <section id="level-4" class="card p-6 fade-in hidden-screen">
-    <div class="flex items-start gap-3 mb-3">
-      <div class="text-4xl">🇹🇼</div>
+  <!-- ===== Level 4: 我的行動 (20 pts) ===== -->
+  <section id="level-4" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">💪</div>
       <div>
-        <h2 class="text-xl font-bold text-rose-700">關卡 4：臺灣——演化的實驗室</h2>
-        <p class="text-sm text-slate-700 mt-1">艾拉說：「臺灣是海島＋高山的完美演化實驗室！下列 3 題看看你記得多少真實數據。」<small class="text-slate-500 block mt-1">資料：data_card dp3, dp4, dp5</small></p>
+        <h2 class="text-xl font-bold text-purple-700">關卡 4：演化學家的行動</h2>
+        <p class="text-sm text-slate-700 mt-1">艾拉說：「演化讓地球有了這麼多生物，我們要好好珍惜！選一個你想行動的方向吧！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜選主題 + 選行動 + 立下承諾</p>
       </div>
     </div>
 
-    <div class="space-y-4">
-      <div>
-        <p class="font-bold">1) 臺灣擁有超過多少種原生植物？</p>
-        <div class="grid grid-cols-3 gap-2 mt-2" data-q="1" data-ans="b">
-          <button class="qopt btn bg-white border-2 border-slate-300 rounded-xl p-2" data-v="a">約 400 種</button>
-          <button class="qopt btn bg-white border-2 border-slate-300 rounded-xl p-2" data-v="b">超過 4,000 種</button>
-          <button class="qopt btn bg-white border-2 border-slate-300 rounded-xl p-2" data-v="c">超過 40,000 種</button>
-        </div>
-      </div>
-      <div>
-        <p class="font-bold">2) 地球至今經歷過幾次大滅絕？每次約消失多少比例物種？</p>
-        <div class="grid grid-cols-3 gap-2 mt-2" data-q="2" data-ans="b">
-          <button class="qopt btn bg-white border-2 border-slate-300 rounded-xl p-2" data-v="a">2 次／50%</button>
-          <button class="qopt btn bg-white border-2 border-slate-300 rounded-xl p-2" data-v="b">5 次／80–90%</button>
-          <button class="qopt btn bg-white border-2 border-slate-300 rounded-xl p-2" data-v="c">10 次／20%</button>
-        </div>
-      </div>
-      <div>
-        <p class="font-bold">3) 腔棘魚本以為早就滅絕，後來哪一年在南非被發現活體？</p>
-        <div class="grid grid-cols-3 gap-2 mt-2" data-q="3" data-ans="c">
-          <button class="qopt btn bg-white border-2 border-slate-300 rounded-xl p-2" data-v="a">1859</button>
-          <button class="qopt btn bg-white border-2 border-slate-300 rounded-xl p-2" data-v="b">1918</button>
-          <button class="qopt btn bg-white border-2 border-slate-300 rounded-xl p-2" data-v="c">1938</button>
-        </div>
+    <!-- Step 1 -->
+    <div class="mb-4">
+      <p class="font-bold text-sm mb-2">① 你最想從哪個方向開始？（選一個）</p>
+      <div id="theme-opts">
+        <label class="opt"><input type="radio" name="theme" value="observe"> 🔍 校園觀察——找找學校裡有哪些演化的「活證據」</label>
+        <label class="opt"><input type="radio" name="theme" value="protect"> 🌿 守護生物——幫助臺灣特有的動植物</label>
+        <label class="opt"><input type="radio" name="theme" value="food"> 🍱 聰明飲食——吃多樣化的在地食物</label>
+        <label class="opt"><input type="radio" name="theme" value="spread"> 📢 分享故事——讓同學也認識演化的神奇</label>
       </div>
     </div>
-    <div id="fb4" class="mt-3 text-sm"></div>
-    <button id="next4" class="btn bg-emerald-500 text-white font-bold px-6 py-2 rounded-full mt-4 hidden-screen">下一關</button>
+
+    <!-- Step 2 -->
+    <div id="action-wrap" class="hidden mb-4">
+      <p class="font-bold text-sm mb-2">② 哪個做法你覺得最容易開始？（選一個）</p>
+      <div id="action-opts"></div>
+      <p id="action-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <!-- Step 3 -->
+    <div id="promise-wrap" class="hidden bg-purple-50 rounded-xl p-4 mb-3">
+      <p class="font-bold text-sm mb-2">③ 在你能做到的事情前打勾（至少選 2 個）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-purple-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會跟家人分享演化時間軸上最讓我驚訝的一件事</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-purple-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會留意學校附近的動植物，思考牠們的特徵是怎麼來的</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-purple-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會跟同學一起找找看校園裡有哪些臺灣特有種</span>
+      </label>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-purple-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會注意不要破壞小動物的巢或棲息地</span>
+      </label>
+      <p id="promise-fb" class="text-xs mt-2 text-slate-500 min-h-[18px]"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="3">← 上一關</button>
+      <button id="btn-next-4" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>查看成果 🏆</button>
+    </div>
   </section>
 
-  <!-- Level 5: 家庭演化樹 -->
-  <section id="level-5" class="card p-6 fade-in hidden-screen">
-    <div class="flex items-start gap-3 mb-3">
-      <div class="text-4xl">🌳</div>
-      <div>
-        <h2 class="text-xl font-bold text-amber-700">關卡 5：我家的演化樹（自然觀察計畫）</h2>
-        <p class="text-sm text-slate-700 mt-1">艾拉說：「真正的演化學家會長期觀察！請寫下你選的校園角落、第一次觀察到的 3 種生物，以及你對它們的一個問題。」</p>
+  <!-- ===== Final: 反思 (5 pts) ===== -->
+  <section id="level-final" class="card p-6 hidden-screen fade-in">
+    <div class="text-6xl text-center pop">🏆</div>
+    <h2 class="text-2xl font-bold text-purple-600 mt-2 text-center">恭喜你成為小小演化學家！</h2>
+    <p class="text-slate-700 mt-1 text-center">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> / 80 分</p>
+
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <!-- Reflection -->
+    <div class="bg-sky-50 rounded-xl p-4 max-w-2xl mx-auto mb-4">
+      <p class="font-bold text-sky-700 mb-3">🤔 最後一步：快速反思（5 分）</p>
+
+      <p class="text-sm font-semibold mb-1">Q1｜上這堂課之前，你對演化的了解程度：</p>
+      <div id="stars-before" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
       </div>
-    </div>
 
-    <div class="space-y-3">
-      <label class="block text-sm font-bold">我選的角落：<input id="w5-place" class="w-full mt-1 p-2 border rounded-lg" placeholder="例：校園後門那棵大榕樹下"></label>
-      <label class="block text-sm font-bold">我看到的 3 種生物：<input id="w5-species" class="w-full mt-1 p-2 border rounded-lg" placeholder="例：麻雀、潮蟲、雜草小黃花"></label>
-      <label class="block text-sm font-bold">我最想問科學家的一個問題：<textarea id="w5-q" rows="2" class="w-full mt-1 p-2 border rounded-lg" placeholder="例：為什麼這棵樹底下的昆蟲比操場多這麼多？"></textarea></label>
-    </div>
-
-    <button id="check5" class="btn bg-emerald-500 text-white font-bold px-6 py-2 rounded-full mt-4">提交觀察計畫</button>
-    <div id="fb5" class="mt-3 text-sm"></div>
-  </section>
-
-  <!-- WSA Challenge -->
-  <section id="level-6" class="card p-6 fade-in hidden-screen bg-gradient-to-br from-purple-50 to-amber-50">
-    <div class="flex items-start gap-3 mb-3">
-      <div class="text-4xl">🏫</div>
-      <div>
-        <h2 class="text-xl font-bold text-purple-700">WSA Challenge：全校英雄任務</h2>
-        <p class="text-sm text-slate-700 mt-1">一個人做不夠，全校一起來！勾選你下個月想帶動的 Whole School Approach 行動。勾滿 4 項即獲得「全校英雄徽章 🏆」！</p>
+      <p class="text-sm font-semibold mb-1">Q2｜上完這堂課後，你的了解程度：</p>
+      <div id="stars-after" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
       </div>
+
+      <p class="text-sm font-semibold mb-1">Q3｜哪個關卡讓你印象最深刻？</p>
+      <div id="impact-opts">
+        <label class="opt"><input type="radio" name="impact" value="1"> 關卡 1：鳥類 vs 魚類特徵配對</label>
+        <label class="opt"><input type="radio" name="impact" value="2"> 關卡 2：生命演化時間軸</label>
+        <label class="opt"><input type="radio" name="impact" value="3"> 關卡 3：北極熊變白骨牌鏈</label>
+        <label class="opt"><input type="radio" name="impact" value="4"> 關卡 4：演化學家行動方案</label>
+      </div>
+      <p id="reflect-fb" class="text-xs mt-2 min-h-[18px]"></p>
     </div>
 
-    <div class="space-y-2">
-      <label class="flex items-start gap-2 cursor-pointer p-2 hover:bg-white rounded-lg"><input type="checkbox" class="wsa mt-1"> <span><b>課程整合：</b>推動全校「校園物種清點日」每月一次（參考 map.csv #353 MOE 生物生長環境）</span></label>
-      <label class="flex items-start gap-2 cursor-pointer p-2 hover:bg-white rounded-lg"><input type="checkbox" class="wsa mt-1"> <span><b>校園營運：</b>向師長提案認養一塊原生植物區，種臺灣特有種苗木（臺灣油杉、山櫻花）</span></label>
-      <label class="flex items-start gap-2 cursor-pointer p-2 hover:bg-white rounded-lg"><input type="checkbox" class="wsa mt-1"> <span><b>社區連結：</b>加入 iNaturalist 公民科學平台，上傳校園觀察幫助全國生物多樣性資料庫</span></label>
-      <label class="flex items-start gap-2 cursor-pointer p-2 hover:bg-white rounded-lg"><input type="checkbox" class="wsa mt-1"> <span><b>學生治理：</b>發起成立「校園物種守護隊」，每季向校長提 1 個保育提案</span></label>
-    </div>
-
-    <button id="check6" class="btn bg-purple-600 text-white font-bold px-6 py-2 rounded-full mt-4">確認我的英雄任務</button>
-    <div id="fb6" class="mt-3 text-sm"></div>
-  </section>
-
-  <!-- Final result -->
-  <section id="result" class="card p-6 fade-in hidden-screen bg-gradient-to-br from-emerald-50 to-purple-50">
-    <h2 class="text-2xl font-bold text-center text-purple-700 mb-3">🏆 演化學家勳章達成！</h2>
-    <p class="text-center text-lg">總分：<span id="final-score" class="font-bold text-emerald-600">0</span> 分</p>
-    <p class="text-center mt-1">徽章：<span id="final-badges" class="font-bold">—</span></p>
-
-    <div class="mt-5 p-4 bg-white rounded-xl">
-      <h3 class="font-bold text-purple-700 mb-2">🧠 三個延伸思考（帶回家跟家人討論）</h3>
-      <ol class="list-decimal list-inside text-sm space-y-2 text-slate-700">
-        <li>科學家警告「第六次大滅絕」正在發生中，人類會是倖存者，還是消失的主角？為什麼？</li>
-        <li>如果 100 年後臺灣還是演化的實驗室，你希望新演化出來的「臺灣特有種」是什麼？牠為了什麼環境條件而出現？</li>
-        <li>「適應」和「演化」哪一個對現在的氣候危機比較重要？還是兩個都需要？舉一個家裡的例子說說看。</li>
+    <div class="bg-yellow-50 rounded-xl p-4 text-left max-w-2xl mx-auto">
+      <h3 class="font-bold text-amber-700 mb-2">🧐 延伸思考小挑戰</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>你家的寵物（狗、貓、魚）有哪些身體特徵？你猜這些特徵是為了幫牠做什麼而演化出來的？</li>
+        <li>臺灣的台灣藍鵲只有在台灣才有。你猜為什麼只有臺灣才有牠？</li>
+        <li>如果你可以為臺灣某種快消失的動物設計一個「保護計畫」，你會怎麼做？</li>
       </ol>
     </div>
 
-    <div class="mt-4 text-xs text-slate-500 text-center">※ Worksheet runtime 功能 (拖曳/點擊/計時/分數) 待人工 Preview 驗證；已內建基本錯誤回饋與進度條。</div>
-
-    <button onclick="location.reload()" class="btn bg-slate-600 text-white font-bold px-6 py-2 rounded-full mt-4 mx-auto block">重新挑戰</button>
+    <div class="nav-row max-w-2xl mx-auto mt-4">
+      <button class="btn btn-back" data-back="4">← 回到關卡 4</button>
+      <button onclick="location.reload()" class="btn bg-purple-500 text-white py-2 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+    </div>
   </section>
 
-</div>
+</div><!-- /max-w-3xl -->
 
 <script>
-  /* ============ 全域狀態 ============ */
-  let score = 0;
-  let badges = [];
-  let step = 1;
-  function setScore(n){ score += n; document.getElementById('score').textContent = score; }
-  function addBadge(b){ if(!badges.includes(b)){ badges.push(b); document.getElementById('badges').textContent = badges.join(' '); }}
-  function showStep(n){
-    for(let i=1;i<=6;i++){
-      const el=document.getElementById('level-'+i);
-      if(el) el.classList.toggle('hidden-screen', i!==n);
-      const d=document.getElementById('dot-'+i);
-      if(d){ d.classList.toggle('active', i===n); if(i<n) d.classList.add('done'); }
+(() => {
+  /* ===================================================
+     Core state  (TOTAL = 4 tasks + 1 final = TOTAL_LEVELS = 4)
+     =================================================== */
+  const TOTAL_LEVELS = 4;
+  const S = { score: 0, current: 1, awarded: {} };
+  const el = id => document.getElementById(id);
+
+  const setScore = n => { S.score += n; el('score').textContent = S.score; };
+  const awardOnce = (key, pts) => { if (!S.awarded[key]) { S.awarded[key] = true; setScore(pts); } };
+
+  const updateDots = () => {
+    for (let i = 1; i <= TOTAL_LEVELS + 1; i++) {
+      const d = el('dot-' + i); if (!d) continue;
+      d.classList.remove('active', 'done');
+      if (i < S.current) d.classList.add('done');
+      else if (i === S.current) d.classList.add('active');
     }
-    const last=document.getElementById('dot-'+(n===6?6:n));
-    document.getElementById('step').textContent = n;
-    if(n===7){ document.getElementById('result').classList.remove('hidden-screen');
-      document.getElementById('final-score').textContent = score;
-      document.getElementById('final-badges').textContent = badges.length ? badges.join(' ') : '（再多努力一下！）';
-    }
-  }
-  function confetti(){
-    for(let i=0;i<24;i++){
-      const c=document.createElement('div'); c.className='confetti';
-      c.style.left=(Math.random()*100)+'vw';
-      c.style.background=['#8b5cf6','#10b981','#f59e0b','#ef4444','#3b82f6'][i%5];
-      c.style.animationDuration=(1.5+Math.random())+'s';
+  };
+
+  const gotoLevel = n => {
+    document.querySelectorAll('section[id^="level-"]').forEach(s => s.classList.add('hidden-screen'));
+    S.current = n;
+    el('step-label').textContent = Math.min(n, 4);
+    const target = (n > TOTAL_LEVELS) ? el('level-final') : el('level-' + n);
+    target.classList.remove('hidden-screen');
+    target.classList.add('fade-in');
+    updateDots();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  document.querySelectorAll('.btn-back').forEach(b => {
+    b.onclick = () => gotoLevel(parseInt(b.dataset.back, 10));
+  });
+
+  const confetti = () => {
+    const colors = ['#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#3b82f6'];
+    for (let i = 0; i < 32; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[i % colors.length];
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
       document.body.appendChild(c);
-      setTimeout(()=>c.remove(), 2500);
-    }
-  }
-  function feedback(elId, ok, okMsg, tryMsg){
-    const el=document.getElementById(elId);
-    el.className='mt-3 text-sm ' + (ok?'text-emerald-600 font-bold':'text-rose-600');
-    el.textContent = ok? '🎉 '+okMsg : '💡 '+tryMsg;
-    if(!ok) document.getElementById('level-'+step).classList.add('shake');
-    setTimeout(()=>{ document.getElementById('level-'+step)?.classList.remove('shake');}, 500);
-  }
-
-  /* ============ Drag & Drop 通用 ============ */
-  function initDrag(itemSel, zoneSel, onDrop){
-    document.querySelectorAll(itemSel).forEach(el=>{
-      el.addEventListener('dragstart', e=>{
-        e.dataTransfer.setData('text/plain', '');
-        el.classList.add('dragging'); window.__dragEl = el;
-      });
-      el.addEventListener('dragend', ()=>el.classList.remove('dragging'));
-    });
-    document.querySelectorAll(zoneSel).forEach(z=>{
-      z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over'); });
-      z.addEventListener('dragleave', ()=>z.classList.remove('over'));
-      z.addEventListener('drop', e=>{
-        e.preventDefault(); z.classList.remove('over');
-        const el=window.__dragEl; if(!el) return;
-        if(onDrop(el, z)){ z.appendChild(el); el.classList.add('pop'); }
-      });
-    });
-  }
-
-  /* ============ Level 1 ============ */
-  initDrag('#seq-items .drag-item, .seq-slot .drag-item', '#level-1 .drop-zone', (el, z)=>true);
-  document.getElementById('check1').onclick = ()=>{
-    const zones = document.querySelectorAll('#level-1 .drop-zone');
-    let ok = true;
-    zones.forEach(z=>{
-      const child = z.querySelector('.drag-item');
-      if(!child || child.dataset.order !== z.dataset.order) ok = false;
-    });
-    if(ok){ setScore(20); addBadge('🧬 序列大師'); confetti();
-      feedback('fb1', true, '全對！動物演化序列：魚→兩棲→爬蟲→鳥→哺乳。接下來面對天擇挑戰！', '');
-      setTimeout(()=>{ step=2; showStep(2); document.getElementById('dot-1').classList.add('done'); }, 1400);
-    } else {
-      feedback('fb1', false, '', '提示：先想「水裡→爬上陸地→蛋殼可以在陸地孵→長翅膀→餵奶」的順序。再試試看！');
+      setTimeout(() => c.remove(), 2500);
     }
   };
 
-  /* ============ Level 2: 樺尺蛾 ============ */
-  let mothTimer=null, mothCaught=0;
-  function spawnMoths(){
-    const field = document.getElementById('moth-field'); field.innerHTML='';
-    // 10 淺 + 10 深；深色背景下淺色易見
-    const moths=[];
-    for(let i=0;i<10;i++) moths.push({color:'#fde68a', type:'light'});
-    for(let i=0;i<10;i++) moths.push({color:'#1f2937', type:'dark'});
-    moths.sort(()=>Math.random()-.5);
-    moths.forEach(m=>{
-      const el=document.createElement('div'); el.className='moth';
-      el.style.background = m.color;
-      if(m.type==='dark') el.style.border='1px solid #374151';
-      el.dataset.type=m.type;
-      el.onclick = ()=>{
-        if(el.classList.contains('caught')) return;
-        el.classList.add('caught'); mothCaught++;
-        document.getElementById('caught').textContent=mothCaught;
-        if(mothCaught>=5) endMoth(true);
-      };
-      field.appendChild(el);
-    });
-  }
-  document.getElementById('start-moth').onclick = ()=>{
-    mothCaught=0; document.getElementById('caught').textContent=0;
-    spawnMoths();
-    let t=10;
-    document.getElementById('timer').textContent=t;
-    clearInterval(mothTimer);
-    mothTimer=setInterval(()=>{
-      t--; document.getElementById('timer').textContent=t;
-      if(t<=0){ clearInterval(mothTimer); endMoth(false); }
-    }, 1000);
-  };
-  function endMoth(completed){
-    clearInterval(mothTimer);
-    // 統計抓到的蛾的顏色
-    const caught = document.querySelectorAll('#moth-field .moth.caught');
-    let light=0, dark=0;
-    caught.forEach(m=>{ if(m.dataset.type==='light') light++; else dark++; });
-    const msg = `你抓到 ${light} 隻淺色、${dark} 隻深色蛾。在深色樹幹上，淺色蛾比較顯眼，很容易被「天擇」淘汰——這就是為什麼曼徹斯特的蛾族群會在約 50 年內變成深色為主。`;
-    setScore(15);
-    addBadge('🦋 天擇偵探');
-    feedback('fb2', true, msg, '');
-    confetti();
-    setTimeout(()=>{ step=3; showStep(3); document.getElementById('dot-2').classList.add('done'); }, 3000);
-  }
-
-  /* ============ Level 3: 適應 vs 演化 ============ */
-  initDrag('#adapt-items .drag-item, #level-3 .drag-item', '#level-3 .drop-zone', (el, z)=>true);
-  document.getElementById('check3').onclick = ()=>{
-    const items = document.querySelectorAll('#level-3 .drag-item');
-    let ok = true;
-    items.forEach(it=>{
-      const parent = it.parentElement;
-      if(!parent.classList.contains('drop-zone')){ ok=false; return; }
-      if(parent.dataset.type !== it.dataset.type) ok=false;
-    });
-    if(ok){ setScore(20); addBadge('🔬 觀念達人'); confetti();
-      feedback('fb3', true, '全對！記住：適應在個體一生中，不遺傳；演化是族群世代改變。', '');
-      setTimeout(()=>{ step=4; showStep(4); document.getElementById('dot-3').classList.add('done'); }, 1400);
-    } else {
-      feedback('fb3', false, '', '提示：如果只有「你一個人」身上發生，那是適應；如果是「整個族群、很多代」才發生的，那是演化。');
+  const shuffleChildren = parent => {
+    const kids = Array.from(parent.children);
+    for (let i = kids.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      parent.appendChild(kids[j]);
     }
   };
 
-  /* ============ Level 4: QA ============ */
-  let q4done = {};
-  document.querySelectorAll('#level-4 .qopt').forEach(btn=>{
-    btn.onclick = ()=>{
-      const group = btn.parentElement;
-      const q = group.dataset.q, ans = group.dataset.ans, v = btn.dataset.v;
-      group.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
-      if(v===ans){ btn.classList.add('bg-emerald-200','border-emerald-500'); setScore(10); q4done[q]=true; }
-      else { btn.classList.add('bg-rose-200','border-rose-500');
-        group.querySelector(`[data-v="${ans}"]`).classList.add('bg-emerald-200','border-emerald-500');
-        q4done[q]=false;
+  /* =====================================================
+     Level 1: 特徵配對 drag-drop (15 pts)
+     ===================================================== */
+  shuffleChildren(el('items-box-1'));
+  shuffleChildren(el('zones-box-1'));
+
+  let dragged1 = null, l1Correct = 0;
+  const total1 = document.querySelectorAll('#items-box-1 .drag-item').length;
+
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged1 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#items-box-1 .drag-item').forEach(x => x.classList.remove('ring-4', 'ring-purple-400'));
+      item.classList.add('ring-4', 'ring-purple-400'); dragged1 = item;
+    });
+  });
+
+  document.querySelectorAll('#zones-box-1 .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop1(zone); });
+    zone.addEventListener('click', () => { if (dragged1) handleDrop1(zone); });
+  });
+
+  function handleDrop1(zone) {
+    if (!dragged1) return;
+    const fb = el('l1-feedback');
+    if (dragged1.dataset.match === zone.dataset.accept) {
+      zone.querySelector('.dz-items').appendChild(dragged1);
+      dragged1.setAttribute('draggable', 'false');
+      dragged1.classList.remove('ring-4', 'ring-purple-400', 'bg-purple-100', 'border-purple-400');
+      dragged1.classList.add('bg-purple-200', 'border-purple-500', 'pop');
+      l1Correct++;
+      fb.textContent = '答對！ 👏';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+      confetti();
+      if (l1Correct === total1) {
+        awardOnce('L1', 15);
+        const btn = el('btn-next-1');
+        btn.disabled = false;
+        btn.className = 'btn bg-purple-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(2);
+        fb.textContent = '全部答對！艾拉為你鼓掌！🎉 +15 分';
       }
-      if(Object.keys(q4done).length===3){
-        const got=Object.values(q4done).filter(x=>x).length;
-        feedback('fb4', got>=2, `答對 ${got}/3 題！臺灣的演化故事是你的驕傲——分享給家人聽吧。`, `答對 ${got}/3 題，沒關係，再複習資料卡 dp3、dp4、dp5 三個數據！`);
-        if(got>=2) addBadge('🇹🇼 寶島通');
-        document.getElementById('next4').classList.remove('hidden-screen');
+    } else {
+      dragged1.classList.add('shake');
+      setTimeout(() => dragged1.classList.remove('shake'), 400);
+      fb.textContent = '再想想！提示：在水裡的 vs 會飛的，各有各的特徵！💡';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged1 = null;
+  }
+
+  /* =====================================================
+     Level 2 (Q1:5pts Q2:15pts = 20)
+     ===================================================== */
+  let q1Done = false, q2Done = false;
+  const checkL2ready = () => {
+    const ready = q1Done && q2Done;
+    const btn = el('btn-next-2');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-purple-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=q1]').forEach(r => {
+    r.onchange = () => {
+      if (q1Done) return;
+      document.querySelectorAll('#q1-opts .opt').forEach(o => o.classList.remove('sel','correct','wrong'));
+      r.parentElement.classList.add(r.value === '1' ? 'correct' : 'wrong');
+      const fb = el('q1-fb');
+      if (r.value === '1') {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 對！38 億年前最早出現的是單細胞生物，比人眼還看不到！+5 分</span>';
+        awardOnce('L2-q1', 5); q1Done = true;
+      } else {
+        fb.innerHTML = '<span class="text-rose-600">❌ 再看看時間軸最左邊！</span>';
       }
+      checkL2ready();
     };
   });
-  document.getElementById('next4').onclick = ()=>{ step=5; showStep(5); document.getElementById('dot-4').classList.add('done'); };
 
-  /* ============ Level 5 ============ */
-  document.getElementById('check5').onclick = ()=>{
-    const p = document.getElementById('w5-place').value.trim();
-    const s = document.getElementById('w5-species').value.trim();
-    const q = document.getElementById('w5-q').value.trim();
-    if(!p || !s || !q){ feedback('fb5', false, '', '請完整填寫三個欄位喔，小研究員！'); return; }
-    setScore(15); addBadge('🌿 小觀察家'); confetti();
-    feedback('fb5', true, '太棒了！你已經擁有科學家的眼睛。記得每月一次到這個地點觀察，持續一整學期！', '');
-    setTimeout(()=>{ step=6; showStep(6); document.getElementById('dot-5').classList.add('done'); }, 1600);
-  };
+  let q2Submitted = false;
+  document.querySelectorAll('#q2-opts input[type=checkbox]').forEach(cb => {
+    cb.onchange = () => {
+      if (q2Submitted) return;
+      const checked = document.querySelectorAll('#q2-opts input:checked');
+      const fb = el('q2-fb');
+      if (checked.length >= 1) { fb.textContent = `已選 ${checked.length} 項。覺得都選好了嗎？可以先提交～`; q2Done = true; }
+      else q2Done = false;
+      checkL2ready();
+    };
+  });
 
-  /* ============ Level 6: WSA ============ */
-  document.getElementById('check6').onclick = ()=>{
-    const n = document.querySelectorAll('.wsa:checked').length;
-    if(n>=4){ setScore(20); addBadge('🏆 全校英雄'); confetti();
-      feedback('fb6', true, '四項全勾！你已是全校英雄——把這份行動計畫帶到班會，動員更多同學！', '');
-      setTimeout(()=>{ showStep(7); document.getElementById('dot-6').classList.add('done'); }, 1600);
+  el('btn-next-2').onclick = () => {
+    if (q2Submitted) { gotoLevel(3); return; }
+    q2Submitted = true;
+    const opts = document.querySelectorAll('#q2-opts input');
+    let correctCount = 0, wrongCount = 0;
+    opts.forEach(o => {
+      o.disabled = true;
+      const lbl = o.parentElement;
+      if (o.checked) {
+        if (o.dataset.correct === '1') { lbl.classList.add('correct'); correctCount++; }
+        else { lbl.classList.add('wrong'); wrongCount++; }
+      }
+    });
+    const pts = Math.max(0, correctCount * 5 - wrongCount * 5);
+    awardOnce('L2-q2', Math.min(pts, 15));
+    const fb = el('q2-fb');
+    if (wrongCount === 0 && correctCount >= 2) {
+      fb.innerHTML = `<span class="text-emerald-700 font-bold">✅ 理解得很棒！+${Math.min(pts,15)} 分</span>`;
+      confetti();
+    } else if (correctCount >= 1) {
+      fb.innerHTML = `<span class="text-amber-600">勾對 ${correctCount} 項、錯 ${wrongCount} 項。人類其實和其他動物有共同祖先喔！</span>`;
     } else {
-      feedback('fb6', false, '', `目前 ${n}/4，還差 ${4-n} 項。每一個面向（課程/校園/社區/治理）都很重要，一起做吧！`);
+      fb.innerHTML = '<span class="text-rose-600">❌ 再想想演化的規則！</span>';
     }
+    el('btn-next-2').textContent = '繼續下一關 →';
+    el('btn-next-2').onclick = () => gotoLevel(3);
   };
+
+  /* =====================================================
+     Level 3: 骨牌鏈 (20 pts)
+     ===================================================== */
+  shuffleChildren(el('chain-items'));
+  let dragged3 = null, l3SlotsFilled = 0;
+  const slotMap = {};
+  const correctOrder = { '1':'1','2':'2','3':'3','4':'4' };
+
+  document.querySelectorAll('#chain-items .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged3 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#chain-items .drag-item').forEach(x => x.classList.remove('ring-4','ring-violet-400'));
+      item.classList.add('ring-4','ring-violet-400'); dragged3 = item;
+    });
+  });
+
+  document.querySelectorAll('#chain-slots .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop3(zone); });
+    zone.addEventListener('click', () => { if (dragged3) handleDrop3(zone); });
+  });
+
+  function handleDrop3(zone) {
+    if (!dragged3) return;
+    const slot = zone.dataset.slot, chainVal = dragged3.dataset.chain;
+    const fb = el('l3-feedback');
+    if (slotMap[slot]) {
+      fb.textContent = '這格已經有卡片了！先試試其他格子。';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-amber-600';
+      dragged3 = null; return;
+    }
+    if (correctOrder[slot] === chainVal) {
+      slotMap[slot] = chainVal;
+      const slotText = zone.querySelector('.slot-text');
+      slotText.textContent = dragged3.textContent.trim();
+      slotText.classList.remove('text-slate-400');
+      slotText.classList.add('text-slate-800','font-bold','pop');
+      zone.classList.add('bg-green-50'); zone.style.borderColor = '#10b981';
+      dragged3.style.visibility = 'hidden'; l3SlotsFilled++;
+      fb.textContent = '對了！🎉 繼續放下一張！';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600';
+      if (l3SlotsFilled === 4) {
+        awardOnce('L3', 20);
+        fb.textContent = '完美！全部順序正確！ +20 分 🦕';
+        confetti();
+        const btn = el('btn-next-3');
+        btn.disabled = false;
+        btn.className = 'btn bg-purple-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(4);
+      }
+    } else {
+      zone.classList.add('shake');
+      setTimeout(() => zone.classList.remove('shake'), 400);
+      fb.textContent = '順序不對喔！提示：第 ① 格是「古代的熊移住北極」。';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged3 = null;
+  }
+
+  /* =====================================================
+     Level 4: 我的行動 (20 pts)
+     ===================================================== */
+  const actionBank = {
+    observe: ['在校園找 3 種不同的鳥，記下牠們的特徵', '觀察學校裡的樹，找找看有沒有昆蟲或其他動物', '畫一張「校園生物小圖鑑」，記錄你發現的生物'],
+    protect: ['和同學提議不要驚擾校園裡的鳥巢', '回家告訴家人不要買野生動物當寵物', '支持使用對環境友善的產品，減少對野生地的破壞'],
+    food: ['和家人選購在地農場的蔬果，支持友善農業', '嘗試吃多樣化的食物，不挑食', '少吃高度加工食品，多選原型食物'],
+    spread: ['在班上分享演化時間軸，讓同學猜「恐龍出現在哪裡」', '做一張「臺灣特有種小海報」貼在教室', '邀請同學一起觀察校園生物，做調查記錄']
+  };
+
+  let themePicked = null, actionPicked = false, promiseCount = 0;
+  const checkL4ready = () => {
+    const ready = themePicked && actionPicked && promiseCount >= 2;
+    const btn = el('btn-next-4');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-purple-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=theme]').forEach(r => {
+    r.onchange = () => {
+      themePicked = r.value;
+      document.querySelectorAll('#theme-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      const box = el('action-opts'); box.innerHTML = ''; actionPicked = false;
+      actionBank[themePicked].forEach(txt => {
+        const lbl = document.createElement('label');
+        lbl.className = 'opt';
+        lbl.innerHTML = `<input type="radio" name="action"> ${txt}`;
+        lbl.querySelector('input').onchange = () => {
+          document.querySelectorAll('#action-opts .opt').forEach(o => o.classList.remove('sel'));
+          lbl.classList.add('sel'); actionPicked = true;
+          el('action-fb').innerHTML = '<span class="text-emerald-700">✅ 好主意！繼續下一步～</span>';
+          el('promise-wrap').classList.remove('hidden'); checkL4ready();
+        };
+        box.appendChild(lbl);
+      });
+      el('action-wrap').classList.remove('hidden');
+      el('promise-wrap').classList.add('hidden'); checkL4ready();
+    };
+  });
+
+  document.querySelectorAll('.promise-cb').forEach(cb => {
+    cb.onchange = () => {
+      promiseCount = document.querySelectorAll('.promise-cb:checked').length;
+      const fb = el('promise-fb');
+      if (promiseCount < 2) fb.textContent = `已選 ${promiseCount}/4，請至少選 2 個 😊`;
+      else fb.textContent = `選了 ${promiseCount} 個承諾！太棒了！`;
+      checkL4ready();
+    };
+  });
+
+  el('btn-next-4').onclick = () => { awardOnce('L4', 20); confetti(); showFinal(); };
+
+  function showFinal() {
+    gotoLevel(TOTAL_LEVELS + 1);
+    el('final-score').textContent = S.score;
+    const box = el('badges'); box.innerHTML = '';
+    const earned = [];
+    if (S.awarded['L1']) earned.push('🦕 特徵分類達人');
+    if (S.awarded['L2-q1'] || S.awarded['L2-q2']) earned.push('⏳ 時間軸解讀家');
+    if (S.awarded['L3']) earned.push('🐻‍❄️ 演化思考王');
+    if (S.awarded['L4']) earned.push('🌱 行動實踐者');
+    if (earned.length === 0) earned.push('🔬 小小演化學家');
+    earned.forEach(b => {
+      const chip = document.createElement('span');
+      chip.className = 'bg-purple-100 border-2 border-purple-400 rounded-full px-3 py-1 text-sm font-bold pop';
+      chip.textContent = b; box.appendChild(chip);
+    });
+    confetti();
+  }
+
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+  const setupStars = (wrapId, setter) => {
+    const wrap = el(wrapId);
+    wrap.querySelectorAll('.star').forEach(s => {
+      s.onclick = () => {
+        const v = parseInt(s.dataset.val, 10); setter(v);
+        wrap.querySelectorAll('.star').forEach(x => x.classList.toggle('on', parseInt(x.dataset.val,10) <= v));
+        checkReflect();
+      };
+    });
+  };
+  setupStars('stars-before', v => starBefore = v);
+  setupStars('stars-after', v => starAfter = v);
+
+  document.querySelectorAll('input[name=impact]').forEach(r => {
+    r.onchange = () => {
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel'); checkReflect();
+    };
+  });
+
+  function checkReflect() {
+    const ok = starBefore > 0 && starAfter > 0 && impactPicked;
+    const fb = el('reflect-fb');
+    if (ok) {
+      fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 反思完成！+5 分 🌟</span>';
+      awardOnce('FINAL', 5); el('final-score').textContent = S.score;
+    } else {
+      fb.textContent = '請完成三題反思（★ 前後了解度 + 印象最深的關卡）';
+    }
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

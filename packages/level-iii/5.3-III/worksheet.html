@@ -6,324 +6,673 @@
 <title>氣候偵探小米的颱風日記 | 5.3-III 互動學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif;
-         background: linear-gradient(135deg,#dbeafe,#fde68a,#fecaca); min-height:100vh;}
-  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.12);}
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg,#fef3c7,#fecaca); min-height:100vh;}
+  .card { background:white; border-radius:1.5rem; box-shadow:0 10px 30px rgba(0,0,0,.1);}
   .btn { transition:all .2s; }
-  .btn:hover { transform: translateY(-2px); }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter:brightness(1.05);}
+  .btn:disabled { opacity:.5; cursor:not-allowed;}
   .drag-item { cursor: grab; user-select:none; }
   .drag-item.dragging { opacity:.4; }
-  .drop-zone { min-height:80px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
-  .drop-zone.over { background:#fde68a; }
+  .drop-zone { min-height:110px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
   .pop { animation: pop .5s ease; }
   @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
   .shake { animation: shake .4s; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
-  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2.2s linear forwards; z-index:50; pointer-events:none;}
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; animation: fall 2s linear forwards; z-index:50; pointer-events:none;}
   @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
   .hidden-screen { display:none; }
-  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; transition:all .3s;}
+  .progress-dot { width:14px; height:14px; border-radius:50%; background:#cbd5e1; }
   .progress-dot.active { background:#f59e0b; transform:scale(1.3);}
   .progress-dot.done { background:#10b981;}
   .fade-in { animation: fade .4s ease; }
   @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
-  .progress-bar { height:10px; background:#e2e8f0; border-radius:5px; overflow:hidden;}
-  .progress-bar > div { height:100%; background: linear-gradient(90deg,#f59e0b,#ef4444); transition:width .5s;}
-  .badge { display:inline-block; padding:.25rem .75rem; border-radius:999px; font-weight:700;}
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.95rem;}
+  .opt:hover { background:#fef9ec; }
+  .opt.sel { border-color:#f59e0b; background:#fef3c7;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.5rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
 <body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 
-<div class="max-w-4xl mx-auto">
+<div class="max-w-3xl mx-auto">
 
   <!-- Header -->
-  <div class="card p-6 mb-4 text-center">
-    <h1 class="text-3xl md:text-4xl font-bold text-red-700">氣候偵探小米的颱風日記</h1>
-    <p class="text-gray-600 mt-2">UNESCO 5.3-III｜氣候變遷與我們的經濟｜9-12 歲</p>
-    <div class="flex justify-center gap-2 mt-4" id="progressDots"></div>
-    <div class="progress-bar mt-3"><div id="progressBar" style="width:0%"></div></div>
-    <p class="text-sm text-gray-500 mt-2" id="progressText">關卡 0 / 5</p>
-  </div>
-
-  <!-- Role intro -->
-  <div class="card p-6 mb-4 bg-gradient-to-r from-yellow-100 to-orange-100" id="intro">
-    <h2 class="text-2xl font-bold text-orange-700">角色：氣候偵探小米</h2>
-    <p class="mt-3 text-gray-700 leading-relaxed">
-      嗨！我是 <b>小米</b>，剛升五年級。上次凱米颱風讓我們家停電了 18 小時，冰箱的冰淇淋都融化了，阿嬤因為太熱還頭暈送醫。
-      我想搞懂：<b>為什麼天氣會讓整個城市停擺？</b> 你願意跟我一起當偵探嗎？
-    </p>
-    <button class="btn bg-orange-500 text-white px-6 py-3 rounded-full mt-4 font-bold" onclick="showScreen(1)">開始任務 →</button>
-  </div>
-
-  <!-- Screen 1: Memory Wall 極端天氣記憶牆 -->
-  <div class="card p-6 mb-4 hidden-screen" id="screen1">
-    <h2 class="text-2xl font-bold text-blue-700">關卡 1：我的極端天氣記憶</h2>
-    <p class="mt-2 text-gray-600">寫下你經歷過的一次颱風、豪雨、熱浪或停電的感覺。真實、簡短就好。</p>
-    <textarea id="memoryInput" rows="3" class="w-full mt-3 p-3 border rounded-lg focus:ring-2 focus:ring-blue-400" placeholder="例如：凱米颱風那天我們家停電，阿嬤很熱..."></textarea>
-    <div class="mt-3 flex gap-2">
-      <button class="btn bg-blue-500 text-white px-5 py-2 rounded-full font-bold" onclick="saveMemory()">貼上記憶牆</button>
+  <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-red-600">🌀 氣候偵探小米的颱風日記</h1>
+      <p class="text-sm text-slate-600 mt-1">幫小米搞懂颱風和極端天氣對我們生活的影響，成為氣候韌性小英雄！</p>
     </div>
-    <div id="memoryWall" class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4"></div>
-    <button class="btn bg-green-500 text-white px-6 py-2 rounded-full mt-4 font-bold hidden" id="mem-next" onclick="showScreen(2)">下一關 →</button>
-  </div>
-
-  <!-- Screen 2: 災害帳單配對 (drag drop) -->
-  <div class="card p-6 mb-4 hidden-screen" id="screen2">
-    <h2 class="text-2xl font-bold text-red-700">關卡 2：災害帳單配對</h2>
-    <p class="mt-2 text-gray-600">把下面的「數字」拖到對應的「災害事件」上。真實資料，別被嚇到！</p>
-    <div class="flex flex-wrap gap-2 mt-4" id="numBox">
-      <div class="drag-item bg-red-200 px-4 py-2 rounded-full font-bold" draggable="true" data-ans="morakot">2,884 mm / 681 人 / 1,947 億</div>
-      <div class="drag-item bg-yellow-200 px-4 py-2 rounded-full font-bold" draggable="true" data-ans="kaemi">50 萬戶停電 / 10 人 / 47 億</div>
-      <div class="drag-item bg-purple-200 px-4 py-2 rounded-full font-bold" draggable="true" data-ans="who">每年 48.9 萬人死亡</div>
-      <div class="drag-item bg-blue-200 px-4 py-2 rounded-full font-bold" draggable="true" data-ans="noaa">27 件 / 1,827 億美元</div>
-      <div class="drag-item bg-green-200 px-4 py-2 rounded-full font-bold" draggable="true" data-ans="undrr">7,348 起 / 2.97 兆美元</div>
+    <div class="text-right">
+      <div class="text-xs text-slate-500">目前分數</div>
+      <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 80</div>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5">
-      <div class="drop-zone p-3" data-accept="morakot"><b>① 莫拉克颱風（2009 台灣阿里山）</b></div>
-      <div class="drop-zone p-3" data-accept="kaemi"><b>② 凱米颱風（2024 台灣）</b></div>
-      <div class="drop-zone p-3" data-accept="who"><b>③ 全球熱浪死亡（WHO 估計）</b></div>
-      <div class="drop-zone p-3" data-accept="noaa"><b>④ 美國 2024 年十億美元災害（NOAA）</b></div>
-      <div class="drop-zone p-3" data-accept="undrr"><b>⑤ 2000-2019 全球重大災害（UNDRR）</b></div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card p-4 mb-4 flex items-center justify-center gap-3 flex-wrap">
+    <div class="progress-dot active" id="dot-1"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-2"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-3"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-4"></div>
+    <div class="h-1 w-8 bg-slate-300"></div>
+    <div class="progress-dot" id="dot-5"></div>
+    <span class="ml-2 text-sm text-slate-600">關卡 <span id="step-label">1</span> / 4</span>
+  </div>
+
+  <!-- ===== Level 1: 極端天氣 vs 正常天氣 配對 (15 pts) ===== -->
+  <section id="level-1" class="card p-6 fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🕵️</div>
+      <div>
+        <h2 class="text-xl font-bold text-red-700">關卡 1：正常天氣還是極端天氣？猜猜看！</h2>
+        <p class="text-sm text-slate-700 mt-1">小米說：「上次颱風停電 18 小時，冰箱裡的冰淇淋全融化了！<b>正常天氣</b>是每個季節常見的樣子（夏天熱、冬天涼）；<b>極端天氣</b>是很少見、很厲害的天氣（超強暴雨、超長停電）。把卡片拖到對的籃子！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 15 分｜全部放對才能前往下一關</p>
+      </div>
     </div>
-    <p id="s2-feedback" class="mt-3 font-bold"></p>
-    <button class="btn bg-green-500 text-white px-6 py-2 rounded-full mt-3 font-bold hidden" id="s2-next" onclick="showScreen(3)">下一關 →</button>
-  </div>
 
-  <!-- Screen 3: Domino 骨牌 -->
-  <div class="card p-6 mb-4 hidden-screen" id="screen3">
-    <h2 class="text-2xl font-bold text-amber-700">關卡 3：公共服務骨牌</h2>
-    <p class="mt-2 text-gray-600">把骨牌依因果順序排好，看看颱風怎麼讓城市停擺。</p>
-    <div id="dominoPool" class="flex flex-wrap gap-2 mt-4"></div>
-    <h3 class="mt-4 font-bold text-gray-700">正確順序：</h3>
-    <div id="dominoDrop" class="grid grid-cols-1 gap-2 mt-2"></div>
-    <button class="btn bg-amber-500 text-white px-5 py-2 rounded-full mt-3 font-bold" onclick="checkDomino()">檢查順序</button>
-    <p id="s3-feedback" class="mt-3 font-bold"></p>
-    <button class="btn bg-green-500 text-white px-6 py-2 rounded-full mt-3 font-bold hidden" id="s3-next" onclick="showScreen(4)">下一關 →</button>
-  </div>
+    <div class="grid grid-cols-2 gap-3 my-3" id="items-box-1">
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="extreme">🌀 颱風來讓全班停課三天</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="normal">⛅ 今天多雲，下午有點涼</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="extreme">🌊 暴雨讓學校操場積水到膝蓋</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="normal">🌤️ 春天陰雨綿綿，要帶傘上學</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="extreme">🥵 連續一週氣溫超過 38°C，阿嬤頭暈</div>
+      <div class="drag-item bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-match="normal">🌸 冬天偶爾下雨，氣溫 15°C</div>
+    </div>
 
-  <!-- Screen 4: Heatwave 情境選擇 -->
-  <div class="card p-6 mb-4 hidden-screen" id="screen4">
-    <h2 class="text-2xl font-bold text-rose-700">關卡 4：熱浪關懷任務</h2>
-    <p class="mt-2 text-gray-600">38°C 的午後，你家附近有位獨居的阿嬤。你會怎麼做？</p>
-    <div class="mt-4 space-y-2" id="q4"></div>
-    <p id="s4-feedback" class="mt-3 font-bold"></p>
-    <button class="btn bg-green-500 text-white px-6 py-2 rounded-full mt-3 font-bold hidden" id="s4-next" onclick="showScreen(5)">下一關 →</button>
-  </div>
+    <div class="grid grid-cols-2 gap-3" id="zones-box-1">
+      <div class="drop-zone bg-sky-50 p-3" data-accept="normal">
+        <div class="font-bold text-sky-700 text-center mb-2">🌤️ 正常天氣<br><span class="text-xs font-normal text-sky-500">（每個季節常見）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+      <div class="drop-zone bg-red-50 p-3" data-accept="extreme">
+        <div class="font-bold text-red-700 text-center mb-2">⚡ 極端天氣<br><span class="text-xs font-normal text-red-400">（很少見、影響很大）</span></div>
+        <div class="dz-items flex flex-wrap gap-2 justify-center"></div>
+      </div>
+    </div>
 
-  <!-- Screen 5: WSA 全校英雄 4-checkbox -->
-  <div class="card p-6 mb-4 hidden-screen" id="screen5">
-    <h2 class="text-2xl font-bold text-purple-700">關卡 5：全校英雄挑戰（WSA 四面向）</h2>
-    <p class="mt-2 text-gray-600">完成這 4 個承諾，就能解鎖「全校英雄」徽章！</p>
-    <div class="mt-4 space-y-3">
-      <label class="flex items-start gap-3 p-3 bg-blue-50 rounded-lg cursor-pointer">
-        <input type="checkbox" class="wsa mt-1" data-k="curriculum">
-        <span><b>① 課程</b>：這週在社會/自然/綜合課中，至少和同學討論一次極端天氣事件。</span>
+    <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <span></span>
+      <button id="btn-next-1" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>完成分類才能繼續 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 2: 看圖找答案 (20 pts) ===== -->
+  <section id="level-2" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">📈</div>
+      <div>
+        <h2 class="text-xl font-bold text-red-700">關卡 2：看圖找答案</h2>
+        <p class="text-sm text-slate-700 mt-1">小米找到一張「近年颱風停電天數」紀錄圖（2019–2023 五年）。仔細看，回答下面兩題！</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜Q1 單選 5 分 + Q2 多選 15 分</p>
+      </div>
+    </div>
+
+    <!-- SVG bar chart: typhoon power outage days per year 2019-2023 -->
+    <svg viewBox="0 0 400 180" class="w-full max-w-lg mx-auto block bg-slate-50 rounded-xl mb-4 border border-slate-200">
+      <line x1="50" y1="150" x2="390" y2="150" stroke="#475569" stroke-width="1.5"/>
+      <line x1="50" y1="20" x2="50" y2="150" stroke="#475569" stroke-width="1.5"/>
+      <!-- Y labels -->
+      <text x="5" y="155" font-size="9" fill="#64748b">0</text>
+      <text x="5" y="112" font-size="9" fill="#64748b">3</text>
+      <text x="5" y="70" font-size="9" fill="#64748b">6</text>
+      <text x="5" y="28" font-size="9" fill="#64748b">天</text>
+      <!-- Bars: 2, 1, 4, 3, 6 days -->
+      <rect x="65" y="123" width="45" height="27" fill="#60a5fa" rx="4"/>
+      <rect x="130" y="136" width="45" height="14" fill="#34d399" rx="4"/>
+      <rect x="195" y="96" width="45" height="54" fill="#fbbf24" rx="4"/>
+      <rect x="260" y="109" width="45" height="41" fill="#f87171" rx="4"/>
+      <rect x="325" y="69" width="45" height="81" fill="#ef4444" rx="4"/>
+      <!-- X labels -->
+      <text x="77" y="165" font-size="9" fill="#64748b">2019</text>
+      <text x="142" y="165" font-size="9" fill="#64748b">2020</text>
+      <text x="207" y="165" font-size="9" fill="#64748b">2021</text>
+      <text x="272" y="165" font-size="9" fill="#64748b">2022</text>
+      <text x="337" y="165" font-size="9" fill="#64748b">2023</text>
+      <!-- Values -->
+      <text x="78" y="120" font-size="9" fill="#1e40af" font-weight="bold">2天</text>
+      <text x="143" y="133" font-size="9" fill="#065f46" font-weight="bold">1天</text>
+      <text x="208" y="93" font-size="9" fill="#92400e" font-weight="bold">4天</text>
+      <text x="273" y="106" font-size="9" fill="#991b1b" font-weight="bold">3天</text>
+      <text x="338" y="66" font-size="9" fill="#7f1d1d" font-weight="bold">6天</text>
+      <text x="115" y="35" font-size="10" fill="#475569" font-weight="bold">近年颱風造成停電天數（天）</text>
+    </svg>
+
+    <!-- Q1: Single choice -->
+    <div class="mb-5">
+      <p class="font-bold text-sm mb-2">📌 Q1：從這張圖可以看出什麼？（單選，5 分）</p>
+      <div id="q1-opts">
+        <label class="opt"><input type="radio" name="q1" value="0"> A. 每年停電天數都一樣。</label>
+        <label class="opt"><input type="radio" name="q1" value="1"> B. 整體來說停電天數有慢慢增加的趨勢，2023 年最多。</label>
+        <label class="opt"><input type="radio" name="q1" value="0"> C. 2020 年停電最多天，之後越來越少。</label>
+      </div>
+      <p id="q1-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <!-- Q2: Multi-select -->
+    <div class="mb-3">
+      <p class="font-bold text-sm mb-1">📌 Q2：颱風停電這麼久，在你家或學校可能造成什麼影響？<br><span class="font-normal text-slate-500 text-xs">（勾出你覺得有可能是真的，可以勾多個）</span></p>
+      <div id="q2-opts">
+        <label class="opt"><input type="checkbox" data-correct="1"> 🧊 冰箱裡的食物壞掉，爸媽要多花錢買</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 🏥 阿嬤的電動輪椅沒辦法充電，出不了門</label>
+        <label class="opt"><input type="checkbox" data-correct="0"> 🌿 停電讓植物長得更好</label>
+        <label class="opt"><input type="checkbox" data-correct="1"> 📱 手機沒電，沒辦法和同學聯絡確認安全</label>
+      </div>
+      <p id="q2-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="1">← 上一關</button>
+      <button id="btn-next-2" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>提交答案 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 3: 推一推 — 颱風骨牌鏈 (20 pts) ===== -->
+  <section id="level-3" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">🔄</div>
+      <div>
+        <h2 class="text-xl font-bold text-red-700">關卡 3：推一推！颱風讓城市停擺的骨牌</h2>
+        <p class="text-sm text-slate-700 mt-1">小米說：「颱風不只讓學校停課，它會一件接一件地讓城市停擺！把四張卡片依照正確順序拖進 ① ② ③ ④ 格子裡！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜順序全對才得分</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row items-center justify-center gap-2 my-4" id="chain-slots">
+      <div class="drop-zone bg-amber-50 p-3 w-full md:w-32 text-center" data-slot="1">
+        <div class="text-xs font-bold text-amber-700 mb-1">① 起點</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-amber-50 p-3 w-full md:w-32 text-center" data-slot="2">
+        <div class="text-xs font-bold text-amber-700 mb-1">②</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-amber-50 p-3 w-full md:w-32 text-center" data-slot="3">
+        <div class="text-xs font-bold text-amber-700 mb-1">③</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+      <div class="text-2xl text-slate-400">→</div>
+      <div class="drop-zone bg-amber-50 p-3 w-full md:w-32 text-center" data-slot="4">
+        <div class="text-xs font-bold text-amber-700 mb-1">④ 結果</div>
+        <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 mt-2" id="chain-items">
+      <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="3">🚇 捷運和公車停駛，爸媽無法上班</div>
+      <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="1">🌀 強颱來襲，暴雨加強風</div>
+      <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="4">🛒 超商貨架空了，買不到泡麵和蠟燭</div>
+      <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="2">💡 電線桿倒塌，全區停電 18 小時</div>
+    </div>
+
+    <p id="l3-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="2">← 上一關</button>
+      <button id="btn-next-3" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>下一關 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Level 4: 我的行動 (20 pts) ===== -->
+  <section id="level-4" class="card p-6 hidden-screen fade-in">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="text-4xl">💪</div>
+      <div>
+        <h2 class="text-xl font-bold text-red-700">關卡 4：我的颱風韌性行動</h2>
+        <p class="text-sm text-slate-700 mt-1">小米說：「知道颱風的影響了，我們可以提前準備，讓自己和家人更安全！先選一個想行動的方向！」</p>
+        <p class="text-xs text-slate-500 mt-1">✅ 20 分｜選主題 + 選行動 + 立下承諾</p>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <p class="font-bold text-sm mb-2">① 小米最想從哪裡開始準備？（選一個）</p>
+      <div id="theme-opts">
+        <label class="opt"><input type="radio" name="theme" value="prepare"> 🎒 準備家庭颱風應急包（手電筒、水、食物）</label>
+        <label class="opt"><input type="radio" name="theme" value="neighbor"> 👵 颱風前主動關心獨居的鄰居或阿嬤</label>
+        <label class="opt"><input type="radio" name="theme" value="school"> 🏫 建議學校在颱風後幫助整理環境</label>
+        <label class="opt"><input type="radio" name="theme" value="spread"> 📢 告訴同學颱風來前要做哪些準備</label>
+      </div>
+    </div>
+
+    <div id="action-wrap" class="hidden mb-4">
+      <p class="font-bold text-sm mb-2">② 以下三個做法，你覺得哪個最容易開始？（選一個）</p>
+      <div id="action-opts"></div>
+      <p id="action-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div id="promise-wrap" class="hidden bg-amber-50 rounded-xl p-4 mb-3">
+      <p class="font-bold text-sm mb-2">③ 在你能做到的事情前打勾（至少選 2 個）：</p>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-amber-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會跟家人討論颱風來時要怎麼辦</span>
       </label>
-      <label class="flex items-start gap-3 p-3 bg-green-50 rounded-lg cursor-pointer">
-        <input type="checkbox" class="wsa mt-1" data-k="ops">
-        <span><b>② 校園營運</b>：幫班級檢查教室手電筒/急救包/避難動線，回報老師。</span>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-amber-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會留意家裡有沒有颱風應急物品</span>
       </label>
-      <label class="flex items-start gap-3 p-3 bg-yellow-50 rounded-lg cursor-pointer">
-        <input type="checkbox" class="wsa mt-1" data-k="community">
-        <span><b>③ 社區連結</b>：打電話或親訪一位獨居長者，詢問「熱浪/颱風時家裡需要什麼？」或寄一張感謝卡給清潔隊/消防員。</span>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-amber-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">我會跟同學分享今天學到的颱風知識</span>
       </label>
-      <label class="flex items-start gap-3 p-3 bg-pink-50 rounded-lg cursor-pointer">
-        <input type="checkbox" class="wsa mt-1" data-k="agency">
-        <span><b>④ 學生治理</b>：向班會提出一項「校園韌性改善」提案（例如增設遮陽、購買備用風扇）。</span>
+      <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-amber-100 cursor-pointer">
+        <input type="checkbox" class="promise-cb mt-1"><span class="text-sm">下次颱風前，我會主動關心附近獨居長輩</span>
       </label>
+      <p id="promise-fb" class="text-xs mt-2 text-slate-500 min-h-[18px]"></p>
     </div>
-    <button class="btn bg-purple-600 text-white px-6 py-2 rounded-full mt-4 font-bold" onclick="checkWSA()">我承諾完成！</button>
-    <div id="heroBadge" class="hidden mt-5 text-center fade-in">
-      <div class="badge bg-gradient-to-r from-yellow-400 to-red-500 text-white text-xl px-6 py-3">全校英雄 徽章 解鎖</div>
-      <p class="mt-3 text-gray-700">小米：「謝謝你！我們的校園和社區會因為你變得更有韌性。」</p>
-      <button class="btn bg-red-500 text-white px-6 py-3 rounded-full mt-4 font-bold" onclick="finalCelebration()">放煙火慶祝</button>
-    </div>
-  </div>
 
-  <!-- Footer -->
-  <div class="card p-4 mb-4 text-center text-xs text-gray-500">
-    資料來源：WHO、IPCC AR6 WG2、NOAA NCEI、UNDRR、中央氣象署 CWA、中央災害應變中心 EMIC、農業部、TCCIP｜校對 2026-04-16
-  </div>
+    <div class="nav-row">
+      <button class="btn btn-back" data-back="3">← 上一關</button>
+      <button id="btn-next-4" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>查看成果 🏆</button>
+    </div>
+  </section>
+
+  <!-- ===== Final: 反思 (5 pts) ===== -->
+  <section id="level-final" class="card p-6 hidden-screen fade-in">
+    <div class="text-6xl text-center pop">🏆</div>
+    <h2 class="text-2xl font-bold text-red-600 mt-2 text-center">恭喜你幫小米成為氣候韌性英雄！</h2>
+    <p class="text-slate-700 mt-1 text-center">最終分數：<span id="final-score" class="text-3xl font-bold text-emerald-600">0</span> / 80 分</p>
+
+    <div class="flex flex-wrap justify-center gap-2 my-4" id="badges"></div>
+
+    <div class="bg-sky-50 rounded-xl p-4 max-w-2xl mx-auto mb-4">
+      <p class="font-bold text-sky-700 mb-3">🤔 最後一步：快速反思（5 分）</p>
+
+      <p class="text-sm font-semibold mb-1">Q1｜上這堂課之前，你對颱風和極端天氣的了解程度：</p>
+      <div id="stars-before" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q2｜上完這堂課後，你的了解程度：</p>
+      <div id="stars-after" class="flex gap-1 mb-3">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+      </div>
+
+      <p class="text-sm font-semibold mb-1">Q3｜哪個關卡讓你印象最深刻？</p>
+      <div id="impact-opts">
+        <label class="opt"><input type="radio" name="impact" value="1"> 關卡 1：正常天氣 vs 極端天氣配對</label>
+        <label class="opt"><input type="radio" name="impact" value="2"> 關卡 2：看停電天數圖</label>
+        <label class="opt"><input type="radio" name="impact" value="3"> 關卡 3：颱風城市骨牌效應</label>
+        <label class="opt"><input type="radio" name="impact" value="4"> 關卡 4：我的颱風韌性行動</label>
+      </div>
+      <p id="reflect-fb" class="text-xs mt-2 min-h-[18px]"></p>
+    </div>
+
+    <div class="bg-yellow-50 rounded-xl p-4 text-left max-w-2xl mx-auto">
+      <h3 class="font-bold text-amber-700 mb-2">🧐 延伸思考小挑戰</h3>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+        <li>如果颱風讓家裡停電兩天，你最擔心的三件事是什麼？你會怎麼提前準備？</li>
+        <li>你家附近有沒有年紀大的獨居長輩？颱風前你可以幫他們做什麼？</li>
+        <li>你願意邀請哪個同學一起討論家庭颱風應急計畫？你會怎麼開口？</li>
+      </ol>
+    </div>
+
+    <div class="nav-row max-w-2xl mx-auto mt-4">
+      <button class="btn btn-back" data-back="4">← 回到關卡 4</button>
+      <button onclick="location.reload()" class="btn bg-red-500 text-white py-2 px-6 rounded-xl font-bold">再玩一次 🔁</button>
+    </div>
+  </section>
+
 </div>
 
 <script>
-const totalScreens = 5;
-let currentScreen = 0;
-const dots = document.getElementById('progressDots');
-for (let i=0;i<totalScreens;i++){
-  const d=document.createElement('div'); d.className='progress-dot'; dots.appendChild(d);
-}
-function updateProgress(){
-  document.querySelectorAll('.progress-dot').forEach((d,i)=>{
-    d.classList.remove('active','done');
-    if(i<currentScreen) d.classList.add('done');
-    else if(i===currentScreen-1) d.classList.add('active');
-  });
-  const pct = Math.min(100,(currentScreen/totalScreens)*100);
-  document.getElementById('progressBar').style.width = pct+'%';
-  document.getElementById('progressText').textContent = `關卡 ${Math.min(currentScreen,totalScreens)} / ${totalScreens}`;
-}
-function showScreen(n){
-  document.getElementById('intro').classList.add('hidden-screen');
-  for(let i=1;i<=totalScreens;i++) document.getElementById('screen'+i).classList.add('hidden-screen');
-  const el = document.getElementById('screen'+n);
-  if(el){ el.classList.remove('hidden-screen'); el.classList.add('fade-in'); }
-  currentScreen = n;
-  updateProgress();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+(() => {
+  /* TOTAL = 4 tasks + 1 final = TOTAL_LEVELS = 4 */
+  const TOTAL_LEVELS = 4;
+  const S = { score: 0, current: 1, awarded: {} };
+  const el = id => document.getElementById(id);
 
-// Screen 1: memory wall
-function saveMemory(){
-  const v = document.getElementById('memoryInput').value.trim();
-  if(v.length<5){ alert('再寫具體一點吧～至少 5 個字'); return; }
-  const wall = document.getElementById('memoryWall');
-  const note = document.createElement('div');
-  note.className='bg-yellow-100 p-3 rounded-lg pop';
-  note.innerHTML = '<b>📌 我的記憶：</b>'+v;
-  wall.appendChild(note);
-  document.getElementById('memoryInput').value='';
-  document.getElementById('mem-next').classList.remove('hidden');
-}
+  const setScore = n => { S.score += n; el('score').textContent = S.score; };
+  const awardOnce = (key, pts) => { if (!S.awarded[key]) { S.awarded[key] = true; setScore(pts); } };
 
-// Screen 2: drag-drop numbers
-document.querySelectorAll('.drag-item').forEach(item=>{
-  item.addEventListener('dragstart',e=>{
-    e.dataTransfer.setData('text/plain', item.dataset.ans);
-    item.classList.add('dragging');
-  });
-  item.addEventListener('dragend',()=> item.classList.remove('dragging'));
-});
-document.querySelectorAll('.drop-zone').forEach(z=>{
-  z.addEventListener('dragover',e=>{ e.preventDefault(); z.classList.add('over');});
-  z.addEventListener('dragleave',()=> z.classList.remove('over'));
-  z.addEventListener('drop',e=>{
-    e.preventDefault(); z.classList.remove('over');
-    const ans = e.dataTransfer.getData('text/plain');
-    if(ans === z.dataset.accept){
-      const orig = [...document.querySelectorAll('.drag-item')].find(i=>i.dataset.ans===ans);
-      if(orig){ z.appendChild(orig); orig.classList.add('pop'); orig.draggable=false; orig.style.cursor='default';}
-      checkS2();
-    } else {
-      z.classList.add('shake');
-      setTimeout(()=> z.classList.remove('shake'),400);
-      document.getElementById('s2-feedback').innerHTML = '<span class="text-red-600">❌ 對應不上喔，再想想：這組數字屬於哪個事件？小提示：看「台灣」「美國」「全球」三個尺度。</span>';
-    }
-  });
-});
-function checkS2(){
-  const placed = document.querySelectorAll('.drop-zone .drag-item').length;
-  if(placed===5){
-    document.getElementById('s2-feedback').innerHTML = '<span class="text-green-600">🎉 全部配對正確！你已經是災害數字小達人！</span>';
-    document.getElementById('s2-next').classList.remove('hidden');
-    confetti();
-  }
-}
-
-// Screen 3: domino
-const dominoItems = [
-  {id:'a', t:'① 氣候變遷 → 海面溫度上升'},
-  {id:'b', t:'② 颱風強度增加、降雨更集中'},
-  {id:'c', t:'③ 城市多處淹水、土石流'},
-  {id:'d', t:'④ 電線桿倒、變電所泡水 → 停電'},
-  {id:'e', t:'⑤ 捷運、台鐵、公車停駛'},
-  {id:'f', t:'⑥ 爸媽無法上班、店家無法營業'},
-];
-const correctOrder = ['a','b','c','d','e','f'];
-let dominoState = [];
-function renderDomino(){
-  const pool = document.getElementById('dominoPool'); pool.innerHTML='';
-  const shuffled = [...dominoItems].sort(()=>Math.random()-.5);
-  shuffled.forEach(it=>{
-    if(dominoState.includes(it.id)) return;
-    const b = document.createElement('button');
-    b.className='btn bg-amber-200 px-3 py-2 rounded-lg';
-    b.textContent = it.t;
-    b.onclick = ()=>{ dominoState.push(it.id); renderDomino(); };
-    pool.appendChild(b);
-  });
-  const drop = document.getElementById('dominoDrop'); drop.innerHTML='';
-  dominoState.forEach((id,idx)=>{
-    const it = dominoItems.find(x=>x.id===id);
-    const row = document.createElement('div');
-    row.className='bg-amber-100 p-2 rounded-lg flex justify-between items-center';
-    row.innerHTML = `<span>${idx+1}. ${it.t}</span>`;
-    const rm = document.createElement('button');
-    rm.textContent='移除'; rm.className='text-red-500 text-sm ml-2';
-    rm.onclick=()=>{ dominoState = dominoState.filter(x=>x!==id); renderDomino();};
-    row.appendChild(rm);
-    drop.appendChild(row);
-  });
-}
-renderDomino();
-function checkDomino(){
-  if(dominoState.length<6){
-    document.getElementById('s3-feedback').innerHTML='<span class="text-orange-600">⚠ 還沒排完，總共 6 張骨牌喔。</span>';
-    return;
-  }
-  if(JSON.stringify(dominoState)===JSON.stringify(correctOrder)){
-    document.getElementById('s3-feedback').innerHTML='<span class="text-green-600">🎉 順序完全正確！你已經看懂氣候骨牌效應。</span>';
-    document.getElementById('s3-next').classList.remove('hidden');
-    confetti();
-  } else {
-    document.getElementById('s3-feedback').innerHTML='<span class="text-red-600">❌ 順序還不對。小提示：從最大的原因（氣候變遷）開始，往下到最貼近生活的影響（爸媽、店家）。</span>';
-  }
-}
-
-// Screen 4: heatwave scenario
-const q4 = [
-  {t:'A. 把冷氣開強一點，不管阿嬤。', ok:false, fb:'少了同理。阿嬤可能一個人沒冷氣，我們要主動關心。'},
-  {t:'B. 和爸媽一起打電話問阿嬤家裡有沒有開電風扇、有沒有喝水、要不要過去陪她。', ok:true, fb:'🎉 這就是「社區韌性」。WHO 提醒：主動關懷是救命關鍵。'},
-  {t:'C. 把 WHO 每年 48.9 萬人死於熱浪的新聞轉給家人群組，提醒大家注意長輩。', ok:true, fb:'🎉 很棒！把科學資訊變成家庭對話是行動的第一步。'},
-  {t:'D. 心想：反正政府會處理。', ok:false, fb:'政府能做的有限。你的一通電話可能就是阿嬤最需要的那一通。'}
-];
-const q4box = document.getElementById('q4');
-let q4done=false;
-q4.forEach((opt,i)=>{
-  const b = document.createElement('button');
-  b.className='btn block w-full text-left p-3 bg-rose-100 hover:bg-rose-200 rounded-lg';
-  b.textContent=opt.t;
-  b.onclick=()=>{
-    document.getElementById('s4-feedback').innerHTML = opt.ok
-      ? `<span class="text-green-600">${opt.fb}</span>`
-      : `<span class="text-red-600">再想想：${opt.fb}</span>`;
-    if(opt.ok && !q4done){
-      q4done=true;
-      document.getElementById('s4-next').classList.remove('hidden');
-      confetti();
+  const updateDots = () => {
+    for (let i = 1; i <= TOTAL_LEVELS + 1; i++) {
+      const d = el('dot-' + i); if (!d) continue;
+      d.classList.remove('active', 'done');
+      if (i < S.current) d.classList.add('done');
+      else if (i === S.current) d.classList.add('active');
     }
   };
-  q4box.appendChild(b);
-});
 
-// Screen 5: WSA
-function checkWSA(){
-  const all = [...document.querySelectorAll('.wsa')];
-  const done = all.filter(c=>c.checked).length;
-  if(done<4){
-    alert(`還差 ${4-done} 個承諾，才能解鎖全校英雄徽章 💪`);
-    return;
+  const gotoLevel = n => {
+    document.querySelectorAll('section[id^="level-"]').forEach(s => s.classList.add('hidden-screen'));
+    S.current = n;
+    el('step-label').textContent = Math.min(n, 4);
+    const target = (n > TOTAL_LEVELS) ? el('level-final') : el('level-' + n);
+    target.classList.remove('hidden-screen');
+    target.classList.add('fade-in');
+    updateDots();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  document.querySelectorAll('.btn-back').forEach(b => {
+    b.onclick = () => gotoLevel(parseInt(b.dataset.back, 10));
+  });
+
+  const confetti = () => {
+    const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#a855f7'];
+    for (let i = 0; i < 32; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[i % colors.length];
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 2500);
+    }
+  };
+
+  const shuffleChildren = parent => {
+    const kids = Array.from(parent.children);
+    for (let i = kids.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      parent.appendChild(kids[j]);
+    }
+  };
+
+  /* Level 1: drag-drop 15 pts */
+  shuffleChildren(el('items-box-1'));
+  shuffleChildren(el('zones-box-1'));
+
+  let dragged1 = null, l1Correct = 0;
+  const total1 = document.querySelectorAll('#items-box-1 .drag-item').length;
+
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged1 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#items-box-1 .drag-item').forEach(x => x.classList.remove('ring-4', 'ring-amber-400'));
+      item.classList.add('ring-4', 'ring-amber-400'); dragged1 = item;
+    });
+  });
+
+  document.querySelectorAll('#zones-box-1 .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop1(zone); });
+    zone.addEventListener('click', () => { if (dragged1) handleDrop1(zone); });
+  });
+
+  function handleDrop1(zone) {
+    if (!dragged1) return;
+    const fb = el('l1-feedback');
+    if (dragged1.dataset.match === zone.dataset.accept) {
+      zone.querySelector('.dz-items').appendChild(dragged1);
+      dragged1.setAttribute('draggable', 'false');
+      dragged1.classList.remove('ring-4', 'ring-amber-400', 'bg-yellow-100', 'border-yellow-400');
+      dragged1.classList.add('bg-green-100', 'border-green-500', 'pop');
+      l1Correct++;
+      fb.textContent = '答對！ 👏';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600 pop';
+      confetti();
+      if (l1Correct === total1) {
+        awardOnce('L1', 15);
+        const btn = el('btn-next-1');
+        btn.disabled = false;
+        btn.className = 'btn bg-red-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(2);
+        fb.textContent = '全部答對！小米為你加油！🎉 +15 分';
+      }
+    } else {
+      dragged1.classList.add('shake');
+      setTimeout(() => dragged1.classList.remove('shake'), 400);
+      fb.textContent = '再想想！提示：極端天氣是很少見、影響很大的天氣，不是每天都有的 💡';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged1 = null;
   }
-  document.getElementById('heroBadge').classList.remove('hidden');
-  confetti(60);
-}
 
-// confetti
-function confetti(n=30){
-  const colors = ['#f59e0b','#ef4444','#10b981','#3b82f6','#8b5cf6','#ec4899'];
-  for(let i=0;i<n;i++){
-    const c = document.createElement('div');
-    c.className='confetti';
-    c.style.left = Math.random()*100+'vw';
-    c.style.background = colors[i%colors.length];
-    c.style.animationDuration = (1.5+Math.random()*1.5)+'s';
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),2500);
+  /* Level 2: Q1 radio 5pts + Q2 multi 15pts */
+  let q1Done = false, q2Done = false;
+  const checkL2ready = () => {
+    const ready = q1Done && q2Done;
+    const btn = el('btn-next-2');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-red-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=q1]').forEach(r => {
+    r.onchange = () => {
+      if (q1Done) return;
+      document.querySelectorAll('#q1-opts .opt').forEach(o => o.classList.remove('sel', 'correct', 'wrong'));
+      r.parentElement.classList.add(r.value === '1' ? 'correct' : 'wrong');
+      const fb = el('q1-fb');
+      if (r.value === '1') {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 對了！整體趨勢往上，2023 年達到 6 天最多！+5 分</span>';
+        awardOnce('L2-q1', 5); q1Done = true;
+      } else {
+        fb.innerHTML = '<span class="text-rose-600">❌ 再看看，哪年的柱子最高？整體是往上還是往下？</span>';
+      }
+      checkL2ready();
+    };
+  });
+
+  let q2Submitted = false;
+  document.querySelectorAll('#q2-opts input[type=checkbox]').forEach(cb => {
+    cb.onchange = () => {
+      if (q2Submitted) return;
+      const checked = document.querySelectorAll('#q2-opts input:checked');
+      const fb = el('q2-fb');
+      if (checked.length >= 1) { fb.textContent = `已選 ${checked.length} 項，覺得都選好了可以提交！`; q2Done = true; }
+      else q2Done = false;
+      checkL2ready();
+    };
+  });
+
+  el('btn-next-2').onclick = () => {
+    if (q2Submitted) { gotoLevel(3); return; }
+    q2Submitted = true;
+    const opts = document.querySelectorAll('#q2-opts input');
+    let correctCount = 0, wrongCount = 0;
+    opts.forEach(o => {
+      o.disabled = true;
+      const lbl = o.parentElement;
+      if (o.checked) {
+        if (o.dataset.correct === '1') { lbl.classList.add('correct'); correctCount++; }
+        else { lbl.classList.add('wrong'); wrongCount++; }
+      }
+    });
+    const pts = Math.max(0, correctCount * 5 - wrongCount * 5);
+    awardOnce('L2-q2', Math.min(pts, 15));
+    const fb = el('q2-fb');
+    if (wrongCount === 0 && correctCount >= 2) {
+      fb.innerHTML = `<span class="text-emerald-700 font-bold">✅ 觀察得很好！+${Math.min(pts,15)} 分</span>`;
+      confetti();
+    } else if (correctCount >= 1) {
+      fb.innerHTML = `<span class="text-amber-600">勾對 ${correctCount} 項、錯 ${wrongCount} 項。注意：停電不會讓植物長更好喔！</span>`;
+    } else {
+      fb.innerHTML = '<span class="text-rose-600">❌ 試試重新想想每個選項。</span>';
+    }
+    el('btn-next-2').textContent = '繼續下一關 →';
+    el('btn-next-2').onclick = () => gotoLevel(3);
+  };
+
+  /* Level 3: chain drag 20 pts */
+  shuffleChildren(el('chain-items'));
+  let dragged3 = null, l3SlotsFilled = 0;
+  const slotMap = {};
+  const correctOrder = { '1':'1', '2':'2', '3':'3', '4':'4' };
+
+  document.querySelectorAll('#chain-items .drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragged3 = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#chain-items .drag-item').forEach(x => x.classList.remove('ring-4', 'ring-amber-400'));
+      item.classList.add('ring-4', 'ring-amber-400'); dragged3 = item;
+    });
+  });
+
+  document.querySelectorAll('#chain-slots .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handleDrop3(zone); });
+    zone.addEventListener('click', () => { if (dragged3) handleDrop3(zone); });
+  });
+
+  function handleDrop3(zone) {
+    if (!dragged3) return;
+    const slot = zone.dataset.slot;
+    const chainVal = dragged3.dataset.chain;
+    const fb = el('l3-feedback');
+    if (slotMap[slot]) {
+      fb.textContent = '這格已有卡片！試試其他格子。';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-amber-600';
+      dragged3 = null; return;
+    }
+    if (correctOrder[slot] === chainVal) {
+      slotMap[slot] = chainVal;
+      const slotText = zone.querySelector('.slot-text');
+      slotText.textContent = dragged3.textContent.trim();
+      slotText.classList.remove('text-slate-400');
+      slotText.classList.add('text-slate-800', 'font-bold', 'pop');
+      zone.classList.add('bg-green-50');
+      zone.style.borderColor = '#10b981';
+      dragged3.style.visibility = 'hidden';
+      l3SlotsFilled++;
+      fb.textContent = '對了！🎉 繼續放下一張！';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-emerald-600';
+      if (l3SlotsFilled === 4) {
+        awardOnce('L3', 20);
+        fb.textContent = '完美！全部順序正確！+20 分 🔥';
+        confetti();
+        const btn = el('btn-next-3');
+        btn.disabled = false;
+        btn.className = 'btn bg-red-500 text-white px-6 py-2 rounded-xl font-bold';
+        btn.onclick = () => gotoLevel(4);
+      }
+    } else {
+      zone.classList.add('shake');
+      setTimeout(() => zone.classList.remove('shake'), 400);
+      fb.textContent = '順序不對喔！提示：第①格是「颱風本身來襲」這件事。';
+      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+    }
+    dragged3 = null;
   }
-}
-function finalCelebration(){ confetti(120); alert('🎆 恭喜解鎖全校英雄！把你的承諾告訴家人和老師吧！');}
 
-updateProgress();
+  /* Level 4: 我的行動 20 pts */
+  const actionBank = {
+    prepare: ['和家人一起整理應急包：手電筒、備用電池、礦泉水', '颱風前把陽台花盆搬進室內，避免被風吹落砸到人', '確認家裡有沒有一週的食物，需要的話先去補充'],
+    neighbor: ['颱風前打電話問鄰居阿嬤家裡有沒有需要幫忙的地方', '颱風後主動去幫獨居長輩看看，確認他們平安', '告訴家人哪位鄰居可能需要特別關心'],
+    school: ['颱風後自動幫忙整理班級掉落的東西', '提議在班上準備一個小型應急箱（手電筒和急救包）', '告訴老師哪裡有損壞，讓學校早點修理'],
+    spread: ['在班上分享今天學到最有趣的一件颱風知識', '做一張颱風應急小貼士貼在家裡，提醒家人', '邀請好朋友一起和家人討論颱風應急計畫']
+  };
+
+  let themePicked = null, actionPicked = false, promiseCount = 0;
+  const checkL4ready = () => {
+    const ready = themePicked && actionPicked && promiseCount >= 2;
+    const btn = el('btn-next-4');
+    btn.disabled = !ready;
+    if (ready) btn.className = 'btn bg-red-500 text-white px-6 py-2 rounded-xl font-bold';
+  };
+
+  document.querySelectorAll('input[name=theme]').forEach(r => {
+    r.onchange = () => {
+      themePicked = r.value;
+      document.querySelectorAll('#theme-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      const wrap = el('action-wrap'); const box = el('action-opts');
+      box.innerHTML = ''; actionPicked = false;
+      actionBank[themePicked].forEach(txt => {
+        const lbl = document.createElement('label');
+        lbl.className = 'opt';
+        lbl.innerHTML = `<input type="radio" name="action"> ${txt}`;
+        lbl.querySelector('input').onchange = () => {
+          document.querySelectorAll('#action-opts .opt').forEach(o => o.classList.remove('sel'));
+          lbl.classList.add('sel'); actionPicked = true;
+          el('action-fb').innerHTML = '<span class="text-emerald-700">✅ 好主意！繼續下一步～</span>';
+          el('promise-wrap').classList.remove('hidden');
+          checkL4ready();
+        };
+        box.appendChild(lbl);
+      });
+      wrap.classList.remove('hidden');
+      el('promise-wrap').classList.add('hidden');
+      checkL4ready();
+    };
+  });
+
+  document.querySelectorAll('.promise-cb').forEach(cb => {
+    cb.onchange = () => {
+      promiseCount = document.querySelectorAll('.promise-cb:checked').length;
+      const fb = el('promise-fb');
+      if (promiseCount < 2) fb.textContent = `已選 ${promiseCount}/4，請至少選 2 個 😊`;
+      else fb.textContent = `選了 ${promiseCount} 個承諾！太棒了！`;
+      checkL4ready();
+    };
+  });
+
+  el('btn-next-4').onclick = () => { awardOnce('L4', 20); confetti(); showFinal(); };
+
+  function showFinal() {
+    gotoLevel(TOTAL_LEVELS + 1);
+    el('final-score').textContent = S.score;
+    const box = el('badges'); box.innerHTML = '';
+    const earned = [];
+    if (S.awarded['L1']) earned.push('🌀 天氣分類達人');
+    if (S.awarded['L2-q1'] || S.awarded['L2-q2']) earned.push('📊 數據觀察家');
+    if (S.awarded['L3']) earned.push('🔗 骨牌思考王');
+    if (S.awarded['L4']) earned.push('💪 韌性行動者');
+    if (earned.length === 0) earned.push('🕵️ 氣候小偵探');
+    earned.forEach(b => {
+      const chip = document.createElement('span');
+      chip.className = 'bg-red-100 border-2 border-red-400 rounded-full px-3 py-1 text-sm font-bold pop';
+      chip.textContent = b; box.appendChild(chip);
+    });
+    confetti();
+  }
+
+  /* Final reflection 5 pts */
+  let starBefore = 0, starAfter = 0, impactPicked = false;
+  const setupStars = (wrapId, setter) => {
+    const wrap = el(wrapId);
+    wrap.querySelectorAll('.star').forEach(s => {
+      s.onclick = () => {
+        const v = parseInt(s.dataset.val, 10); setter(v);
+        wrap.querySelectorAll('.star').forEach(x => x.classList.toggle('on', parseInt(x.dataset.val, 10) <= v));
+        checkReflect();
+      };
+    });
+  };
+  setupStars('stars-before', v => starBefore = v);
+  setupStars('stars-after', v => starAfter = v);
+
+  document.querySelectorAll('input[name=impact]').forEach(r => {
+    r.onchange = () => {
+      impactPicked = true;
+      document.querySelectorAll('#impact-opts .opt').forEach(o => o.classList.remove('sel'));
+      r.parentElement.classList.add('sel');
+      checkReflect();
+    };
+  });
+
+  function checkReflect() {
+    const ok = starBefore > 0 && starAfter > 0 && impactPicked;
+    const fb = el('reflect-fb');
+    if (ok) {
+      fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 反思完成！+5 分 🌟</span>';
+      awardOnce('FINAL', 5);
+      el('final-score').textContent = S.score;
+    } else {
+      fb.textContent = '請完成三題反思（★ 前後了解度 + 印象最深的關卡）';
+    }
+  }
+})();
+</script>
+
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
+})();
 </script>
 </body>
 </html>

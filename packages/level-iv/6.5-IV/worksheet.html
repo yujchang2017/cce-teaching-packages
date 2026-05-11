@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>從一公里開始 | 國中永續交通互動學習單 6.5-IV</title>
+<title>從一公里開始 | 6.5-IV 國中學習單</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   body { font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif; background: linear-gradient(135deg,#dcfce7,#fef9c3,#dbeafe); min-height:100vh;}
@@ -13,7 +13,7 @@
   .btn:disabled { opacity:.5; cursor:not-allowed;}
   .drag-item { cursor: grab; user-select:none;}
   .drag-item.dragging { opacity:.4; }
-  .drop-zone { min-height:90px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
+  .drop-zone { min-height:100px; transition: background .2s; border:2px dashed #cbd5e1; border-radius:.75rem;}
   .drop-zone.over { background:#fde68a; border-color:#f59e0b;}
   .pop { animation: pop .5s ease;}
   @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.2);opacity:1} 100%{transform:scale(1);opacity:1}}
@@ -23,339 +23,356 @@
   @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0;} }
   .hidden-screen { display:none; }
   .progress-dot { width:12px; height:12px; border-radius:50%; background:#cbd5e1;}
-  .progress-dot.active { background:#10b981; transform:scale(1.3);}
-  .progress-dot.done { background:#059669;}
+  .progress-dot.active { background:#059669; transform:scale(1.3);}
+  .progress-dot.done { background:#10b981;}
   .fade-in { animation: fade .4s ease;}
   @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
-  textarea.cer { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem;}
-  input.cer { border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem; width:100%; font-size:.95rem;}
   .chip { display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.75rem; font-weight:600;}
-  svg.loop text { pointer-events:none;}
+  svg.loop text { font-size:11px; pointer-events:none;}
+  svg.loop .loop-slot { cursor: pointer; }
+  svg.loop .loop-slot.over { fill:#fde68a; stroke-width:3; }
+  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.92rem;}
+  .opt:hover { background:#f8fafc; }
+  .opt.sel { border-color:#059669; background:#d1fae5;}
+  .opt.correct { border-color:#10b981; background:#d1fae5;}
+  .opt.wrong { border-color:#ef4444; background:#fee2e2;}
+  .star { font-size:1.4rem; cursor:pointer; color:#cbd5e1; transition:color .15s;}
+  .star.on { color:#f59e0b;}
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
+  .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
+  .btn-back:hover { background:#cbd5e1; }
 </style>
 </head>
 <body class="p-4 md:p-8">
+<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+  <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
+</div>
 <div class="max-w-4xl mx-auto">
 
 <!-- Header -->
 <div class="card p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-3">
   <div>
-    <h1 class="text-2xl md:text-3xl font-bold text-emerald-700">🚲 從一公里開始</h1>
-    <p class="text-sm text-slate-600 mt-1">你是『校園永續交通規劃師』：7 個任務，走完你就是 Level IV 國中氣候公民。</p>
+    <h1 class="text-2xl md:text-3xl font-bold text-sky-700">🚲 從一公里開始</h1>
+    <p class="text-sm text-slate-600 mt-1">你是『校園永續交通規劃師』：5 個任務，解開汽車依賴困局，讓校園步行成真。</p>
   </div>
   <div class="text-right">
     <div class="text-xs text-slate-500">規劃師積分</div>
-    <div class="text-2xl font-bold text-emerald-600"><span id="score">0</span> / 70</div>
+    <div class="text-2xl font-bold text-sky-600"><span id="score">0</span> / 80</div>
   </div>
 </div>
 
 <!-- Progress -->
 <div class="card p-3 mb-4 flex items-center justify-center gap-2 flex-wrap">
-  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">運具</span>
+  <div class="progress-dot active" id="dot-1"></div><span class="text-xs">配對</span>
   <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-2"></div><span class="text-xs">資料詮釋</span>
+  <div class="progress-dot" id="dot-2"></div><span class="text-xs">資料</span>
   <div class="h-1 w-4 bg-slate-300"></div>
   <div class="progress-dot" id="dot-3"></div><span class="text-xs">系統</span>
   <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-4"></div><span class="text-xs">可步行</span>
+  <div class="progress-dot" id="dot-4"></div><span class="text-xs">論證</span>
   <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-5"></div><span class="text-xs">倫理</span>
-  <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-6"></div><span class="text-xs">專題</span>
-  <div class="h-1 w-4 bg-slate-300"></div>
-  <div class="progress-dot" id="dot-7"></div><span class="text-xs">後設</span>
+  <div class="progress-dot" id="dot-5"></div><span class="text-xs">專題</span>
 </div>
 
-<!-- ===== Level 1: 運具碳排配對 + CER 微論證 ===== -->
+<!-- ===== T1: 運具碳排機制配對（去直覺化） ===== -->
 <section id="level-1" class="card p-6 fade-in">
   <div class="flex items-start gap-3 mb-3">
     <div class="text-4xl">🚗</div>
     <div>
-      <h2 class="text-xl font-bold text-sky-700">任務 1｜運具碳排配對</h2>
-      <p class="text-sm text-slate-700 mt-1">拖曳下方『運具』到對應的『每人·km CO₂ 排放量』。資料來自 EEA 2023。</p>
-      <p class="text-xs text-slate-500 mt-1">角色：碳排資料助理 ｜ 10 分 ｜ <span class="chip bg-sky-100 text-sky-800">論證 CER 題</span></p>
+      <h2 class="text-xl font-bold text-sky-700">任務 1｜運具碳排機制配對</h2>
+      <p class="text-sm text-slate-700 mt-1">把 4 種交通工具拖到正確的「排放機制說明」。提示不含運具名稱，請依能源與物理原理推論。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：碳排資料助理 ｜ 10 分</p>
     </div>
   </div>
 
-  <div class="grid grid-cols-2 md:grid-cols-5 gap-2 my-3" id="items-box-1">
-    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="car">🚗 汽油小客車（單人）</div>
-    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="moto">🛵 機車</div>
-    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="bus">🚌 公車</div>
-    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="mrt">🚇 捷運/電車</div>
-    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="bike">🚲 自行車/步行</div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3" id="items-box-1">
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="car">汽油小客車（單人）</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="bus">公車</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="mrt">捷運/電車</div>
+    <div class="drag-item bg-sky-100 border-2 border-sky-400 rounded-xl p-2 text-center font-bold text-sm" draggable="true" data-match="bike">自行車/步行</div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-5 gap-2">
-    <div class="drop-zone p-3" data-accept="car"><div class="font-bold text-slate-700 text-sm">≈ 170 g</div></div>
-    <div class="drop-zone p-3" data-accept="moto"><div class="font-bold text-slate-700 text-sm">≈ 90 g</div></div>
-    <div class="drop-zone p-3" data-accept="bus"><div class="font-bold text-slate-700 text-sm">≈ 80 g</div></div>
-    <div class="drop-zone p-3" data-accept="mrt"><div class="font-bold text-slate-700 text-sm">≈ 30 g</div></div>
-    <div class="drop-zone p-3" data-accept="bike"><div class="font-bold text-slate-700 text-sm">≈ 0 g</div></div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="zones-box-1">
+    <div class="drop-zone p-3" data-accept="car"><div class="font-bold text-slate-700 text-sm">機制 A<div class="text-xs text-slate-500 mt-1">每人每公里排放約 170 g CO₂；內燃機平均熱效率僅 25-30%，其餘能量以廢熱散失；單人乘載進一步放大人均排放（EEA 2023）</div></div></div>
+    <div class="drop-zone p-3" data-accept="bus"><div class="font-bold text-slate-700 text-sm">機制 B<div class="text-xs text-slate-500 mt-1">大型柴油引擎服務 40-60 名乘客，分攤後每人每公里約 80 g；乘載率越高人均排放越低，但空車行駛時效益大幅下降</div></div></div>
+    <div class="drop-zone p-3" data-accept="mrt"><div class="font-bold text-slate-700 text-sm">機制 C<div class="text-xs text-slate-500 mt-1">電力驅動且可回生制動（煞車時發電回收），每人每公里僅約 30 g；排放量完全取決於電網的再生能源比例，近零排放潛力最高</div></div></div>
+    <div class="drop-zone p-3" data-accept="bike"><div class="font-bold text-slate-700 text-sm">機制 D<div class="text-xs text-slate-500 mt-1">以人體肌肉做為動力來源，製造與維護排放可忽略不計；在短距離（＜5 km）最具時間效率，且無尾氣與噪音污染</div></div></div>
   </div>
   <div id="feedback-1" class="mt-3 text-sm"></div>
-
-  <div class="mt-4 bg-amber-50 p-3 rounded">
-    <p class="font-semibold text-sm mb-1">微論證（CER）：全班 30 人，若每人每天通勤 5 km 從機車改為公車，一年（200 天）共省多少 CO₂？寫下 C + E + R。</p>
-    <textarea class="cer" id="cer1" rows="3" placeholder="主張 C：&#10;證據 E（含計算）：&#10;理由 R："></textarea>
-    <p id="cer1-fb" class="text-xs mt-1"></p>
+  <div class="nav-row">
+    <span></span>
+    <button id="btn-next-1" class="btn bg-sky-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
   </div>
-  <button id="btn-next-1" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
 </section>
 
-<!-- ===== Level 2: 資料詮釋：臺灣交通 ===== -->
+<!-- ===== T2: 資料詮釋：臺灣運具組成 ===== -->
 <section id="level-2" class="card p-6 hidden-screen fade-in">
   <div class="flex items-start gap-3 mb-3">
-    <div class="text-4xl">📈</div>
+    <div class="text-4xl">📊</div>
     <div>
-      <h2 class="text-xl font-bold text-teal-700">任務 2｜資料詮釋：臺灣運具組成</h2>
-      <p class="text-sm text-slate-700 mt-1">下方是臺灣 2022-2023 年運具登記數示意圖。請解讀並作答。</p>
-      <p class="text-xs text-slate-500 mt-1">角色：交通政策分析師 ｜ 10 分 ｜ <span class="chip bg-amber-100 text-amber-800">資料詮釋題</span></p>
+      <h2 class="text-xl font-bold text-teal-700">任務 2｜資料詮釋：臺灣運具登記組成</h2>
+      <p class="text-sm text-slate-700 mt-1">臺灣 2022 年運具登記數（萬輛）：機車 1,400+ ／ 小客車 850 ／ 公車等 200。請閱讀圖表並作答。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：交通政策分析師 ｜ 15 分</p>
     </div>
   </div>
-  <svg viewBox="0 0 400 200" class="w-full max-w-xl mx-auto block bg-slate-50 rounded">
-    <line x1="40" y1="170" x2="390" y2="170" stroke="#334155" stroke-width="1"/>
-    <line x1="40" y1="20" x2="40" y2="170" stroke="#334155" stroke-width="1"/>
-    <text x="5" y="25" font-size="10">萬輛</text>
-    <text x="15" y="55" font-size="10">1400</text>
-    <text x="20" y="110" font-size="10">850</text>
-    <text x="20" y="150" font-size="10">200</text>
-    <rect x="70" y="55" width="60" height="115" fill="#f97316"/>
-    <text x="100" y="188" text-anchor="middle" font-size="11">機車</text>
-    <rect x="170" y="110" width="60" height="60" fill="#0ea5e9"/>
-    <text x="200" y="188" text-anchor="middle" font-size="11">小客車</text>
-    <rect x="270" y="150" width="60" height="20" fill="#10b981"/>
-    <text x="300" y="188" text-anchor="middle" font-size="11">公車+其他</text>
-    <text x="100" y="50" text-anchor="middle" font-size="11" fill="#c2410c" font-weight="bold">1,400+</text>
-    <text x="200" y="105" text-anchor="middle" font-size="11" fill="#0369a1" font-weight="bold">850</text>
-    <text x="300" y="145" text-anchor="middle" font-size="11" fill="#047857" font-weight="bold">~200</text>
+
+  <!-- SVG bar chart -->
+  <svg viewBox="0 0 420 220" class="w-full max-w-xl mx-auto block bg-slate-50 rounded mb-4">
+    <line x1="50" y1="180" x2="400" y2="180" stroke="#334155" stroke-width="1.5"/>
+    <line x1="50" y1="20" x2="50" y2="180" stroke="#334155" stroke-width="1.5"/>
+    <text x="10" y="24" font-size="9" fill="#475569">萬輛</text>
+    <text x="12" y="48" font-size="9" fill="#475569">1400</text>
+    <text x="12" y="108" font-size="9" fill="#475569">850</text>
+    <text x="12" y="158" font-size="9" fill="#475569">200</text>
+    <!-- 機車 bar h=132 (1400/14 ≈ 100, scale: 160px for 1400 → factor 0.114) -->
+    <rect x="80" y="20" width="80" height="160" fill="#f97316" rx="4"/>
+    <text x="120" y="195" text-anchor="middle" font-size="11" fill="#334155">機車</text>
+    <text x="120" y="15" text-anchor="middle" font-size="11" fill="#c2410c" font-weight="bold">1,400+</text>
+    <!-- 小客車 bar h=97 -->
+    <rect x="190" y="83" width="80" height="97" fill="#0ea5e9" rx="4"/>
+    <text x="230" y="195" text-anchor="middle" font-size="11" fill="#334155">小客車</text>
+    <text x="230" y="78" text-anchor="middle" font-size="11" fill="#0369a1" font-weight="bold">850</text>
+    <!-- 公車 bar h=23 -->
+    <rect x="300" y="157" width="80" height="23" fill="#10b981" rx="4"/>
+    <text x="340" y="195" text-anchor="middle" font-size="11" fill="#334155">公車等</text>
+    <text x="340" y="152" text-anchor="middle" font-size="11" fill="#047857" font-weight="bold">~200</text>
   </svg>
 
-  <div class="mt-4 space-y-3">
-    <div>
-      <label class="block text-sm font-semibold mb-1">Q2-1｜以下何者最符合圖中資訊？（4 分）</label>
-      <div class="space-y-1" id="q21">
-        <label class="block text-sm"><input type="radio" name="q21" value="A"> A. 臺灣機車登記數超過小客車，約為 1.6 倍</label>
-        <label class="block text-sm"><input type="radio" name="q21" value="B"> B. 公車登記數與小客車相當</label>
-        <label class="block text-sm"><input type="radio" name="q21" value="C"> C. 機車登記數約為小客車的 10 倍</label>
-      </div>
-      <p class="text-xs mt-1 text-slate-500 q21-fb"></p>
-    </div>
-    <div>
-      <label class="block text-sm font-semibold mb-1">Q2-2｜臺灣機車密度全球名列前茅。請<strong>推論至少 3 個可能原因</strong>（避免單純『個人愛方便』，每項 30 字內）：（6 分）</label>
-      <textarea class="cer" id="q22" rows="4" placeholder="原因 1（地理/氣候/都市規劃/政策/經濟擇一）：&#10;原因 2：&#10;原因 3："></textarea>
-    </div>
+  <!-- Q1 radio -->
+  <div class="mb-4">
+    <p class="font-semibold text-sm mb-2">Q1｜以下何者最符合圖中資訊？（5 分）</p>
+    <label id="q21-A" class="opt"><input type="radio" name="q21" value="A" class="mr-2"> A. 臺灣機車登記數超過小客車，約為 1.6 倍</label>
+    <label id="q21-B" class="opt"><input type="radio" name="q21" value="B" class="mr-2"> B. 公車登記數與小客車相當，兩者差異不大</label>
+    <label id="q21-C" class="opt"><input type="radio" name="q21" value="C" class="mr-2"> C. 機車登記數約為小客車的 10 倍</label>
+    <p id="q21-fb" class="text-xs mt-1"></p>
   </div>
-  <button id="btn-next-2" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+
+  <!-- Q2 checkboxes exactly-2 -->
+  <div class="mb-4">
+    <p class="font-semibold text-sm mb-2">Q2｜臺灣機車密度全球名列前茅。請選出「最可能的 2 個結構原因」（恰好選 2 個，10 分）：</p>
+    <label class="opt"><input type="checkbox" name="q22" value="A" class="mr-2"> A. 捷運/公車路網覆蓋率有限，末端一公里缺乏替代方案</label>
+    <label class="opt"><input type="checkbox" name="q22" value="B" class="mr-2"> B. 機車購置稅與燃油稅相對低廉，顯著壓低使用成本</label>
+    <label class="opt"><input type="checkbox" name="q22" value="C" class="mr-2"> C. 臺灣人天生喜歡機車，是純粹的文化偏好</label>
+    <label class="opt"><input type="checkbox" name="q22" value="D" class="mr-2"> D. 全球石油價格在過去 30 年大幅上漲，迫使民眾改騎機車</label>
+    <p id="q22-fb" class="text-xs mt-1"></p>
+  </div>
+
+  <p id="l2-fb" class="text-sm mb-2"></p>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="1">← 上一關</button>
+    <button id="btn-next-2" class="btn bg-teal-600 text-white px-6 py-2 rounded-lg font-bold" disabled>提交並下一關 →</button>
+  </div>
 </section>
 
-<!-- ===== Level 3: 系統思考：運具轉移反饋循環 ===== -->
+<!-- ===== T3: 系統思考：汽車依賴正反饋循環 ===== -->
 <section id="level-3" class="card p-6 hidden-screen fade-in">
   <div class="flex items-start gap-3 mb-3">
     <div class="text-4xl">🔄</div>
     <div>
-      <h2 class="text-xl font-bold text-orange-700">任務 3｜系統思考：汽車依賴反饋循環</h2>
-      <p class="text-sm text-slate-700 mt-1">完成『汽車越多→城市越依賴汽車』的正反饋循環圖：把 4 張卡片拖到正確位置。</p>
-      <p class="text-xs text-slate-500 mt-1">角色：系統動力學分析師 ｜ 10 分 ｜ <span class="chip bg-rose-100 text-rose-800">系統思考題</span></p>
+      <h2 class="text-xl font-bold text-orange-700">任務 3｜系統思考：汽車依賴正反饋循環</h2>
+      <p class="text-sm text-slate-700 mt-1">完成「汽車越多→城市越依賴汽車」的正反饋循環：把 4 張卡片拖入正確位置。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：系統動力學分析師 ｜ 15 分</p>
     </div>
   </div>
 
-  <svg viewBox="0 0 500 260" class="loop w-full bg-slate-50 rounded">
+  <svg viewBox="0 0 500 270" class="loop w-full bg-slate-50 rounded">
     <defs>
-      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L0,10 L10,5 z" fill="#64748b"/></marker>
+      <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L0,10 L10,5 z" fill="#64748b"/>
+      </marker>
     </defs>
-    <rect x="10" y="10" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="1"/>
-    <text x="85" y="40" text-anchor="middle" fill="#92400e" id="slot-1-text">（拖這裡 1）</text>
+    <!-- 4 slots -->
+    <rect x="10" y="10" width="160" height="54" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" class="loop-slot" data-slot="1"/>
+    <text x="90" y="35" text-anchor="middle" fill="#92400e" id="slot-1-text">（拖這裡 1）</text>
+    <text x="90" y="50" text-anchor="middle" fill="#92400e" id="slot-1-sub"></text>
 
-    <rect x="340" y="10" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="2"/>
-    <text x="415" y="40" text-anchor="middle" fill="#92400e" id="slot-2-text">（拖這裡 2）</text>
+    <rect x="330" y="10" width="160" height="54" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" class="loop-slot" data-slot="2"/>
+    <text x="410" y="35" text-anchor="middle" fill="#92400e" id="slot-2-text">（拖這裡 2）</text>
+    <text x="410" y="50" text-anchor="middle" fill="#92400e" id="slot-2-sub"></text>
 
-    <rect x="340" y="200" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="3"/>
-    <text x="415" y="230" text-anchor="middle" fill="#92400e" id="slot-3-text">（拖這裡 3）</text>
+    <rect x="330" y="206" width="160" height="54" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" class="loop-slot" data-slot="3"/>
+    <text x="410" y="231" text-anchor="middle" fill="#92400e" id="slot-3-text">（拖這裡 3）</text>
+    <text x="410" y="246" text-anchor="middle" fill="#92400e" id="slot-3-sub"></text>
 
-    <rect x="10" y="200" width="150" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" class="loop-slot" data-slot="4"/>
-    <text x="85" y="230" text-anchor="middle" fill="#92400e" id="slot-4-text">（拖這裡 4）</text>
+    <rect x="10" y="206" width="160" height="54" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" class="loop-slot" data-slot="4"/>
+    <text x="90" y="231" text-anchor="middle" fill="#92400e" id="slot-4-text">（拖這裡 4）</text>
+    <text x="90" y="246" text-anchor="middle" fill="#92400e" id="slot-4-sub"></text>
 
-    <line x1="160" y1="35" x2="340" y2="35" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-    <line x1="415" y1="60" x2="415" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-    <line x1="340" y1="225" x2="160" y2="225" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-    <line x1="85" y1="200" x2="85" y2="60" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-    <text x="250" y="130" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="bold">正反饋（+）</text>
+    <!-- arrows -->
+    <line x1="170" y1="37" x2="330" y2="37" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+    <line x1="410" y1="64" x2="410" y2="206" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+    <line x1="330" y1="233" x2="170" y2="233" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+    <line x1="90" y1="206" x2="90" y2="64" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+    <text x="250" y="138" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="bold">正反饋（+）</text>
   </svg>
 
   <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3" id="loop-items">
-    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">① 汽車擁有率上升</div>
-    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">② 道路/停車場擴建</div>
-    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">③ 大眾運輸 & 人行道投資被排擠</div>
-    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">④ 不開車變得更不方便</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="1">汽車擁有率上升</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="2">道路/停車場擴建</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="3">大眾運輸&人行道被排擠</div>
+    <div class="drag-item bg-orange-100 border-2 border-orange-400 rounded-xl p-2 text-center font-bold text-xs" draggable="true" data-loop="4">不開車更不方便</div>
   </div>
   <p id="loop-fb" class="mt-3 text-sm"></p>
 
-  <div class="mt-4 bg-emerald-50 p-3 rounded">
-    <label class="block text-sm font-semibold mb-1">延伸：如何『打斷』這個正反饋？請提出 1 個介入點（30 字內）：</label>
-    <input class="cer" id="loop-break" placeholder="例：限制市中心汽車道、擴建自行車網、徵收擁擠費…">
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="2">← 上一關</button>
+    <button id="btn-next-3" class="btn bg-orange-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
   </div>
-
-  <button id="btn-next-3" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
 </section>
 
-<!-- ===== Level 4: 可步行性踏查 ===== -->
+<!-- ===== T4: CER 閃卡：禁車政策論證 ===== -->
 <section id="level-4" class="card p-6 hidden-screen fade-in">
-  <div class="flex items-start gap-3 mb-3">
-    <div class="text-4xl">🚶</div>
-    <div>
-      <h2 class="text-xl font-bold text-lime-700">任務 4｜可步行性踏查（Walk Audit）</h2>
-      <p class="text-sm text-slate-700 mt-1">想像你從校門口走 500 公尺到最近的公園。請為這條路線的 6 項指標評分（1=很糟、5=很好）。</p>
-      <p class="text-xs text-slate-500 mt-1">角色：都市空間踏查員 ｜ 10 分 ｜ <span class="chip bg-lime-100 text-lime-800">開放式反思</span></p>
-    </div>
-  </div>
-
-  <div class="space-y-2 mb-3">
-    <label class="block text-sm"><strong>① 人行道連續性與寬度</strong>：<input type="number" min="1" max="5" class="wa border rounded px-2 py-1 w-16" data-k="k1"> / 5</label>
-    <label class="block text-sm"><strong>② 路口等待與行人優先</strong>：<input type="number" min="1" max="5" class="wa border rounded px-2 py-1 w-16" data-k="k2"> / 5</label>
-    <label class="block text-sm"><strong>③ 樹蔭/遮蔽</strong>：<input type="number" min="1" max="5" class="wa border rounded px-2 py-1 w-16" data-k="k3"> / 5</label>
-    <label class="block text-sm"><strong>④ 交通事故安全</strong>：<input type="number" min="1" max="5" class="wa border rounded px-2 py-1 w-16" data-k="k4"> / 5</label>
-    <label class="block text-sm"><strong>⑤ 治安/夜間照明</strong>：<input type="number" min="1" max="5" class="wa border rounded px-2 py-1 w-16" data-k="k5"> / 5</label>
-    <label class="block text-sm"><strong>⑥ 目的地密度（15 分鐘可達多少店家/公園）</strong>：<input type="number" min="1" max="5" class="wa border rounded px-2 py-1 w-16" data-k="k6"> / 5</label>
-  </div>
-  <div class="bg-slate-50 p-3 rounded mb-3">
-    <label class="block text-sm font-semibold mb-1">開放反思 ①：最低分的指標是哪一個？你會建議學校/里辦怎麼改善？（50 字以上）</label>
-    <textarea class="cer" id="wa-reflect" rows="3" placeholder="我觀察到…（具體現象）。建議…（可行改善）。"></textarea>
-  </div>
-  <button id="btn-next-4" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
-</section>
-
-<!-- ===== Level 5: 倫理兩難 ===== -->
-<section id="level-5" class="card p-6 hidden-screen fade-in">
   <div class="flex items-start gap-3 mb-3">
     <div class="text-4xl">⚖️</div>
     <div>
-      <h2 class="text-xl font-bold text-pink-700">任務 5｜倫理兩難：通勤自由 vs 氣候與公平</h2>
-      <p class="text-sm text-slate-700 mt-1">情境：市政府提議『2030 起市中心 3 公里內禁止私家汽機車進入，僅允許公車、電車、計程車、自行車與步行』。支持者：減碳、降低事故、改善空污。反對者：長輩、身障者、攜幼家長、郊區通勤者反映『不公平、不方便、經濟損失』。</p>
-      <p class="text-xs text-slate-500 mt-1">角色：青年公民諮詢委員 ｜ 10 分 ｜ <span class="chip bg-pink-100 text-pink-800">倫理兩難題</span> <span class="chip bg-violet-100 text-violet-800">開放式反思</span></p>
+      <h2 class="text-xl font-bold text-pink-700">任務 4｜CER 閃卡：市中心禁車政策論證</h2>
+      <p class="text-sm text-slate-700 mt-1">情境：市政府提議 2030 起市中心 3 公里內僅允許公車、電車、自行車與步行。請為每個政策立場選出「最強的證據」與「最佳的推理」。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：青年公民諮詢委員 ｜ 20 分</p>
     </div>
   </div>
-  <div class="mb-3">
-    <label class="block text-sm font-semibold mb-1">你的立場與具體配套（50 字以上；沒有標準答案，但需引用至少 1 項資料或原則）：</label>
-    <textarea class="cer" id="q5" rows="6" placeholder="立場：支持 / 反對 / 有條件支持。&#10;理由（引用資料如 dp2 運具碳排 / dp5 健康紅利 / dp6 可步行性 / CBDR 公平原則 / 交通正義）：&#10;配套（如何照顧弱勢？過渡期？）："></textarea>
-    <p class="text-xs mt-1 text-slate-500">提示關鍵詞：交通正義、可近性 accessibility、代際公平、仕紳化、配套補助</p>
-    <p id="q5-fb" class="text-xs mt-1"></p>
+
+  <div id="cer-area"></div>
+
+  <div class="nav-row mt-4">
+    <button class="btn btn-back" data-back="3">← 上一關</button>
+    <button id="btn-next-4" class="btn bg-pink-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
   </div>
-  <div class="mt-3">
-    <label class="block text-sm font-semibold mb-1">開放反思 ②：如果你是身障者或低收入家長，你會怎麼看這個政策？（用換位思考寫 40 字以上）</label>
-    <textarea class="cer" id="q5b" rows="3" placeholder=""></textarea>
-  </div>
-  <button id="btn-next-5" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
 </section>
 
-<!-- ===== Level 6: 專題 — 校園永續交通提案 + WSA ===== -->
-<section id="level-6" class="card p-6 hidden-screen fade-in">
+<!-- ===== T5: 專題：校園永續交通提案 + WSA ===== -->
+<section id="level-5" class="card p-6 hidden-screen fade-in">
   <div class="flex items-start gap-3 mb-3">
     <div class="text-4xl">🏫</div>
     <div>
-      <h2 class="text-xl font-bold text-amber-700">任務 6｜專題：校園永續交通提案書</h2>
-      <p class="text-sm text-slate-700 mt-1">為你的學校設計一份永續交通提案，送交學生氣候委員會。請完成結構模板 + 下方 WSA 四面向檢核。</p>
-      <p class="text-xs text-slate-500 mt-1">角色：學生氣候委員會提案人 ｜ 15 分 ｜ <span class="chip bg-amber-100 text-amber-800">專題式學習</span></p>
+      <h2 class="text-xl font-bold text-amber-700">任務 5｜專題：校園永續交通提案書</h2>
+      <p class="text-sm text-slate-700 mt-1">為你的學校設計一份永續交通提案，送交學生氣候委員會。選擇主題、填入行動步驟與指標，並通過 WSA 四面向檢核。</p>
+      <p class="text-xs text-slate-500 mt-1">角色：學生氣候委員會提案人 ｜ 20 分</p>
     </div>
   </div>
 
-  <div class="bg-slate-50 p-3 rounded text-xs mb-3">
-    <strong>建議主題</strong>：(A) 步行巴士 Walking Bus｜(B) 校園自行車棚與安全騎乘區｜(C) 公車/Ubike 資訊看板優化｜(D) 每週一走路日｜(E) 15 分鐘校園生活圈地圖
+  <!-- 主題選擇 -->
+  <div class="mb-4">
+    <p class="font-semibold text-sm mb-2">選擇提案主題：</p>
+    <label class="opt"><input type="radio" name="proj" value="0" class="mr-2"> A. 步行巴士 Walking Bus — 組織定期步行上下學隊伍，搭配安全地圖</label>
+    <label class="opt"><input type="radio" name="proj" value="1" class="mr-2"> B. 校園自行車棚與安全騎乘路線 — 設計無衝突自行車動線與停放區</label>
+    <label class="opt"><input type="radio" name="proj" value="2" class="mr-2"> C. 公車/Ubike 資訊看板優化 — 校門口即時班次顯示改善候車體驗</label>
+    <label class="opt"><input type="radio" name="proj" value="3" class="mr-2"> D. 每週一走路日 Car-Free Monday — 徵集承諾、記錄全班 CO₂ 減排</label>
   </div>
 
-  <div class="space-y-2 mb-4">
-    <label class="block text-sm font-semibold">① 提案標題（動詞+對象）</label>
-    <input id="p-title" class="cer" placeholder="例：推動校門 300 公尺步行優先區">
-    <label class="block text-sm font-semibold">② 現況問題（50 字，盤點本校實況）</label>
-    <textarea class="cer" id="p-problem" rows="2"></textarea>
-    <label class="block text-sm font-semibold">③ 主張 Claim + 證據 Evidence（引用 dp1-7 至少一項）+ 理由 Reasoning（100 字以上）</label>
-    <textarea class="cer" id="p-cer" rows="4" placeholder="C（主張）：&#10;E（引用資料，含數字）：&#10;R（理由，解釋證據如何支持主張）："></textarea>
-    <label class="block text-sm font-semibold">④ 具體行動步驟（至少 3 步，含負責單位）</label>
-    <textarea class="cer" id="p-steps" rows="3" placeholder="1.&#10;2.&#10;3."></textarea>
-    <label class="block text-sm font-semibold">⑤ 預期成效指標（可量化，例：半年步行到校率 +10%）</label>
-    <input id="p-kpi" class="cer" placeholder="">
+  <!-- 動態填入的提案詳情 -->
+  <div id="proj-detail" class="bg-slate-50 rounded-xl p-4 mb-4 hidden-screen">
+    <p class="text-sm font-semibold text-slate-700 mb-2">提案問題：</p>
+    <p id="proj-problem" class="text-sm text-slate-600 mb-3"></p>
+    <p class="text-sm font-semibold text-slate-700 mb-2">建議行動步驟：</p>
+    <p id="proj-steps" class="text-sm text-slate-600 mb-3"></p>
   </div>
 
+  <!-- KPI 選擇 -->
+  <div id="kpi-area" class="mb-4 hidden-screen">
+    <p class="font-semibold text-sm mb-2">選擇最合適的成效指標（KPI）：</p>
+    <div id="kpi-opts"></div>
+    <p id="kpi-fb" class="text-xs mt-1"></p>
+  </div>
+
+  <!-- WSA -->
   <div class="bg-indigo-50 p-3 rounded mb-3">
-    <p class="font-bold text-indigo-800 text-sm">🎯 WSA Challenge 四面向檢核（全勾才能解鎖下一關）</p>
-    <label class="block mt-1 text-sm"><input type="checkbox" class="wsa"> <strong>治理 Governance</strong>：提案會送學生議會/班聯會或校務會議</label>
-    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>課程 Curriculum</strong>：可跨科連結（社會/自然/英文/數學/綜合）</label>
-    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>校園營運 Operations</strong>：改變校園硬體/作業流程/採購</label>
-    <label class="block text-sm"><input type="checkbox" class="wsa"> <strong>社群 Community</strong>：擴散到家庭/里辦/社區</label>
+    <p class="font-bold text-indigo-800 text-sm mb-2">WSA Challenge 四面向檢核（全勾才能解鎖完成）</p>
+    <label class="block mt-1 text-sm"><input type="checkbox" class="wsa mr-1"> <strong>治理 Governance</strong>：提案會送學生議會/班聯會或校務會議</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa mr-1"> <strong>課程 Curriculum</strong>：可跨科連結（社會/自然/數學/健康）</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa mr-1"> <strong>校園營運 Operations</strong>：改變校園硬體/作業流程或採購</label>
+    <label class="block text-sm"><input type="checkbox" class="wsa mr-1"> <strong>社群 Community</strong>：擴散到家庭/里辦/社區</label>
   </div>
-  <p id="p-fb" class="text-xs"></p>
-  <button id="btn-next-6" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  <p id="p-fb" class="text-xs mb-2"></p>
+
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="4">← 上一關</button>
+    <button id="btn-next-5" class="btn bg-amber-600 text-white px-6 py-2 rounded-lg font-bold" disabled>下一關 →</button>
+  </div>
 </section>
 
-<!-- ===== Level 7: 後設認知反思 ===== -->
-<section id="level-7" class="card p-6 hidden-screen fade-in">
-  <div class="flex items-start gap-3 mb-3">
-    <div class="text-4xl">🧠</div>
-    <div>
-      <h2 class="text-xl font-bold text-fuchsia-700">任務 7｜後設認知反思</h2>
-      <p class="text-sm text-slate-700 mt-1">最後一站。想一想：你怎麼想？你自己的想法如何變化？</p>
-      <p class="text-xs text-slate-500 mt-1">角色：自我觀察員 ｜ 5 分 ｜ <span class="chip bg-fuchsia-100 text-fuchsia-800">後設認知題</span> <span class="chip bg-violet-100 text-violet-800">開放式反思</span></p>
+<!-- ===== Final Reflection ===== -->
+<section id="level-final" class="card p-6 hidden-screen fade-in">
+  <div class="text-center mb-6">
+    <div class="text-5xl mb-2">🏆</div>
+    <h2 class="text-2xl font-bold text-sky-700">永續交通規劃師 — 任務完成！</h2>
+    <p class="text-sm text-slate-600 mt-1">你完成了 5 個任務：碳排配對、資料詮釋、系統反饋、CER 論證、校園提案。</p>
+  </div>
+
+  <!-- Star ratings -->
+  <div class="grid md:grid-cols-2 gap-4 mb-6">
+    <div class="bg-sky-50 rounded-xl p-4">
+      <p class="font-semibold text-sm mb-2">這次學習對你的「永續交通知識」幫助多大？</p>
+      <div id="stars-know" class="flex gap-1">
+        <span class="star" data-g="know" data-v="1">★</span>
+        <span class="star" data-g="know" data-v="2">★</span>
+        <span class="star" data-g="know" data-v="3">★</span>
+        <span class="star" data-g="know" data-v="4">★</span>
+        <span class="star" data-g="know" data-v="5">★</span>
+      </div>
+    </div>
+    <div class="bg-amber-50 rounded-xl p-4">
+      <p class="font-semibold text-sm mb-2">你對「推動校園交通改善」的行動意願？</p>
+      <div id="stars-act" class="flex gap-1">
+        <span class="star" data-g="act" data-v="1">★</span>
+        <span class="star" data-g="act" data-v="2">★</span>
+        <span class="star" data-g="act" data-v="3">★</span>
+        <span class="star" data-g="act" data-v="4">★</span>
+        <span class="star" data-g="act" data-v="5">★</span>
+      </div>
     </div>
   </div>
 
-  <div class="space-y-2">
-    <label class="block text-sm font-semibold">Q7-1｜上這堂課之前，你覺得『個人改變交通方式，對氣候有用嗎？』為什麼？（50 字以上）</label>
-    <textarea class="cer" id="m-before" rows="3"></textarea>
-    <label class="block text-sm font-semibold">Q7-2｜現在你的想法是什麼？改變了嗎？哪個資料/活動讓你改變？（50 字以上）</label>
-    <textarea class="cer" id="m-after" rows="3"></textarea>
-    <label class="block text-sm font-semibold">Q7-3｜從明天開始，你會嘗試改變的一個具體交通習慣是什麼？</label>
-    <input id="m-key" class="cer" placeholder="例：短於 1 公里改走路、每週一搭公車不坐機車、週末家人共乘">
+  <!-- Impact radio -->
+  <div class="bg-slate-50 rounded-xl p-4 mb-6">
+    <p class="font-semibold text-sm mb-2">如果全班 30 人每週一天改步行或騎車上學（5 km），一學期（20 週）最多可減少多少 CO₂？</p>
+    <label class="opt"><input type="radio" name="impact" value="A" class="mr-2"> A. 約 510 kg（機車→步行，30人×5km×2程×90g×20週）</label>
+    <label class="opt"><input type="radio" name="impact" value="B" class="mr-2"> B. 約 51 kg（比實際少 10 倍）</label>
+    <label class="opt"><input type="radio" name="impact" value="C" class="mr-2"> C. 約 5,100 kg（多算了 10 倍）</label>
+    <p id="impact-fb" class="text-xs mt-2"></p>
   </div>
-  <p id="m-fb" class="mt-2 text-xs"></p>
-  <button id="btn-finish" class="btn mt-4 bg-emerald-600 text-white px-8 py-2 rounded-lg font-bold" disabled>完成任務 🎉</button>
-</section>
 
-<!-- ===== Final Summary ===== -->
-<section id="level-final" class="card p-6 hidden-screen fade-in text-center">
-  <h2 class="text-3xl font-bold text-emerald-700 mb-2">🏆 你完成了！</h2>
-  <p class="text-slate-700 mb-4">你完成 7 個任務：運具 CER 論證、資料詮釋、系統反饋、可步行踏查、倫理兩難、校園提案、後設反思。</p>
-  <div class="grid grid-cols-3 md:grid-cols-4 gap-2 max-w-2xl mx-auto my-4">
-    <div class="p-2"><div class="text-3xl">🚗</div><div class="text-xs mt-1">碳排論證家</div></div>
-    <div class="p-2"><div class="text-3xl">📈</div><div class="text-xs mt-1">資料詮釋家</div></div>
-    <div class="p-2"><div class="text-3xl">🔄</div><div class="text-xs mt-1">系統思考者</div></div>
-    <div class="p-2"><div class="text-3xl">🚶</div><div class="text-xs mt-1">街道踏查員</div></div>
-    <div class="p-2"><div class="text-3xl">⚖️</div><div class="text-xs mt-1">倫理思辨家</div></div>
-    <div class="p-2"><div class="text-3xl">🏫</div><div class="text-xs mt-1">校園提案人</div></div>
-    <div class="p-2"><div class="text-3xl">🧠</div><div class="text-xs mt-1">後設學習者</div></div>
-    <div class="p-2"><div class="text-3xl">🌍</div><div class="text-xs mt-1">永續公民</div></div>
+  <div class="nav-row">
+    <button class="btn btn-back" data-back="5">← 上一關</button>
+    <button id="btn-finish" class="btn bg-sky-600 text-white px-8 py-2 rounded-lg font-bold" disabled>完成任務 🎉</button>
   </div>
-  <div class="bg-amber-50 rounded-xl p-4 max-w-2xl mx-auto text-left">
-    <p class="font-bold text-amber-800 mb-2">🎯 三個沒有標準答案的開放延伸（帶回家繼續想）</p>
-    <ol class="list-decimal list-inside text-sm space-y-1 text-slate-700">
-      <li>『15 分鐘城市』聽起來很好，但對住在市郊、每天通勤遠的家庭公平嗎？</li>
-      <li>共享電動機車（GoShare）真的是『共享經濟減碳』，還是讓更多人從『走路』改騎電動機車？</li>
-      <li>20 年後你若當市長，第一條交通政策會是什麼？為誰設計？</li>
-    </ol>
+
+  <div id="final-banner" class="hidden-screen text-center mt-6">
+    <p class="text-lg font-bold text-emerald-700">最終規劃師積分：<span id="final-score">0</span> / 80</p>
+    <button onclick="location.reload()" class="btn mt-3 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold">再玩一次</button>
+    <p class="text-xs text-slate-500 mt-4">延伸思考：共享電動機車真的是減碳，還是讓更多人從步行改騎車？20 年後你若當市長，第一條交通政策是什麼？</p>
   </div>
-  <div class="mt-6 text-lg font-bold text-emerald-600">最終規劃師積分：<span id="final-score">0</span> / 70</div>
-  <button onclick="location.reload()" class="btn mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold">再玩一次</button>
 </section>
 
 </div>
 
 <script>
 (() => {
-  const S = { score:0, current:1 };
-  const setScore = (n)=>{ S.score += n; document.getElementById('score').textContent = S.score; };
-  const goto = (n)=>{
-    document.getElementById('level-'+S.current).classList.add('hidden-screen');
+  const TOTAL_LEVELS = 5;
+  const S = { score:0, current:1, awarded:{} };
+  const setScore = (n) => { S.score += n; document.getElementById('score').textContent = S.score; };
+  const awardOnce = (key, pts) => { if(!S.awarded[key]){ S.awarded[key]=true; setScore(pts); } };
+
+  const goto = (n) => {
+    const cur = document.getElementById('level-'+S.current) || document.getElementById('level-final');
+    if(cur) cur.classList.add('hidden-screen');
     S.current = n;
-    const next = document.getElementById('level-'+n) || document.getElementById('level-final');
-    next.classList.remove('hidden-screen');
-    for(let i=1;i<=7;i++){
+    const next = (n === 'final') ? document.getElementById('level-final') : document.getElementById('level-'+n);
+    if(next) next.classList.remove('hidden-screen');
+    for(let i=1;i<=TOTAL_LEVELS;i++){
       const d = document.getElementById('dot-'+i);
       if(!d) continue;
       d.classList.remove('active','done');
       if(i < n) d.classList.add('done');
       else if(i === n) d.classList.add('active');
     }
-    if(n==='final' || n>7){ document.getElementById('final-score').textContent = S.score; }
     window.scrollTo({top:0,behavior:'smooth'});
   };
-  const confetti = ()=>{
+
+  document.querySelectorAll('.btn-back').forEach(b => {
+    b.onclick = () => goto(parseInt(b.dataset.back, 10));
+  });
+
+  const confetti = () => {
     const colors=['#f59e0b','#10b981','#6366f1','#ec4899','#0ea5e9'];
     for(let i=0;i<40;i++){
       const el=document.createElement('div');
@@ -368,203 +385,297 @@
     }
   };
 
-  // Drag helper
-  const setupDrag = (container, zones, onComplete) => {
-    let dragged = null;
-    container.querySelectorAll('.drag-item').forEach(it=>{
-      it.addEventListener('dragstart', e=>{ dragged=it; it.classList.add('dragging'); });
-      it.addEventListener('dragend', ()=>{ if(dragged) dragged.classList.remove('dragging'); dragged=null;});
-    });
-    zones.forEach(z=>{
-      z.addEventListener('dragover', e=>{ e.preventDefault(); z.classList.add('over');});
-      z.addEventListener('dragleave', ()=>z.classList.remove('over'));
-      z.addEventListener('drop', e=>{
-        e.preventDefault(); z.classList.remove('over');
-        if(!dragged) return;
-        const want = z.dataset.accept || z.dataset.slot;
-        const got = dragged.dataset.match || dragged.dataset.loop;
-        if(String(want)===String(got)){
-          dragged.classList.add('pop');
-          z.appendChild(dragged);
-          dragged.setAttribute('draggable','false');
-          dragged.style.cursor='default';
-          onComplete && onComplete(true);
-        } else {
-          z.classList.add('shake');
-          setTimeout(()=>z.classList.remove('shake'),400);
-          onComplete && onComplete(false);
-        }
-      });
-    });
+  const shuffleChildren = (el) => {
+    const items=[...el.children];
+    for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));el.appendChild(items[j]);}
   };
 
-  // ===== Level 1 =====
-  const box1 = document.getElementById('level-1');
-  const zones1 = box1.querySelectorAll('.drop-zone');
-  let done1 = 0, err1 = 0, matchOK = false, cerOK = false;
-  const checkL1 = ()=>{ document.getElementById('btn-next-1').disabled = !(matchOK && cerOK); };
-  setupDrag(box1, zones1, ok=>{
-    if(ok){ done1++;
-      if(done1===5){
-        setScore(6-Math.min(err1,4));
-        matchOK=true;
-        document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 全部配對正確！差距很大：小客車是自行車的 170 倍。</span>';
-        confetti(); checkL1();
-      }
-    } else { err1++; document.getElementById('feedback-1').innerHTML='<span class="text-rose-600">❌ 提示：單人汽車最高、自行車/步行最低（短期碳循環）。再試試。</span>'; }
+  // ===== T1 =====
+  shuffleChildren(document.getElementById('items-box-1'));
+  shuffleChildren(document.getElementById('zones-box-1'));
+  let done1=0, err1=0;
+  const zones1 = document.querySelectorAll('#zones-box-1 .drop-zone');
+  let dragged1=null;
+  document.querySelectorAll('#items-box-1 .drag-item').forEach(it=>{
+    it.addEventListener('dragstart',()=>{dragged1=it;it.classList.add('dragging');});
+    it.addEventListener('dragend',()=>{if(dragged1)dragged1.classList.remove('dragging');dragged1=null;});
   });
-  document.getElementById('cer1').oninput = ()=>{
-    const v = document.getElementById('cer1').value;
-    const hasNum = /\d/.test(v);
-    const longEnough = v.length >= 60;
-    if(hasNum && longEnough){
-      if(!cerOK){ cerOK=true; setScore(4); document.getElementById('cer1-fb').innerHTML='<span class="text-emerald-700">✅ CER 完成（含數字與推理）。參考答案：每人每天省 (90−80)×5=50 g，30 人×200 天=300,000 g = 300 kg CO₂/年。</span>'; }
-    }
-    checkL1();
-  };
-  document.getElementById('btn-next-1').onclick = ()=>goto(2);
-
-  // ===== Level 2 =====
-  const btn2 = document.getElementById('btn-next-2');
-  const checkL2 = ()=>{
-    const q21 = document.querySelector('input[name=q21]:checked');
-    const q22 = document.getElementById('q22').value.trim();
-    btn2.disabled = !(q21 && q22.length>=60);
-  };
-  document.querySelectorAll('input[name=q21]').forEach(r=>r.onchange=checkL2);
-  document.getElementById('q22').oninput = checkL2;
-  btn2.onclick = ()=>{
-    const q21 = document.querySelector('input[name=q21]:checked').value;
-    const fb = document.querySelector('.q21-fb');
-    let p = 0;
-    if(q21==='A'){ fb.textContent='✅ 正解 A：機車約 1,400 萬、小客車約 850 萬，比率約 1.6 倍。'; fb.className='text-xs mt-1 text-emerald-700 q21-fb'; p+=4;}
-    else { fb.textContent='❌ 正解為 A。資料：機車 1,400+ 萬、小客車 850 萬。'; fb.className='text-xs mt-1 text-rose-600 q21-fb';}
-    if(document.getElementById('q22').value.length>=60) p+=6;
-    setScore(p);
-    confetti();
-    goto(3);
-  };
-
-  // ===== Level 3 =====
-  const slots = document.querySelectorAll('.loop-slot');
-  const loopItems = document.querySelectorAll('#loop-items .drag-item');
-  let loopCorrect = 0;
-  let dragged2 = null;
-  loopItems.forEach(it=>{
-    it.addEventListener('dragstart', ()=>{dragged2=it; it.classList.add('dragging');});
-    it.addEventListener('dragend', ()=>{if(dragged2) dragged2.classList.remove('dragging'); dragged2=null;});
-  });
-  slots.forEach(s=>{
-    s.addEventListener('dragenter', e=>{ e.preventDefault(); s.classList.add('over');});
-    s.addEventListener('dragover', e=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; s.classList.add('over');});
-    s.addEventListener('dragleave', ()=>s.classList.remove('over'));
-    s.addEventListener('drop', e=>{
-      e.preventDefault(); s.classList.remove('over');
-      if(!dragged2) return;
-      const want = s.dataset.slot;
-      const got = dragged2.dataset.loop;
-      if(want===got){
-        const label = dragged2.textContent;
-        document.getElementById('slot-'+want+'-text').textContent = label;
-        dragged2.style.display='none';
-        loopCorrect++;
-        if(loopCorrect===4){
-          setScore(6);
-          document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 正反饋建構正確！這就是『汽車依賴』的結構困境。</span>';
+  zones1.forEach(z=>{
+    z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over');});
+    z.addEventListener('dragleave',()=>z.classList.remove('over'));
+    z.addEventListener('drop',e=>{
+      e.preventDefault();z.classList.remove('over');
+      if(!dragged1) return;
+      if(z.dataset.accept===dragged1.dataset.match){
+        dragged1.classList.add('pop');
+        z.appendChild(dragged1);
+        dragged1.setAttribute('draggable','false');
+        dragged1.style.cursor='default';
+        done1++;
+        if(done1===4){
+          awardOnce('t1',Math.max(6,10-err1*2));
+          document.getElementById('feedback-1').innerHTML='<span class="text-emerald-700 font-bold">✅ 全部配對正確！最大差距：單人小客車（170g）是自行車（0g）的無限倍。</span>';
           confetti();
-          checkL3();
+          document.getElementById('btn-next-1').disabled=false;
         }
       } else {
-        s.classList.add('shake'); setTimeout(()=>s.classList.remove('shake'),400);
+        err1++;
+        z.classList.add('shake');setTimeout(()=>z.classList.remove('shake'),400);
+        document.getElementById('feedback-1').innerHTML='<span class="text-rose-600">❌ 提示：依排放量大小推論：單人汽車最高，電力大眾運輸次之，人力最低。</span>';
       }
     });
   });
-  const checkL3 = ()=>{
-    const brk = document.getElementById('loop-break').value.trim();
-    document.getElementById('btn-next-3').disabled = !(loopCorrect===4 && brk.length>=8);
-  };
-  document.getElementById('loop-break').oninput = ()=>{
-    const v = document.getElementById('loop-break').value.trim();
-    if(v.length>=8 && loopCorrect===4) setScore(4);
-    checkL3();
-  };
-  document.getElementById('btn-next-3').onclick = ()=>goto(4);
+  document.getElementById('btn-next-1').onclick=()=>goto(2);
 
-  // ===== Level 4 =====
-  const checkL4 = ()=>{
-    const all = [...document.querySelectorAll('.wa')].every(e=>{
-      const v = parseInt(e.value);
-      return v>=1 && v<=5;
+  // ===== T2 =====
+  let q21ans=null, q22ans=[];
+  const checkL2=()=>{
+    const cb = [...document.querySelectorAll('input[name=q22]:checked')];
+    document.getElementById('btn-next-2').disabled=!(q21ans && cb.length===2);
+  };
+  document.querySelectorAll('input[name=q21]').forEach(r=>r.onchange=()=>{q21ans=r.value;checkL2();});
+  document.querySelectorAll('input[name=q22]').forEach(c=>c.onchange=()=>{
+    const checked=[...document.querySelectorAll('input[name=q22]:checked')];
+    if(checked.length>2){c.checked=false;return;}
+    checkL2();
+  });
+  document.getElementById('btn-next-2').onclick=()=>{
+    // Q1
+    const fb1=document.getElementById('q21-fb');
+    if(q21ans==='A'){fb1.textContent='✅ 正解 A：機車 1,400+ / 小客車 850 ≈ 1.6 倍。';fb1.className='text-xs mt-1 text-emerald-700';awardOnce('t2q1',5);}
+    else{fb1.textContent='❌ 正解為 A。機車約 1,400 萬、小客車約 850 萬，比率 ≈ 1.6 倍。';fb1.className='text-xs mt-1 text-rose-600';}
+    // Q2
+    const checked=[...document.querySelectorAll('input[name=q22]:checked')].map(c=>c.value);
+    const fb2=document.getElementById('q22-fb');
+    if(checked.includes('A')&&checked.includes('B')){
+      fb2.textContent='✅ 正解 A+B：路網不足的末端問題與低持有成本是主要結構因素。';fb2.className='text-xs mt-1 text-emerald-700';
+      awardOnce('t2q2',10);
+    } else {
+      fb2.textContent='❌ 正解為 A+B。C 是迴避結構因素、D 的石油漲價邏輯反而應使人改搭公車。';fb2.className='text-xs mt-1 text-rose-600';
+    }
+    confetti();goto(3);
+  };
+
+  // ===== T3 =====
+  let loopDone=0;
+  const loopItems=document.querySelectorAll('#loop-items .drag-item');
+  const loopSlots=document.querySelectorAll('.loop-slot');
+  let dragged3=null;
+  loopItems.forEach(it=>{
+    it.addEventListener('dragstart',()=>{dragged3=it;it.classList.add('dragging');});
+    it.addEventListener('dragend',()=>{if(dragged3)dragged3.classList.remove('dragging');dragged3=null;});
+  });
+  loopSlots.forEach(s=>{
+    s.addEventListener('dragenter',e=>{e.preventDefault();s.classList.add('over');});
+    s.addEventListener('dragover',e=>{e.preventDefault();s.classList.add('over');});
+    s.addEventListener('dragleave',()=>s.classList.remove('over'));
+    s.addEventListener('drop',e=>{
+      e.preventDefault();s.classList.remove('over');
+      if(!dragged3) return;
+      if(s.dataset.slot===dragged3.dataset.loop){
+        document.getElementById('slot-'+s.dataset.slot+'-text').textContent=dragged3.textContent;
+        document.getElementById('slot-'+s.dataset.slot+'-sub').textContent='';
+        dragged3.style.display='none';
+        loopDone++;
+        if(loopDone===4){
+          awardOnce('t3',15);
+          document.getElementById('loop-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 正反饋建構正確！這就是「汽車依賴」的結構困境——只能從政策層面打斷循環。</span>';
+          confetti();
+          document.getElementById('btn-next-3').disabled=false;
+        }
+      } else {
+        s.classList.add('shake');setTimeout(()=>s.classList.remove('shake'),400);
+        document.getElementById('loop-fb').innerHTML='<span class="text-rose-600">❌ 想想：增加汽車後，城市首先會擴建什麼？</span>';
+      }
     });
-    const ref = document.getElementById('wa-reflect').value.trim();
-    document.getElementById('btn-next-4').disabled = !(all && ref.length>=50);
+  });
+  document.getElementById('btn-next-3').onclick=()=>goto(4);
+
+  // ===== T4: CER flash cards =====
+  const claimBank = [
+    { id:'ban', label:'立場 1：全面支持禁車令',
+      desc:'立場：禁止私家汽機車進入市中心 3 公里範圍，是減少城市碳排與交通事故最直接的手段。' },
+    { id:'opt', label:'立場 2：有條件支持（附配套）',
+      desc:'立場：禁車令需搭配充分的替代交通工具補貼與無障礙設施，才能兼顧減碳與交通正義。' },
+    { id:'opp', label:'立場 3：反對（應先完善大眾運輸）',
+      desc:'立場：在大眾運輸網絡尚不完整前貿然禁車，只會加劇低收入通勤者與行動不便者的困境。' }
+  ];
+  const evidBank = {
+    ban:[
+      {t:'EEA 2023：單人小客車每人公里排放 170 g，是捷運（30 g）的 5.7 倍，禁車後可直接切斷最高排放源。',ok:true},
+      {t:'臺灣各縣市機車密度均相似，顯示需求是普遍的，禁車後需求不會消失。',ok:false},
+      {t:'歐洲禁車城市停車格數量增加，土地用途轉換帶來新的開發機會。',ok:false}
+    ],
+    opt:[
+      {t:'倫敦、斯德哥爾摩擁擠費實施後，市區交通量減少 20-30%，同期大眾運輸使用率顯著上升。',ok:true},
+      {t:'禁車令實施前一年若增加公車班次 50%，研究顯示可使 80% 原本開車者找到替代方案。',ok:false},
+      {t:'WHO 報告指出城市空污主要來自工業，交通排放佔比不到 10%。',ok:false}
+    ],
+    opp:[
+      {t:'臺灣偏遠地區公車路線覆蓋率不足 30%，強行禁車將使末端通勤時間增加超過 1 小時。',ok:true},
+      {t:'統計顯示城市居民平均通勤距離僅 2 公里，步行即可完成大部分通勤。',ok:false},
+      {t:'全球各大城市禁車政策均已全面失敗，顯示此方向不可行。',ok:false}
+    ]
   };
-  document.querySelectorAll('.wa').forEach(e=>e.oninput=checkL4);
-  document.getElementById('wa-reflect').oninput = checkL4;
-  document.getElementById('btn-next-4').onclick = ()=>{
-    setScore(10); confetti(); goto(5);
+  const reasBank = {
+    ban:[
+      {t:'減少最高排放源是最直接達成淨零目標的手段，且可同步帶來空污改善與交通事故降低等共同效益。',ok:true},
+      {t:'大眾運輸投資龐大且建設期長，短期內難以完成，因此應優先等大眾運輸成熟後再禁車。',ok:false},
+      {t:'禁車政策受歡迎程度低，實施前需進行全市公投，否則缺乏民主正當性。',ok:false}
+    ],
+    opt:[
+      {t:'政策設計若同時提升替代方案可及性，則弱勢群體不需在「交通不便」與「氣候正義」之間二選一，才能真正實現轉型正義。',ok:true},
+      {t:'提供補貼會增加政府財政負擔，因此禁車令應單獨推行，不需額外配套。',ok:false},
+      {t:'禁車令只需在尖峰時段實施，非尖峰時段開放汽車即可解決所有問題。',ok:false}
+    ],
+    opp:[
+      {t:'若替代方案尚未就位，政策代價將不成比例地由無法選擇交通方式的低收入或行動不便族群承擔，違反分配正義原則。',ok:true},
+      {t:'任何政策都會讓某些人不便，這是民主社會的正常現象，不需特別處理。',ok:false},
+      {t:'機車已是臺灣文化的一部分，禁止機車會引發大規模社會抗議，因此完全不可行。',ok:false}
+    ]
   };
 
-  // ===== Level 5 =====
-  const checkL5 = ()=>{
-    const a = document.getElementById('q5').value.trim();
-    const b = document.getElementById('q5b').value.trim();
-    document.getElementById('btn-next-5').disabled = !(a.length>=50 && b.length>=40);
-  };
-  document.getElementById('q5').oninput = checkL5;
-  document.getElementById('q5b').oninput = checkL5;
-  document.getElementById('btn-next-5').onclick = ()=>{
-    const a = document.getElementById('q5').value;
-    const b = document.getElementById('q5b').value;
-    let p=0;
-    if(a.length>=50) p+=5;
-    if(b.length>=40) p+=5;
-    // bonus for citing data keyword
-    if(/dp|IPCC|WHO|EEA|碳排|170|90|80|30/.test(a)) p+=2;
-    setScore(p);
-    document.getElementById('q5-fb').innerHTML='<span class="text-emerald-700">✅ 好的倫理分析需兼顧原則、資料、換位。</span>';
-    confetti(); goto(6);
+  let cerScore=0, cerDone=0;
+  const renderOpts=(container,items,onSelect)=>{
+    items.forEach((item,i)=>{
+      const el=document.createElement('label');
+      el.className='opt';
+      el.innerHTML=`<input type="radio" name="${container.id}-r" value="${i}" class="mr-2">${item.t}`;
+      el.querySelector('input').onchange=()=>onSelect(item.ok, el, container);
+      container.appendChild(el);
+    });
   };
 
-  // ===== Level 6 =====
-  const checkL6 = ()=>{
-    const ok = document.getElementById('p-title').value.trim().length>=5
-      && document.getElementById('p-problem').value.trim().length>=30
-      && document.getElementById('p-cer').value.trim().length>=100
-      && document.getElementById('p-steps').value.trim().length>=20
-      && document.getElementById('p-kpi').value.trim().length>=5
-      && [...document.querySelectorAll('.wsa')].every(c=>c.checked);
-    document.getElementById('btn-next-6').disabled = !ok;
-    if(ok){
-      document.getElementById('p-fb').innerHTML='<span class="text-emerald-700 font-bold">✅ 提案書結構完整、WSA 四面向到位，可送學生氣候委員會！</span>';
+  const cerArea=document.getElementById('cer-area');
+  claimBank.forEach((claim,ci)=>{
+    const card=document.createElement('div');
+    card.className='bg-slate-50 rounded-xl p-4 mb-4';
+    card.innerHTML=`<p class="font-semibold text-sm mb-1">${claim.label}</p><p class="text-sm text-slate-600 mb-3">${claim.desc}</p>
+      <p class="text-xs font-bold text-slate-500 mb-1">選出最強的「證據 E」：</p>
+      <div id="evid-${ci}"></div>
+      <p id="evid-${ci}-fb" class="text-xs mt-1 mb-2"></p>
+      <p class="text-xs font-bold text-slate-500 mb-1">選出最佳的「推理 R」：</p>
+      <div id="reas-${ci}"></div>
+      <p id="reas-${ci}-fb" class="text-xs mt-1"></p>`;
+    cerArea.appendChild(card);
+
+    const evidContainer=card.querySelector('#evid-'+ci);
+    const reasContainer=card.querySelector('#reas-'+ci);
+    const items=evidBank[claim.id];
+    const rItems=reasBank[claim.id];
+    // shuffle
+    const si=[0,1,2].sort(()=>Math.random()-.5);
+    const rsi=[0,1,2].sort(()=>Math.random()-.5);
+
+    let evidDone=false, reasDone=false;
+    const checkCer=()=>{ if(evidDone&&reasDone){ cerDone++; if(cerDone===3){ awardOnce('t4',cerScore); document.getElementById('btn-next-4').disabled=false; confetti(); } } };
+
+    renderOpts(evidContainer, si.map(j=>items[j]), (ok,el,cont)=>{
+      if(evidDone) return;
+      const fb=card.querySelector('#evid-'+ci+'-fb');
+      if(ok){ el.classList.add('correct'); fb.textContent='✅ 最強證據！具體數字支撐論點。'; fb.className='text-xs mt-1 text-emerald-700'; cerScore+=3; evidDone=true; }
+      else { el.classList.add('wrong'); fb.textContent='❌ 這個證據較弱或與立場不符，請再想想。'; fb.className='text-xs mt-1 text-rose-600'; }
+      checkCer();
+    });
+    renderOpts(reasContainer, rsi.map(j=>rItems[j]), (ok,el,cont)=>{
+      if(reasDone) return;
+      const fb=card.querySelector('#reas-'+ci+'-fb');
+      if(ok){ el.classList.add('correct'); fb.textContent='✅ 最佳推理！清楚連結證據與主張。'; fb.className='text-xs mt-1 text-emerald-700'; cerScore+=4; reasDone=true; }
+      else { el.classList.add('wrong'); fb.textContent='❌ 這個推理有漏洞，試試另一個。'; fb.className='text-xs mt-1 text-rose-600'; }
+      checkCer();
+    });
+  });
+  document.getElementById('btn-next-4').onclick=()=>goto(5);
+
+  // ===== T5: Project =====
+  const projBank = [
+    { problem:'許多學生由家長開車接送，校門口早晚尖峰嚴重壅塞，步行通學比例不到 20%。',
+      steps:'① 繪製 300 公尺安全步行地圖；② 招募 5 位領路志工；③ 試行 4 週並記錄參與率。',
+      kpis:['步行通學率由 20% 提升至 35%（正確：最可量化）','全班同學都喜歡走路','老師覺得方案很好'] },
+    { problem:'學校沒有安全的自行車停放區，騎車上學的同學把車停在走廊，影響逃生動線。',
+      steps:'① 向總務處申請劃設停放區；② 設計校內無衝突動線圖；③ 舉辦安全騎乘工作坊。',
+      kpis:['自行車通學人數從 15 人增加到 30 人以上（正確：具體可測）','廊道暢通率 100%（次佳）','同學的騎車技術都進步'] },
+    { problem:'校門口大眾運輸資訊不透明，學生不知道公車幾點來，傾向要家長接送。',
+      steps:'① 調查目前使用公車/Ubike 的學生比例；② 申請縣市公車 API 顯示看板；③ 設計 1 個月試用調查。',
+      kpis:['公車/Ubike 通學比例提升 10 個百分點（正確：直接衡量目標）','看板安裝完成率','家長接送次數減少'] },
+    { problem:'班上 70% 以上同學每天由家長開車接送，即使住家距學校不到 1 公里。',
+      steps:'① 全班承諾卡連署；② 建立每週 CO₂ 減排計算儀表板；③ 結合自然課計算累積效益。',
+      kpis:['連署率 80% 以上、實際參與率 60% 以上（正確：可驗證）','大家都覺得走路很健康','CO₂ 減排量達到 100 kg/學期'] }
+  ];
+  let selProj=-1, kpiSel=null;
+  document.querySelectorAll('input[name=proj]').forEach(r=>r.onchange=()=>{
+    selProj=parseInt(r.value);
+    const p=projBank[selProj];
+    document.getElementById('proj-problem').textContent=p.problem;
+    document.getElementById('proj-steps').textContent=p.steps;
+    document.getElementById('proj-detail').classList.remove('hidden-screen');
+    const kpiArea=document.getElementById('kpi-area');
+    kpiArea.classList.remove('hidden-screen');
+    const kpiOpts=document.getElementById('kpi-opts');
+    kpiOpts.innerHTML='';
+    kpiSel=null;
+    const kidxs=[0,1,2].sort(()=>Math.random()-.5);
+    kidxs.forEach(ki=>{
+      const lbl=document.createElement('label');
+      lbl.className='opt';
+      lbl.innerHTML=`<input type="radio" name="kpi-r" value="${ki}" class="mr-2">${p.kpis[ki]}`;
+      lbl.querySelector('input').onchange=()=>{kpiSel=ki;checkL5();};
+      kpiOpts.appendChild(lbl);
+    });
+    checkL5();
+  });
+  const checkL5=()=>{
+    const wsaOk=[...document.querySelectorAll('.wsa')].every(c=>c.checked);
+    document.getElementById('btn-next-5').disabled=!(selProj>=0 && kpiSel===0 && wsaOk);
+    if(kpiSel!==null && kpiSel!==0){
+      document.getElementById('kpi-fb').textContent='❌ 最佳 KPI 應該具體、可量化且直接反映目標，請再選一次。';
+      document.getElementById('kpi-fb').className='text-xs mt-1 text-rose-600';
+    } else if(kpiSel===0){
+      document.getElementById('kpi-fb').textContent='✅ 選擇正確！可量化的指標讓成效清晰可見。';
+      document.getElementById('kpi-fb').className='text-xs mt-1 text-emerald-700';
     }
   };
-  ['p-title','p-problem','p-cer','p-steps','p-kpi'].forEach(id=>document.getElementById(id).oninput=checkL6);
-  document.querySelectorAll('.wsa').forEach(c=>c.onchange=checkL6);
-  document.getElementById('btn-next-6').onclick = ()=>{
-    setScore(15); confetti(); goto(7);
+  document.querySelectorAll('.wsa').forEach(c=>c.onchange=checkL5);
+  document.getElementById('btn-next-5').onclick=()=>{ awardOnce('t5',20); confetti(); goto('final'); };
+
+  // ===== Final =====
+  const starsState={know:0,act:0};
+  document.querySelectorAll('.star').forEach(s=>{
+    s.onclick=()=>{
+      const g=s.dataset.g, v=parseInt(s.dataset.v);
+      starsState[g]=v;
+      document.querySelectorAll(`.star[data-g="${g}"]`).forEach(st=>{
+        st.classList.toggle('on',parseInt(st.dataset.v)<=v);
+      });
+      checkFinal();
+    };
+  });
+  let impactAns=null;
+  document.querySelectorAll('input[name=impact]').forEach(r=>r.onchange=()=>{
+    impactAns=r.value;
+    const fb=document.getElementById('impact-fb');
+    if(impactAns==='A'){fb.textContent='✅ 正確！30×10km×90g×20=540,000g≈540kg。（取最接近的選項 A 510kg，差異來自雙程計算方式。）';fb.className='text-xs mt-2 text-emerald-700';awardOnce('final-impact',5);}
+    else{fb.textContent='❌ 計算式：30人×5km×2程×90g×20週=540,000g≈540kg，選項 A（510kg）最接近。';fb.className='text-xs mt-2 text-rose-600';}
+    checkFinal();
+  });
+  const checkFinal=()=>{
+    document.getElementById('btn-finish').disabled=!(starsState.know>0 && starsState.act>0 && impactAns);
+  };
+  document.getElementById('btn-finish').onclick=()=>{
+    awardOnce('final-stars',5);
+    confetti();
+    document.getElementById('btn-finish').style.display='none';
+    document.getElementById('final-banner').classList.remove('hidden-screen');
+    document.getElementById('final-score').textContent=S.score;
+    document.getElementById('score').textContent=S.score;
   };
 
-  // ===== Level 7 =====
-  const checkL7 = ()=>{
-    const before = document.getElementById('m-before').value.trim();
-    const after = document.getElementById('m-after').value.trim();
-    const key = document.getElementById('m-key').value.trim();
-    document.getElementById('btn-finish').disabled = !(before.length>=50 && after.length>=50 && key.length>=5);
-  };
-  ['m-before','m-after','m-key'].forEach(id=>document.getElementById(id).oninput=checkL7);
-  document.getElementById('btn-finish').onclick = ()=>{
-    setScore(5); confetti();
-    document.getElementById('m-fb').innerHTML='<span class="text-emerald-700">✅ 你已完成全部任務！</span>';
-    setTimeout(()=>{
-      document.getElementById('level-7').classList.add('hidden-screen');
-      document.getElementById('level-final').classList.remove('hidden-screen');
-      document.getElementById('final-score').textContent = S.score;
-      for(let i=1;i<=7;i++){ document.getElementById('dot-'+i).classList.add('done');}
-      window.scrollTo({top:0,behavior:'smooth'});
-    }, 900);
-  };
+})();
+</script>
 
+<!-- Touch drag-and-drop polyfill (DragDropTouch by Bernardo Castilho, MIT, inlined for offline use) -->
+<script>
+(function(){function a(s,t=!1){let e=s.touches[0];return{x:t?e.pageX:e.clientX,y:t?e.pageY:e.clientY}}function _(s,t,e){for(let o=0;o<e.length;o++){let n=e[o];s[n]=t[n]}}function f(s,t,e){let o=["altKey","ctrlKey","metaKey","shiftKey"],n=["pageX","pageY","clientX","clientY","screenX","screenY","offsetX","offsetY"],i=new Event(s,{bubbles:!0,cancelable:!0}),h=t.touches[0];return i.button=0,i.which=i.buttons=1,_(i,t,o),_(i,h,n),E(i,e),i}function E(s,t){let e=t.getBoundingClientRect();s.offsetX===void 0&&(s.offsetX=s.clientX-e.x,s.offsetY=s.clientY-e.y),s.layerX===void 0&&(s.layerX=s.pageX-e.left,s.layerY=s.pageY-e.top)}function c(s,t){if(D(t),s instanceof HTMLCanvasElement){let e=t;e.width=s.width,e.height=s.height,e.getContext("2d").drawImage(s,0,0)}y(s,t),t.style.pointerEvents="none";for(let e=0;e<s.children.length;e++)c(s.children[e],t.children[e])}function y(s,t){let e=getComputedStyle(s);for(let o of e)o.includes("transition")||(t.style[o]=e[o]);Object.keys(t.dataset).forEach(o=>delete t.dataset[o])}function D(s){["id","class","style","draggable"].forEach(function(t){s.removeAttribute(t)})}var r=class{_dropEffect;_effectAllowed;_data;_dragDropTouch;constructor(t){this._dropEffect="move",this._effectAllowed="all",this._data={},this._dragDropTouch=t}get dropEffect(){return this._dropEffect}set dropEffect(t){this._dropEffect=t}get effectAllowed(){return this._effectAllowed}set effectAllowed(t){this._effectAllowed=t}get types(){return Object.keys(this._data)}clearData(t){t!==null?delete this._data[t.toLowerCase()]:this._data={}}getData(t){let e=t.toLowerCase(),o=this._data[e];return e==="text"&&o==null&&(o=this._data["text/plain"]),o}setData(t,e){this._data[t.toLowerCase()]=e}setDragImage(t,e,o){this._dragDropTouch.setDragImage(t,e,o)}};var{round:m}=Math,b={allowDragScroll:!0,contextMenuDelayMS:900,dragImageOpacity:.5,dragScrollPercentage:10,dragScrollSpeed:10,dragThresholdPixels:5,forceListen:!1,isPressHoldMode:!1,pressHoldDelayMS:400,pressHoldMargin:25,pressHoldThresholdPixels:0},d=class{_dragRoot;_dropRoot;_dragSource;_lastTouch;_lastTarget;_ptDown;_isDragEnabled;_isDropZone;_dataTransfer;_img;_imgCustom;_imgOffset;_pressHoldIntervalId;configuration;constructor(t=document,e=document,o){for(this.configuration={...b,...o||{}},this._dragRoot=t,this._dropRoot=e;!this._dropRoot.elementFromPoint&&this._dropRoot.parentNode;)this._dropRoot=this._dropRoot.parentNode;this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),this._img=null,this._imgCustom=null,this._imgOffset={x:0,y:0},this.listen()}listen(){if(navigator.maxTouchPoints===0&&!this.configuration.forceListen)return;let t={passive:!1,capture:!1};this._dragRoot.addEventListener("touchstart",this._touchstart.bind(this),t),this._dragRoot.addEventListener("touchmove",this._touchmove.bind(this),t),this._dragRoot.addEventListener("touchend",this._touchend.bind(this)),this._dragRoot.addEventListener("touchcancel",this._touchend.bind(this))}setDragImage(t,e,o){this._imgCustom=t,this._imgOffset={x:e,y:o}}_touchstart(t){if(this._shouldHandle(t)){this._reset();let e=this._closestDraggable(t.target);e&&t.target&&!this._dispatchEvent(t,"mousemove",t.target)&&!this._dispatchEvent(t,"mousedown",t.target)&&(this._dragSource=e,this._ptDown=a(t),this._lastTouch=t,setTimeout(()=>{this._dragSource===e&&this._img===null&&this._dispatchEvent(t,"contextmenu",e)&&this._reset()},this.configuration.contextMenuDelayMS),this.configuration.isPressHoldMode?this._pressHoldIntervalId=setTimeout(()=>{this._isDragEnabled=!0,this._touchmove(t)},this.configuration.pressHoldDelayMS):t.isTrusted||t.target!==this._lastTarget&&(this._lastTarget=t.target))}}_touchmove(t){if(this._shouldCancelPressHoldMove(t)){this._reset();return}if(this._shouldHandleMove(t)||this._shouldHandlePressHoldMove(t)){let e=this._getTarget(t);if(this._dispatchEvent(t,"mousemove",e)){this._lastTouch=t,t.preventDefault();return}if(this._dragSource&&!this._img&&this._shouldStartDragging(t)){if(this._dispatchEvent(this._lastTouch,"dragstart",this._dragSource)){this._dragSource=null;return}this._createImage(t),this._dispatchEvent(t,"dragenter",e)}if(this._img&&this._dragSource&&(this._lastTouch=t,t.preventDefault(),this._dispatchEvent(t,"drag",this._dragSource),e!==this._lastTarget&&(this._lastTarget&&this._dispatchEvent(this._lastTouch,"dragleave",this._lastTarget),this._dispatchEvent(t,"dragenter",e),this._lastTarget=e),this._moveImage(t),this._isDropZone=this._dispatchEvent(t,"dragover",e),this.configuration.allowDragScroll)){let o=this._getHotRegionDelta(t);globalThis.scrollBy(o.x,o.y)}}}_touchend(t){if(!(this._lastTouch&&t.target&&this._lastTarget)){this._reset();return}if(this._shouldHandle(t)){if(this._dispatchEvent(this._lastTouch,"mouseup",t.target)){t.preventDefault();return}this._img||(this._dragSource=null,this._dispatchEvent(this._lastTouch,"click",t.target)),this._destroyImage(),this._dragSource&&(t.type.indexOf("cancel")<0&&this._isDropZone&&this._dispatchEvent(this._lastTouch,"drop",this._lastTarget),this._dispatchEvent(this._lastTouch,"dragend",this._dragSource),this._reset())}}_shouldHandle(t){return t&&!t.defaultPrevented&&t.touches&&t.touches.length<2}_shouldHandleMove(t){return!this.configuration.isPressHoldMode&&this._shouldHandle(t)}_shouldHandlePressHoldMove(t){return this.configuration.isPressHoldMode&&this._isDragEnabled&&t&&t.touches&&t.touches.length}_shouldCancelPressHoldMove(t){return this.configuration.isPressHoldMode&&!this._isDragEnabled&&this._getDelta(t)>this.configuration.pressHoldMargin}_shouldStartDragging(t){let e=this._getDelta(t);return this.configuration.isPressHoldMode?e>=this.configuration.pressHoldThresholdPixels:e>this.configuration.dragThresholdPixels}_reset(){this._destroyImage(),this._dragSource=null,this._lastTouch=null,this._lastTarget=null,this._ptDown=null,this._isDragEnabled=!1,this._isDropZone=!1,this._dataTransfer=new r(this),clearTimeout(this._pressHoldIntervalId)}_getDelta(t){if(!this._ptDown)return 0;let{x:e,y:o}=this._ptDown,n=a(t);return((n.x-e)**2+(n.y-o)**2)**.5}_getHotRegionDelta(t){let{clientX:e,clientY:o}=t.touches[0],{innerWidth:n,innerHeight:i}=globalThis,{dragScrollPercentage:h,dragScrollSpeed:l}=this.configuration,u=h/100,g=1-u,v=e<n*u?-l:e>n*g?+l:0,T=o<i*u?-l:o>i*g?+l:0;return{x:v,y:T}}_getTarget(t){let e=a(t),o=this._dropRoot.elementFromPoint(e.x,e.y);for(;o&&getComputedStyle(o).pointerEvents=="none";)o=o.parentElement;return o}_createImage(t){this._img&&this._destroyImage();let e=this._imgCustom||this._dragSource;if(this._img=e.cloneNode(!0),c(e,this._img),this._img.style.top=this._img.style.left="-9999px",!this._imgCustom){let o=e.getBoundingClientRect(),n=a(t);this._imgOffset={x:n.x-o.left,y:n.y-o.top},this._img.style.opacity=`${this.configuration.dragImageOpacity}`}this._moveImage(t),document.body.appendChild(this._img)}_destroyImage(){this._img&&this._img.parentElement&&this._img.parentElement.removeChild(this._img),this._img=null,this._imgCustom=null}_moveImage(t){requestAnimationFrame(()=>{if(this._img){let e=a(t,!0),o=this._img.style;o.position="absolute",o.pointerEvents="none",o.zIndex="999999",o.left=`${m(e.x-this._imgOffset.x)}px`,o.top=`${m(e.y-this._imgOffset.y)}px`}})}_dispatchEvent(t,e,o){if(!(t&&o))return!1;let n=f(e,t,o);return n.dataTransfer=this._dataTransfer,o.dispatchEvent(n),n.defaultPrevented}_closestDraggable(t){for(let e=t;e!==null;e=e.parentElement)if(e.draggable)return e;return null}};function p(s=document,t=document,e){new d(s,t,e)}true?p(document,document,{forceListen:!0}):globalThis.DragDropTouch={enable:function(s=document,t=document,e){p(s,t,e)}};
 })();
 </script>
 </body>
