@@ -6,6 +6,7 @@ import path from 'path';
 import { fetchAllPackages } from "@/lib/github-api";
 import HomeBrowser from "@/components/HomeBrowser";
 import DisclaimerModal from "@/components/DisclaimerModal";
+import TrackPageView from "@/components/TrackPageView";
 
 function loadStats() {
   try {
@@ -23,6 +24,7 @@ export default async function Home() {
   return (
     <>
       <DisclaimerModal />
+      <TrackPageView event="view_home" />
       {/* HERO BANNER */}
       <section
         className="border-b border-earth/10 relative"

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { setConsent } from "@/lib/track";
 
 const STORAGE_KEY = "cce_disclaimer_v1";
 
@@ -14,6 +15,13 @@ export default function DisclaimerModal() {
 
   function dismiss() {
     sessionStorage.setItem(STORAGE_KEY, "1");
+    setConsent(true);
+    setVisible(false);
+  }
+
+  function declineStats() {
+    sessionStorage.setItem(STORAGE_KEY, "1");
+    setConsent(false);
     setVisible(false);
   }
 
@@ -56,10 +64,19 @@ export default function DisclaimerModal() {
           <p className="text-earth font-medium">
             目前雖然這些素材已經經過多次的檢視與測試，但是由於數量龐大，仍需具有相當專業的學者專家們分批的進行審查與修正，在尚未完成所有審查程序的情況下，目前僅進行內部與邀請對象的試用。因此，請試用的師長們酌量取用並持續給我們回饋與指正。
           </p>
+          <p className="text-xs text-mute pt-3 border-t border-earth/20">
+            📊 為了改善教學資源，本站會匿名記錄哪些教案、學習單、簡報被開啟（不收集姓名、IP、學校等個資）。
+          </p>
         </div>
 
         {/* 按鈕 */}
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex flex-col sm:flex-row sm:justify-end gap-2">
+          <button
+            onClick={declineStats}
+            className="text-mute hover:text-earth py-2.5 px-5 rounded-xl transition text-sm"
+          >
+            不參與統計
+          </button>
           <button
             onClick={dismiss}
             className="bg-forest hover:bg-forest/90 text-white font-bold py-2.5 px-7 rounded-xl transition shadow-warm text-sm"

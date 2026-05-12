@@ -8,6 +8,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { fetchPackageDetail, getAllKeyIds } from "@/lib/github-api";
+import TrackPageView from "@/components/TrackPageView";
+import TrackLink from "@/components/TrackLink";
 
 export const dynamicParams = false; // 靜態匯出:不允許未列出的 keyId
 
@@ -43,6 +45,7 @@ export default async function PackageDetail({
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 w-full flex-1">
+      <TrackPageView event="view_package" resource={keyId} meta={{ theme: summary.themeNumber, level: summary.levelLabel }} />
       {/* Breadcrumb */}
       <nav className="text-sm text-mute mb-6 flex flex-wrap items-center gap-1.5">
         <Link href="/" className="hover:text-sun transition">首頁</Link>
@@ -67,14 +70,16 @@ export default async function PackageDetail({
 
       {/* CTA BAR */}
       <section className="bg-white rounded-2xl shadow-warm border border-earth/10 p-5 sm:p-6 mb-6 flex items-center gap-3 flex-wrap">
-        <a href={worksheetPagesUrl} target="_blank" rel="noopener noreferrer"
+        <TrackLink href={worksheetPagesUrl} target="_blank" rel="noopener noreferrer"
+          event="open_worksheet" resource={keyId}
           className="px-5 py-2.5 rounded-full bg-sun text-white hover:bg-sunDeep transition text-sm font-semibold shadow-sm">
           1. 動態學習單（worksheet.html）
-        </a>
-        <a href={pptHtmlViewUrl} target="_blank" rel="noopener noreferrer"
+        </TrackLink>
+        <TrackLink href={pptHtmlViewUrl} target="_blank" rel="noopener noreferrer"
+          event="open_ppt" resource={keyId}
           className="px-5 py-2.5 rounded-full bg-sky-100 border border-sky-200 text-sky-700 hover:bg-sky-200 transition text-sm font-semibold">
           2. PPT.html
-        </a>
+        </TrackLink>
         <Link href={`/remix/${keyId}/`}
           className="px-5 py-2.5 rounded-full bg-forest text-white hover:bg-forest/85 transition text-sm font-semibold">
           3. 試教／回饋表單
