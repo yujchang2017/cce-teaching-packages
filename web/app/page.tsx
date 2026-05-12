@@ -80,7 +80,7 @@ export default async function Home() {
           </div>
           {stats.bySchool && stats.bySchool.length > 0 ? (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {stats.bySchool.slice(0, 4).map((s, i) => (
+              {stats.bySchool.slice(0, 4).map((s: { school: string; teachers: number; submissions: number; themes: number[] }, i: number) => (
                 <article
                   key={s.school}
                   className="rounded-2xl p-5 shadow-warm border border-earth/10 transition hover:-translate-y-1.5 hover:shadow-warm-lg cursor-default"
