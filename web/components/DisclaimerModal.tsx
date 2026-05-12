@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { setConsent } from "@/lib/track";
 
-const STORAGE_KEY = "cce_disclaimer_v1";
+const STORAGE_KEY = "cce_disclaimer_v2";
 
 export default function DisclaimerModal() {
   const [visible, setVisible] = useState(false);
