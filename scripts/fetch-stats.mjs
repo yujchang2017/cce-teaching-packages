@@ -133,8 +133,9 @@ const bySchool = Array.from(schoolMap.entries())
     teachers: v.teachers.size,
     submissions: v.submissions,
     themes: Array.from(v.themes).sort(),
+    score: v.submissions * 2 + v.themes.size, // 複合排名：提交數×2 + 主題覆蓋數
   }))
-  .sort((a, b) => b.submissions - a.submissions);
+  .sort((a, b) => b.score - a.score);
 
 // KC 覆蓋率：被任一老師試教過的主題數
 const coveredThemes = Object.entries(themeCount)

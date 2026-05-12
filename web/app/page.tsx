@@ -3,7 +3,6 @@
 
 import fs from 'fs';
 import path from 'path';
-import { wsaSchools } from "@/lib/mock-data";
 import { fetchAllPackages } from "@/lib/github-api";
 import HomeBrowser from "@/components/HomeBrowser";
 
@@ -12,7 +11,7 @@ function loadStats() {
     const p = path.join(process.cwd(), 'data', 'stats.json');
     return JSON.parse(fs.readFileSync(p, 'utf8'));
   } catch {
-    return { totalSubmissions: 0, teachers: 0, schools: 0, kcCoverage: 0 };
+    return { totalSubmissions: 0, teachers: 0, schools: 0, kcCoverage: 0, bySchool: [] as { school: string; teachers: number; submissions: number; themes: number[] }[] };
   }
 }
 
@@ -73,29 +72,35 @@ export default async function Home() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full">
         <HomeBrowser packages={allPackages} />
 
-        {/* WSA SCHOOLS */}
+        {/* TOP SCHOOLS */}
         <section className="mb-8">
           <div className="flex items-baseline justify-between mb-5 flex-wrap gap-2">
-            <h2 className="text-xl font-bold text-ink flex items-center gap-2">🏫 WSA 氣候整備學校</h2>
-            <span className="text-sm text-mute">Whole School Approach · 全校推動示範校</span>
+            <h2 className="text-xl font-bold text-ink flex items-center gap-2">🏫 活躍試教學校</h2>
+            <span className="text-sm text-mute">依試教總數與主題覆蓋數排名</span>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {wsaSchools.map((s) => (
-              <article
-                key={s.name}
-                className="rounded-2xl p-5 shadow-warm border border-earth/10 transition hover:-translate-y-1.5 hover:shadow-warm-lg cursor-default"
-                style={{ background: "linear-gradient(135deg, #FFF7E5 0%, #FFE8CC 100%)" }}
-              >
-                <div className="text-4xl mb-3">{s.icon}</div>
-                <h3 className="font-bold text-ink text-base mb-1">{s.name}</h3>
-                <p className="text-xs text-mute mb-3">{s.focus}</p>
-                <div className="flex items-center justify-between text-xs text-earth pt-3 border-t border-earth/15">
-                  <span>👩‍🏫 {s.teachers} 位老師</span>
-                  <span>🔀 {s.remixes} 次改編</span>
-                </div>
-              </article>
-            ))}
-          </div>
+          {stats.bySchool && stats.bySchool.length > 0 ? (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {stats.bySchool.slice(0, 4).map((s, i) => (
+                <article
+                  key={s.school}
+                  className="rounded-2xl p-5 shadow-warm border border-earth/10 transition hover:-translate-y-1.5 hover:shadow-warm-lg cursor-default"
+                  style={{ background: "linear-gradient(135deg, #FFF7E5 0%, #FFE8CC 100%)" }}
+                >
+                  <div className="text-4xl mb-3">{["🥇","🥈","🥉","🏫"][i] ?? "🏫"}</div>
+                  <h3 className="font-bold text-ink text-base mb-1">{s.school}</h3>
+                  <p className="text-xs text-mute mb-3">已涵蓋 {s.themes.length} 個主題</p>
+                  <div className="flex items-center justify-between text-xs text-earth pt-3 border-t border-earth/15">
+                    <span>👩‍🏫 {s.teachers} 位老師</span>
+                    <span>📋 {s.submissions} 次試教</span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed border-earth/30 p-8 text-center text-mute text-sm">
+              等待第一所學校提交試教回饋 🌱
+            </div>
+          )}
         </section>
       </main>
     </>
