@@ -274,11 +274,59 @@
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="排放比例圓餅圖">
-          <defs><marker id="flowArrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#0f766e"/></marker></defs>
-          <rect x="58" y="42" width="744" height="268" rx="28" fill="#f8fafc" stroke="#e2e8f0"/>
-          <rect x="112" y="138" width="130" height="72" rx="18" fill="#ecfeff" stroke="#99f6e4"/><text x="177" y="170" text-anchor="middle" font-size="15" fill="#334155" font-weight="900">排放比例圓餅圖</text><text x="177" y="194" text-anchor="middle" class="viz-small">步驟 1</text><line x1="256" y1="174" x2="274" y2="174" stroke="#0f766e" stroke-width="5" marker-end="url(#flowArrow2)"/><rect x="284" y="138" width="130" height="72" rx="18" fill="#fff7ed" stroke="#fed7aa"/><text x="349" y="170" text-anchor="middle" font-size="15" fill="#334155" font-weight="900">比較</text><text x="349" y="194" text-anchor="middle" class="viz-small">步驟 2</text><line x1="428" y1="174" x2="446" y2="174" stroke="#0f766e" stroke-width="5" marker-end="url(#flowArrow2)"/><rect x="456" y="138" width="130" height="72" rx="18" fill="#eff6ff" stroke="#bfdbfe"/><text x="521" y="170" text-anchor="middle" font-size="15" fill="#334155" font-weight="900">理解</text><text x="521" y="194" text-anchor="middle" class="viz-small">步驟 3</text><line x1="600" y1="174" x2="618" y2="174" stroke="#0f766e" stroke-width="5" marker-end="url(#flowArrow2)"/><rect x="628" y="138" width="130" height="72" rx="18" fill="#f0fdf4" stroke="#bbf7d0"/><text x="693" y="170" text-anchor="middle" font-size="15" fill="#334155" font-weight="900">行動</text><text x="693" y="194" text-anchor="middle" class="viz-small">步驟 4</text>
-          <text x="430" y="92" text-anchor="middle" font-size="18" fill="#0f766e" font-weight="900">排放比例圓餅圖</text>
-          <text x="430" y="344" text-anchor="middle" font-size="14" fill="#64748b" font-weight="600">最富有 10% 人口 → 排放 50% 溫室氣體 / 最窮 50%</text>
+          <defs>
+            <linearGradient id="pieGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#fefce8"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="20" width="820" height="350" rx="16" fill="url(#pieGrad)" stroke="#fde68a" stroke-width="1.5"/>
+          <text x="430" y="46" text-anchor="middle" font-size="14" fill="#1e293b" font-weight="800">誰排放了最多溫室氣體？（聯合國 / 世界不平等報告 2022）</text>
+
+          <!-- Pie chart centered at (220, 210), r=140 -->
+          <!-- Rich 10%: 50% → 180° arc, from top (-90°) to bottom (90°) — right half -->
+          <!-- Middle 40%: 38% → 136.8° arc -->
+          <!-- Poor 50%: 12% → 43.2° arc -->
+
+          <!-- Slice 1: Richest 10% = 50% (red), from -90° to 90° = right semicircle -->
+          <path d="M220,210 L220,70 A140,140 0 0,1 220,350 Z" fill="#dc2626" opacity="0.88"/>
+
+          <!-- Slice 2: Middle 40% = 38% → 136.8°; from 90° to 90°+136.8°=226.8° -->
+          <!-- 90°: (220,350); 226.8°: (220+140*cos(226.8°), 210+140*sin(226.8°)) -->
+          <!-- cos(226.8°)≈-0.683, sin(226.8°)≈-0.730 → (124, 108) -->
+          <path d="M220,210 L220,350 A140,140 0 0,1 124,108 Z" fill="#f59e0b" opacity="0.85"/>
+
+          <!-- Slice 3: Poorest 50% = 12% → 43.2°; from 226.8° to 270° (-90°) -->
+          <!-- 226.8°: (124,108); 270°: (220,70) -->
+          <path d="M220,210 L124,108 A140,140 0 0,1 220,70 Z" fill="#16a34a" opacity="0.85"/>
+
+          <!-- Center hole (donut) -->
+          <circle cx="220" cy="210" r="58" fill="#fef9c3" stroke="#fde68a" stroke-width="2"/>
+          <text x="220" y="206" text-anchor="middle" font-size="11" fill="#1e293b" font-weight="700">溫室氣體</text>
+          <text x="220" y="222" text-anchor="middle" font-size="11" fill="#1e293b" font-weight="700">排放分配</text>
+
+          <!-- Legend / explanation right side -->
+          <!-- Rich 10% -->
+          <rect x="410" y="65" width="400" height="82" rx="12" fill="#fee2e2" stroke="#fca5a5" stroke-width="2"/>
+          <rect x="425" y="78" width="18" height="18" rx="4" fill="#dc2626"/>
+          <text x="452" y="92" font-size="13" font-weight="800" fill="#dc2626">最富有 10% 人口</text>
+          <text x="452" y="112" font-size="22" font-weight="900" fill="#dc2626">排放 50%</text>
+          <text x="452" y="134" font-size="11" fill="#7f1d1d">搭私人飛機、開大車、住大房子</text>
+
+          <!-- Middle 40% -->
+          <rect x="410" y="160" width="400" height="82" rx="12" fill="#fef3c7" stroke="#fbbf24" stroke-width="2"/>
+          <rect x="425" y="173" width="18" height="18" rx="4" fill="#f59e0b"/>
+          <text x="452" y="187" font-size="13" font-weight="800" fill="#92400e">中間 40% 人口</text>
+          <text x="452" y="207" font-size="22" font-weight="900" fill="#92400e">排放 38%</text>
+          <text x="452" y="229" font-size="11" fill="#78350f">一般工薪族、城市中產階級</text>
+
+          <!-- Poor 50% -->
+          <rect x="410" y="255" width="400" height="82" rx="12" fill="#dcfce7" stroke="#86efac" stroke-width="2"/>
+          <rect x="425" y="268" width="18" height="18" rx="4" fill="#16a34a"/>
+          <text x="452" y="282" font-size="13" font-weight="800" fill="#15803d">最窮 50% 人口（約 40 億人）</text>
+          <text x="452" y="302" font-size="22" font-weight="900" fill="#15803d">只排 12%</text>
+          <text x="452" y="324" font-size="11" fill="#166534">走路、騎腳踏車、幾乎不用電器</text>
+
+          <text x="430" y="378" text-anchor="middle" font-size="9" fill="#64748b">資料來源：UN Climate Justice / 世界不平等報告 2022（L1）</text>
         </svg>
         <div class="viz-callout">最富有 10% 人口 → 排放 50% 溫室氣體 / 最窮 50%</div>
       </div>
@@ -304,22 +352,56 @@
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="最不發達 45 國世界地圖">
-          <rect x="52" y="38" width="756" height="280" rx="28" fill="#eff6ff" stroke="#bfdbfe"/>
-          <g fill="#bbf7d0" stroke="#16a34a" stroke-width="3" opacity="0.95">
-            <path d="M142 145 C178 96, 248 92, 294 124 C328 148, 310 188, 254 190 C196 192, 134 184, 142 145 Z"/>
-            <path d="M318 108 C372 76, 438 92, 464 136 C492 184, 440 224, 382 212 C330 202, 284 154, 318 108 Z"/>
-            <path d="M498 116 C570 82, 670 92, 726 138 C770 174, 730 222, 650 218 C568 214, 478 174, 498 116 Z"/>
-            <path d="M560 244 C604 230, 650 244, 674 270 C642 294, 590 294, 552 274 C540 262, 544 250, 560 244 Z"/>
-          </g>
-          <g fill="#0f766e" opacity="0.9">
-            <circle cx="230" cy="144" r="14"/><circle cx="390" cy="142" r="14"/><circle cx="602" cy="154" r="14"/><circle cx="690" cy="188" r="14"/>
-          </g>
-          <g stroke="#0f766e" stroke-width="3" fill="none" opacity="0.82">
-            <path d="M230 144 C302 88, 500 88, 602 154"/>
-            <path d="M390 142 C470 198, 580 218, 690 188"/>
-          </g>
-          <rect x="160" y="270" width="540" height="42" rx="21" fill="#fff7ed"/>
-          <text x="430" y="296" text-anchor="middle" font-size="15" fill="#9a3412" font-weight="800">14% 全球人口 / 只排 4% 溫室氣體 / 卻最常受乾旱、水災</text>
+          <rect x="20" y="20" width="820" height="350" rx="16" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+          <text x="430" y="46" text-anchor="middle" font-size="14" fill="#1e293b" font-weight="800">最不發達 45 國：住了 14% 人口，只排 4% 碳，卻受最重的災害</text>
+
+          <!-- Three-column comparison layout -->
+          <!-- Column 1: Population -->
+          <rect x="35" y="62" width="240" height="280" rx="14" fill="rgba(255,255,255,0.88)" stroke="#93c5fd" stroke-width="2"/>
+          <text x="155" y="90" text-anchor="middle" font-size="13" font-weight="800" fill="#1d4ed8">👥 人口</text>
+          <text x="155" y="140" text-anchor="middle" font-size="48" font-weight="900" fill="#1d4ed8">14%</text>
+          <text x="155" y="165" text-anchor="middle" font-size="11" fill="#1e40af">全球人口</text>
+          <!-- People icons -->
+          <text x="155" y="210" text-anchor="middle" font-size="28">🧑‍🤝‍🧑🧑‍🤝‍🧑</text>
+          <text x="155" y="240" text-anchor="middle" font-size="11" fill="#64748b">約 11 億人</text>
+          <text x="155" y="260" text-anchor="middle" font-size="11" fill="#64748b">生活在 45 個</text>
+          <text x="155" y="276" text-anchor="middle" font-size="11" fill="#64748b">最不發達國家</text>
+          <rect x="55" y="288" width="200" height="40" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+          <text x="155" y="308" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">主要在非洲、南亞</text>
+          <text x="155" y="322" text-anchor="middle" font-size="10" fill="#1e40af">及太平洋小島</text>
+
+          <!-- Column 2: Emissions -->
+          <rect x="310" y="62" width="240" height="280" rx="14" fill="rgba(255,255,255,0.88)" stroke="#86efac" stroke-width="2"/>
+          <text x="430" y="90" text-anchor="middle" font-size="13" font-weight="800" fill="#15803d">💨 碳排放</text>
+          <text x="430" y="140" text-anchor="middle" font-size="48" font-weight="900" fill="#15803d">4%</text>
+          <text x="430" y="165" text-anchor="middle" font-size="11" fill="#166534">全球年排放量</text>
+          <!-- Tiny smokestack icon -->
+          <text x="430" y="210" text-anchor="middle" font-size="28">🌿</text>
+          <text x="430" y="240" text-anchor="middle" font-size="11" fill="#64748b">幾乎不開車</text>
+          <text x="430" y="257" text-anchor="middle" font-size="11" fill="#64748b">沒有工廠</text>
+          <text x="430" y="274" text-anchor="middle" font-size="11" fill="#64748b">用電量極低</text>
+          <rect x="330" y="288" width="200" height="40" rx="8" fill="#dcfce7" stroke="#86efac"/>
+          <text x="430" y="308" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">幾乎沒有造成</text>
+          <text x="430" y="322" text-anchor="middle" font-size="10" fill="#166534">氣候問題</text>
+
+          <!-- Column 3: Disaster impact -->
+          <rect x="585" y="62" width="240" height="280" rx="14" fill="rgba(255,255,255,0.88)" stroke="#fca5a5" stroke-width="2"/>
+          <text x="705" y="90" text-anchor="middle" font-size="13" font-weight="800" fill="#dc2626">⚡ 受害程度</text>
+          <!-- Dramatic number -->
+          <text x="705" y="140" text-anchor="middle" font-size="48" font-weight="900" fill="#dc2626">最重</text>
+          <text x="705" y="165" text-anchor="middle" font-size="11" fill="#7f1d1d">氣候災害衝擊</text>
+          <text x="705" y="210" text-anchor="middle" font-size="28">🌀🏜️🌊</text>
+          <text x="705" y="240" text-anchor="middle" font-size="11" fill="#64748b">乾旱、水災</text>
+          <text x="705" y="257" text-anchor="middle" font-size="11" fill="#64748b">颱風、糧食危機</text>
+          <text x="705" y="274" text-anchor="middle" font-size="11" fill="#64748b">缺乏應對資源</text>
+          <rect x="605" y="288" width="200" height="40" rx="8" fill="#fee2e2" stroke="#fca5a5"/>
+          <text x="705" y="308" text-anchor="middle" font-size="11" font-weight="700" fill="#dc2626">這公平嗎？</text>
+          <text x="705" y="322" text-anchor="middle" font-size="10" fill="#7f1d1d">誰弄髒，誰打掃？</text>
+
+          <!-- 示意圖 watermark -->
+          <g transform="translate(800,38)"><rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/><text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text></g>
+
+          <text x="430" y="378" text-anchor="middle" font-size="9" fill="#64748b">資料來源：UN-OHRLLS / UNFCCC LDC Group（L1）・區域分布為教學示意</text>
         </svg>
         <div class="viz-callout">14% 全球人口 / 只排 4% 溫室氣體 / 卻最常受乾旱、水災</div>
       </div>
@@ -354,22 +436,47 @@
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="10 億兒童風險分布地圖">
-          <rect x="52" y="38" width="756" height="280" rx="28" fill="#eff6ff" stroke="#bfdbfe"/>
-          <g fill="#bbf7d0" stroke="#16a34a" stroke-width="3" opacity="0.95">
-            <path d="M142 145 C178 96, 248 92, 294 124 C328 148, 310 188, 254 190 C196 192, 134 184, 142 145 Z"/>
-            <path d="M318 108 C372 76, 438 92, 464 136 C492 184, 440 224, 382 212 C330 202, 284 154, 318 108 Z"/>
-            <path d="M498 116 C570 82, 670 92, 726 138 C770 174, 730 222, 650 218 C568 214, 478 174, 498 116 Z"/>
-            <path d="M560 244 C604 230, 650 244, 674 270 C642 294, 590 294, 552 274 C540 262, 544 250, 560 244 Z"/>
-          </g>
-          <g fill="#0f766e" opacity="0.9">
-            <circle cx="230" cy="144" r="14"/><circle cx="390" cy="142" r="14"/><circle cx="602" cy="154" r="14"/><circle cx="690" cy="188" r="14"/>
-          </g>
-          <g stroke="#0f766e" stroke-width="3" fill="none" opacity="0.82">
-            <path d="M230 144 C302 88, 500 88, 602 154"/>
-            <path d="M390 142 C470 198, 580 218, 690 188"/>
-          </g>
-          <rect x="160" y="270" width="540" height="42" rx="21" fill="#fff7ed"/>
-          <text x="430" y="296" text-anchor="middle" font-size="15" fill="#9a3412" font-weight="800">約 10 億兒童（佔全球兒童近一半） / 生活在熱浪、洪水、空</text>
+          <rect x="20" y="20" width="820" height="350" rx="16" fill="#fdf2f8" stroke="#f9a8d4" stroke-width="1.5"/>
+          <text x="430" y="46" text-anchor="middle" font-size="14" fill="#1e293b" font-weight="800">全球約 10 億兒童——你的同齡人——正生活在氣候極高風險中</text>
+
+          <!-- Central visual: 2 kids side by side -->
+          <!-- Kid 1 (safe, left) -->
+          <rect x="35" y="60" width="360" height="285" rx="14" fill="#dcfce7" stroke="#86efac" stroke-width="2"/>
+          <text x="215" y="88" text-anchor="middle" font-size="13" font-weight="800" fill="#15803d">🟢 低風險地區的孩子</text>
+          <!-- House icon -->
+          <text x="215" y="145" text-anchor="middle" font-size="52">🏠</text>
+          <text x="215" y="175" text-anchor="middle" font-size="13" fill="#166534" font-weight="600">有冷氣的家</text>
+          <!-- Features list -->
+          <rect x="55" y="188" width="320" height="130" rx="10" fill="rgba(255,255,255,0.7)"/>
+          <text x="75" y="210" font-size="11" fill="#166534">✅ 有醫院、學校、避難所</text>
+          <text x="75" y="230" font-size="11" fill="#166534">✅ 冷氣、乾淨水、安全食物</text>
+          <text x="75" y="250" font-size="11" fill="#166534">✅ 遇到災害有資源應對</text>
+          <text x="75" y="270" font-size="11" fill="#166534">✅ 碳排放相對較高</text>
+          <text x="75" y="290" font-size="11" fill="#64748b">（通常在溫帶富裕國家）</text>
+
+          <!-- Kid 2 (at risk, right) -->
+          <rect x="445" y="60" width="380" height="285" rx="14" fill="#fee2e2" stroke="#fca5a5" stroke-width="2"/>
+          <text x="635" y="88" text-anchor="middle" font-size="13" font-weight="800" fill="#dc2626">🔴 高風險地區的孩子（10 億人）</text>
+          <!-- Danger icon -->
+          <text x="635" y="145" text-anchor="middle" font-size="52">⛈️</text>
+          <text x="635" y="175" text-anchor="middle" font-size="13" fill="#7f1d1d" font-weight="600">熱浪、洪水、乾旱</text>
+          <!-- Features list -->
+          <rect x="465" y="188" width="340" height="130" rx="10" fill="rgba(255,255,255,0.7)"/>
+          <text x="485" y="210" font-size="11" fill="#7f1d1d">❌ 醫療資源極少</text>
+          <text x="485" y="230" font-size="11" fill="#7f1d1d">❌ 缺乏乾淨水與穩定糧食</text>
+          <text x="485" y="250" font-size="11" fill="#7f1d1d">❌ 沒有錢搬離危險區域</text>
+          <text x="485" y="270" font-size="11" fill="#7f1d1d">❌ 碳排放極低</text>
+          <text x="485" y="290" font-size="11" fill="#64748b">（主要在南亞、非洲、小島國）</text>
+
+          <!-- VS divider -->
+          <text x="412" y="218" text-anchor="middle" font-size="22" font-weight="900" fill="#64748b">vs</text>
+
+          <!-- Bottom stat bar -->
+          <rect x="35" y="352" width="790" height="0" rx="0"/>
+          <!-- 示意圖 watermark -->
+          <g transform="translate(800,38)"><rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/><text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text></g>
+
+          <text x="430" y="378" text-anchor="middle" font-size="9" fill="#64748b">資料來源：UNICEF 兒童氣候風險指數（CCRI）2021（L1）・情境對比為教學示意</text>
         </svg>
         <div class="viz-callout">約 10 億兒童（佔全球兒童近一半） / 生活在熱浪、洪水、空</div>
       </div>

@@ -853,27 +853,93 @@
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="台北市熱島分布地圖">
-          <defs><filter id="mapShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12"/></filter></defs>
-          <rect x="52" y="38" width="756" height="280" rx="28" fill="#eff6ff" stroke="#bfdbfe"/>
-          <g filter="url(#mapShadow)">
-            <image href="../_assets/taiwan_outline_simplemaps.svg" x="318" y="52" width="190" height="286" preserveAspectRatio="xMidYMid meet"/>
+          <defs>
+            <radialGradient id="heatGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#dc2626" stop-opacity="0.7"/>
+              <stop offset="50%" stop-color="#f97316" stop-opacity="0.45"/>
+              <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.1"/>
+            </radialGradient>
+            <filter id="mapShadow64" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.1"/>
+            </filter>
+          </defs>
+          <!-- 背景 -->
+          <rect x="58" y="42" width="744" height="310" rx="20" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+          <!-- 圖標題 -->
+          <text x="430" y="66" text-anchor="middle" font-size="13" fill="#dc2626" font-weight="800">台北市熱島效應：市中心比近郊熱 3.5°C（教學示意）</text>
+
+          <!-- 台灣島輪廓（外部SVG保留，加shadow） -->
+          <g filter="url(#mapShadow64)">
+            <image href="../_assets/taiwan_outline_simplemaps.svg" x="318" y="58" width="190" height="278" preserveAspectRatio="xMidYMid meet"/>
           </g>
-          <path d="M418 92 C405 146, 414 196, 394 238 C378 276, 388 306, 372 330" fill="none" stroke="#15803d" stroke-width="8" stroke-linecap="round" opacity="0.75"/>
-          <path d="M368 270 C378 296, 394 318, 414 337" fill="none" stroke="#38bdf8" stroke-width="10" stroke-linecap="round" opacity="0.65"/>
-          <circle cx="426" cy="102" r="13" fill="#ea580c"/><text x="426" y="107" text-anchor="middle" fill="#fff" font-size="11" font-weight="900">臺</text>
-<circle cx="393" cy="218" r="13" fill="#ea580c"/><text x="393" y="223" text-anchor="middle" fill="#fff" font-size="11" font-weight="900">臺</text>
-<circle cx="376" cy="318" r="13" fill="#ea580c"/><text x="376" y="323" text-anchor="middle" fill="#fff" font-size="11" font-weight="900">高</text>
-          <rect x="92" y="88" width="184" height="72" rx="18" fill="#ecfeff" stroke="#99f6e4"/>
-          <text x="184" y="118" text-anchor="middle" fill="#0f766e" font-size="24" font-weight="900">3.5°C</text>
-          <text x="184" y="142" text-anchor="middle" fill="#64748b" font-size="12">關鍵數字</text>
-          <rect x="92" y="196" width="184" height="72" rx="18" fill="#fff7ed" stroke="#fed7aa"/>
-          <text x="184" y="226" text-anchor="middle" fill="#9a3412" font-size="24" font-weight="900">風險</text>
-          <text x="184" y="250" text-anchor="middle" fill="#64748b" font-size="12">比較焦點</text>
-          <rect x="600" y="118" width="172" height="92" rx="18" fill="#fff" stroke="#cbd5e1"/>
-          <text x="686" y="150" text-anchor="middle" font-size="13" fill="#334155" font-weight="700">市中心 +3.5°C 熱區示意 /</text>
-<text x="686" y="172" text-anchor="middle" font-size="13" fill="#334155" font-weight="700"> 可對照 TCCIP 平台實際熱</text>
-<text x="686" y="194" text-anchor="middle" font-size="13" fill="#334155" font-weight="700">島圖</text>
-          <text x="430" y="354" text-anchor="middle" fill="#64748b" font-size="12">臺灣底圖來源: SimpleMaps, 教學標記為示意</text>
+
+          <!-- 熱島熱區（台北盆地位置示意，放在島嶼北部） -->
+          <ellipse cx="400" cy="112" rx="46" ry="36" fill="url(#heatGrad)"/>
+          <!-- 熱島圓圈輪廓（從熱到涼） -->
+          <ellipse cx="400" cy="112" rx="46" ry="36" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="4,2" opacity="0.6"/>
+          <ellipse cx="400" cy="112" rx="68" ry="52" fill="none" stroke="#f97316" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.4"/>
+          <ellipse cx="400" cy="112" rx="88" ry="66" fill="none" stroke="#fbbf24" stroke-width="1" stroke-dasharray="4,2" opacity="0.3"/>
+
+          <!-- 城市標記 -->
+          <!-- 台北（市中心，熱） -->
+          <circle cx="400" cy="108" r="11" fill="#dc2626" stroke="#fff" stroke-width="2"/>
+          <text x="400" y="112" text-anchor="middle" fill="#fff" font-size="9" font-weight="900">北</text>
+          <line x1="411" y1="102" x2="448" y2="88" stroke="#dc2626" stroke-width="1.2" stroke-dasharray="3,2"/>
+          <rect x="450" y="76" width="88" height="30" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="1.2"/>
+          <text x="494" y="88" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="800">台北市中心</text>
+          <text x="494" y="101" text-anchor="middle" font-size="10" fill="#991b1b">+3.5°C 熱區</text>
+
+          <!-- 新北/近郊（涼） -->
+          <circle cx="368" cy="148" r="9" fill="#0ea5e9" stroke="#fff" stroke-width="2"/>
+          <text x="368" y="152" text-anchor="middle" fill="#fff" font-size="8" font-weight="900">郊</text>
+          <line x1="358" y1="148" x2="316" y2="155" stroke="#0ea5e9" stroke-width="1.2" stroke-dasharray="3,2"/>
+          <rect x="230" y="142" width="84" height="30" rx="6" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="1.2"/>
+          <text x="272" y="154" text-anchor="middle" font-size="10" fill="#0369a1" font-weight="800">近郊（對照）</text>
+          <text x="272" y="167" text-anchor="middle" font-size="10" fill="#475569">基準溫度</text>
+
+          <!-- 台中標記（中部） -->
+          <circle cx="393" cy="218" r="9" fill="#475569" stroke="#fff" stroke-width="1.5"/>
+          <text x="393" y="222" text-anchor="middle" fill="#fff" font-size="8" font-weight="900">中</text>
+
+          <!-- 高雄標記（南部） -->
+          <circle cx="376" cy="318" r="9" fill="#475569" stroke="#fff" stroke-width="1.5"/>
+          <text x="376" y="322" text-anchor="middle" fill="#fff" font-size="8" font-weight="900">高</text>
+
+          <!-- 左側：關鍵數字框 -->
+          <rect x="68" y="88" width="180" height="80" rx="12" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+          <text x="158" y="114" text-anchor="middle" font-size="30" fill="#dc2626" font-weight="900">+3.5°C</text>
+          <text x="158" y="136" text-anchor="middle" font-size="11" fill="#991b1b" font-weight="700">台北夏季熱島強度</text>
+          <text x="158" y="155" text-anchor="middle" font-size="10" fill="#64748b">市中心 vs 近郊</text>
+
+          <!-- 左側：對策框 -->
+          <rect x="68" y="186" width="180" height="100" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+          <text x="158" y="208" text-anchor="middle" font-size="11" fill="#166534" font-weight="800">降溫對策</text>
+          <text x="78" y="228" font-size="10" fill="#334155">🌿 屋頂綠化</text>
+          <text x="158" y="228" text-anchor="end" font-size="11" fill="#16a34a" font-weight="800">↓1–3°C</text>
+          <text x="78" y="246" font-size="10" fill="#334155">💧 透水鋪面</text>
+          <text x="78" y="264" font-size="10" fill="#334155">🌳 都市行道樹</text>
+          <text x="78" y="278" font-size="9" fill="#64748b">（TCCIP 2023 估計）</text>
+
+          <!-- 右側：熱島惡循環說明框 -->
+          <rect x="600" y="100" width="188" height="170" rx="12" fill="#fff" stroke="#f97316" stroke-width="1.5"/>
+          <text x="694" y="122" text-anchor="middle" font-size="11" fill="#ea580c" font-weight="800">熱島惡循環</text>
+          <text x="614" y="142" font-size="10" fill="#334155">🏙️ 水泥建築多</text>
+          <text x="630" y="158" font-size="10" fill="#64748b">↓ 吸收更多熱</text>
+          <text x="614" y="176" font-size="10" fill="#334155">❄️ 冷氣越開越強</text>
+          <text x="630" y="192" font-size="10" fill="#64748b">↓ 排出更多廢熱</text>
+          <text x="614" y="210" font-size="10" fill="#334155">🌡️ 城市越來越熱</text>
+          <text x="630" y="226" font-size="10" fill="#64748b">↓ 再開更多冷氣</text>
+          <line x1="614" y1="236" x2="782" y2="236" stroke="#e2e8f0" stroke-width="1"/>
+          <text x="694" y="254" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="700">打破循環的鑰匙：綠化！</text>
+          <text x="694" y="264" text-anchor="middle" font-size="9" fill="#64748b">TCCIP / 中央氣象署 2023</text>
+
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,58)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
+          </g>
+          <!-- 來源 -->
+          <text x="390" y="358" text-anchor="middle" font-size="9" fill="#94a3b8">熱區位置與溫度差為教學示意；+3.5°C 來自 TCCIP 2023；底圖：SimpleMaps（CC BY 4.0）</text>
         </svg>
         <div class="viz-callout">市中心 +3.5°C 熱區示意 / 可對照 TCCIP 平台實際熱島圖</div>
       </div>

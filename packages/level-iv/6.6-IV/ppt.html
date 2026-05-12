@@ -253,17 +253,72 @@ border: 1px solid #bfdbfe;
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="全球 GHG 部門圓餅圖">
-          <defs><marker id="worldArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#0f766e"/></marker></defs>
-          <rect x="58" y="42" width="744" height="268" rx="28" fill="#eef9ff" stroke="#bfdbfe"/>
-          <path d="M136 152 C158 110,221 102,263 126 C292 143,282 184,240 194 C196 205,158 190,136 152Z" fill="#8bd3bd" stroke="#0f766e" stroke-width="2"/>
-          <path d="M322 124 C376 85,468 94,498 146 C523 190,480 232,414 224 C354 217,292 174,322 124Z" fill="#fde68a" stroke="#b45309" stroke-width="2"/>
-          <path d="M524 139 C586 99,699 108,724 164 C746 214,678 244,596 226 C542 214,492 171,524 139Z" fill="#bae6fd" stroke="#0369a1" stroke-width="2"/>
-          <path d="M430 222 C462 235,475 278,452 310 C426 286,415 250,430 222Z" fill="#fda4af" stroke="#be123c" stroke-width="2"/>
-          <path d="M624 182 C552 154,514 146,452 156" fill="none" stroke="#0f766e" stroke-width="4" stroke-linecap="round" marker-end="url(#worldArrow)"/>
-          <path d="M624 182 C540 230,494 245,416 238" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" marker-end="url(#worldArrow)"/>
-          <circle cx="624" cy="182" r="8" fill="#0f766e"/><text x="624" y="164" text-anchor="middle" font-size="13" fill="#0f766e" font-weight="900">臺灣</text>
-          <text x="430" y="300" text-anchor="middle" font-size="13" fill="#64748b" font-weight="700">用世界尺度看區域差異與跨國流動</text>
-          <text x="430" y="86" text-anchor="middle" font-size="18" fill="#0f766e" font-weight="900">全球 GHG 部門圓餅圖</text>
+          <defs>
+            <linearGradient id="ghgBg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#f0fdf4"/>
+              <stop offset="100%" stop-color="#fefce8"/>
+            </linearGradient>
+          </defs>
+          <!-- 背景 -->
+          <rect x="20" y="20" width="820" height="350" rx="14" fill="url(#ghgBg)" stroke="#d1fae5" stroke-width="1.5"/>
+          <!-- 標題 -->
+          <text x="430" y="48" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="800">全球溫室氣體排放來源（2018 年）</text>
+
+          <!-- 餅圖圓心 cx=240 cy=210 r=145 -->
+          <!-- 食物系統 26%：0°→93.6° → 從上方(−90°)開始 → -90°到3.6° -->
+          <!-- 角度計算（從正上方順時針）：食物=26%=93.6°, 能源=34%=122.4°, 運輸=16%=57.6°, 工業=14%=50.4°, 其他=10%=36° -->
+          <!-- 弧端點 cx+r*sin(a), cy-r*cos(a) 累計角度 -->
+          <!-- 食物 0→93.6° -->
+          <path d="M240 210 L240 65 A145 145 0 0 1 380.1 282.1 Z" fill="#16a34a" stroke="#fff" stroke-width="2"/>
+          <!-- 能源電力 93.6→216° -->
+          <path d="M240 210 L380.1 282.1 A145 145 0 0 1 120.3 122.7 Z" fill="#0ea5e9" stroke="#fff" stroke-width="2"/>
+          <!-- 운輸 216→273.6° -->
+          <path d="M240 210 L120.3 122.7 A145 145 0 0 1 152.8 66.3 Z" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+          <!-- 工業 273.6→324° -->
+          <path d="M240 210 L152.8 66.3 A145 145 0 0 1 327.3 83.4 Z" fill="#9333ea" stroke="#fff" stroke-width="2"/>
+          <!-- 其他 324→360° -->
+          <path d="M240 210 L327.3 83.4 A145 145 0 0 1 240 65 Z" fill="#64748b" stroke="#fff" stroke-width="2"/>
+
+          <!-- 食物扇形強調框 -->
+          <path d="M240 210 L240 65 A145 145 0 0 1 380.1 282.1 Z" fill="none" stroke="#15803d" stroke-width="3"/>
+
+          <!-- 食物標籤（扇形中央約47°→在中間） -->
+          <text x="310" y="180" text-anchor="middle" font-size="22" fill="#fff" font-weight="900">26%</text>
+          <text x="310" y="202" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">食物系統</text>
+          <!-- 能源標籤 -->
+          <text x="165" y="240" text-anchor="middle" font-size="13" fill="#fff" font-weight="800">34%</text>
+          <text x="165" y="257" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">能源電力</text>
+          <!-- 運輸標籤 -->
+          <text x="170" y="120" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">16%</text>
+          <text x="170" y="135" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">運輸</text>
+          <!-- 工業標籤 -->
+          <text x="250" y="95" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">14%</text>
+          <text x="250" y="110" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">工業</text>
+          <!-- 其他標籤 -->
+          <text x="355" y="120" text-anchor="middle" font-size="11" fill="#fff" font-weight="800">10%</text>
+          <text x="355" y="134" text-anchor="middle" font-size="9" fill="#fff">其他</text>
+
+          <!-- 食物扇形引導箭頭 -->
+          <line x1="355" y1="230" x2="440" y2="205" stroke="#15803d" stroke-width="2" stroke-dasharray="4,3"/>
+          <rect x="438" y="190" width="200" height="30" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+          <text x="538" y="210" text-anchor="middle" font-size="13" fill="#15803d" font-weight="800">食物系統 = 26% 全球排放</text>
+
+          <!-- 圖例 -->
+          <g transform="translate(450,240)">
+            <rect x="0" y="0" width="12" height="12" rx="2" fill="#16a34a"/>
+            <text x="17" y="11" font-size="11" fill="#1e293b">食物系統 26%</text>
+            <rect x="0" y="18" width="12" height="12" rx="2" fill="#0ea5e9"/>
+            <text x="17" y="29" font-size="11" fill="#1e293b">能源電力 34%</text>
+            <rect x="0" y="36" width="12" height="12" rx="2" fill="#f59e0b"/>
+            <text x="17" y="47" font-size="11" fill="#1e293b">運輸 16%</text>
+            <rect x="110" y="0" width="12" height="12" rx="2" fill="#9333ea"/>
+            <text x="127" y="11" font-size="11" fill="#1e293b">工業 14%</text>
+            <rect x="110" y="18" width="12" height="12" rx="2" fill="#64748b"/>
+            <text x="127" y="29" font-size="11" fill="#1e293b">其他 10%</text>
+          </g>
+
+          <!-- 來源 -->
+          <text x="430" y="378" text-anchor="middle" font-size="9" fill="#64748b">資料來源：Poore &amp; Nemecek (2018), Science; Our World in Data 2024</text>
         </svg>
         <div class="viz-callout">食物佔全球溫室氣體 26%</div>
       </div>
@@ -283,17 +338,87 @@ border: 1px solid #bfdbfe;
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="蛋白質等量碳足跡橫條圖">
-          <rect x="64" y="42" width="732" height="272" rx="26" fill="#f8fafc" stroke="#e2e8f0"/>
-          <g transform="translate(165 118)">
-            <circle cx="70" cy="70" r="62" fill="#ccfbf1" stroke="#0f766e" stroke-width="4"/>
-            <circle cx="265" cy="70" r="62" fill="#fff7ed" stroke="#f59e0b" stroke-width="4"/>
-            <circle cx="460" cy="70" r="62" fill="#eff6ff" stroke="#2563eb" stroke-width="4"/>
-            <text x="70" y="76" text-anchor="middle" fill="#0f766e" font-size="18" font-weight="900">觀察</text>
-            <text x="265" y="76" text-anchor="middle" fill="#9a3412" font-size="18" font-weight="900">理解</text>
-            <text x="460" y="76" text-anchor="middle" fill="#1d4ed8" font-size="18" font-weight="900">行動</text>
+          <defs>
+            <linearGradient id="beefGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#dc2626"/>
+              <stop offset="100%" stop-color="#f87171"/>
+            </linearGradient>
+            <linearGradient id="chickenGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#f59e0b"/>
+              <stop offset="100%" stop-color="#fcd34d"/>
+            </linearGradient>
+            <linearGradient id="tofuGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#0ea5e9"/>
+              <stop offset="100%" stop-color="#7dd3fc"/>
+            </linearGradient>
+            <linearGradient id="legGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#16a34a"/>
+              <stop offset="100%" stop-color="#86efac"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="20" width="820" height="350" rx="14" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+          <text x="430" y="48" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="800">每 100g 蛋白質的碳足跡比較</text>
+
+          <!-- Y軸 -->
+          <line x1="200" y1="68" x2="200" y2="310" stroke="#1e293b" stroke-width="1.5"/>
+          <!-- X軸 -->
+          <line x1="200" y1="310" x2="790" y2="310" stroke="#1e293b" stroke-width="1.5"/>
+
+          <!-- X軸網格 & 刻度 (max 25, scale: 1 kg = 23.2 px) -->
+          <!-- 0,5,10,15,20,25 -->
+          <g font-size="10" fill="#64748b">
+            <line x1="200" y1="310" x2="200" y2="315" stroke="#1e293b" stroke-width="1"/>
+            <text x="200" y="328" text-anchor="middle">0</text>
+            <line x1="316" y1="68" x2="316" y2="310" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="316" y1="310" x2="316" y2="315" stroke="#1e293b" stroke-width="1"/>
+            <text x="316" y="328" text-anchor="middle">5</text>
+            <line x1="432" y1="68" x2="432" y2="310" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="432" y1="310" x2="432" y2="315" stroke="#1e293b" stroke-width="1"/>
+            <text x="432" y="328" text-anchor="middle">10</text>
+            <line x1="548" y1="68" x2="548" y2="310" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="548" y1="310" x2="548" y2="315" stroke="#1e293b" stroke-width="1"/>
+            <text x="548" y="328" text-anchor="middle">15</text>
+            <line x1="664" y1="68" x2="664" y2="310" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="664" y1="310" x2="664" y2="315" stroke="#1e293b" stroke-width="1"/>
+            <text x="664" y="328" text-anchor="middle">20</text>
+            <line x1="780" y1="68" x2="780" y2="310" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="780" y1="310" x2="780" y2="315" stroke="#1e293b" stroke-width="1"/>
+            <text x="780" y="328" text-anchor="middle">25</text>
           </g>
-          <text x="430" y="92" text-anchor="middle" font-size="18" fill="#0f766e" font-weight="900">蛋白質等量碳足跡橫條圖</text>
-          <text x="430" y="340" text-anchor="middle" font-size="14" fill="#64748b" font-weight="700">同樣 100g 蛋白質,差 38 倍</text>
+          <!-- X軸標題 -->
+          <text x="490" y="348" text-anchor="middle" font-size="11" fill="#1e293b" font-weight="700">碳足跡（kg CO₂eq / 100g 蛋白質）</text>
+
+          <!-- 牛肉 25 kg → width=580px (25×23.2) -->
+          <rect x="200" y="88" width="580" height="42" rx="6" fill="url(#beefGrad)"/>
+          <text x="192" y="115" text-anchor="end" font-size="12" fill="#1e293b" font-weight="700">牛肉</text>
+          <text x="788" y="115" text-anchor="start" font-size="13" fill="#dc2626" font-weight="900"> 25.0</text>
+          <!-- 牛肉強調標籤 -->
+          <rect x="360" y="95" width="90" height="22" rx="4" fill="#fef2f2" stroke="#dc2626" stroke-width="1"/>
+          <text x="405" y="111" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="800">最高排放！</text>
+
+          <!-- 雞肉 4.3 kg → width=99.8px -->
+          <rect x="200" y="148" width="100" height="42" rx="6" fill="url(#chickenGrad)"/>
+          <text x="192" y="175" text-anchor="end" font-size="12" fill="#1e293b" font-weight="700">雞肉</text>
+          <text x="308" y="175" text-anchor="start" font-size="13" fill="#d97706" font-weight="900"> 4.3</text>
+
+          <!-- 豆腐 1.6 kg → width=37.1px -->
+          <rect x="200" y="208" width="37" height="42" rx="6" fill="url(#tofuGrad)"/>
+          <text x="192" y="235" text-anchor="end" font-size="12" fill="#1e293b" font-weight="700">豆腐</text>
+          <text x="245" y="235" text-anchor="start" font-size="13" fill="#0369a1" font-weight="900"> 1.6</text>
+
+          <!-- 豆類 0.65 kg → width=15px -->
+          <rect x="200" y="268" width="15" height="42" rx="6" fill="url(#legGrad)"/>
+          <text x="192" y="295" text-anchor="end" font-size="12" fill="#1e293b" font-weight="700">豆類</text>
+          <text x="223" y="295" text-anchor="start" font-size="13" fill="#15803d" font-weight="900"> 0.65</text>
+
+          <!-- 38倍標記 -->
+          <g transform="translate(600,150)">
+            <rect x="-72" y="-18" width="144" height="36" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+            <text x="0" y="-2" text-anchor="middle" font-size="11" fill="#92400e" font-weight="700">牛肉是豆類的</text>
+            <text x="0" y="13" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="900">38 倍</text>
+          </g>
+
+          <text x="430" y="378" text-anchor="middle" font-size="9" fill="#64748b">資料來源：Poore &amp; Nemecek (2018), Science; Our World in Data</text>
         </svg>
         <div class="viz-callout">同樣 100g 蛋白質,差 38 倍</div>
       </div>
@@ -313,17 +438,68 @@ border: 1px solid #bfdbfe;
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="食物碳足跡組成餅圖">
-          <rect x="64" y="42" width="732" height="272" rx="26" fill="#f8fafc" stroke="#e2e8f0"/>
-          <g transform="translate(165 118)">
-            <circle cx="70" cy="70" r="62" fill="#ccfbf1" stroke="#0f766e" stroke-width="4"/>
-            <circle cx="265" cy="70" r="62" fill="#fff7ed" stroke="#f59e0b" stroke-width="4"/>
-            <circle cx="460" cy="70" r="62" fill="#eff6ff" stroke="#2563eb" stroke-width="4"/>
-            <text x="70" y="76" text-anchor="middle" fill="#0f766e" font-size="18" font-weight="900">觀察</text>
-            <text x="265" y="76" text-anchor="middle" fill="#9a3412" font-size="18" font-weight="900">理解</text>
-            <text x="460" y="76" text-anchor="middle" fill="#1d4ed8" font-size="18" font-weight="900">行動</text>
+          <rect x="20" y="20" width="820" height="350" rx="14" fill="#fefce8" stroke="#fde68a" stroke-width="1.5"/>
+          <text x="430" y="48" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="800">一份食物的碳足跡從哪裡來？</text>
+
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
           </g>
-          <text x="430" y="92" text-anchor="middle" font-size="18" fill="#0f766e" font-weight="900">食物碳足跡組成餅圖</text>
-          <text x="430" y="340" text-anchor="middle" font-size="14" fill="#64748b" font-weight="700">吃在地一定比進口低碳?</text>
+
+          <!-- 環形圖 cx=240 cy=210 R=130 r=72 -->
+          <!-- 生產 83% = 298.8°, 運輸 6% = 21.6°, 加工零售 5% = 18°, 包裝 5% = 18°, 消費廢棄 1% = 3.6° -->
+          <!-- 從頂部(-90°)順時針 -->
+          <!-- 生產 -90°→208.8° -->
+          <path d="M240 80 A130 130 0 1 1 116.4 319.5 L181.2 271.2 A72 72 0 1 0 240 138 Z" fill="#16a34a" stroke="#fff" stroke-width="2"/>
+          <!-- 運輸 208.8°→230.4° -->
+          <path d="M116.4 319.5 A130 130 0 0 1 73.5 283.5 L121.7 250.4 A72 72 0 0 0 181.2 271.2 Z" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+          <!-- 加工零售 230.4°→248.4° -->
+          <path d="M73.5 283.5 A130 130 0 0 1 59.2 243.7 L111.7 229.1 A72 72 0 0 0 121.7 250.4 Z" fill="#9333ea" stroke="#fff" stroke-width="2"/>
+          <!-- 包裝 248.4°→266.4° -->
+          <path d="M59.2 243.7 A130 130 0 0 1 59.5 176.3 L111.7 187.7 A72 72 0 0 0 111.7 229.1 Z" fill="#0ea5e9" stroke="#fff" stroke-width="2"/>
+          <!-- 消費廢棄 266.4°→270° -->
+          <path d="M59.5 176.3 A130 130 0 0 1 59.7 168.7 L111.9 183.2 A72 72 0 0 0 111.7 187.7 Z" fill="#dc2626" stroke="#fff" stroke-width="2"/>
+          <!-- 中央圓 -->
+          <circle cx="240" cy="210" r="68" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+          <text x="240" y="205" text-anchor="middle" font-size="12" fill="#1e293b" font-weight="700">碳足跡</text>
+          <text x="240" y="222" text-anchor="middle" font-size="12" fill="#1e293b" font-weight="700">來源</text>
+
+          <!-- 右側說明欄 -->
+          <g transform="translate(410,70)">
+            <!-- 生產 83% -->
+            <rect x="0" y="0" width="380" height="52" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+            <rect x="10" y="14" width="18" height="18" rx="3" fill="#16a34a"/>
+            <text x="36" y="24" font-size="13" fill="#15803d" font-weight="800">農業生產</text>
+            <text x="36" y="40" font-size="11" fill="#64748b">土地利用、飼料、甲烷、農藥</text>
+            <text x="340" y="32" text-anchor="end" font-size="18" fill="#15803d" font-weight="900">≈83%</text>
+
+            <!-- 運輸 6% -->
+            <rect x="0" y="62" width="380" height="42" rx="8" fill="#fef9c3" stroke="#f59e0b" stroke-width="1.5"/>
+            <rect x="10" y="76" width="18" height="18" rx="3" fill="#f59e0b"/>
+            <text x="36" y="86" font-size="13" fill="#92400e" font-weight="800">運輸（食物里程）</text>
+            <text x="36" y="100" font-size="11" fill="#64748b">從農場到港口到餐桌</text>
+            <text x="340" y="92" text-anchor="end" font-size="18" fill="#d97706" font-weight="900">≈6%</text>
+
+            <!-- 加工零售 5% -->
+            <rect x="0" y="114" width="180" height="42" rx="8" fill="#f3e8ff" stroke="#9333ea" stroke-width="1.5"/>
+            <rect x="10" y="128" width="18" height="18" rx="3" fill="#9333ea"/>
+            <text x="36" y="138" font-size="12" fill="#7e22ce" font-weight="800">加工零售</text>
+            <text x="160" y="140" text-anchor="end" font-size="16" fill="#7e22ce" font-weight="900">≈5%</text>
+
+            <!-- 包裝 5% -->
+            <rect x="195" y="114" width="185" height="42" rx="8" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="1.5"/>
+            <rect x="205" y="128" width="18" height="18" rx="3" fill="#0ea5e9"/>
+            <text x="231" y="138" font-size="12" fill="#0369a1" font-weight="800">包裝</text>
+            <text x="375" y="140" text-anchor="end" font-size="16" fill="#0369a1" font-weight="900">≈5%</text>
+
+            <!-- 重點框 -->
+            <rect x="0" y="168" width="380" height="38" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="190" y="183" text-anchor="middle" font-size="12" fill="#dc2626" font-weight="800">關鍵發現：運輸只佔 6%</text>
+            <text x="190" y="199" text-anchor="middle" font-size="11" fill="#dc2626">「吃在地」不一定比進口食物低碳！</text>
+          </g>
+
+          <text x="430" y="378" text-anchor="middle" font-size="9" fill="#64748b">概念比例參考 Poore &amp; Nemecek (2018)；各食物來源比例差異大，數值為教學示意</text>
         </svg>
         <div class="viz-callout">吃在地一定比進口低碳?</div>
       </div>
@@ -340,17 +516,77 @@ border: 1px solid #bfdbfe;
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="吃 — 食物系統圖">
-          <rect x="64" y="42" width="732" height="272" rx="26" fill="#f8fafc" stroke="#e2e8f0"/>
-          <g transform="translate(165 118)">
-            <circle cx="70" cy="70" r="62" fill="#ccfbf1" stroke="#0f766e" stroke-width="4"/>
-            <circle cx="265" cy="70" r="62" fill="#fff7ed" stroke="#f59e0b" stroke-width="4"/>
-            <circle cx="460" cy="70" r="62" fill="#eff6ff" stroke="#2563eb" stroke-width="4"/>
-            <text x="70" y="76" text-anchor="middle" fill="#0f766e" font-size="18" font-weight="900">觀察</text>
-            <text x="265" y="76" text-anchor="middle" fill="#9a3412" font-size="18" font-weight="900">理解</text>
-            <text x="460" y="76" text-anchor="middle" fill="#1d4ed8" font-size="18" font-weight="900">行動</text>
+          <defs>
+            <marker id="sysArrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6 Z" fill="#0f766e"/>
+            </marker>
+            <marker id="fbArrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6 Z" fill="#dc2626"/>
+            </marker>
+            <linearGradient id="sysBg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f0fdf4"/>
+              <stop offset="100%" stop-color="#ecfeff"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="20" width="820" height="350" rx="14" fill="url(#sysBg)" stroke="#a7f3d0" stroke-width="1.5"/>
+          <text x="430" y="46" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="800">把「吃」放進系統圖</text>
+
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
           </g>
-          <text x="430" y="92" text-anchor="middle" font-size="18" fill="#0f766e" font-weight="900">吃 — 食物系統圖</text>
-          <text x="430" y="340" text-anchor="middle" font-size="14" fill="#64748b" font-weight="700">把「吃」放進系統圖</text>
+
+          <!-- 主流程節點 (y=175, 5個節點間距155px，起x=60) -->
+          <!-- 農業生產 x=60 -->
+          <rect x="38" y="152" width="110" height="46" rx="10" fill="#16a34a" stroke="#15803d" stroke-width="2"/>
+          <text x="93" y="172" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">🌾 農業生產</text>
+          <text x="93" y="188" text-anchor="middle" font-size="9" fill="#d1fae5">土地・水・能源</text>
+
+          <!-- 加工運輸 x=210 -->
+          <rect x="193" y="152" width="110" height="46" rx="10" fill="#0ea5e9" stroke="#0369a1" stroke-width="2"/>
+          <text x="248" y="172" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">🏭 加工運輸</text>
+          <text x="248" y="188" text-anchor="middle" font-size="9" fill="#e0f2fe">包裝・冷鏈・里程</text>
+
+          <!-- 零售市場 x=365 -->
+          <rect x="348" y="152" width="110" height="46" rx="10" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+          <text x="403" y="172" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">🛒 零售市場</text>
+          <text x="403" y="188" text-anchor="middle" font-size="9" fill="#fef9c3">價格・標示・選擇</text>
+
+          <!-- 消費者 x=520 -->
+          <rect x="503" y="152" width="110" height="46" rx="10" fill="#9333ea" stroke="#7e22ce" stroke-width="2"/>
+          <text x="558" y="172" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">🍽 消費者</text>
+          <text x="558" y="188" text-anchor="middle" font-size="9" fill="#f3e8ff">飲食選擇・文化</text>
+
+          <!-- 廢棄物 x=675 -->
+          <rect x="658" y="152" width="110" height="46" rx="10" fill="#dc2626" stroke="#b91c1c" stroke-width="2"/>
+          <text x="713" y="172" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">🗑 廢棄物</text>
+          <text x="713" y="188" text-anchor="middle" font-size="9" fill="#fee2e2">廚餘・包裝・剩食</text>
+
+          <!-- 主流程箭頭 -->
+          <line x1="148" y1="175" x2="191" y2="175" stroke="#0f766e" stroke-width="2.5" marker-end="url(#sysArrow)"/>
+          <line x1="303" y1="175" x2="346" y2="175" stroke="#0f766e" stroke-width="2.5" marker-end="url(#sysArrow)"/>
+          <line x1="458" y1="175" x2="501" y2="175" stroke="#0f766e" stroke-width="2.5" marker-end="url(#sysArrow)"/>
+          <line x1="613" y1="175" x2="656" y2="175" stroke="#0f766e" stroke-width="2.5" marker-end="url(#sysArrow)"/>
+
+          <!-- 環境衝擊 (上方) -->
+          <rect x="148" y="70" width="520" height="30" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
+          <text x="408" y="90" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="700">🌍 環境衝擊：GHG 排放・土地退化・水資源耗用・生物多樣性喪失</text>
+          <!-- 上衝擊箭頭 -->
+          <line x1="93" y1="152" x2="200" y2="100" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#fbArrow)"/>
+          <line x1="403" y1="152" x2="408" y2="100" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#fbArrow)"/>
+          <line x1="713" y1="152" x2="620" y2="100" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#fbArrow)"/>
+
+          <!-- 回饋迴路 (下方弧線) -->
+          <path d="M713 198 C713 290,93 290,93 198" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#fbArrow)"/>
+          <text x="403" y="284" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="700">氣候衝擊回饋：極端氣候影響農業生產（強化迴路 R）</text>
+
+          <!-- 個人行動介入點 -->
+          <rect x="478" y="240" width="100" height="30" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+          <text x="528" y="259" text-anchor="middle" font-size="10" fill="#15803d" font-weight="800">↑ 你的選擇</text>
+          <line x1="528" y1="240" x2="528" y2="198" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#sysArrow)"/>
+
+          <text x="430" y="375" text-anchor="middle" font-size="9" fill="#64748b">系統圖為概念示意，箭頭關係依 Poore &amp; Nemecek (2018) 及 IPCC AR6 WGIII Ch.12 整理</text>
         </svg>
         <div class="viz-callout">把「吃」放進系統圖</div>
       </div>
@@ -376,17 +612,106 @@ border: 1px solid #bfdbfe;
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="行星健康飲食盤示意">
-          <rect x="64" y="42" width="732" height="272" rx="26" fill="#f8fafc" stroke="#e2e8f0"/>
-          <g transform="translate(165 118)">
-            <circle cx="70" cy="70" r="62" fill="#ccfbf1" stroke="#0f766e" stroke-width="4"/>
-            <circle cx="265" cy="70" r="62" fill="#fff7ed" stroke="#f59e0b" stroke-width="4"/>
-            <circle cx="460" cy="70" r="62" fill="#eff6ff" stroke="#2563eb" stroke-width="4"/>
-            <text x="70" y="76" text-anchor="middle" fill="#0f766e" font-size="18" font-weight="900">觀察</text>
-            <text x="265" y="76" text-anchor="middle" fill="#9a3412" font-size="18" font-weight="900">理解</text>
-            <text x="460" y="76" text-anchor="middle" fill="#1d4ed8" font-size="18" font-weight="900">行動</text>
+          <defs>
+            <linearGradient id="plateBg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#f0fdf4"/>
+              <stop offset="100%" stop-color="#ecfdf5"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="20" width="820" height="350" rx="14" fill="url(#plateBg)" stroke="#a7f3d0" stroke-width="1.5"/>
+          <text x="430" y="46" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="800">EAT-Lancet 行星健康飲食盤</text>
+
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
           </g>
-          <text x="430" y="92" text-anchor="middle" font-size="18" fill="#0f766e" font-weight="900">行星健康飲食盤示意</text>
-          <text x="430" y="340" text-anchor="middle" font-size="14" fill="#64748b" font-weight="700">EAT-Lancet 行星健康飲食</text>
+
+          <!-- 盤子外圈 cx=240 cy=210 r=155 -->
+          <circle cx="240" cy="210" r="155" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="3"/>
+          <!-- 盤子內圈 r=148 -->
+          <circle cx="240" cy="210" r="148" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+
+          <!-- 蔬果 50% (180°) 上半：-90°→90° -->
+          <!-- 上半左：蔬菜 ~30% = 108°, -90°→18° -->
+          <path d="M240 62 A148 148 0 0 1 380.7 259.8 L240 210 Z" fill="#16a34a" opacity="0.85"/>
+          <!-- 上半右：水果 ~20% = 72°, 18°→90° -->
+          <path d="M380.7 259.8 A148 148 0 0 1 240 358 L240 210 Z" fill="#22c55e" opacity="0.85"/>
+
+          <!-- 全穀類 25% = 90°, 90°→180° -->
+          <path d="M240 358 A148 148 0 0 1 92 210 L240 210 Z" fill="#f59e0b" opacity="0.85"/>
+
+          <!-- 植物蛋白 15% = 54°, 180°→234° -->
+          <path d="M92 210 A148 148 0 0 1 154.6 96.4 L240 210 Z" fill="#0ea5e9" opacity="0.85"/>
+
+          <!-- 動物蛋白(少量) 10% = 36°, 234°→270° -->
+          <path d="M154.6 96.4 A148 148 0 0 1 240 62 L240 210 Z" fill="#f87171" opacity="0.85"/>
+
+          <!-- 分割線 -->
+          <line x1="240" y1="62" x2="240" y2="210" stroke="#fff" stroke-width="2"/>
+          <line x1="380.7" y1="259.8" x2="240" y2="210" stroke="#fff" stroke-width="2"/>
+          <line x1="240" y1="358" x2="240" y2="210" stroke="#fff" stroke-width="2"/>
+          <line x1="92" y1="210" x2="240" y2="210" stroke="#fff" stroke-width="2"/>
+          <line x1="154.6" y1="96.4" x2="240" y2="210" stroke="#fff" stroke-width="2"/>
+
+          <!-- 盤子中心標籤 -->
+          <circle cx="240" cy="210" r="36" fill="#fff" stroke="#e2e8f0" stroke-width="1.5"/>
+          <text x="240" y="206" text-anchor="middle" font-size="9" fill="#64748b" font-weight="600">行星</text>
+          <text x="240" y="219" text-anchor="middle" font-size="9" fill="#64748b" font-weight="600">健康飲食</text>
+
+          <!-- 說明欄 右側 -->
+          <g transform="translate(420,58)">
+            <!-- 蔬菜 30% -->
+            <rect x="0" y="0" width="14" height="14" rx="2" fill="#16a34a"/>
+            <text x="20" y="12" font-size="12" fill="#1e293b" font-weight="700">蔬菜</text>
+            <text x="130" y="12" text-anchor="end" font-size="12" fill="#15803d" font-weight="800">~30%</text>
+            <text x="140" y="12" font-size="10" fill="#64748b">多色蔬菜為主</text>
+
+            <!-- 水果 20% -->
+            <rect x="0" y="22" width="14" height="14" rx="2" fill="#22c55e"/>
+            <text x="20" y="34" font-size="12" fill="#1e293b" font-weight="700">水果</text>
+            <text x="130" y="34" text-anchor="end" font-size="12" fill="#15803d" font-weight="800">~20%</text>
+            <text x="140" y="34" font-size="10" fill="#64748b">各類時令水果</text>
+
+            <!-- 全穀類 25% -->
+            <rect x="0" y="44" width="14" height="14" rx="2" fill="#f59e0b"/>
+            <text x="20" y="56" font-size="12" fill="#1e293b" font-weight="700">全穀類</text>
+            <text x="130" y="56" text-anchor="end" font-size="12" fill="#d97706" font-weight="800">~25%</text>
+            <text x="140" y="56" font-size="10" fill="#64748b">糙米、燕麥、藜麥</text>
+
+            <!-- 植物蛋白 15% -->
+            <rect x="0" y="66" width="14" height="14" rx="2" fill="#0ea5e9"/>
+            <text x="20" y="78" font-size="12" fill="#1e293b" font-weight="700">植物蛋白</text>
+            <text x="130" y="78" text-anchor="end" font-size="12" fill="#0369a1" font-weight="800">~15%</text>
+            <text x="140" y="78" font-size="10" fill="#64748b">豆類、堅果、豆腐</text>
+
+            <!-- 動物蛋白 10% -->
+            <rect x="0" y="88" width="14" height="14" rx="2" fill="#f87171"/>
+            <text x="20" y="100" font-size="12" fill="#1e293b" font-weight="700">動物蛋白</text>
+            <text x="130" y="100" text-anchor="end" font-size="12" fill="#dc2626" font-weight="800">~10%</text>
+            <text x="140" y="100" font-size="10" fill="#64748b">魚、蛋、少量肉</text>
+
+            <!-- 分隔線 -->
+            <line x1="0" y1="114" x2="400" y2="114" stroke="#e2e8f0" stroke-width="1"/>
+
+            <!-- 核心目標 -->
+            <rect x="0" y="122" width="400" height="56" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+            <text x="200" y="140" text-anchor="middle" font-size="12" fill="#15803d" font-weight="800">EAT-Lancet 2019 核心目標</text>
+            <text x="200" y="157" text-anchor="middle" font-size="11" fill="#1e293b">每年可預防約 1,100 萬人早死</text>
+            <text x="200" y="172" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="700">紅肉與糖須減少 50% 以上</text>
+
+            <!-- 臺灣現狀對比 -->
+            <rect x="0" y="188" width="400" height="42" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="200" y="206" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">臺灣現況：蔬果不足、紅肉偏高</text>
+            <text x="200" y="222" text-anchor="middle" font-size="10" fill="#92400e">與行星健康飲食建議有明顯落差</text>
+
+            <!-- 2050目標 -->
+            <rect x="0" y="240" width="400" height="34" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+            <text x="200" y="256" text-anchor="middle" font-size="11" fill="#1d4ed8" font-weight="800">2050 年：蔬果、堅果、豆類須倍增</text>
+            <text x="200" y="269" text-anchor="middle" font-size="10" fill="#1d4ed8">紅肉消費須從現在大幅削減</text>
+          </g>
+
+          <text x="430" y="378" text-anchor="middle" font-size="9" fill="#64748b">參考：EAT-Lancet Commission (2019)；盤面比例為概念示意，實際建議見委員會完整報告</text>
         </svg>
         <div class="viz-callout">EAT-Lancet 行星健康飲食</div>
       </div>
@@ -406,17 +731,109 @@ border: 1px solid #bfdbfe;
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="臺灣糧食自給率歷年趨勢圖">
-          <rect x="64" y="42" width="732" height="272" rx="26" fill="#f8fafc" stroke="#e2e8f0"/>
-          <line x1="132" y1="270" x2="728" y2="270" stroke="#64748b" stroke-width="2"/>
-          <line x1="132" y1="84" x2="132" y2="270" stroke="#64748b" stroke-width="2"/>
-          <g stroke="#dbeafe" stroke-width="1">
-            <line x1="132" y1="224" x2="728" y2="224"/><line x1="132" y1="178" x2="728" y2="178"/><line x1="132" y1="132" x2="728" y2="132"/>
+          <defs>
+            <linearGradient id="twBg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fefce8"/>
+              <stop offset="100%" stop-color="#f0fdf4"/>
+            </linearGradient>
+            <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0f766e" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#0f766e" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="20" width="820" height="350" rx="14" fill="url(#twBg)" stroke="#fde68a" stroke-width="1.5"/>
+          <text x="430" y="46" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="800">臺灣糧食自給率歷年趨勢（熱量計算）</text>
+
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
           </g>
-          <path d="M132 238 C218 236,274 228,344 210 C432 188,506 154,586 120 C642 96,690 82,728 74" fill="none" stroke="#0f766e" stroke-width="6" stroke-linecap="round"/>
-          <path d="M132 242 C218 240,274 232,344 214 C432 192,506 158,586 124 C642 100,690 86,728 78" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="132" cy="238" r="8" fill="#0f766e"/><circle cx="728" cy="74" r="8" fill="#f97316"/>
-          <text x="430" y="92" text-anchor="middle" font-size="18" fill="#0f766e" font-weight="900">臺灣糧食自給率歷年趨勢圖</text>
-          <text x="430" y="340" text-anchor="middle" font-size="14" fill="#64748b" font-weight="700">臺灣的餐桌數字</text>
+
+          <!-- 繪圖區域: x軸 120→800, y軸 70→310, y範圍 0%→100% (1%=2.4px) -->
+          <!-- Y軸 -->
+          <line x1="120" y1="68" x2="120" y2="312" stroke="#1e293b" stroke-width="1.5"/>
+          <!-- X軸 -->
+          <line x1="120" y1="312" x2="802" y2="312" stroke="#1e293b" stroke-width="1.5"/>
+
+          <!-- Y軸刻度: 0%=312, 20%=264, 40%=216, 60%=168, 80%=120, 100%=72 -->
+          <g font-size="10" fill="#475569">
+            <line x1="115" y1="312" x2="120" y2="312" stroke="#1e293b"/>
+            <text x="110" y="316" text-anchor="end">0%</text>
+            <line x1="115" y1="264" x2="802" y2="264" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="115" y1="264" x2="120" y2="264" stroke="#1e293b"/>
+            <text x="110" y="268" text-anchor="end">20%</text>
+            <line x1="115" y1="216" x2="802" y2="216" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="115" y1="216" x2="120" y2="216" stroke="#1e293b"/>
+            <text x="110" y="220" text-anchor="end">40%</text>
+            <line x1="115" y1="168" x2="802" y2="168" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="115" y1="168" x2="120" y2="168" stroke="#1e293b"/>
+            <text x="110" y="172" text-anchor="end">60%</text>
+            <line x1="115" y1="120" x2="802" y2="120" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="115" y1="120" x2="120" y2="120" stroke="#1e293b"/>
+            <text x="110" y="124" text-anchor="end">80%</text>
+            <line x1="115" y1="72" x2="802" y2="72" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="115" y1="72" x2="120" y2="72" stroke="#1e293b"/>
+            <text x="110" y="76" text-anchor="end">100%</text>
+          </g>
+
+          <!-- Y軸標題 -->
+          <text x="38" y="200" text-anchor="middle" font-size="11" fill="#1e293b" font-weight="700" transform="rotate(-90,38,200)">糧食自給率（%，熱量計）</text>
+
+          <!-- X軸年份刻度：1980→2023，共43年，寬682px，每年15.86px -->
+          <!-- 1980=120, 1990=278.6, 2000=437.2, 2010=595.8, 2020=754.4, 2023=802 -->
+          <g font-size="10" fill="#475569">
+            <line x1="120" y1="312" x2="120" y2="317" stroke="#1e293b"/>
+            <text x="120" y="328" text-anchor="middle">1980</text>
+            <line x1="279" y1="312" x2="279" y2="317" stroke="#1e293b"/>
+            <text x="279" y="328" text-anchor="middle">1990</text>
+            <line x1="437" y1="312" x2="437" y2="317" stroke="#1e293b"/>
+            <text x="437" y="328" text-anchor="middle">2000</text>
+            <line x1="596" y1="312" x2="596" y2="317" stroke="#1e293b"/>
+            <text x="596" y="328" text-anchor="middle">2010</text>
+            <line x1="754" y1="312" x2="754" y2="317" stroke="#1e293b"/>
+            <text x="754" y="328" text-anchor="middle">2020</text>
+          </g>
+
+          <!-- 趨勢線資料點（近似值示意）：
+               1980≈83% → y=112, 1985≈70% → y=144, 1990≈60% → y=168,
+               1995≈55% → y=180, 2000≈50% → y=192, 2005≈45% → y=204,
+               2009≈32% → y=235, 2015≈32% → y=235, 2020≈31% → y=237, 2023≈31% → y=237 -->
+          <!-- 面積填充 -->
+          <path d="M120 112 C200 130,260 150,279 168 C330 188,390 196,437 192
+                   C500 196,550 200,596 235 C640 237,720 237,754 237 C775 237,796 237,802 237
+                   L802 312 L120 312 Z"
+                fill="url(#areaFill)"/>
+
+          <!-- 趨勢折線 -->
+          <path d="M120 112 C200 130,260 150,279 168 C330 188,390 196,437 192
+                   C500 196,550 200,596 235 C640 237,720 237,754 237 C775 237,796 237,802 237"
+                fill="none" stroke="#0f766e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+          <!-- 關鍵資料點 -->
+          <circle cx="120" cy="112" r="6" fill="#0f766e" stroke="#fff" stroke-width="2"/>
+          <circle cx="437" cy="192" r="5" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+          <circle cx="596" cy="235" r="6" fill="#dc2626" stroke="#fff" stroke-width="2"/>
+          <circle cx="802" cy="237" r="6" fill="#dc2626" stroke="#fff" stroke-width="2"/>
+
+          <!-- 1980標籤 -->
+          <rect x="126" y="94" width="60" height="22" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="1"/>
+          <text x="156" y="109" text-anchor="middle" font-size="10" fill="#15803d" font-weight="800">≈83%</text>
+
+          <!-- 2009標籤 -->
+          <rect x="580" y="242" width="55" height="20" rx="4" fill="#fef2f2" stroke="#dc2626" stroke-width="1"/>
+          <text x="607" y="256" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="800">32%</text>
+
+          <!-- 2022-23標籤 -->
+          <rect x="716" y="218" width="82" height="22" rx="4" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+          <text x="757" y="233" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="900">≈31%</text>
+
+          <!-- 警示框 -->
+          <rect x="230" y="72" width="320" height="34" rx="8" fill="#fef9c3" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="390" y="87" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">40 年間下降逾 50 個百分點</text>
+          <text x="390" y="100" text-anchor="middle" font-size="10" fill="#92400e">約 7 成熱量依賴進口　糧食安全風險高</text>
+
+          <text x="430" y="372" text-anchor="middle" font-size="9" fill="#64748b">資料來源：農業部糧食供需年報；趨勢走向依官方數據，中間年份數值為教學示意</text>
         </svg>
         <div class="viz-callout">臺灣的餐桌數字</div>
       </div>
@@ -436,17 +853,98 @@ border: 1px solid #bfdbfe;
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="亞馬遜雨林砍伐 + 飼料作物外銷示意">
-          <defs><marker id="worldArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#0f766e"/></marker></defs>
-          <rect x="58" y="42" width="744" height="268" rx="28" fill="#eef9ff" stroke="#bfdbfe"/>
-          <path d="M136 152 C158 110,221 102,263 126 C292 143,282 184,240 194 C196 205,158 190,136 152Z" fill="#8bd3bd" stroke="#0f766e" stroke-width="2"/>
-          <path d="M322 124 C376 85,468 94,498 146 C523 190,480 232,414 224 C354 217,292 174,322 124Z" fill="#fde68a" stroke="#b45309" stroke-width="2"/>
-          <path d="M524 139 C586 99,699 108,724 164 C746 214,678 244,596 226 C542 214,492 171,524 139Z" fill="#bae6fd" stroke="#0369a1" stroke-width="2"/>
-          <path d="M430 222 C462 235,475 278,452 310 C426 286,415 250,430 222Z" fill="#fda4af" stroke="#be123c" stroke-width="2"/>
-          <path d="M624 182 C552 154,514 146,452 156" fill="none" stroke="#0f766e" stroke-width="4" stroke-linecap="round" marker-end="url(#worldArrow)"/>
-          <path d="M624 182 C540 230,494 245,416 238" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" marker-end="url(#worldArrow)"/>
-          <circle cx="624" cy="182" r="8" fill="#0f766e"/><text x="624" y="164" text-anchor="middle" font-size="13" fill="#0f766e" font-weight="900">臺灣</text>
-          <text x="430" y="300" text-anchor="middle" font-size="13" fill="#64748b" font-weight="700">用世界尺度看區域差異與跨國流動</text>
-          <text x="430" y="86" text-anchor="middle" font-size="18" fill="#0f766e" font-weight="900">亞馬遜雨林砍伐 + 飼料作物外銷示意</text>
+          <defs>
+            <marker id="chainArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L9,3 L0,6 Z" fill="#dc2626"/>
+            </marker>
+            <marker id="shipArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L9,3 L0,6 Z" fill="#0369a1"/>
+            </marker>
+            <linearGradient id="amazonBg" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#dcfce7"/>
+              <stop offset="40%" stop-color="#fef9c3"/>
+              <stop offset="100%" stop-color="#e0f2fe"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="20" width="820" height="350" rx="14" fill="url(#amazonBg)" stroke="#fde68a" stroke-width="1.5"/>
+          <text x="430" y="46" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="800">南方國家的代價：亞馬遜→飼料→臺灣餐桌</text>
+
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
+          </g>
+
+          <!-- 步驟1: 雨林砍伐 (巴西) -->
+          <rect x="30" y="80" width="155" height="200" rx="12" fill="#166534" stroke="#15803d" stroke-width="2"/>
+          <text x="108" y="104" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">🌳 亞馬遜雨林</text>
+          <text x="108" y="120" text-anchor="middle" font-size="10" fill="#bbf7d0">巴西・南美洲</text>
+          <!-- 樹木圖示 -->
+          <polygon points="108,135 92,165 124,165" fill="#22c55e"/>
+          <rect x="104" y="165" width="8" height="14" fill="#92400e"/>
+          <polygon points="108,148 95,172 121,172" fill="#16a34a"/>
+          <!-- 砍伐X -->
+          <line x1="88" y1="148" x2="128" y2="180" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
+          <line x1="128" y1="148" x2="88" y2="180" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
+          <text x="108" y="202" text-anchor="middle" font-size="10" fill="#fca5a5" font-weight="700">砍伐！</text>
+          <text x="108" y="218" text-anchor="middle" font-size="9" fill="#86efac">每年數百萬公頃</text>
+          <text x="108" y="232" text-anchor="middle" font-size="9" fill="#86efac">土地轉為農地</text>
+          <text x="108" y="258" text-anchor="middle" font-size="10" fill="#fef9c3" font-weight="700">GHG 大量排放</text>
+          <text x="108" y="272" text-anchor="middle" font-size="9" fill="#fef9c3">生物多樣性喪失</text>
+
+          <!-- 箭頭1 -->
+          <line x1="185" y1="180" x2="228" y2="180" stroke="#dc2626" stroke-width="3" marker-end="url(#chainArrow)"/>
+          <text x="207" y="170" text-anchor="middle" font-size="9" fill="#dc2626" font-weight="700">改種</text>
+
+          <!-- 步驟2: 黃豆/玉米飼料 -->
+          <rect x="230" y="80" width="155" height="200" rx="12" fill="#ca8a04" stroke="#b45309" stroke-width="2"/>
+          <text x="308" y="104" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">🌽 飼料作物</text>
+          <text x="308" y="120" text-anchor="middle" font-size="10" fill="#fef9c3">黃豆・玉米・高粱</text>
+          <!-- 作物圖示 -->
+          <rect x="290" y="135" width="36" height="50" rx="4" fill="#fef9c3" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="308" y="166" text-anchor="middle" font-size="20">🌾</text>
+          <text x="308" y="202" text-anchor="middle" font-size="9" fill="#fff">大規模單一作物</text>
+          <text x="308" y="216" text-anchor="middle" font-size="9" fill="#fff">大量化肥農藥</text>
+          <text x="308" y="240" text-anchor="middle" font-size="10" fill="#fef3c7" font-weight="700">70–80% 黃豆</text>
+          <text x="308" y="255" text-anchor="middle" font-size="9" fill="#fef3c7">用於畜牧飼料</text>
+          <text x="308" y="270" text-anchor="middle" font-size="9" fill="#fef3c7">非人類直接食用</text>
+
+          <!-- 箭頭2 (船) -->
+          <line x1="385" y1="180" x2="428" y2="180" stroke="#0369a1" stroke-width="3" marker-end="url(#shipArrow)"/>
+          <text x="407" y="168" text-anchor="middle" font-size="9" fill="#0369a1" font-weight="700">出口</text>
+          <text x="407" y="195" text-anchor="middle" font-size="14">🚢</text>
+
+          <!-- 步驟3: 畜牧業 -->
+          <rect x="430" y="80" width="155" height="200" rx="12" fill="#b45309" stroke="#92400e" stroke-width="2"/>
+          <text x="508" y="104" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">🐄 畜牧加工</text>
+          <text x="508" y="120" text-anchor="middle" font-size="10" fill="#fef9c3">亞洲各地</text>
+          <text x="508" y="160" text-anchor="middle" font-size="32">🐄</text>
+          <text x="508" y="202" text-anchor="middle" font-size="9" fill="#fff">飼料轉化效率低</text>
+          <text x="508" y="216" text-anchor="middle" font-size="9" fill="#fff">7–8 kg 飼料</text>
+          <text x="508" y="230" text-anchor="middle" font-size="9" fill="#fff">→ 1 kg 牛肉</text>
+          <text x="508" y="255" text-anchor="middle" font-size="10" fill="#fed7aa" font-weight="700">甲烷排放</text>
+          <text x="508" y="270" text-anchor="middle" font-size="9" fill="#fed7aa">廢水・土地壓力</text>
+
+          <!-- 箭頭3 -->
+          <line x1="585" y1="180" x2="628" y2="180" stroke="#dc2626" stroke-width="3" marker-end="url(#chainArrow)"/>
+          <text x="607" y="170" text-anchor="middle" font-size="9" fill="#dc2626" font-weight="700">進口</text>
+
+          <!-- 步驟4: 臺灣餐桌 -->
+          <rect x="630" y="80" width="155" height="200" rx="12" fill="#0f766e" stroke="#0d9488" stroke-width="2"/>
+          <text x="708" y="104" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">🍽 臺灣餐桌</text>
+          <text x="708" y="120" text-anchor="middle" font-size="10" fill="#ccfbf1">消費者的選擇</text>
+          <text x="708" y="160" text-anchor="middle" font-size="28">🥩</text>
+          <text x="708" y="200" text-anchor="middle" font-size="9" fill="#fff">一塊牛排背後</text>
+          <text x="708" y="214" text-anchor="middle" font-size="9" fill="#fff">隱含遠方土地</text>
+          <text x="708" y="228" text-anchor="middle" font-size="9" fill="#fff">水資源與排放</text>
+          <text x="708" y="252" text-anchor="middle" font-size="10" fill="#fef9c3" font-weight="700">你的選擇</text>
+          <text x="708" y="267" text-anchor="middle" font-size="9" fill="#fef9c3">影響地球另一端</text>
+
+          <!-- 底部總結 -->
+          <rect x="30" y="295" width="800" height="32" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+          <text x="430" y="315" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="800">食物里程不只是距離——背後是土地剝奪、碳排放與糧食不公義的全球鏈條</text>
+
+          <text x="430" y="372" text-anchor="middle" font-size="9" fill="#64748b">參考：Greenpeace Taiwan；Poore &amp; Nemecek (2018)；圖示為概念示意，非特定國家實際數據</text>
         </svg>
         <div class="viz-callout">南方國家的代價</div>
       </div>
@@ -466,23 +964,83 @@ border: 1px solid #bfdbfe;
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="食物銀行運作流程示意">
-          <defs><marker id="flowArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#0f766e"/></marker></defs>
-          <rect x="64" y="42" width="732" height="272" rx="26" fill="#f8fafc" stroke="#e2e8f0"/>
-          <rect x="112" y="142" width="128" height="78" rx="18" fill="#ecfeff" stroke="#99f6e4"/>
-              <text x="176" y="176" text-anchor="middle" font-size="15" fill="#334155" font-weight="900">食物銀行運作</text>
-              <text x="176" y="199" text-anchor="middle" class="viz-small">步驟 1</text>
-              <line x1="248" y1="181" x2="272" y2="181" stroke="#0f766e" stroke-width="5" marker-end="url(#flowArrow)"/><rect x="284" y="142" width="128" height="78" rx="18" fill="#fff7ed" stroke="#fed7aa"/>
-              <text x="348" y="176" text-anchor="middle" font-size="15" fill="#334155" font-weight="900">原因</text>
-              <text x="348" y="199" text-anchor="middle" class="viz-small">步驟 2</text>
-              <line x1="420" y1="181" x2="444" y2="181" stroke="#0f766e" stroke-width="5" marker-end="url(#flowArrow)"/><rect x="456" y="142" width="128" height="78" rx="18" fill="#eff6ff" stroke="#bfdbfe"/>
-              <text x="520" y="176" text-anchor="middle" font-size="15" fill="#334155" font-weight="900">影響</text>
-              <text x="520" y="199" text-anchor="middle" class="viz-small">步驟 3</text>
-              <line x1="592" y1="181" x2="616" y2="181" stroke="#0f766e" stroke-width="5" marker-end="url(#flowArrow)"/><rect x="628" y="142" width="128" height="78" rx="18" fill="#f0fdf4" stroke="#bbf7d0"/>
-              <text x="692" y="176" text-anchor="middle" font-size="15" fill="#334155" font-weight="900">行動</text>
-              <text x="692" y="199" text-anchor="middle" class="viz-small">步驟 4</text>
-              
-          <text x="430" y="92" text-anchor="middle" font-size="18" fill="#0f766e" font-weight="900">食物銀行運作流程示意</text>
-          <text x="430" y="340" text-anchor="middle" font-size="14" fill="#64748b" font-weight="700">剩食補位:食物銀行</text>
+          <defs>
+            <marker id="flowArrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L9,3 L0,6 Z" fill="#0f766e"/>
+            </marker>
+            <linearGradient id="fbBg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#f0fdf4"/>
+              <stop offset="100%" stop-color="#ecfeff"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="20" width="820" height="350" rx="14" fill="url(#fbBg)" stroke="#a7f3d0" stroke-width="1.5"/>
+          <text x="430" y="46" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="800">食物銀行運作流程</text>
+
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
+          </g>
+
+          <!-- 流程節點（5個，y中心=185，高80，寬130，間距20） -->
+          <!-- x起點: 30, 間距150 → 30,180,330,480,630,780 → 太擠，改：節點寬128，間距22，5個 -->
+          <!-- x: 40,210,380,550,700 -->
+
+          <!-- ① 捐贈來源 -->
+          <rect x="30" y="132" width="128" height="86" rx="12" fill="#0f766e" stroke="#0d9488" stroke-width="2"/>
+          <text x="94" y="158" text-anchor="middle" font-size="22">🏪</text>
+          <text x="94" y="178" text-anchor="middle" font-size="11" fill="#fff" font-weight="800">① 捐贈來源</text>
+          <text x="94" y="193" text-anchor="middle" font-size="9" fill="#ccfbf1">超市・企業・</text>
+          <text x="94" y="206" text-anchor="middle" font-size="9" fill="#ccfbf1">個人・農場</text>
+
+          <line x1="158" y1="175" x2="178" y2="175" stroke="#0f766e" stroke-width="3" marker-end="url(#flowArrow2)"/>
+
+          <!-- ② 篩選分類 -->
+          <rect x="180" y="132" width="128" height="86" rx="12" fill="#16a34a" stroke="#15803d" stroke-width="2"/>
+          <text x="244" y="158" text-anchor="middle" font-size="22">🔍</text>
+          <text x="244" y="178" text-anchor="middle" font-size="11" fill="#fff" font-weight="800">② 篩選分類</text>
+          <text x="244" y="193" text-anchor="middle" font-size="9" fill="#d1fae5">檢查效期・</text>
+          <text x="244" y="206" text-anchor="middle" font-size="9" fill="#d1fae5">品質分級</text>
+
+          <line x1="308" y1="175" x2="328" y2="175" stroke="#0f766e" stroke-width="3" marker-end="url(#flowArrow2)"/>
+
+          <!-- ③ 倉儲管理 -->
+          <rect x="330" y="132" width="128" height="86" rx="12" fill="#0ea5e9" stroke="#0369a1" stroke-width="2"/>
+          <text x="394" y="158" text-anchor="middle" font-size="22">🏭</text>
+          <text x="394" y="178" text-anchor="middle" font-size="11" fill="#fff" font-weight="800">③ 倉儲管理</text>
+          <text x="394" y="193" text-anchor="middle" font-size="9" fill="#e0f2fe">低溫保存・</text>
+          <text x="394" y="206" text-anchor="middle" font-size="9" fill="#e0f2fe">庫存追蹤</text>
+
+          <line x1="458" y1="175" x2="478" y2="175" stroke="#0f766e" stroke-width="3" marker-end="url(#flowArrow2)"/>
+
+          <!-- ④ 配送機構 -->
+          <rect x="480" y="132" width="128" height="86" rx="12" fill="#9333ea" stroke="#7e22ce" stroke-width="2"/>
+          <text x="544" y="158" text-anchor="middle" font-size="22">🚐</text>
+          <text x="544" y="178" text-anchor="middle" font-size="11" fill="#fff" font-weight="800">④ 配送機構</text>
+          <text x="544" y="193" text-anchor="middle" font-size="9" fill="#f3e8ff">社福團體・</text>
+          <text x="544" y="206" text-anchor="middle" font-size="9" fill="#f3e8ff">學校・庇護所</text>
+
+          <line x1="608" y1="175" x2="628" y2="175" stroke="#0f766e" stroke-width="3" marker-end="url(#flowArrow2)"/>
+
+          <!-- ⑤ 受惠者 -->
+          <rect x="630" y="132" width="128" height="86" rx="12" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+          <text x="694" y="158" text-anchor="middle" font-size="22">👨‍👩‍👧</text>
+          <text x="694" y="178" text-anchor="middle" font-size="11" fill="#fff" font-weight="800">⑤ 受惠者</text>
+          <text x="694" y="193" text-anchor="middle" font-size="9" fill="#fef9c3">弱勢家庭・</text>
+          <text x="694" y="206" text-anchor="middle" font-size="9" fill="#fef9c3">獨居長者</text>
+
+          <!-- 安得烈數據框 -->
+          <rect x="30" y="238" width="760" height="52" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+          <text x="430" y="257" text-anchor="middle" font-size="12" fill="#15803d" font-weight="800">安得烈慈善協會食物銀行（2017年度）</text>
+          <text x="230" y="278" text-anchor="middle" font-size="11" fill="#1e293b">累計轉送 <tspan font-weight="900" fill="#0f766e">206 公噸</tspan> 物資</text>
+          <text x="430" y="278" text-anchor="middle" font-size="11" fill="#1e293b">市值超過 <tspan font-weight="900" fill="#0f766e">4,300 萬元</tspan></text>
+          <text x="640" y="278" text-anchor="middle" font-size="11" fill="#1e293b">服務 <tspan font-weight="900" fill="#0f766e">21 萬人次</tspan></text>
+
+          <!-- 底部訊息 -->
+          <rect x="30" y="302" width="760" height="30" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="430" y="322" text-anchor="middle" font-size="11" fill="#92400e" font-weight="700">食物銀行是「補位」而非「根本解」——源頭減少剩食才是永續之道</text>
+
+          <text x="430" y="372" text-anchor="middle" font-size="9" fill="#64748b">資料來源：安得烈慈善協會年報（2017）；流程示意依一般食物銀行運作模式繪製</text>
         </svg>
         <div class="viz-callout">剩食補位:食物銀行</div>
       </div>

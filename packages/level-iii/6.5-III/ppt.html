@@ -350,17 +350,79 @@
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="碳排煙囪長條圖">
-          <rect x="58" y="42" width="744" height="268" rx="28" fill="#f8fafc" stroke="#e2e8f0"/>
-          <g stroke="#e2e8f0"><line x1="132" y1="252" x2="740" y2="252"/><line x1="132" y1="202" x2="740" y2="202"/><line x1="132" y1="152" x2="740" y2="152"/><line x1="132" y1="102" x2="740" y2="102"/></g>
-          <line x1="132" y1="252" x2="740" y2="252" stroke="#94a3b8" stroke-width="2"/>
-          <rect x="190" y="174" width="96" height="78" rx="14" fill="#38bdf8"/>
-          <rect x="382" y="98" width="96" height="154" rx="14" fill="#0f766e"/>
-          <rect x="574" y="134" width="96" height="118" rx="14" fill="#f59e0b"/>
-          <text x="238" y="282" text-anchor="middle" class="viz-small">低</text>
-          <text x="430" y="282" text-anchor="middle" class="viz-small">中</text>
-          <text x="622" y="282" text-anchor="middle" class="viz-small">高</text>
-          <text x="430" y="82" text-anchor="middle" font-size="18" fill="#0f766e" font-weight="900">碳排煙囪長條圖</text>
-          <text x="430" y="344" text-anchor="middle" font-size="14" fill="#64748b" font-weight="600">（每人每公里 CO₂）： / 步行／自行車：約 0 g 捷運：約</text>
+          <defs>
+            <linearGradient id="barWalk" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#16a34a"/>
+            </linearGradient>
+            <linearGradient id="barMRT" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#0ea5e9"/>
+            </linearGradient>
+            <linearGradient id="barBus" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/>
+            </linearGradient>
+            <linearGradient id="barCar" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#fca5a5"/><stop offset="1" stop-color="#dc2626"/>
+            </linearGradient>
+            <linearGradient id="barPlane" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#fcd34d"/><stop offset="1" stop-color="#f59e0b"/>
+            </linearGradient>
+          </defs>
+          <!-- 背景 -->
+          <rect x="58" y="42" width="744" height="310" rx="18" fill="#f8fafc" stroke="#e2e8f0"/>
+          <!-- 標題 -->
+          <text x="430" y="68" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="800">同一段路，不同交通工具的 CO₂ 排放比較</text>
+          <text x="430" y="84" text-anchor="middle" font-size="11" fill="#64748b">（每人每公里排放量，g CO₂e）</text>
+          <!-- Y 軸網格 & 標籤 -->
+          <g font-size="10" fill="#64748b" font-weight="600">
+            <line x1="118" y1="260" x2="790" y2="260" stroke="#e2e8f0" stroke-dasharray="3,3"/>
+            <text x="112" y="263" text-anchor="end">0</text>
+            <line x1="118" y1="227" x2="790" y2="227" stroke="#e2e8f0" stroke-dasharray="3,3"/>
+            <text x="112" y="230" text-anchor="end">50</text>
+            <line x1="118" y1="194" x2="790" y2="194" stroke="#e2e8f0" stroke-dasharray="3,3"/>
+            <text x="112" y="197" text-anchor="end">100</text>
+            <line x1="118" y1="161" x2="790" y2="161" stroke="#e2e8f0" stroke-dasharray="3,3"/>
+            <text x="112" y="164" text-anchor="end">150</text>
+            <line x1="118" y1="128" x2="790" y2="128" stroke="#e2e8f0" stroke-dasharray="3,3"/>
+            <text x="112" y="131" text-anchor="end">200</text>
+            <line x1="118" y1="95" x2="790" y2="95" stroke="#e2e8f0" stroke-dasharray="3,3"/>
+            <text x="112" y="98" text-anchor="end">250</text>
+          </g>
+          <!-- 軸線 -->
+          <line x1="118" y1="95" x2="118" y2="260" stroke="#1e293b" stroke-width="1.5"/>
+          <line x1="118" y1="260" x2="790" y2="260" stroke="#1e293b" stroke-width="1.5"/>
+          <!-- 走路/自行車 ≈ 0 g (0px height, show floor bar) -->
+          <rect x="148" y="258" width="80" height="2" rx="2" fill="url(#barWalk)"/>
+          <text x="188" y="254" text-anchor="middle" font-size="11" fill="#16a34a" font-weight="800">≈0 g</text>
+          <!-- 捷運 ≈ 30 g → 30/250 * 165 = 19.8 px -->
+          <rect x="278" y="240" width="80" height="20" rx="4" fill="url(#barMRT)"/>
+          <text x="318" y="234" text-anchor="middle" font-size="11" fill="#0ea5e9" font-weight="800">30 g</text>
+          <!-- 公車 ≈ 85 g → 85/250 * 165 = 56 px -->
+          <rect x="408" y="204" width="80" height="56" rx="4" fill="url(#barBus)"/>
+          <text x="448" y="198" text-anchor="middle" font-size="11" fill="#7c3aed" font-weight="800">85 g</text>
+          <!-- 單人開車 ≈ 200 g → 200/250 * 165 = 132 px -->
+          <rect x="538" y="128" width="80" height="132" rx="4" fill="url(#barCar)"/>
+          <text x="578" y="122" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="800">200 g</text>
+          <!-- 短程飛機 ≈ 275 g → 275/250 * 165 = 181.5 → cap at 165 -->
+          <rect x="668" y="95" width="80" height="165" rx="4" fill="url(#barPlane)"/>
+          <text x="708" y="89" text-anchor="middle" font-size="11" fill="#f59e0b" font-weight="800">275 g</text>
+          <!-- X 軸標籤 -->
+          <g font-size="10" fill="#334155" font-weight="700" text-anchor="middle">
+            <text x="188" y="274">走路</text>
+            <text x="188" y="284">自行車</text>
+            <text x="318" y="274">捷運</text>
+            <text x="448" y="274">公車</text>
+            <text x="578" y="274">單人</text>
+            <text x="578" y="284">開車</text>
+            <text x="708" y="274">短程</text>
+            <text x="708" y="284">飛機</text>
+          </g>
+          <!-- 重點標記：開車比捷運多 -->
+          <rect x="506" y="106" width="142" height="20" rx="5" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+          <text x="577" y="119" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="800">開車是捷運的 6–7 倍！</text>
+          <!-- Y 軸標題 -->
+          <text x="74" y="180" text-anchor="middle" font-size="10" fill="#475569" font-weight="700" transform="rotate(-90,74,180)">g CO₂e / 人·公里</text>
+          <!-- 來源 -->
+          <text x="430" y="340" text-anchor="middle" font-size="9" fill="#64748b">資料來源：IEA Transport Tracking・UK BEIS Conversion Factors・EEA（2023）｜數值為各來源近似範圍中值</text>
         </svg>
         <div class="viz-callout">（每人每公里 CO₂）： / 步行／自行車：約 0 g 捷運：約</div>
       </div>
@@ -471,17 +533,52 @@
         </div>
 
         <svg viewBox="0 0 860 390" role="img" aria-label="北捷路線圖＋YouBike 站點示意圖">
-          <rect x="58" y="42" width="744" height="268" rx="28" fill="#f8fafc" stroke="#e2e8f0"/>
-          <g transform="translate(160 126)">
-            <circle cx="72" cy="72" r="64" fill="#ccfbf1" stroke="#0f766e" stroke-width="4"/>
-            <circle cx="270" cy="72" r="64" fill="#fff7ed" stroke="#f59e0b" stroke-width="4"/>
-            <circle cx="468" cy="72" r="64" fill="#eff6ff" stroke="#2563eb" stroke-width="4"/>
-            <text x="72" y="78" text-anchor="middle" fill="#0f766e" font-size="18" font-weight="900">看見</text>
-            <text x="270" y="78" text-anchor="middle" fill="#9a3412" font-size="18" font-weight="900">理解</text>
-            <text x="468" y="78" text-anchor="middle" fill="#1d4ed8" font-size="18" font-weight="900">行動</text>
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
           </g>
-          <text x="430" y="92" text-anchor="middle" font-size="18" fill="#0f766e" font-weight="900">北捷路線圖＋YouBike 站點示意圖</text>
-          <text x="430" y="344" text-anchor="middle" font-size="14" fill="#64748b" font-weight="600">北捷日均 200 萬人次、YouBike 累計 10 億次騎乘</text>
+          <!-- 背景 -->
+          <rect x="58" y="42" width="744" height="298" rx="18" fill="#f0fdf4" stroke="#bbf7d0"/>
+          <!-- 標題 -->
+          <text x="430" y="68" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="800">北捷＋YouBike：台灣永續交通的真實規模</text>
+          <!-- 大數字統計卡 -->
+          <!-- 卡1：北捷日均運量 -->
+          <rect x="80" y="86" width="200" height="100" rx="16" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/>
+          <text x="180" y="118" text-anchor="middle" font-size="32" fill="#0f766e" font-weight="900">200萬</text>
+          <text x="180" y="140" text-anchor="middle" font-size="12" fill="#065f46" font-weight="700">人次 / 日</text>
+          <text x="180" y="158" text-anchor="middle" font-size="11" fill="#047857">台北捷運日均運量</text>
+          <text x="180" y="172" text-anchor="middle" font-size="10" fill="#64748b">（2024，台北捷運年報）</text>
+          <!-- 卡2：YouBike 累計 -->
+          <rect x="330" y="86" width="200" height="100" rx="16" fill="#fef9c3" stroke="#f59e0b" stroke-width="2"/>
+          <text x="430" y="118" text-anchor="middle" font-size="32" fill="#b45309" font-weight="900">10億次</text>
+          <text x="430" y="140" text-anchor="middle" font-size="12" fill="#92400e" font-weight="700">累計騎乘</text>
+          <text x="430" y="158" text-anchor="middle" font-size="11" fill="#b45309">YouBike 全台（2024）</text>
+          <text x="430" y="172" text-anchor="middle" font-size="10" fill="#64748b">（YouBike 官方統計）</text>
+          <!-- 卡3：5km 通勤減碳 -->
+          <rect x="580" y="86" width="200" height="100" rx="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+          <text x="680" y="118" text-anchor="middle" font-size="32" fill="#1d4ed8" font-weight="900">0.85kg</text>
+          <text x="680" y="140" text-anchor="middle" font-size="12" fill="#1e40af" font-weight="700">CO₂ 省下 / 次</text>
+          <text x="680" y="158" text-anchor="middle" font-size="11" fill="#1d4ed8">5 km 通勤替代開車</text>
+          <text x="680" y="172" text-anchor="middle" font-size="10" fill="#64748b">（IEA 排放因子計算）</text>
+          <!-- 比較示意：路線示意 -->
+          <rect x="80" y="208" width="700" height="52" rx="14" fill="#fff" stroke="#e2e8f0" stroke-width="1.5"/>
+          <!-- 捷運路線示意（彩色線條）-->
+          <line x1="110" y1="234" x2="760" y2="234" stroke="#e2e8f0" stroke-width="14" stroke-linecap="round"/>
+          <line x1="110" y1="234" x2="430" y2="234" stroke="#dc2626" stroke-width="6" stroke-linecap="round"/>
+          <line x1="200" y1="220" x2="200" y2="248" stroke="#0ea5e9" stroke-width="6" stroke-linecap="round"/>
+          <line x1="340" y1="220" x2="340" y2="248" stroke="#16a34a" stroke-width="6" stroke-linecap="round"/>
+          <line x1="480" y1="220" x2="480" y2="248" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/>
+          <line x1="620" y1="220" x2="620" y2="248" stroke="#9333ea" stroke-width="6" stroke-linecap="round"/>
+          <!-- YouBike 站點圖示 -->
+          <circle cx="200" cy="253" r="7" fill="#0f766e" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="340" cy="253" r="7" fill="#0f766e" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="480" cy="253" r="7" fill="#0f766e" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="620" cy="253" r="7" fill="#0f766e" stroke="#fff" stroke-width="1.5"/>
+          <text x="430" y="222" text-anchor="middle" font-size="9" fill="#64748b">▬ 捷運路線示意　● YouBike 接駁站</text>
+          <!-- 底部說明 -->
+          <text x="430" y="284" text-anchor="middle" font-size="11" fill="#0f766e" font-weight="700">北捷一天運的人，等於台灣人口的 8%——大眾運輸是最有力的減碳行動！</text>
+          <text x="430" y="330" text-anchor="middle" font-size="9" fill="#64748b">路線位置為示意，非實際地理座標｜資料來源：台北大眾捷運公司・YouBike 官方統計（2024）</text>
         </svg>
         <div class="viz-callout">北捷日均 200 萬人次、YouBike 累計 10 億次騎乘</div>
       </div>
