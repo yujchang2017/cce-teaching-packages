@@ -47,8 +47,11 @@ jobs:
         run: node ../scripts/build-packages-index.mjs
         env:
           CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}
-        # 統一 repo 模式：自動偵測 packages/_index.json 存在 → 本地讀取
-        # 若需強制遠端模式: node ../scripts/build-packages-index.mjs --remote
+
+      - name: Fetch teaching stats (Google Sheets CSV)
+        run: node ../scripts/fetch-stats.mjs
+        env:
+          STATS_SHEET_CSV_URL: ${{ secrets.STATS_SHEET_CSV_URL }}
 
       - name: Build Next.js (static export)
         run: npm run build

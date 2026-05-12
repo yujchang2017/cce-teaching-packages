@@ -1,12 +1,24 @@
 // 首頁 — 從 build-time JSON 讀取 136 包
 // 與舊版 app_sample/app/page.tsx 視覺 100% 一致
 
+import fs from 'fs';
+import path from 'path';
 import { wsaSchools } from "@/lib/mock-data";
 import { fetchAllPackages } from "@/lib/github-api";
 import HomeBrowser from "@/components/HomeBrowser";
 
+function loadStats() {
+  try {
+    const p = path.join(process.cwd(), 'data', 'stats.json');
+    return JSON.parse(fs.readFileSync(p, 'utf8'));
+  } catch {
+    return { totalSubmissions: 0, teachers: 0, schools: 0, kcCoverage: 0 };
+  }
+}
+
 export default async function Home() {
   const allPackages = await fetchAllPackages();
+  const stats = loadStats();
 
   return (
     <>
@@ -44,10 +56,10 @@ export default async function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 -mt-8 relative z-10">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {[
-            { icon: "🎒", n: allPackages.length, label: "教學組合包", border: "border-sun" },
-            { icon: "👩‍🏫", n: 0, label: "位貢獻老師（等首位）", border: "border-forest" },
-            { icon: "🔀", n: 0, label: "次改編（等首位）", border: "border-earth" },
-            { icon: "🏫", n: 4, label: "所 WSA 實踐校", border: "border-sunDeep" },
+          { icon: "🎒", n: allPackages.length, label: "教學組合包", border: "border-sun" },
+            { icon: "👩‍🏫", n: stats.teachers, label: "位貢獻老師", border: "border-forest" },
+            { icon: "🔀", n: stats.totalSubmissions, label: "次試教回饋", border: "border-earth" },
+            { icon: "🏫", n: stats.schools, label: "所參與學校", border: "border-sunDeep" },
           ].map((s) => (
             <div key={s.label} className={`bg-white rounded-xl p-4 sm:p-5 shadow-warm border-t-4 ${s.border} text-center`}>
               <div className="text-3xl mb-1">{s.icon}</div>

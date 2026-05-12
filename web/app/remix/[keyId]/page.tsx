@@ -84,6 +84,10 @@ export default async function RemixPage({
         </div>
         <h1 className="text-2xl sm:text-3xl font-bold text-ink mb-2">回饋意見《{pkg.topic}》</h1>
         <p className="text-sm text-ink/75">先選一個入口,表單會預填提交類型。進入同一份 Google Form 後,請依區段提示填寫相關內容;不適用的改編或試教題目可留空。每週一統一審核。</p>
+        <p className="text-xs text-ink/55 mt-2 flex items-start gap-1.5">
+          <span>📌</span>
+          <span>照片、學生作品等素材可在表單中各自選擇「公開授權」或「僅供審核」，預設不公開，審核通過後才可能對外展示。</span>
+        </p>
       </section>
 
       {/* 雙入口 CTA */}
