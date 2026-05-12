@@ -84,13 +84,13 @@ export default async function PackageDetail({
       {/* LESSON PLAN */}
       <section className="bg-white rounded-2xl shadow-warm border border-earth/10 p-6 sm:p-8 mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-ink flex items-center gap-2">📘 完整教案</h2>
+          <h2 className="text-xl font-bold text-ink flex items-center gap-2">📘 參考教案</h2>
           <a href={lessonPlanHtmlViewUrl} target="_blank" rel="noopener noreferrer"
             className="text-xs text-sun hover:underline">新視窗開啟 ↗</a>
         </div>
         <iframe
           src={lessonPlanHtmlViewUrl}
-          title={`${keyId} 完整教案`}
+          title={`${keyId} 參考教案`}
           className="w-full rounded-xl border border-earth/10"
           style={{ height: "80vh", minHeight: "600px" }}
         />

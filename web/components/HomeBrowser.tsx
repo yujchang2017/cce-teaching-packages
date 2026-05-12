@@ -26,9 +26,9 @@ const levelTagClass: Record<string, string> = {
 
 const LEVEL_OPTIONS: { value: Level | 'all'; label: string }[] = [
   { value: 'all', label: '全部' },
-  { value: 'II', label: 'Level II · 幼兒園低年級' },
-  { value: 'III', label: 'Level III · 國小中高' },
-  { value: 'IV', label: 'Level IV · 國中' },
+  { value: 'II', label: 'Level II · 5-8歲' },
+  { value: 'III', label: 'Level III · 9-12歲' },
+  { value: 'IV', label: 'Level IV · 13-15歲' },
   // { value: 'V', label: 'Level V · 高中' }, // 暫時隱藏,待教案完善後再開放
 ];
 
@@ -39,7 +39,7 @@ const THEME_OPTIONS: { value: number | 'all'; label: string }[] = [
   { value: 3, label: '3️⃣ 氣候正義' },
   { value: 4, label: '4️⃣ 韌性建構' },
   { value: 5, label: '5️⃣ 後碳經濟' },
-  { value: 6, label: '6️⃣ 永續生活形態' },
+  { value: 6, label: '6️⃣ 永續生活型態' },
 ];
 
 type SortKey = 'default' | 'keyid' | 'level' | 'theme';
@@ -47,7 +47,7 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: 'default', label: '🔢 預設（key_id 升冪）' },
   { value: 'keyid', label: '🔠 Key ID' },
   { value: 'level', label: '🎒 年段' },
-  { value: 'theme', label: '🌐 主題' },
+  { value: 'theme', label: '🌐 關鍵概念' },
 ];
 
 function PackageCard({ pkg }: { pkg: PackageSummary }) {
@@ -173,7 +173,7 @@ export default function HomeBrowser({
             </div>
           </div>
           <div className="flex items-start gap-3 flex-wrap">
-            <span className="text-xs text-mute font-medium shrink-0 pt-1.5 w-14">主題</span>
+            <span className="text-xs text-mute font-medium shrink-0 pt-1.5 w-14">關鍵概念</span>
             <div className="flex items-center gap-2 flex-wrap">
               {THEME_OPTIONS.map((opt) => (
                 <button

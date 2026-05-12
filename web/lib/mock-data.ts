@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   TeachingPackage,
   Remix,
   DiscussionPost,
@@ -232,7 +232,7 @@ export const allPackages: PackageSummary[] = [
     levelLabel: '高中',
     topic: '設計屬於你的永續飲食提案',
     themeNumber: 6,
-    themeName: '永續生活形態',
+    themeName: '永續生活型態',
     summary: '高中專題課程，整合 SDG2、SDG12、SDG13，產出一份可落地的社區提案。',
     stars: 20,
     forks: 4,

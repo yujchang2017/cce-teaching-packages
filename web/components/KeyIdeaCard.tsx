@@ -5,7 +5,7 @@ export default function KeyIdeaCard({ pkg }: { pkg: TeachingPackage }) {
     <section className="grid lg:grid-cols-[380px_1fr] gap-6 mb-10">
       {/* Key Idea card */}
       <div className="bg-white rounded-2xl p-6 shadow-warm border-l-4 border-sun">
-        <div className="text-xs text-sun font-bold tracking-wider uppercase mb-2">Key Idea</div>
+        <div className="text-xs text-sun font-bold tracking-wider uppercase mb-2">主要觀點</div>
         <blockquote className="text-lg leading-relaxed text-ink font-medium">
           「{pkg.keyIdea}」
         </blockquote>
@@ -40,7 +40,7 @@ export default function KeyIdeaCard({ pkg }: { pkg: TeachingPackage }) {
           </div>
           <div>
             <div className="text-xs font-bold text-earth mb-2 flex items-center gap-1">
-              💛 社會情緒 Social <span className="text-mute font-normal">({pkg.learningOutcomes.social.length})</span>
+              📛 社會與情感 Social <span className="text-mute font-normal">({pkg.learningOutcomes.social.length})</span>
             </div>
             <ul className="text-xs text-ink/85 space-y-1.5">
               {pkg.learningOutcomes.social.map((lo) => {
