@@ -72,7 +72,7 @@ export default async function RemixPage({
         <span className="text-earth/40">›</span>
         <Link href={`/package/${keyId}/`} className="hover:text-sun transition">{keyId}</Link>
         <span className="text-earth/40">›</span>
-        <span className="text-ink font-medium">分享改編 / 試教</span>
+        <span className="text-ink font-medium">回饋意見</span>
       </nav>
 
       {/* Hero */}
@@ -82,7 +82,7 @@ export default async function RemixPage({
           <span className="text-xs px-2.5 py-1 rounded-full bg-forest/10 text-forest font-medium">{pkg.levelLabel}</span>
           <span className="text-xs px-2.5 py-1 rounded-full bg-sun/10 text-sunDeep">主題 {pkg.themeNumber} · {pkg.themeName}</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-ink mb-2">分享《{pkg.topic}》</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-ink mb-2">回饋意見《{pkg.topic}》</h1>
         <p className="text-sm text-ink/75">先選一個入口,表單會預填提交類型。進入同一份 Google Form 後,請依區段提示填寫相關內容;不適用的改編或試教題目可留空。每週一統一審核。</p>
       </section>
 
@@ -91,11 +91,10 @@ export default async function RemixPage({
         <div className="bg-white rounded-2xl shadow-warm border-2 border-forest/30 p-6 flex flex-col">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-3xl">🌳</span>
-            <h2 className="text-xl font-bold text-forest">分享改編成果</h2>
+            <h2 className="text-xl font-bold text-forest">回饋意見</h2>
           </div>
           <p className="text-sm text-ink/80 mb-4 flex-1">
-            你針對這份教案做了文件層面的修改 (還沒在課堂試教)。<br />
-            請填改編相關題目;試教題目可留空。
+            針對參考教案我有以下回饋意見
           </p>
           {remixUrl ? (
             <a
@@ -104,7 +103,7 @@ export default async function RemixPage({
               rel="noopener noreferrer"
               className="block text-center bg-forest hover:bg-forest/90 text-white font-bold py-3 px-5 rounded-xl transition shadow-warm"
             >
-              開始填寫(B 類) →
+              開始填寫 →
             </a>
           ) : (
             <span className="block text-center bg-mute/30 text-mute py-3 px-5 rounded-xl">表單尚未設定</span>
@@ -117,8 +116,7 @@ export default async function RemixPage({
             <h2 className="text-xl font-bold text-sunDeep">分享試教回饋</h2>
           </div>
           <p className="text-sm text-ink/80 mb-4 flex-1">
-            你直接用原版教案進了教室。<br />
-            請填試教相關題目;改編題目可留空。
+            分享使用參考教案的試教經驗
           </p>
           {teachUrl ? (
             <a
@@ -127,7 +125,7 @@ export default async function RemixPage({
               rel="noopener noreferrer"
               className="block text-center bg-sun hover:bg-sunDeep text-white font-bold py-3 px-5 rounded-xl transition shadow-warm"
             >
-              開始填寫(C 類) →
+              開始填寫 →
             </a>
           ) : (
             <span className="block text-center bg-mute/30 text-mute py-3 px-5 rounded-xl">表單尚未設定</span>
@@ -135,24 +133,7 @@ export default async function RemixPage({
         </div>
       </section>
 
-      {/* 雙料 A 類 加碼提示 */}
-      {bothUrl && (
-        <section className="bg-gradient-to-br from-sun/15 to-forest/10 border-2 border-sun/30 rounded-2xl p-5 mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <span className="text-4xl">🌟</span>
-          <div className="flex-1">
-            <h3 className="font-bold text-ink mb-1">兩件事都做了?</h3>
-            <p className="text-sm text-ink/80">同時提交「改編 + 試教」是含金量最高的 A 類貢獻,徽章計分加倍。</p>
-          </div>
-          <a
-            href={bothUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="whitespace-nowrap bg-ink hover:bg-ink/85 text-white text-sm font-bold py-2.5 px-5 rounded-xl transition"
-          >
-            填寫 A 類完整版 →
-          </a>
-        </section>
-      )}
+
 
       {!ready && (
         <section className="bg-white rounded-2xl border border-earth/10 p-6 mb-8 text-sm text-mute">

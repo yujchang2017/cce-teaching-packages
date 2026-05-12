@@ -77,7 +77,7 @@ export default async function PackageDetail({
         </a>
         <Link href={`/remix/${keyId}/`}
           className="px-5 py-2.5 rounded-full bg-forest text-white hover:bg-forest/85 transition text-sm font-semibold">
-          3. 試教／修改表單
+          3. 試教／回饋表單
         </Link>
       </section>
 
