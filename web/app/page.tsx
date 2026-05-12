@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { fetchAllPackages } from "@/lib/github-api";
 import HomeBrowser from "@/components/HomeBrowser";
+import DisclaimerModal from "@/components/DisclaimerModal";
 
 function loadStats() {
   try {
@@ -21,6 +22,7 @@ export default async function Home() {
 
   return (
     <>
+      <DisclaimerModal />
       {/* HERO BANNER */}
       <section
         className="border-b border-earth/10 relative"
