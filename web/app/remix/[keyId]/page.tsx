@@ -6,9 +6,11 @@
 //   NEXT_PUBLIC_FORM_URL                   — Google Form viewform URL
 //   NEXT_PUBLIC_FORM_ENTRY_KEY_ID          — Q2「教案編號」entry.xxx
 //   NEXT_PUBLIC_FORM_ENTRY_SUBMIT_TYPE_ID  — Q6「提交類型」entry.xxx (v3 新增)
+//   NEXT_PUBLIC_PROFILE_FORM_URL           — 貢獻者基本資料 Google Form viewform URL (選填)
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ContributorFormGate from "@/components/ContributorFormGate";
 import { fetchAllPackages, getAllKeyIds } from "@/lib/github-api";
 
 export const dynamicParams = false;
@@ -52,6 +54,7 @@ export default async function RemixPage({
   const formBase = process.env.NEXT_PUBLIC_FORM_URL ?? "";
   const keyEntry = process.env.NEXT_PUBLIC_FORM_ENTRY_KEY_ID ?? "";
   const typeEntry = process.env.NEXT_PUBLIC_FORM_ENTRY_SUBMIT_TYPE_ID ?? "";
+  const profileFormUrl = process.env.NEXT_PUBLIC_PROFILE_FORM_URL ?? "";
   const ready = formBase && keyEntry && typeEntry;
 
   const remixUrl = ready
@@ -90,54 +93,23 @@ export default async function RemixPage({
         </p>
       </section>
 
-      {/* 雙入口 CTA */}
-      <section className="grid md:grid-cols-2 gap-5 mb-8">
-        <div className="bg-white rounded-2xl shadow-warm border-2 border-forest/30 p-6 flex flex-col">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-3xl">🌳</span>
-            <h2 className="text-xl font-bold text-forest">回饋意見</h2>
-          </div>
-          <p className="text-sm text-ink/80 mb-4 flex-1">
-            針對參考教案我有以下回饋意見
-          </p>
-          {remixUrl ? (
-            <a
-              href={remixUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-center bg-forest hover:bg-forest/90 text-white font-bold py-3 px-5 rounded-xl transition shadow-warm"
-            >
-              開始填寫 →
-            </a>
-          ) : (
-            <span className="block text-center bg-mute/30 text-mute py-3 px-5 rounded-xl">表單尚未設定</span>
-          )}
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-warm border-2 border-sun/40 p-6 flex flex-col">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-3xl">🏫</span>
-            <h2 className="text-xl font-bold text-sunDeep">分享試教回饋</h2>
-          </div>
-          <p className="text-sm text-ink/80 mb-4 flex-1">
-            分享使用參考教案的試教經驗
-          </p>
-          {teachUrl ? (
-            <a
-              href={teachUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-center bg-sun hover:bg-sunDeep text-white font-bold py-3 px-5 rounded-xl transition shadow-warm"
-            >
-              開始填寫 →
-            </a>
-          ) : (
-            <span className="block text-center bg-mute/30 text-mute py-3 px-5 rounded-xl">表單尚未設定</span>
-          )}
-        </div>
-      </section>
-
-
+      <ContributorFormGate
+        profileFormUrl={profileFormUrl}
+        submissions={[
+          {
+            title: "回饋意見",
+            description: "針對參考教案我有以下回饋意見",
+            href: remixUrl,
+            accent: "forest",
+          },
+          {
+            title: "分享試教回饋",
+            description: "分享使用參考教案的試教經驗",
+            href: teachUrl,
+            accent: "sun",
+          },
+        ]}
+      />
 
       {!ready && (
         <section className="bg-white rounded-2xl border border-earth/10 p-6 mb-8 text-sm text-mute">
@@ -184,10 +156,10 @@ export default async function RemixPage({
         <div className="bg-white rounded-2xl shadow-warm border border-earth/10 p-5">
           <h3 className="font-bold text-ink mb-3 flex items-center gap-2">📅 接下來會發生什麼</h3>
           <ol className="space-y-2 text-sm text-ink/80 list-decimal list-inside">
-            <li>送出後收到 Google 表單副本</li>
+            <li>第一次提交先建立基本資料</li>
+            <li>送出回饋後收到 Google 表單副本</li>
             <li>每週一審核員批次審查</li>
             <li>通過 → 合併到主庫,寄信通知</li>
-            <li>滿足條件即發放徽章</li>
           </ol>
           <div className="mt-4 pt-3 border-t border-earth/10 text-xs text-mute">
             <p>💡 我們以你的 <b>Google Email</b> 作為唯一識別,沒有額外帳號要記。</p>
