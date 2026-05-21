@@ -277,10 +277,8 @@ function formatDate(raw) {
 /** 從 CSV 列組成改編標題字串 */
 function buildTitle(row) {
   const brief   = (row['改編簡述'] ?? '').trim();
-  const subType = (row['提交類型'] ?? '').trim();
   if (brief) return brief.slice(0, 60) + (brief.length > 60 ? '…' : '');
-  if (subType.startsWith('B') || subType.startsWith('C')) return '試教紀錄';
-  return '';
+  return '試教／回饋紀錄';
 }
 
 /** 產生 PR body Markdown */

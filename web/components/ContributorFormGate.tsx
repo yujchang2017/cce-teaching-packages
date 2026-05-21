@@ -89,7 +89,7 @@ export default function ContributorFormGate({ profileFormUrl, submissions }: Pro
         </div>
       </section>
 
-      <section className="grid md:grid-cols-2 gap-5 mb-8">
+      <section className={submissions.length === 1 ? "max-w-2xl mx-auto mb-8" : "grid md:grid-cols-2 gap-5 mb-8"}>
         {submissions.map((item) => {
           const tone = accentClasses[item.accent];
           return (
