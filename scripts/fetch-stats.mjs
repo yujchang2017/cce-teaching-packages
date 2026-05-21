@@ -8,7 +8,7 @@
  *   3  = 老師姓名
  *   4  = 學校 / 機構
  *   7  = 提交類型  (A/B/C)
- *   23 = 狀態      ("approved" | "needs-revision" | "rejected" | "")
+ *   23 = 狀態      ("A" | "R" | "approved" | "needs-revision" | "rejected" | "")
  */
 
 import fs from 'fs';
@@ -26,6 +26,14 @@ const THEME_NAMES = {
   5: '後碳經濟',
   6: '永續生活型態',
 };
+
+function normalizeStatus(value) {
+  const raw = String(value || '').trim().toLowerCase();
+  if (raw === 'a' || raw === 'approved' || raw === 'approve') return 'approved';
+  if (raw === 'r' || raw === 'needs-revision' || raw === 'need-revision' || raw === 'revision') return 'needs-revision';
+  if (raw === 'rejected' || raw === 'reject') return 'rejected';
+  return raw || 'pending';
+}
 
 // ---- CSV parser (handles quoted fields with embedded commas/newlines) ----
 function parseCsv(text) {
@@ -85,12 +93,14 @@ if (rows.length < 2) {
 }
 
 // Skip header row
-const dataRows = rows.slice(1).filter(r => {
+const submittedRows = rows.slice(1).filter(r => {
   const keyId = (r[2] || '').trim();
-  const status = (r[23] || '').trim().toLowerCase();
-  // 計算所有非 rejected 且有 keyId 的提交
-  return keyId && status !== 'rejected';
+  return Boolean(keyId);
 });
+const approvedRows = submittedRows.filter(r => normalizeStatus(r[23]) === 'approved');
+const needsRevisionRows = submittedRows.filter(r => normalizeStatus(r[23]) === 'needs-revision');
+const rejectedRows = submittedRows.filter(r => normalizeStatus(r[23]) === 'rejected');
+const pendingRows = submittedRows.filter(r => normalizeStatus(r[23]) === 'pending');
 
 // ---- Aggregate ----
 const teacherMap = new Map();   // teacher -> { school, themes: Set }
@@ -98,7 +108,7 @@ const schoolMap = new Map();    // school -> { teachers: Set, submissions: numbe
 const themeCount = {};
 for (let t = 1; t <= 6; t++) themeCount[t] = 0;
 
-for (const row of dataRows) {
+for (const row of approvedRows) {
   const keyId   = (row[2] || '').trim();
   const teacher = (row[3] || '').trim() || '(未填)';
   const school  = (row[4] || '').trim() || '(未填)';
@@ -143,7 +153,11 @@ const coveredThemes = Object.entries(themeCount)
   .map(([t]) => parseInt(t, 10));
 
 const stats = {
-  totalSubmissions: dataRows.length,
+  totalSubmissions: submittedRows.length,
+  approvedSubmissions: approvedRows.length,
+  needsRevisionSubmissions: needsRevisionRows.length,
+  rejectedSubmissions: rejectedRows.length,
+  pendingSubmissions: pendingRows.length,
   teachers: teacherMap.size,
   schools: schoolMap.size,
   kcCoverage: coveredThemes.length,
@@ -157,11 +171,12 @@ const stats = {
 
 fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
 fs.writeFileSync(OUT_PATH, JSON.stringify(stats, null, 2), 'utf8');
-console.log(`[fetch-stats] Done — ${dataRows.length} 筆，${teacherMap.size} 位老師，${schoolMap.size} 所學校，KC 覆蓋 ${coveredThemes.length}/6`);
+console.log(`[fetch-stats] Done — 收到 ${submittedRows.length} 筆，通過 ${approvedRows.length} 筆，${teacherMap.size} 位老師，${schoolMap.size} 所學校，KC 覆蓋 ${coveredThemes.length}/6`);
 
 function writeEmpty() {
   const empty = {
-    totalSubmissions: 0, teachers: 0, schools: 0, kcCoverage: 0,
+    totalSubmissions: 0, approvedSubmissions: 0, needsRevisionSubmissions: 0, rejectedSubmissions: 0, pendingSubmissions: 0,
+    teachers: 0, schools: 0, kcCoverage: 0,
     byTheme: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 },
     themeNames: THEME_NAMES, coveredThemes: [], byTeacher: [], bySchool: [],
     generatedAt: new Date().toISOString(),

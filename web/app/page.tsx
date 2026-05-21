@@ -13,7 +13,7 @@ function loadStats() {
     const p = path.join(process.cwd(), 'data', 'stats.json');
     return JSON.parse(fs.readFileSync(p, 'utf8'));
   } catch {
-    return { totalSubmissions: 0, teachers: 0, schools: 0, kcCoverage: 0, bySchool: [] as { school: string; teachers: number; submissions: number; themes: number[] }[] };
+    return { totalSubmissions: 0, approvedSubmissions: 0, teachers: 0, schools: 0, kcCoverage: 0, bySchool: [] as { school: string; teachers: number; submissions: number; themes: number[] }[] };
   }
 }
 
@@ -61,13 +61,14 @@ export default async function Home() {
           {[
           { icon: "🎒", n: allPackages.length, label: "教學組合包", border: "border-sun" },
             { icon: "👩‍🏫", n: stats.teachers, label: "位貢獻老師", border: "border-forest" },
-            { icon: "🔀", n: stats.totalSubmissions, label: "次試教回饋", border: "border-earth" },
+            { icon: "🔀", n: stats.approvedSubmissions ?? 0, label: "次通過回饋", sublabel: `收到 ${stats.totalSubmissions ?? 0} 件`, border: "border-earth" },
             { icon: "🏫", n: stats.schools, label: "所參與學校", border: "border-sunDeep" },
           ].map((s) => (
             <div key={s.label} className={`bg-white rounded-xl p-4 sm:p-5 shadow-warm border-t-4 ${s.border} text-center`}>
               <div className="text-3xl mb-1">{s.icon}</div>
               <div className="text-3xl sm:text-4xl font-bold text-ink">{s.n}</div>
               <div className="text-xs sm:text-sm text-mute mt-1">{s.label}</div>
+              {'sublabel' in s && s.sublabel && <div className="text-[11px] text-mute/80 mt-0.5">{s.sublabel}</div>}
             </div>
           ))}
         </div>
@@ -80,7 +81,7 @@ export default async function Home() {
         <section className="mb-8">
           <div className="flex items-baseline justify-between mb-5 flex-wrap gap-2">
             <h2 className="text-xl font-bold text-ink flex items-center gap-2">🏫 活躍試教學校</h2>
-            <span className="text-sm text-mute">依試教總數與主題覆蓋數排名</span>
+            <span className="text-sm text-mute">依審核通過數與主題覆蓋數排名</span>
           </div>
           {stats.bySchool && stats.bySchool.length > 0 ? (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -95,14 +96,14 @@ export default async function Home() {
                   <p className="text-xs text-mute mb-3">已涵蓋 {s.themes.length} 個主題</p>
                   <div className="flex items-center justify-between text-xs text-earth pt-3 border-t border-earth/15">
                     <span>👩‍🏫 {s.teachers} 位老師</span>
-                    <span>📋 {s.submissions} 次試教</span>
+                    <span>📋 {s.submissions} 次通過</span>
                   </div>
                 </article>
               ))}
             </div>
           ) : (
             <div className="rounded-2xl border border-dashed border-earth/30 p-8 text-center text-mute text-sm">
-              等待第一所學校提交試教回饋 🌱
+              等待第一筆審核通過的試教回饋 🌱
             </div>
           )}
         </section>
