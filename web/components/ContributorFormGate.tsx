@@ -48,7 +48,7 @@ export default function ContributorFormGate({ profileFormUrl, submissions }: Pro
     setProfileDone(false);
   }
 
-  const canSubmit = !profileFormUrl || profileDone;
+  const needsProfileConfirmation = Boolean(profileFormUrl && !profileDone);
 
   return (
     <>
@@ -80,7 +80,7 @@ export default function ContributorFormGate({ profileFormUrl, submissions }: Pro
                 onClick={markProfileDone}
                 className="rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-white hover:bg-ink/90 transition"
               >
-                我已填過基本資料
+                我已填完基本資料
               </button>
             </div>
           ) : (
@@ -97,24 +97,15 @@ export default function ContributorFormGate({ profileFormUrl, submissions }: Pro
               <h2 className={`text-xl font-bold ${tone.title} mb-3`}>{item.title}</h2>
               <p className="text-sm text-ink/80 mb-4 flex-1">{item.description}</p>
               {item.href ? (
-                canSubmit ? (
-                  <a
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`block text-center ${tone.button} text-white font-bold py-3 px-5 rounded-xl transition shadow-warm`}
-                  >
-                    開始填寫
-                  </a>
-                ) : (
-                  <button
-                    type="button"
-                    disabled
-                    className="block w-full text-center bg-mute/30 text-mute py-3 px-5 rounded-xl cursor-not-allowed"
-                  >
-                    先完成基本資料確認
-                  </button>
-                )
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={needsProfileConfirmation ? markProfileDone : undefined}
+                  className={`block text-center ${tone.button} text-white font-bold py-3 px-5 rounded-xl transition shadow-warm`}
+                >
+                  {needsProfileConfirmation ? "已填基本資料，開始填寫" : "開始填寫"}
+                </a>
               ) : (
                 <span className="block text-center bg-mute/30 text-mute py-3 px-5 rounded-xl">表單尚未設定</span>
               )}
