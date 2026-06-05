@@ -7,7 +7,7 @@ type SiteStatus = "testing" | "beta" | "live";
 const status = (process.env.NEXT_PUBLIC_SITE_STATUS || "testing").toLowerCase() as SiteStatus;
 const message =
   process.env.NEXT_PUBLIC_SITE_STATUS_MESSAGE ||
-  "本網站目前為測試版，資料、表單與審核流程仍在調整中。";
+  "本網站目前為測試版，現階段以試教／回饋收集與統計為主。";
 
 export default function SiteStatusNotice() {
   const [showSplash, setShowSplash] = useState(false);

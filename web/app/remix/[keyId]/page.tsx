@@ -69,10 +69,10 @@ export default async function RemixPage({
           <span className="text-xs px-2.5 py-1 rounded-full bg-sun/10 text-sunDeep">主題 {pkg.themeNumber} · {pkg.themeName}</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-bold text-ink mb-2">試教／回饋《{pkg.topic}》</h1>
-        <p className="text-sm text-ink/75">點選下方入口後,表單會預填教案編號。進入 Google Form 後,請依題目填寫回饋或試教內容;每週一統一審核。</p>
+        <p className="text-sm text-ink/75">點選下方入口後,表單會預填教案編號。進入 Google Form 後,請依題目填寫試教紀錄、教學觀察或回饋內容。</p>
         <p className="text-xs text-ink/55 mt-2 flex items-start gap-1.5">
           <span>📌</span>
-          <span>照片、學生作品等素材可在表單中各自選擇「公開授權」或「僅供審核」，預設不公開，審核通過後才可能對外展示。</span>
+          <span>照片、學生作品等素材可在表單中各自選擇授權範圍；未明確授權公開的內容只作內部統計與教案改進參考。</span>
         </p>
       </section>
 
@@ -109,21 +109,21 @@ export default async function RemixPage({
               <span className="text-xl">🌱</span>
               <div>
                 <b className="text-forest">新芽</b>
-                <p className="text-xs text-mute">提交通過 ≥ 1 件</p>
+                <p className="text-xs text-mute">提交 ≥ 1 件</p>
               </div>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-xl">🌳</span>
               <div>
                 <b className="text-forest">青樹</b>
-                <p className="text-xs text-mute">提交通過 ≥ 3 件</p>
+                <p className="text-xs text-mute">提交 ≥ 3 件</p>
               </div>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-xl">🏔️</span>
               <div>
                 <b className="text-sunDeep">氣候教育師</b>
-                <p className="text-xs text-mute">6 大主題各有通過提交 ≥ 1 件 + 年會頒獎</p>
+                <p className="text-xs text-mute">6 大主題各有提交 ≥ 1 件 + 年會頒獎</p>
               </div>
             </li>
           </ul>
@@ -134,8 +134,8 @@ export default async function RemixPage({
           <ol className="space-y-2 text-sm text-ink/80 list-decimal list-inside">
             <li>第一次提交先建立基本資料</li>
             <li>送出回饋後收到 Google 表單副本</li>
-            <li>每週一審核員批次審查</li>
-            <li>通過 → 合併到主庫,寄信通知</li>
+            <li>系統定期彙整試教／回饋件數</li>
+            <li>首頁排行榜與徽章統計會隨資料更新</li>
           </ol>
           <div className="mt-4 pt-3 border-t border-earth/10 text-xs text-mute">
             <p>💡 我們以你的 <b>Google Email</b> 作為唯一識別,沒有額外帳號要記。</p>

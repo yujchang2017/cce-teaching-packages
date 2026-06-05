@@ -108,8 +108,8 @@ export default async function PackageDetail({
         </h2>
         {detail.remixes.length === 0 ? (
           <div className="bg-sun/10 border border-sun/30 rounded-xl p-5 text-sm text-ink/85">
-            本教案暫無改編版本，快來當<b>第一位改編者</b>！
-            <Link href={`/remix/${keyId}/`} className="ml-3 underline text-sun hover:text-sunDeep">立即改編 →</Link>
+            本教案暫無改編版本；目前先收集試教與回饋資料。
+            <Link href={`/remix/${keyId}/`} className="ml-3 underline text-sun hover:text-sunDeep">填寫回饋 →</Link>
           </div>
         ) : (
           <ul className="space-y-2">

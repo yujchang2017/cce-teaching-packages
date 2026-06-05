@@ -13,10 +13,10 @@ export default function MainCTA({
       <div className="relative flex flex-col md:flex-row md:items-center gap-5">
         <div className="flex-1">
           <h2 className="text-xl sm:text-2xl font-bold mb-1">
-            想把這份教案改成適合你班上的版本嗎？
+            試教後願意留下回饋嗎？
           </h2>
           <p className="text-white/90 text-sm">
-            30 分鐘內可完成改編申請 · 通過審核可得 <b>研習時數</b> + <b>改編徽章</b>
+            上傳試教紀錄與教學觀察，協助教案持續修正，也會累積個人與學校統計
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2.5 shrink-0">
@@ -24,7 +24,7 @@ export default function MainCTA({
             href={`/remix/${keyId}`}
             className="cta-main bg-white text-sunDeep font-bold text-base px-6 py-3.5 rounded-xl shadow-warm hover:shadow-warm-lg hover:bg-cream transition-all text-center"
           >
-            ✏️ 我要改編這個教案
+            ✏️ 填寫試教／回饋
           </Link>
           <a
             href={worksheetUrl}
