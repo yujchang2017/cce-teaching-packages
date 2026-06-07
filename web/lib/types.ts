@@ -49,6 +49,40 @@ export type PackageSummary = {
   files?: string[];
 };
 
+export type PackageVersionEntry = {
+  version: string;
+  date?: string;
+  label?: string;
+  editor?: string;
+  reviewer?: string;
+  reviewStatus?: 'not_reviewed' | 'reviewing' | 'approved' | 'needs_revision';
+  summary?: string;
+  files?: {
+    lessonPlan?: string;
+    ppt?: string;
+    worksheet?: string;
+  };
+};
+
+export type PackageVersionMetadata = {
+  currentVersion: string;
+  recommendedVersion?: string;
+  status?: 'initial' | 'reviewing' | 'recommended' | 'archived';
+  versions: PackageVersionEntry[];
+};
+
+export type PackageResource = {
+  title: string;
+  url: string;
+  type?: 'article' | 'video' | 'dataset' | 'tool' | 'other';
+  provider?: string;
+  note?: string;
+};
+
+export type PackageResourcesMetadata = {
+  resources: PackageResource[];
+};
+
 export type WsaSchool = {
   name: string;
   icon: string;

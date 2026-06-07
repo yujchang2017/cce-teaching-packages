@@ -3,7 +3,7 @@
 //
 // 函式名稱與舊版 github-api.ts 保持相容,所以 app/ 內的 page.tsx 不需要大改。
 
-import type { Level, PackageSummary } from "./types";
+import type { Level, PackageResourcesMetadata, PackageSummary, PackageVersionMetadata } from "./types";
 import packagesIndex from "@/data/packages.json";
 
 const LEVEL_LABEL: Record<Level, string> = {
@@ -106,6 +106,8 @@ export type DataCard = {
 export type PackageDetail = {
   summary: PackageSummary | null;
   dataCard: DataCard | null;
+  version: PackageVersionMetadata;
+  resources: PackageResourcesMetadata;
   worksheetRawUrl: string;
   worksheetPagesUrl: string;
   baseUrl: string;
@@ -125,6 +127,8 @@ export type RemixEntry = {
 type DetailJson = {
   summary: PackageSummary;
   dataCard: DataCard | null;
+  version?: PackageVersionMetadata;
+  resources?: PackageResourcesMetadata;
   worksheetRawUrl: string;
   worksheetPagesUrl: string;
   baseUrl: string;
@@ -139,6 +143,8 @@ export async function fetchPackageDetail(keyId: string): Promise<PackageDetail> 
     return {
       summary: d.summary,
       dataCard: d.dataCard,
+      version: d.version ?? fallbackVersionMetadata(d.summary),
+      resources: d.resources ?? { resources: [] },
       worksheetRawUrl: d.worksheetRawUrl,
       worksheetPagesUrl: d.worksheetPagesUrl,
       baseUrl: d.baseUrl,
@@ -152,10 +158,36 @@ export async function fetchPackageDetail(keyId: string): Promise<PackageDetail> 
     return {
       summary: null,
       dataCard: null,
+      version: fallbackVersionMetadata(null),
+      resources: { resources: [] },
       worksheetRawUrl: `${base}/worksheet.html`,
       worksheetPagesUrl: `${base}/worksheet.html`,
       baseUrl: base,
       remixes: [],
     };
   }
+}
+
+function fallbackVersionMetadata(summary: PackageSummary | null): PackageVersionMetadata {
+  return {
+    currentVersion: "1.0.0",
+    recommendedVersion: "1.0.0",
+    status: "initial",
+    versions: [
+      {
+        version: "1.0.0",
+        date: summary?.publishedAt ?? "2026-04-17",
+        label: "初始版",
+        editor: "系統產生",
+        reviewer: "",
+        reviewStatus: "not_reviewed",
+        summary: "依 UNESCO 綠色課程指南架構產生初版教案、簡報與互動學習單。",
+        files: {
+          lessonPlan: "lesson_plan.html",
+          ppt: "ppt.html",
+          worksheet: "worksheet.html"
+        }
+      }
+    ]
+  };
 }

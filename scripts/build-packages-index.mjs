@@ -124,6 +124,34 @@ function toSummary(entry) {
   };
 }
 
+function fallbackVersionMetadata(entry) {
+  return {
+    currentVersion: "1.0.0",
+    recommendedVersion: "1.0.0",
+    status: "initial",
+    versions: [
+      {
+        version: "1.0.0",
+        date: entry.publishedAt ?? "2026-04-17",
+        label: "初始版",
+        editor: "系統產生",
+        reviewer: "",
+        reviewStatus: "not_reviewed",
+        summary: "依 UNESCO 綠色課程指南架構產生初版教案、簡報與互動學習單。",
+        files: {
+          lessonPlan: "lesson_plan.html",
+          ppt: "ppt.html",
+          worksheet: "worksheet.html"
+        }
+      }
+    ]
+  };
+}
+
+function fallbackResourcesMetadata() {
+  return { resources: [] };
+}
+
 /** 本地模式：從 packages/ 資料夾讀取一個教案的 detail */
 async function buildOneDetailLocal(entry) {
   const keyId = entry.keyId;
@@ -138,10 +166,14 @@ async function buildOneDetailLocal(entry) {
   }
 
   const dataCard = await readLocalJson("data_card.json");
+  const version = await readLocalJson("version.json") ?? fallbackVersionMetadata(entry);
+  const resources = await readLocalJson("resources.json") ?? fallbackResourcesMetadata();
 
   return {
     summary: toSummary(entry),
     dataCard,
+    version,
+    resources,
     worksheetRawUrl: `${rawBase}/worksheet.html`,
     worksheetPagesUrl: `${pagesBase}/worksheet.html`,
     baseUrl: rawBase,
@@ -159,10 +191,14 @@ async function buildOneDetail(entry) {
   const pagesBase = `${PAGES_BASE}/${dir}`;
 
   const dataCard = await fetchJson(`${dir}/data_card.json`);
+  const version = await fetchJson(`${dir}/version.json`) ?? fallbackVersionMetadata(entry);
+  const resources = await fetchJson(`${dir}/resources.json`) ?? fallbackResourcesMetadata();
 
   return {
     summary: toSummary(entry),
     dataCard,
+    version,
+    resources,
     worksheetRawUrl: `${base}/worksheet.html`,
     worksheetPagesUrl: `${pagesBase}/worksheet.html`,
     baseUrl: base,

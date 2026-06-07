@@ -19,6 +19,21 @@ function versionedUrl(url: string) {
   return `${url}${url.includes("?") ? "&" : "?"}v=${packageAssetVersion}`;
 }
 
+const REVIEW_STATUS_LABEL: Record<string, string> = {
+  not_reviewed: "尚未審查",
+  reviewing: "審查中",
+  approved: "已審查",
+  needs_revision: "待修訂",
+};
+
+const RESOURCE_TYPE_LABEL: Record<string, string> = {
+  article: "文章",
+  video: "影片",
+  dataset: "資料集",
+  tool: "工具",
+  other: "其他",
+};
+
 export async function generateStaticParams() {
   return getAllKeyIds().map((keyId) => ({ keyId }));
 }
@@ -42,6 +57,9 @@ export default async function PackageDetail({
   const worksheetPagesUrl = versionedUrl(detail.worksheetPagesUrl);
   const lessonPlanHtmlViewUrl = versionedUrl(lessonPlanHtmlUrl);
   const pptHtmlViewUrl = versionedUrl(pptHtmlUrl);
+  const currentVersion = detail.version.currentVersion;
+  const recommendedVersion = detail.version.recommendedVersion;
+  const resources = detail.resources.resources ?? [];
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 w-full flex-1">
@@ -61,6 +79,10 @@ export default async function PackageDetail({
           <span className="text-xs bg-sand/80 text-earth font-mono font-bold px-2.5 py-1 rounded">{summary.keyId}</span>
           <span className="text-xs px-2.5 py-1 rounded-full bg-forest/10 text-forest font-medium">{summary.levelLabel}</span>
           <span className="text-xs px-2.5 py-1 rounded-full bg-sun/10 text-sunDeep">主題 {summary.themeNumber} · {summary.themeName}</span>
+          <span className="text-xs px-2.5 py-1 rounded-full bg-sky-100 text-sky-700 font-medium">v{currentVersion}</span>
+          {recommendedVersion && recommendedVersion !== currentVersion && (
+            <span className="text-xs px-2.5 py-1 rounded-full bg-forest/10 text-forest">推薦 v{recommendedVersion}</span>
+          )}
           {summary.ageBand && <span className="text-xs text-mute">年段 {summary.ageBand} 歲</span>}
         </div>
         <h1 className="text-2xl sm:text-3xl font-bold text-ink mb-3">{summary.topic}</h1>
@@ -84,6 +106,64 @@ export default async function PackageDetail({
           className="px-5 py-2.5 rounded-full bg-forest text-white hover:bg-forest/85 transition text-sm font-semibold">
           3. 試教／回饋表單
         </Link>
+      </section>
+
+      {/* VERSION HISTORY */}
+      <section className="bg-white rounded-2xl shadow-warm border border-earth/10 p-6 sm:p-8 mb-6">
+        <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+          <h2 className="text-xl font-bold text-ink flex items-center gap-2">版本紀錄</h2>
+          <span className="text-xs rounded-full bg-sand/80 text-earth px-3 py-1 font-medium">
+            目前版 v{currentVersion}
+          </span>
+        </div>
+        <ul className="space-y-3">
+          {detail.version.versions.map((item) => (
+            <li key={`${item.version}-${item.date ?? ""}`} className="border-l-2 border-sun/60 pl-4 py-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <b className="text-sm text-ink">v{item.version}</b>
+                {item.label && <span className="text-xs text-earth bg-sand/60 rounded-full px-2 py-0.5">{item.label}</span>}
+                {item.reviewStatus && <span className="text-xs text-mute">{REVIEW_STATUS_LABEL[item.reviewStatus] ?? item.reviewStatus}</span>}
+                {item.date && <span className="text-xs text-mute">{item.date}</span>}
+              </div>
+              {item.summary && <p className="text-sm text-ink/75 mt-1">{item.summary}</p>}
+              {(item.editor || item.reviewer) && (
+                <p className="text-xs text-mute mt-1">
+                  {item.editor && <>編修：{item.editor}</>}
+                  {item.editor && item.reviewer && <span> · </span>}
+                  {item.reviewer && <>審查：{item.reviewer}</>}
+                </p>
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* RESOURCES */}
+      <section className="bg-white rounded-2xl shadow-warm border border-earth/10 p-6 sm:p-8 mb-6">
+        <h2 className="text-xl font-bold text-ink mb-4 flex items-center gap-2">
+          延伸資源 <span className="text-sm font-normal text-mute">({resources.length})</span>
+        </h2>
+        {resources.length === 0 ? (
+          <div className="bg-sand/50 border border-earth/10 rounded-xl p-5 text-sm text-ink/75">
+            尚未加入延伸資源；短期先保留欄位，後續可由維護者手動新增文章、影片、資料集或工具連結。
+          </div>
+        ) : (
+          <ul className="space-y-3">
+            {resources.map((resource) => (
+              <li key={resource.url} className="border border-earth/10 rounded-xl p-4">
+                <a href={resource.url} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-forest hover:underline">
+                  {resource.title}
+                </a>
+                <p className="text-xs text-mute mt-1">
+                  {resource.type && <span>{RESOURCE_TYPE_LABEL[resource.type] ?? resource.type}</span>}
+                  {resource.type && resource.provider && <span> · </span>}
+                  {resource.provider && <span>{resource.provider}</span>}
+                </p>
+                {resource.note && <p className="text-sm text-ink/75 mt-2">{resource.note}</p>}
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       {/* LESSON PLAN */}
