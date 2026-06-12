@@ -32,7 +32,8 @@
   .progress-dot.done { background:#10b981;}
   .fade-in { animation: fade .4s ease; }
   @keyframes fade { from{opacity:0; transform:translateY(10px)} to{opacity:1;transform:none}}
-  .opt { display:block; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.95rem;}
+  .opt { display:flex; align-items:flex-start; gap:.45rem; padding:.5rem .7rem; border:2px solid #e2e8f0; border-radius:.6rem; margin-top:.4rem; cursor:pointer; font-size:.95rem; line-height:1.45;}
+  .opt input { flex:0 0 auto; margin-top:.25rem; }
   .opt:hover { background:#fef9ec; }
   .opt.sel { border-color:#f59e0b; background:#fef3c7;}
   .opt.correct { border-color:#10b981; background:#d1fae5;}
@@ -42,6 +43,28 @@
   .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:.5rem; flex-wrap:wrap;}
   .btn-back { background:#e2e8f0; color:#475569; padding:.4rem 1rem; border-radius:.5rem; font-size:.85rem; font-weight:600;}
   .btn-back:hover { background:#cbd5e1; }
+  @media (max-width: 520px) {
+    body { padding:.75rem !important; }
+    .worksheet-version { padding-left:0 !important; padding-right:0 !important; text-align:center !important; }
+    .worksheet-version span { display:block; white-space:normal; line-height:1.55; font-size:.7rem; padding:.4rem .6rem; }
+    .card { border-radius:1rem; }
+    section.card { padding:1rem !important; }
+    .card.p-5, .card.p-4 { padding:1rem !important; }
+    h1 { font-size:1.45rem !important; line-height:1.25 !important; }
+    h2 { font-size:1.1rem !important; line-height:1.35 !important; }
+    .text-4xl { font-size:1.9rem !important; line-height:1 !important; }
+    .progress-dot { width:11px; height:11px; }
+    .h-1.w-8 { width:1.15rem !important; }
+    .opt { gap:.5rem; padding:.55rem .6rem; font-size:.9rem; line-height:1.5; }
+    .opt input { margin-top:.3rem; }
+    .drop-zone { min-height:88px; }
+    #items-box-1, #chain-items { grid-template-columns:1fr !important; }
+    #q1-opts, #q2-opts, #theme-opts, #impact-opts { display:grid; gap:.35rem; }
+    svg { max-width:100%; height:auto; }
+    .nav-row { align-items:stretch; flex-direction:column; }
+    .nav-row span:empty { display:none; }
+    .nav-row .btn, .nav-row button { width:100%; min-width:0; }
+  }
 </style>
 </head>
 <body class="p-4 md:p-8">
@@ -128,7 +151,7 @@
       <div class="text-4xl">📈</div>
       <div>
         <h2 class="text-xl font-bold text-amber-700">關卡 2：小安看了一張圖</h2>
-        <p class="text-sm text-slate-700 mt-1">學校老師把臺灣過去 110 年的氣溫變化畫成一張圖。仔細看，回答下面兩題！</p>
+        <p class="text-sm text-slate-700 mt-1">學校老師把西元 1910-2020 年間臺灣平均氣溫變化畫成一張圖。仔細看，回答下面兩題！</p>
         <p class="text-xs text-slate-500 mt-1">✅ 20 分｜Q1 單選 5 分 + Q2 多選 15 分</p>
       </div>
     </div>
@@ -147,14 +170,14 @@
       <polyline fill="none" stroke="#ef4444" stroke-width="2.5"
         points="50,140 70,138 90,136 110,142 130,132 155,130 175,134 195,126 215,122 235,124 255,116 275,108 295,112 315,98 335,92 360,85 385,75"/>
       <text x="240" y="42" font-size="10" fill="#dc2626" font-weight="bold">↗ 約 +1.6°C</text>
-      <text x="240" y="54" font-size="9" fill="#94a3b8">（110 年，資料：TCCIP）</text>
+      <text x="240" y="54" font-size="9" fill="#94a3b8">（1910-2020，資料：TCCIP）</text>
     </svg>
 
     <div class="mb-5">
       <p class="font-bold text-sm mb-2">📌 Q1：這張圖想告訴我們什麼？（單選，5 分）</p>
       <div id="q1-opts">
         <label class="opt"><input type="radio" name="q1" value="0"> A. 臺灣每一年都完全一樣冷，沒有變化。</label>
-        <label class="opt"><input type="radio" name="q1" value="1"> B. 臺灣整體氣溫在慢慢升高，110 年大約升了 1.6°C。</label>
+        <label class="opt"><input type="radio" name="q1" value="1"> B. 在西元 1910-2020 年間，臺灣平均氣溫升高了約 1.6°C。</label>
         <label class="opt"><input type="radio" name="q1" value="0"> C. 圖的意思是 2020 年忽然變得非常熱，之前都很涼。</label>
       </div>
       <p id="q1-fb" class="text-xs mt-2 min-h-[18px]"></p>
@@ -351,6 +374,15 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const openLevelFromHash = () => {
+    const match = location.hash.match(/^#level-(\d+)$/);
+    if (!match) return;
+    const requested = parseInt(match[1], 10);
+    if (requested >= 1 && requested <= TOTAL_LEVELS) gotoLevel(requested);
+  };
+  openLevelFromHash();
+  window.addEventListener('hashchange', openLevelFromHash);
+
   document.querySelectorAll('.btn-back').forEach(b => {
     b.onclick = () => gotoLevel(parseInt(b.dataset.back, 10));
   });
@@ -446,7 +478,7 @@
       r.parentElement.classList.add(r.value === '1' ? 'correct' : 'wrong');
       const fb = el('q1-fb');
       if (r.value === '1') {
-        fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 對了！整體趨勢往上，110 年上升約 1.6°C。+5 分</span>';
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✅ 對了！在西元 1910-2020 年間，臺灣平均氣溫升高了約 1.6°C。+5 分</span>';
         awardOnce('L2-q1', 5);
         q1Done = true;
       } else {

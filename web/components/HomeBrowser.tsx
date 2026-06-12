@@ -24,6 +24,37 @@ const levelTagClass: Record<string, string> = {
   V: 'bg-[#D4E4F0] text-[#2D6A9F]',
 };
 
+function cardVersionStyle(version?: string) {
+  if (version === '1.2.0') {
+    return {
+      outer: 'p-[3px] bg-[conic-gradient(from_180deg,#E8884F,#F0CD6E,#8BC88B,#6EB5FF,#A78BFA,#E8A7D1,#E8884F)] shadow-warm-lg',
+      inner: 'bg-white',
+      header: themeGrad,
+      badge: 'bg-white/90 text-[#6A4CA4] border border-white/60',
+    };
+  }
+
+  if (version === '1.0.0') {
+    return {
+      outer: 'p-0 bg-transparent opacity-80 hover:opacity-100',
+      inner: 'bg-[#F2F2F2] border border-[#D6D6D6]',
+      header: Object.fromEntries(
+        Object.keys(themeGrad).map((key) => [Number(key), 'bg-gradient-to-br from-[#E5E5E5] to-[#BDBDBD]'])
+      ) as Record<number, string>,
+      badge: 'bg-white/80 text-[#666] border border-[#D6D6D6]',
+    };
+  }
+
+  return {
+    outer: 'p-0 bg-transparent',
+    inner: pkgOfficialClass,
+    header: themeGrad,
+    badge: 'bg-sun/10 text-sunDeep border border-sun/20',
+  };
+}
+
+const pkgOfficialClass = 'bg-white ring-2 ring-sun/40';
+
 const LEVEL_OPTIONS: { value: Level | 'all'; label: string }[] = [
   { value: 'all', label: '全部' },
   { value: 'II', label: 'Level II · 5-8歲' },
@@ -51,40 +82,46 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
 ];
 
 function PackageCard({ pkg }: { pkg: PackageSummary }) {
+  const version = pkg.currentVersion ?? '1.0.0';
+  const versionStyle = cardVersionStyle(version);
+
   return (
     <Link
       href={`/package/${pkg.keyId}`}
-      className={`group relative block bg-white rounded-2xl shadow-warm overflow-hidden transition hover:-translate-y-1.5 hover:shadow-warm-lg ${
-        pkg.isOfficial ? 'ring-2 ring-sun/40' : ''
-      }`}
+      className={`group relative block rounded-2xl transition hover:-translate-y-1.5 hover:shadow-warm-lg ${versionStyle.outer}`}
     >
-      <div className={`${themeGrad[pkg.themeNumber]} h-36 flex items-center justify-center text-5xl relative`}>
-        <span className="drop-shadow-lg">{pkg.emojis}</span>
-        <div className="absolute inset-0 flex items-center justify-center bg-ink/55 text-white font-semibold opacity-0 group-hover:opacity-100 transition">
-          點擊查看 →
-        </div>
-      </div>
-      <div className="p-5">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs bg-sand/80 text-earth font-mono font-bold px-2 py-0.5 rounded">
-            {pkg.keyId}
+      <div className={`rounded-2xl shadow-warm overflow-hidden ${versionStyle.inner}`}>
+        <div className={`${versionStyle.header[pkg.themeNumber]} h-36 flex items-center justify-center text-5xl relative`}>
+          <span className="drop-shadow-lg">{pkg.emojis}</span>
+          <span className={`absolute right-3 top-3 text-[11px] font-bold rounded-full px-2 py-0.5 ${versionStyle.badge}`}>
+            v{version}
           </span>
-          <span className="text-[10px] text-mute">
-            主題 {pkg.themeNumber} · {pkg.themeName}
-          </span>
-        </div>
-        <h3 className="font-bold text-ink text-base leading-snug mb-2">{pkg.topic}</h3>
-        <p className="text-xs text-ink/70 mb-3 line-clamp-2">{pkg.summary}</p>
-        <div className="flex items-center gap-2 flex-wrap mb-3">
-          <span className={`text-[11px] px-2 py-0.5 rounded-full ${levelTagClass[pkg.level]}`}>
-            {pkg.levelLabel}
-          </span>
-        </div>
-        {pkg.mascot && (
-          <div className="text-xs text-ink/70 pt-3 border-t border-earth/10">
-            🎭 {pkg.mascot}
+          <div className="absolute inset-0 flex items-center justify-center bg-ink/55 text-white font-semibold opacity-0 group-hover:opacity-100 transition">
+            點擊查看 →
           </div>
-        )}
+        </div>
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs bg-sand/80 text-earth font-mono font-bold px-2 py-0.5 rounded">
+              {pkg.keyId}
+            </span>
+            <span className="text-[10px] text-mute">
+              主題 {pkg.themeNumber} · {pkg.themeName}
+            </span>
+          </div>
+          <h3 className="font-bold text-ink text-base leading-snug mb-2">{pkg.topic}</h3>
+          <p className="text-xs text-ink/70 mb-3 line-clamp-2">{pkg.summary}</p>
+          <div className="flex items-center gap-2 flex-wrap mb-3">
+            <span className={`text-[11px] px-2 py-0.5 rounded-full ${levelTagClass[pkg.level]}`}>
+              {pkg.levelLabel}
+            </span>
+          </div>
+          {pkg.mascot && (
+            <div className="text-xs text-ink/70 pt-3 border-t border-earth/10">
+              🎭 {pkg.mascot}
+            </div>
+          )}
+        </div>
       </div>
     </Link>
   );

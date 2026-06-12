@@ -135,10 +135,15 @@
   .prog-dot.done { background: #34d399; color: white; }
   .prog-dot.active { background: #fbbf24; color: #92400e; }
   .prog-dot.todo { background: #e5e7eb; color: #9ca3af; }
+
+  /* 響應式欄寬：手機滿版，桌機加寬，避免桌機看起來像手機畫面 */
+  .ws-wrap { width: 100%; max-width: 42rem; margin-left: auto; margin-right: auto; }
+  @media (min-width: 1024px) { .ws-wrap { max-width: 60rem; } }
+  @media (min-width: 1440px) { .ws-wrap { max-width: 68rem; } }
 </style>
 </head>
 <body class="flex flex-col items-center pb-12">
-<div class="worksheet-version w-full max-w-4xl mx-auto px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
+<div class="worksheet-version ws-wrap px-4 pt-3 text-right text-[11px] text-slate-500" data-version="WS-20260511-01">
   <span class="inline-block rounded-full bg-white/80 border border-slate-200 px-3 py-1 shadow-sm">版次：WS-20260511-01｜版次說明：20260511去除開放性問題並減少任務數</span>
 </div>
 
@@ -168,7 +173,7 @@
 </svg>
 
 <!-- 頂部標題 + 進度 -->
-<div class="w-full max-w-2xl px-4 pt-4">
+<div class="ws-wrap px-4 pt-4">
   <div class="flex items-center justify-center gap-3 text-3xl font-extrabold text-amber-700 mb-3">
     <svg width="56" height="56" viewBox="0 0 100 100"><use href="#bear"/></svg>
     <span>小熊波波的天氣旅行</span>
@@ -185,12 +190,12 @@
   </div>
   <!-- Score -->
   <div class="text-center mt-2 text-xl font-bold text-amber-700">
-    得了 <span id="score-display">0</span> 分！
+    目前分數 <span id="score-display">0</span> 分
   </div>
 </div>
 
 <!-- 主畫面容器 -->
-<main class="w-full max-w-2xl px-4 mt-4">
+<main class="ws-wrap px-4 mt-4">
 
   <!-- ===== 開始畫面 ===== -->
   <section id="intro" class="card text-center popin">
@@ -205,7 +210,7 @@
     </button>
   </section>
 
-  <!-- ===== 關卡 1：看一看 / 拖一拖 (30 pts) ===== -->
+  <!-- ===== 關卡 1：看一看 / 拖一拖 (40 pts) ===== -->
   <section id="level-1" class="card w-full hide">
     <!-- 波波說話泡泡 -->
     <div class="flex items-end gap-3 mb-4">
@@ -334,7 +339,7 @@
     </div>
   </section>
 
-  <!-- ===== 關卡 3：做一做 / 我的承諾 (15 pts) ===== -->
+  <!-- ===== 關卡 3：做一做 / 我的承諾 (30 pts) ===== -->
   <section id="level-3" class="card w-full hide">
     <div class="flex items-end gap-3 mb-4">
       <svg width="80" height="80" viewBox="0 0 100 100" class="flex-shrink-0"><use href="#bear"/></svg>
@@ -381,7 +386,7 @@
     </div>
   </section>
 
-  <!-- ===== Final：笑臉評分 (5 pts) ===== -->
+  <!-- ===== Final：笑臉評分（回饋用，不計分） ===== -->
   <section id="level-final" class="card w-full hide">
     <div class="flex items-end gap-3 mb-4">
       <div class="shine inline-block">
@@ -397,7 +402,7 @@
       波波送你 <span class="text-pink-500 font-bold">⭐ 天氣小星星</span>！
     </p>
     <p class="text-3xl text-center font-extrabold text-emerald-600 mt-1">
-      得了 <span id="final-score">0</span> / 80 分！
+      得了 <span id="final-score">0</span> / 100 分！
     </p>
 
     <!-- 笑臉評分 -->
@@ -510,7 +515,9 @@
     } else {
       el('level-final').classList.remove('hide');
       el('level-final').classList.add('popin');
+      // 三關配分 40+30+30=100，完成三關即滿分；問卷只作回饋、不計分
       el('final-score').textContent = S.score;
+      el('score-display').textContent = S.score;
       confetti();
       setTimeout(confetti, 600);
     }
@@ -556,7 +563,7 @@
   }
 
   /* =========================================================
-     Level 1: 拖拉天氣卡片 (30 pts)
+     Level 1: 拖拉天氣卡片 (40 pts)
      ========================================================= */
   const L1_ITEMS = [
     { id: 'umbrella', emoji: '☂️', label: '帶雨傘',   zone: 'rainy'  },
@@ -632,7 +639,7 @@
       fb.textContent = `✨ 放對了！（${l1Correct}/${L1_ITEMS.length}）`;
       fb.className = 'text-xl text-center font-bold mt-4 text-green-500';
       if (l1Correct === L1_ITEMS.length) {
-        awardOnce('L1', 30);
+        awardOnce('L1', 40);
         fb.textContent = '🎉 全部放對了！波波好開心！';
         fb.className = 'text-2xl text-center font-bold mt-4 text-green-500 popin';
         confetti();
@@ -712,7 +719,7 @@
   }
 
   /* =========================================================
-     Level 3: 承諾選 (15 pts — need at least 2)
+     Level 3: 承諾選 (30 pts — need at least 2)
      ========================================================= */
   const l3Chosen = new Set();
 
@@ -733,7 +740,7 @@
 
   window.l3Submit = function() {
     if (l3Chosen.size < 2) return;
-    awardOnce('L3', 15);
+    awardOnce('L3', 30);
     const fb = el('l3-feedback');
     fb.classList.remove('hide');
     fb.textContent = '🎉 波波為你加油！你做得到！';
@@ -757,7 +764,7 @@
   }
 
   /* =========================================================
-     Final: 笑臉 + 最愛關卡 (5 pts)
+     Final: 笑臉 + 最愛關卡 (回饋用，不計分)
      ========================================================= */
   let smileyPicked = false, favPicked = false;
 
@@ -785,7 +792,6 @@
 
   function checkFinalDone() {
     if (smileyPicked && favPicked) {
-      awardOnce('FINAL', 5);
       el('final-score').textContent = S.score;
       el('score-display').textContent = S.score;
     }

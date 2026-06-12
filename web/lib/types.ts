@@ -47,6 +47,7 @@ export type PackageSummary = {
   ageBand?: string;
   publishedAt?: string;
   files?: string[];
+  currentVersion?: string;
 };
 
 export type PackageVersionEntry = {

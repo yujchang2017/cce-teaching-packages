@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <!-- cce-tracker-injected -->
+  <meta name="cce-key-id" content="1.1-II">
+  <meta name="cce-page-type" content="ppt">
+  <script src="/tracker.js" defer></script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天氣小偵探 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #0f766e;
+    --c-accent-soft: #ccfbf1;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text);
+    line-height: 1.6;
+    margin: 0;
+    background: #fff;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 44px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.9rem;
+  }
+  .topbar a.back { color: var(--c-accent); text-decoration: none; font-weight: 600; }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title { margin: 0 0 0 24px; font-size: 0.95rem; font-weight: 500; color: var(--c-muted); }
+
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 36px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator {
+    font-family: "JetBrains Mono", "Consolas", monospace;
+    color: var(--c-text);
+  }
+  .navbar .page-indicator .nav-current { color: var(--c-accent); font-weight: 700; }
+  .navbar .hint kbd {
+    display: inline-block; padding: 1px 6px;
+    border: 1px solid var(--c-border); border-bottom-width: 2px;
+    border-radius: 4px; font-family: monospace; font-size: 0.8em;
+    background: #fff; margin: 0 2px;
+  }
+
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px);
+    scroll-snap-align: start;
+    padding: 40px 60px;
+    display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag { font-size: 0.85rem; color: var(--c-accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .slide h2 { font-size: 1.9rem; margin: 0 0 16px; color: var(--c-text); }
+  .slide h3 { font-size: 1.15rem; color: var(--c-accent); margin-top: 18px; }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto; padding-top: 14px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem; color: var(--c-muted);
+  }
+  .slide-source a { color: var(--c-accent); text-decoration: none; border-bottom: 1px dashed var(--c-accent); }
+  .slide-source a:hover { border-bottom-style: solid; }
+
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle { font-size: 1.2rem; color: var(--c-muted); margin-top: 8px; }
+  .slide.divider .activity-num { font-size: 0.9rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 12px; }
+  .slide.divider h2 { font-size: 2.4rem; color: var(--c-accent); }
+
+  .question-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 30px 0;
+  }
+  .question-card {
+    background: var(--c-bg);
+    border: 2px solid var(--c-accent);
+    border-radius: 12px;
+    padding: 24px;
+    font-size: 1.15rem;
+    text-align: center;
+    color: var(--c-text);
+    position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -12px; left: 14px;
+    background: var(--c-accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%;
+    font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 20px 0;
+  }
+  .compare-card {
+    border: 2px solid var(--c-border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+  .compare-card.left { border-color: var(--c-cog); }
+  .compare-card.right { border-color: var(--c-warn); }
+  .compare-card .label {
+    font-size: 0.9rem; font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .compare-card.left .label { color: var(--c-cog); }
+  .compare-card.right .label { color: var(--c-warn); }
+  .compare-card h3 { margin: 8px 0; font-size: 1.4rem; }
+  .compare-card p { color: var(--c-muted); margin: 0; }
+  .compare-card .icon { font-size: 3rem; margin: 10px 0; }
+
+  .seasons-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin: 20px 0;
+  }
+  .season-card {
+    border-radius: 14px;
+    padding: 28px 12px;
+    text-align: center;
+    border: 3px solid;
+  }
+  .season-card .icon { font-size: 3.4rem; margin-bottom: 8px; }
+  .season-card .name { font-size: 1.5rem; font-weight: 800; }
+  .season-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 6px; }
+  .season-card.spring { border-color: #22c55e; background: #f0fdf4; }
+  .season-card.summer { border-color: #f59e0b; background: #fffbeb; }
+  .season-card.autumn { border-color: #ea580c; background: #fff7ed; }
+  .season-card.winter { border-color: #3b82f6; background: #eff6ff; }
+  .season-card.spring .name { color: #16a34a; }
+  .season-card.summer .name { color: #d97706; }
+  .season-card.autumn .name { color: #c2410c; }
+  .season-card.winter .name { color: #2563eb; }
+
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 0.9rem; color: var(--c-muted); margin-top: 8px; }
+
+  .summary-keys {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin: 30px 0;
+  }
+  .key-card {
+    text-align: center; padding: 30px 20px;
+    border-radius: 16px; background: var(--c-bg);
+    border: 3px solid;
+  }
+  .key-card .num { font-size: 0.85rem; font-weight: 700; color: var(--c-muted); letter-spacing: 0.2em; }
+  .key-card .word { font-size: 2.6rem; font-weight: 800; margin: 12px 0; }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-warn); }
+  .key-card.k2 .word { color: var(--c-warn); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc { font-size: 0.95rem; color: var(--c-muted); margin-top: 8px; }
+
+  .typhoon-bag {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .item-card {
+    border: 2px solid var(--c-border);
+    border-radius: 10px;
+    padding: 18px 8px;
+    text-align: center;
+    background: var(--c-bg);
+  }
+  .item-card.must { border-color: var(--c-beh); background: #f0fdf4; }
+  .item-card.no { border-color: var(--c-muted); opacity: 0.55; }
+  .item-card .ic { font-size: 2.4rem; }
+  .item-card .nm { font-size: 1rem; margin-top: 6px; font-weight: 600; }
+  .item-card .tag {
+    display: inline-block; margin-top: 6px;
+    font-size: 0.75rem; padding: 2px 8px;
+    border-radius: 12px;
+  }
+  .item-card.must .tag { background: var(--c-beh); color: #fff; }
+  .item-card.no .tag { background: #d1d5db; color: #374151; }
+
+
+  .viz-panel {
+    margin: 18px auto;
+    
+    width: min(920px, calc(100vw - 150px));
+    align-self: center;
+max-width: 920px;
+    
+    min-width: min(620px, calc(100vw - 150px));
+border: 1px solid #bfdbfe;
+    border-radius: 18px;
+    padding: 22px 24px 20px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+  }
+  .viz-title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-weight: 800;
+  }
+  .viz-title strong {
+    color: var(--c-accent, var(--accent, #0f766e));
+    font-size: 1.04rem;
+  }
+  .viz-title span {
+    color: var(--c-muted, var(--muted, #64748b));
+    font-size: 0.84rem;
+    text-align: right;
+  }
+  .viz-panel svg {
+    display: block;
+    width: 100%;
+    max-height: 390px;
+  }
+  .viz-callout {
+    display: inline-block;
+    margin: 10px auto 0;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: #fff7ed;
+    color: #9a3412;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+  .viz-small { fill: #64748b; font-size: 12px; font-weight: 700; }
+
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">天氣小偵探 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- 1. 封面 -->
+<section class="slide cover" id="slide-cover">
+  <div class="slide-body" style="justify-content: center;">
+    <h2>天氣小偵探</h2>
+    <p class="subtitle">天天觀察天空,認識四季與颱風</p>
+    <div style="font-size: 5rem; margin-top: 20px;">🐻‍❄️🔍🌈</div>
+  </div>
+</section>
+
+<!-- 2. 大問題 -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>今天的天空,跟昨天一樣嗎?</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card"><div class="q-num">1</div>今天天空什麼顏色?</div>
+      <div class="question-card"><div class="q-num">2</div>有沒有看到太陽?</div>
+      <div class="question-card"><div class="q-num">3</div>有沒有下雨?</div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      天天看一看,你就是<strong style="color: var(--c-accent);">天氣小偵探</strong>!
+    </p>
+  </div>
+</section>
+
+<!-- 3. 活動一過場 -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>今天天氣是誰?</h2>
+    <p class="subtitle">學會用眼睛、皮膚、耳朵感受天氣</p>
+  </div>
+</section>
+
+<!-- 4. 窗外小偵探 -->
+<section class="slide" id="slide-window">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>今天外面怎麼樣?</h2>
+  <div class="slide-body">
+    <div class="seasons-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="season-card summer"><div class="icon">☀️</div><div class="name">晴</div></div>
+      <div class="season-card winter"><div class="icon">🌧️</div><div class="name">雨</div></div>
+      <div class="season-card spring"><div class="icon">☁️</div><div class="name">雲</div></div>
+      <div class="season-card autumn"><div class="icon">💨</div><div class="name">風</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      老師數 1、2、3,大家一起用手指比!
+    </p>
+  </div>
+</section>
+
+<!-- 5. 什麼叫天氣 -->
+<section class="slide" id="slide-weather-def">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>什麼叫「天氣」?</h2>
+  <div class="viz-panel">
+        <div class="viz-title">
+          <strong>大時鐘「今天」+ 晴/雨/風三表情</strong>
+          <span>整理圖</span>
+        </div>
+
+        <svg viewBox="0 0 860 390" role="img" aria-label="大時鐘「今天」+ 晴/雨/風三表情">
+          <defs>
+            <radialGradient id="sunGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fde68a"/>
+              <stop offset="100%" stop-color="#f59e0b"/>
+            </radialGradient>
+          </defs>
+          <!-- 背景 -->
+          <rect x="64" y="42" width="732" height="272" rx="26" fill="#fefce8" stroke="#fde68a" stroke-width="2"/>
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)"><rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/><text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text></g>
+          <!-- 標題 -->
+          <text x="430" y="80" text-anchor="middle" font-size="20" fill="#0f766e" font-weight="900">「天氣」= 今天外面是什麼樣子！</text>
+          <!-- 三個天氣卡片 -->
+          <!-- 晴天 -->
+          <rect x="100" y="105" width="180" height="170" rx="22" fill="#fff7ed" stroke="#f59e0b" stroke-width="3"/>
+          <!-- 太陽圓 -->
+          <circle cx="190" cy="165" r="38" fill="url(#sunGrad)"/>
+          <!-- 太陽光芒 -->
+          <line x1="190" y1="120" x2="190" y2="112" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+          <line x1="190" y1="210" x2="190" y2="218" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+          <line x1="145" y1="165" x2="137" y2="165" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+          <line x1="235" y1="165" x2="243" y2="165" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+          <line x1="158" y1="133" x2="152" y2="127" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+          <line x1="222" y1="197" x2="228" y2="203" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+          <line x1="222" y1="133" x2="228" y2="127" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+          <line x1="158" y1="197" x2="152" y2="203" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+          <!-- 太陽臉 -->
+          <circle cx="178" cy="160" r="5" fill="#92400e"/>
+          <circle cx="202" cy="160" r="5" fill="#92400e"/>
+          <path d="M178 174 Q190 183 202 174" fill="none" stroke="#92400e" stroke-width="3" stroke-linecap="round"/>
+          <text x="190" y="258" text-anchor="middle" font-size="22" fill="#d97706" font-weight="900">☀️ 晴天</text>
+          <!-- 雨天 -->
+          <rect x="340" y="105" width="180" height="170" rx="22" fill="#eff6ff" stroke="#3b82f6" stroke-width="3"/>
+          <!-- 雲 -->
+          <ellipse cx="420" cy="148" rx="46" ry="28" fill="#93c5fd"/>
+          <ellipse cx="395" cy="155" rx="26" ry="18" fill="#bfdbfe"/>
+          <ellipse cx="445" cy="155" rx="26" ry="18" fill="#bfdbfe"/>
+          <!-- 雨滴 -->
+          <line x1="395" y1="182" x2="388" y2="202" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+          <line x1="415" y1="182" x2="408" y2="202" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+          <line x1="435" y1="182" x2="428" y2="202" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+          <line x1="455" y1="182" x2="448" y2="202" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+          <text x="430" y="258" text-anchor="middle" font-size="22" fill="#1d4ed8" font-weight="900">🌧️ 雨天</text>
+          <!-- 颳風 -->
+          <rect x="580" y="105" width="180" height="170" rx="22" fill="#ecfeff" stroke="#0f766e" stroke-width="3"/>
+          <!-- 風 曲線 -->
+          <path d="M602 148 Q640 130 680 148 Q720 166 746 148" fill="none" stroke="#0f766e" stroke-width="6" stroke-linecap="round"/>
+          <path d="M606 172 Q645 156 685 172 Q715 188 740 172" fill="none" stroke="#38bdf8" stroke-width="5" stroke-linecap="round"/>
+          <path d="M614 196 Q650 182 690 196 Q720 208 738 196" fill="none" stroke="#0f766e" stroke-width="4" stroke-linecap="round"/>
+          <!-- 葉子隨風飄 -->
+          <ellipse cx="630" cy="215" rx="10" ry="6" fill="#22c55e" transform="rotate(-30 630 215)"/>
+          <ellipse cx="700" cy="140" rx="9" ry="5" fill="#16a34a" transform="rotate(20 700 140)"/>
+          <text x="670" y="258" text-anchor="middle" font-size="22" fill="#0f766e" font-weight="900">💨 颳風</text>
+          <!-- 底部說明 -->
+          <text x="430" y="338" text-anchor="middle" font-size="14" fill="#64748b" font-weight="700">天氣 = 今天外面是晴天、雨天還是颳風？</text>
+        </svg>
+        <div class="viz-callout">什麼叫「天氣」?</div>
+      </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://science.nasa.gov/kids/earth/weather-and-climate" target="_blank" rel="noopener">美國太空總署兒童科學館 — 天氣與氣候</a>
+  </div>
+</section>
+
+<!-- 6. 心情 vs 個性 -->
+<section class="slide" id="slide-mood">
+  <div class="slide-tag">活動一・步驟 4</div>
+  <h2>天氣 vs 氣候:心情和個性</h2>
+  <div class="slide-body">
+    <div class="compare-grid">
+      <div class="compare-card left">
+        <div class="label">天 氣 = 今天的心情</div>
+        <div class="icon">😊😢😣</div>
+        <h3>每天都會變</h3>
+        <p>晴天、雨天、颳風天</p>
+      </div>
+      <div class="compare-card right">
+        <div class="label">氣 候 = 平常的個性</div>
+        <div class="icon">🌞🌧️🍃</div>
+        <h3>很多年才看得出來</h3>
+        <p>臺灣夏天常熱、冬天常涼</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 20px; color: var(--c-accent);">
+      <strong>心情會變,個性比較固定。天氣會變,氣候比較固定。</strong>
+    </p>
+  </div>
+  <div class="slide-source">
+    參考資料:
+    <a href="https://science.nasa.gov/kids/earth/weather-and-climate" target="_blank" rel="noopener">美國太空總署兒童科學館 — 天氣與氣候</a>
+  </div>
+</section>
+
+<!-- 7. 活動二過場 -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>四季是好朋友</h2>
+    <p class="subtitle">春夏秋冬輪流來找我們</p>
+  </div>
+</section>
+
+<!-- 8. 四季 -->
+<section class="slide" id="slide-seasons">
+  <div class="slide-tag">活動二・步驟 1</div>
+  <h2>臺灣的四個季節</h2>
+  <div class="slide-body">
+    <div class="seasons-grid">
+      <div class="season-card spring">
+        <div class="icon">🌸</div>
+        <div class="name">春</div>
+        <div class="desc">花開了</div>
+      </div>
+      <div class="season-card summer">
+        <div class="icon">☀️</div>
+        <div class="name">夏</div>
+        <div class="desc">熱熱的</div>
+      </div>
+      <div class="season-card autumn">
+        <div class="icon">🍂</div>
+        <div class="name">秋</div>
+        <div class="desc">葉子掉下來</div>
+      </div>
+      <div class="season-card winter">
+        <div class="icon">❄️</div>
+        <div class="name">冬</div>
+        <div class="desc">要穿外套</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+      4 個季節,每個大約住 <strong style="color: var(--c-accent); font-size: 1.6rem;">3 個月</strong>,加起來剛好 12 個月!
+    </p>
+  </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署</a>
+  </div>
+</section>
+
+<!-- 9. 夏天像什麼/冬天像什麼 -->
+<section class="slide" id="slide-summer-winter">
+  <div class="slide-tag">活動二・步驟 2</div>
+  <h2>夏天像什麼?冬天像什麼?</h2>
+  <div class="viz-panel">
+        <div class="viz-title">
+          <strong>左邊大毛毯(夏)+ 右邊風吹臉(冬)</strong>
+          <span>天氣指標圖</span>
+        </div>
+
+        <svg viewBox="0 0 860 390" role="img" aria-label="左邊大毛毯(夏)+ 右邊風吹臉(冬)">
+          <defs>
+            <linearGradient id="summerBg" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#fff7ed"/>
+              <stop offset="100%" stop-color="#fef3c7"/>
+            </linearGradient>
+            <linearGradient id="winterBg" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#eff6ff"/>
+              <stop offset="100%" stop-color="#e0f2fe"/>
+            </linearGradient>
+          </defs>
+          <!-- 背景 -->
+          <rect x="64" y="42" width="732" height="272" rx="26" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)"><rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/><text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text></g>
+          <!-- 中線 -->
+          <line x1="430" y1="70" x2="430" y2="300" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="6,4"/>
+          <!-- 夏天左側 -->
+          <rect x="88" y="68" width="320" height="236" rx="20" fill="url(#summerBg)" stroke="#f59e0b" stroke-width="2.5"/>
+          <text x="248" y="96" text-anchor="middle" font-size="22" fill="#d97706" font-weight="900">☀️ 夏天</text>
+          <!-- 大毛毯圖示：小孩蓋毛毯 -->
+          <ellipse cx="248" cy="162" rx="54" ry="58" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+          <!-- 臉 -->
+          <circle cx="234" cy="150" r="7" fill="#92400e"/>
+          <circle cx="262" cy="150" r="7" fill="#92400e"/>
+          <path d="M233 168 Q248 180 263 168" fill="none" stroke="#92400e" stroke-width="3" stroke-linecap="round"/>
+          <!-- 汗滴 -->
+          <ellipse cx="205" cy="142" rx="5" ry="8" fill="#38bdf8"/>
+          <ellipse cx="290" cy="138" rx="5" ry="8" fill="#38bdf8"/>
+          <!-- 毛毯 -->
+          <rect x="185" y="195" width="126" height="40" rx="12" fill="#fb923c" stroke="#ea580c" stroke-width="2"/>
+          <line x1="205" y1="195" x2="205" y2="235" stroke="#fef3c7" stroke-width="2"/>
+          <line x1="225" y1="195" x2="225" y2="235" stroke="#fef3c7" stroke-width="2"/>
+          <line x1="245" y1="195" x2="245" y2="235" stroke="#fef3c7" stroke-width="2"/>
+          <line x1="265" y1="195" x2="265" y2="235" stroke="#fef3c7" stroke-width="2"/>
+          <line x1="285" y1="195" x2="285" y2="235" stroke="#fef3c7" stroke-width="2"/>
+          <text x="248" y="264" text-anchor="middle" font-size="16" fill="#9a3412" font-weight="900">熱熱的，像大毛毯！</text>
+          <!-- 中央 vs -->
+          <circle cx="430" cy="186" r="28" fill="#fff" stroke="#e2e8f0" stroke-width="2"/>
+          <text x="430" y="192" text-anchor="middle" font-size="18" fill="#64748b" font-weight="900">VS</text>
+          <!-- 冬天右側 -->
+          <rect x="452" y="68" width="320" height="236" rx="20" fill="url(#winterBg)" stroke="#3b82f6" stroke-width="2.5"/>
+          <text x="612" y="96" text-anchor="middle" font-size="22" fill="#1d4ed8" font-weight="900">❄️ 冬天</text>
+          <!-- 風吹臉 -->
+          <ellipse cx="612" cy="162" rx="54" ry="58" fill="#bfdbfe" stroke="#3b82f6" stroke-width="2"/>
+          <!-- 臉冷縮 -->
+          <circle cx="598" cy="150" r="7" fill="#1d4ed8"/>
+          <circle cx="626" cy="150" r="7" fill="#1d4ed8"/>
+          <!-- 嘴冷縮 -->
+          <path d="M600 170 Q612 164 624 170" fill="none" stroke="#1d4ed8" stroke-width="3" stroke-linecap="round"/>
+          <!-- 圍巾 -->
+          <path d="M570 192 Q612 206 654 192" fill="#dc2626" stroke="none"/>
+          <rect x="570" y="192" width="84" height="16" rx="8" fill="#dc2626"/>
+          <!-- 風線 -->
+          <path d="M466 148 Q500 136 528 148" fill="none" stroke="#93c5fd" stroke-width="5" stroke-linecap="round"/>
+          <path d="M468 168 Q500 158 526 168" fill="none" stroke="#bfdbfe" stroke-width="4" stroke-linecap="round"/>
+          <!-- 雪花 -->
+          <text x="550" y="258" text-anchor="middle" font-size="20">❄</text>
+          <text x="685" y="240" text-anchor="middle" font-size="18">❄</text>
+          <text x="612" y="264" text-anchor="middle" font-size="16" fill="#1d4ed8" font-weight="900">涼涼的，風吹臉！</text>
+          <!-- 溫度對比 -->
+          <text x="248" y="295" text-anchor="middle" font-size="18" fill="#d97706" font-weight="900">約 28°C</text>
+          <text x="612" y="295" text-anchor="middle" font-size="18" fill="#1d4ed8" font-weight="900">約 16°C</text>
+          <text x="430" y="330" text-anchor="middle" font-size="13" fill="#64748b">資料來源：中央氣象署氣候資料（教學示意，近 30 年平均）</text>
+        </svg>
+        <div class="viz-callout">夏天像什麼?冬天像什麼?</div>
+      </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署氣候資料</a>
+  </div>
+</section>
+
+<!-- 10. 穿什麼才剛剛好 -->
+<section class="slide" id="slide-dressup">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>穿什麼才剛剛好?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 20px;">
+      老師喊「下雨了!」「夏天了!」「冬天了!」,大家用手指出對的衣服。
+    </p>
+    <div class="typhoon-bag">
+      <div class="item-card"><div class="ic">👕</div><div class="nm">T 恤</div><div class="tag" style="background:#fde68a;color:#92400e;">夏</div></div>
+      <div class="item-card"><div class="ic">🧥</div><div class="nm">外套</div><div class="tag" style="background:#bfdbfe;color:#1e40af;">冬</div></div>
+      <div class="item-card"><div class="ic">🧣</div><div class="nm">圍巾</div><div class="tag" style="background:#bfdbfe;color:#1e40af;">冬</div></div>
+      <div class="item-card"><div class="ic">🧢</div><div class="nm">帽子</div><div class="tag" style="background:#fde68a;color:#92400e;">夏</div></div>
+      <div class="item-card"><div class="ic">☂️</div><div class="nm">雨傘</div><div class="tag" style="background:#a5f3fc;color:#155e75;">雨</div></div>
+      <div class="item-card"><div class="ic">🥾</div><div class="nm">雨鞋</div><div class="tag" style="background:#a5f3fc;color:#155e75;">雨</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. 活動三過場 -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>颱風天我來準備</h2>
+    <p class="subtitle">知道天氣,就能保護自己</p>
+  </div>
+</section>
+
+<!-- 12. 颱風是誰 -->
+<section class="slide" id="slide-typhoon">
+  <div class="slide-tag">活動三・步驟 1</div>
+  <h2>颱風是誰?</h2>
+  <div class="viz-panel">
+        <div class="viz-title">
+          <strong>可愛颱風卡通(轉圈圈)+ 雨滴與風</strong>
+          <span>天氣指標圖</span>
+        </div>
+
+        <svg viewBox="0 0 860 390" role="img" aria-label="可愛颱風卡通(轉圈圈)+ 雨滴與風">
+          <defs>
+            <radialGradient id="typhoonGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#e0f2fe"/>
+              <stop offset="100%" stop-color="#bfdbfe"/>
+            </radialGradient>
+            <linearGradient id="skyGrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#e0f2fe"/>
+              <stop offset="100%" stop-color="#f0f9ff"/>
+            </linearGradient>
+          </defs>
+          <!-- 背景天空 -->
+          <rect x="64" y="42" width="732" height="272" rx="26" fill="url(#skyGrad)" stroke="#93c5fd" stroke-width="2"/>
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)"><rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/><text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text></g>
+          <!-- 標題 -->
+          <text x="430" y="76" text-anchor="middle" font-size="20" fill="#1d4ed8" font-weight="900">颱風 = 又大又會轉圈圈的風雨！</text>
+          <!-- 颱風本體：大漩渦 -->
+          <!-- 外圈雲帶 -->
+          <circle cx="310" cy="186" r="100" fill="none" stroke="#93c5fd" stroke-width="18" stroke-dasharray="40,20" stroke-linecap="round"/>
+          <circle cx="310" cy="186" r="70" fill="none" stroke="#60a5fa" stroke-width="14" stroke-dasharray="30,18" stroke-linecap="round"/>
+          <circle cx="310" cy="186" r="42" fill="none" stroke="#3b82f6" stroke-width="10" stroke-dasharray="22,14" stroke-linecap="round"/>
+          <!-- 颱風眼（中心安靜） -->
+          <circle cx="310" cy="186" r="20" fill="#e0f2fe" stroke="#2563eb" stroke-width="3"/>
+          <text x="310" y="191" text-anchor="middle" font-size="13" fill="#1d4ed8" font-weight="900">眼</text>
+          <!-- 旋轉箭頭 -->
+          <path d="M310 80 A106 106 0 0 1 416 186" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" marker-end="url(#tyArrow)"/>
+          <defs><marker id="tyArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#2563eb"/></marker></defs>
+          <!-- 颱風臉 -->
+          <circle cx="302" cy="182" r="5" fill="#1d4ed8"/>
+          <circle cx="318" cy="182" r="5" fill="#1d4ed8"/>
+          <path d="M302 192 Q310 198 318 192" fill="none" stroke="#1d4ed8" stroke-width="3" stroke-linecap="round"/>
+          <!-- 右側：颱風帶來的雨和風 -->
+          <rect x="462" y="90" width="290" height="190" rx="18" fill="rgba(219,234,254,0.5)" stroke="#93c5fd" stroke-width="1.5"/>
+          <!-- 風線 -->
+          <path d="M474 120 Q530 106 576 120" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+          <path d="M480 142 Q540 128 590 142" fill="none" stroke="#60a5fa" stroke-width="4" stroke-linecap="round"/>
+          <path d="M470 164 Q550 148 600 164" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+          <!-- 雨滴組 -->
+          <line x1="520" y1="185" x2="512" y2="210" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+          <line x1="545" y1="182" x2="537" y2="207" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+          <line x1="570" y1="185" x2="562" y2="210" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+          <line x1="595" y1="182" x2="587" y2="207" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+          <line x1="620" y1="185" x2="612" y2="210" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+          <line x1="645" y1="182" x2="637" y2="207" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+          <line x1="530" y1="220" x2="522" y2="245" stroke="#60a5fa" stroke-width="3" stroke-linecap="round"/>
+          <line x1="558" y1="218" x2="550" y2="243" stroke="#60a5fa" stroke-width="3" stroke-linecap="round"/>
+          <line x1="586" y1="220" x2="578" y2="245" stroke="#60a5fa" stroke-width="3" stroke-linecap="round"/>
+          <line x1="614" y1="218" x2="606" y2="243" stroke="#60a5fa" stroke-width="3" stroke-linecap="round"/>
+          <line x1="642" y1="220" x2="634" y2="245" stroke="#60a5fa" stroke-width="3" stroke-linecap="round"/>
+          <text x="560" y="268" text-anchor="middle" font-size="17" fill="#1d4ed8" font-weight="900">💨 強風 + 大雨！</text>
+          <!-- 月份說明 -->
+          <rect x="90" y="300" width="690" height="32" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="435" y="321" text-anchor="middle" font-size="14" fill="#92400e" font-weight="800">臺灣颱風主要在 7–10 月來訪，要提前準備喔！（資料來源：中央氣象署）</text>
+        </svg>
+        <div class="viz-callout">颱風是誰?</div>
+      </div>
+  <div class="slide-source">
+    資料來源:
+    <a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener">中央氣象署 — 颱風資訊</a>
+  </div>
+</section>
+
+<!-- 13. 颱風來了要準備什麼 -->
+<section class="slide" id="slide-typhoon-bag">
+  <div class="slide-tag">活動三・步驟 3</div>
+  <h2>颱風來了要準備什麼?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 16px;">
+      請從下面選 5 個放進颱風背包。哪些是必要的?哪些可以先不用?
+    </p>
+    <div class="typhoon-bag">
+      <div class="item-card must"><div class="ic">💧</div><div class="nm">水</div><div class="tag">必要</div></div>
+      <div class="item-card must"><div class="ic">🔦</div><div class="nm">手電筒</div><div class="tag">必要</div></div>
+      <div class="item-card must"><div class="ic">🍪</div><div class="nm">餅乾</div><div class="tag">必要</div></div>
+      <div class="item-card must"><div class="ic">📻</div><div class="nm">收音機</div><div class="tag">必要</div></div>
+      <div class="item-card must"><div class="ic">🩹</div><div class="nm">小急救包</div><div class="tag">必要</div></div>
+      <div class="item-card no"><div class="ic">🧸</div><div class="nm">玩具</div><div class="tag">可不帶</div></div>
+      <div class="item-card no"><div class="ic">☂️</div><div class="nm">雨傘</div><div class="tag">出門用</div></div>
+      <div class="item-card no"><div class="ic">🍦</div><div class="nm">冰淇淋</div><div class="tag">會融化</div></div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 20px;">
+      別忘了:<strong>關好窗戶 🪟</strong>,聽爸爸媽媽和老師的話。
+    </p>
+  </div>
+</section>
+
+<!-- 14. 三關鍵字總結 -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三件大事,一起記住</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 件</div>
+        <div class="word">看天空</div>
+        <div class="desc">天氣是<br>今天的樣子</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 件</div>
+        <div class="word">記四季</div>
+        <div class="desc">氣候是<br>很多年的平均</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 件</div>
+        <div class="word">會準備</div>
+        <div class="desc">看天氣穿衣服<br>颱風要做準備</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      <strong style="color: var(--c-accent);">小偵探,真棒!記得回家跟爸爸媽媽一起數雲朵喔。</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">14</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>

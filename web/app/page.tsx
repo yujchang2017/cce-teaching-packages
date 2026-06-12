@@ -3,7 +3,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fetchAllPackages } from "@/lib/github-api";
+import { fetchAllPackages, fetchPackageDetail } from "@/lib/github-api";
 import HomeBrowser from "@/components/HomeBrowser";
 import DisclaimerModal from "@/components/DisclaimerModal";
 import TrackPageView from "@/components/TrackPageView";
@@ -63,7 +63,13 @@ function packageTitle(packages: PackageSummary[], keyId: string) {
 }
 
 export default async function Home() {
-  const allPackages = await fetchAllPackages();
+  const basePackages = await fetchAllPackages();
+  const allPackages = await Promise.all(
+    basePackages.map(async (pkg) => {
+      const detail = await fetchPackageDetail(pkg.keyId);
+      return { ...pkg, currentVersion: detail.version.currentVersion };
+    })
+  );
   const stats = loadStats();
   const themeRows = Object.entries(stats.byTheme ?? {})
     .map(([theme, count]) => ({ theme, count, name: stats.themeNames?.[theme] ?? `主題 ${theme}` }))

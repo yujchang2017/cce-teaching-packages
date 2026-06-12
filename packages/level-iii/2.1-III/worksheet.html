@@ -113,7 +113,10 @@
     <p id="l1-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
     <div class="nav-row">
       <span></span>
-      <button id="btn-next-1" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>完成分類才能繼續 →</button>
+      <div class="flex gap-2 items-center flex-wrap justify-end">
+        <button id="btn-skip-1" class="btn text-slate-400 text-sm px-3 py-2" style="display:none; background:none; box-shadow:none; text-decoration:underline;" onclick="gotoLevel(2)">卡關了？跳過此關（不得分）→</button>
+        <button id="btn-next-1" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>完成分類才能繼續 →</button>
+      </div>
     </div>
   </section>
 
@@ -171,7 +174,7 @@
 
     <!-- Q2 -->
     <div class="mb-3">
-      <p class="font-bold text-sm mb-1">📌 Q2：你覺得校園裡有哪些事情可以讓生物種類變多？<br><span class="font-normal text-slate-500 text-xs">（勾出你覺得有可能的，可以勾多個）</span></p>
+      <p class="font-bold text-sm mb-1">📌 Q2：你覺得校園裡有哪些事情可以讓生物種類變多？<br><span class="font-normal text-slate-500 text-xs">（4 個選項中，勾出你覺得有可能的——可以勾 1 個，也可以勾多個）</span></p>
       <div id="q2-opts">
         <label class="opt"><input type="checkbox" data-correct="1"> 🌻 種更多不同種類的花草樹木</label>
         <label class="opt"><input type="checkbox" data-correct="1"> 💧 設置小水池或積水桶給青蛙住</label>
@@ -193,13 +196,37 @@
       <div class="text-4xl">🔄</div>
       <div>
         <h2 class="text-xl font-bold text-emerald-700">關卡 3：如果蜜蜂消失了……</h2>
-        <p class="text-sm text-slate-700 mt-1">阿花說：「一件事會影響另一件事——就像骨牌！把這四張卡片排出正確的順序，看看蜜蜂消失會發生什麼事。」</p>
+        <p class="text-sm text-slate-700 mt-1">阿花說：「一件事會影響另一件事——就像骨牌！把下面的卡片拖到①②③④格，排出正確的因果順序。」</p>
         <p class="text-xs text-slate-500 mt-1">✅ 20 分｜順序全對才得分</p>
       </div>
     </div>
 
+    <!-- Chain drag items（移到上方，卡片樣式） -->
+    <div class="mb-1">
+      <p class="text-xs font-bold text-teal-700 mb-2">📋 把下面四張卡片，依序拖入下方的①②③④格：</p>
+    </div>
+    <div class="grid grid-cols-2 gap-3 mb-5" id="chain-items">
+      <div class="drag-item bg-white border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm shadow-md" style="cursor:grab;" draggable="true" data-chain="3">
+        <div class="text-2xl mb-1">🍎</div>
+        <div>果樹沒有果實，我們買不到水果</div>
+      </div>
+      <div class="drag-item bg-white border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm shadow-md" style="cursor:grab;" draggable="true" data-chain="1">
+        <div class="text-2xl mb-1">🐝</div>
+        <div>蜜蜂越來越少，快要不見了</div>
+      </div>
+      <div class="drag-item bg-white border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm shadow-md" style="cursor:grab;" draggable="true" data-chain="4">
+        <div class="text-2xl mb-1">🌍</div>
+        <div>很多動物和人類都少了重要食物</div>
+      </div>
+      <div class="drag-item bg-white border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm shadow-md" style="cursor:grab;" draggable="true" data-chain="2">
+        <div class="text-2xl mb-1">🌸</div>
+        <div>花朵沒有蜜蜂幫忙傳播花粉</div>
+      </div>
+    </div>
+
     <!-- Chain slots -->
-    <div class="flex flex-col md:flex-row items-center justify-center gap-2 my-4" id="chain-slots">
+    <p class="text-xs font-bold text-emerald-700 mb-2">⬇ 拖到這裡，排出因果順序：</p>
+    <div class="flex flex-col md:flex-row items-center justify-center gap-2 mb-4" id="chain-slots">
       <div class="drop-zone bg-emerald-50 p-3 w-full md:w-32 text-center" data-slot="1">
         <div class="text-xs font-bold text-emerald-700 mb-1">① 起點</div>
         <div class="slot-text text-sm text-slate-400 min-h-[40px] flex items-center justify-center">拖到這裡</div>
@@ -221,18 +248,13 @@
       </div>
     </div>
 
-    <!-- Chain drag items -->
-    <div class="grid grid-cols-2 gap-3 mt-2" id="chain-items">
-      <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="3">🍎 果樹沒有果實，我們買不到水果</div>
-      <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="1">🐝 蜜蜂越來越少，快要不見了</div>
-      <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="4">🌍 很多動物和人類都少了重要食物</div>
-      <div class="drag-item bg-teal-100 border-2 border-teal-400 rounded-xl p-3 text-center font-bold text-sm" draggable="true" data-chain="2">🌸 花朵沒有蜜蜂幫忙傳播花粉</div>
-    </div>
-
     <p id="l3-feedback" class="mt-3 text-center font-bold min-h-[24px]"></p>
     <div class="nav-row">
       <button class="btn btn-back" data-back="2">← 上一關</button>
-      <button id="btn-next-3" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>下一關 →</button>
+      <div class="flex gap-2 items-center flex-wrap justify-end">
+        <button id="btn-skip-3" class="btn text-slate-400 text-sm px-3 py-2" style="display:none; background:none; box-shadow:none; text-decoration:underline;" onclick="gotoLevel(4)">卡關了？跳過此關（不得分）→</button>
+        <button id="btn-next-3" class="btn bg-slate-300 text-white px-6 py-2 rounded-xl font-bold" disabled>下一關 →</button>
+      </div>
     </div>
   </section>
 
@@ -455,11 +477,35 @@
         btn.className = 'btn bg-emerald-500 text-white px-6 py-2 rounded-xl font-bold';
         btn.onclick = () => gotoLevel(2);
         fb.textContent = '全部答對！阿花為你拍手！🎉 +15 分';
+        el('btn-skip-1') && (el('btn-skip-1').style.display = 'none');
+      } else {
+        // 每次答對都顯示跳過按鈕（不得分但可繼續）
+        const skipBtn = el('btn-skip-1');
+        if (skipBtn) skipBtn.style.display = 'inline-block';
       }
     } else {
       dragged1.classList.add('shake');
       setTimeout(() => dragged1.classList.remove('shake'), 400);
-      fb.textContent = '再想想！提示：看看牠的習慣，是需要水還是需要樹呢？💡';
+      // 累計錯誤次數
+      dragged1.dataset.wrong = (parseInt(dragged1.dataset.wrong || '0') + 1);
+      const wrongTimes = parseInt(dragged1.dataset.wrong);
+      const hints = {
+        'tree': '提示：這個生物喜歡 🌳 大樹環境（在樹上築巢、啃樹葉、躲樹皮）',
+        'water': '提示：這個生物需要 💧 潮濕或有水的地方才能生存'
+      };
+      const hintMsg = hints[dragged1.dataset.match] || '提示：想想看牠平常住哪裡？';
+      if (wrongTimes >= 2) {
+        fb.innerHTML = `<span class="text-rose-500 font-bold">再想想！${hintMsg}</span>`;
+        // 第3次錯就顯示直接提示
+        if (wrongTimes >= 3) {
+          fb.innerHTML = `<span class="text-amber-600 font-bold">💡 答案揭曉：${hintMsg.replace('提示：', '')} ——再試一次！</span>`;
+        }
+        // 顯示跳過按鈕
+        const skipBtn = el('btn-skip-1');
+        if (skipBtn) skipBtn.style.display = 'inline-block';
+      } else {
+        fb.textContent = '再想想！提示：看看牠的習慣，是需要水還是需要樹呢？💡';
+      }
       fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
     }
     dragged1 = null;
@@ -598,8 +644,21 @@
     } else {
       zone.classList.add('shake');
       setTimeout(() => zone.classList.remove('shake'), 400);
-      fb.textContent = '順序不對喔！提示：第 ① 格是「蜜蜂快消失」。';
-      fb.className = 'mt-3 text-center font-bold min-h-[24px] text-rose-500';
+      // 累計全域錯誤次數
+      window._l3WrongCount = (window._l3WrongCount || 0) + 1;
+      const hints = {
+        '1': '第①格是「起點」——誰先消失的？',
+        '2': '第②格：蜜蜂沒了，花朵會發生什麼事？',
+        '3': '第③格：花沒有授粉，果樹會怎樣？',
+        '4': '第④格是「最終結果」——對人類和動物的影響'
+      };
+      fb.innerHTML = `<span class="text-rose-500 font-bold">順序不對！💡 ${hints[slot] || '想想因果關係的順序'}——卡片放回去再試試！</span>`;
+      fb.className = 'mt-3 text-center font-bold min-h-[24px]';
+      // 顯示跳過按鈕（錯2次以上）
+      if (window._l3WrongCount >= 2) {
+        const skipBtn = el('btn-skip-3');
+        if (skipBtn) skipBtn.style.display = 'inline-block';
+      }
     }
     dragged3 = null;
   }

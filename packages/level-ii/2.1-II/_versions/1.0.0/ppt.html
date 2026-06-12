@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <!-- cce-tracker-injected -->
+  <meta name="cce-key-id" content="2.1-II">
+  <meta name="cce-page-type" content="ppt">
+  <script src="/tracker.js" defer></script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小小生態守護者 — 教學投影片</title>
+<style>
+  :root {
+    --c-accent: #15803d;
+    --c-accent-soft: #dcfce7;
+    --c-cog: #2563eb;
+    --c-soc: #db2777;
+    --c-beh: #16a34a;
+    --c-warn: #ea580c;
+    --c-ocean: #0891b2;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-bg: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--c-text);
+    line-height: 1.6;
+    margin: 0;
+    background: #fff;
+  }
+
+  /* 頂部回教案列 */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 44px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--c-border);
+    display: flex; align-items: center;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.9rem;
+  }
+  .topbar a.back {
+    color: var(--c-accent); text-decoration: none; font-weight: 600;
+  }
+  .topbar a.back:hover { text-decoration: underline; }
+  .topbar-title {
+    margin: 0 0 0 24px;
+    font-size: 0.95rem; font-weight: 500; color: var(--c-muted);
+  }
+
+  /* 底部頁碼列 */
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 36px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+    font-size: 0.85rem; color: var(--c-muted);
+  }
+  .navbar .page-indicator {
+    font-family: "JetBrains Mono", "Consolas", monospace;
+    color: var(--c-text);
+  }
+  .navbar .page-indicator .nav-current {
+    color: var(--c-accent); font-weight: 700;
+  }
+  .navbar .hint kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    border: 1px solid var(--c-border);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    font-family: monospace; font-size: 0.8em;
+    background: #fff;
+    margin: 0 2px;
+  }
+
+  /* 投影片基本框架 */
+  main { padding-top: 44px; padding-bottom: 36px; }
+  .slide {
+    min-height: calc(100vh - 80px);
+    scroll-snap-align: start;
+    padding: 40px 60px;
+    display: flex; flex-direction: column;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .slide-tag {
+    font-size: 0.85rem;
+    color: var(--c-accent);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .slide h2 {
+    font-size: 1.9rem;
+    margin: 0 0 16px;
+    color: var(--c-text);
+  }
+  .slide h3 {
+    font-size: 1.15rem;
+    color: var(--c-accent);
+    margin-top: 18px;
+  }
+  .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .slide-source {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 0.8rem;
+    color: var(--c-muted);
+  }
+  .slide-source a {
+    color: var(--c-accent); text-decoration: none;
+    border-bottom: 1px dashed var(--c-accent);
+  }
+  .slide-source a:hover { border-bottom-style: solid; }
+
+  /* 封面與過場 */
+  .slide.cover, .slide.divider {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, var(--c-accent-soft) 0%, #fff 60%);
+  }
+  .slide.cover h2 { font-size: 2.6rem; line-height: 1.3; }
+  .slide.cover .subtitle {
+    font-size: 1.2rem;
+    color: var(--c-muted);
+    margin-top: 8px;
+  }
+  .slide.divider .activity-num {
+    font-size: 0.9rem;
+    color: var(--c-accent);
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+  }
+  .slide.divider h2 {
+    font-size: 2.4rem;
+    color: var(--c-accent);
+  }
+
+  /* 圖表佔位框(C 方案) */
+  .chart-placeholder {
+    border: 2px dashed var(--c-accent);
+    border-radius: 12px;
+    padding: 40px;
+    background: var(--c-accent-soft);
+    text-align: center;
+    margin: 12px 0;
+  }
+  .chart-placeholder .ph-tag {
+    font-size: 0.8rem;
+    color: var(--c-muted);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .chart-placeholder .ph-title {
+    font-size: 1.4rem;
+    color: var(--c-accent);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .chart-placeholder .ph-data {
+    font-size: 1.1rem;
+    margin: 14px 0;
+  }
+  .chart-placeholder .ph-foot {
+    font-size: 0.85rem;
+    color: var(--c-muted);
+    margin-top: 12px;
+  }
+
+  /* emoji 動物方陣 */
+  .animal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+    gap: 12px;
+    margin: 20px auto;
+    max-width: 720px;
+  }
+  .animal-cell {
+    background: var(--c-bg);
+    border: 2px solid var(--c-border);
+    border-radius: 12px;
+    padding: 14px 4px;
+    text-align: center;
+    font-size: 1.7rem;
+  }
+  .animal-cell .name {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--c-muted);
+    margin-top: 4px;
+  }
+
+  /* 比較卡(動物大比拼) */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 20px 0;
+  }
+  .compare-card {
+    border: 2px solid var(--c-border);
+    border-radius: 12px;
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .compare-card .icon { font-size: 3rem; margin: 8px 0; }
+  .compare-card h3 { margin: 8px 0; font-size: 1.25rem; }
+  .compare-card p { color: var(--c-muted); margin: 4px 0; font-size: 0.95rem; }
+  .compare-card.bear { border-color: #b45309; }
+  .compare-card.frog { border-color: var(--c-beh); }
+  .compare-card.fish { border-color: var(--c-ocean); }
+
+  /* 食物鏈接力 */
+  .food-chain {
+    display: grid;
+    grid-template-columns: repeat(7, auto);
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    margin: 24px auto;
+    font-size: 1.1rem;
+  }
+  .food-chain .step {
+    padding: 18px 22px;
+    border-radius: 14px;
+    text-align: center;
+    font-weight: 700;
+    background: var(--c-accent-soft);
+    color: var(--c-accent);
+    min-width: 110px;
+  }
+  .food-chain .step .emoji {
+    display: block;
+    font-size: 2.2rem;
+    margin-bottom: 4px;
+  }
+  .food-chain .arrow { color: var(--c-muted); font-size: 1.6rem; }
+
+  /* 三欄行動 */
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 20px 0;
+  }
+  .col-card {
+    border: 2px solid var(--c-border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .col-card.fam { border-color: var(--c-soc); }
+  .col-card.sch { border-color: var(--c-cog); }
+  .col-card.com { border-color: var(--c-beh); }
+  .col-card h4 {
+    margin: 0 0 10px;
+    font-size: 1.15rem;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--c-border);
+  }
+  .col-card.fam h4 { color: var(--c-soc); }
+  .col-card.sch h4 { color: var(--c-cog); }
+  .col-card.com h4 { color: var(--c-beh); }
+  .col-card ul { margin: 0; padding-left: 20px; }
+  .col-card li { margin: 6px 0; }
+
+  /* ws-table */
+  .ws-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 1.05rem;
+  }
+  .ws-table th, .ws-table td {
+    border: 2px solid var(--c-border);
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .ws-table th {
+    background: var(--c-accent-soft);
+    color: var(--c-accent);
+    font-weight: 700;
+  }
+  .ws-table td.fill {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 18px, #d1d5db 18px, #d1d5db 19px);
+    height: 48px;
+  }
+
+  /* 連連看(○ ×) */
+  .ox-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin: 20px auto;
+    max-width: 760px;
+  }
+  .ox-cell {
+    border: 2px solid;
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #fff;
+    font-size: 1.05rem;
+  }
+  .ox-cell.yes { border-color: var(--c-beh); background: #f0fdf4; }
+  .ox-cell.no { border-color: var(--c-warn); background: #fff7ed; }
+  .ox-cell .mark {
+    font-size: 2rem;
+    font-weight: 800;
+    width: 40px;
+    text-align: center;
+  }
+  .ox-cell.yes .mark { color: var(--c-beh); }
+  .ox-cell.no .mark { color: var(--c-warn); }
+  .ox-cell .emoji { font-size: 1.6rem; }
+
+  /* 三關鍵字總結 */
+  .summary-keys {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin: 30px 0;
+  }
+  .key-card {
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: 16px;
+    background: var(--c-bg);
+    border: 3px solid;
+  }
+  .key-card .num {
+    font-size: 0.85rem; font-weight: 700;
+    color: var(--c-muted);
+    letter-spacing: 0.2em;
+  }
+  .key-card .word {
+    font-size: 2.6rem; font-weight: 800;
+    margin: 12px 0;
+  }
+  .key-card.k1 { border-color: var(--c-cog); }
+  .key-card.k1 .word { color: var(--c-cog); }
+  .key-card.k2 { border-color: var(--c-soc); }
+  .key-card.k2 .word { color: var(--c-soc); }
+  .key-card.k3 { border-color: var(--c-beh); }
+  .key-card.k3 .word { color: var(--c-beh); }
+  .key-card .desc {
+    font-size: 0.95rem; color: var(--c-muted);
+    margin-top: 8px;
+  }
+
+  /* 宣誓 / 承諾框 */
+  .pledge-form {
+    border: 3px solid var(--c-accent);
+    border-radius: 16px;
+    padding: 28px 32px;
+    background: var(--c-bg);
+    max-width: 720px;
+    margin: 20px auto;
+  }
+  .pledge-form .row {
+    display: flex; align-items: baseline;
+    gap: 12px; margin: 16px 0;
+    font-size: 1.05rem;
+  }
+  .pledge-form .row .lbl { color: var(--c-muted); white-space: nowrap; }
+  .pledge-form .row .blank {
+    flex: 1;
+    border-bottom: 2px solid var(--c-text);
+    height: 28px;
+  }
+  .pledge-form .oath {
+    font-size: 1.4rem;
+    color: var(--c-accent);
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 18px;
+  }
+
+  /* 希望框(自然探險計畫書) */
+  .hope-frame {
+    border: 3px dashed var(--c-accent);
+    border-radius: 16px;
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 720px;
+    background: var(--c-accent-soft);
+  }
+  .hope-frame .prompt {
+    font-size: 1.4rem;
+    color: var(--c-accent);
+    font-weight: 700;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .hope-frame .text-area {
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 30px, #86efac 30px, #86efac 31px);
+    height: 90px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+  }
+  .hope-frame .draw-area {
+    border: 2px dashed #86efac;
+    height: 160px;
+    border-radius: 6px;
+    text-align: center;
+    color: #16a34a;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+  }
+
+  /* 開放式提問卡 */
+  .question-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 30px 0;
+  }
+  .question-card {
+    background: var(--c-bg);
+    border: 2px solid var(--c-accent);
+    border-radius: 14px;
+    padding: 24px;
+    font-size: 1.15rem;
+    text-align: center;
+    color: var(--c-text);
+    position: relative;
+  }
+  .question-card .q-num {
+    position: absolute; top: -14px; left: 16px;
+    background: var(--c-accent); color: #fff;
+    width: 30px; height: 30px; border-radius: 50%;
+    font-size: 0.9rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  figure { margin: 0; text-align: center; }
+  figcaption {
+    font-size: 0.9rem;
+    color: var(--c-muted);
+    margin-top: 8px;
+  }
+
+
+  .viz-panel {
+    margin: 18px auto;
+    
+    width: min(920px, calc(100vw - 150px));
+    align-self: center;
+max-width: 920px;
+    
+    min-width: min(620px, calc(100vw - 150px));
+border: 1px solid #bfdbfe;
+    border-radius: 18px;
+    padding: 22px 24px 20px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+  }
+  .viz-title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-weight: 800;
+  }
+  .viz-title strong {
+    color: var(--c-accent, var(--accent, #0f766e));
+    font-size: 1.04rem;
+  }
+  .viz-title span {
+    color: var(--c-muted, var(--muted, #64748b));
+    font-size: 0.84rem;
+    text-align: right;
+  }
+  .viz-panel svg {
+    display: block;
+    width: 100%;
+    max-height: 390px;
+  }
+  .viz-callout {
+    display: inline-block;
+    margin: 10px auto 0;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: #fff7ed;
+    color: #9a3412;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+  .viz-small { fill: #64748b; font-size: 12px; font-weight: 700; }
+
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="lesson_plan.html" class="back">← 回教案</a>
+  <span class="topbar-title">小小生態守護者 — 教學投影片</span>
+</header>
+
+<main>
+
+<!-- ============ 1. 封面 ============ -->
+<section class="slide cover" id="slide-cover">
+  <div class="viz-panel">
+        <div class="viz-title">
+          <strong>小海龜咕嚕咕嚕戴探險帽,左邊森林、右邊海洋,中間彩虹</strong>
+          <span>概念整理圖</span>
+        </div>
+
+        <svg viewBox="0 0 860 390" role="img" aria-label="森林與海洋大冒險封面圖">
+          <defs>
+            <linearGradient id="coverSky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#bae6fd"/>
+              <stop offset="50%" stop-color="#86efac"/>
+            </linearGradient>
+            <linearGradient id="coverSea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0ea5e9"/>
+              <stop offset="100%" stop-color="#0369a1"/>
+            </linearGradient>
+          </defs>
+          <!-- 天空 -->
+          <rect x="20" y="20" width="820" height="200" rx="20" fill="url(#coverSky)"/>
+          <!-- 森林區 (左半) -->
+          <rect x="20" y="180" width="390" height="170" rx="0" fill="#16a34a"/>
+          <rect x="20" y="310" width="390" height="60" rx="0" rx="20" fill="#15803d"/>
+          <!-- 海洋區 (右半) -->
+          <rect x="430" y="180" width="410" height="170" rx="0" fill="url(#coverSea)"/>
+          <rect x="430" y="310" width="410" height="60" rx="20" fill="#0369a1"/>
+
+          <!-- 彩虹 -->
+          <path d="M340,180 Q430,80 520,180" stroke="#f87171" stroke-width="6" fill="none" opacity="0.8"/>
+          <path d="M350,185 Q430,92 510,185" stroke="#fb923c" stroke-width="5" fill="none" opacity="0.8"/>
+          <path d="M360,190 Q430,104 500,190" stroke="#facc15" stroke-width="5" fill="none" opacity="0.8"/>
+          <path d="M370,195 Q430,116 490,195" stroke="#4ade80" stroke-width="5" fill="none" opacity="0.8"/>
+          <path d="M380,200 Q430,128 480,200" stroke="#60a5fa" stroke-width="4" fill="none" opacity="0.8"/>
+
+          <!-- 森林樹木 -->
+          <text x="120" y="230" text-anchor="middle" font-size="52">🌳</text>
+          <text x="220" y="260" text-anchor="middle" font-size="40">🌲</text>
+          <text x="80" y="270" text-anchor="middle" font-size="36">🌿</text>
+          <!-- 森林動物 -->
+          <text x="160" y="310" text-anchor="middle" font-size="32">🐿️</text>
+          <text x="270" y="300" text-anchor="middle" font-size="32">🦋</text>
+          <text x="360" y="320" text-anchor="middle" font-size="28">🐦</text>
+          <!-- 森林標籤 -->
+          <rect x="50" y="330" width="130" height="36" rx="10" fill="#15803d" opacity="0.85"/>
+          <text x="115" y="353" text-anchor="middle" font-size="15" fill="#fff" font-weight="800">🌳 森林</text>
+
+          <!-- 海洋生物 -->
+          <text x="530" y="240" text-anchor="middle" font-size="42">🐢</text>
+          <text x="650" y="260" text-anchor="middle" font-size="38">🐠</text>
+          <text x="760" y="230" text-anchor="middle" font-size="36">🐳</text>
+          <text x="490" y="305" text-anchor="middle" font-size="30">🦀</text>
+          <text x="700" y="310" text-anchor="middle" font-size="30">🐙</text>
+          <!-- 波浪 -->
+          <path d="M430,210 Q470,200 510,210 Q550,220 590,210 Q630,200 670,210 Q710,220 750,210 Q790,200 840,210" stroke="#bae6fd" stroke-width="3" fill="none" opacity="0.6"/>
+          <!-- 海洋標籤 -->
+          <rect x="660" y="330" width="130" height="36" rx="10" fill="#0369a1" opacity="0.85"/>
+          <text x="725" y="353" text-anchor="middle" font-size="15" fill="#fff" font-weight="800">🌊 海洋</text>
+
+          <!-- 太陽 -->
+          <circle cx="100" cy="65" r="38" fill="#fbbf24" opacity="0.9"/>
+          <text x="100" y="76" text-anchor="middle" font-size="30">☀️</text>
+
+          <!-- 主標題 -->
+          <rect x="220" y="30" width="420" height="50" rx="14" fill="rgba(255,255,255,0.88)"/>
+          <text x="430" y="50" text-anchor="middle" font-size="16" fill="#15803d" font-weight="900">🌿 森林與海洋大冒險</text>
+          <text x="430" y="70" text-anchor="middle" font-size="13" fill="#0369a1" font-weight="700">我們都是地球的家人！</text>
+        </svg>
+        <div class="viz-callout">主題: 森林與海洋大冒險 副標: 我們都是地球的家人</div>
+      </div>
+</section>
+
+<!-- ============ 2. 大問題 ============ -->
+<section class="slide" id="slide-question">
+  <div class="slide-tag">起點</div>
+  <h2>誰住在地球上?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.15rem; color: var(--c-muted); margin: 0 0 12px;">
+      小朋友看看,地球上有誰呀?用手指比出最喜歡的那一個!
+    </p>
+    <div class="animal-grid">
+      <div class="animal-cell">🐦<span class="name">小鳥</span></div>
+      <div class="animal-cell">🐿️<span class="name">松鼠</span></div>
+      <div class="animal-cell">🐠<span class="name">魚魚</span></div>
+      <div class="animal-cell">🐢<span class="name">海龜</span></div>
+      <div class="animal-cell">🦋<span class="name">蝴蝶</span></div>
+      <div class="animal-cell">🌳<span class="name">大樹</span></div>
+      <div class="animal-cell">🌸<span class="name">小花</span></div>
+      <div class="animal-cell">🐝<span class="name">蜜蜂</span></div>
+      <div class="animal-cell">🦌<span class="name">小鹿</span></div>
+      <div class="animal-cell">🐳<span class="name">鯨魚</span></div>
+      <div class="animal-cell">🦀<span class="name">螃蟹</span></div>
+      <div class="animal-cell">👧<span class="name">我們</span></div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem; margin-top: 20px;">
+      <strong style="color: var(--c-accent);">大家都是地球的家人!</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ============ 3. 活動一過場 ============ -->
+<section class="slide divider" id="slide-a1">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動一</div>
+    <h2>生物大家庭<br>認識我的鄰居</h2>
+    <p class="subtitle">森林、海洋、溼地……每個地方都住著不一樣的生物</p>
+  </div>
+</section>
+
+<!-- ============ 4. 誰住在地球上(繪本導讀) ============ -->
+<section class="slide" id="slide-who-lives">
+  <div class="slide-tag">活動一・步驟 2</div>
+  <h2>這是誰的家?</h2>
+  <div class="viz-panel">
+        <div class="viz-title">
+          <strong>森林、海洋、溼地三個場景,各自有代表生物</strong>
+          <span>概念整理圖</span>
+        </div>
+
+        <svg viewBox="0 0 860 390" role="img" aria-label="森林、海洋、溼地三個場景,各自有代表生物">
+          <defs>
+            <linearGradient id="forestBg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#bbf7d0"/>
+              <stop offset="100%" stop-color="#86efac"/>
+            </linearGradient>
+            <linearGradient id="oceanBg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#bae6fd"/>
+              <stop offset="100%" stop-color="#7dd3fc"/>
+            </linearGradient>
+            <linearGradient id="wetlandBg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#d9f99d"/>
+              <stop offset="100%" stop-color="#a3e635"/>
+            </linearGradient>
+          </defs>
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
+          </g>
+          <!-- 標題 -->
+          <text x="430" y="44" text-anchor="middle" font-size="17" fill="#15803d" font-weight="900">🌍 這是誰的家？三種生態系大比較</text>
+
+          <!-- 森林卡片 -->
+          <rect x="30" y="60" width="255" height="270" rx="20" fill="url(#forestBg)" stroke="#16a34a" stroke-width="3"/>
+          <text x="157" y="90" text-anchor="middle" font-size="16" fill="#14532d" font-weight="900">🌳 森林</text>
+          <text x="157" y="150" text-anchor="middle" font-size="48">🌲</text>
+          <text x="90" y="200" text-anchor="middle" font-size="30">🐿️</text>
+          <text x="157" y="200" text-anchor="middle" font-size="30">🦋</text>
+          <text x="224" y="200" text-anchor="middle" font-size="30">🐦</text>
+          <text x="157" y="240" text-anchor="middle" font-size="28">🐻</text>
+          <rect x="50" y="255" width="215" height="54" rx="12" fill="rgba(255,255,255,0.75)"/>
+          <text x="157" y="274" text-anchor="middle" font-size="12" fill="#14532d" font-weight="800">松鼠・蝴蝶・小鳥</text>
+          <text x="157" y="292" text-anchor="middle" font-size="12" fill="#14532d" font-weight="800">台灣黑熊住這裡！</text>
+          <text x="157" y="316" text-anchor="middle" font-size="11" fill="#166534">樹上・地面・樹洞都是家</text>
+
+          <!-- 海洋卡片 -->
+          <rect x="303" y="60" width="254" height="270" rx="20" fill="url(#oceanBg)" stroke="#0891b2" stroke-width="3"/>
+          <text x="430" y="90" text-anchor="middle" font-size="16" fill="#0c4a6e" font-weight="900">🌊 海洋</text>
+          <text x="430" y="150" text-anchor="middle" font-size="48">🌊</text>
+          <text x="363" y="200" text-anchor="middle" font-size="30">🐠</text>
+          <text x="430" y="200" text-anchor="middle" font-size="30">🐢</text>
+          <text x="497" y="200" text-anchor="middle" font-size="30">🪸</text>
+          <text x="430" y="240" text-anchor="middle" font-size="28">🐳</text>
+          <rect x="323" y="255" width="214" height="54" rx="12" fill="rgba(255,255,255,0.75)"/>
+          <text x="430" y="274" text-anchor="middle" font-size="12" fill="#0c4a6e" font-weight="800">小丑魚・海龜・珊瑚</text>
+          <text x="430" y="292" text-anchor="middle" font-size="12" fill="#0c4a6e" font-weight="800">海裡有好多好多家！</text>
+          <text x="430" y="316" text-anchor="middle" font-size="11" fill="#0369a1">珊瑚礁是海洋的大城市</text>
+
+          <!-- 溼地卡片 -->
+          <rect x="575" y="60" width="255" height="270" rx="20" fill="url(#wetlandBg)" stroke="#65a30d" stroke-width="3"/>
+          <text x="702" y="90" text-anchor="middle" font-size="16" fill="#365314" font-weight="900">🌾 溼地</text>
+          <text x="702" y="150" text-anchor="middle" font-size="48">🌿</text>
+          <text x="635" y="200" text-anchor="middle" font-size="30">🐸</text>
+          <text x="702" y="200" text-anchor="middle" font-size="30">🦆</text>
+          <text x="769" y="200" text-anchor="middle" font-size="30">🦅</text>
+          <text x="702" y="240" text-anchor="middle" font-size="28">🐟</text>
+          <rect x="595" y="255" width="215" height="54" rx="12" fill="rgba(255,255,255,0.75)"/>
+          <text x="702" y="274" text-anchor="middle" font-size="12" fill="#365314" font-weight="800">青蛙・鴨子・候鳥</text>
+          <text x="702" y="292" text-anchor="middle" font-size="12" fill="#365314" font-weight="800">水草之間躲貓貓！</text>
+          <text x="702" y="316" text-anchor="middle" font-size="11" fill="#4d7c0f">水陸之間的家</text>
+
+          <text x="430" y="378" text-anchor="middle" font-size="9" fill="#6b7280">圖表數據為教學示意，非實際觀測值</text>
+        </svg>
+        <div class="viz-callout">🌳 森林: 松鼠、蝴蝶、小鳥、台灣黑熊 🌊 海洋: 小丑魚、海龜、珊瑚 🌾</div>
+      </div>
+</section>
+
+<!-- ============ 5. 臺灣有多少種朋友 ============ -->
+<section class="slide" id="slide-tw-species">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>臺灣有多少種朋友?</h2>
+  <div class="viz-panel">
+        <div class="viz-title">
+          <strong>大大的「60,000+」,周圍 20 隻不同的小動物繞圈</strong>
+          <span>概念整理圖</span>
+        </div>
+
+        <svg viewBox="0 0 860 390" role="img" aria-label="大大的「60,000+」,周圍 20 隻不同的小動物繞圈">
+          <defs>
+            <radialGradient id="speciesBg" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#f0fdf4"/>
+              <stop offset="100%" stop-color="#dcfce7"/>
+            </radialGradient>
+          </defs>
+          <rect x="20" y="20" width="820" height="350" rx="20" fill="url(#speciesBg)" stroke="#86efac" stroke-width="2"/>
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
+          </g>
+          <!-- 標題 -->
+          <text x="430" y="48" text-anchor="middle" font-size="17" fill="#15803d" font-weight="900">臺灣有多少種朋友？超級多！</text>
+
+          <!-- 中央大數字 -->
+          <circle cx="430" cy="200" r="105" fill="#16a34a" opacity="0.15"/>
+          <circle cx="430" cy="200" r="88" fill="#16a34a" opacity="0.2"/>
+          <text x="430" y="185" text-anchor="middle" font-size="46" fill="#15803d" font-weight="900">6萬+</text>
+          <text x="430" y="215" text-anchor="middle" font-size="16" fill="#166534" font-weight="800">種動植物</text>
+          <text x="430" y="238" text-anchor="middle" font-size="13" fill="#4ade80" font-weight="700">住在臺灣！</text>
+
+          <!-- 環繞動物 (16隻，均勻分布) -->
+          <!-- 上方 -->
+          <text x="430" y="82" text-anchor="middle" font-size="28">🦋</text>
+          <text x="340" y="98" text-anchor="middle" font-size="26">🌸</text>
+          <text x="520" y="98" text-anchor="middle" font-size="26">🐦</text>
+          <text x="270" y="130" text-anchor="middle" font-size="26">🐿️</text>
+          <text x="590" y="130" text-anchor="middle" font-size="26">🦅</text>
+          <!-- 左右 -->
+          <text x="220" y="185" text-anchor="middle" font-size="28">🐸</text>
+          <text x="640" y="185" text-anchor="middle" font-size="28">🐟</text>
+          <text x="200" y="220" text-anchor="middle" font-size="26">🦌</text>
+          <text x="660" y="220" text-anchor="middle" font-size="26">🌳</text>
+          <!-- 下方 -->
+          <text x="270" y="268" text-anchor="middle" font-size="26">🐢</text>
+          <text x="590" y="268" text-anchor="middle" font-size="26">🦀</text>
+          <text x="340" y="298" text-anchor="middle" font-size="26">🐝</text>
+          <text x="520" y="298" text-anchor="middle" font-size="26">🌿</text>
+          <text x="430" y="316" text-anchor="middle" font-size="28">🐻</text>
+          <!-- 左上右下斜 -->
+          <text x="168" y="148" text-anchor="middle" font-size="24">🌺</text>
+          <text x="692" y="148" text-anchor="middle" font-size="24">🦎</text>
+
+          <!-- 說明框 -->
+          <rect x="100" y="338" width="660" height="34" rx="10" fill="#15803d" opacity="0.15" stroke="#16a34a" stroke-width="1.5"/>
+          <text x="430" y="360" text-anchor="middle" font-size="13" fill="#166534" font-weight="800">就像一棟有 6 萬間房間的大樓，每種動植物都是鄰居！</text>
+
+          <text x="430" y="383" text-anchor="middle" font-size="9" fill="#6b7280">資料參考：臺灣生物多樣性網 — 農業部生物多樣性研究所（數字為概算，教學示意）</text>
+        </svg>
+        <div class="viz-callout">關鍵數據: 光是臺灣就有 超過 6 萬種 不同的動物和植物! 就像 30</div>
+      </div>
+  <div class="slide-source">
+    資料來源:<a href="https://www.tbn.org.tw/" target="_blank" rel="noopener">臺灣生物多樣性網 — 農業部生物多樣性研究所</a>
+  </div>
+</section>
+
+<!-- ============ 6. 森林是誰的家 ============ -->
+<section class="slide" id="slide-forest-home">
+  <div class="slide-tag">活動一・步驟 3</div>
+  <h2>森林是誰的家?</h2>
+  <div class="viz-panel">
+        <div class="viz-title">
+          <strong>臺灣地圖塗綠超過一半,森林裡有松鼠、黑熊、小鳥、蝴蝶等</strong>
+          <span>使用正式臺灣底圖與教學標記</span>
+        </div>
+
+        <svg viewBox="0 0 860 390" role="img" aria-label="臺灣地圖塗綠超過一半,森林裡有松鼠、黑熊、小鳥、蝴蝶等">
+          <rect x="58" y="42" width="744" height="268" rx="28" fill="#eff6ff" stroke="#bfdbfe"/>
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
+          </g>
+          <rect x="102" y="92" width="180" height="70" rx="16" fill="#ecfeff" stroke="#99f6e4"/>
+          <rect x="102" y="194" width="180" height="70" rx="16" fill="#fff7ed" stroke="#fed7aa"/>
+          <text x="192" y="132" text-anchor="middle" font-size="24" fill="#0f766e" font-weight="900">60%</text>
+          <text x="192" y="152" text-anchor="middle" class="viz-small">關鍵數字</text>
+          <text x="192" y="234" text-anchor="middle" font-size="24" fill="#9a3412" font-weight="900">風險</text>
+          <text x="192" y="254" text-anchor="middle" class="viz-small">比較焦點</text>
+          <image href="../_assets/taiwan_outline_simplemaps.svg" x="326" y="54" width="184" height="278" preserveAspectRatio="xMidYMid meet"/>
+          <path d="M418 100 C412 152,410 204,397 267" stroke="#0f766e" stroke-width="7" stroke-linecap="round" opacity="0.75"/>
+          <circle cx="424" cy="112" r="13" fill="#0f766e"/><text x="424" y="117" text-anchor="middle" font-size="12" fill="#fff" font-weight="900">北</text>
+          <circle cx="398" cy="198" r="13" fill="#0f766e"/><text x="398" y="203" text-anchor="middle" font-size="12" fill="#fff" font-weight="900">中</text>
+          <circle cx="383" cy="292" r="13" fill="#0f766e"/><text x="383" y="297" text-anchor="middle" font-size="12" fill="#fff" font-weight="900">南</text>
+          <path d="M378 248 L420 318" stroke="#38bdf8" stroke-width="8" stroke-linecap="round" opacity="0.8"/>
+          <rect x="608" y="128" width="166" height="86" rx="17" fill="#fff" stroke="#cbd5e1"/>
+          <text x="691" y="160" text-anchor="middle" font-size="13" fill="#334155" font-weight="800">關鍵數據: 臺灣有超過 一半(約</text><text x="691" y="182" text-anchor="middle" font-size="13" fill="#334155" font-weight="800">60%) 的土地都是森林,綠綠的!</text><text x="691" y="204" text-anchor="middle" font-size="13" fill="#334155" font-weight="800">🐿️ 松鼠住樹上 ・ 🐦</text>
+          <text x="430" y="352" text-anchor="middle" fill="#64748b" font-size="12">臺灣底圖來源: SimpleMaps，教學標記為示意</text>
+        </svg>
+        <div class="viz-callout">關鍵數據: 臺灣有超過 一半(約 60%) 的土地都是森林,綠綠的! 🐿️</div>
+      </div>
+  <div class="slide-source">
+    資料來源:<a href="https://www.forest.gov.tw/" target="_blank" rel="noopener">林業及自然保育署(農業部)</a>
+  </div>
+</section>
+
+<!-- ============ 7. 活動二過場 ============ -->
+<section class="slide divider" id="slide-a2">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動二</div>
+    <h2>食物鏈小劇場<br>森林與海洋的祕密</h2>
+    <p class="subtitle">大自然的能量接力賽 ・ 每個生物都很重要</p>
+  </div>
+</section>
+
+<!-- ============ 8. 食物接力賽 ============ -->
+<section class="slide" id="slide-food-chain">
+  <div class="slide-tag">活動二・步驟 1–2</div>
+  <h2>食物接力賽</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.1rem; color: var(--c-muted);">
+      大自然有一個好玩的接力賽,一個接一個傳能量,這就是「食物鏈」!
+    </p>
+    <div class="food-chain">
+      <div class="step"><span class="emoji">☀️</span>太陽</div>
+      <div class="arrow">→</div>
+      <div class="step"><span class="emoji">🌳</span>樹</div>
+      <div class="arrow">→</div>
+      <div class="step"><span class="emoji">🐛</span>毛毛蟲</div>
+      <div class="arrow">→</div>
+      <div class="step"><span class="emoji">🐦</span>小鳥</div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 24px;">
+      <strong>動作練習:</strong>孩子排成一列,用手比出 ☀️ 太陽 → 🌳 樹 → 🐛 蟲 → 🐦 鳥 四個動作,一個接一個傳「能量」!
+    </p>
+  </div>
+</section>
+
+<!-- ============ 9. 海底彩虹城堡 ============ -->
+<section class="slide" id="slide-coral">
+  <div class="slide-tag">活動二・步驟 3</div>
+  <h2>海底有一座彩虹城堡</h2>
+  <div class="viz-panel">
+        <div class="viz-title">
+          <strong>五彩繽紛的珊瑚礁,周圍有小丑魚、海龜、螃蟹群</strong>
+          <span>概念整理圖</span>
+        </div>
+
+        <svg viewBox="0 0 860 390" role="img" aria-label="五彩繽紛的珊瑚礁,周圍有小丑魚、海龜、螃蟹群">
+          <defs>
+            <linearGradient id="deepSea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0ea5e9"/>
+              <stop offset="100%" stop-color="#0c4a6e"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="20" width="820" height="350" rx="20" fill="url(#deepSea)"/>
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
+          </g>
+          <!-- 光線從上方射入 -->
+          <line x1="200" y1="20" x2="280" y2="180" stroke="#bae6fd" stroke-width="2" opacity="0.3"/>
+          <line x1="430" y1="20" x2="430" y2="200" stroke="#bae6fd" stroke-width="2" opacity="0.3"/>
+          <line x1="660" y1="20" x2="580" y2="180" stroke="#bae6fd" stroke-width="2" opacity="0.3"/>
+
+          <!-- 標題 -->
+          <text x="430" y="50" text-anchor="middle" font-size="17" fill="#fff" font-weight="900">🪸 海底彩虹城堡 — 珊瑚礁大家族</text>
+
+          <!-- 珊瑚礁 底部 -->
+          <!-- 珊瑚1 (左) -->
+          <ellipse cx="180" cy="290" rx="30" ry="60" fill="#f87171" opacity="0.9"/>
+          <ellipse cx="155" cy="300" rx="18" ry="45" fill="#fb923c" opacity="0.85"/>
+          <ellipse cx="205" cy="310" rx="16" ry="38" fill="#f472b6" opacity="0.85"/>
+          <!-- 珊瑚2 (中左) -->
+          <ellipse cx="330" cy="285" rx="35" ry="65" fill="#a78bfa" opacity="0.9"/>
+          <ellipse cx="305" cy="300" rx="20" ry="48" fill="#818cf8" opacity="0.85"/>
+          <ellipse cx="360" cy="295" rx="18" ry="52" fill="#c4b5fd" opacity="0.85"/>
+          <!-- 珊瑚3 (中) -->
+          <ellipse cx="430" cy="275" rx="40" ry="75" fill="#fb7185" opacity="0.9"/>
+          <ellipse cx="400" cy="290" rx="22" ry="55" fill="#f43f5e" opacity="0.8"/>
+          <ellipse cx="462" cy="288" rx="20" ry="58" fill="#fda4af" opacity="0.85"/>
+          <!-- 珊瑚4 (中右) -->
+          <ellipse cx="540" cy="285" rx="34" ry="63" fill="#34d399" opacity="0.9"/>
+          <ellipse cx="515" cy="300" rx="19" ry="47" fill="#6ee7b7" opacity="0.85"/>
+          <ellipse cx="568" cy="295" rx="17" ry="50" fill="#10b981" opacity="0.85"/>
+          <!-- 珊瑚5 (右) -->
+          <ellipse cx="680" cy="290" rx="30" ry="60" fill="#fbbf24" opacity="0.9"/>
+          <ellipse cx="655" cy="305" rx="18" ry="44" fill="#f59e0b" opacity="0.85"/>
+          <ellipse cx="708" cy="308" rx="15" ry="36" fill="#fde68a" opacity="0.85"/>
+
+          <!-- 海底地面 -->
+          <rect x="20" y="335" width="820" height="35" rx="0" rx="16" fill="#1e3a5f" opacity="0.8"/>
+          <text x="80" y="355" font-size="11" fill="#7dd3fc">🪨 海底岩石</text>
+
+          <!-- 游動的魚群 -->
+          <text x="100" y="130" text-anchor="middle" font-size="34">🐠</text>
+          <text x="165" y="165" text-anchor="middle" font-size="24">🐟</text>
+          <text x="70" y="185" text-anchor="middle" font-size="22">🐡</text>
+
+          <text x="430" y="110" text-anchor="middle" font-size="34">🐢</text>
+          <text x="380" y="155" text-anchor="middle" font-size="24">🐠</text>
+          <text x="480" y="150" text-anchor="middle" font-size="22">🐟</text>
+
+          <text x="730" y="140" text-anchor="middle" font-size="34">🦀</text>
+          <text x="780" y="180" text-anchor="middle" font-size="28">🐙</text>
+          <text x="760" y="120" text-anchor="middle" font-size="22">🐠</text>
+
+          <!-- 氣泡 -->
+          <circle cx="250" cy="100" r="6" fill="none" stroke="#bae6fd" stroke-width="1.5" opacity="0.6"/>
+          <circle cx="260" cy="80" r="4" fill="none" stroke="#bae6fd" stroke-width="1.5" opacity="0.5"/>
+          <circle cx="600" cy="90" r="5" fill="none" stroke="#bae6fd" stroke-width="1.5" opacity="0.6"/>
+          <circle cx="610" cy="70" r="3" fill="none" stroke="#bae6fd" stroke-width="1.5" opacity="0.5"/>
+
+          <!-- 說明框 -->
+          <rect x="200" y="200" width="460" height="52" rx="14" fill="rgba(255,255,255,0.18)" stroke="#bae6fd" stroke-width="1.5"/>
+          <text x="430" y="223" text-anchor="middle" font-size="14" fill="#fff" font-weight="800">🏆 珊瑚礁 = 海洋生物多樣性第一名！</text>
+          <text x="430" y="243" text-anchor="middle" font-size="12" fill="#bae6fd">雖然只佔海洋面積 1%，卻住了 25% 的海洋生物！</text>
+
+          <text x="430" y="376" text-anchor="middle" font-size="9" fill="#7dd3fc">圖表數據為教學示意，非實際觀測值｜資料參考：國立海洋生物博物館</text>
+        </svg>
+        <div class="viz-callout">關鍵事實: 海底的「珊瑚礁」是 海洋生物多樣性第一名 的生態系! 🐠 小丑魚</div>
+      </div>
+  <div class="slide-source">
+    資料來源:<a href="https://www.nmmba.gov.tw/" target="_blank" rel="noopener">國立海洋生物博物館 — 珊瑚礁保育</a>
+  </div>
+</section>
+
+<!-- ============ 10. 珊瑚城堡手作單 ============ -->
+<section class="slide" id="slide-ws-coral">
+  <div class="slide-tag">活動二・步驟 3 ・學習單(投影版)</div>
+  <h2>海底樂高城堡:我來蓋一座!</h2>
+  <div class="slide-body">
+    <p style="font-size: 1.05rem; color: var(--c-muted); margin: 0 0 8px; text-align: center;">
+      小組合作,用樂高 / 黏土做出珊瑚,把魚魚 / 海龜貼紙放進去,寫下「住在我珊瑚裡的鄰居」。
+    </p>
+    <table class="ws-table">
+      <thead>
+        <tr>
+          <th>我的珊瑚顏色</th>
+          <th>住進來的鄰居 1</th>
+          <th>住進來的鄰居 2</th>
+          <th>住進來的鄰居 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td class="fill"></td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size: 1.05rem; margin-top: 14px; text-align: center;">
+      <strong>分享題:</strong>如果你是小丑魚,你會選哪一棟珊瑚當家?為什麼?
+    </p>
+  </div>
+</section>
+
+<!-- ============ 11. 我們都是好鄰居 ============ -->
+<section class="slide" id="slide-neighbors">
+  <div class="slide-tag">活動二・步驟 4</div>
+  <h2>我們都是好鄰居</h2>
+  <div class="viz-panel">
+        <div class="viz-title">
+          <strong>地球上動物與人類牽手圍成一圈,沒有誰比較大</strong>
+          <span>比較圖</span>
+        </div>
+
+        <svg viewBox="0 0 860 390" role="img" aria-label="地球上動物與人類牽手圍成一圈,沒有誰比較大">
+          <defs>
+            <radialGradient id="earthGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#bbf7d0"/>
+              <stop offset="100%" stop-color="#f0fdf4"/>
+            </radialGradient>
+          </defs>
+          <rect x="20" y="20" width="820" height="350" rx="20" fill="url(#earthGlow)" stroke="#86efac" stroke-width="2"/>
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
+          </g>
+          <!-- 標題 -->
+          <text x="430" y="48" text-anchor="middle" font-size="17" fill="#15803d" font-weight="900">我們都是好鄰居！大家一樣重要</text>
+
+          <!-- 地球圓心 -->
+          <circle cx="430" cy="200" r="55" fill="#3b82f6" opacity="0.9"/>
+          <text x="430" y="192" text-anchor="middle" font-size="30">🌍</text>
+          <text x="430" y="218" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">地球</text>
+          <text x="430" y="234" text-anchor="middle" font-size="10" fill="#bfdbfe">我們的家</text>
+
+          <!-- 牽手圓圈 — 8個生物均勻環繞 -->
+          <!-- 上 -->
+          <circle cx="430" cy="90" r="38" fill="#fef9c3" stroke="#ca8a04" stroke-width="2.5"/>
+          <text x="430" y="82" text-anchor="middle" font-size="26">🐦</text>
+          <text x="430" y="108" text-anchor="middle" font-size="11" fill="#92400e" font-weight="700">小鳥</text>
+
+          <!-- 右上 -->
+          <circle cx="596" cy="120" r="38" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+          <text x="596" y="112" text-anchor="middle" font-size="26">🐠</text>
+          <text x="596" y="138" text-anchor="middle" font-size="11" fill="#1d4ed8" font-weight="700">魚魚</text>
+
+          <!-- 右 -->
+          <circle cx="660" cy="200" r="38" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+          <text x="660" y="192" text-anchor="middle" font-size="26">🐢</text>
+          <text x="660" y="218" text-anchor="middle" font-size="11" fill="#15803d" font-weight="700">海龜</text>
+
+          <!-- 右下 -->
+          <circle cx="596" cy="280" r="38" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5"/>
+          <text x="596" y="272" text-anchor="middle" font-size="26">🦋</text>
+          <text x="596" y="298" text-anchor="middle" font-size="11" fill="#6d28d9" font-weight="700">蝴蝶</text>
+
+          <!-- 下 -->
+          <circle cx="430" cy="315" r="38" fill="#fff7ed" stroke="#ea580c" stroke-width="2.5"/>
+          <text x="430" y="307" text-anchor="middle" font-size="26">🌳</text>
+          <text x="430" y="333" text-anchor="middle" font-size="11" fill="#9a3412" font-weight="700">大樹</text>
+
+          <!-- 左下 -->
+          <circle cx="264" cy="280" r="38" fill="#fce7f3" stroke="#db2777" stroke-width="2.5"/>
+          <text x="264" y="272" text-anchor="middle" font-size="26">🐸</text>
+          <text x="264" y="298" text-anchor="middle" font-size="11" fill="#9d174d" font-weight="700">青蛙</text>
+
+          <!-- 左 -->
+          <circle cx="200" cy="200" r="38" fill="#fef9c3" stroke="#ca8a04" stroke-width="2.5"/>
+          <text x="200" y="192" text-anchor="middle" font-size="26">🐻</text>
+          <text x="200" y="218" text-anchor="middle" font-size="11" fill="#92400e" font-weight="700">小熊</text>
+
+          <!-- 左上 — 人類 (同樣大小！) -->
+          <circle cx="264" cy="120" r="38" fill="#fef3c7" stroke="#f59e0b" stroke-width="2.5"/>
+          <text x="264" y="112" text-anchor="middle" font-size="26">👧</text>
+          <text x="264" y="138" text-anchor="middle" font-size="11" fill="#92400e" font-weight="700">我們</text>
+
+          <!-- 連接線 (牽手) -->
+          <circle cx="430" cy="130" r="3" fill="#86efac"/>
+          <circle cx="565" cy="157" r="3" fill="#86efac"/>
+          <circle cx="622" cy="200" r="3" fill="#86efac"/>
+          <circle cx="565" cy="243" r="3" fill="#86efac"/>
+          <circle cx="430" cy="277" r="3" fill="#86efac"/>
+          <circle cx="295" cy="243" r="3" fill="#86efac"/>
+          <circle cx="238" cy="200" r="3" fill="#86efac"/>
+          <circle cx="295" cy="157" r="3" fill="#86efac"/>
+          <path d="M430,130 Q497,143 565,157 Q608,178 622,200 Q615,225 565,243 Q497,261 430,277 Q363,261 295,243 Q245,225 238,200 Q245,175 295,157 Q363,143 430,130" fill="none" stroke="#4ade80" stroke-width="2" stroke-dasharray="6,4" opacity="0.7"/>
+
+          <!-- 訊息 -->
+          <rect x="160" y="354" width="540" height="28" rx="8" fill="#15803d" opacity="0.15"/>
+          <text x="430" y="373" text-anchor="middle" font-size="13" fill="#166534" font-weight="800">「人」也是地球上的一種動物！我們不比小鳥厲害，大家一樣重要</text>
+
+          <text x="430" y="393" text-anchor="middle" font-size="9" fill="#6b7280">圖表數據為教學示意，非實際觀測值</text>
+        </svg>
+        <div class="viz-callout">關鍵想法: 「人」也是地球上的一種動物喔! 我們 不是比小鳥或魚魚厲害</div>
+      </div>
+  <div class="slide-source">
+    參考資料:<a href="https://unesdoc.unesco.org/ark:/48223/pf0000247444" target="_blank" rel="noopener">聯合國教科文組織 — ESD 學習目標(SDG 14、15)</a>
+  </div>
+</section>
+
+<!-- ============ 12. 動物大比拼 ============ -->
+<section class="slide" id="slide-animal-compare">
+  <div class="slide-tag">補充</div>
+  <h2>動物家長大比拼</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 12px;">
+      不同的動物,身體不一樣,住的地方也不一樣——「不一樣很棒」!
+    </p>
+    <div class="compare-grid">
+      <div class="compare-card bear">
+        <div class="icon">🐻</div>
+        <h3>小熊</h3>
+        <p>身體:毛茸茸</p>
+        <p>家:山洞、森林</p>
+      </div>
+      <div class="compare-card frog">
+        <div class="icon">🐸</div>
+        <h3>青蛙</h3>
+        <p>身體:滑滑的皮</p>
+        <p>家:池塘、溼地</p>
+      </div>
+      <div class="compare-card fish">
+        <div class="icon">🐟</div>
+        <h3>魚</h3>
+        <p>身體:亮亮的鱗片</p>
+        <p>家:大海、河流</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1rem; margin-top: 20px;">
+      摸摸自己衣服:「<strong>毛毛的像小熊嗎?</strong>」<br>
+      每種動物都有自己最舒服的家。
+    </p>
+  </div>
+</section>
+
+<!-- ============ 13. 活動三過場 ============ -->
+<section class="slide divider" id="slide-a3">
+  <div class="slide-body" style="justify-content: center;">
+    <div class="activity-num">活動三</div>
+    <h2>守護小行動<br>我是生態小幫手</h2>
+    <p class="subtitle">把感受變成下一步行動</p>
+  </div>
+</section>
+
+<!-- ============ 14. 看看不帶走 ============ -->
+<section class="slide" id="slide-look-dont-take">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>看看,不帶走</h2>
+  <div class="viz-panel">
+        <div class="viz-title">
+          <strong>孩子蹲下來看花上的蝴蝶,沒有伸手抓</strong>
+          <span>概念整理圖</span>
+        </div>
+
+        <svg viewBox="0 0 860 390" role="img" aria-label="孩子蹲下來看花上的蝴蝶,沒有伸手抓">
+          <defs>
+            <linearGradient id="lookBg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f0fdf4"/>
+              <stop offset="100%" stop-color="#dcfce7"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="20" width="820" height="350" rx="20" fill="url(#lookBg)" stroke="#86efac" stroke-width="2"/>
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
+          </g>
+          <!-- 標題 -->
+          <text x="430" y="48" text-anchor="middle" font-size="17" fill="#15803d" font-weight="900">看看，不帶走 — 怎麼當好鄰居</text>
+
+          <!-- 左邊：○ 正確行為 -->
+          <rect x="30" y="65" width="370" height="280" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+          <!-- ○ 標記 -->
+          <circle cx="95" cy="105" r="28" fill="#16a34a"/>
+          <text x="95" y="114" text-anchor="middle" font-size="22" fill="#fff" font-weight="900">○</text>
+          <text x="215" y="95" text-anchor="middle" font-size="16" fill="#15803d" font-weight="900">這樣做！</text>
+
+          <!-- 蹲下看蝴蝶場景 -->
+          <text x="215" y="175" text-anchor="middle" font-size="64">🌸</text>
+          <text x="280" y="155" text-anchor="middle" font-size="40">🦋</text>
+          <!-- 孩子蹲著看 (簡化人形) -->
+          <circle cx="130" cy="175" r="22" fill="#fbbf24"/>
+          <text x="130" y="183" text-anchor="middle" font-size="16">😊</text>
+          <!-- 眼睛看向蝴蝶的箭頭 -->
+          <path d="M152,170 Q195,162 222,162" stroke="#16a34a" stroke-width="2.5" fill="none" stroke-dasharray="4,2" marker-end="url(#lookOkArrow)"/>
+          <defs>
+            <marker id="lookOkArrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6 Z" fill="#16a34a"/>
+            </marker>
+          </defs>
+          <text x="215" y="240" text-anchor="middle" font-size="14" fill="#15803d" font-weight="800">蹲下來用眼睛看</text>
+          <text x="215" y="260" text-anchor="middle" font-size="13" fill="#166534">不伸手去抓</text>
+          <rect x="65" y="278" width="300" height="46" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+          <text x="215" y="298" text-anchor="middle" font-size="13" fill="#15803d" font-weight="800">蝴蝶在自己的家最開心！</text>
+          <text x="215" y="315" text-anchor="middle" font-size="12" fill="#166534">牠的家是花園，不是口袋</text>
+
+          <!-- 右邊：× 不對行為 -->
+          <rect x="460" y="65" width="370" height="280" rx="20" fill="#fff7ed" stroke="#ea580c" stroke-width="3"/>
+          <!-- × 標記 -->
+          <circle cx="525" cy="105" r="28" fill="#ea580c"/>
+          <text x="525" y="114" text-anchor="middle" font-size="22" fill="#fff" font-weight="900">×</text>
+          <text x="645" y="95" text-anchor="middle" font-size="16" fill="#9a3412" font-weight="900">不要這樣！</text>
+
+          <!-- 抓走蝴蝶場景 -->
+          <text x="645" y="170" text-anchor="middle" font-size="55">🦋</text>
+          <!-- 手抓 -->
+          <text x="720" y="175" text-anchor="middle" font-size="36">✋</text>
+          <!-- 悲傷蝴蝶 -->
+          <text x="560" y="220" text-anchor="middle" font-size="28">😢</text>
+          <text x="645" y="245" text-anchor="middle" font-size="14" fill="#9a3412" font-weight="800">把蝴蝶帶回家</text>
+          <text x="645" y="265" text-anchor="middle" font-size="13" fill="#7c2d12">牠會想家、生病</text>
+          <rect x="495" y="278" width="300" height="46" rx="12" fill="#fee2e2" stroke="#ea580c" stroke-width="1.5"/>
+          <text x="645" y="298" text-anchor="middle" font-size="13" fill="#9a3412" font-weight="800">動物最愛自己的棲息地！</text>
+          <text x="645" y="315" text-anchor="middle" font-size="12" fill="#7c2d12">離開了家，牠會不健康</text>
+
+          <text x="430" y="374" text-anchor="middle" font-size="9" fill="#6b7280">圖表數據為教學示意，非實際觀測值</text>
+        </svg>
+        <div class="viz-callout">核心訊息: 動物最喜歡自己的家(棲息地)。 把牠帶走,牠會 想家、不健康 。</div>
+      </div>
+</section>
+
+<!-- ============ 15. 守護者小行動卡 ============ -->
+<section class="slide" id="slide-actions">
+  <div class="slide-tag">活動三・步驟 2</div>
+  <h2>小小守護者怎麼做?</h2>
+  <div class="slide-body">
+    <p style="text-align: center; color: var(--c-muted); margin: 0 0 12px;">
+      看看下面這些行動,哪些是「○ 對動物好」?哪些是「× 動物會難過」?
+    </p>
+    <div class="ox-grid">
+      <div class="ox-cell yes">
+        <span class="mark">○</span>
+        <span class="emoji">🗑️</span>
+        <span>撿起地上的垃圾</span>
+      </div>
+      <div class="ox-cell yes">
+        <span class="mark">○</span>
+        <span class="emoji">🌱</span>
+        <span>走路不踩小草</span>
+      </div>
+      <div class="ox-cell yes">
+        <span class="mark">○</span>
+        <span class="emoji">🚰</span>
+        <span>關緊水龍頭</span>
+      </div>
+      <div class="ox-cell yes">
+        <span class="mark">○</span>
+        <span class="emoji">🥤</span>
+        <span>自備水壺,不用一次性瓶子</span>
+      </div>
+      <div class="ox-cell yes">
+        <span class="mark">○</span>
+        <span class="emoji">🐛</span>
+        <span>蟲蟲只看不抓</span>
+      </div>
+      <div class="ox-cell no">
+        <span class="mark">×</span>
+        <span class="emoji">🌸</span>
+        <span>把花摘下來帶回家</span>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 18px;">
+      每個孩子舉手說:<strong style="color: var(--c-accent);">「我今天要做 ___ !」</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ============ 16. 自然探險計畫書 ============ -->
+<section class="slide" id="slide-ws-plan">
+  <div class="slide-tag">活動三・步驟 3 ・學習單(投影版)</div>
+  <h2>自然探險計畫書</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      畫下「這週我要去看的自然」——可以是公園、陽台或社區的一棵樹。
+    </p>
+    <div class="hope-frame">
+      <div class="prompt">「這週我要去看的自然是……」</div>
+      <div class="text-area"></div>
+      <div class="draw-area">✏️ 在這裡畫一幅圖:那裡有誰住?</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 17. 守護者宣誓卡 ============ -->
+<section class="slide" id="slide-ws-pledge">
+  <div class="slide-tag">活動三・步驟 4 ・學習單(投影版)</div>
+  <h2>守護者宣誓卡</h2>
+  <div class="slide-body">
+    <p style="text-align: center; font-size: 1.05rem; color: var(--c-muted);">
+      全班一起舉手大喊,把承諾寫進心裡!
+    </p>
+    <div class="pledge-form">
+      <div class="oath">「我是小小生態守護者!」</div>
+      <div class="row">
+        <span class="lbl">我這週要做的小行動:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">我會邀請的家人是:</span>
+        <span class="blank"></span>
+      </div>
+      <div class="row">
+        <span class="lbl">執行的時間 / 地點:</span>
+        <span class="blank"></span>
+      </div>
+      <hr style="margin: 18px 0; border: 0; border-top: 1px dashed var(--c-border);">
+      <div class="row">
+        <span class="lbl">守護者簽名:</span>
+        <span class="blank"></span>
+        <span class="lbl">老師見證:</span>
+        <span class="blank"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 18. 家庭小任務 ============ -->
+<section class="slide" id="slide-family-mission">
+  <div class="slide-tag">活動三・步驟 4</div>
+  <h2>家庭小任務:週末自然小偵探</h2>
+  <div class="viz-panel">
+        <div class="viz-title">
+          <strong>溫暖的家庭在公園野餐,孩子蹲著看蟲</strong>
+          <span>食物系統圖</span>
+        </div>
+
+        <svg viewBox="0 0 860 390" role="img" aria-label="溫暖的家庭在公園野餐,孩子蹲著看蟲">
+          <defs>
+            <linearGradient id="parkSky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#bae6fd"/>
+              <stop offset="100%" stop-color="#e0f2fe"/>
+            </linearGradient>
+            <linearGradient id="parkGrass" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#86efac"/>
+              <stop offset="100%" stop-color="#4ade80"/>
+            </linearGradient>
+          </defs>
+          <!-- 天空 -->
+          <rect x="20" y="20" width="820" height="220" rx="20" fill="url(#parkSky)"/>
+          <!-- 草地 -->
+          <rect x="20" y="220" width="820" height="150" rx="0" fill="url(#parkGrass)"/>
+          <rect x="20" y="330" width="820" height="40" rx="20" fill="#16a34a"/>
+
+          <!-- 示意圖標籤 -->
+          <g transform="translate(800,38)">
+            <rect x="-58" y="-12" width="56" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="-30" y="3" text-anchor="middle" font-size="11" fill="#92400e" font-weight="800">示意圖</text>
+          </g>
+
+          <!-- 太陽 -->
+          <circle cx="760" cy="70" r="42" fill="#fbbf24" opacity="0.9"/>
+          <text x="760" y="80" text-anchor="middle" font-size="32">☀️</text>
+
+          <!-- 雲朵 -->
+          <ellipse cx="200" cy="65" rx="55" ry="28" fill="#fff" opacity="0.85"/>
+          <ellipse cx="240" cy="58" rx="38" ry="24" fill="#fff" opacity="0.85"/>
+          <ellipse cx="550" cy="80" rx="45" ry="22" fill="#fff" opacity="0.8"/>
+
+          <!-- 大樹 -->
+          <rect x="88" y="180" width="18" height="60" rx="5" fill="#92400e"/>
+          <ellipse cx="97" cy="170" rx="48" ry="42" fill="#16a34a"/>
+          <ellipse cx="75" cy="185" rx="32" ry="28" fill="#15803d"/>
+          <ellipse cx="118" cy="182" rx="30" ry="26" fill="#166534"/>
+
+          <rect x="680" y="185" width="16" height="55" rx="5" fill="#92400e"/>
+          <ellipse cx="688" cy="174" rx="44" ry="38" fill="#16a34a"/>
+          <ellipse cx="668" cy="188" rx="28" ry="24" fill="#15803d"/>
+
+          <!-- 家庭野餐場景 -->
+          <!-- 野餐墊 -->
+          <ellipse cx="430" cy="280" rx="130" ry="35" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+          <!-- 食物 -->
+          <text x="390" y="268" text-anchor="middle" font-size="22">🧺</text>
+          <text x="430" y="265" text-anchor="middle" font-size="20">🍎</text>
+          <text x="468" y="268" text-anchor="middle" font-size="20">🥪</text>
+
+          <!-- 爸爸 -->
+          <circle cx="330" cy="235" r="20" fill="#fbbf24"/>
+          <text x="330" y="243" text-anchor="middle" font-size="15">👨</text>
+          <!-- 媽媽 -->
+          <circle cx="530" cy="235" r="20" fill="#fbbf24"/>
+          <text x="530" y="243" text-anchor="middle" font-size="15">👩</text>
+          <!-- 孩子蹲著看蟲 -->
+          <circle cx="620" cy="250" r="18" fill="#fbbf24"/>
+          <text x="620" y="258" text-anchor="middle" font-size="14">🧒</text>
+          <text x="660" y="260" text-anchor="middle" font-size="20">🐛</text>
+          <!-- 指向蟲的視線 -->
+          <path d="M638,252 Q650,255 658,258" stroke="#15803d" stroke-width="1.5" fill="none" stroke-dasharray="3,2"/>
+
+          <!-- 本週任務卡 -->
+          <rect x="155" y="30" width="540" height="75" rx="16" fill="rgba(255,255,255,0.92)" stroke="#16a34a" stroke-width="2"/>
+          <text x="430" y="55" text-anchor="middle" font-size="15" fill="#15803d" font-weight="900">🌿 本週家庭小任務：去公園或海邊探險！</text>
+          <text x="280" y="78" text-anchor="middle" font-size="13" fill="#166534" font-weight="700">🌱 找 5 種植物</text>
+          <text x="430" y="78" text-anchor="middle" font-size="13" fill="#0369a1" font-weight="700">🐦 找 3 種鳥</text>
+          <text x="580" y="78" text-anchor="middle" font-size="13" fill="#92400e" font-weight="700">🐛 找 2 種蟲</text>
+          <text x="430" y="97" text-anchor="middle" font-size="11" fill="#6b7280">邀請爸爸媽媽一起，把發現的畫下來！</text>
+
+          <!-- 自然元素點綴 -->
+          <text x="160" y="245" text-anchor="middle" font-size="22">🌸</text>
+          <text x="200" y="260" text-anchor="middle" font-size="18">🦋</text>
+          <text x="700" y="230" text-anchor="middle" font-size="22">🐝</text>
+          <text x="740" y="250" text-anchor="middle" font-size="18">🌼</text>
+
+          <text x="430" y="358" text-anchor="middle" font-size="9" fill="#166534">圖表數據為教學示意，非實際觀測值</text>
+        </svg>
+        <div class="viz-callout">本週任務: 邀請爸爸媽媽,假日一起去公園或海邊! 🌱 找 5 種植物 🐦 找</div>
+      </div>
+</section>
+
+<!-- ============ 19. 三關鍵字總結 ============ -->
+<section class="slide" id="slide-summary">
+  <div class="slide-tag">總結</div>
+  <h2>三個關鍵字,一起記住!</h2>
+  <div class="slide-body">
+    <div class="summary-keys">
+      <div class="key-card k1">
+        <div class="num">第 1 個</div>
+        <div class="word">好多</div>
+        <div class="desc">生物多樣性<br>地球上有好多好多種動植物</div>
+      </div>
+      <div class="key-card k2">
+        <div class="num">第 2 個</div>
+        <div class="word">家人</div>
+        <div class="desc">人類也是地球家庭<br>大家都是好鄰居</div>
+      </div>
+      <div class="key-card k3">
+        <div class="num">第 3 個</div>
+        <div class="word">守護</div>
+        <div class="desc">看看不帶走<br>每個小行動都是愛</div>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.15rem; margin-top: 30px;">
+      全班拍手三下,大喊:<br>
+      <strong style="color: var(--c-accent); font-size: 1.4rem;">「我是小小生態守護者!」</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ============ 20. 開放式提問 ============ -->
+<section class="slide" id="slide-open-question">
+  <div class="slide-tag">想一想</div>
+  <h2>最後想一想……</h2>
+  <div class="slide-body">
+    <div class="question-cards">
+      <div class="question-card">
+        <div class="q-num">1</div>
+        如果你可以變成一種動物,<br>你想住在<strong>森林</strong>還是<strong>海裡</strong>?<br>
+        <span style="color: var(--c-muted); font-size: 0.95rem;">為什麼呢?</span>
+      </div>
+      <div class="question-card">
+        <div class="q-num">2</div>
+        如果有一隻蟲蟲<br>爬進教室,<br>
+        你會怎麼辦?
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 1.05rem; margin-top: 24px; color: var(--c-muted);">
+      請 1–2 位小朋友分享給全班聽,其他人點頭回應 🤝
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="navbar">
+  <span class="page-indicator"><span class="nav-current">1</span> / <span class="nav-total">20</span></span>
+  <span class="hint"><kbd>←</kbd> <kbd>→</kbd> 切換投影片 ・ <a href="lesson_plan.html" style="color: var(--c-accent);">回教案</a></span>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navCurrent = document.querySelector('.nav-current');
+  const navTotal = document.querySelector('.nav-total');
+  navTotal.textContent = slides.length;
+  let current = 0;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        current = slides.indexOf(e.target);
+        navCurrent.textContent = current + 1;
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => obs.observe(s));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }
+</script>
+
+</body>
+</html>
