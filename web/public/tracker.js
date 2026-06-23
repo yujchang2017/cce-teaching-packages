@@ -51,13 +51,28 @@
     uuid = "anon";
   }
 
+  var sessionId = "";
+  try {
+    sessionId = sessionStorage.getItem("cce_session_id") || "";
+    if (!sessionId) {
+      sessionId = (window.crypto && crypto.randomUUID)
+        ? crypto.randomUUID().slice(0, 8)
+        : "s" + Math.random().toString(36).slice(2, 10);
+      sessionStorage.setItem("cce_session_id", sessionId);
+    }
+  } catch (e) {}
+
+  var refHost = "";
+  try { refHost = document.referrer ? new URL(document.referrer).hostname : ""; } catch (e) {}
+  var screenW = (window.screen && window.screen.width) || 0;
+
   function send(event, meta) {
     try {
       var payload = JSON.stringify({
         uuid: uuid,
         event: event,
         resource: keyId,
-        meta: Object.assign({ pageType: pageType }, meta || {}),
+        meta: Object.assign({ pageType: pageType, sid: sessionId, ref: refHost, sw: screenW }, meta || {}),
         userAgent: navigator.userAgent,
       });
       if (navigator.sendBeacon) {
@@ -107,6 +122,15 @@
       true
     );
   }
+
+  // 頁面停留時間：離開時送出
+  var pageLoadTime = Date.now();
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "hidden") {
+      var ms = Date.now() - pageLoadTime;
+      if (ms > 1000) send("page_leave", { durationMs: ms });
+    }
+  });
 
   // 暴露給 worksheet 內手動呼叫
   window.cceTrack = send;

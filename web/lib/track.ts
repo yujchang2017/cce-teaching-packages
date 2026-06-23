@@ -3,6 +3,17 @@
 
 const UUID_KEY = "cce_uuid_v1";
 const CONSENT_KEY = "cce_track_consent_v1";
+const SID_KEY = "cce_session_id";
+
+function getSessionId(): string {
+  if (typeof window === "undefined") return "";
+  let sid = sessionStorage.getItem(SID_KEY);
+  if (!sid) {
+    sid = (crypto as Crypto & { randomUUID: () => string }).randomUUID().slice(0, 8);
+    sessionStorage.setItem(SID_KEY, sid);
+  }
+  return sid;
+}
 
 export function getUuid(): string {
   if (typeof window === "undefined") return "";
@@ -37,11 +48,18 @@ export function track(ev: TrackEvent) {
   const url = process.env.NEXT_PUBLIC_TRACK_URL;
   if (!url) return;
 
+  const enrichedMeta = {
+    ...ev.meta,
+    sid: getSessionId(),
+    ref: (() => { try { return new URL(document.referrer).hostname; } catch { return ""; } })(),
+    sw: window.screen?.width ?? 0,
+  };
+
   const payload = JSON.stringify({
     uuid: getUuid(),
     event: ev.event,
     resource: ev.resource ?? "",
-    meta: ev.meta ?? {},
+    meta: enrichedMeta,
     userAgent: navigator.userAgent,
   });
 
