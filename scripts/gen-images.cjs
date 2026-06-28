@@ -108,7 +108,7 @@ function postPrompt(workflow) {
 }
 
 // Wait for image to be generated (poll history)
-function waitForImage(promptId, timeoutMs = 60000) {
+function waitForImage(promptId, timeoutMs = 600000) {
   const start = Date.now();
   return new Promise((resolve, reject) => {
     const poll = () => {
@@ -173,7 +173,7 @@ async function main() {
       continue;
     }
 
-    const fullPrompt = style + ", " + entry.prompt;
+    const fullPrompt = style ? (style + ", " + entry.prompt) : entry.prompt;
     tasks.push({ key, desc: entry.desc, filename, destPath, prompt: fullPrompt, negative });
     console.log(`  🎨 ${filename} — ${entry.desc}`);
   }
