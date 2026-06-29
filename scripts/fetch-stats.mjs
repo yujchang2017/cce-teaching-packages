@@ -167,6 +167,10 @@ const headerCandidates = {
   teacher: ['老師姓名', '教師姓名', '教師顯示名稱', '姓名', 'teacher', 'teacherName'],
   school: ['學校／機構', '學校/機構', '學校機構', '學校', '服務學校', '任教學校', 'school'],
   status: ['狀態', '審查狀態', 'status', 'reviewStatus'],
+  studentCount: ['學生人數', '學生數', '人數', 'studentCount', 'student_count', 'students'],
+  trialDate: ['試教日期', '日期', 'trialDate', 'date'],
+  city: ['任教縣市', '縣市', 'city'],
+  grade: ['任教年級', '年級', 'grade'],
 };
 
 const headers = rows[0];
@@ -180,6 +184,10 @@ const columns = {
   teacher: hasHeader ? findHeaderColumn(headers, headerCandidates.teacher) : detectedKeyIdColumn + 1,
   school: hasHeader ? findHeaderColumn(headers, headerCandidates.school) : detectedKeyIdColumn + 2,
   status: hasHeader ? findHeaderColumn(headers, headerCandidates.status) : -1,
+  studentCount: hasHeader ? findHeaderColumn(headers, headerCandidates.studentCount) : -1,
+  trialDate: hasHeader ? findHeaderColumn(headers, headerCandidates.trialDate) : -1,
+  city: hasHeader ? findHeaderColumn(headers, headerCandidates.city) : -1,
+  grade: hasHeader ? findHeaderColumn(headers, headerCandidates.grade) : -1,
 };
 if (columns.teacher < 0) columns.teacher = columns.keyId + 1;
 if (columns.school < 0) columns.school = columns.keyId + 2;
@@ -193,42 +201,66 @@ const rejectedRows = submittedRows.filter(r => normalizeStatus(getCell(r, column
 const pendingRows = submittedRows.filter(r => normalizeStatus(getCell(r, columns.status)) === 'pending');
 
 // ---- Aggregate ----
-const packageMap = new Map();   // keyId -> { submissions, teachers: Set, schools: Set, themeNum }
-const teacherMap = new Map();   // teacher -> { school, submissions, themes: Set }
-const schoolMap = new Map();    // school -> { teachers: Set, submissions: number, themes: Set }
+const packageMap = new Map();   // keyId -> { submissions, teachers: Set, schools: Set, themeNum, students }
+const teacherMap = new Map();   // teacher -> { school, submissions, themes: Set, students }
+const schoolMap = new Map();    // school -> { teachers: Set, submissions: number, themes: Set, students }
+const cityMap = new Map();      // city -> { teachers: Set, schools: Set, submissions }
 const themeCount = {};
 for (let t = 1; t <= 6; t++) themeCount[t] = 0;
+let totalStudents = 0;
+let trialSessions = 0; // 有填學生人數的試教次數
 
 for (const row of submittedRows) {
   const keyId   = (getCell(row, columns.keyId) || '').trim();
   const teacher = normalizeOptionalText(getCell(row, columns.teacher));
   const school  = normalizeOptionalText(getCell(row, columns.school));
+  const city    = normalizeOptionalText(getCell(row, columns.city));
+  const studentCountRaw = (getCell(row, columns.studentCount) || '').trim();
+  const studentCount = parseInt(studentCountRaw, 10) || 0;
+
+  if (studentCount > 0) {
+    totalStudents += studentCount;
+    trialSessions++;
+  }
 
   // 從 keyId 取主題編號（第一個字元）
   const themeNum = parseInt(keyId.charAt(0), 10);
   if (themeNum >= 1 && themeNum <= 6) themeCount[themeNum]++;
 
   // Package map
-  if (!packageMap.has(keyId)) packageMap.set(keyId, { submissions: 0, teachers: new Set(), schools: new Set(), themeNum });
+  if (!packageMap.has(keyId)) packageMap.set(keyId, { submissions: 0, teachers: new Set(), schools: new Set(), themeNum, students: 0 });
   const pm = packageMap.get(keyId);
   pm.submissions++;
+  pm.students += studentCount;
   if (teacher) pm.teachers.add(teacher);
   if (school) pm.schools.add(school);
 
   // Teacher map
   if (teacher) {
-    if (!teacherMap.has(teacher)) teacherMap.set(teacher, { school: school || '未提供學校', submissions: 0, themes: new Set() });
-    teacherMap.get(teacher).submissions++;
-    if (themeNum >= 1 && themeNum <= 6) teacherMap.get(teacher).themes.add(themeNum);
+    if (!teacherMap.has(teacher)) teacherMap.set(teacher, { school: school || '未提供學校', submissions: 0, themes: new Set(), students: 0 });
+    const tm = teacherMap.get(teacher);
+    tm.submissions++;
+    tm.students += studentCount;
+    if (themeNum >= 1 && themeNum <= 6) tm.themes.add(themeNum);
   }
 
   // School map
   if (school) {
-    if (!schoolMap.has(school)) schoolMap.set(school, { teachers: new Set(), submissions: 0, themes: new Set() });
+    if (!schoolMap.has(school)) schoolMap.set(school, { teachers: new Set(), submissions: 0, themes: new Set(), students: 0 });
     const sm = schoolMap.get(school);
     if (teacher) sm.teachers.add(teacher);
     sm.submissions++;
+    sm.students += studentCount;
     if (themeNum >= 1 && themeNum <= 6) sm.themes.add(themeNum);
+  }
+
+  // City map
+  if (city) {
+    if (!cityMap.has(city)) cityMap.set(city, { teachers: new Set(), schools: new Set(), submissions: 0 });
+    const cm = cityMap.get(city);
+    if (teacher) cm.teachers.add(teacher);
+    if (school) cm.schools.add(school);
+    cm.submissions++;
   }
 }
 
@@ -237,6 +269,7 @@ const byTeacher = Array.from(teacherMap.entries())
     name,
     school: v.school,
     submissions: v.submissions,
+    students: v.students,
     themes: Array.from(v.themes).sort(),
     badge: getBadge(v.submissions, v.themes.size),
   }))
@@ -246,6 +279,7 @@ const byPackage = Array.from(packageMap.entries())
   .map(([keyId, v]) => ({
     keyId,
     submissions: v.submissions,
+    students: v.students,
     teachers: v.teachers.size,
     schools: v.schools.size,
     theme: v.themeNum,
@@ -258,10 +292,20 @@ const bySchool = Array.from(schoolMap.entries())
     school,
     teachers: v.teachers.size,
     submissions: v.submissions,
+    students: v.students,
     themes: Array.from(v.themes).sort(),
-    score: v.submissions * 2 + v.themes.size, // 複合排名：提交數×2 + 主題覆蓋數
+    score: v.submissions * 2 + v.themes.size,
   }))
   .sort((a, b) => b.score - a.score);
+
+const byCity = Array.from(cityMap.entries())
+  .map(([city, v]) => ({
+    city,
+    teachers: v.teachers.size,
+    schools: v.schools.size,
+    submissions: v.submissions,
+  }))
+  .sort((a, b) => b.submissions - a.submissions);
 
 // KC 覆蓋率：被任一老師試教過的主題數
 const coveredThemes = Object.entries(themeCount)
@@ -274,8 +318,11 @@ const stats = {
   needsRevisionSubmissions: needsRevisionRows.length,
   rejectedSubmissions: rejectedRows.length,
   pendingSubmissions: pendingRows.length,
+  totalStudents,
+  trialSessions,
   teachers: teacherMap.size,
   schools: schoolMap.size,
+  cities: cityMap.size,
   kcCoverage: coveredThemes.length,
   byTheme: themeCount,
   themeNames: THEME_NAMES,
@@ -283,20 +330,23 @@ const stats = {
   byPackage,
   byTeacher,
   bySchool,
+  byCity,
   generatedAt: new Date().toISOString(),
 };
 
 fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
 fs.writeFileSync(OUT_PATH, JSON.stringify(stats, null, 2), 'utf8');
-console.log(`[fetch-stats] Done — 收到 ${submittedRows.length} 筆，${teacherMap.size} 位老師，${schoolMap.size} 所學校，${packageMap.size} 份教案，KC 覆蓋 ${coveredThemes.length}/6`);
+console.log(`[fetch-stats] Done — 收到 ${submittedRows.length} 筆，${teacherMap.size} 位老師，${schoolMap.size} 所學校，${packageMap.size} 份教案，KC 覆蓋 ${coveredThemes.length}/6，學生人次 ${totalStudents}（${trialSessions} 次試教）`);
 console.log(`[fetch-stats] Columns — header=${hasHeader ? 'yes' : 'no'}, keyId=${columns.keyId + 1}, teacher=${columns.teacher + 1}, school=${columns.school + 1}`);
 
 function writeEmpty() {
   const empty = {
     totalSubmissions: 0, approvedSubmissions: 0, needsRevisionSubmissions: 0, rejectedSubmissions: 0, pendingSubmissions: 0,
-    teachers: 0, schools: 0, kcCoverage: 0,
+    totalStudents: 0, trialSessions: 0,
+    teachers: 0, schools: 0, cities: 0, kcCoverage: 0,
     byTheme: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 },
-    themeNames: THEME_NAMES, coveredThemes: [], byPackage: [], byTeacher: [], bySchool: [],
+    themeNames: THEME_NAMES, coveredThemes: [], byPackage: [], byTeacher: [], bySchool: [], byCity: [],
+    announcements: [],
     generatedAt: new Date().toISOString(),
   };
   fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
