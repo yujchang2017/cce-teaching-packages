@@ -10,6 +10,7 @@ import { notFound } from "next/navigation";
 import { fetchPackageDetail, getAllKeyIds } from "@/lib/github-api";
 import TrackPageView from "@/components/TrackPageView";
 import TrackLink from "@/components/TrackLink";
+import Giscus from "@/components/Giscus";
 
 export const dynamicParams = false; // 靜態匯出:不允許未列出的 keyId
 
@@ -205,6 +206,13 @@ export default async function PackageDetail({
             ))}
           </ul>
         )}
+      </section>
+
+      {/* DISCUSSIONS */}
+      <section className="mt-8 pt-6 border-t border-earth/10">
+        <h2 className="text-xl font-bold text-ink flex items-center gap-2 mb-4">💬 討論與回饋</h2>
+        <p className="text-sm text-mute mb-4">使用 GitHub 帳號登入即可留言、按讚或提出建議。</p>
+        <Giscus term={summary.keyId} />
       </section>
 
       {/* NAV */}
