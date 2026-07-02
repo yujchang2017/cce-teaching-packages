@@ -1,5 +1,15 @@
 # Build-time scripts
 
+## link-review-apply.mjs
+
+套用 `review_standalone.html` 產出的連結審查 CSV(`ccreview_responses*.csv`)
+到 `packages/` 教案 HTML。詳見 [.claude/skills/link-review/SKILL.md](../.claude/skills/link-review/SKILL.md)。
+
+```bash
+node scripts/link-review-apply.mjs --dir _local/reviewXXXXXX --dry-run
+node scripts/link-review-apply.mjs --dir _local/reviewXXXXXX --resolutions resolutions.json
+```
+
 ## build-packages-index.mjs
 
 從 GitHub `cce-teaching-packages` repo 抓所有教案資料,寫入 `web/data/`。
