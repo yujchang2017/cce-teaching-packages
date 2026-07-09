@@ -70,6 +70,18 @@ function pkgOf(p) {
   return m ? { level: m[1], node: m[2] } : null;
 }
 
+// 慣例上允許註解的 JSONC 檔（devcontainer / .vscode / tsconfig 等），
+// 不能用嚴格 JSON.parse 驗證，否則會誤判成壞 JSON。教材 JSON（packages/**）不在此列，仍嚴格檢查。
+function isJsonc(p) {
+  const base = path.posix.basename(p);
+  return (
+    /(^|\/)\.devcontainer\//.test(p) ||
+    /(^|\/)\.vscode\//.test(p) ||
+    base === "devcontainer.json" ||
+    /^(tsconfig|jsconfig)(\..+)?\.json$/.test(base)
+  );
+}
+
 for (const p of changed) {
   if (DANGER_PATH.some((re) => re.test(p))) dangers.push(`禁止的檔案/路徑：\`${p}\``);
 
@@ -78,7 +90,7 @@ for (const p of changed) {
     if (size > HARD_SIZE) dangers.push(`檔案過大（${(size / 1048576).toFixed(1)}MB）：\`${p}\``);
     else if (size > WARN_SIZE) notes.push(`檔案較大（${(size / 1048576).toFixed(1)}MB），請確認是否必要：\`${p}\``);
 
-    if (p.endsWith(".json")) {
+    if (p.endsWith(".json") && !isJsonc(p)) {
       try {
         JSON.parse(fs.readFileSync(p, "utf8"));
       } catch (e) {
