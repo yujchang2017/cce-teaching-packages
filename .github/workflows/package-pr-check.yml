@@ -1,0 +1,62 @@
+name: 教材 PR 檢查
+
+# 對 main 的每個 PR 跑輔助檢查：
+#  - 硬擋明顯危險（密鑰/個資/私有路徑/壞 JSON/超大檔）→ 讓檢查失敗
+#  - 其餘只提醒，並在 PR 留言附上「改寫後教材的即時預覽連結」
+# 觸發用 pull_request（非 pull_request_target）：對 fork PR 的 token 會自動降為唯讀、
+# 且拿不到 secrets，因此就算 PR 動了本檔或腳本也無法竊取機密或寫入，安全。
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write # fork PR 會自動降為唯讀，下方留言步驟會自動略過
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取出 PR 內容（head）
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/head
+          fetch-depth: 0
+
+      - name: 取得 main 以便比對
+        run: git fetch origin main:refs/remotes/origin/main
+
+      - name: 計算變更檔案清單
+        run: |
+          git diff --name-only --diff-filter=d origin/main...HEAD > changed.txt
+          git diff --name-only --diff-filter=D origin/main...HEAD > deleted.txt
+          echo "---- changed ----"; cat changed.txt
+          echo "---- deleted ----"; cat deleted.txt
+
+      - name: Node
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: "22"
+
+      - name: 執行檢查
+        id: check
+        env:
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/check-package-pr.mjs
+
+      - name: 寫入工作摘要
+        if: always()
+        run: cat comment.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 在 PR 留言（同倉庫分支才有寫入權）
+        if: always() && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr comment ${{ github.event.pull_request.number }} --body-file comment.md
+
+      - name: 有危險就讓檢查失敗
+        if: always() && steps.check.outputs.danger == 'true'
+        run: |
+          echo "偵測到必須先修正的問題，詳見上方 PR 留言 / 工作摘要。"
+          exit 1
