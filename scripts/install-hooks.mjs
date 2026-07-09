@@ -47,7 +47,7 @@ if [ -n "$INTERNAL_DOCS" ]; then
 fi
 
 # ---- 4. packages/ 下只允許白名單檔案 ----
-PKG_VIOLATIONS=$(git diff --cached --name-only | grep '^packages/' | grep -vE '^packages/_index\\.json$|^packages/_meta\\.json$|^packages/[^/]+/[^/]+/(data_card\\.json|version\\.json|resources\\.json|lesson_plan\\.(md|html)|ppt_script\\.md|ppt\\.html|worksheet\\.html|resources\\.md|qa_report\\.md|README\\.md)$|^packages/[^/]+/[^/]+/_versions/[^/]+/(data_card\\.json|lesson_plan\\.(md|html)|ppt_script\\.md|ppt\\.html|worksheet\\.html|resources\\.md|qa_report\\.md|README\\.md)$|^packages/[^/]+/$|^packages/$')
+PKG_VIOLATIONS=$(git diff --cached --name-only | grep '^packages/' | grep -vE '^packages/_index\\.json$|^packages/_meta\\.json$|^packages/remixes\\.json$|^packages/[^/]+/[^/]+/(data_card\\.json|version\\.json|resources\\.json|lesson_plan\\.(md|html)|ppt_script\\.md|ppt\\.html|worksheet\\.html|resources\\.md|qa_report\\.md|README\\.md)$|^packages/[^/]+/[^/]+/_versions/[^/]+/(data_card\\.json|lesson_plan\\.(md|html)|ppt_script\\.md|ppt\\.html|worksheet\\.html|resources\\.md|qa_report\\.md|README\\.md)$|^packages/[^/]+/$|^packages/$')
 if [ -n "$PKG_VIOLATIONS" ]; then
   echo "[pre-commit] ❌ packages/ 下有不允許的檔案:"
   echo "$PKG_VIOLATIONS"

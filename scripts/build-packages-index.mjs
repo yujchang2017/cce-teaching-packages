@@ -152,6 +152,40 @@ function fallbackResourcesMetadata() {
   return { resources: [] };
 }
 
+// ---- 模式一：改編紀錄 ----
+// 資料來源 packages/remixes.json（追蹤檔，維護者用 scripts/add-remix-record.mjs 收錄）。
+// 每筆含 keyId + 顯示欄位；build 時依 keyId 掛到「原教案頁」的 remixes（前端已會渲染）。
+let REMIX_INDEX = new Map(); // keyId -> remix[]（已去除 keyId）
+
+async function loadRemixIndex(useLocal) {
+  let arr = null;
+  if (useLocal) {
+    try {
+      const raw = await readFile(join(LOCAL_PACKAGES, "remixes.json"), "utf8");
+      arr = JSON.parse(raw.replace(/^﻿/, ""));
+    } catch {
+      arr = null; // 檔案不存在或空 → 視為沒有改編紀錄
+    }
+  } else {
+    arr = await fetchJson("packages/remixes.json");
+  }
+  const map = new Map();
+  if (Array.isArray(arr)) {
+    for (const r of arr) {
+      if (!r || !r.keyId) continue;
+      const { keyId, ...rest } = r;
+      if (!map.has(keyId)) map.set(keyId, []);
+      map.get(keyId).push(rest);
+    }
+  }
+  REMIX_INDEX = map;
+  console.log(`[build] 改編紀錄：載入 ${Array.isArray(arr) ? arr.length : 0} 筆，涵蓋 ${map.size} 個教案`);
+}
+
+function remixesFor(keyId) {
+  return REMIX_INDEX.get(keyId) ?? [];
+}
+
 /** 本地模式：從 packages/ 資料夾讀取一個教案的 detail */
 async function buildOneDetailLocal(entry) {
   const keyId = entry.keyId;
@@ -177,7 +211,7 @@ async function buildOneDetailLocal(entry) {
     worksheetRawUrl: `${rawBase}/worksheet.html`,
     worksheetPagesUrl: `${pagesBase}/worksheet.html`,
     baseUrl: rawBase,
-    remixes: [],
+    remixes: remixesFor(keyId),
   };
 }
 
@@ -202,7 +236,7 @@ async function buildOneDetail(entry) {
     worksheetRawUrl: `${base}/worksheet.html`,
     worksheetPagesUrl: `${pagesBase}/worksheet.html`,
     baseUrl: base,
-    remixes: [], // Phase 1 由另一支 script 填入
+    remixes: remixesFor(keyId),
   };
 }
 
@@ -254,6 +288,9 @@ async function main() {
 
   // 寫入主 index
   await writeFile(join(WEB_DATA, "packages.json"), JSON.stringify(indexJson, null, 2));
+
+  // 載入改編紀錄（模式一），供各教案 detail 掛上
+  await loadRemixIndex(useLocal);
 
   // 並行 detail（限制並發）
   const CONCURRENCY = useLocal ? 20 : 6;

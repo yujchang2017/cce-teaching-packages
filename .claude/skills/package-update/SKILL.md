@@ -45,6 +45,19 @@ node scripts/add-version-record.mjs --node 3.1-III --reason 審查修訂 \
 - git 歷史即為舊版備份，這裡不做 `_versions/` 備份
 - 補完後由**使用者** commit / push（可能是把版本 commit 併進 PR 分支，或 merge 後於 main 補一筆）
 
+## 收錄「改編紀錄」（模式一）
+
+若 PR 是**改編**（改編自某教案、要掛成原教案頁的「改編紀錄」連結，而非優化官方版），
+用 [scripts/add-remix-record.mjs](../../../scripts/add-remix-record.mjs) 收錄，欄位取自 PR：
+
+```bash
+node scripts/add-remix-record.mjs --keyId 1.1-III --remixer 王老師 \
+     --school 某某國小 --title "都會區情境版" --pr <PR編號>
+```
+
+- 只是加一筆連結到 `packages/remixes.json`，build 時顯示在原教案頁；不新增獨立教案、不動 `_index.json`
+- 若使用者要讓改編版成為可獨立瀏覽的正式教案（模式二），那要另外登記到 `_index.json`，屬較大變更，先跟使用者確認
+
 ## 動手前後
 - 動 repo 前先 `git status` 確認乾淨、讓使用者知道有存檔點。
 - 完成後回報：審了哪個 PR、版本從幾號到幾號、有沒有提醒事項；push 由使用者執行。
