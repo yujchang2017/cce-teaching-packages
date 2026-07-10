@@ -9,23 +9,27 @@
 
 ## 這是什麼？
 
-本倉庫收錄以 **UNESCO《Learn for Our Planet》氣候變遷教育框架**為基礎、搭配臺灣本土教學現場需求開發的**教學組合包（Teaching Packages）**。每包完整涵蓋：
+本倉庫收錄以 **UNESCO (2024)《 Greening Curriculum Guidance: Teaching and learning for climate action 》綠色課程指南**為基礎、搭配臺灣本土教學現場需求開發的**教學組合包（Teaching Packages）**。每包完整涵蓋：
 
 - 資料卡（`data_card.json`）—— 關鍵數據與出處
-- 教案（`lesson_plan.md`）—— 4 節 × 40 分鐘標準課程
+- 教案（`lesson_plan.md`）—— 4 單元 × 10 分鐘參考活動
 - PPT 腳本（`ppt_script.md`）—— 講述稿與投影片對照
 - 互動學習單（`worksheet.html`）—— 可離線開啟的 HTML 檔
 - 教學資源清單（`resources.md`）—— 延伸閱讀與影片連結
 
-全套規劃 **136 包**，涵蓋 UNESCO 六大主題 × 四個年段（Level I–IV）。
+全套規劃 **102 包**，涵蓋 UNESCO 六大主題 × 四個年段（Level II–IV）。
 
-## 目前收錄的教學包（Phase 0 POC）
+## 目前收錄的教學包
 
-| Key ID | 主題 | 年段 | 線上預覽 | 狀態 |
-|---|---|---|---|---|
-| [1.1-III](packages/level-iii/1.1-III/) | 天氣、氣候與氣候變遷 | Level III（9–12 歲） | [互動學習單](https://yujchang2017.github.io/cce-teaching-packages/packages/level-iii/1.1-III/worksheet.html) | 已上線 |
+目前網站已呈現 **102 包**（Level II–IV），各年段收錄如下：
 
-> 其餘 135 包將於 Phase 1–2 陸續推出。詳見 [community.cce.tw](https://community.cce.tw) （暫定，建置中）。
+| 年段 | 包數 | 目錄入口 |
+|---|---:|---|
+| Level II（5–8 歲） | 34 | [packages/level-ii/](packages/level-ii/) |
+| Level III（9–12 歲） | 34 | [packages/level-iii/](packages/level-iii/) |
+| Level IV（13–15 歲） | 34 | [packages/level-iv/](packages/level-iv/) |
+
+> 高中階段（Level V）內容暫未於現階段網站呈現。
 >
 > **線上預覽說明**：本倉庫已啟用 GitHub Pages（`https://yujchang2017.github.io/cce-teaching-packages/`）直接提供互動 HTML。請**避免**使用 `htmlpreview.github.io/?...` 連結——其 iframe sandbox 會讓 Tailwind CDN 與 drag/drop 事件失效，造成「畫面跑出來但無法互動」的情況。
 
@@ -53,16 +57,32 @@
 
 ## 如何參與改編
 
-我們歡迎兩種路徑：
+目前以 GitHub 協作為主，建議依需求走下列路徑：
 
-### 友善路徑（推薦給第一次接觸開源的老師）
-前往 [community.cce.tw](https://community.cce.tw)（建置中）填寫「教案改編提案」表單，由平臺協助處理版本控管。
+### 路徑一：先提改編想法（不需先會 Git）
+使用 [教案改編提案](.github/ISSUE_TEMPLATE/remix-proposal.md) Issue 模板，先描述：
+1. 想改編哪一包
+2. 想改哪些情境或內容
+3. 預計試教對象與時程
 
-### 技術路徑（熟悉 GitHub 的貢獻者）
+維護者會先協助你確認方向，再決定後續是否送 PR。
+
+### 路徑二：直接優化現有教材（PR）
+如果是修正錯字、更新失效連結、補充說明等，可直接修改原檔並送 PR：
+1. 進入要修改的檔案後點 GitHub 鉛筆圖示編輯
+2. Commit 並建立 PR
+3. 依 PR 模板填寫教案代號、修改類型與摘要
+
+送出後會跑自動檢查；`version.json` 由維護者審查時統一補上。
+
+### 路徑三：製作你的改編版本（Fork + PR）
+適合要做在地化或教學重設計：
 1. `Fork` 本倉庫
-2. 新增分支 `remix/您的名字-教案編號`
-3. 改編後送 Pull Request
+2. 建立分支（建議：`remix/你的名字-教案代號`）
+3. 完成改編後送 Pull Request
 4. 詳見 [CONTRIBUTING.md](CONTRIBUTING.md)
+
+> 若要先回報試教使用經驗，可用 [教學回饋](.github/ISSUE_TEMPLATE/feedback.md) Issue 模板。
 
 ### 遇到問題？
 使用 [Issue 模板](.github/ISSUE_TEMPLATE/) 提出教學回饋或改編提案。
