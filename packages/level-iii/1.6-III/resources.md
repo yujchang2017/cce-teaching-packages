@@ -5,7 +5,7 @@
 |---|---|---|---|---|
 | 1 | 全球再生能源發電 30% / 太陽+風 13% | IEA Electricity 2024；Ember 2024 | https://www.iea.org/reports/electricity-2024 | high |
 | 2 | 台灣再生能源 11.6% / 太陽光電 14 GW | 經濟部能源署 能源統計月報 2024 | https://www.moeaea.gov.tw/ | high |
-| 3 | 台灣電力排碳係數 0.495 kg CO2/kWh | 經濟部能源署 | https://www.moeaea.gov.tw/ecw/populace/content/ContentDesc.aspx?menu_id=14437 | high |
+| 3 | 台灣電力排碳係數 0.467 kg CO2e/度（2025年度） | 經濟部能源署 114年度電力排碳係數 | https://www.moeaea.gov.tw/ecw/populace/content/ContentDesc.aspx?menu_id=27028 | high |
 | 4 | 2050 淨零 / 電力 2035 近零碳 | IPCC AR6 WG3 SPM 2022 | https://www.ipcc.ch/report/ar6/wg3/ | high |
 | 5 | 台灣 2025 再生能源 20%、2030 離岸風電 13.1 GW | 國家發展委員會 台灣2050淨零路徑 | https://www.ndc.gov.tw/nc_27_35984 | high |
 | 6 | 生質能永續須砍一種一 | IPCC AR6；FAO Wood Energy | https://www.fao.org/forestry/energy/en/ | high |
