@@ -47,13 +47,13 @@ if [ -n "$INTERNAL_DOCS" ]; then
 fi
 
 # ---- 4. packages/ 下只允許白名單檔案 ----
-PKG_VIOLATIONS=$(git diff --cached --name-only | grep '^packages/' | grep -vE '^packages/_index\\.json$|^packages/_meta\\.json$|^packages/remixes\\.json$|^packages/[^/]+/[^/]+/(data_card\\.json|version\\.json|resources\\.json|lesson_plan\\.(md|html)|ppt_script\\.md|ppt\\.html|worksheet\\.html|resources\\.md|qa_report\\.md|README\\.md)$|^packages/[^/]+/[^/]+/_versions/[^/]+/(data_card\\.json|lesson_plan\\.(md|html)|ppt_script\\.md|ppt\\.html|worksheet\\.html|resources\\.md|qa_report\\.md|README\\.md)$|^packages/[^/]+/$|^packages/$')
+PKG_VIOLATIONS=$(git diff --cached --name-only | grep '^packages/' | grep -vE '^packages/_index\\.json$|^packages/_meta\\.json$|^packages/remixes\\.json$|^packages/[^/]+/[^/]+/(data_card\\.json|version\\.json|resources\\.json|lesson_plan\\.(md|html)|ppt_script\\.md|ppt\\.html|worksheet\\.html|resources\\.md|qa_report\\.md|README\\.md)$|^packages/[^/]+/[^/]+/_versions/[^/]+/(data_card\\.json|lesson_plan\\.(md|html)|ppt_script\\.md|ppt\\.html|worksheet\\.html|resources\\.md|qa_report\\.md|README\\.md)$|^packages/[^/]+/[^/]+/images/[^/]+\\.png$|^packages/[^/]+/$|^packages/$')
 if [ -n "$PKG_VIOLATIONS" ]; then
   echo "[pre-commit] ❌ packages/ 下有不允許的檔案:"
   echo "$PKG_VIOLATIONS"
   echo "  允許清單: data_card.json, version.json, resources.json, lesson_plan.md/html,"
   echo "            ppt_script.md, ppt.html, worksheet.html, resources.md, qa_report.md, README.md"
-  echo "            以及 _versions/{version}/ 下的封存教材檔"
+  echo "            images/*.png（簡報插圖），以及 _versions/{version}/ 下的封存教材檔"
   BLOCKED=1
 fi
 
