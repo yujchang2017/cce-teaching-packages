@@ -2,6 +2,8 @@
 import {useEffect,useMemo,useRef,useState} from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import {useGameEvents} from '@/lib/useGameEvents';
+
 import type {Mode,Simulation} from './types';
 import {animalCost,animalWorld,cleanAnimals,emptyAnimals,emptyCrossing,simulateAnimals,ANIMAL_BUDGET,type AnimalDesign,type Crossing} from './animals';
 import {heatWorld,cleanTrees,simulateHeat,temperature,plantable,homes,sites,PER_HOME,RESIDENTS,TREE_LIMIT,HEAT_THRESHOLD,ENERGY_MAX,type Tree} from './heat';
@@ -13,6 +15,7 @@ const names=['觀察現況','配置設施','預測・模擬','比較・改善','
 const copy={animals:{title:'幫動物，接回一條路。',short:'動物通道',key:'2.5-III',eyebrow:'WILDLIFE CROSSING LAB',intro:'橋接起來了，整群動物都走得過嗎？',unit:'隻',kpi:'抵達另一棲地',hint:'工程先接得上，再讓整群走得過。'},heat:{title:'涼爽的路，能送大家回家嗎？',short:'都市降溫',key:'3.2-III',eyebrow:'COOL STREETS LAB',intro:'熱浪來了。用三棵樹，讓出門辦事的鄰居有力氣回家。',unit:'人',kpi:'辦完事並安全返家',hint:'熱格 −1，涼格 ＋1；到目的地還不算完成。'}};
 const fingerprint=(v:Trial)=>JSON.stringify([v.animals,v.trees,v.scenario]);
 export default function GroupGame({mode}:{mode:Mode}){
+  const telemetry=useGameEvents(mode);
   const c=copy[mode],storageKey=mode==='heat'?'cce-group-heat-simple-v2':`cce-group-${mode}-v1`;
   const [animals,setAnimals]=useState<AnimalDesign>(emptyAnimals),[trees,setTrees]=useState<Tree[]>([]),[scenario,setScenario]=useState(0);
   const [step,setStep]=useState(0),[history,setHistory]=useState<Trial[]>([]),[record,setRecord]=useState<Trial|null>(null),[prediction,setPrediction]=useState(''),[reflection,setReflection]=useState('');
@@ -42,7 +45,7 @@ export default function GroupGame({mode}:{mode:Mode}){
   },[]);
   useEffect(()=>{if(!loaded)return;try{localStorage.setItem(storageKey,JSON.stringify({version:1,animals,trees,scenario,history,reflection}));setSaved(true);}catch{setSaved(false);}},[loaded,animals,trees,scenario,history,reflection]);
   useEffect(()=>{if(!playing||paused)return;let raf=0,last=performance.now();const tick=(now:number)=>{const dt=Math.min(100,now-last)/1000;last=now;setTime(t=>Math.min(run.duration,t+dt*3*speed));raf=requestAnimationFrame(tick);};raf=requestAnimationFrame(tick);return()=>cancelAnimationFrame(raf);},[playing,paused,speed,run]);
-  useEffect(()=>{if(!playing||time<run.duration||!record)return;setPlaying(false);setPaused(false);if(purpose.current!=='replay'){setHistory(h=>[...h,record].slice(-6));setStep(purpose.current==='baseline'?0:3);if(matchMedia('(max-width:850px)').matches)focusPanel();}},[playing,time,run,record]);
+  useEffect(()=>{if(!playing||time<run.duration||!record)return;setPlaying(false);setPaused(false);if(purpose.current!=='replay'){telemetry.complete({success:run.success,total:run.total,successRate:Math.round(run.score*100),cost:mode==='animals'?animalCost(record.animals):record.trees.length,trees:record.trees.length});setHistory(h=>[...h,record].slice(-6));setStep(purpose.current==='baseline'?0:3);if(matchMedia('(max-width:850px)').matches)focusPanel();}},[playing,time,run,record]);
   function edited(){setPrediction('');setTime(0);setSelected(null);setMessage('配置已更動。下一步先預測，再重新模擬。');}
   function updateCrossing(patch:Partial<Crossing>){if(playing)return;const d=animals.map((v,i)=>i===lane?{...v,...patch}:v) as AnimalDesign;if(d[lane].kind==='none')d[lane]=emptyCrossing();if(d[lane].kind==='tunnel'){d[lane].entry=false;d[lane].exit=false;d[lane].guard=false;}if(animalCost(d)>ANIMAL_BUDGET){setMessage('材料不夠。先移除其他工程或改用較省材料的配置。');return;}setAnimals(d);edited();}
   function plant(at:Tree){setCell(at);if(!plantable(at.x,at.z)){setMessage('請選 A–F 六個白色植樹點；道路與老樹保留。');return;}if(trees.some(t=>t.x===at.x&&t.z===at.z)){setMessage('這格已種樹。可切換「移除」取回樹木。');return;}if(trees.length>=TREE_LIMIT){setMessage('三棵樹已用完。先移除或搬移一棵，再調整位置。');return;}setTrees(old=>[...old,{x:at.x,z:at.z}]);setTool('inspect');edited();setMessage(`已在第 ${at.x+1} 欄、第 ${at.z+1} 列種樹。附近降溫區已更新。`);}
@@ -51,9 +54,9 @@ export default function GroupGame({mode}:{mode:Mode}){
   function start(kind:'baseline'|'trial'|'replay'){
     if(playing||!loaded)return;if(kind==='trial'&&!prediction){setMessage('先選一個預測。');return;}
     const r=kind==='replay'&&record?record:kind==='baseline'?{animals:emptyAnimals(),trees:[],scenario,prediction:'觀察原始環境'}:{animals:cleanAnimals(animals),trees:cleanTrees(trees),scenario,prediction};
-    purpose.current=kind;setRecord(r);setTime(reduced?simulate(r).duration:0);setPaused(false);setPlaying(true);setMessage('');setTool('inspect');focusScene();
+    if(kind!=='replay')telemetry.start({phase:kind==='baseline'?'baseline':'challenge',scenario:r.scenario});purpose.current=kind;setRecord(r);setTime(reduced?simulate(r).duration:0);setPaused(false);setPlaying(true);setMessage('');setTool('inspect');focusScene();
   }
-  function reset(){setAnimals(emptyAnimals());setTrees([]);setHistory([]);setRecord(null);setScenario(0);setReflection('');setPrediction('');setPlaying(false);setPaused(false);setTime(0);setSelected(null);setResetting(false);go(0);}
+  function reset(){telemetry.cancel();setAnimals(emptyAnimals());setTrees([]);setHistory([]);setRecord(null);setScenario(0);setReflection('');setPrediction('');setPlaying(false);setPaused(false);setTime(0);setSelected(null);setResetting(false);go(0);}
   const textReport=useMemo(()=>[`${c.short}｜我的實驗紀錄`,...results.flatMap(({record:r,run:v},i)=>[`\n實驗 ${i+1}：${r.prediction}`,`配置：${mode==='animals'?JSON.stringify(r.animals):r.trees.map(t=>`(${t.x+1},${t.z+1})`).join('、')||'未種樹'}`,`成功 ${v.success}/${v.total}（${Math.round(v.score*100)}%）`,...v.travelers.map(p=>`${p.label}｜${p.origin}｜${p.itinerary.join(' → ')}｜${p.outcome}｜${p.detail}`)]),`\n我的解釋：${reflection}`,'\n數值是固定條件的教學模擬，不代表真實動物行為或人體耐熱能力。'].join('\n'),[c.short,results,mode,reflection]);
   const link='data:text/plain;charset=utf-8,'+encodeURIComponent('\ufeff'+textReport);
   return <main className={`group-game ${mode}`}>
@@ -88,7 +91,7 @@ export default function GroupGame({mode}:{mode:Mode}){
     </div>
     {hasBaseline&&(step===3||step===4)&&<section className="gg-evidence"><h2>從個體紀錄找證據</h2><p>點一列追蹤該角色；結果不只是一個總分。</p><div className="gg-record-grid">{run.travelers.map(p=><button key={p.id} className={p.outcome==='抵達'||p.outcome==='安全返家'?'arrived':''} onClick={()=>{setSelected(p.id);setPaths(true);stage.current?.scrollIntoView({behavior:'instant',block:'start'});}}><b>{p.label}</b><span>{p.outcome}</span><small>{mode==='heat'?`${p.origin} · ${p.completed}/${p.required} 件事 · 體力 ${p.energy}`:p.detail}</small></button>)}</div><details><summary>最近 {history.length} 次實驗比較</summary><div className="gg-table"><table><thead><tr><th>預測</th><th>配置</th><th>成功率</th></tr></thead><tbody>{results.map(({record:r,run:v},i)=><tr key={i}><td>{i+1}. {r.prediction}</td><td>{mode==='animals'?`${animalCost(r.animals)} 材料 · 情境 ${r.scenario?'B':'A'}`:`${r.trees.length} 棵樹`}</td><td>{v.success}/{v.total} · {Math.round(v.score*100)}%</td></tr>)}</tbody></table></div></details></section>}
     <details className="gg-teacher"><summary>教師備註：模型假設與教學範圍</summary><p>{mode==='animals'?'固定 24 隻虛構動物，以簡化路徑、行走偏移、群體間距及車流接觸模擬。個體速度與出發時間不同，但同情境重試一致；模擬時限 42 秒。脫群是過程狀態，之後抵達仍算成功；結算每隻只有一個終態。工程材質與數值均為教學示意，不代表真實動物習性或工程安全規範。':'每格溫度固定，32°C 是本遊戲的高低溫分界，不是健康安全門檻。兩個住宅區共 12 位居民，每人辦一件事再原路返家。所有居民起始體力 10，上限 10；進入一格才加減一次，歸零停止，辦事不補體力。居民走固定最短可通行路線，不為刷體力繞圈。西側既有老樹提供原始陰涼，新增樹木兩格內降溫 6°C，重疊不加倍。未模擬真實熱疾病、氣流或太陽移動。'}</p><p>採「觀察 → 配置 → 預測 → 比較 → 解釋」。主要 KPI 依完整個體行程計算，文字長度只檢查紀錄完整性。尚需班級試教驗證難度與學習成效。</p></details>
-    <footer className="gg-footer"><span>{saved?'紀錄只保存在此瀏覽器。':'無法自動保存，離開前請下載紀錄。'}</span><button disabled={playing} onClick={()=>setResetting(true)}>重新開始</button></footer>
+    <footer className="gg-footer"><span>{saved?'配置與文字保存在此瀏覽器；同意統計時傳送結果摘要。':'無法自動保存，離開前請下載紀錄。'}</span><button disabled={playing} onClick={()=>setResetting(true)}>重新開始</button></footer>
     {resetting&&<div className="gg-reset" role="group" aria-label="確認重設"><p>清除本款遊戲的本機配置、實驗及解釋？</p><a href={link} download={`${c.short}-實驗紀錄.txt`}>先下載紀錄</a><button onClick={()=>setResetting(false)}>保留</button><button onClick={reset}>清除並重新開始</button></div>}
   </main>;
 }

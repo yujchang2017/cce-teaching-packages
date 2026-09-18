@@ -2,6 +2,8 @@
 import {useEffect,useMemo,useRef,useState} from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import {useGameEvents} from '@/lib/useGameEvents';
+
 import {parts,bins,upgrades,directions,screwLabel,obstacle,guidedRemove,nextAccessible,fresh,budget,validDesign,issue,release,remove,identify,sort,complete,comparison,results,restore,standardRun,type Upgrade,type Id,type Direction,type Tool,type State} from './model';
 import './recycling.css';
 const Scene=dynamic(()=>import('./RecyclingScene'),{ssr:false,loading:()=> <div className="rc-scene">工作桌準備中…</div>});
@@ -9,6 +11,7 @@ const EMPTY:Upgrade[]=[];
 const stepNames=['接收與安全','拆開產品','辨識與分類','改良設計','比較回收成本'];
 const SAVE='cce-recycling-design-v1';
 export default function RecyclingLab(){
+ const telemetry=useGameEvents('recycling');
  const [step,setStep]=useState(0),[state,setState]=useState<State>(fresh),[design,setDesign]=useState<Upgrade[]>([]),[trialDesign,setTrialDesign]=useState<Upgrade[]>([]),[revised,setRevised]=useState(false);
  const [selected,setSelected]=useState<Id>('cap'),[tool,setTool]=useState<Tool>('PH1'),[direction,setDirection]=useState<Direction>('up');
  const [view,setView]=useState<'orbit'|'front'|'back'|'top'>('orbit'),[viewNonce,setViewNonce]=useState(0),[cutaway,setCutaway]=useState(false);
@@ -30,14 +33,14 @@ export default function RecyclingLab(){
  const [replayRemoved,setReplayRemoved]=useState<Id[]>([]);
  useEffect(()=>{if(replay===null)return;const removals=standardRun(design).events.filter(e=>e.kind==='remove');if(replay>=removals.length){setReplay(null);return;}const timer=setTimeout(()=>{setReplayRemoved(removals.slice(0,replay+1).map(e=>e.id!));setSelected(removals[replay].id!);setDirection(parts(design).find(p=>p.id===removals[replay].id)!.direction);setReplay(replay+1);},650);return()=>clearTimeout(timer);},[replay,design]);
  function tell(text:string,bad=false){setMessage(text);setError(bad);}
- function go(n:number){if(actionTimer.current)clearTimeout(actionTimer.current);setBusy(false);setStep(n);setReplay(null);setReplayRemoved([]);tell(n===3?'選擇改版項目，最多使用 3 點。':'照操作卡完成目前步驟。');requestAnimationFrame(()=>(n===1?bench.current:task.current)?.scrollIntoView({behavior:'instant',block:'start'}));}
+ function go(n:number){if(n===4)telemetry.complete({seconds:compare.after.seconds,cost:compare.after.cost,pure:compare.after.pure,mixed:compare.after.mixed,professional:compare.after.professional,changes:compare.after.changes,stations:compare.after.stations,batchSavings:compare.batchSavings,upgrades:design.length,passed:compare.batchSavings>0});if(actionTimer.current)clearTimeout(actionTimer.current);setBusy(false);setStep(n);setReplay(null);setReplayRemoved([]);tell(n===3?'選擇改版項目，最多使用 3 點。':'照操作卡完成目前步驟。');requestAnimationFrame(()=>(n===1?bench.current:task.current)?.scrollIntoView({behavior:'instant',block:'start'}));}
  function pick(id:Id){if(busy)return;setSelected(id);const p=parts(working).find(p=>p.id===id)!;setDirection(p.direction);setView(p.direction==='back'?'back':p.direction==='front'?'front':'orbit');setViewNonce(n=>n+1);if(step===2)setState(s=>identify(working,s,id));tell(p.note);}
  function dismantle(){if(busy)return;const result=guidedRemove(working,state,selected);if(result.error){tell(result.error,true);return;}setState(result.state);setBusy(true);tell('正在解除固定並移出'+part.name.slice(3)+'…');actionTimer.current=setTimeout(()=>{setBusy(false);const next=nextAccessible(working,result.state);if(next){setSelected(next);const p=parts(working).find(p=>p.id===next)!;setDirection(p.direction);setView(p.direction==='back'?'back':p.direction==='front'?'front':'orbit');setViewNonce(n=>n+1);tell('已拆下'+part.name.slice(3)+'。接下來：'+p.name.slice(3)+'。');}else tell('全部拆好了！下一步辨識材質並分類。');},matchMedia('(prefers-reduced-motion: reduce)').matches?120:1250);}
  function beginSorting(){setSelected('cap');setState(s=>identify(working,s,'cap'));go(2);}
  function apply(result:{state:State;error?:string},success:string){if(result.error){tell(result.error,true);return;}setState(result.state);tell(success);}
  function doRemove(){const result=remove(working,state,selected,direction);apply(result,'零件已移到桌邊。選下一個零件，或進入分類。');}
- function toggle(id:Upgrade){const next=design.includes(id)?design.filter(x=>x!==id):[...design,id];if(!validDesign(next)){tell(next.includes('plastic')&&next.includes('separate')?'統一 PC 與獨立 PP 是兩種替代方案，請擇一。':'改版點數不足。先取消一項，再選新的設計。',true);return;}setDesign(next);setReplayRemoved([]);tell('設計已更新。可用剖視查看構造，再測試成本。');}
- function startTrial(){const initial={...fresh(),safe:true};const first=nextAccessible(design,initial)!;const p=parts(design).find(p=>p.id===first)!;setTrialDesign([...design]);setState(initial);setSelected(first);setTool(p.tool);setDirection(p.direction);setView(p.direction==='front'?'front':'orbit');setViewNonce(n=>n+1);setRevised(true);go(1);}
+ function toggle(id:Upgrade){const next=design.includes(id)?design.filter(x=>x!==id):[...design,id];if(!validDesign(next)){tell(next.includes('plastic')&&next.includes('separate')?'統一 PC 與獨立 PP 是兩種替代方案，請擇一。':'改版點數不足。先取消一項，再選新的設計。',true);return;}telemetry.ensureStart({phase:'design'});setDesign(next);setReplayRemoved([]);tell('設計已更新。可用剖視查看構造，再測試成本。');}
+ function startTrial(){telemetry.start({phase:'design'});const initial={...fresh(),safe:true};const first=nextAccessible(design,initial)!;const p=parts(design).find(p=>p.id===first)!;setTrialDesign([...design]);setState(initial);setSelected(first);setTool(p.tool);setDirection(p.direction);setView(p.direction==='front'?'front':'orbit');setViewNonce(n=>n+1);setRevised(true);go(1);}
  const activeIssue=step===1?issue(working,state,selected,part.direction):null;
  const blockedBy=step===1?obstacle(working,state,selected,part.direction):undefined;
  const nextPart=nextAccessible(working,state);
@@ -71,7 +74,7 @@ export default function RecyclingLab(){
     {step===0?<>
      <p>這批有一台外殼鼓起、疑似電池異常。你會怎麼做？</p><div className="rc-choices"><button onClick={()=>tell('疑似異常不能繼續拆卸，也不能混入一般材料。請重新選擇。',true)}>先打開，拆快一點</button><button className={safety?'chosen':''} onClick={()=>{setSafety(true);tell('正確。異常整機已交由專業單位；接下來使用另一台已完成專業安全檢查的虛擬樣品。');}}>停止拆卸，交專業處理</button><button onClick={()=>tell('含電池產品不能直接投入一般材料回收。請重新選擇。',true)}>整台丟入塑膠回收</button></div>
      <p className="rc-note">本遊戲只模擬完整模組的分離與交接，不拆電芯。實體課堂請使用無電池教具。</p>
-     <button className="rc-primary" disabled={!safety||!loaded} onClick={()=>{setState({...fresh(),safe:true});setTrialDesign(EMPTY);go(1);}}>開始拆解安全樣品 →</button>
+     <button className="rc-primary" disabled={!safety||!loaded} onClick={()=>{telemetry.start({phase:'design'});setState({...fresh(),safe:true});setTrialDesign(EMPTY);go(1);}}>開始拆解安全樣品 →</button>
     </>:step===1?<>
      <p>在模型下方按一次，即可完成該零件的拆卸。系統接著帶你看下一個能拆的部位。</p>
      <ol className="rc-simple-guide"><li><b>看</b><span>目前部位會亮起，模型自動轉到可操作角度。</span></li><li><b>拆</b><span>按「拆出」，觀察固定點與移出順序。</span></li><li><b>想</b><span>為了取出電池，得先移開哪些零件？</span></li></ol>
@@ -104,6 +107,6 @@ export default function RecyclingLab(){
   {step===4&&<section className="rc-result-section"><div><p className="rc-eyebrow">THE RETURN BILL</p><h2>省在回收，也要算進設計。</h2><p>100 台回收的情境假設，不代表法定回收率。所有數值都是教學示意。</p></div><div className="rc-bill"><div><span>100 台回收費用減少</span><b>{((compare.before.cost-compare.after.cost)*100).toFixed(2)}</b></div><div><span>減：新增製造費用</span><b>−{(compare.manufacturing*100).toFixed(2)}</b></div><div><span>減：一次性改版費用</span><b>−{compare.development.toFixed(2)}</b></div><div className="rc-bill-total"><span>本批淨節省</span><b>{compare.batchSavings.toFixed(2)} 點</b></div></div><details><summary>展開每台回收帳單與材料去向</summary><div className="rc-table-scroll"><table><thead><tr><th>成本項目（點／台）</th><th>原版</th><th>新版</th></tr></thead><tbody>{([['logistics','分攤收運'],['labor','作業工時'],['processing','專業與複合材料處理'],['income','扣除材料收入'],['cost','回收淨成本']] as const).map(([key,title])=><tr key={key}><th>{title}</th><td>{compare.before[key]}</td><td>{compare.after[key]}</td></tr>)}</tbody></table></div><p>新版材料帳：單一材料 {events.pure} g ＋ 複合材料 {events.mixed} g ＋ 專業交接 {events.professional} g ＋ 未完成分流 {events.unresolved} g ＝ {events.total} g。這是分流質量，並非全部已完成再生；固定件質量未另估。</p></details><label className="rc-reflection"><b>用一項證據說明你的改版</b><textarea value={reflection} onChange={e=>setReflection(e.target.value)} maxLength={1000} rows={3} placeholder="我把＿＿改成＿＿，少了＿＿步／減少混料。每台成本從＿＿變成＿＿，但仍需保留＿＿安全條件。"/></label><a className={`rc-primary rc-download ${reflection.trim().length<15?'disabled':''}`} aria-disabled={reflection.trim().length<15} href={reflection.trim().length>=15?'data:text/plain;charset=utf-8,'+encodeURIComponent('\ufeff'+report):undefined} download="為回收而設計-我的設計紀錄.txt">下載設計紀錄（說明至少 15 字）↓</a></section>}
   <details className="rc-teacher"><summary>教師備註 · 模型、來源與學習重點</summary><p>5.2-III 循環經濟延伸活動。透過螺絲標準化、材質分離及安全可拆性，理解生命終期成本與生產者責任。EPR 是生產者承擔消費後管理的財務及／或實體責任；依制度也可由共同組織履行，不等於每家原廠親自逐件拆解。</p><p>這是簡化 3D 結構模型：包圍盒掃掠判斷移出空間，固定工具與依賴順序決定作業。未模擬真實電路、電池拆卸程序、樹脂化學或工廠報價。外觀為虛構攜帶燈，細節化模型與簡化碰撞界線共用拆卸位置；每台 760 g 示意材料；單一材質只代表符合本場設定的接收規格。所有方案預設維持產品功能。電池及電路交接不直接算為已再生材料。模型只比較回收作業，不提供完整生命週期環境評估。</p><p><a href="https://publications.jrc.ec.europa.eu/repository/handle/JRC101479" target="_blank" rel="noreferrer">JRC 拆解難易度研究 ↗</a> · <a href="https://www.epa.gov/recycle/used-lithium-ion-batteries" target="_blank" rel="noreferrer">EPA 電池處理 ↗</a> · <a href="https://www.oecd.org/en/publications/global-plastics-outlook_de747aef-en/full-report/component-11.html" target="_blank" rel="noreferrer">OECD 生產者責任 ↗</a></p></details>
   <footer className="rc-footer"><span>{saved?'本機僅保存改版選擇與文字說明；重新整理會從安全引導開始。':'本機儲存不可用，離開前請下載設計紀錄。'}</span><button onClick={()=>setResetConfirm(true)}>重新開始</button></footer>
-  {resetConfirm&&<div className="rc-reset" role="group" aria-label="重新開始確認"><p>清除這款遊戲的設計與說明，重新開始？</p><button onClick={()=>setResetConfirm(false)}>保留</button><button onClick={()=>{setState(fresh());setDesign([]);setTrialDesign([]);setRevised(false);setSafety(false);setReflection('');setSelected('cap');setResetConfirm(false);go(0);}}>清除並開始</button></div>}
+  {resetConfirm&&<div className="rc-reset" role="group" aria-label="重新開始確認"><p>清除這款遊戲的設計與說明，重新開始？</p><button onClick={()=>setResetConfirm(false)}>保留</button><button onClick={()=>{telemetry.cancel();setState(fresh());setDesign([]);setTrialDesign([]);setRevised(false);setSafety(false);setReflection('');setSelected('cap');setResetConfirm(false);go(0);}}>清除並開始</button></div>}
  </main>;
 }

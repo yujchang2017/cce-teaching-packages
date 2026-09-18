@@ -2,6 +2,8 @@
 import {useEffect,useMemo,useRef,useState} from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import {useGameEvents} from '@/lib/useGameEvents';
+
 import {BUDGET,RAIN_COUNT,facilityInfo,placementIssue,simulate,signature,meetsChallenge,restoreLab,sites,snap,type Facility,type FacilityKind,type Run,type Experiment} from './hydrology';
 import type {Tool,View} from './WatershedScene';
 import './watershed-lab.css';
@@ -12,6 +14,7 @@ const stepNames=['觀察水路','放置設施','預測・降雨','比較・修�
 const SAVE_KEY='cce-watershed-lab-v2';
 const metricLabels={school:'流向學校',stream:'流向溪流',ground:'進入地下',tank:'收進水槽',pooled:'地表停留'} as const;
 export default function WatershedLab(){
+  const telemetry=useGameEvents('water');
   const [facilities,setFacilities]=useState<Facility[]>([]),[history,setHistory]=useState<Experiment[]>([]),[reflection,setReflection]=useState('');
   const [loaded,setLoaded]=useState(false),[saved,setSaved]=useState(true),[tool,setTool]=useState<Tool>('inspect'),[selected,setSelected]=useState<string|null>(null);
   const [run,setRun]=useState<Run|null>(null),[snapshot,setSnapshot]=useState<Experiment|null>(null),[playing,setPlaying]=useState(false),[paused,setPaused]=useState(false),[time,setTime]=useState(0);
@@ -35,7 +38,7 @@ export default function WatershedLab(){
   },[playing,paused]);
   useEffect(()=>{
     if(!playing||time<100)return;setPlaying(false);setPaused(false);
-    if(snapshot&&!replaying.current){setHistory(old=>[...old,snapshot].slice(-6));const result=simulate(snapshot.facilities);setStep(snapshot.facilities.length?'review':'observe');if(matchMedia('(max-width:800px)').matches)requestAnimationFrame(()=>taskPanel.current?.scrollIntoView({behavior:'instant',block:'start'}));setError(false);setMessage(snapshot.facilities.length===0?'這是原始水路。旋轉看看分水嶺，再選設施、放進地形。':meetsChallenge(result)?'三個目標都達成了！請用水量變化與空間位置解釋原因。':'實驗完成。比較水量與水路，試著移動設施再驗證。');}
+    if(snapshot&&!replaying.current){setHistory(old=>[...old,snapshot].slice(-6));const result=simulate(snapshot.facilities);telemetry.complete({...result.totals,facilities:snapshot.facilities.length,passed:meetsChallenge(result)});setStep(snapshot.facilities.length?'review':'observe');if(matchMedia('(max-width:800px)').matches)requestAnimationFrame(()=>taskPanel.current?.scrollIntoView({behavior:'instant',block:'start'}));setError(false);setMessage(snapshot.facilities.length===0?'這是原始水路。旋轉看看分水嶺，再選設施、放進地形。':meetsChallenge(result)?'三個目標都達成了！請用水量變化與空間位置解釋原因。':'實驗完成。比較水量與水路，試著移動設施再驗證。');}
   },[playing,time,snapshot]);
   const hasBaseline=history.length>0;
   const used=facilities.reduce((n,f)=>n+facilityInfo[f.kind].cost,0);
@@ -61,11 +64,11 @@ export default function WatershedLab(){
     if(playing)return;
     if(!replay&&hasBaseline&&(!prediction||!facilities.length)){tell('先放置設施，並選擇你的預測。',true);return;}
     const record=replay&&snapshot?snapshot:{facilities:hasBaseline?facilities.map(f=>({...f})):[],prediction:hasBaseline?prediction:'觀察原始地形'};
-    replaying.current=replay;if(matchMedia('(max-width:800px)').matches)requestAnimationFrame(()=>stage.current?.scrollIntoView({behavior:'instant',block:'start'}));setSnapshot(record);setRun(simulate(record.facilities));setTime(reduced?100:0);setPaused(false);setPlaying(true);setTool('inspect');tell('正在降雨。試著轉到側面，或剖開土層追蹤水滴。');
+    if(!replay)telemetry.start({phase:hasBaseline?'challenge':'baseline',facilities:record.facilities.length});replaying.current=replay;if(matchMedia('(max-width:800px)').matches)requestAnimationFrame(()=>stage.current?.scrollIntoView({behavior:'instant',block:'start'}));setSnapshot(record);setRun(simulate(record.facilities));setTime(reduced?100:0);setPaused(false);setPlaying(true);setTool('inspect');tell('正在降雨。試著轉到側面，或剖開土層追蹤水滴。');
     if(sound){try{const a=audio.current??new AudioContext();audio.current=a;void a.resume();const o=a.createOscillator(),g=a.createGain();o.frequency.value=520;g.gain.setValueAtTime(.035,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.3);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.32);o.onended=()=>{o.disconnect();g.disconnect();};}catch{setSound(false);}}
   }
   function selectFacility(id:string){if(step!=='build'||playing)return;setSelected(id);setTool('move');tell('已選中設施。在地形上點新位置，或使用下方位置按鈕。');}
-  function reset(){go('observe');setFacilities([]);setHistory([]);setReflection('');setRun(null);setSnapshot(null);setTime(0);setPlaying(false);setPaused(false);setPrediction('');setSelected(null);setTool('inspect');setResetting(false);tell('新的實驗開始了。先觀察沒有設施的水路。');}
+  function reset(){telemetry.cancel();go('observe');setFacilities([]);setHistory([]);setReflection('');setRun(null);setSnapshot(null);setTime(0);setPlaying(false);setPaused(false);setPrediction('');setSelected(null);setTool('inspect');setResetting(false);tell('新的實驗開始了。先觀察沒有設施的水路。');}
   const report=['流域實驗室｜一場雨，兩條路','4.2-III 安全與復原力策略：水路空間實驗補充活動','',...history.flatMap((h,i)=>{const r=simulate(h.facilities);return[`實驗 ${i+1}：${h.prediction}`,`布設：${h.facilities.map(f=>`${facilityInfo[f.kind].title}（${f.x}, ${f.z}）`).join('；')||'無設施'}`,`示意水量：${Object.entries(r.totals).map(([k,v])=>`${metricLabels[k as keyof typeof metricLabels]} ${v}`).join('；')}`,''];}),`我的解釋：${reflection}`,'','每次相同 72 份示意雨水；不代表真實水文預測。文字論證由師生討論。','教材內容 CC BY-SA 4.0 · 115 年中小學氣候變遷教育推動計畫'].join('\n');
 
   return <main className="watershed-lab">
