@@ -7,6 +7,7 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import type { PackageSummary, Level } from '@/lib/types';
+import { getGameForPackage } from '@/lib/teaching-games';
 
 const themeGrad: Record<number, string> = {
   1: 'bg-gradient-to-br from-[#6EB5FF] to-[#3C6EA5]',
@@ -84,12 +85,12 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
 function PackageCard({ pkg }: { pkg: PackageSummary }) {
   const version = pkg.currentVersion ?? '1.0.0';
   const versionStyle = cardVersionStyle(version);
+  const game = getGameForPackage(pkg.keyId);
+  const materialRoot = `/packages/level-${pkg.level.toLowerCase()}/${pkg.keyId}`;
 
   return (
-    <Link
-      href={`/package/${pkg.keyId}`}
-      className={`group relative block rounded-2xl transition hover:-translate-y-1.5 hover:shadow-warm-lg ${versionStyle.outer}`}
-    >
+    <article className={`group relative block rounded-2xl transition hover:-translate-y-1.5 hover:shadow-warm-lg ${versionStyle.outer}`}>
+      <Link href={`/package/${pkg.keyId}`} className="block rounded-2xl">
       <div className={`rounded-2xl shadow-warm overflow-hidden ${versionStyle.inner}`}>
         <div className={`${versionStyle.header[pkg.themeNumber]} h-36 flex items-center justify-center text-5xl relative`}>
           <span className="drop-shadow-lg">{pkg.emojis}</span>
@@ -116,6 +117,7 @@ function PackageCard({ pkg }: { pkg: PackageSummary }) {
               {pkg.levelLabel}
             </span>
           </div>
+          {game && <span className="inline-block text-xs font-bold rounded-full bg-forest/10 text-forest px-3 py-1 mb-3">🎮 含 3D 遊戲 · 試玩版</span>}
           {pkg.mascot && (
             <div className="text-xs text-ink/70 pt-3 border-t border-earth/10">
               🎭 {pkg.mascot}
@@ -123,7 +125,13 @@ function PackageCard({ pkg }: { pkg: PackageSummary }) {
           )}
         </div>
       </div>
-    </Link>
+      </Link>
+      <nav aria-label={`${pkg.keyId} 教學素材`} className="flex flex-wrap items-center gap-2 px-4 py-3 bg-white border-t border-earth/10 rounded-b-2xl text-xs font-semibold">
+        <Link href={`${materialRoot}/worksheet.html`} target="_blank" rel="noopener noreferrer" prefetch={false} className="rounded-lg px-3 py-2 bg-sun/10 text-sunDeep hover:bg-sun/20">互動學習單 ↗</Link>
+        <Link href={`${materialRoot}/ppt.html`} target="_blank" rel="noopener noreferrer" prefetch={false} className="rounded-lg px-3 py-2 bg-sky-50 text-sky-700 hover:bg-sky-100">PPT ↗</Link>
+        {game && <Link href={game.href} prefetch={false} target="_blank" rel="noopener noreferrer" className="rounded-lg px-3 py-2 bg-forest/10 text-forest hover:bg-forest/20">3D 遊戲 ↗</Link>}
+      </nav>
+    </article>
   );
 }
 
@@ -133,6 +141,7 @@ export default function HomeBrowser({
   packages: PackageSummary[];
 }) {
   const [query, setQuery] = useState('');
+  const [gamesOnly, setGamesOnly] = useState(false);
   const [level, setLevel] = useState<Level | 'all'>('all');
   const [theme, setTheme] = useState<number | 'all'>('all');
   const [sort, setSort] = useState<SortKey>('default');
@@ -142,8 +151,10 @@ export default function HomeBrowser({
     let result = packages.filter((p) => {
       if (level !== 'all' && p.level !== level) return false;
       if (theme !== 'all' && p.themeNumber !== theme) return false;
+      if (gamesOnly && !getGameForPackage(p.keyId)) return false;
       if (q) {
-        const hay = `${p.keyId} ${p.topic} ${p.themeName} ${p.mascot ?? ''}`.toLowerCase();
+        const game = getGameForPackage(p.keyId);
+        const hay = `${p.keyId} ${p.topic} ${p.themeName} ${p.mascot ?? ''} ${game?.title ?? ''} ${game?.summary ?? ''}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
@@ -170,7 +181,7 @@ export default function HomeBrowser({
       );
     }
     return result;
-  }, [packages, query, level, theme, sort]);
+  }, [packages, query, level, theme, sort, gamesOnly]);
 
   const filterPillActive = 'bg-[#8B5A3C] border-[#8B5A3C] text-white';
   const filterPillBase =
@@ -194,6 +205,10 @@ export default function HomeBrowser({
         </div>
 
         <div className="space-y-3">
+          <div className="flex items-start gap-3 flex-wrap">
+            <span className="text-xs text-mute font-medium shrink-0 pt-1.5 w-14">素材</span>
+            <button type="button" aria-pressed={gamesOnly} onClick={()=>setGamesOnly(v=>!v)} className={`${filterPillBase} ${gamesOnly ? filterPillActive : ''}`}>🎮 有遊戲的教案</button>
+          </div>
           <div className="flex items-start gap-3 flex-wrap">
             <span className="text-xs text-mute font-medium shrink-0 pt-1.5 w-14">年段</span>
             <div className="flex items-center gap-2 flex-wrap">
@@ -241,14 +256,15 @@ export default function HomeBrowser({
               </div>
             </div>
             <div className="text-sm text-mute pt-1.5">
-              結果 <b className="text-earth text-base">{filtered.length}</b> 筆
-              {(level !== 'all' || theme !== 'all' || query) && (
+              <span aria-live="polite">結果 <b className="text-earth text-base">{filtered.length}</b> 筆</span>
+              {(level !== 'all' || theme !== 'all' || query || gamesOnly) && (
                 <button
                   type="button"
                   onClick={() => {
                     setQuery('');
                     setLevel('all');
                     setTheme('all');
+                    setGamesOnly(false);
                   }}
                   className="ml-3 text-xs underline text-sun hover:text-sunDeep"
                 >

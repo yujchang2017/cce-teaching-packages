@@ -11,6 +11,7 @@ import { fetchPackageDetail, getAllKeyIds } from "@/lib/github-api";
 import TrackPageView from "@/components/TrackPageView";
 import TrackLink from "@/components/TrackLink";
 import Giscus from "@/components/Giscus";
+import { getGameForPackage } from "@/lib/teaching-games";
 
 export const dynamicParams = false; // 靜態匯出:不允許未列出的 keyId
 
@@ -61,6 +62,7 @@ export default async function PackageDetail({
   const currentVersion = detail.version.currentVersion;
   const recommendedVersion = detail.version.recommendedVersion;
   const resources = detail.resources.resources ?? [];
+  const game = getGameForPackage(keyId);
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 w-full flex-1">
@@ -91,22 +93,34 @@ export default async function PackageDetail({
         {summary.publishedAt && <p className="text-xs text-mute">發布日期：{summary.publishedAt}</p>}
       </section>
 
-      {/* CTA BAR */}
-      <section className="bg-white rounded-2xl shadow-warm border border-earth/10 p-5 sm:p-6 mb-6 flex items-center gap-3 flex-wrap">
-        <TrackLink href={worksheetPagesUrl} target="_blank" rel="noopener noreferrer"
-          event="open_worksheet" resource={keyId}
-          className="px-5 py-2.5 rounded-full bg-sun text-white hover:bg-sunDeep transition text-sm font-semibold shadow-sm">
-          1. 動態學習單（worksheet.html）
-        </TrackLink>
-        <TrackLink href={pptHtmlViewUrl} target="_blank" rel="noopener noreferrer"
-          event="open_ppt" resource={keyId}
-          className="px-5 py-2.5 rounded-full bg-sky-100 border border-sky-200 text-sky-700 hover:bg-sky-200 transition text-sm font-semibold">
-          2. PPT.html
-        </TrackLink>
-        <Link href={`/remix/${keyId}/`}
-          className="px-5 py-2.5 rounded-full bg-forest text-white hover:bg-forest/85 transition text-sm font-semibold">
-          3. 試教／回饋表單
-        </Link>
+      {/* Additive teaching materials: a game never replaces a worksheet or slides. */}
+      <section aria-label="教學素材" className="bg-white rounded-2xl shadow-warm border border-earth/10 p-5 sm:p-6 mb-6">
+        <h2 className="text-lg font-bold text-ink mb-2">教學素材</h2>
+        <p className="text-sm text-mute mb-4">依教學活動選用，素材皆於新視窗開啟。</p>
+        <div className={`grid gap-3 ${game ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
+          <TrackLink href={worksheetPagesUrl} target="_blank" rel="noopener noreferrer"
+            event="open_worksheet" resource={keyId}
+            className="rounded-xl border border-sun/30 bg-sun/5 p-4 hover:bg-sun/10 transition flex flex-col gap-2">
+            <span className="font-bold text-sunDeep">互動學習單 ↗</span>
+            <span className="text-xs text-ink/70">觀察、作答與記錄學習發現</span>
+          </TrackLink>
+          <TrackLink href={pptHtmlViewUrl} target="_blank" rel="noopener noreferrer"
+            event="open_ppt" resource={keyId}
+            className="rounded-xl border border-sky-200 bg-sky-50 p-4 hover:bg-sky-100 transition flex flex-col gap-2">
+            <span className="font-bold text-sky-700">PPT 簡報 ↗</span>
+            <span className="text-xs text-ink/70">課堂講解與討論引導</span>
+          </TrackLink>
+          {game && <Link href={game.href} target="_blank" rel="noopener noreferrer"
+            className="rounded-xl border border-forest/30 bg-forest/5 p-4 hover:bg-forest/10 transition flex flex-col gap-2">
+            <span className="font-bold text-forest">3D 遊戲 ↗ <span className="text-[10px] font-medium rounded-full bg-forest/10 px-2 py-0.5">試作</span></span>
+            <span className="text-sm font-semibold text-ink">{game.title}</span>
+            <span className="text-xs text-ink/70">{game.summary} · 約 {game.minutes} 分鐘</span>
+          </Link>}
+        </div>
+        <div className="mt-4 pt-4 border-t border-earth/10 flex flex-wrap items-center justify-between gap-3">
+          <span className="text-xs text-mute">試教後，歡迎分享學生的操作與學習觀察。</span>
+          <Link href={`/remix/${keyId}/`} className="text-sm font-semibold text-forest hover:underline">試教／回饋表單 →</Link>
+        </div>
       </section>
 
       {/* VERSION HISTORY */}

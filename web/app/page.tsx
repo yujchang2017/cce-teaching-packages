@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { fetchAllPackages, fetchPackageDetail } from "@/lib/github-api";
 import HomeBrowser from "@/components/HomeBrowser";
+import GameShowcase from "@/components/GameShowcase";
 import DisclaimerModal from "@/components/DisclaimerModal";
 import TrackPageView from "@/components/TrackPageView";
 import type { PackageSummary } from "@/lib/types";
@@ -129,6 +130,10 @@ export default async function Home() {
                 依據 UNESCO <a href="https://cce.tw/" target="_blank" rel="noopener noreferrer" className="text-forest hover:underline">《綠色課程指南：氣候行動的教學與學習》</a>開發；老師改編共創的開源社群。
               </span>
             </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-forest/20 bg-white/80 p-4">
+              <div className="flex-1 min-w-48"><p className="text-xs font-bold text-forest mb-1">新增 · 3D 學習遊戲試玩版</p><p className="text-base font-bold text-ink">六大主題 × 6 款遊戲，把觀察變成行動</p></div>
+              <a href="#games" className="rounded-xl bg-forest text-white font-bold px-5 py-3 text-sm hover:bg-forest/90 focus-visible:outline-4 focus-visible:outline-sun">立即試玩 ↓</a>
+            </div>
           </div>
         </div>
       </section>
@@ -154,6 +159,7 @@ export default async function Home() {
       </section>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full">
+        <GameShowcase />
         {/* ANNOUNCEMENTS */}
         {announcements.length > 0 && (
           <section className="mb-8">

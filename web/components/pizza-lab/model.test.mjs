@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {foods,values,fraction,balance,makeRound,evaluate,cutFromPoints,diskPolygon,lineEndpoints,RADIUS} from './model.ts';
+const close=(a,b)=>assert.ok(Math.abs(a-b)<1e-7,`${a} != ${b}`);
+test('CSV units convert grams, kJ and kgCO2e consistently',()=>{const beef=values(foods.find(f=>f.id==='beef'),100);close(beef.carbon,6104);close(beef.energy,1332/4.184);close(beef.protein,16.4);});
+test('circular cut splits ingredients continuously, conserves all quantities',()=>{close(fraction(0,.3),.5);close(fraction(.1,.3)+fraction(-.1,.3),1);assert.equal(fraction(1,.3),1);assert.equal(fraction(-1,.3),0);
+ for(let seed=0;seed<50;seed++){const r=makeRound(seed,seed%3),base=evaluate(r,{angle:0,offset:0});for(const angle of [0,30,89,140,179])for(const offset of [-1.6,0,.5,1.6]){const v=evaluate(r,{angle,offset});for(const k of Object.keys(v.a))close(v.a[k]+v.b[k],base.a[k]+base.b[k]);assert.ok(v.score>=0&&v.score<=100);}}
+});
+test('all levels have a reachable balanced solution and non-overlapping complete toppings',()=>{for(let seed=0;seed<150;seed++)for(let level=0;level<3;level++){const r=makeRound(seed,level);assert.equal(r.toppings.length,[8,12,16][level]);assert.ok(evaluate(r,{angle:r.solution,offset:0}).passed);close(evaluate(r,{angle:r.solution,offset:0}).score,100);for(const a of r.toppings){assert.ok(Math.hypot(a.x,a.z)+a.radius<RADIUS-.1);for(const b of r.toppings)if(a.id!==b.id)assert.ok(Math.hypot(a.x-b.x,a.z-b.z)>=a.radius+b.radius);}assert.deepEqual(makeRound(seed,level),r);}});
+test('balanced carbon cannot hide unequal nutrition or base area; empty nutrient totals are balanced',()=>{close(balance(0,0),100);close(balance(10,0),0);const r=makeRound(23,2);for(const angle of [10,40,85,110]){const v=evaluate(r,{angle,offset:1});assert.equal(v.score,Math.min(v.scores.carbon,v.nutrition,v.areaScore));assert.ok(!v.passed);}});
+test('drag direction is equivalent, short taps ignored, slice geometry stays within cut',()=>{const a={x:-2,z:-1},b={x:2,z:1};assert.deepEqual(cutFromPoints(a,b),cutFromPoints(b,a));assert.equal(cutFromPoints(a,a),null);for(const angle of [0,60,120]){const c={angle,offset:.3};for(const p of lineEndpoints(c))close(Math.hypot(p.x,p.z),RADIUS);for(const side of [1,-1])assert.ok(diskPolygon(c,side).length>=3);}});
