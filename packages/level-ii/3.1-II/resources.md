@@ -6,9 +6,9 @@
    https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health
    （dp2 來源：65 歲以上熱相關死亡 20 年增加 70%）
 
-2. **UNICEF — Environment and climate change**
-   https://www.unicef.org/environment-and-climate-change/climate-change
-   （dp4 來源：兒童氣候風險指數 CCRI）
+2. **UNICEF — One billion children at 'extremely high risk'（CCRI 新聞稿，2021-08-20）**
+   https://www.unicef.org/press-releases/one-billion-children-extremely-high-risk-impacts-climate-crisis-unicef
+   （dp4 來源：兒童氣候風險指數 CCRI，10 億兒童／全球 22 億兒童之近半）
 
 3. **中央氣象署 CWA 首頁**
    https://www.cwa.gov.tw/
