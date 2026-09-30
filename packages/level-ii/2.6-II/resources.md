@@ -3,7 +3,7 @@
 ## 權威網站（已驗證 2026-04-16）
 1. **Wikipedia — Biodiversity of Taiwan**
    https://en.wikipedia.org/wiki/Biodiversity_of_Taiwan
-   （data_card dp1, dp2, dp4 數據來源：4000+ 植物 / 1000+ 特有 / 55% 森林 / 65 種螢火蟲）
+   （data_card dp1, dp2, dp4 數據來源：4000+ 植物 / 1000+ 特有 / 65 種螢火蟲；森林覆蓋率 60.71% 改引林業及自然保育署）
 
 2. **United Nations — International Mother Earth Day**
    https://www.un.org/en/observances/earth-day

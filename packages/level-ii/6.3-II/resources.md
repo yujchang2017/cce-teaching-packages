@@ -3,7 +3,7 @@
 ## 權威網站（已驗證 2026-04-16）
 1. **UN SDG 12 Goal Page — Responsible Consumption and Production**
    https://sdgs.un.org/goals/goal12
-   （全球食物浪費 10.5 億公噸、家庭 60%、電子垃圾 7.8 kg/人 等數據來源）
+   （全球食物浪費 10.5 億公噸、家庭 60%、電子垃圾 8.1 kg/人 等數據來源）
 
 2. **UN Sustainable Consumption and Production**
    https://www.un.org/sustainabledevelopment/sustainable-consumption-production/
