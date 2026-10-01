@@ -32,6 +32,10 @@ export default function Footer() {
               <br />
               張育傑教授（計畫主持人）
             </p>
+            <ul className="text-xs leading-relaxed text-mute mt-2 space-y-0.5">
+              <li>共同主持人：<a href="mailto:hjsu@go.utaipei.edu.tw" className="text-sun hover:underline">寫信給蘇老師</a>、<a href="mailto:yanglanchi@gmail.com" className="text-sun hover:underline">寫信給楊老師</a></li>
+              <li>研究團隊：<a href="mailto:willie17565@gmail.com" className="text-sun hover:underline">寫信給陳先生</a>、<a href="mailto:hc1020tw@gmail.com" className="text-sun hover:underline">寫信給林小姐</a></li>
+            </ul>
           </div>
         </div>
         <div className="mt-6 pt-5 border-t border-earth/15 text-xs text-mute flex flex-wrap gap-2 justify-between">
