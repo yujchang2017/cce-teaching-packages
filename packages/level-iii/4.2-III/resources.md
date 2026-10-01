@@ -3,7 +3,7 @@
 ## 權威數據來源
 | # | 主題 | 來源 | URL | 可靠度 |
 |---|---|---|---|---|
-| 1 | 莫拉克颱風阿里山 3 日 2,800+ mm、全台 673 人罹難 | CWA 颱風資料庫 / NCDR | https://rdc28.cwa.gov.tw/ | high |
+| 1 | 莫拉克颱風阿里山約 4 日 2,900 mm、全台約 700 人死亡或失蹤 | CWA 颱風資料庫 / NCDR | https://rdc28.cwa.gov.tw/ | high |
 | 2 | WHO 預估氣候變遷 2030-2050 每年額外 25 萬人死亡 | WHO Climate change and health | https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health | high |
 | 3 | 臺灣近 110 年升溫 1.6°C，全球 2 倍 | TCCIP / NCDR | https://tccip.ncdr.nat.gov.tw/ | high |
 | 4 | 緊急避難包 8 大類、每 6 個月檢查 | 內政部消防署 / EMIC | https://www.emic.gov.tw/ | high |
