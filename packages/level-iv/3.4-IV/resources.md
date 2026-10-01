@@ -23,8 +23,8 @@
 |---|---|---|
 | UNEP Emissions Gap Report 2023 | 最富10%排放50%、最貧50%排放12% | https://www.unep.org/resources/emissions-gap-report-2023 |
 | IPCC AR6 SYR 2023 | 2030減43%、2035減60% | https://www.ipcc.ch/report/ar6/syr/ |
-| World Bank Shock Waves 2016 | 1.32億人陷貧風險 | https://www.worldbank.org/en/topic/climatechange/publication/shock-waves-managing-the-impacts-of-climate-change-on-poverty |
+| World Bank Policy Research WP 9417（2020 修訂 Shock Waves） | 最多1.32億人陷貧風險（範圍3,200萬–1.32億） | https://documents1.worldbank.org/curated/en/706751601388457990/pdf/Revised-Estimates-of-the-Impact-of-Climate-Change-on-Extreme-Poverty-by-2030.pdf |
 | WHO Fact Sheet: Climate change and health | 年25萬人死亡 | https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health |
-| FAO/FILAC 2021 | 原住民守護80%生物多樣性 | https://www.fao.org/newsroom/detail/FAO-UN-new-report-forest-governance-indigenous-tribal-peoples-Latin-America-Caribbean/en |
+| FAO/FILAC 2021（拉美區域報告，僅作背景；全球結論改引 IPBES 2019 與世界銀行） | 原住民族管理土地占全球陸地約1/4；約5%人口守護大量生物多樣性（世銀常引用約80%） | https://www.fao.org/newsroom/detail/FAO-UN-new-report-forest-governance-indigenous-tribal-peoples-Latin-America-Caribbean/en |
 | 國發會 臺灣2050淨零排放路徑 | 12項戰略含公正轉型 | https://www.ndc.gov.tw/Content_List.aspx?n=FD76ECBAE77D9811 |
-| IEA World Energy Outlook 2023 | 年需1.5兆美元 | https://www.iea.org/reports/world-energy-outlook-2023 |
+| IEA World Energy Outlook 2023 | 新興與發展中經濟體潔淨能源投資年需約1.5兆美元（1.4–1.9兆） | https://www.iea.org/reports/world-energy-outlook-2023 |
