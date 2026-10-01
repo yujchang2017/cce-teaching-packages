@@ -20,7 +20,7 @@
 |---|---|---|
 | IPBES Global Assessment 2019 | 100 萬種面臨滅絕；速率快 10–100 倍 | https://www.ipbes.net/global-assessment |
 | CBD GBO-5 | 20 項愛知子目標 0 項完全達成 | https://www.cbd.int/gbo5 |
-| WWF Living Planet Report 2022 | 脊椎動物族群 -69% | https://livingplanet.panda.org/ |
+| WWF Living Planet Report 2024 | 脊椎動物族群 -73%（1970–2020） | https://livingplanet.panda.org/ |
 | 農業部林業署 | 臺灣森林覆蓋率 60.71%、219.7 萬 ha | https://www.forest.gov.tw/ |
 | 農業部生物多樣性 | 特有種 植物 26%、脊椎 30% | https://www.biodiv.tw/ |
 

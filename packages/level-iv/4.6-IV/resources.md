@@ -3,7 +3,7 @@
 ## 權威國際
 - UNESCO Media & Information Literacy. https://www.unesco.org/en/media-information-literacy （驗證 2026-04-16）
 - UNESCO 線上課程「Navigating Climate Information with MIL」
-- IPCC AR6 WG3 (2022). https://www.ipcc.ch/report/ar6/wg3/
+- IPCC AR6 WG1 (2021). https://www.ipcc.ch/report/ar6/wg1/
 - UNESCO/IPSOS 2023 Global Survey on Online Disinformation
 - UNESCO 2024 Digital Content Creators Report
 
