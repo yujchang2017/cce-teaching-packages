@@ -7,7 +7,7 @@
  *   - SVG 圖中文字：一律不動（另案處理）
  *   - 真正的附註維持較小：資料來源、圖說（figcaption）、圖表小標籤／小註（viz-／chart- 系列、圖表框內文字）
  *   - 其餘文字（主文，以及用方框拼出來的 HTML 示意圖）一律套下限，整張圖一起放大、保持一致
- * 說明見 docs/VISUAL_GUIDE.md。
+ * 說明見 CONTRIBUTING.md「教材版面與可讀性規範」。
  *
  * 用法：
  *   node scripts/apply-readability.mjs --dry-run                 # 全部教案，只列出會改什麼
@@ -37,6 +37,8 @@ const UI_EXCLUDE = /(navbar|topbar|btn-back|slide-num|counter|nav-|pbar|\bhint\b
 const NOTE_EXCLUDE = /(viz|chart|figcaption|slide-source|slide-src|source|-src\b|\bsrc\b)/i;
 // 指向 SVG 或其文字的選擇器不套下限
 const SVG_SEL = /svg|(^|[\s>+~])(text|tspan)(?![-\w])/i;
+// 根元素絕不套下限（html 設下限會改到 rem 基準、反而整份縮小；1.3-IV 曾因此出錯）
+const ROOT_SEL = /^(html|:root|body)$/i;
 // 位置判斷：SVG 內、圖說內、圖表框（放 SVG 圖表的容器）內的元素視為附註，不套下限
 const CHART_CTX = "svg *,figcaption *,.slide-source *,.viz-panel *,.chart-box *,.chart-placeholder *";
 const NOT_CTX = `:not(${CHART_CTX})`;
@@ -81,10 +83,24 @@ function floorCss(src, name) {
       maxPx.set(s, Math.max(maxPx.get(s) ?? 0, px));
     }
   }
-  const lift = [...maxPx]
-    .filter(([s, px]) => px < floorPx - 0.05 && !UI_EXCLUDE.test(s) && !NOTE_EXCLUDE.test(s) && !SVG_SEL.test(s))
-    .map(([s]) => notSvg(s));
+  const eligible = (s) => !ROOT_SEL.test(s) && !UI_EXCLUDE.test(s) && !NOTE_EXCLUDE.test(s) && !SVG_SEL.test(s);
+  const lift = [...maxPx].filter(([s, px]) => px < floorPx - 0.05 && eligible(s)).map(([s]) => notSvg(s));
   if (lift.length) rules.push(`${lift.join(",")}{font-size:${floorRem}rem}`);
+
+  // 1b) em 相對單位（相對上一層）：用 max(下限, 原值em)——結果一定 ≥ 原本大小，保證不縮小。
+  //     只處理「該檔對這個選擇器只用 em 宣告」者，避免蓋掉同選擇器的 rem/px 規則。
+  const emSel = new Map();
+  for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const f = m[2].match(/font-size:\s*([0-9]*\.?[0-9]+)em\b/);
+    if (!f || +f[1] >= 1) continue;
+    for (let s of m[1].split(",")) {
+      s = s.trim().replace(/\s+/g, " ");
+      if (s && !s.startsWith("@")) emSel.set(s, f[1]);
+    }
+  }
+  for (const [s, v] of emSel) {
+    if (!maxPx.has(s) && eligible(s)) rules.push(`${notSvg(s)}{font-size:max(${floorRem}rem,${v}em)}`);
+  }
 
   // 2) 直接寫在元素上的小字（inline style，不含 SVG 內）
   const body = base.replace(/<svg[\s\S]*?<\/svg>/g, "");
@@ -94,6 +110,12 @@ function floorCss(src, name) {
     if (px < floorPx - 0.05) inl.add(`[style*="${m[1]}"]${NOT_CTX}`);
   }
   if (inl.size) rules.push(`${[...inl].join(",")}{font-size:${floorRem}rem!important}`);
+
+  // 2b) <small> 標籤（瀏覽器預設「小一號」≈0.8333em，沒有 CSS 規則可讀）：max(下限, 預設大小)。
+  //     若該檔自己寫了 small 的規則就不碰，以免蓋掉作者設定。
+  if (/<small[\s>]/i.test(body) && !/(^|[\s,>+~}])small\b[^{}]*\{/i.test(css)) {
+    rules.push(`small${NOT_CTX}{font-size:max(${floorRem}rem,.8333em)}`);
+  }
 
   // 3) 學習單的 Tailwind 小字 class
   if (/class="[^"]*\btext-xs\b/.test(body)) rules.push(`.text-xs${NOT_CTX}{font-size:${floorRem}rem;line-height:1.25rem}`);
@@ -107,9 +129,13 @@ function floorCss(src, name) {
   return rules.join("");
 }
 
+// 未公開的學層預設不處理（2026-10 維護者裁定：level-v 公開前另行處理）。
+// 需要時可直接指定教案路徑，例如 level-v/1.1-V。
+const UNPUBLISHED = new Set(["level-v"]);
+
 function listPackages() {
   const out = [];
-  for (const lv of readdirSync(PKG).filter((d) => d.startsWith("level-"))) {
+  for (const lv of readdirSync(PKG).filter((d) => d.startsWith("level-") && !UNPUBLISHED.has(d))) {
     for (const p of readdirSync(join(PKG, lv))) out.push(`${lv}/${p}`);
   }
   return out.sort();
@@ -125,7 +151,7 @@ for (const pkg of pkgs) {
     if (!existsSync(file)) continue;
     const src = readFileSync(file, "utf8");
     const block =
-      `<style id="cce-readability">/* 可讀性：根字級等比放大＋小字下限（說明見 docs/VISUAL_GUIDE.md） */` +
+      `<style id="cce-readability">/* 可讀性：根字級等比放大＋小字下限（說明見 CONTRIBUTING.md「教材版面與可讀性規範」） */` +
       `html{font-size:${size}%}${floorCss(src, name)}</style>`;
     let next;
     if (BLOCK_RE.test(src)) {
