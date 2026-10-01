@@ -138,29 +138,21 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* STATS STRIP */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 -mt-8 relative z-10">
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-          {[
-            { icon: "🎒", n: allPackages.length, label: "教學組合包", border: "border-sun" },
-            { icon: "👩‍🏫", n: stats.teachers, label: "位回饋教師", border: "border-forest" },
-            { icon: "📋", n: stats.totalSubmissions ?? 0, label: "試教／回饋件數", sublabel: `${stats.kcCoverage ?? 0}/6 主題有資料`, border: "border-earth" },
-            { icon: "🏫", n: stats.schools, label: "所參與學校", border: "border-sunDeep" },
-            { icon: "🧑‍🎓", n: stats.totalStudents ?? 0, label: "試教學生人次", sublabel: stats.trialSessions ? `${stats.trialSessions} 次試教` : undefined, border: "border-forest" },
-          ].map((s) => (
-            <div key={s.label} className={`bg-white rounded-xl p-4 sm:p-5 shadow-warm border-t-4 ${s.border} text-center`}>
-              <div className="text-3xl mb-1">{s.icon}</div>
-              <div className="text-3xl sm:text-4xl font-bold text-ink">{s.n}</div>
-              <div className="text-xs sm:text-sm text-mute mt-1">{s.label}</div>
-              {'sublabel' in s && s.sublabel && <div className="text-[11px] text-mute/80 mt-0.5">{s.sublabel}</div>}
-            </div>
-          ))}
+      {/* STATS STRIP（精簡一行） */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 -mt-6 relative z-10">
+        <div className="bg-white rounded-xl shadow-warm border border-earth/10 px-4 py-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-ink">
+          <span><b className="text-earth text-lg">{allPackages.length}</b> 教學組合包</span>
+          <span><b className="text-earth text-lg">{stats.teachers}</b> 位回饋教師</span>
+          <span><b className="text-earth text-lg">{stats.schools}</b> 所參與學校</span>
+          <span><b className="text-earth text-lg">{stats.totalStudents ?? 0}</b> 試教學生人次</span>
+          <a href="#community-stats" className="ml-auto text-forest hover:underline text-sm">看社群統計 ↓</a>
         </div>
       </section>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full">
-        <GameShowcase />
-        {/* ANNOUNCEMENTS */}
+        <HomeBrowser packages={allPackages} />
+
+        {/* ANNOUNCEMENTS（顯示最新 2 則，其餘展開） */}
         {announcements.length > 0 && (
           <section className="mb-8">
             <div className="flex items-baseline justify-between mb-4 flex-wrap gap-2">
@@ -168,7 +160,7 @@ export default async function Home() {
               <span className="text-sm text-mute">維護進度與更動說明</span>
             </div>
             <div className="space-y-3">
-              {announcements.slice(0, 5).map((a, i) => {
+              {announcements.slice(0, 2).map((a, i) => {
                 const style = CATEGORY_STYLES[a.category] ?? CATEGORY_STYLES['公告'];
                 return (
                   <article key={`${a.date}-${i}`} className="bg-white rounded-xl shadow-warm border border-earth/10 p-4 flex items-start gap-3">
@@ -178,7 +170,7 @@ export default async function Home() {
                         <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${style.bg} ${style.text}`}>{a.category || '公告'}</span>
                         <h3 className="font-bold text-ink text-sm sm:text-base">{a.title}</h3>
                       </div>
-                      {a.content && <p className="text-sm text-ink/70 leading-relaxed whitespace-pre-line">{a.content}</p>}
+                      {a.content && (a.content.length > 140 ? (<details className="group text-sm text-ink/70 leading-relaxed"><summary className="cursor-pointer list-none"><span className="whitespace-pre-line group-open:hidden">{a.content.slice(0, 120).trimEnd()}…</span> <span className="text-forest hover:underline group-open:hidden">閱讀全文 ▾</span><span className="text-forest hover:underline hidden group-open:inline">收合 ▴</span></summary><p className="whitespace-pre-line mt-1">{a.content}</p></details>) : <p className="text-sm text-ink/70 leading-relaxed whitespace-pre-line">{a.content}</p>)}
                       <div className="flex items-center gap-3 mt-2 text-xs text-mute">
                         {a.date && <span>{a.date}</span>}
                         {a.author && <span>— {a.author}</span>}
@@ -188,9 +180,40 @@ export default async function Home() {
                 );
               })}
             </div>
+            {announcements.length > 2 && (
+              <details className="mt-3 group">
+                <summary className="cursor-pointer text-sm text-forest hover:underline list-none">顯示較早的 {Math.min(announcements.length, 8) - 2} 則消息 ▾</summary>
+                <div className="space-y-3 mt-3">
+                  {announcements.slice(2, 8).map((a, j) => { const i = j + 2;
+                const style = CATEGORY_STYLES[a.category] ?? CATEGORY_STYLES['公告'];
+                return (
+                  <article key={`${a.date}-${i}`} className="bg-white rounded-xl shadow-warm border border-earth/10 p-4 flex items-start gap-3">
+                    {a.pinned && <span className="text-lg shrink-0 mt-0.5">📌</span>}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${style.bg} ${style.text}`}>{a.category || '公告'}</span>
+                        <h3 className="font-bold text-ink text-sm sm:text-base">{a.title}</h3>
+                      </div>
+                      {a.content && (a.content.length > 140 ? (<details className="group text-sm text-ink/70 leading-relaxed"><summary className="cursor-pointer list-none"><span className="whitespace-pre-line group-open:hidden">{a.content.slice(0, 120).trimEnd()}…</span> <span className="text-forest hover:underline group-open:hidden">閱讀全文 ▾</span><span className="text-forest hover:underline hidden group-open:inline">收合 ▴</span></summary><p className="whitespace-pre-line mt-1">{a.content}</p></details>) : <p className="text-sm text-ink/70 leading-relaxed whitespace-pre-line">{a.content}</p>)}
+                      <div className="flex items-center gap-3 mt-2 text-xs text-mute">
+                        {a.date && <span>{a.date}</span>}
+                        {a.author && <span>— {a.author}</span>}
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+                </div>
+              </details>
+            )}
           </section>
         )}
 
+        <GameShowcase />
+        {/* 社群統計（預設摺疊） */}
+        <details id="community-stats" className="mb-8 rounded-2xl border border-earth/15 bg-white/60 p-4 sm:p-5">
+          <summary className="cursor-pointer text-lg font-bold text-ink list-none flex items-center gap-2">📊 社群統計：試教回饋排行、主題分布、教師與學校 <span className="text-sm font-normal text-forest">（點開查看）</span></summary>
+          <div className="mt-5">
         {/* TRIAL FEEDBACK DASHBOARD */}
         <section className="mb-8 grid lg:grid-cols-3 gap-5">
           <div className="bg-white rounded-2xl shadow-warm border border-earth/10 p-5 lg:col-span-2">
@@ -303,38 +326,8 @@ export default async function Home() {
           </div>
         </section>
 
-        <HomeBrowser packages={allPackages} />
-
-        {/* TOP SCHOOLS */}
-        <section className="mb-8">
-          <div className="flex items-baseline justify-between mb-5 flex-wrap gap-2">
-            <h2 className="text-xl font-bold text-ink flex items-center gap-2">🏫 活躍試教學校</h2>
-            <span className="text-sm text-mute">依上傳件數與主題覆蓋數排名</span>
           </div>
-          {stats.bySchool && stats.bySchool.length > 0 ? (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {stats.bySchool.slice(0, 4).map((s, i: number) => (
-                <article
-                  key={s.school}
-                  className="rounded-2xl p-5 shadow-warm border border-earth/10 transition hover:-translate-y-1.5 hover:shadow-warm-lg cursor-default"
-                  style={{ background: "linear-gradient(135deg, #FFF7E5 0%, #FFE8CC 100%)" }}
-                >
-                  <div className="text-4xl mb-3">{["🥇","🥈","🥉","🏫"][i] ?? "🏫"}</div>
-                  <h3 className="font-bold text-ink text-base mb-1">{s.school}</h3>
-                  <p className="text-xs text-mute mb-3">已涵蓋 {s.themes.length} 個主題</p>
-                  <div className="flex items-center justify-between text-xs text-earth pt-3 border-t border-earth/15">
-                    <span>👩‍🏫 {s.teachers} 位老師</span>
-                    <span>📋 {s.submissions} 件</span>
-                  </div>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-dashed border-earth/30 p-8 text-center text-mute text-sm">
-              等待第一筆試教／回饋上傳 🌱
-            </div>
-          )}
-        </section>
+        </details>
       </main>
     </>
   );
