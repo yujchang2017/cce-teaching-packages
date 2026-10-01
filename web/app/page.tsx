@@ -150,8 +150,6 @@ export default async function Home() {
       </section>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full">
-        <HomeBrowser packages={allPackages} />
-
         {/* ANNOUNCEMENTS（顯示最新 2 則，其餘展開） */}
         {announcements.length > 0 && (
           <section className="mb-8">
@@ -208,6 +206,8 @@ export default async function Home() {
             )}
           </section>
         )}
+
+        <HomeBrowser packages={allPackages} />
 
         <GameShowcase />
         {/* 社群統計（預設摺疊） */}
