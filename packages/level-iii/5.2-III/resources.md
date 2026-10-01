@@ -8,7 +8,7 @@
 | 1 | 環境部 資源循環署 2024 統計 | dp1 回收率 59.9%、dp3 寶特瓶 >95%、dp5 舊衣 | https://www.moenv.gov.tw/ |
 | 2 | 環境部 回收再利用統計平台 | 各項回收物統計 | https://recycle.moenv.gov.tw/ |
 | 3 | UN Global E-waste Monitor 2024 | dp2 全球電子廢棄物 6,200 萬公噸 | https://ewastemonitor.info/the-global-e-waste-monitor-2024/ |
-| 4 | Ellen MacArthur Foundation | dp4 循環經濟減碳 39% | https://ellenmacarthurfoundation.org/ |
+| 4 | Circle Economy Circularity Gap Report 2021 | dp4 循環經濟減碳 39%（約 228 億公噸） | https://circularity-gap.world/2021 |
 | 5 | UNEP Food Waste Index Report 2024 | dp6 全球食物浪費 10.5 億公噸 | https://www.unep.org/resources/publications/food-waste-index-report-2024 |
 | 6 | UN University / StEP e-Waste Report | dp7 都市礦山 | https://ewastemonitor.info/ |
 
