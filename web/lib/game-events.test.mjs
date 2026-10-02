@@ -82,3 +82,4 @@ test('blocked consent storage and transport failures do not break play',()=>{
   const broken=createGameEvents({game:'heat',environment:()=> 'production',enabled:()=>true,id:()=> 'id',send:()=>{throw Error('send');}});
   assert.doesNotThrow(()=>{broken.view();broken.start();broken.complete();});
 });
+test('quick (activity) version phase survives the whitelist',()=>{assert.deepEqual(cleanSummary({phase:'quick',success:12,total:12,trees:3,baselineSuccess:6,passed:true}),{phase:'quick',success:12,total:12,trees:3,baselineSuccess:6,passed:true});});

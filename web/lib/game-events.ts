@@ -26,7 +26,7 @@ export function cleanSummary(input: Summary): Summary {
   for (const [key, value] of Object.entries(input)) {
     if (numbers.has(key) && typeof value === 'number' && Number.isFinite(value)) out[key] = Math.round(value * 1000) / 1000;
     if ((key === 'passed' || key === 'tutorial') && typeof value === 'boolean') out[key] = value;
-    if (key === 'phase' && typeof value === 'string' && ['baseline','challenge','design','dismantle'].includes(String(value))) out[key] = value;
+    if (key === 'phase' && typeof value === 'string' && ['baseline','challenge','design','dismantle','quick'].includes(String(value))) out[key] = value;
     if (key === 'topic' && typeof value === 'string' && ['combustion','fugitive','electricity'].includes(String(value))) out[key] = value;
   }
   return out;
