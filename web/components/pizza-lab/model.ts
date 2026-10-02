@@ -1,16 +1,23 @@
 export const RADIUS=3;
-export interface Food {id:string;name:string;sourceId:string;co2:number;energy:number;protein:number;fat:number;carb:number;color:number}
+// grams: per-piece portion (meat 12 g, seafood 10 g, other 8 g).
+export interface Food {id:string;name:string;sourceId:string;co2:number;energy:number;protein:number;fat:number;carb:number;color:number;grams:number}
 // Snapshot from the user-supplied balance/pizzacut.csv. Carbon: kg CO2e/kg;
 // energy: kJ/100 g; other nutrients: g/100 g. No live or Taiwan-specific factors.
 export const foods:Food[]=[
- {id:'tomato',name:'番茄',sourceId:'Ra00002',co2:.46,energy:87,protein:.8,fat:.1,carb:3.3,color:0xc95235},
- {id:'pepper',name:'甜椒',sourceId:'Ra00001',co2:.96,energy:133,protein:.9,fat:.1,carb:5.9,color:0x54923b},
- {id:'mushroom',name:'洋菇',sourceId:'Ra00207',co2:.37,energy:97,protein:2.3,fat:.1,carb:2.7,color:0xb48b64},
- {id:'pineapple',name:'鳳梨（罐頭）',sourceId:'Ra00123',co2:1.1,energy:269,protein:.4,fat:.3,carb:14.1,color:0xeeb839},
- {id:'feta',name:'費塔起司',sourceId:'Ra00270',co2:2.24,energy:1071,protein:17.7,fat:20.8,carb:.4,color:0xf5e9c5},
- {id:'shrimp',name:'熟蝦仁',sourceId:'Ra00275',co2:8.8,energy:291,protein:15.3,fat:.8,carb:0,color:0xdf8d6b},
- {id:'chicken',name:'熟雞胸肉',sourceId:'Ra00052',co2:4.76,energy:475,protein:20.6,fat:3.2,carb:.4,color:0xd8ae76},
- {id:'beef',name:'牛肉',sourceId:'Ra00503',co2:61.04,energy:1332,protein:16.4,fat:28.4,carb:.2,color:0x8e4434},
+ {id:'tomato',name:'番茄',sourceId:'Ra00002',co2:.46,energy:87,protein:.8,fat:.1,carb:3.3,color:0xc95235,grams:8},
+ {id:'pepper',name:'甜椒',sourceId:'Ra00001',co2:.96,energy:133,protein:.9,fat:.1,carb:5.9,color:0x54923b,grams:8},
+ {id:'mushroom',name:'洋菇',sourceId:'Ra00207',co2:.37,energy:97,protein:2.3,fat:.1,carb:2.7,color:0xb48b64,grams:8},
+ {id:'pineapple',name:'鳳梨（罐頭）',sourceId:'Ra00123',co2:1.1,energy:269,protein:.4,fat:.3,carb:14.1,color:0xeeb839,grams:8},
+ {id:'feta',name:'費塔起司',sourceId:'Ra00270',co2:2.24,energy:1071,protein:17.7,fat:20.8,carb:.4,color:0xf5e9c5,grams:8},
+ {id:'shrimp',name:'熟蝦仁',sourceId:'Ra00275',co2:8.8,energy:291,protein:15.3,fat:.8,carb:0,color:0xdf8d6b,grams:10},
+ {id:'chicken',name:'熟雞胸肉',sourceId:'Ra00052',co2:4.76,energy:475,protein:20.6,fat:3.2,carb:.4,color:0xd8ae76,grams:12},
+ {id:'beef',name:'牛肉',sourceId:'Ra00503',co2:61.04,energy:1332,protein:16.4,fat:28.4,carb:.2,color:0x8e4434,grams:12},
+ {id:'onion',name:'洋蔥',sourceId:'Ra00264',co2:.36,energy:117,protein:.8,fat:.1,carb:5,color:0xc39bc4,grams:8},
+ {id:'olive',name:'黑橄欖',sourceId:'Ra00139',co2:1.84,energy:703,protein:1,fat:17.2,carb:0,color:0x2f2a2d,grams:8},
+ {id:'ham',name:'火腿',sourceId:'Ra00046',co2:4.28,energy:457,protein:17.9,fat:4,carb:.3,color:0xeb9faa,grams:12},
+ {id:'salami',name:'義式臘腸',sourceId:'Ra00045',co2:5.9,energy:2104,protein:13.9,fat:49.2,carb:2.8,color:0xa22a3c,grams:12},
+ {id:'tuna',name:'鮪魚（水煮罐頭）',sourceId:'Ra00098',co2:4.5,energy:451,protein:23.9,fat:1.2,carb:0,color:0xcdb49c,grams:10},
+ {id:'octopus',name:'章魚',sourceId:'Ra00206',co2:.38,energy:324,protein:16.4,fat:.9,carb:.7,color:0x93406a,grams:10},
 ];
 export const foodById=Object.fromEntries(foods.map(f=>[f.id,f])) as Record<string,Food>;
 export interface Topping {id:number;food:string;x:number;z:number;radius:number;grams:number;rotation:number}
@@ -34,15 +41,23 @@ export function evaluate(round:Round,cut:Cut){
  return {a,b,scores,area,areaScore,nutrition,score,passed:score>=85,portions};
 }
 function random(seed:number){let x=seed>>>0;return()=>{x+=0x6d2b79f5;let t=Math.imul(x^x>>>15,1|x);t^=t+Math.imul(t^t>>>7,61|t);return ((t^t>>>14)>>>0)/4294967296;};}
+export const levelFoodCounts=[4,6,10];
+// Positions as [distance from hidden cut, distance along it] for one half.
+// Levels 1-2 keep the roomy 8-slot layout; level 3 packs 10 per half (radius .46,
+// centre spacing >= 1.02, outer edge <= 2.72 so toppings stay inside the crust).
+const slotSets=[
+ [[.674,-2.073],[1.764,-1.281],[2.18,0],[1.764,1.281],[.674,2.073],[.5,-.866],[1,0],[.5,.866]],
+ [[.512,-2.148],[.512,-1.124],[.514,0],[.512,1.124],[.512,2.148],[1.426,-1.686],[1.426,-.661],[1.426,.661],[1.426,1.686],[2.208,0]],
+];
 export function makeRound(seed:number,level:number):Round{
- const rnd=random(seed),count=[4,6,8][clamp(level,0,2)],solution=20+Math.floor(rnd()*140),n=normal({angle:solution,offset:0}),t={x:n.z,z:-n.x};
+ const lv=clamp(level,0,2),rnd=random(seed),count=levelFoodCounts[lv],solution=20+Math.floor(rnd()*140),n=normal({angle:solution,offset:0}),t={x:n.z,z:-n.x};
+ // Every round draws `count` foods from the full 14-food pool with the seeded RNG (reproducible).
  const selected=[...foods].sort((a,b)=>a.id.localeCompare(b.id));for(let i=selected.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[selected[i],selected[j]]=[selected[j],selected[i]];}
- const toppings:Topping[]=[];
+ const toppings:Topping[]=[],slots=slotSets[lv===2?1:0];
  // Matched food amounts are placed independently in each half of a hidden cut.
  // A known 100-point solution exists, without a visually mirrored arrangement.
- const slots=[[.674,-2.073],[1.764,-1.281],[2.18,0],[1.764,1.281],[.674,2.073],[.5,-.866],[1,0],[.5,.866]];
- for(const sign of [1,-1]){const positions=[...slots];for(let j=positions.length-1;j>0;j--){const k=Math.floor(rnd()*(j+1));[positions[j],positions[k]]=[positions[k],positions[j]];}for(let i=0;i<count;i++){const [d,along]=positions[i];const food=selected[i],radius=.46;const x=n.x*d*sign+t.x*along,z=n.z*d*sign+t.z*along;toppings.push({id:toppings.length,food:food.id,x,z,radius,grams:food.id==='beef'||food.id==='chicken'?12:food.id==='shrimp'?10:8,rotation:rnd()*Math.PI*2});}}
- return {seed,level:clamp(level,0,2),toppings,solution};
+ for(const sign of [1,-1]){const positions=[...slots];for(let j=positions.length-1;j>0;j--){const k=Math.floor(rnd()*(j+1));[positions[j],positions[k]]=[positions[k],positions[j]];}for(let i=0;i<count;i++){const [d,along]=positions[i];const food=selected[i],radius=.46;const x=n.x*d*sign+t.x*along,z=n.z*d*sign+t.z*along;toppings.push({id:toppings.length,food:food.id,x,z,radius,grams:food.grams,rotation:rnd()*Math.PI*2});}}
+ return {seed,level:lv,toppings,solution};
 }
 export function lineEndpoints(cut:Cut){const c=sanitizeCut(cut),n=normal(c),half=Math.sqrt(RADIUS*RADIUS-c.offset*c.offset),t={x:n.z,z:-n.x};return [{x:n.x*c.offset-t.x*half,z:n.z*c.offset-t.z*half},{x:n.x*c.offset+t.x*half,z:n.z*c.offset+t.z*half}];}
 export function cutFromPoints(a:{x:number;z:number},b:{x:number;z:number}):Cut|null{if(Math.hypot(a.x-b.x,a.z-b.z)<.35)return null;const angle=((Math.atan2(b.z-a.z,b.x-a.x)*180/Math.PI)%180+180)%180;const n=normal({angle,offset:0});return sanitizeCut({angle,offset:n.x*(a.x+b.x)/2+n.z*(a.z+b.z)/2});}

@@ -2,7 +2,7 @@
 import {useEffect,useRef,useState} from 'react';
 import type * as Three from 'three';
 import {foodById,normal,diskPolygon,lineEndpoints,cutFromPoints,type Cut,type Round} from './model';
-interface Props {round:Round;cut:Cut;separated:boolean;orbit:boolean;top:boolean;viewNonce:number;onCut:(c:Cut)=>void;onInspect:(id:string)=>void}
+interface Props {round:Round;cut:Cut;separated:boolean;orbit:boolean;top:boolean;viewNonce:number;onCut:(c:Cut)=>void;onInspect:(id:string)=>void;onDragStart?:()=>void}
 export default function PizzaScene(props:Props){
  const host=useRef<HTMLDivElement>(null),latest=useRef(props);latest.current=props;
  const [status,setStatus]=useState('loading');
@@ -39,7 +39,42 @@ export default function PizzaScene(props:Props){
    if(key==='feta'){box(body,[.36,.19,.32],0xeee3c7,[0,.11,0],.028);for(let j=0;j<7;j++){const hole=sphere(body,.021,0xd4c7a7,Math.sin(j*4)*.12,.21,Math.cos(j*3)*.1);hole.scale.y=.15;}}
    if(key==='shrimp'){const pts=Array.from({length:24},(_,j)=>{const a=-.3+j/23*4.6;return new T.Vector3(Math.cos(a)*.16,.09,Math.sin(a)*.16);});mesh(body,new T.TubeGeometry(new T.CatmullRomCurve3(pts),36,.075,10,false),0xeb7040);for(let j=0;j<7;j++){const a=.1+j*.53;const band=sphere(body,.079,0xb83c1e,Math.cos(a)*.16,.091,Math.sin(a)*.16);band.scale.set(.3,.85,1);band.rotation.y=-a;}const tail=box(body,[.12,.035,.15],0xdf4825,[.14,.045,-.09],.025);tail.rotation.y=.6;}
    if(key==='chicken'||key==='beef'){const chunk=box(body,[.45,.14,.31],key==='chicken'?0xc48738:0x763424,[0,.09,0],.09);chunk.rotation.y=.15;for(let j=0;j<4;j++){const mark=box(body,[.024,.014,.26],key==='chicken'?0x613218:0x5e382a,[-.14+j*.09,.168,0],.006);mark.rotation.y=.3;}if(key==='beef'){const fat=box(body,[.34,.012,.024],0xd0a780,[0,.175,-.07],.008);fat.rotation.y=-.3;}}
-   body.traverse(o=>{if(o instanceof T.Mesh){o.userData.food=key;(o.material as Three.MeshStandardMaterial).envMapIntensity=.35;(o.material as Three.MeshStandardMaterial).roughness=.5;pickables.push(o);}});return body;
+   if(key==='onion'){
+    // Concentric rings: purple-edged outer ring, white inner rings.
+    const ring=(radius:number,tube:number,color:number,y:number)=>{const m=mesh(body,new T.TorusGeometry(radius,tube,10,40),color,0,y,0);m.rotation.x=Math.PI/2;m.scale.z=.7;return m;};
+    ring(.215,.04,0x9c4f93,.045);ring(.165,.03,0xf6eef5,.045);ring(.105,.026,0xe9d6ea,.045);
+   }
+   if(key==='olive'){
+    // Glossy black olive ring with an obvious hole.
+    const ring=mesh(body,new T.TorusGeometry(.135,.072,14,36),0x1d1719,0,.07,0);ring.rotation.x=Math.PI/2;ring.scale.z=.85;ring.userData.rough=.18;
+    const shine=sphere(body,.03,0x8d8487,-.06,.13,-.09);shine.scale.set(1.6,.25,.7);shine.userData.rough=.1;
+   }
+   if(key==='ham'){
+    // Square pink slice with pale fat rim and a soft fold.
+    box(body,[.44,.03,.4],0xf3c7c4,[0,.03,0],.08);
+    const slice=box(body,[.39,.04,.35],0xd9677c,[0,.058,0],.07);slice.rotation.z=.04;
+    for(let j=0;j<4;j++){const streak=sphere(body,.05,0xeb9aa8,-.11+j*.075,.082,Math.sin(j*2.1)*.09);streak.scale.set(1.1,.12,.45);streak.rotation.y=j*.7;}
+   }
+   if(key==='salami'){
+    // Deep red round with white fat dots and a dark casing.
+    cylinder(body,.235,.235,.05,0xa1243a,0,.05,0);
+    const casing=mesh(body,new T.TorusGeometry(.235,.02,8,48),0x5a1621,0,.05,0);casing.rotation.x=Math.PI/2;
+    for(let j=0;j<13;j++){const a=j*2.399,rr=.04+((j*37)%16)/100;const dot=sphere(body,.024+(j%3)*.006,0xfaece2,Math.cos(a)*rr,.077,Math.sin(a)*rr);dot.scale.y=.2;}
+    for(let j=0;j<6;j++){const a=j*1.7+.5,rr=.08+(j%3)*.04;const pep=sphere(body,.012,0x2e1a14,Math.cos(a)*rr,.077,Math.sin(a)*rr);pep.scale.y=.3;}
+   }
+   if(key==='tuna'){
+    // Pile of faceted pale flakes.
+    const flakes:[number,number,number,number,number][]=[[0,0,.12,.1,0xa86f52],[.13,.06,.09,.09,0x9a6248],[-.12,.07,.09,.085,0xb57c5d],[.03,-.13,.08,.09,0x8f5a42],[-.08,-.1,.075,.08,0xae7556],[.12,-.09,.07,.08,0xbd8766],[-.02,.15,.07,.075,0x9f684c]];
+    flakes.forEach(([x,z,rad,y,color],j)=>{const f=mesh(body,new T.IcosahedronGeometry(rad,0),color,x,y,z);f.scale.set(1.25,.62,1);f.rotation.set(j*.7,j*1.3,j*.4);});
+    for(let j=0;j<3;j++){const line=box(body,[.012,.01,.13],0xb08a70,[-.05+j*.06,.15,0],.004);line.rotation.y=.4+j*.3;}
+   }
+   if(key==='octopus'){
+    // Tapering curled tentacle (chain of spheres) with two rows of pale suckers.
+    const spiral=(q:number)=>{const a=q*Math.PI*2.6,rr=.23-.17*q;return {x:Math.cos(a)*rr,z:Math.sin(a)*rr,a};};
+    for(let j=0;j<=44;j++){const q=j/44,{x,z}=spiral(q);const seg=sphere(body,.07-.045*q,j%2?0x7c2450:0x86295a,x,.07,z);seg.scale.y=.75;}
+    for(let j=0;j<16;j++){const q=.03+j/17,{x,z,a}=spiral(q),off=.026*(j%2?1:-1),r0=.022-.011*q;const sucker=sphere(body,r0,0xf7dcd6,x+Math.cos(a)*off,.07+.05-.03*q,z+Math.sin(a)*off);sucker.scale.y=.35;}
+   }
+   body.traverse(o=>{if(o instanceof T.Mesh){o.userData.food=key;(o.material as Three.MeshStandardMaterial).envMapIntensity=.35;(o.material as Three.MeshStandardMaterial).roughness=o.userData.rough??.5;pickables.push(o);}});return body;
   };
   halves.forEach((g,index)=>{
    for(const [height,color] of [[.22,0xe2b779],[.028,0xb64b2f],[.065,0xeace87]]){const m=mesh(g,new T.BufferGeometry(),color,0,height===.22?.06:height===.028?.28:.307,0);bases[index].push(m);if(height===.065)(m.material as Three.MeshStandardMaterial).map=cheeseTexture;m.userData.depth=height;}
@@ -56,7 +91,7 @@ export default function PizzaScene(props:Props){
   const sparks=Array.from({length:30},(_,i)=>{const m=new T.Mesh(new T.OctahedronGeometry(.025+(i%3)*.012),new T.MeshBasicMaterial({color:i%3?0xffc451:0xfff5bb,transparent:true,depthWrite:false}));scene.add(m);return m;});
   const ray=new T.Raycaster(),pointer=new T.Vector2(),workPlane=new T.Plane(new T.Vector3(0,1,0),-.4);let start:Three.Vector3|null=null,startScreen=[0,0],held=-1;
   function project(e:PointerEvent){const rect=r.domElement.getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);ray.setFromCamera(pointer,camera);return ray.ray.intersectPlane(workPlane,new T.Vector3());}
-  const down=(e:PointerEvent)=>{if(latest.current.orbit||latest.current.separated)return;start=project(e);startScreen=[e.clientX,e.clientY];held=e.pointerId;r.domElement.setPointerCapture(e.pointerId);};
+  const down=(e:PointerEvent)=>{if(latest.current.orbit||latest.current.separated)return;latest.current.onDragStart?.();start=project(e);startScreen=[e.clientX,e.clientY];held=e.pointerId;r.domElement.setPointerCapture(e.pointerId);};
   const move=(e:PointerEvent)=>{if(!start||held!==e.pointerId||latest.current.orbit||latest.current.separated)return;const end=project(e);if(end){const c=cutFromPoints(start,end);if(c)latest.current.onCut(c);}};
   const up=(e:PointerEvent)=>{if(held!==e.pointerId)return;if(start&&Math.hypot(e.clientX-startScreen[0],e.clientY-startScreen[1])<7){project(e);const hit=ray.intersectObjects(pickables,false).find(h=>h.object.userData.food);if(hit)latest.current.onInspect(hit.object.userData.food);}start=null;held=-1;if(r.domElement.hasPointerCapture(e.pointerId))r.domElement.releasePointerCapture(e.pointerId);};
   const cancel=()=>{start=null;held=-1;};r.domElement.addEventListener('pointerdown',down);r.domElement.addEventListener('pointermove',move);r.domElement.addEventListener('pointerup',up);r.domElement.addEventListener('pointercancel',cancel);
@@ -78,5 +113,5 @@ export default function PizzaScene(props:Props){
   cleanup=()=>{cancelAnimationFrame(frame);observer.disconnect();controls.dispose();for(const [name,fn] of [['pointerdown',down],['pointermove',move],['pointerup',up],['pointercancel',cancel]] as const)r.domElement.removeEventListener(name,fn);scene.traverse(o=>{if(o instanceof T.Mesh){o.geometry.dispose();for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();}});labels.forEach(s=>{s.material.map?.dispose();s.material.dispose();});wood.dispose();crustTexture.dispose();cheeseTexture.dispose();env.dispose();r.dispose();r.domElement.remove();};if(stopped)cleanup();
  }catch{renderer?.dispose();renderer?.domElement.remove();if(!stopped)setStatus('failed');}})();return()=>{stopped=true;cleanup();};
  },[props.round]);
- return <div className="pz-scene-wrap"><div ref={host} className="pz-scene"/>{status!=='ready'&&<div className="pz-load">{status==='loading'?'披薩即將出爐…':'3D 無法顯示；仍可使用角度、位置與配料座標表完成分配。'}</div>}<span className="pz-scene-tip">{props.separated?'切開完成後，可轉動觀察切面':props.orbit?'拖曳轉動披薩 · 切回「畫切線」開始分配':'在餅面拖出一條切線 · 點配料查看名稱'}</span></div>;
+ return <div className="pz-scene-wrap"><div ref={host} className="pz-scene"/>{status!=='ready'&&<div className="pz-load">{status==='loading'?'披薩即將出爐…':'3D 無法顯示；仍可使用角度、位置與配料座標表完成分配。'}</div>}</div>;
 }
