@@ -59,6 +59,23 @@ test('whitelist excludes free text, nested data and nonfinite or spoofed metrics
     treePositions:[1,2],phase:'a name',topic:'free text',environment:'production',keyId:'override',durationMs:123,
     pure:Infinity,seconds:NaN,passed:true,tutorial:false}),{score:87.123,passed:true,tutorial:false});
 });
+test('abandon reports an unfinished round once; finished or cancelled rounds are not abandoned',()=>{
+  const {api,sent,tick}=fixture('carbon');api.start({phase:'challenge',topic:'combustion'});tick(5000);
+  api.abandon({pairs:1,totalPairs:3,tries:4});api.abandon();api.complete();
+  const a=sent.filter(e=>e.event==='game_abandon');assert.equal(a.length,1);
+  assert.equal(a[0].meta.pairs,1);assert.equal(a[0].meta.durationMs,5000);assert.equal(a[0].meta.topic,'combustion');
+  assert.equal(sent.filter(e=>e.event==='game_complete').length,0);
+  api.start();api.complete();api.abandon();api.start();api.cancel();api.abandon();
+  assert.equal(sent.filter(e=>e.event==='game_abandon').length,1);
+});
+test('reflect sends only the length, once per page until reset, and respects consent',()=>{
+  const f=fixture('heat');f.api.reflect(42);f.api.reflect(50);
+  const r=f.sent.filter(e=>e.event==='game_reflect');assert.equal(r.length,1);
+  assert.equal(r[0].meta.chars,42);assert.equal('reflection' in r[0].meta,false);
+  f.api.cancel();f.api.reflect(30);assert.equal(f.sent.filter(e=>e.event==='game_reflect').length,2);
+  const g=fixture('water');g.consent(false);g.api.reflect(25);assert.equal(g.sent.length,0);
+  g.consent(true);g.api.reflect(25);assert.equal(g.sent.filter(e=>e.event==='game_reflect').length,1);
+});
 test('blocked consent storage and transport failures do not break play',()=>{
   const blocked=createGameEvents({game:'heat',environment:()=> 'production',enabled:()=>{throw Error('storage');},send:()=>{throw Error('send');}});
   assert.doesNotThrow(()=>{blocked.view();blocked.start();blocked.complete();});

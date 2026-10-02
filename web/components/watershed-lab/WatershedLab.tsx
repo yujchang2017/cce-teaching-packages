@@ -45,6 +45,7 @@ export default function WatershedLab(){
   const current=snapshot&&signature(snapshot.facilities)===signature(facilities);
   const success=!!run&&!playing&&!!current&&meetsChallenge(run);
   const complete=success&&reflection.trim().length>=20;
+  useEffect(()=>{if(complete)telemetry.reflect(reflection.trim().length);},[complete]);
   const selectedFacility=facilities.find(f=>f.id===selected);
   function tell(text:string,isError=false){setMessage(text);setError(isError);}
   function chooseView(next:View){setView(next);setViewNonce(n=>n+1);setSection(next==='section');}

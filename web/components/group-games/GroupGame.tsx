@@ -36,6 +36,7 @@ export default function GroupGame({mode}:{mode:Mode}){
   const point=selectedPerson?sampleAt(selectedPerson.samples,displayTime):null;
   const personFinished=!!selectedPerson&&displayTime>=selectedPerson.samples.at(-1)!.t;
   const done=step===4&&reflection.trim().length>=20;
+  useEffect(()=>{if(done)telemetry.reflect(reflection.trim().length);},[done]);
   const focusPanel=()=>{requestAnimationFrame(()=>panel.current?.scrollIntoView({behavior:'instant',block:'start'}));};
   const focusScene=()=>{if(mode==='heat'||matchMedia('(max-width:850px)').matches)requestAnimationFrame(()=>stage.current?.scrollIntoView({behavior:'instant',block:'start'}));};
   function go(n:number){setStep(n);setTool('inspect');setMessage('');focusPanel();}
@@ -45,7 +46,7 @@ export default function GroupGame({mode}:{mode:Mode}){
   },[]);
   useEffect(()=>{if(!loaded)return;try{localStorage.setItem(storageKey,JSON.stringify({version:1,animals,trees,scenario,history,reflection}));setSaved(true);}catch{setSaved(false);}},[loaded,animals,trees,scenario,history,reflection]);
   useEffect(()=>{if(!playing||paused)return;let raf=0,last=performance.now();const tick=(now:number)=>{const dt=Math.min(100,now-last)/1000;last=now;setTime(t=>Math.min(run.duration,t+dt*3*speed));raf=requestAnimationFrame(tick);};raf=requestAnimationFrame(tick);return()=>cancelAnimationFrame(raf);},[playing,paused,speed,run]);
-  useEffect(()=>{if(!playing||time<run.duration||!record)return;setPlaying(false);setPaused(false);if(purpose.current!=='replay'){telemetry.complete({success:run.success,total:run.total,successRate:Math.round(run.score*100),cost:mode==='animals'?animalCost(record.animals):record.trees.length,trees:record.trees.length});setHistory(h=>[...h,record].slice(-6));setStep(purpose.current==='baseline'?0:3);if(matchMedia('(max-width:850px)').matches)focusPanel();}},[playing,time,run,record]);
+  useEffect(()=>{if(!playing||time<run.duration||!record)return;setPlaying(false);setPaused(false);if(purpose.current!=='replay'){telemetry.complete({success:run.success,total:run.total,successRate:Math.round(run.score*100),cost:mode==='animals'?animalCost(record.animals):record.trees.length,trees:record.trees.length,baselineSuccess:baseline.success,passed:purpose.current==='trial'&&run.success>baseline.success});setHistory(h=>[...h,record].slice(-6));setStep(purpose.current==='baseline'?0:3);if(matchMedia('(max-width:850px)').matches)focusPanel();}},[playing,time,run,record]);
   function edited(){setPrediction('');setTime(0);setSelected(null);setMessage('配置已更動。下一步先預測，再重新模擬。');}
   function updateCrossing(patch:Partial<Crossing>){if(playing)return;const d=animals.map((v,i)=>i===lane?{...v,...patch}:v) as AnimalDesign;if(d[lane].kind==='none')d[lane]=emptyCrossing();if(d[lane].kind==='tunnel'){d[lane].entry=false;d[lane].exit=false;d[lane].guard=false;}if(animalCost(d)>ANIMAL_BUDGET){setMessage('材料不夠。先移除其他工程或改用較省材料的配置。');return;}setAnimals(d);edited();}
   function plant(at:Tree){setCell(at);if(!plantable(at.x,at.z)){setMessage('請選 A–F 六個白色植樹點；道路與老樹保留。');return;}if(trees.some(t=>t.x===at.x&&t.z===at.z)){setMessage('這格已種樹。可切換「移除」取回樹木。');return;}if(trees.length>=TREE_LIMIT){setMessage('三棵樹已用完。先移除或搬移一棵，再調整位置。');return;}setTrees(old=>[...old,{x:at.x,z:at.z}]);setTool('inspect');edited();setMessage(`已在第 ${at.x+1} 欄、第 ${at.z+1} 列種樹。附近降溫區已更新。`);}
