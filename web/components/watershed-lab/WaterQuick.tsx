@@ -55,6 +55,13 @@ function School({x,y}:{x:number;y:number}){
   return <g aria-hidden="true"><ellipse cx={x} cy={y+28} rx={64} ry={7} fill="#00000018"/><line x1={x+42} y1={y-22} x2={x+42} y2={y-48} stroke="#5d5d5d" strokeWidth={3}/><path d={`M${x+42} ${y-48} l22 6 l-22 6z`} fill="#d9534f"/><rect x={x-54} y={y-22} width={108} height={48} rx={4} fill="#f3e6c4" stroke="#8a6a45" strokeWidth={3}/><rect x={x-60} y={y-29} width={120} height={10} rx={3} fill="#c4774f"/>{[-40,-22,12,30].map(d=><rect key={d} x={x+d} y={y-10} width={11} height={11} fill="#d6eef2" stroke="#8a6a45" strokeWidth={2}/>)}<rect x={x-8} y={y+5} width={16} height={21} fill="#8a6a45"/></g>;
 }
 
+// Hand the current facilities to the full 3D lab (WatershedLab restores this key); keep its history and reflection.
+const FULL_KEY='cce-watershed-lab-v2';
+function carryTo3D(facilities:Facility[]){
+  try{const raw=localStorage.getItem(FULL_KEY);const s=raw?JSON.parse(raw):null;const base=s&&s.version===2?s:{version:2,history:[],reflection:''};
+    localStorage.setItem(FULL_KEY,JSON.stringify({...base,facilities}));}catch{/* 3D view simply starts empty */}
+}
+
 export default function WaterQuick(){
   const telemetry=useGameEvents('water');
   const [facilities,setFacilities]=useState<Facility[]>([]),[open,setOpen]=useState<number|null>(null);
@@ -175,7 +182,7 @@ export default function WaterQuick(){
   return <main className={`wq${reduced?' wq-reduced':''}`}>
     <div className="wq-top">
       <p className="wq-intro"><b>大雨來了！</b>在山坡上放 2 個設施，把雨水留住、讓它滲進土裡，別讓學校淹水。</p>
-      <Link className="wq-full" href="/missions/water/">完整版（課堂用）→</Link>
+      <Link className="wq-full" href="/missions/water/3d/" onClick={()=>carryTo3D(facilities)}>全 3D 檢視 ▶</Link>
     </div>
     <div className="wq-body">
       <section className={`wq-result${passed?' pass':''}`} aria-live="polite">

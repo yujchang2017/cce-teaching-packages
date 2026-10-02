@@ -87,7 +87,7 @@ export default function GroupGame({mode}:{mode:Mode}){
       '看結果，找出成功或失敗的原因',bar('調整配置，再試一次 →',()=>go(1)),c.hint]):
     [done?'寫好了！按「下載」保存紀錄':`寫下你的發現（還差 ${Math.max(0,20-reflection.trim().length)} 字）`,<a key="dl" className={`gg-bar-primary ${done?'':'disabled'}`} aria-disabled={!done} href={done?link:undefined} download={`${c.short}-實驗紀錄.txt`}>下載我的設計紀錄 ↓</a>,'寫下你改了什麼、結果怎麼變（至少 20 字），就能下載。'];
   return <main className={`group-game ${mode}${reduced?' gg-reduced':''}`}>
-    <div className="gg-top"><Link href={`/package/${c.key}/`}>← 返回教案</Link><span>{c.key} · 3D 遊戲試作</span>{mode==='heat'&&<Link href="/missions/heat-quick/">活動現場？試試簡單版 →</Link>}<button aria-pressed={reduced} onClick={()=>setReduced(!reduced)}>{reduced?'直接顯示結果':'減少動畫'}</button></div>
+    <div className="gg-top"><Link href={`/package/${c.key}/`}>← 返回教案</Link><span>{c.key} · 3D 遊戲試作</span>{mode==='heat'&&<Link href="/missions/heat/">← 回到地圖版</Link>}<button aria-pressed={reduced} onClick={()=>setReduced(!reduced)}>{reduced?'直接顯示結果':'減少動畫'}</button></div>
     <header className="gg-header"><p>{c.eyebrow}</p><h1>{c.title}</h1><span>{c.intro}</span></header>
     {mode==='heat'&&step===0&&<section className="gg-brief" aria-label="這次要解決的問題"><div><b>發生什麼事？</b><p>連續高溫，柏油路曬得燙腳。兩側各住 6 位居民，每天仍要出門：接孩子或買食物。</p></div><div><b>為什麼需要你？</b><p>西側有一棵老樹，東側缺少遮蔭。居民走熱路會耗體力，有人辦完事卻走不回家。</p></div><div><b>你的任務</b><p>你是社區的綠化小隊。把 <strong>3 棵樹</strong>放在 A–F 植樹點，讓更多人<strong>辦完事，再安全回家</strong>。</p></div></section>}
     <ol className="gg-steps" aria-label="五步操作順序">{names.map((name,i)=><li key={name} aria-current={step===i?'step':undefined} className={i<step?'past':''}><b>{i<step?'✓':i+1}</b><span>{name}</span></li>)}</ol>

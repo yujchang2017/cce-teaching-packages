@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import {useGameEvents} from '@/lib/useGameEvents';
 import {simulateHeat,heatWorld,temperature,isRoad,sites,naturalTrees,homes,destinations,SIZE,TREE_LIMIT,HEAT_THRESHOLD,RESIDENTS,PER_HOME,type Tree} from './heat';
+import {emptyAnimals} from './animals';
 import './heat-quick.css';
 
 // 3D 場景只在按「看大家怎麼走」時才下載。
@@ -40,6 +41,13 @@ function Face({ok,color}:{ok:boolean;color:string}){
     {ok?<><circle cx={15.5} cy={15} r={1.9} fill="#3b2a1f"/><circle cx={24.5} cy={15} r={1.9} fill="#3b2a1f"/><path d="M14 20 Q20 26.5 26 20" fill="none" stroke="#3b2a1f" strokeWidth={2} strokeLinecap="round"/></>:
       <><path d="M12.5 14.5 l5 1.6 M27.5 14.5 l-5 1.6" stroke="#3b2a1f" strokeWidth={2} strokeLinecap="round"/><path d="M14 23 q3 -3 6 0 t6 0" fill="none" stroke="#3b2a1f" strokeWidth={2} strokeLinecap="round"/><path d="M32 4 q4.5 6.5 0 9 q-4.5 -2.5 0 -9z" fill="#5aa9e6"/></>}
   </svg>;
+}
+
+// Hand the current trees to the full 3D game (GroupGame heat restores this key); keep its history and reflection.
+const FULL_KEY='cce-group-heat-simple-v2';
+function carryTo3D(trees:Tree[]){
+  try{const raw=localStorage.getItem(FULL_KEY);const s=raw?JSON.parse(raw):null;const base=s&&s.version===1?s:{version:1,animals:emptyAnimals(),scenario:0,history:[],reflection:''};
+    localStorage.setItem(FULL_KEY,JSON.stringify({...base,trees}));}catch{/* 3D view simply starts empty */}
 }
 
 export default function HeatQuick(){
@@ -112,7 +120,7 @@ export default function HeatQuick(){
   return <main className={`hq${reduced?' hq-reduced':''}`}>
     <div className="hq-top">
       <p className="hq-intro"><b>熱浪來了！</b>點地圖上的 A–F 種 3 棵樹。樹蔭讓路變涼，走涼的路才有力氣回家。</p>
-      <Link className="hq-full" href="/missions/heat/">完整版（課堂用）→</Link>
+      <Link className="hq-full" href="/missions/heat/3d/" onClick={()=>carryTo3D(trees)}>全 3D 檢視 ▶</Link>
     </div>
     <div className="hq-body">
       <section className={`hq-result${passed?' pass':''}`} aria-live="polite">
