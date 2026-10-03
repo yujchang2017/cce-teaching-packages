@@ -1,4 +1,4 @@
 import type { Metadata } from 'next';
-import GroupGame from '@/components/group-games/GroupGame';
-export const metadata: Metadata = { title: '都市降溫實驗室｜3D 教案遊戲', description: '用三棵樹改善居民辦事與返家的路，讓更多人保有體力回家。' };
-export default function Page(){return <GroupGame mode="heat"/>;}
+import HeatQuick from '@/components/group-games/HeatQuick';
+export const metadata: Metadata = { title: '都市降溫實驗室｜種 3 棵樹送大家回家', description: '點地圖種 3 棵樹，馬上看到多少居民能平安回家。' };
+export default function Page(){return <HeatQuick/>;}

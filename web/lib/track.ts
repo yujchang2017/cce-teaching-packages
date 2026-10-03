@@ -2,7 +2,23 @@
 const UUID_KEY = 'cce_uuid_v1';
 const CONSENT_KEY = 'cce_track_consent_v1';
 const SID_KEY = 'cce_session_id';
+const DEVICE_KEY = 'cce_device_v1';
 export const CONSENT_EVENT = 'cce:tracking-consent';
+
+// On-site devices (e.g. event tablets): open any page once with ?device=expo-a; ?device=clear removes it.
+// Stored locally even before consent; it is only sent along with consented events.
+export function captureDevice(): string {
+  if (typeof window === 'undefined') return '';
+  try {
+    const raw = new URLSearchParams(location.search).get('device');
+    if (raw !== null) {
+      const tag = raw.trim().toLowerCase();
+      if (tag === 'clear') localStorage.removeItem(DEVICE_KEY);
+      else if (/^[a-z0-9][a-z0-9-]{0,31}$/.test(tag)) localStorage.setItem(DEVICE_KEY, tag);
+    }
+    return localStorage.getItem(DEVICE_KEY) ?? '';
+  } catch { return ''; }
+}
 
 function getSessionId(): string {
   let sid = sessionStorage.getItem(SID_KEY);
@@ -31,7 +47,9 @@ export function setConsent(value: boolean) {
 }
 export interface TrackEvent { event: string; resource?: string; meta?: Record<string, unknown> }
 export function track(ev: TrackEvent) {
-  if (typeof window === 'undefined' || !hasConsent()) return;
+  if (typeof window === 'undefined') return;
+  const device = captureDevice();
+  if (!hasConsent()) return;
   const url = process.env.NEXT_PUBLIC_TRACK_URL;
   if (!url) return;
   try {
@@ -39,7 +57,7 @@ export function track(ev: TrackEvent) {
       uuid: getUuid(), event: ev.event, resource: ev.resource ?? '',
       meta: { ...ev.meta, sid: getSessionId(),
         ref: (() => { try { return new URL(document.referrer).hostname; } catch { return ''; } })(),
-        sw: window.screen?.width ?? 0 },
+        sw: window.screen?.width ?? 0, ...(device ? { device } : {}) },
       userAgent: navigator.userAgent,
     });
     // Fall back when the beacon queue is full; absorb asynchronous failures too.

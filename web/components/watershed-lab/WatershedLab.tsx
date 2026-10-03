@@ -45,6 +45,7 @@ export default function WatershedLab(){
   const current=snapshot&&signature(snapshot.facilities)===signature(facilities);
   const success=!!run&&!playing&&!!current&&meetsChallenge(run);
   const complete=success&&reflection.trim().length>=20;
+  useEffect(()=>{if(complete)telemetry.reflect(reflection.trim().length);},[complete]);
   const selectedFacility=facilities.find(f=>f.id===selected);
   function tell(text:string,isError=false){setMessage(text);setError(isError);}
   function chooseView(next:View){setView(next);setViewNonce(n=>n+1);setSection(next==='section');}
@@ -72,7 +73,7 @@ export default function WatershedLab(){
   const report=['流域實驗室｜一場雨，兩條路','4.2-III 安全與復原力策略：水路空間實驗補充活動','',...history.flatMap((h,i)=>{const r=simulate(h.facilities);return[`實驗 ${i+1}：${h.prediction}`,`布設：${h.facilities.map(f=>`${facilityInfo[f.kind].title}（${f.x}, ${f.z}）`).join('；')||'無設施'}`,`示意水量：${Object.entries(r.totals).map(([k,v])=>`${metricLabels[k as keyof typeof metricLabels]} ${v}`).join('；')}`,''];}),`我的解釋：${reflection}`,'','每次相同 72 份示意雨水；不代表真實水文預測。文字論證由師生討論。','教材內容 CC BY-SA 4.0 · 115 年中小學氣候變遷教育推動計畫'].join('\n');
 
   return <main className="watershed-lab">
-    <div className="wl-top"><Link href="/package/4.2-III/">← 返回教案</Link><span>4.2-III / 韌性建構・水路實驗</span><div><button type="button" aria-pressed={sound} onClick={()=>setSound(!sound)}>{sound?'♪ 音效開':'♪ 音效關'}</button><button type="button" aria-pressed={reduced} onClick={()=>setReduced(!reduced)}>{reduced?'直接呈現結果':'減少動畫'}</button></div></div>
+    <div className="wl-top"><Link href="/package/4.2-III/">← 返回教案</Link><span>4.2-III / 韌性建構・水路實驗</span><Link href="/missions/water/" style={{color:'#bc633c'}}>← 回到地圖版</Link><div><button type="button" aria-pressed={sound} onClick={()=>setSound(!sound)}>{sound?'♪ 音效開':'♪ 音效關'}</button><button type="button" aria-pressed={reduced} onClick={()=>setReduced(!reduced)}>{reduced?'直接呈現結果':'減少動畫'}</button></div></div>
     <header className="wl-header"><div><p className="wl-kicker">流域實驗室 · 4.2-III</p><h1>一場雨，<em>兩條路。</em></h1><p>跟著 5 個步驟，用兩座設施替雨水找出路。</p></div><span className="wl-duration">約 10–15 分鐘</span></header>
     <ol className="wl-steps" aria-label="實驗操作順序">{steps.map((s,i)=><li key={s} aria-current={step===s?'step':undefined} className={steps.indexOf(step)>i?'past':''}><span>{steps.indexOf(step)>i?'✓':i+1}</span><b>{stepNames[i]}</b></li>)}</ol>
     <div className="wl-game-grid">
