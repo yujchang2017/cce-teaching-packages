@@ -83,3 +83,8 @@ test('blocked consent storage and transport failures do not break play',()=>{
   assert.doesNotThrow(()=>{broken.view();broken.start();broken.complete();});
 });
 test('quick (activity) version phase survives the whitelist',()=>{assert.deepEqual(cleanSummary({phase:'quick',success:12,total:12,trees:3,baselineSuccess:6,passed:true}),{phase:'quick',success:12,total:12,trees:3,baselineSuccess:6,passed:true});});
+test('carbon topic whitelist covers every carbon-match topic id and nothing else',()=>{
+  for(const topic of ['combustion','mobile','fugitive','scope1','electricity','commute','water','waste','reduction'])
+    assert.equal(cleanSummary({topic}).topic,topic);
+  for(const topic of ['exempt','toy','scope3','Combustion','mobile ']) assert.equal(cleanSummary({topic}).topic,undefined);
+});
