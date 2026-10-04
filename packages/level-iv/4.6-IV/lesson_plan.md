@@ -9,8 +9,8 @@
 ## 資料引用（≥3 dp；map.csv ≥2；MOE ≥1）
 - **dp1** 56% 網民靠社群媒體看時事 (UNESCO/IPSOS 2023，16 國調查平均)
 - **dp2** 85% 網民擔憂線上不實資訊 (UNESCO/IPSOS 2023，16 國調查)
-- **dp3** 約 62% 內容創作者（45 國 500 位）分享前未驗證資訊正確性 (UNESCO 2024)
-- **dp6** >97% 氣候科學共識 (IPCC AR6)
+- **dp3** 約 62% 內容創作者（45 國 500 位）分享前沒有做系統性查證 (UNESCO 2024)
+- **dp6** >97% 氣候科學共識 (Cook et al. 2013；IPCC AR6 WG1 SPM A.1 unequivocal)
 - map.csv id **338** Climate Change Education curriculum；id **742** 嚴肅遊戲碳足跡 (NTNU)
 - **MOE** 108 課綱核心素養 **B2 科技資訊與媒體素養**（《CCE 溪遊記》教案引用）
 
