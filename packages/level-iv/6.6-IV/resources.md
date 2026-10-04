@@ -1,8 +1,8 @@
 # 6.6-IV 永續飲食 · 資源清單
 
 ## 權威國際來源
-1. **EAT-Lancet Commission Summary Report (2019)** — 行星健康飲食建議
-   https://eatforum.org/eat-lancet-commission/eat-lancet-commission-summary-report/
+1. **EAT-Lancet Commission Summary Report (2019)** — 行星健康飲食建議（2025 年另有更新版）
+   https://eatforum.org/eat-lancet/2019-summary-report/
 2. **Our World in Data – Environmental Impacts of Food（Poore & Nemecek, 2018）**
    https://ourworldindata.org/environmental-impacts-of-food
 3. **FAO – Platform on Food Loss and Waste**
@@ -11,10 +11,10 @@
    https://sdgs.un.org/goals/goal12
 
 ## 臺灣官方 / MOE
-5. **教育部節能減碳資訊平臺**（食物碳足跡教學資料）
-   https://co2.ftis.org.tw/pageA3_2.asp
-6. **農業部糧食供需統計**（糧食自給率）
-   https://www.moa.gov.tw/
+5. **教育部氣候變遷教學資訊平臺**（原節能減碳資訊平臺食物碳足跡頁已不存在）
+   https://climatechange.moe.edu.tw/
+6. **農業部統計處 重要統計指標**（糧食自給率）
+   https://agrstat.moa.gov.tw/moasdweb/inquire/Indicator.aspx
 7. **環境部 綠色生活資訊網**
    https://greenliving.moenv.gov.tw/
 
@@ -23,7 +23,7 @@
    https://www.namr.gov.tw/userfiles/A47040000A/files/3-12%E6%89%B9%E5%88%A4%E6%80%A7%E6%80%9D%E8%80%83%E6%B0%A3%E5%80%99%E8%AE%8A%E9%81%B7.pdf
 9. row 222 綠色和平系列動畫（飲食切入）
    https://www.greenpeace.org/taiwan/update/33645/
-10. row 245《掌中之森》AR 低碳飲食互動遊戲 — 新竹縣環保局
+10. row 245《掌中之森》氣候變遷主題 AR 互動遊戲 — 新竹縣環保局（請教師課前試玩確認是否含飲食內容）
     https://hkhs.hcc.edu.tw/p/406-1015-460742,r7.php
 
 ## RAG 命中的 MOE/CCE 教案（本地 PDF）
@@ -31,7 +31,7 @@
 
 ## 民間/公民社會
 - **安得烈慈善協會食物銀行** https://www.chaca.org.tw/
-- **臺灣全民食物銀行協會** https://foodbank-taiwan.org.tw/
+- **台灣全民食物銀行協會** https://www.foodbank-taiwan.org.tw/393342645599
 
 ## 延伸閱讀（教師）
 - IPCC AR6 WG3 Ch.12 Agriculture, Forestry and Other Land Uses
