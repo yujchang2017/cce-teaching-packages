@@ -20,7 +20,7 @@
 2. Park et al. 2010 森林浴 — https://pubmed.ncbi.nlm.nih.gov/19568835/
 3. White et al. 2019 Sci Reports — https://www.nature.com/articles/s41598-019-44097-3
 4. Costanza et al. 2014 生態系服務價值 — https://www.sciencedirect.com/science/article/abs/pii/S0959378014000685
-5. US EPA Heat Island — https://www.epa.gov/heatislands/using-trees-and-vegetation-reduce-heat-islands
+5. US EPA Heat Island — https://www.epa.gov/heatislands/benefits-trees-and-vegetation
 6. IPBES Global Assessment 2019 — https://www.ipbes.net/global-assessment
 7. WHO Physical Activity Fact Sheet — https://www.who.int/news-room/fact-sheets/detail/physical-activity
 
