@@ -12,7 +12,7 @@
 
 ## MOE RAG 本地教材（實引）
 - 0269_CCE_IV_水資源.pdf（第 1/2 節主引）
-- 0272_CCE_IV_維生基礎系統.pdf（第 3 節）
+- （已移除）0272_CCE_IV_維生基礎系統.pdf：該教材無海洋章節；第 3 節海洋吸熱 91%、吸碳 26% 改引 IPCC AR6 WG1 SPM A.4.2（2021）與 Global Carbon Budget 2024
 - 0100_KEE4_E17_小林村事件簿.pdf（第 4 節 + 任務 6 情緒書寫）
 - 0255_CCE_III_【水】世界.pdf（銜接 Level III）
 - 0224_GS_三、愛水搜查隊.pdf（銜接國小）
