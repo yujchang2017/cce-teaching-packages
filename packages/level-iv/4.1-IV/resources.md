@@ -6,7 +6,7 @@
 ## MOE RAG（Stage 1）
 | PDF | 重點 |
 |---|---|
-| 0182_CCE_氣候難民.pdf | 氣候難民 IPCC 2007 定義、印尼遷都、Inupiat、臺灣沿海沉沒風險 |
+| 0182_CCE_氣候難民.pdf | 氣候難民定義（教材原稱 IPCC 2007，查無出處；改依 EPRS：1985 年起進入公共討論、無國際法定義）、印尼遷都、Inupiat、臺灣沿海沉沒風險 |
 | 0264_CCE_IV_健康.pdf | 健康調適、熱浪對老幼脆弱度、公衛醫療體系負擔 |
 | 0076_KEE3_E11_氣候變遷的危機.pdf | 臺灣因應氣候變遷教育三主軸 |
 | 0164_CCE_地球的暖化難題.pdf | 損失與損害條款、氣候公平討論 |
@@ -27,4 +27,4 @@
 | IPCC AR6 WGII（引用於 WHO） | https://www.ipcc.ch/report/ar6/wg2/ | high |
 | UNHCR — Climate Change & Displacement | https://www.unhcr.org/what-we-do/build-better-futures/environment-disasters-and-climate-change | high（WebFetch 403；僅作參考）|
 
-備註：WebFetch 預算內實取得 WHO 原始數據；IPCC 與 UNHCR 頁面返回 CSS／403，使用 WHO 轉述之 AR6 統計（36 億人、15 倍）為主。
+備註：WebFetch 預算內實取得 WHO 原始數據；IPCC 與 UNHCR 頁面返回 CSS／403，使用 WHO 轉述之 AR6 統計（約 33–36 億人、15 倍）為主。
