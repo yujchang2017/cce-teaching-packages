@@ -2,11 +2,11 @@
 
 ## 權威機構來源（7 筆，皆非 Wikipedia）
 - IPBES Global Assessment Report on Biodiversity and Ecosystem Services (2019) — https://www.ipbes.net/global-assessment
-- FAO State of World Fisheries and Aquaculture (SOFIA) 2022 — https://www.fao.org/state-of-fisheries-aquaculture
+- FAO State of World Fisheries and Aquaculture (SOFIA) 2026 — https://www.fao.org/state-of-fisheries-aquaculture
 - IUCN Red List of Threatened Species — https://www.iucnredlist.org/
 - CITES – Convention on International Trade in Endangered Species — https://cites.org/
 - CBD Kunming-Montreal Global Biodiversity Framework (2022) — https://www.cbd.int/gbf/
-- US NPS – Yellowstone Wolf Restoration — https://www.nps.gov/yell/learn/nature/wolves.htm
+- US NPS – Yellowstone Wolf Restoration — https://www.nps.gov/yell/learn/nature/wolf.htm
 - 行政院農業部 林業及自然保育署 — https://www.forest.gov.tw/
 
 ## MOE RAG 本地教材（實引）
