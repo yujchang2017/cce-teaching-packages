@@ -32,7 +32,7 @@
 - 0214_CCE_食在現代.pdf（綠色消費、地產地消）
 - 0266_CCE_IV_土地利用.pdf（綠色城市政策工具）
 - 0076_KEE3_E11_氣候變遷的危機.pdf（節能減碳政策、中央地方合作）
-- 0300_KEE_III_臺灣能源發電現況.pdf（火力、空污、98% 能源進口）
+- 0300_KEE_III_臺灣能源發電現況.pdf（火力、空污、能源進口；文件寫 98%，最新 2025 年為 95.4%，經濟部能源署）
 
 ## 學生延伸（中英雙語）
 - Our World in Data — CO₂ and Greenhouse Gas Emissions — https://ourworldindata.org/co2-and-greenhouse-gas-emissions
