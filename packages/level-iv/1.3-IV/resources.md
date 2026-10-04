@@ -31,7 +31,7 @@
 |---|---|---|
 | 33 | Project Learning Tree - 12 Videos (carbon) | https://www.plt.org/educator-tips/videos-climate-change-middle-school/ |
 | 34 | NASA Climate Kids Videos | https://climatekids.nasa.gov/menu/watch/ |
-| 54 | NASA Coral Bleaching Game | https://climatekids.nasa.gov/menu/play/ |
+| 54 | （已停用）NASA Coral Bleaching Game：原頁已併入 NASA Science，查無此遊戲（2026-10） | https://climatekids.nasa.gov/menu/play/ |
 | 138 | 10 Climate Change Games - Carbon Cycle | https://oregonclimateeducation.org/teacher-guides/10-climate-change-games-for-the-classroom |
 | 203 | NOAA Classroom-ready data (carbon cycling) | https://www.noaa.gov/education/resource-collections/data/classroom-ready |
 
