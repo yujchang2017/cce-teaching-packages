@@ -7,7 +7,7 @@
 - UNEP – Adaptation Gap Report 2023 — https://www.unep.org/resources/adaptation-gap-report-2023
 - World Bank – Groundswell Part 2: Acting on Internal Climate Migration (2021) — https://www.worldbank.org/en/news/press-release/2021/09/13/climate-change-could-force-216-million-people-to-migrate-within-their-own-countries-by-2050
 - UNFCCC – CBDR & Paris Agreement — https://unfccc.int/process-and-meetings/the-paris-agreement
-- 中華民國環境部 氣候變遷署（含《氣候變遷因應法》、公正轉型、八大調適領域） — https://www.cca.gov.tw/
+- 中華民國環境部 氣候變遷署（含《氣候變遷因應法》、公正轉型、國家調適行動計畫 7 個調適面向加能力建構） — https://www.cca.gov.tw/
 
 ## MOE RAG 本地教材（實引）
 - 0270_CCE_IV_海岸.pdf — 第 1 節海岸原住民與漁村脆弱
@@ -24,8 +24,8 @@
 ## 延伸 NGO / 青年組織
 - 臺灣青年氣候聯盟 TWYCC — https://twycc.org.tw/
 - Fridays for Future — https://fridaysforfuture.org/
-- Juliana v. United States 青年氣候訴訟案
-- 葡萄牙 Duarte Agostinho 等 6 青年訴 32 國案（ECHR）
+- Juliana v. United States 青年氣候訴訟案（2025-03-24 美國最高法院拒絕受理而終結）
+- 葡萄牙 Duarte Agostinho 等 6 青年訴 32 國案（ECHR，2024-04-09 裁定不受理；同日 KlimaSeniorinnen 訴瑞士案判瑞士違反公約第 8 條）
 
 ## 檔案結構
 ```
