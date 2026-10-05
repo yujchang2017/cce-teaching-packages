@@ -29,10 +29,10 @@
 - **814 公平貿易：** 確保生產者獲得公平報酬（教師備課延伸）
 
 ## 推薦繪本（臺灣可取得）
-- 《The Earth Book》Todd Parr（對應 0131 RAG）
-- 《Gabby and Grandma Go Green》Monica Welling（對應 0079 RAG）
-- 《阿公的樹》或《山豬學校，飛鼠大學》（原住民土地倫理）
-- 《地球發燒了》兒童氣候繪本
+- 《The Earth Book》（Todd Parr 著，Little, Brown，2010，英文版；對應 0131 RAG）
+- 《Gabby and Grandma Go Green》（Monica Wellington 著，Dutton Children's Books，2011，英文版；對應 0079 RAG）
+- 《山豬學校，飛鼠大學》（亞榮隆．撒可努著，耶魯國際文化，2005；散文，非繪本，教師可選段落講述；原住民土地倫理）
+- 故事導讀《地球發燒了》（教育部教材 0163，非市售繪本）
 
 ## 歌謠建議
 - 《我有一雙小小手》（暖身）
