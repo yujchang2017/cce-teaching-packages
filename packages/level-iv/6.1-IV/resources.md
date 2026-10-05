@@ -25,6 +25,6 @@
 7. WHO Physical Activity Fact Sheet — https://www.who.int/news-room/fact-sheets/detail/physical-activity
 
 ## 建議延伸閱讀
-- 吳明益《複眼人》
-- E.O. Wilson《Biophilia》
-- Richard Louv《失去山林的孩子》
+- 吳明益《複眼人》（新經典文化；長篇小說，宜由教師選段使用）
+- E.O. Wilson《Biophilia》（Harvard University Press, 1984；英文原著，臺灣未見中譯本）
+- 理查．洛夫（Richard Louv）《失去山林的孩子》（野人文化）
