@@ -3,11 +3,12 @@
 ## 權威機構數據（Web）
 | 來源 | URL | 用途 |
 |---|---|---|
-| Circle Economy – Circularity Gap Report 2024 | https://www.circularity-gap.world/2024 | 全球循環率 7.2%、物料消耗 500 Gt |
-| UNEP – Global Resources Outlook 2024 | https://www.unep.org/resources/Global-Resources-Outlook-2024 | 循環經濟降 39% 溫室氣體 |
-| 中華民國環境部 資源循環署 | https://www.moenv.gov.tw/ | 台灣回收率 60%、人均 1.1 公斤/日 |
-| Ellen MacArthur Foundation – A New Textiles Economy | https://www.ellenmacarthurfoundation.org/a-new-textiles-economy | 快時尚 1,000 億件、<1% 回收 |
-| European Commission – Circular Economy Action Plan | https://environment.ec.europa.eu/strategy/circular-economy-action-plan_en | 歐盟 +0.5% GDP、70 萬新工作 |
+| Circle Economy – Circularity Gap Report 2024 | https://www.circle-economy.com/knowledge-hub/article/8V_3 | 全球循環率 7.2%、物料消耗 500 Gt（5,000 億公噸） |
+| UNEP IRP – Global Resources Outlook 2024 | https://www.resourcepanel.org/reports/global-resources-outlook-2024 | 物料開採與加工占溫室氣體逾 55%；物料使用成長可比歷史趨勢少 30% |
+| Circle Economy – Circularity Gap Report 2021 | https://www.circle-economy.com/knowledge-hub/article/wJkF | 循環策略可減 39% 溫室氣體 |
+| 中華民國環境部 開放資料 STAT_P_126 | https://data.moenv.gov.tw/dataset/detail/STAT_P_126 | 台灣一般廢棄物回收率 58.31%、每人每日 1.36 公斤（2023） |
+| Ellen MacArthur Foundation – A New Textiles Economy | https://www.ellenmacarthurfoundation.org/a-new-textiles-economy | 全球一年賣出 1,000 億件衣服（2015）、材料 <1% 回收成新衣 |
+| European Commission – Circular Economy Action Plan, COM(2020) 98 | https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:52020DC0098 | 研究估計：有潛力 +0.5% GDP、約 70 萬新工作（EUR-Lex 可能需瀏覽器驗證） |
 
 ## MOE RAG 命中
 | PDF | 用途 |
@@ -29,4 +30,4 @@
 ## 延伸閱讀（教師）
 - iFixit Repair Guides: https://www.ifixit.com/
 - Repair Café International: https://www.repaircafe.org/
-- 春池玻璃 / W Glass: https://www.springpoolglass.com/
+- 春池玻璃 / W春池計畫: https://springpoolglass.com/

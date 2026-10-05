@@ -11,7 +11,7 @@
 ## map.csv 資源
 | ID | 類型 | 名稱 | URL | 用途 |
 |---|---|---|---|---|
-| 237 | game | SAVIOURS 氣候變遷調適遊戲 | https://climatechange.tw/Home/getFileByNewId/9b666f41-73dd-496f-95ab-9d2f88c77b8d | 第 2 節脆弱度桌遊 |
+| 237 | game | SAVIOURS 氣候變遷調適遊戲 | https://climatechange.moe.edu.tw/Home/getFileByNewId/9b666f41-73dd-496f-95ab-9d2f88c77b8d | 第 2 節脆弱度桌遊 |
 | 234 | game | 關鍵時刻 氣候變遷桌遊 | https://visionproject.org.tw/article_detail.php?id=6791 | 青少年適用 |
 | 92 | game | Climate Action Game (CAFOD) | https://cafod.org.uk/education/secondary-and-youth-resources/games/climate-action-game | 弱勢族群氣候模擬 |
 | 267 | curriculum | SDGs13 氣候變遷與災害 | https://www.ntsec.edu.tw/liveSupply/detail.aspx?a=6829&cat=6841&p=1&lid=20430&print=1 | 十二年國教課綱 |

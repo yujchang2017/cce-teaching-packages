@@ -34,7 +34,7 @@
 
 **map.csv 資源（≥2）：**
 - 【map #500】「聖誕購了沒 地球健康正大打折扣」動畫（SDG 12）— <https://lihi.cc/gcnM0>
-- 【map #281】ClimateGeekology Games（含 Greenwashing 遊戲）— <https://www.climategeekology.com/resources>
+- 【map #281】ClimateGeekology Games— <https://www.climategeekology.com/resources>
 - 【map #541】Green Team Classroom 學生領導行動工具包 — King County
 
 **MOE RAG 教案（≥1）：**
@@ -43,7 +43,7 @@
 - 〈0044_KEE1_U6 被忽視的生態智慧〉媒體與社群網路如何影響公共意見
 
 **data_card 數據（≥3）：**
-dp1 電子垃圾 6,200 萬公噸／dp2 食物浪費 10.5 億公噸／dp3 快時尚 2,700L 一件T／dp5 臺灣環保標章 130+ 類／dp7 手機壽命 2.5-3 年
+dp1 電子垃圾 6,200 萬公噸／dp2 食物浪費 10.5 億公噸／dp3 快時尚 2,700L 一件T／dp5 臺灣環保標章 14 大類／dp7 手機壽命約 3 年（歐洲）
 
 ---
 
@@ -59,7 +59,7 @@ dp1 電子垃圾 6,200 萬公噸／dp2 食物浪費 10.5 億公噸／dp3 快時�
 | 30-40 | 共享 | 各組 60 秒報告；教師引導比較：哪些管道對青少年影響最大？ | **形成性評量②**：同儕互評（1 句優點+1 題提問） |
 | 40-45 | 反思 | 個人書寫：「我每天接觸哪幾個管道？哪一個最常影響我的購買？」 | 連結 worksheet Q1 |
 
-**差異化**：給寫作困難學生預先提供 6 個管道選項卡；給高階學生追加「計算：你一天暴露於廣告幾次？」（全球平均約 4,000-10,000 次）。
+**差異化**：給寫作困難學生預先提供 6 個管道選項卡；給高階學生追加：請學生自己記錄一趟放學路上看到幾則廣告，並討論怎麼算才算一次。
 
 ---
 
@@ -147,4 +147,4 @@ dp1 電子垃圾 6,200 萬公噸／dp2 食物浪費 10.5 億公噸／dp3 快時�
 - map.csv：#500、#281、#541
 - UNEP/UN：SDG 12、Food Waste Index 2024、Fashion Alliance
 - 歐盟：Right to Repair Directive 2024
-- 臺灣：環境部綠色生活網 <https://greenliving.moenv.gov.tw/>
+- 臺灣：環境部淨零綠生活資訊平台 <https://greenlifestyle.moenv.gov.tw/greenLabel/GreenMarkIntroFirst>

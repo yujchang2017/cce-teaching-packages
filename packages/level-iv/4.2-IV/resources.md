@@ -9,7 +9,7 @@
 - 內政部消防署 — https://www.nfa.gov.tw/
 - 國家災害防救科技中心 NCDR — https://www.ncdr.nat.gov.tw/
 - 教育部防災教育資訊網 — https://disaster.moe.edu.tw/
-- 環境部 國家氣候變遷調適行動方案 — https://www.cca.gov.tw/information-service/publications/national-adaptation-plans.html
+- 行政院 核定國家氣候變遷調適行動計畫（112–115 年） — https://www.ey.gov.tw/Page/448DE008087A1971/31b2cd9e-4e72-45a4-b153-6cb71a940018
 - Red Cross Climate Centre — https://www.climatecentre.org/
 
 ## MOE RAG 本地教材（實引）

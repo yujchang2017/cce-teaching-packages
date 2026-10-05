@@ -20,7 +20,7 @@
 |---|---|---|---|
 | 500 | video | 聖誕購了沒 SDG 12 | <https://lihi.cc/gcnM0> |
 | 281 | activity | ClimateGeekology Games | <https://www.climategeekology.com/resources> |
-| 259 | game | SUSTAINABLE CITIES | <https://gamesforchange.org/studentchallenge/sustainable-cities/> |
+| 259 | game | Games for Change 學習資源（原 SUSTAINABLE CITIES 頁已移除） | <https://learn.gamesforchange.org/> |
 | 541 | activity | Green Team Classroom | <https://your.kingcounty.gov/dnrp/library/solid-waste/Programs/green-schools/activities-climate-change.pdf> |
 
 ## 4. 權威資料來源
@@ -31,8 +31,10 @@
 | UNEP | UN Alliance for Sustainable Fashion | <https://www.unep.org/news-and-stories/press-release/un-alliance-aims-put-fashion-path-sustainability> |
 | UN | SDG 12 Sustainable Consumption | <https://www.un.org/sustainabledevelopment/sustainable-consumption-production/> |
 | European Parliament | Right to Repair 2024 | <https://www.europarl.europa.eu/news/en/headlines/society/20220331STO26410/> |
-| 中華民國環境部 | 綠色生活資訊網 | <https://greenliving.moenv.gov.tw/> |
-| EEB | Planned Obsolescence 研究 | <https://eeb.org/library/coolproducts-report/> |
+| European Commission | Directive (EU) 2024/1799 修繕權指令 | <https://commission.europa.eu/law/law-topic/consumer-protection-law/directive-repair-goods_en> |
+| European Parliament | 紡織生產與廢棄物的環境影響 | <https://www.europarl.europa.eu/topics/en/article/20201208STO93327/the-impact-of-textile-production-and-waste-on-the-environment-infographics> |
+| 中華民國環境部 | 淨零綠生活資訊平台（環保標章） | <https://greenlifestyle.moenv.gov.tw/greenLabel/GreenMarkIntroFirst> |
+| EEB | 拋棄式手機的氣候成本（2019） | <https://eeb.org/en/revealed-the-climate-cost-of-disposable-smartphones/> |
 
 ## 5. 產出
 ```

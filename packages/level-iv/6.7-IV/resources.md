@@ -3,12 +3,13 @@
 驗證日期：2026-04-16
 
 ## 權威國際來源
-- UNEP《Global Waste Management Outlook 2024》: https://www.unep.org/resources/global-waste-management-outlook-2024
+- UNEP《Global Waste Management Outlook 2024》: https://www.unep.org/resources/global-waste-management-outlook-2024（執行摘要 PDF：https://www.iswa.org/wp-content/uploads/2024/07/ISWA-UNEP-GWMO2024-Exec-Summary-A4.pdf）
 - EU《Waste Framework Directive 2008/98/EC》: https://environment.ec.europa.eu/topics/waste-and-recycling/waste-framework-directive_en
-- Zero Waste International Alliance（ZWIA）定義: https://zwia.org/zero-waste-definition/
+- Zero Waste International Alliance（ZWIA）定義: https://zwia.org/zero-waste-definition/ ；企業原則（超過 90% 轉離掩埋場）: https://zwia.org/zero-waste-business-principles/
 
 ## 臺灣政府／教育部資源
-- 中華民國環境部 — 資源循環零廢棄: https://www.moenv.gov.tw/
+- 中華民國環境部 — 資源循環重要業務（五大政策面向）: https://www.moenv.gov.tw/affairs/resource-circulation/3040.html
+- 環保署新聞稿（2012-08-22，人均垃圾清運量）: https://enews.moenv.gov.tw/moenv-news/zh-tw/News/7522
 - 環境部「淨零綠生活」行動指南
 - 教育部十二年國教課綱 — 環境教育議題實質內涵（E3/J3 資源循環利用）
 

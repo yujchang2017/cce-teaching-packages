@@ -4,7 +4,7 @@
 | 文件 | 用途 |
 |---|---|
 | 0043_KEE1_U5_科技過後.pdf | 『告解時間』可轉化為情緒書寫 |
-| 0159_CCE_國際合作食在必行.pdf | 台灣大學生『氣候共學堂』青年行動案例（第4節） |
+| 0159_CCE_國際合作食在必行.pdf | 2019-05-24 氣候大遊行四大訴求與同日學生、青年團體（含 TWYCC）共同發起的『氣候共學堂』（第4節） |
 | 0091_KEE3_J3_氣候變變變.pdf | 國中氣候變遷社會科教案連結 |
 | 0066_KEE2_J2_我們的未來不是夢.pdf | 『環境的哀愁』呼應氣候悲傷 |
 
@@ -20,7 +20,7 @@
 | Hickman et al. 2021, Lancet Planetary Health | https://doi.org/10.1016/S2542-5196(21)00278-3 | dp1/2/3 (59%/45%/75%/56%) |
 | WHO Climate change and health fact sheet | https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health | dp4/5 (質性 + 36 億) |
 | White et al. 2019, Scientific Reports | https://www.nature.com/articles/s41598-019-44097-3 | dp6 (120 分/週) |
-| Schwartz et al. 2022, Current Psychology | https://link.springer.com/article/10.1007/s12144-022-02874-w | dp7 (集體行動) |
+| Schwartz et al. 2022, Current Psychology | https://link.springer.com/article/10.1007/s12144-022-02735-6 | dp7 (集體行動與氣候焦慮、憂鬱症狀關聯較弱；相關性研究) |
 
 ## 在地資源（教師可推薦）
 - 台灣青年氣候聯盟 TWYCC

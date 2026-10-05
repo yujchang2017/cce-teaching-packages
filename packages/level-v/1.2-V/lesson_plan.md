@@ -53,8 +53,8 @@
 | 時間 | 活動 | 師生互動 | 使用資源 | LO |
 |---|---|---|---|---|
 | 5′ | **回顧快測**：上節 GWP-100 五題配對 | 即時數據回饋 | — | C2, C3 |
-| 15′ | **GWP 深入**：GWP-20 vs GWP-100 差異、政策選擇的時間尺度效應；以 CH₄ 為例：GWP-20=81 vs GWP-100=28 | 教師講述 + 學生在 worksheet §4 計算練習（10 噸 CH₄ = ? 噸 CO₂e） | data_card dp3；worksheet §4 | C3 |
-| 12′ | **全球排放餅圖分析**：574 億噸 CO₂e 分佈（CO₂ 74%, CH₄ 18%, N₂O 4%, F-gases 2%） | 學生繪製餅圖；討論「若只減 CO₂，最多砍 74%」的意涵 | data_card dp4；map.csv Row 48 (greenhouse lessons) | C3, C6 |
+| 15′ | **GWP 深入**：GWP-20 vs GWP-100 差異、政策選擇的時間尺度效應；以 CH₄ 為例：GWP-20 約 80 vs GWP-100 約 27–30（IPCC AR6） | 教師講述 + 學生在 worksheet §4 計算練習（10 噸 CH₄ = ? 噸 CO₂e） | data_card dp3；worksheet §4 | C3 |
+| 12′ | **全球排放餅圖分析**：574 億噸 CO₂e 分佈（UNEP 排放差距報告 2023；CO₂ 74%, CH₄ 約 20%, N₂O 4%, F-gases 2%） | 學生繪製餅圖；討論「若只減 CO₂，最多砍 74%」的意涵 | data_card dp4；map.csv Row 48 (greenhouse lessons) | C3, C6 |
 | 10′ | **臭氧層 vs 氣候變遷**：CFCs 的雙重角色——破壞臭氧亦是強效 GHG（GWP 4,660-14,400）；蒙特婁議定書 99% 削減成功 | 學生在 worksheet §5 比較蒙特婁 vs 巴黎協定結構差異 | data_card dp8 | C2, C5 |
 | 8′ | **資料詮釋活動**：NOAA Keeling Curve 2020-2024 年際變化——COVID 封城年為何僅微降？ | 小組討論並提出至少 2 個解釋 | data_card dp1；worksheet §6 | C3, C6 |
 
@@ -71,7 +71,7 @@
 | 8′ | **淨零排放概念剖析**：定義、碳中和 vs 淨零差異、移除技術（森林碳匯/DAC/BECCS/海洋） | 教師講述；學生在 worksheet §7 比較碳中和 vs 淨零 | data_card dp6 | C4 |
 | 12′ | **國際治理架構**：UNFCCC (1992) → 京都 (1997) → 巴黎 (2015) → COP28-29；IPCC 三工作組；NDC 棘輪機制 | 學生在學習單 §8 建構時間軸 + 關係圖；引用 MOE 教材 | data_card dp5；RAG: 0177_CCE_氣候變遷.pdf (MOE #2)；RAG: 0076_KEE3_E11_氣候變遷的危機.pdf | C5 |
 | 12′ | **臺灣 2050 淨零路徑**：《氣候變遷因應法》2023 修法、2.87 億噸 CO₂e、人均 12 噸、2030 減量 24±1% | 學生分析臺灣 vs 全球人均排放；辯論「非締約國是否有減碳責任？」 | data_card dp7；RAG: 0176_CCE_正負2度C.pdf (MOE #3) | C5, C6, S1 |
-| 10′ | **溫度推估三情境**：現行政策 2.6°C / NDC 全達成 2.2°C / 淨零承諾 1.9°C | 學生在 worksheet §9 判讀差距並撰寫政策建議 | data_card dp5 | C5, C6 |
+| 10′ | **溫度推估三情境**：現行政策 2.6°C（只達成 NDC 也約 2.6°C）/ 承諾與長期目標 2.2°C / 樂觀淨零 1.9°C | 學生在 worksheet §9 判讀差距並撰寫政策建議 | data_card dp5 | C5, C6 |
 | 8′ | **倫理兩難辯論**：「歐盟 CBAM 碳關稅是貿易保護主義還是氣候正義？」 | 正反方各 3 分鐘＋交互質詢 2 分鐘 | data_card glossary CBAM；worksheet §10 | S1, C5 |
 
 **形成性評量（本節 ×2）**：

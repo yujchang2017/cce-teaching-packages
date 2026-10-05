@@ -6,7 +6,7 @@
 - IUCN Red List — https://www.iucnredlist.org/ （dp3）
 - FAO FAOSTAT — https://www.fao.org/faostat/ （dp4）
 - 林業及自然保育署（農業部） — https://conservation.forest.gov.tw/ （dp5）
-- WHO Regional Office for Europe – Urban green spaces — https://www.who.int/europe/publications/i/item/9789289052498 （dp6）
+- NHAPS 美國人類活動模式調查（Klepeis et al. 2001）— https://pubmed.ncbi.nlm.nih.gov/11477521/ ；Hunter et al. 2019 自然接觸與皮質醇 — https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2019.00722/full （dp6）
 - IPSI Satoyama Initiative — https://satoyama-initiative.org/ （dp7）
 - IPBES Pollinators Assessment — https://www.ipbes.net/assessment-reports/pollinators （dp8）
 

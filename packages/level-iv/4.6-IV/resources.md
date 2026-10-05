@@ -5,7 +5,15 @@
 - UNESCO 線上課程「Navigating Climate Information with MIL」
 - IPCC AR6 WG1 (2021). https://www.ipcc.ch/report/ar6/wg1/
 - UNESCO/IPSOS 2023 Global Survey on Online Disinformation
-- UNESCO 2024 Digital Content Creators Report
+- UNESCO 2024 Digital Content Creators Report（62% 分享前未做系統性查證）
+- 中央氣象署《氣候監測報告》2025 年 7 月｜https://www.cwa.gov.tw/Data/climate/Watch/mrcs/mrcs202507.pdf
+- Cook, J. (2020) Deconstructing climate science denial（FLICC）｜https://research.monash.edu/en/publications/deconstructing-climate-science-denial/
+- Vosoughi et al. (2018) The spread of true and false news online, Science｜https://www.science.org/doi/10.1126/science.aap9559
+- Martel & Rand (2024) 查核警示標籤效果, Nature Human Behaviour｜https://www.nature.com/articles/s41562-024-01973-x
+- Ho & Schauer (2015) Testing the Marketplace of Ideas, NYU Law Review｜https://nyulawreview.org/issues/volume-90-number-4/testing-the-marketplace-of-ideas/
+- Cook et al. (2013) 97% 共識研究｜https://iopscience.iop.org/article/10.1088/1748-9326/8/2/024024
+- 國家地理 2018 年 8 月號北極熊影片編者按｜https://www.nationalgeographic.com/magazine/article/explore-through-the-lens-starving-polar-bear-photo
+- The Debunking Handbook 2020｜https://skepticalscience.com/docs/DebunkingHandbook2020.pdf
 
 ## 台灣在地
 - 台灣事實查核中心 TFC https://tfc-taiwan.org.tw/

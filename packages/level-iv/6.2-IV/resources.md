@@ -2,7 +2,8 @@
 
 ## 權威出處
 1. IEA《Renewables 2024》— https://www.iea.org/reports/renewables-2024
-2. IRENA《Renewable Capacity Statistics 2025》— https://www.irena.org/Publications/2025/Mar/Renewable-capacity-statistics-2025
+2. IRENA《Renewable Capacity Statistics 2025》— https://www.irena.org/Publications/2025/Mar/Renewable-capacity-statistics-2025（本教案數字採 2025 年 7 月修訂版《Renewable energy highlights》：https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2025/Jul/IRENA_DAT_Renewable_energy_highlights_2025.pdf）
+   - IEA《Batteries and Secure Energy Transitions》（2024，儲能約 6 倍出處）— https://www.iea.org/reports/batteries-and-secure-energy-transitions
 3. 中華民國經濟部能源署 能源統計月報 — https://www.moeaea.gov.tw/
 4. IPCC AR6 WG3 Chapter 6 (Energy Systems) — https://www.ipcc.ch/report/ar6/wg3/chapter/chapter-6/
 5. UNFCCC Paris Agreement — https://unfccc.int/process-and-meetings/the-paris-agreement
@@ -20,7 +21,7 @@
 
 ## 延伸案例
 - 德國 Wildpoldsried 能源村 — https://www.wildpoldsried.de/
-- 臺灣達魯瑪克部落自主電網（臺東魯凱族）
+- 臺灣達魯瑪克部落公民電廠（臺東魯凱族，2017 年成立達魯瑪克綠能公司）
 - 臺灣達德離岸風電場（苗栗海域）
 
 ## 教師備課建議
