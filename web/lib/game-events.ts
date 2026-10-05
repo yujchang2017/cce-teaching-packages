@@ -20,14 +20,14 @@ export function gameEnvironment(host: string, configured?: string): Environment 
 const numbers = new Set(['level','scenario','pairs','totalPairs','tries','accuracy','hints','toyErrors',
   'success','total','successRate','cost','trees','facilities','school','stream','ground','tank','pooled',
   'score','carbonBalance','nutritionBalance','areaBalance','seconds','pure','mixed','professional',
-  'batchSavings','upgrades','changes','stations']);
+  'batchSavings','upgrades','changes','stations','baselineSuccess','chars']);
 export function cleanSummary(input: Summary): Summary {
   const out: Summary = {};
   for (const [key, value] of Object.entries(input)) {
     if (numbers.has(key) && typeof value === 'number' && Number.isFinite(value)) out[key] = Math.round(value * 1000) / 1000;
     if ((key === 'passed' || key === 'tutorial') && typeof value === 'boolean') out[key] = value;
-    if (key === 'phase' && typeof value === 'string' && ['baseline','challenge','design','dismantle'].includes(String(value))) out[key] = value;
-    if (key === 'topic' && typeof value === 'string' && ['combustion','fugitive','electricity'].includes(String(value))) out[key] = value;
+    if (key === 'phase' && typeof value === 'string' && ['baseline','challenge','design','dismantle','quick'].includes(String(value))) out[key] = value;
+    if (key === 'topic' && typeof value === 'string' && ['combustion','mobile','fugitive','scope1','electricity','commute','water','waste','reduction'].includes(String(value))) out[key] = value;
   }
   return out;
 }
@@ -77,11 +77,28 @@ export function createGameEvents(options: {
     send('game_complete', { ...active.meta, ...cleanSummary(input), attempt: count, attemptId: active.id,
       durationMs: Math.max(0, Math.round(now() - active.start)) });
   }
+  // Player left an unfinished round on purpose (e.g. "回到選題").
+  function abandon(input: Summary = {}) {
+    const run = active;
+    active = null;
+    if (!run || run.done || !run.sampled) return;
+    send('game_abandon', { ...run.meta, ...cleanSummary(input), attempt: count, attemptId: run.id,
+      durationMs: Math.max(0, Math.round(now() - run.start)) });
+  }
+  // Reflection reached the required length: only its length is sent, never the text. Once per page or reset.
+  let reflected = false;
+  function reflect(chars: number) {
+    if (reflected || !enabled()) return;
+    reflected = true;
+    view();
+    send('game_reflect', cleanSummary({ chars }));
+  }
   function consentChanged() {
     // Never reconstruct or upload activity performed before consent / during opt-out.
     if (active) active.sampled = false;
     previous = null;
     view();
   }
-  return { view, start, ensureStart, complete, cancel: () => { active = null; }, consentChanged };
+  return { view, start, ensureStart, complete, abandon, reflect,
+    cancel: () => { active = null; reflected = false; }, consentChanged };
 }

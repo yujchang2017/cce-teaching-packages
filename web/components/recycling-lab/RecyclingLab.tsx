@@ -45,6 +45,8 @@ export default function RecyclingLab(){
  const blockedBy=step===1?obstacle(working,state,selected,part.direction):undefined;
  const nextPart=nextAccessible(working,state);
  const removed=step>=3?replayRemoved:state.removed;
+ const reflected=step===4&&reflection.trim().length>=15;
+ useEffect(()=>{if(reflected)telemetry.reflect(reflection.trim().length);},[reflected]);
  const report=`為回收而設計｜5.2-III\n改版：${design.map(id=>upgrades.find(u=>u.id===id)!.name).join('、')||'原版'}\n標準作業：${compare.before.seconds} → ${compare.after.seconds} 秒／台\n回收淨成本：${compare.before.cost} → ${compare.after.cost} 點／台\n100 台扣除改版及新增製造費後節省：${compare.batchSavings} 點\n專業處理待後續：${compare.after.professional} g／台（不視為已再生）\n我的解釋：${reflection}\n所有秒數、質量、成本與材料接收條件為教學模型；不代表實際作業指示或報價。`;
  return <main className={`rc-lab rc-v2 rc-step-${step}`} >
   <nav className="rc-top"><Link href="/package/5.2-III/">← 返回教案</Link><span>主題五 · 後碳經濟</span><span>約 15–20 分鐘</span></nav>

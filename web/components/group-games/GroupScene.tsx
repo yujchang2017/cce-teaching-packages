@@ -26,7 +26,7 @@ export default function GroupScene(props:Props){
       const mat=(color:number,opacity=1)=>new T.MeshStandardMaterial({color,roughness:.85,transparent:opacity<1,opacity});
       const mesh=(g:Three.BufferGeometry,m:Three.Material,parent:Three.Object3D,x=0,y=0,z=0)=>{const o=new T.Mesh(g,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o;};
       function clear(g:Three.Group){g.traverse(o=>{const m=o as Three.Mesh;m.geometry?.dispose();if(m.material)(Array.isArray(m.material)?m.material:[m.material]).forEach(v=>{const map=(v as Three.MeshStandardMaterial).map;map?.dispose();v.dispose();});});g.clear();}
-      function label(text:string,x:number,y:number,z:number,color:string){const canvas=document.createElement('canvas');canvas.width=320;canvas.height=80;const ctx=canvas.getContext('2d')!;ctx.fillStyle='#fffdf0';ctx.beginPath();ctx.roundRect(3,3,314,74,12);ctx.fill();ctx.fillStyle=color;ctx.font='bold 34px Microsoft JhengHei, sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,160,40);const tex=new T.CanvasTexture(canvas);tex.colorSpace=T.SRGBColorSpace;const sprite=new T.Sprite(new T.SpriteMaterial({map:tex,depthTest:false,toneMapped:false}));sprite.position.set(x,y,z);sprite.scale.set(props.mode==='heat'?1.8:3,props.mode==='heat'?.45:.75,1);environment.add(sprite);}
+      function label(text:string,x:number,y:number,z:number,color:string){const canvas=document.createElement('canvas');canvas.width=320;canvas.height=80;const ctx=canvas.getContext('2d')!;ctx.fillStyle='#fffdf0';ctx.beginPath();ctx.roundRect(3,3,314,74,12);ctx.fill();ctx.fillStyle=color;ctx.font=`bold ${text.length<=1?64:34}px Microsoft JhengHei, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,160,40);const tex=new T.CanvasTexture(canvas);tex.colorSpace=T.SRGBColorSpace;const sprite=new T.Sprite(new T.SpriteMaterial({map:tex,depthTest:false,toneMapped:false}));sprite.position.set(x,y,z);sprite.scale.set(props.mode==='heat'?1.8:3,props.mode==='heat'?.45:.75,1);environment.add(sprite);}
       function updateWorld(){
         clear(environment);for(let i=pickables.length-1;i>=0;i--)if(!String(pickables[i].userData.pick).startsWith('agent:'))pickables.splice(i,1);road=[];
         for(const s of latest.current.world.shapes){
@@ -56,7 +56,7 @@ export default function GroupScene(props:Props){
         });
         if(props.mode==='animals')for(let i=0;i<2;i++){const car=new T.Group();actors.add(car);cars.push(car);mesh(new T.BoxGeometry(.48,.3,.85),mat(i?0xcc8a61:0x718a9d),car);mesh(new T.BoxGeometry(.38,.2,.44),mat(0xe8dfcc),car,0,.22,0);}
       }
-      function view(){const p=latest.current;camera.position.set(...(p.view==='top'?(props.mode==='heat'?[0,17,.001]:[0,25,.001]):p.view==='side'?(props.mode==='heat'?[9,5,12]:[13,6,18]):props.mode==='heat'?[0,13,12]:[14,16,19]) as [number,number,number]);controls.target.set(0,.2,0);controls.update();}
+      function view(){const p=latest.current;camera.position.set(...(p.view==='top'?(props.mode==='heat'?[0,15,.001]:[0,25,.001]):p.view==='side'?(props.mode==='heat'?[9,5,12]:[13,6,18]):props.mode==='heat'?[0,10.5,9.5]:[14,16,19]) as [number,number,number]);controls.target.set(0,.2,0);controls.update();}
       api.current={world:updateWorld,agents:updateAgents,view};updateWorld();updateAgents();view();
       const ray=new T.Raycaster(),pointer=new T.Vector2();let down=[0,0];
       const onDown=(e:PointerEvent)=>{down=[e.clientX,e.clientY];};
@@ -83,5 +83,5 @@ export default function GroupScene(props:Props){
   useEffect(()=>{api.current?.world();},[props.world,status]);
   useEffect(()=>{api.current?.agents();},[props.run,status]);
   useEffect(()=>{api.current?.view();},[props.view,props.viewNonce,status]);
-  return <div className="gg-canvas-wrap"><div className="gg-canvas" ref={host}/>{status!=='ready'&&<div className="gg-canvas-message">{status==='loading'?'正在建立立體模擬…':'此裝置無法顯示 3D，仍可用操作卡配置、模擬及閱讀個體紀錄。'}</div>}<div className="gg-canvas-hint">拖曳旋轉 · 滾輪縮放 · 點角色追蹤{props.mode==='heat'?' · 點土地選格':''}</div></div>;
+  return <div className="gg-canvas-wrap"><div className="gg-canvas" ref={host}/>{status!=='ready'&&<div className="gg-canvas-message">{status==='loading'?'正在建立立體模擬…':'此裝置無法顯示 3D，仍可用操作卡配置、模擬及閱讀個體紀錄。'}</div>}<div className="gg-canvas-hint">拖曳旋轉 · 滾輪縮放 · 點角色追蹤{props.mode==='heat'?' · 點白色 A–F 選位置':''}</div></div>;
 }

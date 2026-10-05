@@ -1,19 +1,19 @@
 import test, {beforeEach,afterEach} from 'node:test';
 import assert from 'node:assert/strict';
 import {track,setConsent,hasConsent,consentChoice,CONSENT_EVENT} from './track.ts';
-const keys=['window','localStorage','sessionStorage','document','navigator','fetch'];
+const keys=['window','localStorage','sessionStorage','document','navigator','fetch','location'];
 let descriptors, previousURL, beacon, requests, local;
 beforeEach(()=>{
   descriptors=new Map(keys.map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));
   previousURL=process.env.NEXT_PUBLIC_TRACK_URL;
   process.env.NEXT_PUBLIC_TRACK_URL='https://example.invalid/collector';
   local=new Map();const session=new Map();beacon=[];requests=[];
-  const storage=map=>({getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v)});
+  const storage=map=>({getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v),removeItem:k=>map.delete(k)});
   const window=new EventTarget();window.screen={width:390};
   for(const [key,value] of Object.entries({window,localStorage:storage(local),sessionStorage:storage(session),
     document:{referrer:'https://example.invalid/source?do-not-send=yes'},
     navigator:{userAgent:'test-agent',sendBeacon:(url,body)=>{beacon.push({url,body});return true;}},
-    fetch:(...args)=>{requests.push(args);return Promise.resolve({});}}))
+    fetch:(...args)=>{requests.push(args);return Promise.resolve({});},location:{search:''}}))
     Object.defineProperty(globalThis,key,{value,configurable:true,writable:true});
 });
 afterEach(()=>{
@@ -34,6 +34,15 @@ test('shared consent event fires only on change and payload retains existing she
   assert.equal(payload.resource,'6.6-III');assert.equal(payload.meta.score,87);
   assert.equal(payload.meta.ref,'example.invalid');assert.equal(payload.meta.sw,390);assert.ok(payload.meta.sid);
   assert.equal(beacon[0].body.type,'text/plain;charset=utf-8');assert.equal(requests.length,0);
+});
+test('device tag: remembered before consent, sent only with consent, invalid ignored, clear removes',async()=>{
+  location.search='?device=Expo-A';track({event:'view_home'});
+  assert.equal(local.get('cce_device_v1'),'expo-a');assert.equal(beacon.length,0);assert.equal(local.has('cce_uuid_v1'),false);
+  location.search='';setConsent(true);track({event:'view_home'});
+  assert.equal(JSON.parse(await beacon[0].body.text()).meta.device,'expo-a');
+  location.search='?device=<script>';track({event:'view_home'});assert.equal(local.get('cce_device_v1'),'expo-a');
+  location.search='?device=clear';track({event:'view_home'});assert.equal(local.has('cce_device_v1'),false);
+  assert.equal('device' in JSON.parse(await beacon.at(-1).body.text()).meta,false);
 });
 test('beacon queue rejection falls back to fetch; asynchronous failure is swallowed',async()=>{
   setConsent(true);navigator.sendBeacon=()=>false;
