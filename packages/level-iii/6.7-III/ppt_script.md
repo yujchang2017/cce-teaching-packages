@@ -121,7 +121,7 @@
 ## Slide 21 — 延伸閱讀與資源【1】
 - 環境部資源循環署 <https://recycle.moenv.gov.tw/>
 - UNEP Food Waste Index 2024
-- 台灣好書：《再見！塑膠》《誰把地球搞砸了？》
+- 繪本：教師可自選主題相符的繪本，例如《垃圾車來了！》（凱特．麥克穆蘭、吉姆．麥克穆蘭著，小天下）
 
 ## Slide 22 — 延伸閱讀與資源【2】
 - US EPA Composting at Home <https://www.epa.gov/recycle/composting-home>
