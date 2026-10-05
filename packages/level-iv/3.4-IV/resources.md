@@ -21,10 +21,14 @@
 ## 權威機構資料（避開 Wikipedia）
 | 來源 | 資料 | URL |
 |---|---|---|
-| UNEP Emissions Gap Report 2023 | 最富10%排放50%、最貧50%排放12% | https://www.unep.org/resources/emissions-gap-report-2023 |
+| UNEP Emissions Gap Report 2023 | 最富10%排放48%、最貧50%排放12%（Chancel 2022，2019 年資料） | https://www.unep.org/resources/emissions-gap-report-2023 |
 | IPCC AR6 SYR 2023 | 2030減43%、2035減60% | https://www.ipcc.ch/report/ar6/syr/ |
-| World Bank Policy Research WP 9417（2020 修訂 Shock Waves） | 最多1.32億人陷貧風險（範圍3,200萬–1.32億） | https://documents1.worldbank.org/curated/en/706751601388457990/pdf/Revised-Estimates-of-the-Impact-of-Climate-Change-on-Extreme-Poverty-by-2030.pdf |
+| World Bank Policy Research WP 9417（2020 修訂 Shock Waves） | 2030 年氣候變遷可能使3,200萬–1.32億人額外陷入極端貧困；高衝擊情境：撒哈拉以南非洲3,970萬、南亞3,570萬、東亞太平洋750萬、拉美580萬 | https://documents1.worldbank.org/curated/en/706751601388457990/pdf/Revised-Estimates-of-the-Impact-of-Climate-Change-on-Extreme-Poverty-by-2030.pdf |
 | WHO Fact Sheet: Climate change and health | 年25萬人死亡 | https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health |
-| FAO/FILAC 2021（拉美區域報告，僅作背景；全球結論改引 IPBES 2019 與世界銀行） | 原住民族管理土地占全球陸地約1/4；約5%人口守護大量生物多樣性（世銀常引用約80%） | https://www.fao.org/newsroom/detail/FAO-UN-new-report-forest-governance-indigenous-tribal-peoples-Latin-America-Caribbean/en |
+| FAO/FILAC 2021（拉美區域報告，僅作背景；全球結論改引 IPBES 2019 與世界銀行） | 拉美原住民族森林治理（背景）；全球數字改用：原住民族約占全球人口6.2%（世界銀行）、傳統擁有／管理／使用／居住的土地至少占全球陸地1/4（IPBES 2019） | https://www.fao.org/newsroom/detail/FAO-UN-new-report-forest-governance-indigenous-tribal-peoples-Latin-America-Caribbean/en |
 | 國發會 臺灣2050淨零排放路徑 | 12項戰略含公正轉型 | https://www.ndc.gov.tw/Content_List.aspx?n=FD76ECBAE77D9811 |
-| IEA World Energy Outlook 2023 | 新興與發展中經濟體潔淨能源投資年需約1.5兆美元（1.4–1.9兆） | https://www.iea.org/reports/world-energy-outlook-2023 |
+| IEA World Energy Outlook 2023 | 中國以外新興與發展中經濟體到2030年代初潔淨能源投資年需約1.5兆美元（1.4–1.9兆） | https://www.iea.org/reports/world-energy-outlook-2023 |
+| OECD（2024） | 已開發國家2022年為開發中國家提供並動員1,159億美元氣候資金 | https://www.oecd.org/en/about/news/press-releases/2024/05/developed-countries-materially-surpassed-their-usd-100-billion-climate-finance-commitment-in-2022-oecd.html |
+| CPI Global Landscape of Climate Finance 2023 | 2021/22 年全球氣候資金年均近1.3兆美元 | https://www.climatepolicyinitiative.org/publication/global-landscape-of-climate-finance-2023/ |
+| UNFCCC COP29（2024） | 新目標：2035年每年至少3,000億美元 | https://unfccc.int/news/cop29-un-climate-conference-agrees-to-triple-finance-to-developing-countries-protecting-lives-and |
+| Carbone 4（2019）Faire sa part | 個人行為做到極致約減25%、一般人預估5–10%、家庭投資最多約20% | https://www.carbone4.com/publication-faire-sa-part |

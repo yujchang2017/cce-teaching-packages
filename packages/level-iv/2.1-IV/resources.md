@@ -26,9 +26,9 @@
 |---|---|---|
 | dp1 | IPBES Global Assessment 2019 | https://www.ipbes.net/global-assessment |
 | dp2 | WWF Living Planet Report 2024 | https://www.worldwildlife.org/publications/living-planet-report-2024 |
-| dp3 | FAO / IPBES Pollinators Assessment | https://www.fao.org/pollination/en/ |
-| dp4 | NIH Human Microbiome Project (Sender et al. 2016) | https://www.hmpdacc.org/ |
-| dp5 | TaiBIF 臺灣生物多樣性資訊機構 | https://www.taibif.tw/ |
+| dp3 | IPBES 2016 授粉者評估（金額）／FAO 授粉頁（75%） | https://www.ipbes.net/article/press-release-pollinators-vital-our-food-supply-under-threat ；https://www.fao.org/pollination/en/ |
+| dp4 | NIH Human Microbiome Project；Sender, Fuchs & Milo 2016 (PLOS Biology) | https://commonfund.nih.gov/hmp ；https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002533 |
+| dp5 | TaiBIF 臺灣生物多樣性資訊機構（2009 文章）；臺灣物種名錄 TaiCOL 統計（2026-10 查詢） | https://portal.taibif.tw/en/article/487/ ；https://taicol.tw/zh-hant/statistics |
 | dp6 | 農業部林業及自然保育署 第四次國家森林資源調查 | https://www.forest.gov.tw/ |
 | dp7 | NOAA Ocean Exploration / eDNA 方法學 | https://oceanexplorer.noaa.gov/ |
 

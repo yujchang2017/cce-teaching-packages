@@ -23,7 +23,7 @@
 
 ## 教學資源
 
-- **data_card.json 數據**：dp1 死亡 25 萬/年、dp2 36 億人 × 15 倍、dp3 熱死 +70%、dp4 糧食 7.7 億、dp5 損害 US$2-4B、dp6 氣候難民在地化。
+- **data_card.json 數據**：dp1 死亡 25 萬/年、dp2 約 33–36 億人 × 15 倍、dp3 熱死 +70%、dp4 糧食 7.7 億、dp5 損害 US$2-4B、dp6 氣候難民在地化。
 - **MOE RAG**：0182_CCE_氣候難民.pdf（氣候難民定義＋臺灣沿海沉沒）；0264_CCE_IV_健康.pdf（熱浪對老幼的脆弱度）。
 - **map.csv**：#94 Harvard Teaching Pack: Climate Change, Migration, and Health；#92 CAFOD Climate action game (vulnerable people)；#47 Doctors for Environment AUS 臨床教學投影片。
 - **權威網址**：WHO Climate & Health Fact Sheet。
@@ -35,7 +35,7 @@
 | 段 | 時間 | 活動 | 教學資源 |
 |---|---|---|---|
 | 引起動機 | 8 | 展示「臺灣沿海 vs. 瑞士山區」空拍對照；問：同樣升溫 1.5°C，誰先失去家？ | 0176 RAG；dp6 |
-| 發展 A | 10 | 播放 WHO 36 億人／15 倍死亡率短影片；學生畫「暴露×敏感×能力」三圓 Venn | dp2 |
+| 發展 A | 10 | 播放 WHO 約 33–36 億人／15 倍死亡率短影片；學生畫「暴露×敏感×能力」三圓 Venn | dp2 |
 | 發展 B | 15 | 分組讀三個 case card：孟加拉漁民 / 菲律賓颱風遺孀 / 臺灣東石阿嬤；完成「誰？為什麼最受影響？」表 | dp6、map#94 |
 | 整合 | 8 | 定義「氣候正義」；板書「排放—衝擊—承擔」三欄 | 教案 0076 |
 | 評量 | 4 | **形成性**：一句話收束「我今天發現的不平等是…」；**總結性**：繳交三案例分析單 | — |

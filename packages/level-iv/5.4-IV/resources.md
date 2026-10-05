@@ -4,6 +4,7 @@
 
 1. **IEA World Energy Outlook 2024** — 全球能源趨勢年度旗艦報告
    https://www.iea.org/reports/world-energy-outlook-2024
+   - 一次能源 620 EJ、化石燃料 81.5%、再生能源含水力 14.6% 的出處為 **Energy Institute《世界能源統計年鑑 2024》** https://www.energyinst.org/statistical-review
 2. **IRENA Renewable Capacity Statistics 2024** — 再生能源裝置容量權威數據
    https://www.irena.org/Publications/2024/Mar/Renewable-capacity-statistics-2024
 3. **IRENA Renewable Power Generation Costs 2023** — LCOE 成本趨勢
@@ -64,4 +65,3 @@
 
 - IPCC AR6 WG3 第 6 章（Energy Systems）中文摘要
 - 台達電子文教基金會 — 氣候行動與低碳建築案例
-- 《能源轉型的十個關鍵課題》（綠色公民行動聯盟）

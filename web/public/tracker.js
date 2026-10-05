@@ -13,6 +13,19 @@
     "https://script.google.com/macros/s/AKfycbxPLOjp2CdUXKJL57r_2YZ2qs2-n5aI2ynpknjLrnW8z0iqc2do-wSQ-LyW0PP7wh1S2A/exec";
   var UUID_KEY = "cce_uuid_v1";
   var CONSENT_KEY = "cce_track_consent_v1";
+  var DEVICE_KEY = "cce_device_v1";
+
+  // 現場裝置標記：網址加 ?device=expo-a 記住這台；?device=clear 清除（與主站 track.ts 同規則）
+  var device = "";
+  try {
+    var rawDevice = new URLSearchParams(location.search).get("device");
+    if (rawDevice !== null) {
+      var tag = rawDevice.trim().toLowerCase();
+      if (tag === "clear") localStorage.removeItem(DEVICE_KEY);
+      else if (/^[a-z0-9][a-z0-9-]{0,31}$/.test(tag)) localStorage.setItem(DEVICE_KEY, tag);
+    }
+    device = localStorage.getItem(DEVICE_KEY) || "";
+  } catch (e) {}
 
   // 沒同意就完全不啟用（連 UUID 都不寫）
   try {
@@ -72,7 +85,7 @@
         uuid: uuid,
         event: event,
         resource: keyId,
-        meta: Object.assign({ pageType: pageType, sid: sessionId, ref: refHost, sw: screenW }, meta || {}),
+        meta: Object.assign({ pageType: pageType, sid: sessionId, ref: refHost, sw: screenW }, device ? { device: device } : {}, meta || {}),
         userAgent: navigator.userAgent,
       });
       if (navigator.sendBeacon) {

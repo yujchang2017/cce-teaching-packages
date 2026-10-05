@@ -2,12 +2,13 @@
 
 ## 國際權威
 - IPCC AR6 WG2 Summary for Policymakers (2022) — https://www.ipcc.ch/report/ar6/wg2/
-- UNDRR Disaster Risk Reduction Terminology — https://www.undrr.org/terminology
+- UNDRR Disaster Risk Reduction Terminology（韌性定義）— https://www.undrr.org/terminology/resilience
+- Arup / Rockefeller Foundation City Resilience Framework（2015，七大特徵出處）— https://www.rockefellerfoundation.org/wp-content/uploads/City-Resilience-Framework-2015.pdf
 - UNFCCC – Global Goal on Adaptation / UAE Framework (COP28, 2023) — https://unfccc.int/topics/adaptation-and-resilience
 - UNEP State of Finance for Nature 2022 — https://www.unep.org/resources/state-finance-nature
 
 ## 臺灣政府/在地
-- 環境部氣候變遷署 — 國家氣候變遷調適行動方案（112-115 年）— https://www.cca.gov.tw/
+- 環境部氣候變遷署 — 國家氣候變遷調適行動計畫（112-115 年）— https://www.cca.gov.tw/information-service/info/3824.html
 - TCCIP 臺灣氣候變遷推估資訊與調適知識平台 — https://tccip.ncdr.nat.gov.tw/
 - 交通部公路局 403 震後重建報告 — https://www.thb.gov.tw/
 

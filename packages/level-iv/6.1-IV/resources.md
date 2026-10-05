@@ -20,11 +20,11 @@
 2. Park et al. 2010 森林浴 — https://pubmed.ncbi.nlm.nih.gov/19568835/
 3. White et al. 2019 Sci Reports — https://www.nature.com/articles/s41598-019-44097-3
 4. Costanza et al. 2014 生態系服務價值 — https://www.sciencedirect.com/science/article/abs/pii/S0959378014000685
-5. US EPA Heat Island — https://www.epa.gov/heatislands/using-trees-and-vegetation-reduce-heat-islands
+5. US EPA Heat Island — https://www.epa.gov/heatislands/benefits-trees-and-vegetation
 6. IPBES Global Assessment 2019 — https://www.ipbes.net/global-assessment
 7. WHO Physical Activity Fact Sheet — https://www.who.int/news-room/fact-sheets/detail/physical-activity
 
 ## 建議延伸閱讀
-- 吳明益《複眼人》
-- E.O. Wilson《Biophilia》
-- Richard Louv《失去山林的孩子》
+- 吳明益《複眼人》（新經典文化；長篇小說，宜由教師選段使用）
+- E.O. Wilson《Biophilia》（Harvard University Press, 1984；英文原著，臺灣未見中譯本）
+- 理查．洛夫（Richard Louv）《失去山林的孩子》（野人文化）

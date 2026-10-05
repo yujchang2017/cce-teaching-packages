@@ -30,8 +30,8 @@ export const teachingGames: readonly TeachingGame[] = [
     keyId: '4.2-III',
     themeNumber: 4,
     title: '一場雨，兩條路：流域實驗室',
-    summary: '旋轉地形、布設設施，再降雨驗證水的去向',
-    minutes: '10–15',
+    summary: '在山坡地圖放 2 個雨水設施，馬上看流進學校的水有沒有變少；想深入可切換全 3D 檢視',
+    minutes: '2–5',
     href: '/missions/water/',
   },
   {
@@ -43,8 +43,8 @@ export const teachingGames: readonly TeachingGame[] = [
   {
     id: 'heat', keyId: '3.2-III', themeNumber: 3,
     title: '涼爽的路：都市降溫實驗室',
-    summary: '用三棵樹改善十字路遮蔭，幫居民接孩子、買食物後回家',
-    minutes: '15–20', href: '/missions/heat/',
+    summary: '在地圖種三棵樹，馬上看多少居民能平安回家；想深入可切換全 3D 檢視',
+    minutes: '2–5', href: '/missions/heat/',
   },
   {
     id: 'recycling', keyId: '5.2-III', themeNumber: 5,

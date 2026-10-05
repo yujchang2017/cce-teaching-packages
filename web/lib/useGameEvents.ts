@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { createGameEvents, gameEnvironment, type GameId } from './game-events';
-import { CONSENT_EVENT, hasConsent, track } from './track';
+import { CONSENT_EVENT, captureDevice, hasConsent, track } from './track';
 
 export function useGameEvents(game: GameId) {
   const [events] = useState(() => createGameEvents({
@@ -11,6 +11,7 @@ export function useGameEvents(game: GameId) {
     send: track,
   }));
   useEffect(() => {
+    captureDevice();
     events.view();
     const changed = () => events.consentChanged();
     const storage = (e: StorageEvent) => { if (e.key === 'cce_track_consent_v1' || e.key === null) changed(); };

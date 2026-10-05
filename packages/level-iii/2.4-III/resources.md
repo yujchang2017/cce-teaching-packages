@@ -27,7 +27,7 @@
 - Global Warming & Our Food System（https://assets.farmsanctuary.org/content/uploads/2019/03/27061445/MSL1.pdf）
 
 ## 建議延伸閱讀與採購管道
-- 友善石虎農作：https://www.cleanwebday.com.tw/（綠色保育標章）
+- 友善石虎農作：https://toaf.org.tw/conservation（綠色保育標章）
 - 主婦聯盟生活消費合作社：https://www.hucc-coop.tw/
 - 上下游新聞市集：https://www.newsmarket.com.tw/
 - 農業部生物多樣性研究所（TBRI）：https://www.tbri.gov.tw/

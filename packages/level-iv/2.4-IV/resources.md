@@ -8,7 +8,7 @@
 - FAO Agroecology Knowledge Hub https://www.fao.org/agroecology/overview/en/
 
 ## 二、臺灣官方資源
-- 中華民國農業部 糧食供需年報 https://www.moa.gov.tw/ws.php?id=8711
+- 中華民國農業部 糧食供需年報 https://agrstat.moa.gov.tw/moasdweb/book/Book.aspx
 - TCCIP 臺灣氣候變遷推估資訊與調適知識平台 https://tccip.ncdr.nat.gov.tw/
 - 環境部 氣候變遷署 https://www.cca.gov.tw/
 

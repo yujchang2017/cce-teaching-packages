@@ -18,11 +18,11 @@
 ## 權威機構數據來源
 | 來源 | 數據 | URL |
 |---|---|---|
-| IPBES Global Assessment 2019 | 100 萬種面臨滅絕；速率快 10–100 倍 | https://www.ipbes.net/global-assessment |
+| IPBES Global Assessment 2019 | 100 萬種面臨滅絕；速率快數十至數百倍 | https://www.ipbes.net/global-assessment |
 | CBD GBO-5 | 20 項愛知子目標 0 項完全達成 | https://www.cbd.int/gbo5 |
 | WWF Living Planet Report 2024 | 脊椎動物族群 -73%（1970–2020） | https://livingplanet.panda.org/ |
-| 農業部林業署 | 臺灣森林覆蓋率 60.71%、219.7 萬 ha | https://www.forest.gov.tw/ |
-| 農業部生物多樣性 | 特有種 植物 26%、脊椎 30% | https://www.biodiv.tw/ |
+| 農業部林業署 | 臺灣森林覆蓋率 60.71%、219.7 萬 ha（第四次全國森林資源調查，2008–2014） | https://www.ey.gov.tw/File/F2FAA3BD1D0B287?A=C |
+| TaiBIF 2009／中研院生物多樣性研究中心 | 特有種 植物約 26%、哺乳類約 71%（2009，含特有亞種） | https://portal.taibif.tw/en/article/487/ |
 
 ## 備註
 - WebFetch: IPBES/forest.gov.tw 部分 403/404，以既知權威數據 + RAG 0268 補足。
