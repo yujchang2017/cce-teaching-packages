@@ -1,6 +1,7 @@
 /** Only playable prototypes belong here. Future concepts live in docs/teaching-games-pilot.md.
  * A package can add a game alongside its worksheet and slides, without changing either asset.
  * Keep href app-relative: Next Link applies the configured GitHub Pages basePath.
+ * Research games hosted outside this site use an absolute https URL instead (see isExternalGame).
  */
 export interface TeachingGame {
   id: string;
@@ -10,14 +11,20 @@ export interface TeachingGame {
   summary: string;
   minutes: string;
   href: string;
+  /** Free-tier hosts sleep when idle; shown on the card so teachers open the game before class. */
+  coldStartNote?: string;
 }
+
+/** Standalone research game (yjesdlab), deployed separately with its own consent and data store. */
+export const PIZZA_GAME_URL = 'https://pizza-153495ced5e7.herokuapp.com/';
 
 export const teachingGames: readonly TeachingGame[] = [
   {
     id: 'pizza', keyId: '6.6-III', themeNumber: 6,
     title: '一人一半，怎麼切？3D 披薩分配實驗室',
     summary: '畫出切線分開披薩，同時兼顧兩份的配料碳足跡與營養分配',
-    minutes: '10–15', href: '/missions/pizza/',
+    minutes: '10–15', href: PIZZA_GAME_URL,
+    coldStartNote: '首次載入約需 10 秒',
   },
   {
     id: 'carbon', keyId: '1.2-III', themeNumber: 1,
@@ -53,6 +60,10 @@ export const teachingGames: readonly TeachingGame[] = [
     minutes: '15–20', href: '/missions/recycling/',
   },
 ];
+
+export function isExternalGame(game: Pick<TeachingGame, 'href'>): boolean {
+  return /^https?:\/\//.test(game.href);
+}
 
 export function getGameForPackage(keyId: string): TeachingGame | undefined {
   return teachingGames.find(game => game.keyId === keyId);
