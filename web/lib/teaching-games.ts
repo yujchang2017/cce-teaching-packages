@@ -17,6 +17,7 @@ export interface TeachingGame {
 
 /** Standalone research game (yjesdlab), deployed separately with its own consent and data store. */
 export const PIZZA_GAME_URL = 'https://pizza-153495ced5e7.herokuapp.com/';
+export const CARBON_GAME_URL = 'https://game-carbon-4ece53c592e9.herokuapp.com/';
 
 export const teachingGames: readonly TeachingGame[] = [
   {
@@ -30,7 +31,8 @@ export const teachingGames: readonly TeachingGame[] = [
     id: 'carbon', keyId: '1.2-III', themeNumber: 1,
     title: '校園碳排偵探：3D 配對任務',
     summary: '找出符合排放主題的相同一對，辨認燃燒、逸散與外購電力，留下玩具',
-    minutes: '10–15', href: '/missions/carbon/',
+    minutes: '10–15', href: CARBON_GAME_URL,
+    coldStartNote: '首次載入約需 10 秒',
   },
   {
     id: 'watershed',
