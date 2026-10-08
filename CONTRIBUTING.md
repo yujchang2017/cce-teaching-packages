@@ -203,6 +203,19 @@ node scripts/apply-readability.mjs --size 112.5         # 指定根字級百分�
 
 驗證方式（2026-10 實測）：本機預覽，投影片以 1280×800（教室投影）、學習單以手機寬 390 逐檔檢查根字級、橫向爆版、投影片內容裁切、是否仍有低於下限的主文小字。Level II–IV 共 204 個檔全數通過。
 
+### II 學習單的注音與朗讀（2026-10 已套用於 Level II 34 份）
+
+Level II（5–8 歲）的 `worksheet.html` 上方有「ㄅㄆㄇ 注音」「🔊 朗讀」開關（預設注音開、朗讀關），由 `web/public/zhuyin/cce-zhuyin.js` 提供；`</head>` 前有一行 `<!-- cce-zhuyin -->` 載入它。
+
+- 破音字後面有**看不見的讀音記號**（IVS），讓注音字型顯示正確讀音。一般編輯器看不出來，照常修改文字即可。
+- **改了 II 學習單的文字之後，請維護者重跑標音**（只加不改、可重複執行）：
+  ```bash
+  pip install -r scripts/zhuyin/requirements.txt
+  python scripts/zhuyin/apply_zhuyin.py            # 或指定教案：python scripts/zhuyin/apply_zhuyin.py 1.1-II
+  ```
+  若提示有字不在字型內，再跑 `python scripts/zhuyin/build_font.py`。標音原則與資料授權見 [`scripts/zhuyin/README.md`](scripts/zhuyin/README.md)。
+- 注音字型為源泉注音圓體（SIL OFL 1.1）縮減版，授權檔在 `web/public/zhuyin/`，請勿移除。
+
 ### SVG 圖表美化（規劃中，尚未執行）
 
 - **範圍**：約 745 張內嵌 SVG。主要問題是圖中文字只有 7–11px，根字級放大救不到。
@@ -217,6 +230,7 @@ node scripts/apply-readability.mjs --size 112.5         # 指定根字級百分�
 
 - 全站性的版面調整（如字級與小字下限）不逐份升版，改在 README 記錄。
 - 單一教案的內容或圖表修改（含 SVG 改圖），在該教案 `version.json` 新增修訂條目（patch 升版）。
+- 教材新增功能（如 II 學習單的注音與朗讀），在受影響教案的 `version.json` 新增條目（minor 升版），學習單版次標籤一併更新。
 
 ---
 
