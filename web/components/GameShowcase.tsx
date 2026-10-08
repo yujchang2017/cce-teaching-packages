@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { teachingGames } from '@/lib/teaching-games';
+import { isExternalGame, teachingGames } from '@/lib/teaching-games';
 
 const themes = ['氣候科學','生態系與生物多樣性','氣候正義','韌性建構','後碳經濟','永續生活型態'];
 const titles: Record<string,string> = {carbon:'校園碳排偵探',animals:'幫動物，接回一條路',heat:'涼爽的路',watershed:'一場雨，兩條路',recycling:'產品回家之後',pizza:'一人一半，怎麼切？'};
@@ -12,6 +12,9 @@ const missions: Record<string,string> = {
   pizza:'畫一刀，同時兼顧兩份配料的碳足跡與營養。',
 };
 
+// External research games open in a new tab so the community page stays put.
+const newTab=(game:{href:string})=>isExternalGame(game)?{target:'_blank',rel:'noopener noreferrer'}:{};
+
 export default function GameShowcase() {
   // Images are static; the six Three.js scenes load only on their game pages.
   const explicit=process.env.NEXT_PUBLIC_BASE_PATH?.trim();
@@ -23,16 +26,18 @@ export default function GameShowcase() {
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {[...teachingGames].sort((a,b)=>a.themeNumber-b.themeNumber).map(game=><article key={game.id} className="rounded-2xl overflow-hidden bg-white border border-forest/10 shadow-sm flex flex-col">
-        <Link href={game.href} prefetch={false} aria-label={`試玩：${titles[game.id]}`} className="block relative overflow-hidden bg-[#e6eadf] focus-visible:outline-4 focus-visible:outline-sun">
+        <Link href={game.href} prefetch={false} {...newTab(game)} aria-label={`試玩：${titles[game.id]}${isExternalGame(game)?'（另開外部網站）':''}`} className="block relative overflow-hidden bg-[#e6eadf] focus-visible:outline-4 focus-visible:outline-sun">
           <img src={`${basePath}/games/${game.id}.png`} alt={`${titles[game.id]}實際遊戲畫面`} width={960} height={540} loading="lazy" className="w-full aspect-video object-cover transition duration-300 motion-safe:hover:scale-105"/>
           <span className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-forest">主題 {game.themeNumber}</span>
+          {isExternalGame(game)&&<span className="absolute right-3 top-3 rounded-full bg-sunDeep px-3 py-1 text-xs font-bold text-white">研究計畫・外部網站</span>}
           {game.id==='watershed'&&<span className="absolute right-3 bottom-3 rounded-md bg-ink/80 px-2 py-1 text-xs text-white">水路觀察原型</span>}
         </Link>
         <div className="p-5 flex flex-col flex-1">
           <p className="text-xs text-forest mb-2">{themes[game.themeNumber-1]} · 約 {game.minutes} 分鐘</p>
           <h3 className="font-bold text-lg text-ink mb-2">{titles[game.id]}</h3>
           <p className="text-sm text-ink/75 leading-relaxed flex-1">{missions[game.id]}</p>
-          <div className="flex gap-3 mt-5 items-center"><Link href={game.href} prefetch={false} className="flex-1 text-center rounded-xl bg-forest text-white font-bold py-3 text-sm hover:bg-forest/90 focus-visible:outline-4 focus-visible:outline-sun" aria-label={`開始遊戲：${titles[game.id]}`}>開始遊戲 →</Link><Link href={`/package/${game.keyId}/`} prefetch={false} className="text-sm font-semibold text-forest px-2 py-3 underline underline-offset-4" aria-label={`查看教案：${game.keyId}`}>查看教案</Link></div>
+          {game.coldStartNote&&<p className="text-xs text-ink/60 mt-2">{game.coldStartNote}，上課前建議先開一次。</p>}
+          <div className="flex gap-3 mt-5 items-center"><Link href={game.href} prefetch={false} {...newTab(game)} className="flex-1 text-center rounded-xl bg-forest text-white font-bold py-3 text-sm hover:bg-forest/90 focus-visible:outline-4 focus-visible:outline-sun" aria-label={`開始遊戲：${titles[game.id]}${isExternalGame(game)?'（另開外部網站）':''}`}>{isExternalGame(game)?'開始遊戲 ↗':'開始遊戲 →'}</Link><Link href={`/package/${game.keyId}/`} prefetch={false} className="text-sm font-semibold text-forest px-2 py-3 underline underline-offset-4" aria-label={`查看教案：${game.keyId}`}>查看教案</Link></div>
         </div>
       </article>)}
     </div>
