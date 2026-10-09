@@ -7,7 +7,7 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import type { PackageSummary, Level } from '@/lib/types';
-import { getGameForPackage } from '@/lib/teaching-games';
+import { gameLinkProps, getGameForPackage, getGamesForPackage } from '@/lib/teaching-games';
 
 const themeGrad: Record<number, string> = {
   1: 'bg-gradient-to-br from-[#6EB5FF] to-[#3C6EA5]',
@@ -129,7 +129,7 @@ function PackageCard({ pkg }: { pkg: PackageSummary }) {
       <nav aria-label={`${pkg.keyId} 教學素材`} className="flex flex-wrap items-center gap-2 px-4 py-3 bg-white border-t border-earth/10 rounded-b-2xl text-xs font-semibold">
         <Link href={`${materialRoot}/worksheet.html`} target="_blank" rel="noopener noreferrer" prefetch={false} className="rounded-lg px-3 py-2 bg-sun/10 text-sunDeep hover:bg-sun/20">互動學習單 ↗</Link>
         <Link href={`${materialRoot}/ppt.html`} target="_blank" rel="noopener noreferrer" prefetch={false} className="rounded-lg px-3 py-2 bg-sky-50 text-sky-700 hover:bg-sky-100">PPT ↗</Link>
-        {game && <Link href={game.href} prefetch={false} target="_blank" rel="noopener noreferrer" className="rounded-lg px-3 py-2 bg-forest/10 text-forest hover:bg-forest/20">3D 遊戲 ↗</Link>}
+        {game && <Link href={game.href} prefetch={false} target="_blank" rel="noopener noreferrer" {...gameLinkProps(game)} className="rounded-lg px-3 py-2 bg-forest/10 text-forest hover:bg-forest/20">{game.source === 'lab' ? '3D 遊戲' : '教學遊戲'} ↗</Link>}
       </nav>
     </article>
   );
@@ -151,10 +151,10 @@ export default function HomeBrowser({
     let result = packages.filter((p) => {
       if (level !== 'all' && p.level !== level) return false;
       if (theme !== 'all' && p.themeNumber !== theme) return false;
-      if (gamesOnly && !getGameForPackage(p.keyId)) return false;
+      if (gamesOnly && !getGamesForPackage(p.keyId).length) return false;
       if (q) {
-        const game = getGameForPackage(p.keyId);
-        const hay = `${p.keyId} ${p.topic} ${p.themeName} ${p.mascot ?? ''} ${game?.title ?? ''} ${game?.summary ?? ''}`.toLowerCase();
+        const games = getGamesForPackage(p.keyId).map(g => `${g.title} ${g.summary}`).join(' ');
+        const hay = `${p.keyId} ${p.topic} ${p.themeName} ${p.mascot ?? ''} ${games}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;

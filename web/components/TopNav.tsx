@@ -18,6 +18,9 @@ export default function TopNav() {
           <Link href="/" className="hidden md:inline text-sm text-ink hover:text-sun transition">
             瀏覽教案
           </Link>
+          <Link href="/games/" className="text-sm text-ink hover:text-sun transition">
+            🎮 遊戲區
+          </Link>
         </div>
       </div>
     </header>
