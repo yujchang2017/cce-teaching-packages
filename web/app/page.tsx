@@ -7,6 +7,7 @@ import { fetchAllPackages, fetchPackageDetail } from "@/lib/github-api";
 import HomeBrowser from "@/components/HomeBrowser";
 import GameShowcase from "@/components/GameShowcase";
 import DisclaimerModal from "@/components/DisclaimerModal";
+import NoticeBanner from "@/components/NoticeBanner";
 import TrackPageView from "@/components/TrackPageView";
 import type { PackageSummary } from "@/lib/types";
 
@@ -123,6 +124,7 @@ export default async function Home() {
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink leading-tight mb-3">
               氣候變遷<span className="text-sun">教育教案庫</span>
             </h1>
+            <NoticeBanner />
             <p className="text-base sm:text-lg text-ink/80 leading-relaxed max-w-2xl">
               <b className="text-earth">{allPackages.length}</b> 個教學組合包 · <b className="text-earth">4</b> 個年段 · <b className="text-earth">6</b> 大主題
               <br className="hidden sm:inline" />
