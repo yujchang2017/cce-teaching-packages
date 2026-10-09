@@ -11,7 +11,7 @@ import { fetchPackageDetail, getAllKeyIds } from "@/lib/github-api";
 import TrackPageView from "@/components/TrackPageView";
 import TrackLink from "@/components/TrackLink";
 import Giscus from "@/components/Giscus";
-import { getGameForPackage } from "@/lib/teaching-games";
+import { gameLinkProps, getGamesForPackage, isExternalGame, sourceLabels } from "@/lib/teaching-games";
 
 export const dynamicParams = false; // 靜態匯出:不允許未列出的 keyId
 
@@ -62,7 +62,7 @@ export default async function PackageDetail({
   const currentVersion = detail.version.currentVersion;
   const recommendedVersion = detail.version.recommendedVersion;
   const resources = detail.resources.resources ?? [];
-  const game = getGameForPackage(keyId);
+  const games = getGamesForPackage(keyId);
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 w-full flex-1">
@@ -97,7 +97,7 @@ export default async function PackageDetail({
       <section aria-label="教學素材" className="bg-white rounded-2xl shadow-warm border border-earth/10 p-5 sm:p-6 mb-6">
         <h2 className="text-lg font-bold text-ink mb-2">教學素材</h2>
         <p className="text-sm text-mute mb-4">依教學活動選用，素材皆於新視窗開啟。</p>
-        <div className={`grid gap-3 ${game ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
+        <div className={`grid gap-3 ${games.length ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
           <TrackLink href={worksheetPagesUrl} target="_blank" rel="noopener noreferrer"
             event="open_worksheet" resource={keyId}
             className="rounded-xl border border-sun/30 bg-sun/5 p-4 hover:bg-sun/10 transition flex flex-col gap-2">
@@ -110,12 +110,12 @@ export default async function PackageDetail({
             <span className="font-bold text-sky-700">PPT 簡報 ↗</span>
             <span className="text-xs text-ink/70">課堂講解與討論引導</span>
           </TrackLink>
-          {game && <Link href={game.href} target="_blank" rel="noopener noreferrer"
+          {games.map(game => <Link key={game.id} href={game.href} prefetch={false} {...(isExternalGame(game) ? gameLinkProps(game) : { target: "_blank", rel: "noopener noreferrer" })}
             className="rounded-xl border border-forest/30 bg-forest/5 p-4 hover:bg-forest/10 transition flex flex-col gap-2">
-            <span className="font-bold text-forest">3D 遊戲 ↗ <span className="text-[10px] font-medium rounded-full bg-forest/10 px-2 py-0.5">試作</span></span>
+            <span className="font-bold text-forest">{game.source === "lab" ? "3D 遊戲" : "教學遊戲"} ↗ <span className="text-[10px] font-medium rounded-full bg-forest/10 px-2 py-0.5">{game.source === "lab" ? "試作" : sourceLabels.teacher}</span></span>
             <span className="text-sm font-semibold text-ink">{game.title}</span>
-            <span className="text-xs text-ink/70">{game.summary} · 約 {game.minutes} 分鐘</span>
-          </Link>}
+            <span className="text-xs text-ink/70">{game.summary} · 約 {game.minutes} 分鐘{game.author ? ` · 分享：${game.author}` : ""}</span>
+          </Link>)}
         </div>
         <div className="mt-4 pt-4 border-t border-earth/10 flex flex-wrap items-center justify-between gap-3">
           <span className="text-xs text-mute">試教後，歡迎分享學生的操作與學習觀察。</span>
