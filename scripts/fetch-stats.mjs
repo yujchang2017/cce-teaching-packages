@@ -103,6 +103,16 @@ function getCell(row, index) {
   return index >= 0 ? row[index] : '';
 }
 
+// 個資保護：未明確同意公開的老師，只顯示「姓氏＋老師」，學校顯示「某校」。
+function saysYes(value) {
+  const v = String(value || '').trim().toLowerCase();
+  return !v.includes('不') && (v.includes('同意') || ['是', 'yes', 'y', 'true', '1', 'v', '✓'].includes(v));
+}
+function maskTeacherName(name) {
+  const first = [...String(name || '').trim()][0];
+  return first ? `${first}老師` : '某老師';
+}
+
 function normalizeOptionalText(value) {
   const text = String(value || '').trim();
   return text && text !== '(未填)' ? text : '';
@@ -171,6 +181,8 @@ const headerCandidates = {
   trialDate: ['試教日期', '日期', 'trialDate', 'date'],
   city: ['任教縣市', '縣市', 'city'],
   grade: ['任教年級', '年級', 'grade'],
+  // 選填：表單若加上「同意公開姓名與學校」欄，勾同意者在首頁顯示全名與學校；沒有這欄或未同意者一律遮蔽。
+  publicOk: ['同意公開姓名與學校', '同意公開姓名', '同意公開', '公開姓名', 'publicOk', 'public_ok'],
 };
 
 const headers = rows[0];
@@ -188,6 +200,7 @@ const columns = {
   trialDate: hasHeader ? findHeaderColumn(headers, headerCandidates.trialDate) : -1,
   city: hasHeader ? findHeaderColumn(headers, headerCandidates.city) : -1,
   grade: hasHeader ? findHeaderColumn(headers, headerCandidates.grade) : -1,
+  publicOk: hasHeader ? findHeaderColumn(headers, headerCandidates.publicOk) : -1,
 };
 if (columns.teacher < 0) columns.teacher = columns.keyId + 1;
 if (columns.school < 0) columns.school = columns.keyId + 2;
@@ -202,7 +215,7 @@ const pendingRows = submittedRows.filter(r => normalizeStatus(getCell(r, columns
 
 // ---- Aggregate ----
 const packageMap = new Map();   // keyId -> { submissions, teachers: Set, schools: Set, themeNum, students }
-const teacherMap = new Map();   // teacher -> { school, submissions, themes: Set, students }
+const teacherMap = new Map();   // teacher -> { school, submissions, themes: Set, students, publicOk }
 const schoolMap = new Map();    // school -> { teachers: Set, submissions: number, themes: Set, students }
 const cityMap = new Map();      // city -> { teachers: Set, schools: Set, submissions }
 const themeCount = {};
@@ -237,8 +250,9 @@ for (const row of submittedRows) {
 
   // Teacher map
   if (teacher) {
-    if (!teacherMap.has(teacher)) teacherMap.set(teacher, { school: school || '未提供學校', submissions: 0, themes: new Set(), students: 0 });
+    if (!teacherMap.has(teacher)) teacherMap.set(teacher, { school: school || '未提供學校', submissions: 0, themes: new Set(), students: 0, publicOk: false });
     const tm = teacherMap.get(teacher);
+    if (saysYes(getCell(row, columns.publicOk))) tm.publicOk = true;
     tm.submissions++;
     tm.students += studentCount;
     if (themeNum >= 1 && themeNum <= 6) tm.themes.add(themeNum);
@@ -266,8 +280,8 @@ for (const row of submittedRows) {
 
 const byTeacher = Array.from(teacherMap.entries())
   .map(([name, v]) => ({
-    name,
-    school: v.school,
+    name: v.publicOk ? name : maskTeacherName(name),
+    school: v.publicOk ? v.school : '某校',
     submissions: v.submissions,
     students: v.students,
     themes: Array.from(v.themes).sort(),
@@ -337,7 +351,7 @@ const stats = {
 fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
 fs.writeFileSync(OUT_PATH, JSON.stringify(stats, null, 2), 'utf8');
 console.log(`[fetch-stats] Done — 收到 ${submittedRows.length} 筆，${teacherMap.size} 位老師，${schoolMap.size} 所學校，${packageMap.size} 份教案，KC 覆蓋 ${coveredThemes.length}/6，學生人次 ${totalStudents}（${trialSessions} 次試教）`);
-console.log(`[fetch-stats] Columns — header=${hasHeader ? 'yes' : 'no'}, keyId=${columns.keyId + 1}, teacher=${columns.teacher + 1}, school=${columns.school + 1}`);
+console.log(`[fetch-stats] Columns — header=${hasHeader ? 'yes' : 'no'}, keyId=${columns.keyId + 1}, teacher=${columns.teacher + 1}, school=${columns.school + 1}, publicOk=${columns.publicOk >= 0 ? columns.publicOk + 1 : '無（全部遮蔽）'}`);
 
 function writeEmpty() {
   const empty = {

@@ -1,29 +1,41 @@
 "use client";
 import { useEffect, useState } from "react";
-import { setConsent } from "@/lib/track";
+import { consentChoice, setConsent } from "@/lib/track";
+import { STATS_DISCLOSURE } from "@/components/ConsentSettings";
 
 const STORAGE_KEY = "cce_disclaimer_v2";
 
 export default function DisclaimerModal() {
   const [visible, setVisible] = useState(false);
+  // The visitor's earlier statistics choice (null = never chosen). It is never overwritten silently.
+  const [choice, setChoice] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (!sessionStorage.getItem(STORAGE_KEY)) {
+    let seen = false;
+    try { seen = !!sessionStorage.getItem(STORAGE_KEY); } catch { /* storage blocked: show once */ }
+    if (!seen) {
+      setChoice(consentChoice());
       setVisible(true);
     }
   }, []);
 
-  function dismiss() {
-    sessionStorage.setItem(STORAGE_KEY, "1");
-    setConsent(true);
+  /** Close without touching the statistics choice (backdrop, Esc, or "進入"). Unchosen stays unchosen = no tracking. */
+  function close() {
+    try { sessionStorage.setItem(STORAGE_KEY, "1"); } catch { /* ignore */ }
     setVisible(false);
   }
 
-  function declineStats() {
-    sessionStorage.setItem(STORAGE_KEY, "1");
-    setConsent(false);
-    setVisible(false);
+  function choose(value: boolean) {
+    setConsent(value);
+    close();
   }
+
+  useEffect(() => {
+    if (!visible) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [visible]);
 
   if (!visible) return null;
 
@@ -31,7 +43,7 @@ export default function DisclaimerModal() {
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
       style={{ background: "rgba(40,30,20,0.55)", backdropFilter: "blur(4px)" }}
-      onClick={dismiss}
+      onClick={close}
     >
       <div
         className="relative max-w-2xl w-full rounded-2xl shadow-2xl border border-earth/20 p-6 sm:p-8 overflow-y-auto max-h-[90vh]"
@@ -64,25 +76,26 @@ export default function DisclaimerModal() {
           <p className="text-earth font-medium">
             目前雖然這些素材已經經過多次檢視與測試，但仍需要更多現場試教資料協助修正。因此，請試用的師長們酌量取用，並透過試教／回饋表單留下教學觀察，協助我們掌握各教案、主題、教師與學校的使用情形。
           </p>
-          <p className="text-xs text-mute pt-3 border-t border-earth/20">
-            📊 為了改善教學資源，本站會匿名記錄哪些教案、學習單、簡報被開啟，以及遊戲的開始、重試、完成與結果摘要（不收集姓名、IP、學校等個資）。
-          </p>
+          <div className="text-xs text-mute pt-3 border-t border-earth/20 space-y-1">
+            <p>📊 {STATS_DISCLOSURE}</p>
+            {choice !== null && <p className="font-medium text-ink/80">目前設定：{choice ? "已同意匿名使用統計" : "不參與統計"}（可隨時在頁面最下方「使用統計設定」更改）</p>}
+          </div>
         </div>
 
-        {/* 按鈕 */}
+        {/* 按鈕：沒選過的人要明確選一個；選過的人直接進入，不改變原本的選擇 */}
         <div className="mt-6 flex flex-col sm:flex-row sm:justify-end gap-2">
-          <button
-            onClick={declineStats}
-            className="text-mute hover:text-earth py-2.5 px-5 rounded-xl transition text-sm"
-          >
-            不參與統計
-          </button>
-          <button
-            onClick={dismiss}
-            className="bg-forest hover:bg-forest/90 text-white font-bold py-2.5 px-7 rounded-xl transition shadow-warm text-sm"
-          >
-            了解，進入教案庫 →
-          </button>
+          {choice === null ? <>
+            <button onClick={() => choose(false)} className="text-earth hover:bg-earth/5 py-2.5 px-5 rounded-xl transition text-sm border border-earth/20">
+              不參與統計，進入教案庫
+            </button>
+            <button onClick={() => choose(true)} className="bg-forest hover:bg-forest/90 text-white font-bold py-2.5 px-7 rounded-xl transition shadow-warm text-sm">
+              同意匿名統計，進入教案庫 →
+            </button>
+          </> : (
+            <button onClick={close} className="bg-forest hover:bg-forest/90 text-white font-bold py-2.5 px-7 rounded-xl transition shadow-warm text-sm">
+              了解，進入教案庫 →
+            </button>
+          )}
         </div>
       </div>
     </div>

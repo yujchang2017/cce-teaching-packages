@@ -277,7 +277,7 @@ export default async function Home() {
             {stats.byTeacher.length > 0 ? (
               <div className="space-y-2.5">
                 {stats.byTeacher.slice(0, 6).map((teacher, index) => (
-                  <article key={`${teacher.name}-${teacher.school}`} className="flex items-center gap-3 rounded-xl border border-earth/10 p-3">
+                  <article key={`${index}-${teacher.name}`} className="flex items-center gap-3 rounded-xl border border-earth/10 p-3">
                     <div className="w-8 text-center text-xl">{medal(index)}</div>
                     <div className="min-w-0 flex-1">
                       <h3 className="font-bold text-ink text-sm truncate">{teacher.name}</h3>

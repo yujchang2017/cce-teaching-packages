@@ -1,3 +1,5 @@
+import ConsentSettings from "@/components/ConsentSettings";
+
 export default function Footer() {
   return (
     <footer className="bg-earth/5 border-t border-earth/15 mt-6">
@@ -42,6 +44,7 @@ export default function Footer() {
           <span>© 2026 community.cce.tw · 本站所有教案以 CC BY-SA 4.0 授權</span>
           <span className="text-sun/70">🚧 Beta 測試中 · 部分功能尚未實裝</span>
         </div>
+        <div className="mt-3"><ConsentSettings /></div>
       </div>
     </footer>
   );
