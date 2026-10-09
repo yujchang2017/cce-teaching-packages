@@ -35,8 +35,6 @@ export default function SiteStatusNotice() {
         <span>{message}</span>
       </div>
 
-      {isTesting ? <div className="site-status-ribbon" aria-hidden="true">TEST / 測試中</div> : null}
-
       {showSplash ? (
         <div className="site-status-splash" aria-hidden="true">
           <div className="site-status-splash-text">測試中</div>
