@@ -1,5 +1,8 @@
 import Link from 'next/link';
 
+// 測試期間右上角有「TEST / 測試中」斜緞帶（SiteStatusNotice），選單往左讓出位置以免被遮住。
+const testing = (process.env.NEXT_PUBLIC_SITE_STATUS || 'testing').toLowerCase() === 'testing';
+
 export default function TopNav() {
   return (
     <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur border-b border-earth/15">
@@ -14,7 +17,7 @@ export default function TopNav() {
         </Link>
 
         {/* Right nav */}
-        <div className="flex items-center gap-3 shrink-0 ml-auto">
+        <div className={`flex items-center gap-3 shrink-0 ml-auto ${testing ? 'pr-24 sm:pr-28' : ''}`}>
           <Link href="/" className="hidden md:inline text-sm text-ink hover:text-sun transition">
             瀏覽教案
           </Link>
