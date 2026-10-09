@@ -45,7 +45,7 @@ export const themeNames = ['其他', '氣候科學', '生態系與生物多樣�
 export const sourceLabels: Record<GameSource, string> = { lab: '本計畫研究遊戲', teacher: '教師分享' };
 
 /** 老師想分享遊戲時的聯絡信箱（由計畫主持人審核後，維護者加入清單）。空字串＝請對方用頁尾聯絡方式。 */
-export const GAME_SHARE_CONTACT = '';
+export const GAME_SHARE_CONTACT = 'yujchang@gmail.com';
 
 /** Standalone research games (yjesdlab), deployed separately with their own consent and data store. */
 export const PIZZA_GAME_URL = 'https://pizza-153495ced5e7.herokuapp.com/';
