@@ -124,7 +124,6 @@ export default async function Home() {
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink leading-tight mb-3">
               氣候變遷<span className="text-sun">教育教案庫</span>
             </h1>
-            <NoticeBanner />
             <p className="text-base sm:text-lg text-ink/80 leading-relaxed max-w-2xl">
               <b className="text-earth">{allPackages.length}</b> 個教學組合包 · <b className="text-earth">4</b> 個年段 · <b className="text-earth">6</b> 大主題
               <br className="hidden sm:inline" />
@@ -132,10 +131,8 @@ export default async function Home() {
                 依據 UNESCO <a href="https://cce.tw/" target="_blank" rel="noopener noreferrer" className="text-forest hover:underline">《綠色課程指南：氣候行動的教學與學習》</a>開發；老師改編共創的開源社群。
               </span>
             </p>
-            <div className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-forest/20 bg-white/80 p-4">
-              <div className="flex-1 min-w-48"><p className="text-xs font-bold text-forest mb-1">新增 · 3D 學習遊戲試玩版</p><p className="text-base font-bold text-ink">六大主題 × 6 款遊戲，把觀察變成行動</p></div>
-              <a href="#games" className="rounded-xl bg-forest text-white font-bold px-5 py-3 text-sm hover:bg-forest/90 focus-visible:outline-4 focus-visible:outline-sun">立即試玩 ↓</a>
-            </div>
+            {/* 重點卡片（原遊戲試玩框位置）；遊戲改由頁首「遊戲區」與下方遊戲區進入 */}
+            <NoticeBanner />
           </div>
         </div>
       </section>
