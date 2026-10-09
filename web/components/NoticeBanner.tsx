@@ -1,8 +1,4 @@
-"use client";
-import { useEffect, useState } from "react";
 import { isSafeNoticeHref, siteNotice } from "@/lib/site-notice";
-
-const DISMISS_KEY = "cce_notice_dismissed";
 
 function withBasePath(href: string) {
   if (!href.startsWith("/")) return href;
@@ -11,27 +7,22 @@ function withBasePath(href: string) {
   return `${base}${href}`;
 }
 
-/** One-line announcement under the homepage title. Closing it hides this notice id on this browser only. */
+/** Prominent card under the homepage title for the current key guide (not dismissible). */
 export default function NoticeBanner() {
-  const [hidden, setHidden] = useState(false);
-  useEffect(() => {
-    try { if (siteNotice && localStorage.getItem(DISMISS_KEY) === siteNotice.id) setHidden(true); } catch { /* storage blocked: keep showing */ }
-  }, []);
   const notice = siteNotice;
-  if (!notice || hidden || !isSafeNoticeHref(notice.href)) return null;
+  if (!notice || !isSafeNoticeHref(notice.href)) return null;
   const external = !notice.href.startsWith("/");
-  const close = () => {
-    try { localStorage.setItem(DISMISS_KEY, notice.id); } catch { /* ignore */ }
-    setHidden(true);
-  };
   return (
-    <div role="region" aria-label="重要公告" className="mt-4 flex items-center gap-2 rounded-full border border-sun/30 bg-white/85 pl-2 pr-1 py-1 text-sm max-w-full">
-      <span className="shrink-0 rounded-full bg-sun text-white text-xs font-bold px-2.5 py-0.5">📢 {notice.label}</span>
-      <a href={withBasePath(notice.href)} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-        className="min-w-0 flex-1 truncate text-ink hover:text-sun">
-        {notice.text}<span className="ml-2 font-semibold text-forest whitespace-nowrap">{notice.linkText}</span>
-      </a>
-      <button type="button" onClick={close} aria-label="關閉這則公告" className="shrink-0 rounded-full w-7 h-7 text-mute hover:bg-earth/10 hover:text-ink">×</button>
-    </div>
+    <a href={withBasePath(notice.href)} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      aria-label={`${notice.label}：${notice.title}`}
+      className="group mt-6 flex flex-wrap items-center gap-4 rounded-2xl bg-gradient-to-r from-forest to-[#2F5A3A] p-5 sm:p-6 text-white shadow-warm-lg ring-2 ring-sun/60 hover:ring-sun focus-visible:outline-4 focus-visible:outline-sun transition">
+      <span className="text-4xl shrink-0" aria-hidden="true">📘</span>
+      <div className="flex-1 min-w-52">
+        <p className="inline-block rounded-full bg-sun px-3 py-0.5 text-xs font-bold text-white mb-2">{notice.label}</p>
+        <p className="text-xl sm:text-2xl font-bold leading-snug">{notice.title}</p>
+        <p className="text-sm sm:text-base text-white/85 mt-1">{notice.text}</p>
+      </div>
+      <span className="shrink-0 rounded-xl bg-white text-forest font-bold px-5 py-3 text-sm sm:text-base group-hover:bg-sun group-hover:text-white transition">{notice.linkText}</span>
+    </a>
   );
 }
