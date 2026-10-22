@@ -2,6 +2,7 @@
 // 與舊版 app_sample/app/page.tsx 視覺 100% 一致
 
 import fs from 'fs';
+import Link from "next/link";
 import path from 'path';
 import { fetchAllPackages, fetchPackageDetail } from "@/lib/github-api";
 import HomeBrowser from "@/components/HomeBrowser";
@@ -61,16 +62,26 @@ function loadStats(): StatsData {
   }
 }
 
-// 簡報／學習單點閱次數（scripts/fetch-view-stats.mjs 產生）；0 表示沒資料，首頁就不顯示
-function loadViewStats(): { pptViews: number; worksheetViews: number } {
+// 使用數字（scripts/fetch-view-stats.mjs 產生）；0 或空清單表示沒資料，首頁就不顯示
+type PopularPackage = { keyId: string; ppt: number; worksheet: number };
+type ViewStats = { pptViews: number; worksheetViews: number; visitors: number; visits: number; popular: PopularPackage[] };
+function loadViewStats(): ViewStats {
   try {
     const p = path.join(process.cwd(), 'data', 'view-stats.json');
     const data = JSON.parse(fs.readFileSync(p, 'utf8'));
-    return { pptViews: Number(data.pptViews) || 0, worksheetViews: Number(data.worksheetViews) || 0 };
+    return {
+      pptViews: Number(data.pptViews) || 0,
+      worksheetViews: Number(data.worksheetViews) || 0,
+      visitors: Number(data.visitors) || 0,
+      visits: Number(data.visits) || 0,
+      popular: Array.isArray(data.popular) ? data.popular : [],
+    };
   } catch {
-    return { pptViews: 0, worksheetViews: 0 };
+    return { pptViews: 0, worksheetViews: 0, visitors: 0, visits: 0, popular: [] };
   }
 }
+
+const fmt = (n: number) => n.toLocaleString('en-US');
 
 function loadAnnouncements(): Announcement[] {
   try {
@@ -153,11 +164,17 @@ export default async function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 -mt-6 relative z-10">
         <div className="bg-white rounded-xl shadow-warm border border-earth/10 px-4 py-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-ink">
           <span><b className="text-earth text-lg">{allPackages.length}</b> 教學組合包</span>
+          {views.visitors > 0 && (
+            <span>參訪人數 <b className="text-earth text-lg">{fmt(views.visitors)}</b> 人</span>
+          )}
+          {views.visits > 0 && (
+            <span>參訪次數 <b className="text-earth text-lg">{fmt(views.visits)}</b> 次</span>
+          )}
           {views.pptViews > 0 && (
-            <span>簡報點閱 <b className="text-earth text-lg">{views.pptViews.toLocaleString('en-US')}</b> 次</span>
+            <span>簡報點閱 <b className="text-earth text-lg">{fmt(views.pptViews)}</b> 次</span>
           )}
           {views.worksheetViews > 0 && (
-            <span>學習單點閱 <b className="text-earth text-lg">{views.worksheetViews.toLocaleString('en-US')}</b> 次</span>
+            <span>學習單點閱 <b className="text-earth text-lg">{fmt(views.worksheetViews)}</b> 次</span>
           )}
           <span><b className="text-earth text-lg">{stats.schools}</b> 所參與學校</span>
           <span><b className="text-earth text-lg">{stats.totalStudents ?? 0}</b> 試教學生人次</span>
@@ -220,6 +237,30 @@ export default async function Home() {
                 </div>
               </details>
             )}
+          </section>
+        )}
+
+        {/* 熱門教案：近 30 天簡報＋學習單點閱最多的教案 */}
+        {views.popular.length > 0 && (
+          <section className="mb-8">
+            <div className="flex items-baseline justify-between mb-4 flex-wrap gap-2">
+              <h2 className="text-xl font-bold text-ink flex items-center gap-2">🔥 近 30 天熱門教案</h2>
+              <span className="text-sm text-mute">依簡報＋學習單點閱次數排序</span>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {views.popular.map((pkg, index) => (
+                <Link key={pkg.keyId} href={`/package/${pkg.keyId}/`} prefetch={false} className="flex items-center gap-3 bg-white rounded-xl shadow-warm border border-earth/10 p-3 hover:border-forest/40 transition-colors">
+                  <div className="w-8 text-center text-xl shrink-0">{medal(index)}</div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs bg-sand/80 text-earth font-mono font-bold px-2 py-0.5 rounded shrink-0">{pkg.keyId}</span>
+                      <h3 className="font-bold text-ink text-sm truncate">{packageTitle(allPackages, pkg.keyId)}</h3>
+                    </div>
+                    <p className="text-xs text-mute mt-1">簡報 {fmt(pkg.ppt)} · 學習單 {fmt(pkg.worksheet)}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </section>
         )}
 
