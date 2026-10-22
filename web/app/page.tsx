@@ -61,6 +61,17 @@ function loadStats(): StatsData {
   }
 }
 
+// 簡報／學習單點閱次數（scripts/fetch-view-stats.mjs 產生）；0 表示沒資料，首頁就不顯示
+function loadViewStats(): { pptViews: number; worksheetViews: number } {
+  try {
+    const p = path.join(process.cwd(), 'data', 'view-stats.json');
+    const data = JSON.parse(fs.readFileSync(p, 'utf8'));
+    return { pptViews: Number(data.pptViews) || 0, worksheetViews: Number(data.worksheetViews) || 0 };
+  } catch {
+    return { pptViews: 0, worksheetViews: 0 };
+  }
+}
+
 function loadAnnouncements(): Announcement[] {
   try {
     const p = path.join(process.cwd(), 'data', 'announcements.json');
@@ -95,6 +106,7 @@ export default async function Home() {
     })
   );
   const stats = loadStats();
+  const views = loadViewStats();
   const announcements = loadAnnouncements();
   const themeRows = Object.entries(stats.byTheme ?? {})
     .map(([theme, count]) => ({ theme, count, name: stats.themeNames?.[theme] ?? `主題 ${theme}` }))
@@ -141,7 +153,12 @@ export default async function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 -mt-6 relative z-10">
         <div className="bg-white rounded-xl shadow-warm border border-earth/10 px-4 py-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-ink">
           <span><b className="text-earth text-lg">{allPackages.length}</b> 教學組合包</span>
-          <span><b className="text-earth text-lg">{stats.teachers}</b> 位回饋教師</span>
+          {views.pptViews > 0 && (
+            <span>簡報點閱 <b className="text-earth text-lg">{views.pptViews.toLocaleString('en-US')}</b> 次</span>
+          )}
+          {views.worksheetViews > 0 && (
+            <span>學習單點閱 <b className="text-earth text-lg">{views.worksheetViews.toLocaleString('en-US')}</b> 次</span>
+          )}
           <span><b className="text-earth text-lg">{stats.schools}</b> 所參與學校</span>
           <span><b className="text-earth text-lg">{stats.totalStudents ?? 0}</b> 試教學生人次</span>
           <a href="#community-stats" className="ml-auto text-forest hover:underline text-sm">看社群統計 ↓</a>
