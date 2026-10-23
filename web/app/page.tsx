@@ -10,6 +10,7 @@ import GameShowcase from "@/components/GameShowcase";
 import DisclaimerModal from "@/components/DisclaimerModal";
 import NoticeBanner from "@/components/NoticeBanner";
 import TrackPageView from "@/components/TrackPageView";
+import IslandEasterEgg from "@/components/IslandEasterEgg";
 import type { PackageSummary } from "@/lib/types";
 
 type PackageRank = { keyId: string; submissions: number; teachers: number; schools: number; theme: number; themeName: string };
@@ -83,6 +84,13 @@ function loadViewStats(): ViewStats {
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 
+// public/ 底下的靜態頁不經過 Next Link，要自己補 GitHub Pages 的 basePath（同 NoticeBanner）
+function withBasePath(href: string) {
+  const explicit = process.env.NEXT_PUBLIC_BASE_PATH?.trim();
+  const base = explicit !== undefined ? (explicit === "/" ? "" : explicit) : process.env.CUSTOM_DOMAIN?.trim() ? "" : "/cce-teaching-packages";
+  return `${base}${href}`;
+}
+
 function loadAnnouncements(): Announcement[] {
   try {
     const p = path.join(process.cwd(), 'data', 'announcements.json');
@@ -145,7 +153,7 @@ export default async function Home() {
               <span>📚</span> 開源教案社群 · CC BY-SA 4.0
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink leading-tight mb-3">
-              氣候變遷<span className="text-sun">教育教案庫</span>
+              <IslandEasterEgg href={withBasePath('/home3d/index.html')}>氣候變遷<span className="text-sun">教育教案庫</span></IslandEasterEgg>
             </h1>
             <p className="text-base sm:text-lg text-ink/80 leading-relaxed max-w-2xl">
               <b className="text-earth">{allPackages.length}</b> 個教學組合包 · <b className="text-earth">4</b> 個年段 · <b className="text-earth">6</b> 大主題
