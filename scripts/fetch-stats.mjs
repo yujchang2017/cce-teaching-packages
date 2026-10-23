@@ -103,10 +103,22 @@ function getCell(row, index) {
   return index >= 0 ? row[index] : '';
 }
 
-// 個資保護：未明確同意公開的老師，只顯示「姓氏＋老師」，學校顯示「某校」。
+// 個資保護：未明確同意公開的老師，只顯示「姓氏＋老師」，學校只顯示「縣市・學制」（如「新北市・國小」）。
+// 多數學校只有一位老師參與，完整校名加姓氏就認得出是誰，所以未同意者不顯示校名。
 function saysYes(value) {
   const v = String(value || '').trim().toLowerCase();
   return !v.includes('不') && (v.includes('同意') || ['是', 'yes', 'y', 'true', '1', 'v', '✓'].includes(v));
+}
+function schoolLevel(school) {
+  if (/國小|小學|實小|附小/.test(school)) return '國小';
+  if (/國中/.test(school)) return '國中';
+  if (/高中|高級中學|中學/.test(school)) return '中學';
+  return school ? '機構' : '';
+}
+function maskSchool(school, city) {
+  const region = (city || (String(school || '').match(/^(.{2}[縣市])/) || [])[1] || '').replace(/^台/, '臺');
+  const level = schoolLevel(String(school || ''));
+  return [region, level].filter(Boolean).join('・') || '某校';
 }
 function maskTeacherName(name) {
   const first = [...String(name || '').trim()][0];
@@ -250,11 +262,13 @@ for (const row of submittedRows) {
 
   // Teacher map
   if (teacher) {
-    if (!teacherMap.has(teacher)) teacherMap.set(teacher, { school: school || '未提供學校', submissions: 0, themes: new Set(), students: 0, publicOk: false });
+    if (!teacherMap.has(teacher)) teacherMap.set(teacher, { school: school || '未提供學校', city, submissions: 0, themes: new Set(), students: 0, publicOk: false, packages: new Map() });
     const tm = teacherMap.get(teacher);
     if (saysYes(getCell(row, columns.publicOk))) tm.publicOk = true;
     tm.submissions++;
     tm.students += studentCount;
+    if (!tm.city && city) tm.city = city;
+    tm.packages.set(keyId, (tm.packages.get(keyId) || 0) + studentCount);
     if (themeNum >= 1 && themeNum <= 6) tm.themes.add(themeNum);
   }
 
@@ -281,11 +295,13 @@ for (const row of submittedRows) {
 const byTeacher = Array.from(teacherMap.entries())
   .map(([name, v]) => ({
     name: v.publicOk ? name : maskTeacherName(name),
-    school: v.publicOk ? v.school : '某校',
+    school: v.publicOk ? v.school : maskSchool(v.school, v.city),
     submissions: v.submissions,
     students: v.students,
     themes: Array.from(v.themes).sort(),
     badge: getBadge(v.submissions, v.themes.size),
+    // 試教過的教案與各自的學生數（首頁 3D 試作用來安排老師帶學生走的路線）
+    packages: Array.from(v.packages, ([keyId, students]) => ({ keyId, students })).sort((a, b) => a.keyId.localeCompare(b.keyId)),
   }))
   .sort((a, b) => b.submissions - a.submissions || b.themes.length - a.themes.length);
 
