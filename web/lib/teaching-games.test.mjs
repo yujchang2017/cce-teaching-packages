@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CARBON_GAME_URL, PIZZA_GAME_URL, featuredGames, gameLinkProps, getGameForPackage, getGamesForPackage, isExternalGame, teachingGames, validateGames } from './teaching-games.ts';
+import { ANIMALS_GAME_URL, CARBON_GAME_URL, HEAT_GAME_URL, PIZZA_GAME_URL, RECYCLING_GAME_URL, WATER_GAME_URL, featuredGames, gameLinkProps, getGameForPackage, getGamesForPackage, isExternalGame, teachingGames, validateGames } from './teaching-games.ts';
 
 const base = teachingGames.find(g => g.id === 'carbon');
 const teacher = { ...base, id: 'shared-quiz', source: 'teacher', href: 'https://example.org/game/', image: undefined, coldStartNote: undefined, author: '王老師', addedAt: '2026-10-09' };
@@ -10,8 +10,9 @@ test('the catalog passes its own rules', () => {
 });
 
 test('moved research games link to their standalone sites', () => {
-  assert.equal(teachingGames.find(g => g.id === 'pizza').href, PIZZA_GAME_URL);
-  assert.equal(teachingGames.find(g => g.id === 'carbon').href, CARBON_GAME_URL);
+  const moved = { pizza: PIZZA_GAME_URL, carbon: CARBON_GAME_URL, animals: ANIMALS_GAME_URL, heat: HEAT_GAME_URL, watershed: WATER_GAME_URL, recycling: RECYCLING_GAME_URL };
+  for (const [id, url] of Object.entries(moved)) assert.equal(teachingGames.find(g => g.id === id).href, url, id);
+  assert.equal(teachingGames.filter(g => g.source === 'lab' && !isExternalGame(g)).length, 0);
   for (const g of teachingGames.filter(g => isExternalGame(g))) assert.ok(g.coldStartNote, g.id);
   assert.equal(getGameForPackage('1.2-III').id, 'carbon');
 });

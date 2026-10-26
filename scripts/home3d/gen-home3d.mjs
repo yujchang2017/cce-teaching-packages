@@ -103,10 +103,10 @@ islands.push({
   summary: '搭配教案的互動遊戲，10 分鐘就能在課堂上玩一輪。', landmark: 'stage',
   items: [
     { id: 'g-carbon', name: '校園碳排偵探', nameEn: 'Campus carbon detective', desc: '3D 配對任務：找出校園裡的碳排來源。', model: 'magnifier', facts: ['建議時間 10–15 分鐘', '搭配教案 1.2-III 溫室效應'], href: '/games/' },
-    { id: 'g-animals', name: '幫動物，接回一條路', nameEn: 'Reconnect the path', desc: '動物通道實驗室：替被道路切斷的棲地搭橋。', model: 'river', facts: ['建議時間 15–20 分鐘', '搭配教案 2.5-III'], href: '/missions/animals/' },
-    { id: 'g-heat', name: '涼爽的路', nameEn: 'The cool road', desc: '都市降溫實驗室：種樹、遮陰，讓上學路變涼。', model: 'forest', facts: ['建議時間 2–5 分鐘', '搭配教案 3.2-III'], href: '/missions/heat/' },
-    { id: 'g-water', name: '一場雨，兩條路', nameEn: 'One rain, two paths', desc: '流域實驗室：雨水往哪裡流，城市會不會淹水。', model: 'weather', facts: ['建議時間 2–5 分鐘', '搭配教案 4.2-III'], href: '/missions/water/' },
-    { id: 'g-recycling', name: '產品回家之後', nameEn: 'After products come home', desc: '為回收而設計：拆解產品、分類材料。', model: 'recycle', facts: ['建議時間 15–20 分鐘', '搭配教案 5.2-III'], href: '/missions/recycling/' },
+    { id: 'g-animals', name: '幫動物，接回一條路', nameEn: 'Reconnect the path', desc: '動物通道實驗室：替被道路切斷的棲地搭橋。', model: 'river', facts: ['建議時間 15–20 分鐘', '搭配教案 2.5-III'], href: '/games/' },
+    { id: 'g-heat', name: '涼爽的路', nameEn: 'The cool road', desc: '都市降溫實驗室：種樹、遮陰，讓上學路變涼。', model: 'forest', facts: ['建議時間 2–5 分鐘', '搭配教案 3.2-III'], href: '/games/' },
+    { id: 'g-water', name: '一場雨，兩條路', nameEn: 'One rain, two paths', desc: '流域實驗室：雨水往哪裡流，城市會不會淹水。', model: 'weather', facts: ['建議時間 2–5 分鐘', '搭配教案 4.2-III'], href: '/games/' },
+    { id: 'g-recycling', name: '產品回家之後', nameEn: 'After products come home', desc: '為回收而設計：拆解產品、分類材料。', model: 'recycle', facts: ['建議時間 15–20 分鐘', '搭配教案 5.2-III'], href: '/games/' },
     { id: 'g-pizza', name: '一人一半，怎麼切？', nameEn: 'Fair pizza', desc: '3D 披薩分配實驗室：怎麼分才公平。', model: 'pizza', facts: ['建議時間 10–15 分鐘', '搭配教案 6.6-III'], href: '/games/' },
   ],
 });

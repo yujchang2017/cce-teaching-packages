@@ -50,6 +50,10 @@ export const GAME_SHARE_CONTACT = 'yujchang@gmail.com';
 /** Standalone research games (yjesdlab), deployed separately with their own consent and data store. */
 export const PIZZA_GAME_URL = 'https://pizza-153495ced5e7.herokuapp.com/';
 export const CARBON_GAME_URL = 'https://game-carbon-4ece53c592e9.herokuapp.com/';
+export const ANIMALS_GAME_URL = 'https://game-animals-a189d39c8f78.herokuapp.com/';
+export const HEAT_GAME_URL = 'https://game-heat-64a903c43e5f.herokuapp.com/';
+export const WATER_GAME_URL = 'https://game-water-4e50f1dac73d.herokuapp.com/';
+export const RECYCLING_GAME_URL = 'https://game-recycling-8d06ae330189.herokuapp.com/';
 
 const HEROKU_NOTE = '首次載入約需 10 秒';
 
@@ -66,28 +70,28 @@ export const teachingGames: readonly TeachingGame[] = [
     title: '幫動物，接回一條路：動物通道實驗室', shortTitle: '幫動物，接回一條路',
     mission: '配置橋梁、坡道與護欄，讓整群動物安全抵達。',
     summary: '配置坡道、護欄與涵洞，追蹤整群動物的抵達率',
-    minutes: '15–20', href: '/missions/animals/', image: '/games/animals.png',
+    minutes: '15–20', href: ANIMALS_GAME_URL, image: '/games/animals.png', coldStartNote: HEROKU_NOTE,
   },
   {
     id: 'heat', source: 'lab', themeNumber: 3, levels: ['III'], keyIds: ['3.2-III'], addedAt: '2026-05-01',
     title: '涼爽的路：都市降溫實驗室', shortTitle: '涼爽的路',
     mission: '用三棵樹改善遮蔭，讓居民辦完事還能安全回家。',
     summary: '在地圖種三棵樹，馬上看多少居民能平安回家；想深入可切換全 3D 檢視',
-    minutes: '2–5', href: '/missions/heat/', image: '/games/heat.png',
+    minutes: '2–5', href: HEAT_GAME_URL, image: '/games/heat.png', coldStartNote: HEROKU_NOTE,
   },
   {
     id: 'watershed', source: 'lab', themeNumber: 4, levels: ['III'], keyIds: ['4.2-III'], addedAt: '2026-05-01',
     title: '一場雨，兩條路：流域實驗室', shortTitle: '一場雨，兩條路',
     mission: '觀察地形、配置花園與水槽，再降雨驗證水的去向。',
     summary: '在山坡地圖放 2 個雨水設施，馬上看流進學校的水有沒有變少；想深入可切換全 3D 檢視',
-    minutes: '2–5', href: '/missions/water/', image: '/games/watershed.png', badge: '水路觀察原型',
+    minutes: '2–5', href: WATER_GAME_URL, image: '/games/watershed.png', badge: '水路觀察原型', coldStartNote: HEROKU_NOTE,
   },
   {
     id: 'recycling', source: 'lab', themeNumber: 5, levels: ['III'], keyIds: ['5.2-III'], addedAt: '2026-05-01',
     title: '產品回家之後：為回收而設計', shortTitle: '產品回家之後',
     mission: '拆解、分類、改設計，看看怎樣降低回收成本。',
     summary: '拆解與分類小燈，改良螺絲、材質和電池模組，比較回收成本',
-    minutes: '15–20', href: '/missions/recycling/', image: '/games/recycling.png',
+    minutes: '15–20', href: RECYCLING_GAME_URL, image: '/games/recycling.png', coldStartNote: HEROKU_NOTE,
   },
   {
     id: 'pizza', source: 'lab', themeNumber: 6, levels: ['III'], keyIds: ['6.6-III'], addedAt: '2026-05-01',

@@ -1,4 +1,6 @@
-import type {Metadata} from 'next';
-import WatershedLab from '@/components/watershed-lab/WatershedLab';
-export const metadata:Metadata={title:'一場雨，兩條路｜全 3D 檢視',description:'旋轉流域地形、剖開土層、布設雨水設施，透過同雨量實驗理解坡度、分水嶺與入滲。'};
-export default function Page(){return <WatershedLab/>;}
+import type { Metadata } from 'next';
+import MovedGame from '@/components/MovedGame';
+import { WATER_GAME_URL } from '@/lib/teaching-games';
+// The 3D view now lives inside the standalone game (yjesdlab/game-water).
+export const metadata: Metadata = { title: '一場雨，兩條路｜已搬到研究計畫網站', description: '流域實驗室（含全 3D 檢視）已搬到獨立的研究計畫網站。', robots: { index: false } };
+export default function Page(){return <MovedGame title="一場雨，兩條路" url={WATER_GAME_URL}/>;}
