@@ -1176,10 +1176,11 @@ function applyTints() {
 
 // ================= 介面：品牌卡、清單 =================
 const st = DATA.stats;
+// 數字為 0 代表資料沒抓到（試算表或抓取失敗），跟首頁一樣不顯示那一格
 $('#brandStats').innerHTML = [
-  [fmtN(st.packages), tr('教學組合包', 'lesson packs')], [fmtN(st.pptViews), tr('次簡報點閱', 'slide views')],
-  [fmtN(st.worksheetViews), tr('次學習單點閱', 'worksheet views')], [fmtN(st.schools), tr('所參與學校', 'schools')],
-].map(([n, l]) => `<span><b>${n}</b> ${esc(l)}</span>`).join('');
+  [st.packages, tr('教學組合包', 'lesson packs')], [st.pptViews, tr('次簡報點閱', 'slide views')],
+  [st.worksheetViews, tr('次學習單點閱', 'worksheet views')], [st.schools, tr('所參與學校', 'schools')],
+].filter(([n]) => n > 0).map(([n, l]) => `<span><b>${fmtN(n)}</b> ${esc(l)}</span>`).join('');
 function placeTools() { const b = $('#brand').getBoundingClientRect(); if (!isMobile) $('#tools').style.top = (b.bottom + 10) + 'px'; else $('#tools').style.top = ''; }
 
 const LEVEL_NAME = { strong: ['高度共同連結', 'Strong'], suggest: ['中度共同連結', 'Moderate'], pending: ['少量共同連結', 'Few'] };

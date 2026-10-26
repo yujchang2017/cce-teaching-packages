@@ -114,7 +114,7 @@ islands.push({
   id: 'community', num: '08', q: -2, r: 1, name: '教師社群', nameEn: 'Teacher community', color: '#b48560', style: 'brick', icon: '🤝', tree: 'fruit',
   summary: '老師試教、回饋、改編，一起讓教案越來越好。', landmark: 'pavilion',
   items: [
-    { id: 'c-feedback', name: '試教回饋', nameEn: 'Trial feedback', desc: '老師上傳試教紀錄與學生作品，回饋給教案作者。', model: 'stage', facts: [`${ST?.schools ?? 0} 所學校參與試教`, `${fmt(ST?.totalStudents ?? 0)} 試教學生人次`], href: '/#community-stats' },
+    { id: 'c-feedback', name: '試教回饋', nameEn: 'Trial feedback', desc: '老師上傳試教紀錄與學生作品，回饋給教案作者。', model: 'stage', facts: [ST?.schools && `${ST.schools} 所學校參與試教`, ST?.totalStudents && `${fmt(ST.totalStudents)} 試教學生人次`].filter(Boolean), href: '/#community-stats' },
     { id: 'c-news', name: '最新消息', nameEn: 'News', desc: '網站維護進度與教案更新說明。', model: 'kiosk', facts: ['每次教案更新都會公告'], href: '/' },
     { id: 'c-remix', name: '改編共創', nameEn: 'Remix', desc: '在任何一份教案頁按「改編」，做出適合自己班級的版本。', model: 'classroom', facts: ['教案採 CC BY-SA 4.0 授權'], href: '/' },
     { id: 'c-list', name: '列表版首頁', nameEn: 'Classic list', desc: '用搜尋和篩選快速找到教案。', model: 'book', facts: [`${all.length} 個教學組合包`, '4 種篩選：年段、主題、遊戲、排序'], href: '/' },
