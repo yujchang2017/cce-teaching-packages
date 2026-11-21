@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>縣市試教成果島</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" integrity="sha384-su5kReKyYlIFrI62mbQRKXHzFobMa7BHp1cK6julLPbnYcCW9NIZKJiTODjLPeDh" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js" integrity="sha384-9dCJK6nh7skY14HrcvlLYlFga9/MehJjL9ONWRflmiXNRuf8p2jiF4Y5PR881PTq" crossorigin="anonymous"></script>
+<script onerror="window.__bootFail&&__bootFail('d3（cdnjs.cloudflare.com）')" src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" integrity="sha384-su5kReKyYlIFrI62mbQRKXHzFobMa7BHp1cK6julLPbnYcCW9NIZKJiTODjLPeDh" crossorigin="anonymous"></script>
+<script onerror="window.__bootFail&&__bootFail('topojson（cdnjs.cloudflare.com）')" src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js" integrity="sha384-9dCJK6nh7skY14HrcvlLYlFga9/MehJjL9ONWRflmiXNRuf8p2jiF4Y5PR881PTq" crossorigin="anonymous"></script>
 <script type="importmap">
 {
   "imports": {
@@ -97,12 +97,29 @@ button.play{background:#ff7f6e;color:#fff}
 <div id="hint">🖱️ 拖曳旋轉、滾輪縮放；點縣市進入小島，看各校試教了哪些教案</div>
 <div id="tip"></div>
 <div id="fade"></div>
+<div id="boot" style="position:fixed;inset:0;z-index:150;display:flex;align-items:center;justify-content:center;background:#bfe3f0;text-align:center;line-height:1.8"><div style="max-width:440px;padding:24px"><div style="font-size:40px">🏝️</div><b>縣市試教成果島</b><br><span id="bootMsg" style="font-size:14px">正在載入 3D 地圖…</span><div id="bootErr" style="font-size:14px;margin-top:8px"></div></div></div>
+<div id="glLost" role="alert" style="display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:#fff8f4ee;font-family:inherit"><div style="max-width:420px;padding:24px;line-height:1.8;text-align:center"><div style="font-size:40px">😵</div><b>3D 畫面中斷了</b><br><span style="font-size:14px">瀏覽器暫時收回了圖形資源（常見於電腦睡眠喚醒、顯示卡驅動重置，或同時開了很多 3D 分頁）。</span><br><button onclick="location.reload()" style="margin-top:12px;border:0;border-radius:999px;padding:10px 22px;background:#211d1d;color:#fff;font:inherit;font-weight:800;cursor:pointer">重新載入</button></div></div>
+<script>
+// 載入失敗或太久時說明原因（不要只留一片空白）
+window.__bootFail = function (what, detail) {
+  var b = document.getElementById('boot'); if (!b) return; b.style.display = 'flex';
+  document.getElementById('bootMsg').textContent = '3D 地圖沒有載入成功。';
+  document.getElementById('bootErr').innerHTML = (what ? '無法取得：' + what + '。可能是網路不穩，或學校網路擋住了這個網站。<br>' : '') +
+    (detail ? '<small style="color:#776">' + String(detail).replace(/[<>&]/g, '') + '</small><br>' : '') +
+    '<a href="javascript:location.reload()">重新載入</a>　<a href="/">回首頁</a>';
+};
+window.addEventListener('error', function (e) { if (!window.__cmReady && e.message) __bootFail('', e.message); });
+setTimeout(function () { if (!window.__cmReady && document.getElementById('boot')) {
+  document.getElementById('bootErr').innerHTML = '已經超過 15 秒還沒載入完成：可能是網路較慢，或學校網路擋住了 3D 程式庫（cdn.jsdelivr.net、cdnjs.cloudflare.com）。<br>可以再等一下、<a href="javascript:location.reload()">重新載入</a>，或<a href="/">回首頁</a>。'; } }, 15000);
+// 按「上一頁」從別頁回來時，瀏覽器可能直接還原舊畫面，轉場的白幕要拿掉
+window.addEventListener('pageshow', function () { var f = document.getElementById('fade'); if (f) f.style.opacity = 0; });
+</script>
 <aside id="panel"></aside>
 <div id="nogl"><div style="max-width:560px;line-height:1.8;padding:24px">
 <h2 style="margin:0 0 8px">😵 3D 畫面開不起來（WebGL 被關閉）</h2>
 <div>通常是瀏覽器的「圖形加速」暫時失效：完全關閉 Chrome 再重開；或到 Chrome 設定 → 系統 → 開啟「使用圖形加速功能」。</div></div></div>
 
-<script type="module">
+<script type="module" onerror="window.__bootFail&&__bootFail('three.js（cdn.jsdelivr.net）')">
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
@@ -147,10 +164,11 @@ const total=D0.totals;
 // ================= three.js 基本 =================
 const host=document.getElementById("stage");
 let renderer;
-try{renderer=new THREE.WebGLRenderer({antialias:true});}catch(e1){try{renderer=new THREE.WebGLRenderer({antialias:false});}catch(e){document.getElementById("nogl").style.display="flex";throw e}}
+try{renderer=new THREE.WebGLRenderer({antialias:true});}catch(e1){try{renderer=new THREE.WebGLRenderer({antialias:false});}catch(e){window.__cmReady=true;document.getElementById("boot").remove();document.getElementById("nogl").style.display="flex";throw e}}
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 host.appendChild(renderer.domElement);
+renderer.domElement.addEventListener("webglcontextlost",e=>{e.preventDefault();document.getElementById("glLost").style.display="flex"});
 const labelR=new CSS2DRenderer({element:document.getElementById("labels")});labelR.setSize(innerWidth,innerHeight);
 const camera=new THREE.PerspectiveCamera(40,innerWidth/innerHeight,.1,500);
 const controls=new OrbitControls(camera,renderer.domElement);
@@ -471,6 +489,7 @@ renderer.setAnimationLoop(()=>{
 const HP=new URLSearchParams(location.hash.slice(1));
 if(HP.get("county")&&DATA[HP.get("county")])enterCounty(HP.get("county"),true);
 if(HP.get("play"))setTimeout(()=>document.getElementById("play").click(),1200);
+requestAnimationFrame(()=>requestAnimationFrame(()=>{window.__cmReady=true;document.getElementById("boot")?.remove()}));
 </script>
 </body>
 </html>

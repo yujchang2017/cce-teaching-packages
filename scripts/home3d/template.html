@@ -200,6 +200,15 @@ button{font:inherit;color:inherit}
   <div class="modesw" role="group" aria-label="切換群島"><button class="btn" data-mode="theme">🏝️ 六大主題</button><button class="btn" data-mode="county">🗺️ 縣市試教</button></div>
 </header>
 <div id="modeFade"></div>
+<div id="glLost" role="alert" style="display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:#fff8f4ee;font-family:inherit"><div style="max-width:420px;padding:24px;line-height:1.8;text-align:center"><div style="font-size:40px">😵</div><b>3D 畫面中斷了</b><br><span style="font-size:14px">瀏覽器暫時收回了圖形資源（常見於電腦睡眠喚醒、顯示卡驅動重置，或同時開了很多 3D 分頁）。</span><br><button onclick="location.reload()" style="margin-top:12px;border:0;border-radius:999px;padding:10px 22px;background:#211d1d;color:#fff;font:inherit;font-weight:800;cursor:pointer">重新載入</button></div></div>
+<script>
+// 按「上一頁」回來時瀏覽器可能直接還原切換前的畫面，淡出遮罩要拿掉
+window.addEventListener('pageshow', function () { var f = document.getElementById('modeFade'); if (f) f.style.opacity = 0; });
+// 載入超過 15 秒：說明可能原因（載入完成時 #loader 會被移除）
+setTimeout(function () { var l = document.getElementById('loader'), e = document.getElementById('loadErr');
+  if (l && e && e.classList.contains('hidden')) { e.classList.remove('hidden');
+    e.innerHTML = '已經超過 15 秒還沒載入完成：可能是網路較慢，或學校網路擋住了 3D 程式庫（cdn.jsdelivr.net）。<br>可以再等一下、<a href="javascript:location.reload()">重新載入</a>，或<a href="/">改用列表版首頁 →</a>'; } }, 15000);
+</script>
 <nav id="tools" aria-label="工具列">
   <button class="btn" id="btnHome" title="全景"><span aria-hidden="true">⌂</span><span data-en="Overview">全景</span></button>
   <button class="btn" id="btnList" aria-pressed="true"><span aria-hidden="true">☰</span><span data-en="List">清單</span></button>
@@ -353,6 +362,7 @@ const BK = MODE === 'county' ? Math.max(1.9, (Math.max(...islands.map(i => Math.
 // ================= 渲染器、相機、控制 =================
 const stage = $('#stage');
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.domElement.addEventListener('webglcontextlost', e => { e.preventDefault(); $('#glLost').style.display = 'flex'; });
 renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1.4 : 1.75));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -1269,20 +1279,28 @@ for (const [id, tab] of [['#tabThemes', 'themes'], ['#tabFlows', 'flows']]) $(id
 });
 
 // ================= 卡片 =================
-let thumbRenderer = null;
+// 縮圖用主畫面繪製：在畫布左下角畫一格 160×160，立刻複製出來再把主畫面畫回去（同一個工作內完成，畫面不會閃）
+const THUMB = 160;
 function thumbnail(it) {
   try {
-    if (!thumbRenderer) { thumbRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true }); thumbRenderer.setSize(160, 160); thumbRenderer.setPixelRatio(2);
-      thumbRenderer.outputColorSpace = THREE.SRGBColorSpace; thumbRenderer.toneMapping = THREE.ACESFilmicToneMapping; thumbRenderer.shadowMap.enabled = true; }
     const sc = new THREE.Scene(); const dk = new DirectKit();
     MODELS[it.model]((...a) => dk.put(...a), it.island.color, it.island.tree);
     sc.add(dk.group); sc.add(new THREE.HemisphereLight(0xeef6fa, 0x8f8270, 1.5));
     const dl = new THREE.DirectionalLight(0xfff1de, 2.4); dl.position.set(2, 4, 3); dl.castShadow = true; sc.add(dl);
     const cam = new THREE.PerspectiveCamera(30, 1, .1, 50); cam.position.set(1.6, 1.9, 2.6); cam.lookAt(0, .4, 0);
-    thumbRenderer.render(sc, cam);
-    const url = thumbRenderer.domElement.toDataURL();
+    const pr = renderer.getPixelRatio(), px = Math.round(THUMB * pr), cv = renderer.domElement;
+    if (cv.width < px || cv.height < px) { dk.mats.forEach(m => m.dispose()); return ''; }
+    const vp = new THREE.Vector4(); renderer.getViewport(vp);
+    renderer.setScissorTest(true); renderer.setViewport(0, 0, THUMB, THUMB); renderer.setScissor(0, 0, THUMB, THUMB);
+    const nu = renderer.shadowMap.needsUpdate; renderer.shadowMap.needsUpdate = true; // 降畫質時陰影不自動更新，縮圖的燈要強制畫一次陰影
+    renderer.setClearColor(0x000000, 0); renderer.clear(); renderer.render(sc, cam);
+    renderer.shadowMap.needsUpdate = nu;
+    const out = document.createElement('canvas'); out.width = out.height = px;
+    out.getContext('2d').drawImage(cv, 0, cv.height - px, px, px, 0, 0, px, px);
+    renderer.setScissorTest(false); renderer.setViewport(vp);
+    renderer.render(scene, camera); state.dirty = true;
     dk.mats.forEach(m => m.dispose());
-    return url;
+    return out.toDataURL();
   } catch { return ''; }
 }
 function bigNumbers(facts) {
