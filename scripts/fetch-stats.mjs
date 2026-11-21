@@ -337,6 +337,50 @@ const byCity = Array.from(cityMap.entries())
   }))
   .sort((a, b) => b.submissions - a.submissions);
 
+// ---- 縣市試教群島（首頁彩蛋）：學校→縣市、各校教案、每月筆數 ----
+// 校名別名見 scripts/school-aliases.json。縣市判定順序：別名表指定 > 校名開頭的縣市 > 該校多數回饋填的「任教縣市」。
+// 只輸出校名（已同意公開），不輸出老師姓名。
+const ALIASES = (() => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'school-aliases.json'), 'utf8')); } catch { return { names: {}, city: {} }; } })();
+const COUNTIES = ['台北市', '新北市', '基隆市', '桃園市', '新竹市', '新竹縣', '宜蘭縣', '苗栗縣', '台中市', '彰化縣', '南投縣', '雲林縣', '嘉義市', '嘉義縣', '台南市', '高雄市', '屏東縣', '花蓮縣', '台東縣', '澎湖縣', '金門縣', '連江縣'];
+const normCounty = c => { const v = String(c || '').trim().replace(/^臺/, '台'); return COUNTIES.includes(v) ? v : ''; };
+const isleMap = new Map();
+const monthMap = new Map();
+let isleNoSchool = 0, noDateSubmissions = 0;
+for (const row of submittedRows) {
+  const keyId = (getCell(row, columns.keyId) || '').trim();
+  const raw = normalizeOptionalText(getCell(row, columns.school));
+  const students = parseInt((getCell(row, columns.studentCount) || '').trim(), 10) || 0;
+  const date = (getCell(row, columns.trialDate) || '').trim().match(/^(\d{1,4})[/-](\d{1,2})[/-]\d{1,2}/);
+  if (date) { const y = +date[1] < 1911 ? +date[1] + 1911 : +date[1]; const m = `${y}-${String(+date[2]).padStart(2, '0')}`; monthMap.set(m, (monthMap.get(m) || 0) + 1); }
+  else noDateSubmissions++;
+  if (!raw) { isleNoSchool++; continue; }
+  const name = ALIASES.names?.[raw] || raw;
+  if (!isleMap.has(name)) isleMap.set(name, { cities: new Map(), submissions: 0, students: 0, teachers: new Set(), packages: new Map() });
+  const s = isleMap.get(name);
+  const c = normCounty(getCell(row, columns.city));
+  if (c) s.cities.set(c, (s.cities.get(c) || 0) + 1);
+  const teacher = normalizeOptionalText(getCell(row, columns.teacher));
+  if (teacher) s.teachers.add(teacher);
+  s.submissions++; s.students += students;
+  s.packages.set(keyId, (s.packages.get(keyId) || 0) + students);
+}
+const isleSchools = [];
+let isleNoCounty = 0;
+for (const [name, v] of isleMap) {
+  const city = normCounty(ALIASES.city?.[name]) || normCounty((name.match(/^(.{2}[縣市])/) || [])[1])
+    || [...v.cities.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || '';
+  if (!city) { isleNoCounty += v.submissions; continue; }
+  isleSchools.push({ name, city, level: schoolLevel(name), submissions: v.submissions, students: v.students, teachers: v.teachers.size,
+    packages: Array.from(v.packages, ([keyId, students]) => ({ keyId, students })).sort((a, b) => a.keyId.localeCompare(b.keyId)) });
+}
+isleSchools.sort((a, b) => b.submissions - a.submissions || a.name.localeCompare(b.name));
+const countyIsles = {
+  schools: isleSchools,
+  unplacedSubmissions: isleNoSchool + isleNoCounty, // 沒填學校或判定不出縣市，不畫在地圖上
+  byMonth: Array.from(monthMap, ([m, n]) => ({ m, n })).sort((a, b) => a.m.localeCompare(b.m)),
+  noDateSubmissions,
+};
+
 // KC 覆蓋率：被任一老師試教過的主題數
 const coveredThemes = Object.entries(themeCount)
   .filter(([, n]) => n > 0)
@@ -361,6 +405,7 @@ const stats = {
   byTeacher,
   bySchool,
   byCity,
+  countyIsles,
   generatedAt: new Date().toISOString(),
 };
 
@@ -376,6 +421,7 @@ function writeEmpty() {
     teachers: 0, schools: 0, cities: 0, kcCoverage: 0,
     byTheme: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 },
     themeNames: THEME_NAMES, coveredThemes: [], byPackage: [], byTeacher: [], bySchool: [], byCity: [],
+    countyIsles: { schools: [], unplacedSubmissions: 0, byMonth: [], noDateSubmissions: 0 },
     announcements: [],
     generatedAt: new Date().toISOString(),
   };

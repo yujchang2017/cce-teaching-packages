@@ -1,4 +1,4 @@
-// 產生「氣候教案群島」3D 彩蛋頁（首頁標題連點 3 下進入）：把教案清單、試教統計、點閱數注入 template.html
+// 產生「氣候教案群島」3D 彩蛋頁（首頁標題連點 3 下進入）：把教案清單、試教統計、點閱數注入 template.html；左上角可一鍵切換「六大主題／縣市試教」（?mode=county）
 // 建置時由 GitHub Actions 執行（見 .github/workflows/build-and-deploy.yml），輸出不進版控。
 // 用法（在 web/ 下）：node ../scripts/home3d/gen-home3d.mjs --packages data/packages.json --stats data/stats.json --views data/view-stats.json --out public/home3d/index.html
 // 重算教學銜接線（只在本機，原始分析資料不進 repo）：再加 --rec <unesco_rec.json>，會更新同資料夾的 flows.json
@@ -16,7 +16,8 @@ const all = (Array.isArray(pk) ? pk : pk.packages).filter(p => p.level !== 'V');
 const ST = readJson(arg('stats'));
 const VS = readJson(arg('views'), {});
 const pkgByKey = Object.fromEntries(all.map(p => [p.keyId, p]));
-const teachers = (ST?.byTeacher || []).map(t => ({ name: t.name, school: t.school, submissions: t.submissions, students: t.students, badge: t.badge, themes: t.themes,
+// 2026-11-21 使用者裁定 (b)：整個彩蛋都不顯示老師姓氏
+const teachers = (ST?.byTeacher || []).map(t => ({ name: '試教老師', school: t.school, submissions: t.submissions, students: t.students, badge: t.badge, themes: t.themes,
   packages: (t.packages || []).filter(p => pkgByKey[p.keyId]).map(p => ({ ...p, topic: pkgByKey[p.keyId].topic.replace(/^\d\.\d-[IVX]+\s*/, '') })) })).filter(t => t.packages.length);
 
 
@@ -204,10 +205,144 @@ const DATA = {
   stats: { packages: all.length, schools: ST?.schools ?? 0, teachers: ST?.teachers ?? 0, students: ST?.totalStudents ?? 0, sessions: ST?.trialSessions ?? 0, pptViews: VS.pptViews ?? 0, worksheetViews: VS.worksheetViews ?? 0, asOf: (ST?.generatedAt || '').slice(0, 10) },
   islands, flows, dayCycle, teachers,
 };
+// ===== 縣市模式（2026-11-21）：每個縣市一座島，位置依台灣大致方位排；沒有試教的縣市是小沙洲 =====
+// 資料：stats.json 的 countyIsles（fetch-stats.mjs 依校名、別名表與「任教縣市」判定各校縣市；只有校名，沒有老師姓名）
+const CD = (() => {
+  const by = new Map();
+  for (const s of ST?.countyIsles?.schools || []) {
+    if (!by.has(s.city)) by.set(s.city, { city: s.city, schools: [], submissions: 0, students: 0 });
+    const c = by.get(s.city); c.schools.push(s); c.submissions += s.submissions; c.students += s.students;
+  }
+  return { generatedAt: ST?.generatedAt || '', totals: { submissions: ST?.totalSubmissions || 0 }, cities: [...by.values()] };
+})();
+// 縣市大致中心經緯度（外島已往本島內縮：金門、馬祖、澎湖的位置不是實際比例）
+const GEO = {
+  '台北市': [121.56, 25.08], '新北市': [121.62, 24.93], '基隆市': [121.74, 25.13], '桃園市': [121.24, 24.93],
+  '新竹市': [120.97, 24.80], '新竹縣': [121.17, 24.70], '宜蘭縣': [121.68, 24.62], '苗栗縣': [120.90, 24.50],
+  '台中市': [120.85, 24.22], '彰化縣': [120.47, 23.98], '南投縣': [120.98, 23.87], '花蓮縣': [121.45, 23.82],
+  '雲林縣': [120.40, 23.70], '嘉義市': [120.45, 23.47], '嘉義縣': [120.55, 23.40], '台南市': [120.30, 23.12],
+  '高雄市': [120.50, 22.85], '台東縣': [121.08, 22.90], '屏東縣': [120.62, 22.48],
+  '澎湖縣': [119.70, 23.57], '金門縣': [119.15, 24.45], '連江縣': [120.05, 25.85],
+};
+const STG = n => (n === 0 ? 0 : n < 5 ? 1 : n < 20 ? 2 : 3);
+const C_COL = ['#e1d1ab', '#9cc27a', '#58a6a6', '#db6a41'];
+const C_ICON = ['🚩', '🌱', '🏡', '🏘️'];
+const C_TREE = ['palm', 'broadleaf', 'conifer', 'cherry'];
+const C_LM = [null, 'kiosk', 'classroom', 'hall'];
+const MODEL_OF = lv => ({ 國小: 'classroom', 國中小: 'classroom', 國中: 'court', 中學: 'court', 高中: 'court', 高中職: 'court', 機構: 'factory' }[lv] || 'pavilion');
+const topicOf = k => (pkgByKey[k] ? pkgByKey[k].topic.replace(/^\d\.\d-[IVX]+\s*/, '') : '');
+const THEME_NAME = Object.fromEntries(THEMES.map(t => [t.n, t.name]));
+const cByName = Object.fromEntries(CD.cities.map(c => [c.city, c]));
+const missing = CD.cities.filter(c => !GEO[c.city]).map(c => c.city);
+if (missing.length) throw new Error('縣市沒有島的位置：' + missing.join('、'));
+let sid = 0;
+const cIslands = Object.entries(GEO).map(([name, [lon, lat]], i) => {
+  const c = cByName[name], n = c?.submissions || 0, st = STG(n);
+  const items = (c?.schools || []).map(s => ({
+    id: 's' + (++sid), name: s.name, nameEn: '', model: MODEL_OF(s.level),
+    desc: `${s.level}・試教 ${s.submissions} 筆・${fmt(s.students)} 學生人次${s.note ? '（' + s.note + '）' : ''}`,
+    facts: [`${s.submissions} 筆試教`, `${fmt(s.students)} 學生人次`, `${s.packages.length} 份教案`],
+    level: s.level, submissions: s.submissions, students: s.students,
+    lessons: s.packages.map(p => ({ keyId: p.keyId, topic: topicOf(p.keyId), students: p.students, theme: +p.keyId[0] })),
+  }));
+  return {
+    id: 'c' + i, num: n ? String(n) : '–', q: 0, r: 0, lon, lat, name, nameEn: '', color: C_COL[st], style: ['brick', 'speckle', 'stripe'][i % 3],
+    icon: C_ICON[st], tree: C_TREE[st], landmark: C_LM[st], sand: st === 0, stage: st,
+    summary: n ? `${items.length} 所學校・試教 ${n} 筆・${fmt(c.students)} 學生人次` : '還沒有試教紀錄，等待第一場試教 🚩',
+    items,
+  };
+});
+// ---- 島的大小：學校數、學生人次、教案數（不重複）各自除以全國最大值，加權平均（學校 50%、學生 25%、教案 25%，2026-11-21 使用者裁定）→ 規模分數 0–1 ----
+// 半徑倍率 = 0.62 + 1.38 × 分數^0.8（差距拉大，使用者裁定）；沙洲固定 0.5
+{
+  const m = isl => ({ schools: isl.items.length, students: isl.items.reduce((a, it) => a + it.students, 0), lessons: new Set(isl.items.flatMap(it => it.lessons.map(l => l.keyId))).size });
+  cIslands.forEach(isl => { isl.metric = m(isl); });
+  const act = cIslands.filter(i => !i.sand);
+  const mx = k => Math.max(...act.map(i => i.metric[k]));
+  const MX = { schools: mx('schools'), students: mx('students'), lessons: mx('lessons') };
+  cIslands.forEach(isl => {
+    isl.score = isl.sand ? 0 : 0.5 * isl.metric.schools / MX.schools + 0.25 * isl.metric.students / MX.students + 0.25 * isl.metric.lessons / MX.lessons;
+    isl.sc = isl.sand ? 0.5 : +(0.62 + 1.38 * Math.pow(isl.score, 0.8)).toFixed(3);
+    if (!isl.sand) isl.summary += `・${isl.metric.lessons} 份教案`;
+  });
+}
+// ---- 位置：縣市大致中心的經緯度 → 平面座標；外島往本島內縮；再把重疊的島推開（同時拉回原位） ----
+const OUTER = new Set(['澎湖縣', '金門縣', '連江縣']);
+{
+  const LAT0 = 23.7, LON0 = 120.9, K = 12, COS = Math.cos(LAT0 * Math.PI / 180), BASE_R = 2.02, GAP = 0.9;
+  cIslands.forEach(isl => { isl.ax = (isl.lon - LON0) * COS * K; isl.az = -(isl.lat - LAT0) * K; isl.x = isl.ax; isl.z = isl.az; isl.rad = BASE_R * isl.sc; });
+  for (let it = 0; it < 600; it++) {
+    for (let i = 0; i < cIslands.length; i++) for (let j = i + 1; j < cIslands.length; j++) {
+      const a = cIslands[i], b = cIslands[j]; let dx = b.x - a.x, dz = b.z - a.z, d = Math.hypot(dx, dz) || 1e-3;
+      const need = a.rad + b.rad + GAP; if (d >= need) continue;
+      const push = (need - d) / 2; dx /= d; dz /= d;
+      a.x -= dx * push; a.z -= dz * push; b.x += dx * push; b.z += dz * push;
+    }
+    cIslands.forEach(isl => { isl.x += (isl.ax - isl.x) * 0.04; isl.z += (isl.az - isl.z) * 0.04; });
+  }
+  cIslands.forEach(isl => { isl.x = +isl.x.toFixed(2); isl.z = +isl.z.toFixed(2); });
+  let worst = Infinity;
+  for (let i = 0; i < cIslands.length; i++) for (let j = i + 1; j < cIslands.length; j++) { const a = cIslands[i], b = cIslands[j]; worst = Math.min(worst, Math.hypot(b.x - a.x, b.z - a.z) - a.rad - b.rad); }
+  console.log(`  島與島最小間隙 ${worst.toFixed(2)}（<0 代表重疊）`);
+}
+// ---- 橋：本島各縣市用最小生成樹連通（讓小人走得到），再加上很近的鄰居；外島不架橋 ----
+const cBridges = [];
+{
+  const main = cIslands.filter(i => !OUTER.has(i.name));
+  const gap = (a, b) => Math.hypot(b.x - a.x, b.z - a.z) - a.rad - b.rad;
+  const E = [];
+  for (let i = 0; i < main.length; i++) for (let j = i + 1; j < main.length; j++) E.push([gap(main[i], main[j]), main[i], main[j]]);
+  E.sort((x, y) => x[0] - y[0]);
+  const par = new Map(main.map(i => [i.id, i.id])); const find = x => (par.get(x) === x ? x : (par.set(x, find(par.get(x))), par.get(x)));
+  for (const [g, a, b] of E) {
+    const ra = find(a.id), rb = find(b.id);
+    if (ra !== rb) { par.set(ra, rb); cBridges.push([a.id, b.id]); }
+    else if (g < 1.3) cBridges.push([a.id, b.id]);
+  }
+  console.log(`  橋 ${cBridges.length} 座`);
+}
+
+// 跨縣市觀摩線：兩縣市試教過相同教案 → 小人搬著教案編號來回走
+const C_ROLES = ['teacher', 'student', 'researcher', 'parent', 'traveler', 'commuter', 'elder', 'farmer', 'worker'];
+const keysOf = isl => new Set(isl.items.flatMap(it => it.lessons.map(l => l.keyId)));
+const cAct = cIslands.filter(i => !i.sand);
+const cPairs = [];
+for (let i = 0; i < cAct.length; i++) for (let j = i + 1; j < cAct.length; j++) {
+  const A = cAct[i], B = cAct[j], kb = keysOf(B);
+  const shared = [...keysOf(A)].filter(k => kb.has(k)).sort();
+  if (shared.length) cPairs.push({ A, B, shared });
+}
+cPairs.sort((x, y) => y.shared.length - x.shared.length);
+const firstSchool = (isl, k) => isl.items.find(it => it.lessons.some(l => l.keyId === k))?.id;
+const cFlows = cPairs.slice(0, 10).map((p, i) => {
+  const n = p.shared.length;
+  return {
+    id: 'f' + (i + 1), from: p.A.id, to: p.B.id, fromItem: firstSchool(p.A, p.shared[0]), toItem: firstSchool(p.B, p.shared[0]),
+    carried: p.shared.slice(0, 6).map(k => ({ stage: '', dom: THEME_NAME[+k[0]], code: k })), carryName: p.shared.slice(0, 3).join('、') + (n > 3 ? '…' : ''),
+    role: C_ROLES[i % C_ROLES.length], level: n >= 3 ? 'strong' : n === 2 ? 'suggest' : 'pending', n, mean: 0, stages: [],
+    doms: [...new Set(p.shared.map(k => THEME_NAME[+k[0]]))],
+    desc: `${p.A.name}和${p.B.name}都試教過 ${n} 份相同的教案。`,
+    examples: p.shared.map(k => ({ stage: '', dom: THEME_NAME[+k[0]], code: k, content: topicOf(k), sim: '' })),
+  };
+});
+// 每所學校一個「試教老師」小人（不顯示姓名），身後小孩代表學生
+const cTeachers = cIslands.flatMap(isl => isl.items.map(it => ({
+  name: it.name, school: isl.name, badge: it.level, submissions: it.submissions, students: it.students, itemId: it.id,
+  themes: [...new Set(it.lessons.map(l => l.theme))], packages: it.lessons.map(l => ({ keyId: l.keyId, topic: l.topic, students: l.students })),
+})));
+const DATA_C = {
+  title: '縣市試教群島', titleEn: 'County trial isles', mode: 'county',
+  stats: { ...DATA.stats, cities: CD.cities.length, citySchools: CD.cities.reduce((a, c) => a + c.schools.length, 0),
+    citySubs: CD.cities.reduce((a, c) => a + c.submissions, 0), cityStudents: CD.cities.reduce((a, c) => a + c.students, 0),
+    noCity: CD.totals.submissions - CD.cities.reduce((a, c) => a + c.submissions, 0), asOf: (CD.generatedAt || '').slice(0, 10) },
+  islands: cIslands.map(({ ax, az, rad, ...r }) => r), bridges: cBridges, flows: cFlows, dayCycle, teachers: cTeachers,
+};
+console.log(`縣市模式：島 ${cIslands.length}（有試教 ${cAct.length}、沙洲 ${cIslands.length - cAct.length}），學校 ${sid}，跨縣市線 ${cFlows.length}`);
+
 const nItems = islands.reduce((a, i) => a + i.items.length, 0);
 const tpl = fs.readFileSync(TPL, 'utf8');
 if (!tpl.includes('/*__DATA__*/')) throw new Error('template missing /*__DATA__*/');
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
-fs.writeFileSync(OUT, tpl.replace('/*__DATA__*/', 'const DATA = ' + JSON.stringify(DATA, null, 1) + ';'), 'utf8');
+fs.writeFileSync(OUT, tpl.replace("/*__DATA__*/", () => ["const DATA_T = " + JSON.stringify(DATA) + ";", "const DATA_C = " + JSON.stringify(DATA_C) + ";", "const MODE = new URLSearchParams(location.search).get('mode') === 'county' ? 'county' : 'theme';", "const DATA = MODE === 'county' ? DATA_C : DATA_T;"].join(String.fromCharCode(10))), "utf8");
 console.log(`islands ${islands.length}, items ${nItems}, flows ${flows.length}, packages ${all.length}, teachers ${teachers.length}`);
 flows.forEach(f => console.log(`  ${f.id} ${f.fromItem}→${f.toItem} n=${f.n} ${f.level} ${f.role} 搬運領域：${f.carried.map(c => c.dom).join('/')}`));

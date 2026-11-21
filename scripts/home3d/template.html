@@ -165,6 +165,15 @@ button{font:inherit;color:inherit}
   #legend{bottom:auto;top:84px;font-size:11px;gap:8px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.modesw{display:flex;gap:4px;margin-top:8px;background:#0000000d;border-radius:999px;padding:3px;width:max-content}
+.modesw .btn{border-radius:999px;padding:5px 12px;font-weight:800;font-size:13px}
+.modesw .btn.on{background:#211d1d;color:#fff}
+#modeFade{position:fixed;inset:0;background:#f4eee3;opacity:0;pointer-events:none;transition:opacity .35s;z-index:99}
+.lessons{list-style:none;padding:0;margin:6px 0;font-size:13px}
+.lessons li{display:flex;gap:8px;align-items:baseline;padding:4px 0;border-bottom:1px dashed #0001}
+.lessons a.k{flex:none;color:#fff;border-radius:8px;padding:0 7px;font-weight:800;text-decoration:none}
+.todo{border:2px dashed #c5b5a7;border-radius:12px;padding:8px 10px;font-size:12px;color:var(--mute);margin-top:10px;line-height:1.6}
 </style>
 <script type="importmap">
 {"imports":{
@@ -179,6 +188,7 @@ button{font:inherit;color:inherit}
   <p data-en="Assembling the lesson city…">正在組合教案城市…</p>
   <div id="loadErr" class="hidden"></div>
 </div>
+<script>if (/[?&]mode=county\b/.test(location.search)) { document.querySelector('#loader h1').textContent = '縣市試教群島'; document.querySelector('#loader p').textContent = '正在把各縣市的試教成果長成小島…'; }</script>
 <div id="stage"></div>
 <div id="labels"></div>
 
@@ -187,7 +197,9 @@ button{font:inherit;color:inherit}
   <h1><span data-en="Climate Lesson Isles">氣候教案群島</span><span class="trial" data-en="Prototype">試作版</span></h1>
   <div class="sub" data-en="An open climate-education lesson library, built on UNESCO's Greening Curriculum Guidance">依 UNESCO《綠色課程指南》開發的開源氣候教案庫</div>
   <div class="stats" id="brandStats"></div>
+  <div class="modesw" role="group" aria-label="切換群島"><button class="btn" data-mode="theme">🏝️ 六大主題</button><button class="btn" data-mode="county">🗺️ 縣市試教</button></div>
 </header>
+<div id="modeFade"></div>
 <nav id="tools" aria-label="工具列">
   <button class="btn" id="btnHome" title="全景"><span aria-hidden="true">⌂</span><span data-en="Overview">全景</span></button>
   <button class="btn" id="btnList" aria-pressed="true"><span aria-hidden="true">☰</span><span data-en="List">清單</span></button>
@@ -271,7 +283,7 @@ const lerp = (a, b, t) => a + (b - a) * t;
 const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 const easeInOutCubic = t => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
-const CIRC = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨'];
+const CIRC = '①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳'.split('');
 const fmtN = n => Number(n).toLocaleString('en-US');
 const hhmm = m => { m = ((Math.floor(m) % 1440) + 1440) % 1440; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); };
 
@@ -307,8 +319,8 @@ try {
 
 function init() {
 // ================= 常數與狀態 =================
-const R = 2.02, SPACING = 2.28, TOP = 0.65, WATER_Y = -0.18;
-const PATH_R = 1.8, INNER = 1.36;
+const R = 2.02, R0 = R, SAND_R = 1.05, SPACING = 2.28, TOP = 0.65, WATER_Y = -0.18;
+const PATH_R = 1.8, PATH_R0 = PATH_R, INNER = 1.36;
 const mqMobile = matchMedia('(max-width:800px)');
 const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
 let isMobile = mqMobile.matches;
@@ -328,12 +340,15 @@ const C = h => new THREE.Color(h);
 const axial = (q, r) => ({ x: Math.sqrt(3) * SPACING * (q + r / 2), z: 1.5 * SPACING * r });
 
 // 島與細項索引
-const islands = DATA.islands.map((isl, idx) => ({ ...isl, idx, ...axial(isl.q, isl.r) }));
+const islands = DATA.islands.map((isl, idx) => ({ ...isl, idx, ...(MODE === 'county' ? {} : axial(isl.q, isl.r)) })); // 縣市模式：座標由產生器依地理位置算好
 const islandById = Object.fromEntries(islands.map(i => [i.id, i]));
 const items = [];
 islands.forEach(isl => isl.items.forEach((it, k) => { it.island = isl; it.k = k; items.push(it); }));
 const itemById = Object.fromEntries(items.map(i => [i.id, i]));
-const center = new THREE.Vector3(islands.reduce((a, i) => a + i.x, 0) / islands.length, TOP, islands.reduce((a, i) => a + i.z, 0) / islands.length);
+const center = MODE === 'county' // 縣市模式：用外框中心，避免外島把中心拉偏
+  ? new THREE.Vector3((Math.min(...islands.map(i => i.x)) + Math.max(...islands.map(i => i.x))) / 2, TOP, (Math.min(...islands.map(i => i.z)) + Math.max(...islands.map(i => i.z))) / 2)
+  : new THREE.Vector3(islands.reduce((a, i) => a + i.x, 0) / islands.length, TOP, islands.reduce((a, i) => a + i.z, 0) / islands.length);
+const BK = MODE === 'county' ? Math.max(1.9, (Math.max(...islands.map(i => Math.hypot(i.x - center.x, i.z - center.z) + R * (i.sc || 1))) + 5) / 24) : 1; // 縣市模式群島較大，背景盆地放大
 
 // ================= 渲染器、相機、控制 =================
 const stage = $('#stage');
@@ -348,20 +363,20 @@ stage.appendChild(renderer.domElement);
 const labelRenderer = new CSS2DRenderer({ element: $('#labels') });
 
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0xf4eee3, 42, 150);
+scene.fog = MODE === 'county' ? new THREE.Fog(0xf4eee3, 70, 260) : new THREE.Fog(0xf4eee3, 42, 150);
 const camera = new THREE.PerspectiveCamera(32, 1, .3, 320);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; controls.dampingFactor = .07; controls.enablePan = false;
 controls.minPolarAngle = THREE.MathUtils.degToRad(25); controls.maxPolarAngle = THREE.MathUtils.degToRad(70);
-controls.minDistance = 3; controls.maxDistance = 70;
+controls.minDistance = 3; controls.maxDistance = MODE === 'county' ? 130 : 70;
 controls.target.copy(center);
 // 直式手機改從東側看，讓東西向的群島在畫面上變成上下排列
 const PORTRAIT = innerHeight > innerWidth * 1.2;
-const HOME_DIR = (PORTRAIT ? new THREE.Vector3(.85, .52, -.12) : new THREE.Vector3(.24, .33, .87)).normalize();
+const HOME_DIR = (MODE === 'county' ? (PORTRAIT ? new THREE.Vector3(.1, .85, .35) : new THREE.Vector3(.12, .72, .62)) : PORTRAIT ? new THREE.Vector3(.85, .52, -.12) : new THREE.Vector3(.24, .33, .87)).normalize();
 function homeDistance() {
   // 依扣掉左右面板後的可視區長寬比決定距離
   const side = document.querySelector('#side'), w = !isMobile && side && !side.classList.contains('hidden') ? side.getBoundingClientRect().left : innerWidth;
-  const a = w / innerHeight; return a > 1.3 ? 28.5 : a > .8 ? 38 : PORTRAIT ? 48 : 56;
+  const a = w / innerHeight; return (MODE === 'county' ? BK * .78 : 1) * (a > 1.3 ? 28.5 : a > .8 ? 38 : PORTRAIT ? 48 : 56);
 }
 camera.position.copy(center).addScaledVector(HOME_DIR, homeDistance());
 controls.addEventListener('change', () => { state.dirty = true; });
@@ -428,7 +443,7 @@ function waterMaterial() {
   });
 }
 const waterMat = waterMaterial();
-const water = new THREE.Mesh(new THREE.CircleGeometry(160, 64).rotateX(-Math.PI / 2), waterMat);
+const water = new THREE.Mesh(new THREE.CircleGeometry(160 * (MODE === 'county' ? 1.9 : 1), 64).rotateX(-Math.PI / 2), waterMat);
 water.position.set(center.x, WATER_Y, center.z);
 water.receiveShadow = false;
 scene.add(water);
@@ -666,7 +681,8 @@ const hexRing = (r1, r2, y) => new THREE.RingGeometry(r1, r2, 6, 1).rotateZ(PI /
 
 islands.forEach(isl => {
   const col = C(isl.color);
-  const pale = C(P.cream).lerp(col, .28);
+  const pale = C(P.cream).lerp(col, isl.sand ? .6 : .28);
+  const R = R0 * (isl.sc || 1), PATH_R = isl.sand ? R * .7 : PATH_R0 * (isl.sc || 1);
   // 島面（世界座標 UV，讓花紋跨島連續）
   const top = new THREE.CircleGeometry(R - .05, 6).rotateZ(PI / 6).rotateX(-PI / 2).translate(isl.x, TOP, isl.z);
   const uv = top.attributes.uv, pos = top.attributes.position;
@@ -706,14 +722,16 @@ const foam = new THREE.Mesh(mergeGeometries(foamGeos), new THREE.MeshBasicMateri
 // 橋：相鄰島步道環的邊中點互連
 const islandAt = (q, r) => islands.find(i => i.q === q && i.r === r);
 const bridges = [];
-islands.forEach(a => {
-  for (const [dq, dr] of [[1, 0], [0, 1], [-1, 1]]) {
-    const b = islandAt(a.q + dq, a.r + dr); if (!b) continue;
-    const ang = Math.atan2(b.z - a.z, b.x - a.x);
+const BRIDGE_PAIRS = DATA.bridges ? DATA.bridges.map(([p, q]) => [islandById[p], islandById[q]])
+  : islands.flatMap(a => [[1, 0], [0, 1], [-1, 1]].map(([dq, dr]) => [a, islandAt(a.q + dq, a.r + dr)]).filter(([, b]) => b));
+BRIDGE_PAIRS.forEach(([a, b]) => {
+  {
+    let ang = Math.atan2(b.z - a.z, b.x - a.x);
     const k = ((Math.round(ang / (PI / 3)) * 2) % 12 + 12) % 12;
-    const na = a.nodes[k], nb = b.nodes[(k + 6) % 12];
+    const na = DATA.bridges ? nearestNode(a, b.x, b.z) : a.nodes[k], nb = DATA.bridges ? nearestNode(b, a.x, a.z) : b.nodes[(k + 6) % 12];
     link(na, nb, true); bridges.push([na, nb]);
     const A = nodes[na], B = nodes[nb], len = Math.hypot(B.x - A.x, B.z - A.z), arch = clamp(len * .06, .04, .1);
+    if (DATA.bridges) ang = Math.atan2(B.z - A.z, B.x - A.x);
     for (let i = 0; i < 9; i++) {
       const t = (i + .5) / 9, x = lerp(A.x, B.x, t), z = lerp(A.z, B.z, t);
       kp('box', x, TOP + .01 + Math.sin(t * PI) * arch, z, len / 9 * .92, .045, .34, i % 2 ? '#c99b74' : P.wood, { ry: -ang, owner: null });
@@ -726,20 +744,24 @@ islands.forEach(a => {
 });
 
 // 島內配置：主建物＋交錯格子
-function layoutItems(n) {
-  const c = n <= 3 ? .62 : lerp(.62, .46, clamp((n - 3) / 4, 0, 1));
-  const cand = [];
-  for (let row = -6; row <= 6; row++) {
+function layoutItems(n, sc = 1) {
+  let c = n <= 3 ? .62 : lerp(.62, .46, clamp((n - 3) / 4, 0, 1));
+  let cand = [];
+  for (let tries = 0; tries < 12; tries++, c *= .93) { // 放不下就把格子縮小（縣市島最多 11 所學校）
+  cand = [];
+  for (let row = -8; row <= 8; row++) {
     const z = row * c * .92;
-    for (let col = -6; col <= 6; col++) {
+    for (let col = -8; col <= 8; col++) {
       const x = (col + (row & 1 ? .5 : 0)) * c;
       if (Math.hypot(x, z) > INNER - c * .5) continue;
       if (Math.abs(x) < .66 + c * .4 && z < .05 + c * .4 && z > -1.2) continue; // 主建物區
       cand.push({ x, z });
     }
   }
+  if (cand.length >= n) break;
+  }
   cand.sort((a, b) => Math.hypot(a.x, a.z - .35) - Math.hypot(b.x, b.z - .35));
-  const pick = cand.slice(0, n).sort((a, b) => (a.z - b.z) || (a.x - b.x));
+  const pick = cand.slice(0, n).sort((a, b) => (a.z - b.z) || (a.x - b.x)).map(q => ({ x: q.x * sc, z: q.z * sc }));
   return { c, pick };
 }
 const pinParent = new THREE.Group(); scene.add(pinParent);
@@ -747,13 +769,19 @@ const lampSpots = [];
 islands.forEach(isl => {
   // 主建物
   kit.owner = 'isl:' + isl.id;
-  kit.base = new THREE.Matrix4().compose(V.set(isl.x, TOP, isl.z - .58), Q.identity(), S.setScalar(1.15));
+  if (isl.sand) { // 小沙洲：一面旗子＋一棵椰子樹
+    kit.base = new THREE.Matrix4();
+    kp('cyl', isl.x, TOP, isl.z, .035, .75, .035, P.wood); kp('box', isl.x + .2, TOP + .62, isl.z, .36, .22, .025, P.coral);
+    kit.owner = null; tree(kp, 'palm', isl.x - .45, isl.z + .3, .55); return;
+  }
+  const sc = isl.sc || 1;
+  kit.base = new THREE.Matrix4().compose(V.set(isl.x, TOP, isl.z - .58 * sc), Q.identity(), S.setScalar(1.15 * Math.min(sc, 1.4)));
   MODELS[isl.landmark](kp, isl.color, isl.tree);
   // 細項
-  const { c, pick } = layoutItems(isl.items.length);
+  const { c, pick } = layoutItems(isl.items.length, sc);
   isl.items.forEach((it, k) => {
     const p = pick[k] || { x: 0, z: 0 };
-    it.x = isl.x + p.x; it.z = isl.z + p.z; it.scale = c * .88;
+    it.x = isl.x + p.x; it.z = isl.z + p.z; it.scale = c * .88 * Math.min(sc, 1.3);
     kit.owner = it.id;
     kit.base = new THREE.Matrix4().compose(V.set(it.x, TOP, it.z), Q.setFromEuler(E.set(0, (k % 3 - 1) * .12, 0)), S.setScalar(it.scale));
     MODELS[it.model](kp, isl.color, isl.tree);
@@ -763,28 +791,28 @@ islands.forEach(isl => {
   // 外圈：路燈（頂點）、大樹、盆栽、串燈、長椅
   const rnd = mulberry32(isl.idx * 31 + 5);
   for (let k = 0; k < 6; k++) {
-    const a = PI / 6 + k * PI / 3, x = isl.x + Math.cos(a) * 1.95, z = isl.z + Math.sin(a) * 1.95;
+    const a = PI / 6 + k * PI / 3, x = isl.x + Math.cos(a) * 1.95 * sc, z = isl.z + Math.sin(a) * 1.95 * sc;
     kp('cyl', x, TOP, z, .028, .38, .028, '#4a3f3a', { small: true }); kp('glowsphere', x, TOP + .36, z, .08, .08, .08, P.yellow, { small: true });
     lampSpots.push([x, z]);
     const ta = a + (rnd() < .5 ? -.24 : .24);
-    if (k % 3 !== 1) tree(kp, isl.tree, isl.x + Math.cos(ta) * 1.54, isl.z + Math.sin(ta) * 1.54, .55 + rnd() * .15);
+    if (k % 3 !== 1) tree(kp, isl.tree, isl.x + Math.cos(ta) * 1.54 * sc, isl.z + Math.sin(ta) * 1.54 * sc, .55 + rnd() * .15);
     const ma = a + PI / 6;
     for (let s = -2; s <= 2; s++) { // 串燈
-      const t = s / 5, ex = isl.x + Math.cos(ma) * (R - .1) * Math.cos(PI / 6) / Math.cos(t * .9), ez = isl.z + Math.sin(ma) * (R - .1) * Math.cos(PI / 6) / Math.cos(t * .9);
-      const bx = ex + Math.cos(ma + PI / 2) * t * 1.6, bz = ez + Math.sin(ma + PI / 2) * t * 1.6;
+      const t = s / 5, ex = isl.x + Math.cos(ma) * (R * sc - .1) * Math.cos(PI / 6) / Math.cos(t * .9), ez = isl.z + Math.sin(ma) * (R * sc - .1) * Math.cos(PI / 6) / Math.cos(t * .9);
+      const bx = ex + Math.cos(ma + PI / 2) * t * 1.6 * sc, bz = ez + Math.sin(ma + PI / 2) * t * 1.6 * sc;
       kp('glowsphere', isl.x + (bx - isl.x) * .985, TOP + .02, isl.z + (bz - isl.z) * .985, .045, .045, .045, '#ffe7a8', { small: true });
     }
   }
   for (let k = 0; k < 6; k++) { // 盆栽與花
-    const a = k * PI / 3 + .5, x = isl.x + Math.cos(a) * 1.25, z = isl.z + Math.sin(a) * 1.25;
-    if (isl.items.some(it => Math.hypot(it.x - x, it.z - z) < it.scale * .7) || (Math.abs(x - isl.x) < .8 && z - isl.z < .1 && z - isl.z > -1.2)) continue;
+    const a = k * PI / 3 + .5, x = isl.x + Math.cos(a) * 1.25 * sc, z = isl.z + Math.sin(a) * 1.25 * sc;
+    if (isl.items.some(it => Math.hypot(it.x - x, it.z - z) < it.scale * .7) || (Math.abs(x - isl.x) < .8 * sc && z - isl.z < .1 && z - isl.z > -1.2 * sc)) continue;
     if (k % 2) { kp('cyl', x, TOP, z, .14, .1, .14, P.eave, { small: true }); kp('ico', x, TOP + .08, z, .2, .16, .2, P.leaf2, { small: true }); }
     else { kp('box', x, TOP, z, .3, .05, .09, P.wood, { small: true, ry: -a + PI / 2 }); for (let f = 0; f < 3; f++) kp('sphere', x + Math.cos(a + 1.57) * (f - 1) * .08, TOP + .05, z + Math.sin(a + 1.57) * (f - 1) * .08, .06, .06, .06, [P.pink, P.yellow, P.coral][f], { small: true }); }
   }
 });
 
 // ================= 海上點綴 =================
-const seaSpots = [[-13, 9], [15, -9], [16, 10], [-15, -11]];
+const seaSpots = MODE === 'county' ? [] : [[-13, 9], [15, -9], [16, 10], [-15, -11]];
 seaSpots.forEach(([dx, dz], i) => {
   const x = center.x + dx, z = center.z + dz;
   kp('cyl', x, WATER_Y - .2, z, 2.2, .45, 2.2, '#e1d1ab'); kp('ico', x, WATER_Y + .1, z, 1.5, .9, 1.4, P.leaf2); tree(kp, i % 2 ? 'palm' : 'conifer', x + .4, z + .3, .7);
@@ -804,6 +832,7 @@ const noise = new SimplexNoise({ random: mulberry32(2026) });
 const camSide = new THREE.Vector2(HOME_DIR.x, HOME_DIR.z).normalize();
 function fbm(x, z) { let a = 0, f = 1, amp = .5; for (let o = 0; o < 4; o++) { a += noise.noise(x * f, z * f) * amp; f *= 2; amp *= .5; } return a; }
 function heightAt(x, z) {
+  x /= BK; z /= BK;
   const d = Math.hypot(x, z);
   let m = smooth(25, 50, d) * (6.5 + fbm(x * .03, z * .03) * 5) + smooth(45, 85, d) * 5;
   const side = d > 0 ? (x * camSide.x + z * camSide.y) / d : 0;
@@ -812,7 +841,7 @@ function heightAt(x, z) {
   return m - 2.2;
 }
 {
-  const g = new THREE.PlaneGeometry(170, 170, 160, 160).rotateX(-PI / 2);
+  const g = new THREE.PlaneGeometry(170 * BK, 170 * BK, 160, 160).rotateX(-PI / 2);
   const pos = g.attributes.position, cols = new Float32Array(pos.count * 3);
   const ramp = [[-.1, '#8fb3ad'], [.25, '#d9c9a3'], [1.4, '#aec493'], [3, '#a3b986'], [5.5, '#6f8a62'], [99, '#b2a38d']].map(([h, c]) => [h, C(c)]);
   for (let i = 0; i < pos.count; i++) {
@@ -839,7 +868,7 @@ let forest = null;
   const rnd = mulberry32(42); let nc = 0, nb = 0;
   const greens = ['#5f7d55', '#6f8a62', '#7d9a66', '#88a46d', '#62805c'].map(C);
   for (let tries = 0; tries < N * 8 && (nc < N || nb < N); tries++) {
-    const a = rnd() * PI * 2, d = 16 + rnd() * 36, x = Math.cos(a) * d, z = Math.sin(a) * d, h = heightAt(x, z);
+    const a = rnd() * PI * 2, d = (16 + rnd() * 36) * BK, x = Math.cos(a) * d, z = Math.sin(a) * d, h = heightAt(x, z);
     if (h < .35 || h > 6.5) continue;
     const s = .55 + rnd() * .6; M4.compose(V.set(center.x + x, WATER_Y + h - .05, center.z + z), Q.setFromEuler(E.set(0, rnd() * 6, 0)), S.set(s, s * (.9 + rnd() * .4), s));
     const useC = h > 3 ? rnd() < .75 : rnd() < .3;
@@ -856,7 +885,7 @@ const farBands = [];
   for (let i = 0; i < seg; i++) {
     const a0 = i / seg * PI * 2, a1 = (i + 1) / seg * PI * 2;
     const h0 = hh * (.55 + .45 * (noise.noise(Math.cos(a0) * 3 + bi * 10, Math.sin(a0) * 3) * .5 + .5)), h1 = hh * (.55 + .45 * (noise.noise(Math.cos(a1) * 3 + bi * 10, Math.sin(a1) * 3) * .5 + .5));
-    const p = (a, h) => [center.x + Math.cos(a) * rad, WATER_Y + h, center.z + Math.sin(a) * rad];
+    const p = (a, h) => [center.x + Math.cos(a) * rad * BK, WATER_Y + h, center.z + Math.sin(a) * rad * BK];
     posA.push(...p(a0, -2), ...p(a1, -2), ...p(a1, h1), ...p(a0, -2), ...p(a1, h1), ...p(a0, h0));
   }
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(posA, 3));
@@ -889,7 +918,7 @@ islands.forEach(isl => {
   el.innerHTML = `<b style="background:${isl.color}">${isl.num}</b><span>${esc(tr(isl.name, isl.nameEn))}</span>`;
   el.setAttribute('aria-label', tr(isl.name, isl.nameEn));
   el.addEventListener('click', e => { e.stopPropagation(); selectIsland(isl); });
-  const obj = new CSS2DObject(el); obj.position.set(isl.x, TOP - .05, isl.z + R - .15); scene.add(obj);
+  const obj = new CSS2DObject(el); obj.position.set(isl.x, TOP - .05, isl.z + R * (isl.sc || 1) - .15); scene.add(obj);
   isl.label = el; labels.push({ el, obj, prio: 1, state: 'full' });
 });
 const pinLineMat = new THREE.LineBasicMaterial({ color: P.coral, depthTest: false, transparent: true });
@@ -1031,7 +1060,9 @@ function buildRoute(stops, id) {
 }
 const teacherGroups = [];
 (DATA.teachers || []).forEach((t, ti) => {
-  const stops = [itemById['c-feedback'], ...[...new Set(t.packages.map(p => p.keyId.split('-')[0]))].map(id => itemById[id])].filter(Boolean);
+  const stops = MODE === 'county' ? (() => { const it = itemById[t.itemId]; if (!it) return []; const I = it.island;
+      return [it, { island: I, x: 2 * I.x - it.x, z: 2 * I.z - it.z + .01 }, it]; })()
+    : [itemById['c-feedback'], ...[...new Set(t.packages.map(p => p.keyId.split('-')[0]))].map(id => itemById[id])].filter(Boolean);
   const route = buildRoute(stops, 'tr' + ti); if (!route) return;
   const leader = { fl: route, role: 'teacher', parts: walkerParts('teacher'), s: wrand() * route.len, dir: wrand() < .5 ? -1 : 1, speed: .3 + wrand() * .06,
     wait: 0, phase: wrand(), pos: new THREE.Vector3(), heading: 0, carry: false, group: 't', teacher: t };
@@ -1061,7 +1092,7 @@ const shadowMesh = new THREE.InstancedMesh(new THREE.CircleGeometry(.08, 16).rot
 shadowMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); world.add(shadowMesh);
 
 // 頭上徽章：小人搬運的課綱學習內容所屬「領域」
-const DOM_EMOJI = { '自然': '🔬', '社會': '🌏', '綜合活動': '🤝', '健康與體育': '🏃', '生活': '🏠', '藝術': '🎨', '英文': '🔤', '國文': '📖', '數學': '🔢', '科技': '⚙️' };
+const DOM_EMOJI = { '氣候科學': '🌡️', '生態系與生物多樣性': '🌿', '氣候正義': '⚖️', '韌性建構': '🛡️', '後碳經濟': '♻️', '永續生活型態': '🏡', '自然': '🔬', '社會': '🌏', '綜合活動': '🤝', '健康與體育': '🏃', '生活': '🏠', '藝術': '🎨', '英文': '🔤', '國文': '📖', '數學': '🔢', '科技': '⚙️' };
 const DOM_EN = { '自然': 'Science', '社會': 'Social studies', '綜合活動': 'Integrative activities', '健康與體育': 'Health & PE', '生活': 'Life curriculum', '藝術': 'Arts', '英文': 'English', '國文': 'Mandarin', '數學': 'Maths', '科技': 'Technology' };
 const domName = d => tr(d, DOM_EN[d]);
 function domainTexture(dom) {
@@ -1181,9 +1212,35 @@ $('#brandStats').innerHTML = [
   [st.packages, tr('教學組合包', 'lesson packs')], [st.pptViews, tr('次簡報點閱', 'slide views')],
   [st.worksheetViews, tr('次學習單點閱', 'worksheet views')], [st.schools, tr('所參與學校', 'schools')],
 ].filter(([n]) => n > 0).map(([n, l]) => `<span><b>${fmtN(n)}</b> ${esc(l)}</span>`).join('');
+
+// ---- 一鍵切換：六大主題 ⇄ 縣市試教（換資料後重新載入場景） ----
+document.querySelectorAll('.modesw [data-mode]').forEach(b => {
+  b.classList.toggle('on', b.dataset.mode === MODE);
+  b.setAttribute('aria-pressed', b.dataset.mode === MODE);
+  b.addEventListener('click', () => {
+    if (b.dataset.mode === MODE) return;
+    $('#modeFade').style.opacity = 1;
+    setTimeout(() => { const u = new URL(location.href); if (b.dataset.mode === 'county') u.searchParams.set('mode', 'county'); else u.searchParams.delete('mode'); location.href = u.toString(); }, 360);
+  });
+});
+if (MODE === 'county') {
+  $('#brand h1 span').textContent = '縣市試教群島';
+  $('#brand .sub').textContent = '每座島是一個縣市，島上的小屋是參與試教的學校；沒有試教的縣市是小沙洲';
+  $('#brandStats').innerHTML = [[st.cities, '縣市'], [st.citySchools, '所學校'], [st.citySubs, '筆試教'], [st.cityStudents, '學生人次']]
+    .filter(([n]) => n > 0).map(([n, l]) => `<span><b>${fmtN(n)}</b> ${esc(l)}</span>`).join('') +
+    (st.noCity > 0 ? `<span style="opacity:.7">（另 ${st.noCity} 筆沒填學校或縣市）</span>` : '');
+  $('#search').placeholder = '搜尋縣市、學校、教案編號…';
+  $('#tabThemes').textContent = '縣市與學校'; $('#tabFlows').textContent = '跨縣市觀摩';
+  $('#helpTitle').textContent = '歡迎來到縣市試教群島';
+  const li = document.querySelectorAll('#help ol li div');
+  if (li[0]) li[0].textContent = '每座島是一個縣市，位置大致照台灣地圖排；試教越多，島上越熱鬧。灰色小沙洲是還沒有試教的縣市。';
+  if (li[1]) li[1].textContent = '點海邊的學校小屋，看這所學校試教了哪些教案，直接開教案頁。';
+  if (li[2]) li[2].textContent = '兩個縣市試教過相同的教案，就有小人搬著教案編號來回走：這就是跨縣市觀摩。';
+  const lg = $('#legend'); if (lg) lg.innerHTML = '<span>〰️ 實線：≥3 份相同教案</span><span>- - 虛線：2 份</span><span>··· 點線：1 份</span><em>資料：試教回饋表（' + esc(st.asOf) + '）</em>';
+}
 function placeTools() { const b = $('#brand').getBoundingClientRect(); if (!isMobile) $('#tools').style.top = (b.bottom + 10) + 'px'; else $('#tools').style.top = ''; }
 
-const LEVEL_NAME = { strong: ['高度共同連結', 'Strong'], suggest: ['中度共同連結', 'Moderate'], pending: ['少量共同連結', 'Few'] };
+const LEVEL_NAME = MODE === 'county' ? { strong: ['3 份以上相同教案', '3+ shared'], suggest: ['2 份相同教案', '2 shared'], pending: ['1 份相同教案', '1 shared'] } : { strong: ['高度共同連結', 'Strong'], suggest: ['中度共同連結', 'Moderate'], pending: ['少量共同連結', 'Few'] };
 function renderList() {
   const q = $('#search').value.trim().toLowerCase();
   const list = $('#list');
@@ -1197,7 +1254,7 @@ function renderList() {
     }).join('') || `<p style="padding:12px;color:var(--mute)">${esc(tr('找不到符合的教案', 'No match'))}</p>`;
   } else {
     list.innerHTML = flows.filter(f => !q || [f.carryName, f.desc, f.A.name, f.B.name].join(' ').toLowerCase().includes(q)).map(f =>
-      `<button class="row" data-flow="${f.id}"><span>${f.carried.map(c => DOM_EMOJI[c.dom]).filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).join('')}</span><span>${esc(tr(f.A.name, f.A.nameEn))} → ${esc(tr(f.B.name, f.B.nameEn))}<small>${esc(f.carryName)}・${esc(tr(...LEVEL_NAME[f.level]))}・${esc(f.desc)}</small></span></button>`).join('');
+      `<button class="row" data-flow="${f.id}"><span>${f.carried.map(c => DOM_EMOJI[c.dom]).filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).join('')}</span><span>${esc(tr(f.A.name, f.A.nameEn))} ${MODE === "county" ? "⇄" : "→"} ${esc(tr(f.B.name, f.B.nameEn))}<small>${esc(f.carryName)}・${esc(tr(...LEVEL_NAME[f.level]))}・${esc(f.desc)}</small></span></button>`).join('');
   }
 }
 $('#list').addEventListener('click', e => {
@@ -1247,14 +1304,54 @@ $('#cardBody').addEventListener('click', e => {
   const b = e.target.closest('[data-item],[data-flow],[data-isl-sel]'); if (!b) return;
   if (b.dataset.item) selectItem(itemById[b.dataset.item]); else if (b.dataset.flow) selectFlow(flowById[b.dataset.flow]); else selectIsland(islandById[b.dataset.islSel]);
 });
-const flowChip = f => `<button class="chip cream" data-flow="${f.id}">〰️ ${esc(tr(f.A.name, f.A.nameEn))} → ${esc(tr(f.B.name, f.B.nameEn))}・${esc(f.carryName)}</button>`;
+const flowChip = f => `<button class="chip cream" data-flow="${f.id}">〰️ ${esc(tr(f.A.name, f.A.nameEn))} ${MODE === "county" ? "⇄" : "→"} ${esc(tr(f.B.name, f.B.nameEn))}・${esc(f.carryName)}</button>`;
+
+// ================= 縣市模式（2026-11-21） =================
+const PKG_BASE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || location.protocol === 'file:' ? 'https://community.cce.tw' : '';
+const THEME_HEX = { 1: '#58a6a6', 2: '#7fae6a', 3: '#db6a41', 4: '#6f7fb5', 5: '#e0b443', 6: '#e79bb2' };
+const lessonList = ls => `<ul class="lessons">${ls.map(l => `<li><a class="k" style="background:${THEME_HEX[+l.keyId[0]]}" href="${PKG_BASE}/package/${esc(l.keyId)}/" target="_blank" rel="noopener">${esc(l.keyId)}</a><span>${esc(l.topic)}${l.students ? `<small style="color:var(--mute)">・${fmtN(l.students)} 位學生</small>` : ''}</span></li>`).join('')}</ul>`;
+function cIslandCard(isl) {
+  const fl = flows.filter(f => f.A === isl || f.B === isl);
+  if (isl.sand) return `<div class="icon">🚩</div><div class="eyebrow">縣市・小沙洲</div><h2>${esc(isl.name)}</h2><p>${esc(isl.summary)}</p>
+    <p style="font-size:13px">${esc(isl.name)}的學校只要挑一份教案試教、填寫試教回饋表，這座沙洲就會長成小島。</p><a class="btn go" href="${PKG_BASE}/" target="_blank" rel="noopener">挑一份教案 →</a>`;
+  return `<div class="icon">${isl.icon}</div><div class="eyebrow">縣市・試教 ${isl.num} 筆</div><h2>${esc(isl.name)}</h2><p>${esc(isl.summary)}</p>
+    <ol>${isl.items.map(it => `<li><button class="btn" data-item="${esc(it.id)}"><span class="num">${it.k + 1}</span>${esc(it.name)}</button></li>`).join('')}</ol>
+    ${fl.length ? `<div class="eyebrow">跨縣市觀摩（試教過相同教案）</div><div class="chips">${fl.map(flowChip).join('')}</div>` : ''}`;
+}
+function cItemCard(it) {
+  const isl = it.island, fl = flows.filter(f => f.fromItem === it.id || f.toItem === it.id);
+  return `<div class="eyebrow">${esc(isl.name)}・${CIRC[it.k] || it.k + 1}・${esc(it.level)}</div><h2>${esc(it.name)}</h2><p>${esc(it.desc)}</p>
+    <div class="tiles"><div class="tile"><div class="big">${it.submissions}</div><small>筆試教</small></div>
+      <div class="tile"><div class="big">${fmtN(it.students)}</div><small>學生人次</small></div><div class="tile"><div class="big">${it.lessons.length}</div><small>份教案</small></div></div>
+    <div class="eyebrow">試教過的教案</div>${lessonList(it.lessons)}
+    <div class="todo">📚 觀摩資源（繪本、教具、WSA 教案、學生作品、網站素材連結）：之後由「成果投稿表單」審核通過後顯示在這裡。</div>
+    ${fl.length ? `<div class="eyebrow" style="margin-top:10px">跨縣市觀摩</div><div class="chips">${fl.map(flowChip).join('')}</div>` : ''}
+    <div class="chips"><button class="chip" data-isl-sel="${isl.id}">← 回到${esc(isl.name)}</button></div>`;
+}
+function cFlowCard(f) {
+  return `<div class="eyebrow">跨縣市觀摩・${f.n} 份相同教案</div>
+    <div class="flowline"><span>${esc(f.A.name)}</span><span>⇄</span><span>${esc(f.B.name)}</span></div>
+    <h2>都試教過這些教案</h2>${lessonList(f.examples.map(x => ({ keyId: x.code, topic: x.content })))}
+    <p style="font-size:13px">可以看看對方怎麼教同一份教案，互相觀摩。</p>
+    <div class="chips">${[f.fromItem, f.toItem].map(id => itemById[id]).filter(Boolean).map(it => `<button class="chip cream" data-item="${esc(it.id)}">${esc(it.name)}</button>`).join('')}</div>
+    <p style="font-size:12px;color:var(--mute)">資料：試教回饋表（${esc(DATA.stats.asOf)}）。只列出共同教案最多的 10 組縣市。</p>`;
+}
+function cTeacherCard(t) {
+  return `<div class="eyebrow">🏫 試教學校・${esc(t.badge)}</div><h2>${esc(t.name)}</h2><p style="margin-top:0">${esc(t.school)}</p>
+    <div class="tiles"><div class="tile"><div class="big">${t.submissions}</div><small>筆試教</small></div>
+      <div class="tile"><div class="big">${t.students ? fmtN(t.students) : '—'}</div><small>學生人次</small></div><div class="tile"><div class="big">${t.packages.length}</div><small>份教案</small></div></div>
+    <div class="eyebrow">試教過的教案</div>${lessonList(t.packages)}
+    <p style="font-size:12px;color:var(--mute)">大人代表這所學校的試教老師（不顯示姓名），身後的小孩代表學生，每人約代表 ${STUDENTS_PER_KID} 位。</p>`;
+}
 function islandCard(isl) {
+  if (MODE === 'county') return cIslandCard(isl);
   const fl = flows.filter(f => f.A === isl || f.B === isl);
   return `<div class="icon">${isl.icon}</div><div class="eyebrow">${esc(tr('主題', 'Theme'))} ${isl.num}</div><h2>${esc(tr(isl.name, isl.nameEn))}</h2><p>${esc(isl.summary)}</p>
     <ol>${isl.items.map(it => `<li><button class="btn" data-item="${esc(it.id)}"><span class="num">${it.k + 1}</span>${esc(tr(it.name, it.nameEn))}</button></li>`).join('')}</ol>
     ${fl.length ? `<div class="eyebrow">${esc(tr('教學銜接', 'Teaching links'))}</div><div class="chips">${fl.map(flowChip).join('')}</div>` : ''}`;
 }
 function itemCard(it) {
+  if (MODE === 'county') return cItemCard(it);
   const isl = it.island; const nums = bigNumbers(it.facts); const thumb = thumbnail(it);
   const fl = flows.filter(f => f.fromItem === it.id || f.toItem === it.id);
   return `<div class="eyebrow">${isl.num} ${esc(tr(isl.name, isl.nameEn))}・${CIRC[it.k]} ${esc(it.id.includes('.') ? it.id : '')}</div><h2>${esc(tr(it.name, it.nameEn))}</h2>
@@ -1266,6 +1363,7 @@ function itemCard(it) {
     <div class="chips"><button class="chip" data-isl-sel="${isl.id}">← ${esc(tr('回到整座島', 'Back to island'))}</button></div>`;
 }
 function flowCard(f) {
+  if (MODE === 'county') return cFlowCard(f);
   return `<div class="eyebrow">${esc(tr('教學銜接', 'Teaching link'))}・${esc(tr(...LEVEL_NAME[f.level]))}</div>
     <div class="flowline"><span>${esc(tr(f.A.name, f.A.nameEn))}</span><span>→</span><span>${esc(tr(f.B.name, f.B.nameEn))}</span></div>
     <h2>${esc(itemById[f.fromItem]?.name || '')} ⇄ ${esc(itemById[f.toItem]?.name || '')}</h2>
@@ -1340,6 +1438,7 @@ function selectItem(it) {
   flyTo(new THREE.Vector3(it.x, TOP + .3, it.z), ITEM_OFF.clone());
 }
 function teacherCard(t) {
+  if (MODE === 'county') return cTeacherCard(t);
   return `<div class="eyebrow">🧑‍🏫 ${esc(tr('試教老師', 'Trial teacher'))}・${esc(t.badge)}</div><h2>${esc(t.name)}</h2>
     <p style="margin-top:0">${esc(t.school)}</p>
     <div class="tiles"><div class="tile"><div class="big">${t.submissions}</div><small>${esc(tr('次試教回饋', 'trial reports'))}</small></div>
@@ -1431,7 +1530,7 @@ $('#helpOk').addEventListener('click', () => { $('#help').classList.add('hidden'
 
 // 城市日誌
 const logEntries = [];
-$('#logFilter').innerHTML = `<option value="">${esc(tr('全部銜接線', 'All links'))}</option>` + flows.map(f => `<option value="${f.id}">${esc(tr(f.A.name, f.A.nameEn))} → ${esc(tr(f.B.name, f.B.nameEn))}</option>`).join('');
+$('#logFilter').innerHTML = `<option value="">${esc(tr('全部銜接線', 'All links'))}</option>` + flows.map(f => `<option value="${f.id}">${esc(tr(f.A.name, f.A.nameEn))} ${MODE === "county" ? "⇄" : "→"} ${esc(tr(f.B.name, f.B.nameEn))}</option>`).join('');
 $('#logFilter').addEventListener('change', renderLog);
 let lastLogAt = 0;
 function logEvent(w, kind) {

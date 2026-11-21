@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>縣市試教成果島</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" integrity="sha384-su5kReKyYlIFrI62mbQRKXHzFobMa7BHp1cK6julLPbnYcCW9NIZKJiTODjLPeDh" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js" integrity="sha384-9dCJK6nh7skY14HrcvlLYlFga9/MehJjL9ONWRflmiXNRuf8p2jiF4Y5PR881PTq" crossorigin="anonymous"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  },
+  "integrity": {
+    "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js": "sha384-61S/Nu32S3E5+n+KpCOTb2eRYps6fVKm+9Gz1QBvSePFthb46f063Aa/qe/lykFZ",
+    "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js": "sha384-qlO/ZugKPxAQUAvTlQoo0QECzxJIJySZmCF/DHdb2Xn/hHndFwX/vfUAC9Hbk6LP",
+    "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/renderers/CSS2DRenderer.js": "sha384-oxPlnJSeUCYU9W3RMQswb4S/vFd4Bhxuy1Ffx0V2KJakWeb6n1gaqUtSE9Ic/F72"
+  }
+}
+</script>
+<style>
+:root{--ink:#22302a;--muted:#66736b;--panel:#fffdf6;--line:#e3dcc6}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#bfe3f0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--ink)}
+#stage{position:fixed;inset:0}
+#labels{position:fixed;inset:0;pointer-events:none}
+.top{position:fixed;left:16px;top:12px;right:16px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;pointer-events:none;z-index:3}
+.top>*{pointer-events:auto}
+.title{background:var(--panel);border-radius:18px;padding:8px 16px;box-shadow:0 4px 0 #0002;font-weight:800;font-size:20px}
+.title small{font-weight:400;color:var(--muted);font-size:13px;margin-left:8px}
+.real{background:#dff0e2;border:2px solid #a9d3b2;color:#1f5a33;border-radius:999px;padding:3px 12px;font-size:13px;font-weight:700}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+button.chip{border:0;background:var(--panel);color:var(--ink);border-radius:999px;padding:7px 14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:700;box-shadow:0 3px 0 #0002;transition:transform .12s}
+button.chip:hover{transform:translateY(-2px)}
+button.chip.on{background:var(--ink);color:#fff}
+button.play{background:#ff7f6e;color:#fff}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+#hud{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:var(--panel);border-radius:18px;padding:8px 18px;box-shadow:0 4px 0 #0002;font-size:15px;font-weight:800;z-index:3;display:flex;gap:18px;white-space:nowrap}
+#hud span b{font-size:22px;color:#2f9a5a;margin-right:3px}
+#legend{position:fixed;right:16px;bottom:16px;width:310px;background:var(--panel);border-radius:18px;padding:12px 16px;box-shadow:0 5px 0 #0002;font-size:13px;z-index:3}
+#legend h3{margin:2px 0 8px;font-size:15px}
+.stg{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:3px;vertical-align:-1px}
+.mbar{display:flex;align-items:flex-end;gap:4px;height:70px;margin:6px 0 2px}
+.mbar div{flex:1;background:#7fc67f;border-radius:4px 4px 0 0;position:relative;min-height:2px}
+.mbar div i{position:absolute;top:-15px;left:0;right:0;text-align:center;font-style:normal;font-size:10px;color:var(--muted)}
+.mlab{display:flex;gap:4px;font-size:10px;color:var(--muted)}.mlab span{flex:1;text-align:center}
+.lab{font-size:12px;font-weight:800;color:var(--ink);background:#fffdf6e8;border-radius:999px;padding:1px 8px;box-shadow:0 2px 0 #0002;white-space:nowrap;transform:translateY(-6px)}
+.lab em{font-style:normal;color:#2f9a5a;margin-left:4px}
+.plab{font-size:11px;font-weight:700;background:#fffdf6dd;border-radius:8px;padding:1px 6px;white-space:nowrap;box-shadow:0 2px 0 #0001}
+.slab{font-size:12px;font-weight:800;background:#fff;border:2px solid #2f9a5a;border-radius:10px;padding:1px 8px;white-space:nowrap;box-shadow:0 2px 0 #0002}
+.zlab{font-size:14px;font-weight:900;color:#fff;border-radius:999px;padding:3px 12px;white-space:nowrap;box-shadow:0 3px 0 #0003}
+#tip{position:fixed;pointer-events:none;background:#22302aee;color:#fff;border-radius:12px;padding:8px 12px;font-size:13px;line-height:1.6;display:none;z-index:6}
+#fade{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .35s;z-index:8}
+#panel{position:fixed;top:0;right:0;bottom:0;width:410px;max-width:100%;background:var(--panel);box-shadow:-6px 0 0 #0001;overflow:auto;padding:70px 18px 24px;transform:translateX(105%);transition:transform .4s cubic-bezier(.3,1.4,.5,1);z-index:4}
+#panel.open{transform:none}
+#panel h2{margin:0 0 4px;font-size:22px}
+#panel h3{margin:18px 0 8px;font-size:16px}
+.muted{color:var(--muted);font-size:13px;line-height:1.6}
+.sch{border:2px solid var(--line);border-radius:12px;padding:8px 10px;margin:6px 0;font-size:13px;background:#fff}
+.sch.sel{border-color:#2f9a5a;box-shadow:0 0 0 3px #2f9a5a33}
+.sch b{font-size:14px}
+.pk{display:inline-block;border-radius:999px;padding:1px 8px;margin:4px 4px 0 0;font-size:12px;color:#fff;text-decoration:none}
+.res{border:2px dashed #c9bf9f;border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.7;color:var(--muted)}
+.res .ty{display:inline-block;border-radius:8px;padding:0 7px;margin:2px 3px 0 0;background:#f2ecdb;color:var(--ink)}
+#back{display:none;background:#2f6b4f;color:#fff;font-size:16px;padding:9px 18px}
+.pback{position:sticky;top:0;z-index:2;display:block;width:100%;margin:0 0 12px;border:0;border-radius:12px;background:#2f6b4f;color:#fff;font:inherit;font-weight:800;font-size:15px;padding:10px;cursor:pointer;box-shadow:0 3px 0 #0002}
+#hint{position:fixed;left:16px;bottom:16px;background:var(--panel);border-radius:14px;padding:8px 14px;font-size:13px;box-shadow:0 4px 0 #0002;z-index:3;max-width:380px;line-height:1.6}
+#nogl{position:fixed;inset:0;display:none;align-items:center;justify-content:center;font-size:16px;background:#fff;z-index:9}
+@media (max-width:1300px){#hud{left:16px;bottom:96px;transform:none}}
+@media (max-width:760px){#legend{display:none}#hud{left:16px;right:16px;bottom:96px;transform:none;font-size:13px;gap:4px 12px;flex-wrap:wrap;justify-content:center;white-space:normal}#hud span{white-space:nowrap}#hud span b{font-size:17px}#panel{width:100%;top:45%;padding-top:16px;border-radius:20px 20px 0 0}.title{font-size:16px}.title small{display:none}}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="labels"></div>
+<div class="top">
+  <div class="title">🏝️ 縣市試教成果島<small>氣候教育教案・各縣市試教成果觀摩・試作版</small></div>
+  <a class="chip" href="/" style="text-decoration:none">← 回首頁</a>
+  <span class="real" id="realbadge"></span>
+  <button class="chip play" id="play">▶ 播放成長動畫</button>
+  <button class="chip" id="back">← 回全國</button>
+  <div class="chips" id="thchips"></div>
+</div>
+<div id="hud"></div>
+<div id="legend">
+  <h3>怎麼看這座島</h3>
+  <div class="stg" id="stg"></div>
+  <div class="muted" id="legtxt"></div>
+  <div class="muted" style="margin-top:10px"><b style="color:var(--ink)">每月試教回饋筆數</b>（試教回饋表）</div>
+  <div class="mbar" id="mbar"></div><div class="mlab" id="mlab"></div>
+  <div class="muted" id="mnote" style="font-size:11px"></div>
+  <div class="muted" style="font-size:10px;margin-top:6px">地圖：內政部國土測繪中心「直轄市、縣市界線」（政府資料開放授權條款第1版），經 <a href="https://github.com/dkaoster/taiwan-atlas" target="_blank" rel="noopener">taiwan-atlas</a>（MIT）轉檔。</div>
+</div>
+<div id="hint">🖱️ 拖曳旋轉、滾輪縮放；點縣市進入小島，看各校試教了哪些教案</div>
+<div id="tip"></div>
+<div id="fade"></div>
+<aside id="panel"></aside>
+<div id="nogl"><div style="max-width:560px;line-height:1.8;padding:24px">
+<h2 style="margin:0 0 8px">😵 3D 畫面開不起來（WebGL 被關閉）</h2>
+<div>通常是瀏覽器的「圖形加速」暫時失效：完全關閉 Chrome 再重開；或到 Chrome 設定 → 系統 → 開啟「使用圖形加速功能」。</div></div></div>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
+
+const TOPO = /*__TOPO__*/null;
+const D0 = /*__DATA__*/null;
+const MONTHLY = /*__MONTHLY__*/null;
+const SITE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || location.protocol === "file:" ? "https://community.cce.tw" : ""; // 正式站用相對路徑
+
+// ================= 主題（UNESCO 六大主題） =================
+const TH=[null,
+ {k:1,name:"氣候科學",hex:"#3b6fb6",icon:"☁️"},
+ {k:2,name:"生態系",hex:"#3e9a57",icon:"🌳"},
+ {k:3,name:"氣候正義",hex:"#b5527a",icon:"⚖️"},
+ {k:4,name:"韌性建構",hex:"#6c7a91",icon:"🏠"},
+ {k:5,name:"後碳經濟",hex:"#d39a12",icon:"🌬️"},
+ {k:6,name:"永續生活",hex:"#a5703a",icon:"♻️"}];
+const LV={II:"國小低年級",III:"國小中高年級",IV:"國中"};
+// 縣市試教筆數 → 階段（不排名，只分四級）
+const STAGE=["尚未參與","起步","成長","茂盛"], SICON=["◽","🌱","🌿","🌳"], SEQ=["#e6dcc0","#c4e2a8","#7fc67f","#2f9a5a"];
+const stageOf=n=>n<=0?0:n<5?1:n<20?2:3;
+const themeStage=n=>n<=0?0:n===1?1:n<4?2:3;   // 該主題試教過幾份教案
+const kidStage=n=>n<20?1:n<60?2:3;            // 單份教案學生數
+
+// ================= 資料 =================
+function rng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const R=rng(20261121);
+const feats=topojson.feature(TOPO,TOPO.objects.counties).features;
+feats.forEach(f=>{if(d3.geoArea(f)>2*Math.PI){const g=f.geometry,rev=p=>p.forEach(r=>r.reverse());g.type==="Polygon"?rev(g.coordinates):g.coordinates.forEach(rev)}});
+const SHORT=n=>/^(新竹|嘉義)/.test(n)?n:n.replace(/[縣市]$/,"");
+const byCity=Object.fromEntries(D0.cities.map(c=>[c.city,c]));
+const DATA={};
+feats.forEach(f=>{
+  const id=f.properties.COUNTYID,name=f.properties.COUNTYNAME,c=byCity[name]||{city:name,schools:[],submissions:0,students:0,teachers:0};
+  const pk={};c.schools.forEach(s=>s.packages.forEach(p=>{pk[p.keyId]=(pk[p.keyId]||0)+p.students}));
+  const lessons=Object.entries(pk).map(([keyId,students])=>({keyId,students,theme:+keyId[0]})).sort((a,b)=>a.keyId.localeCompare(b.keyId,undefined,{numeric:true}));
+  const themeN=[0,1,2,3,4,5,6].map(k=>lessons.filter(l=>l.theme===k).length);
+  DATA[id]={id,f,name,...c,lessons,themeN,shown:0};
+});
+const total=D0.totals;
+
+// ================= three.js 基本 =================
+const host=document.getElementById("stage");
+let renderer;
+try{renderer=new THREE.WebGLRenderer({antialias:true});}catch(e1){try{renderer=new THREE.WebGLRenderer({antialias:false});}catch(e){document.getElementById("nogl").style.display="flex";throw e}}
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+host.appendChild(renderer.domElement);
+const labelR=new CSS2DRenderer({element:document.getElementById("labels")});labelR.setSize(innerWidth,innerHeight);
+const camera=new THREE.PerspectiveCamera(40,innerWidth/innerHeight,.1,500);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.maxPolarAngle=1.25;controls.minDistance=8;controls.maxDistance=110;
+addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);labelR.setSize(innerWidth,innerHeight)});
+
+const grad=new THREE.DataTexture(new Uint8Array([90,170,255]),3,1,THREE.RedFormat);grad.minFilter=grad.magFilter=THREE.NearestFilter;grad.needsUpdate=true;
+const MC={};const toon=c=>MC[c]||(MC[c]=new THREE.MeshToonMaterial({color:c,gradientMap:grad}));
+const anims=[];let tweens=[];
+const ease={out:k=>1-Math.pow(1-k,3),back:k=>{const c=1.9;return 1+(c+1)*Math.pow(k-1,3)+c*Math.pow(k-1,2)},io:k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2,lin:k=>k};
+function tween(dur,fn,e=ease.out,delay=0){return new Promise(res=>tweens.push({t0:performance.now()+delay,dur,fn,e,res}))}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+function makeWorld(bg){
+  const s=new THREE.Scene();s.background=new THREE.Color(bg);s.fog=new THREE.Fog(bg,90,220);
+  s.add(new THREE.HemisphereLight(0xffffff,0x9fc8a0,1.6));
+  const sun=new THREE.DirectionalLight(0xfff1d6,2.2);sun.position.set(-25,45,30);sun.castShadow=true;
+  sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-45,right:45,top:45,bottom:-45,near:1,far:150});s.add(sun);
+  const wg=new THREE.PlaneGeometry(260,260,70,70);wg.rotateX(-Math.PI/2);
+  const water=new THREE.Mesh(wg,new THREE.MeshToonMaterial({color:0x5cc3e0,gradientMap:grad,transparent:true,opacity:.95}));
+  water.position.y=-.35;water.receiveShadow=true;s.add(water);
+  const base=wg.attributes.position.array.slice();
+  anims.push({obj:water,fn:t=>{const p=wg.attributes.position.array;for(let i=0;i<p.length;i+=3){p[i+1]=Math.sin(base[i]*.18+t*1.3)*.12+Math.cos(base[i+2]*.21+t*1.1)*.12}wg.attributes.position.needsUpdate=true}});
+  for(let i=0;i<9;i++){const c=cloudShape(0xffffff,1.4+R()*1.2);c.traverse(o=>o.castShadow=false);c.position.set((R()-.5)*120,14+R()*8,(R()-.5)*90);s.add(c);
+    const sp=.6+R();anims.push({obj:c,fn:(t,o)=>{o.position.x+=sp*.02;if(o.position.x>70)o.position.x=-70}})}
+  return s;
+}
+function cloudShape(color,sz){const g=new THREE.Group();[[0,0,0,1],[.9,-.1,0,.75],[-.9,-.1,.1,.8],[.3,.35,.2,.7]].forEach(([x,y,z,r])=>{const m=new THREE.Mesh(new THREE.SphereGeometry(r*sz*.5,12,10),toon(color));m.position.set(x*sz*.6,y*sz*.6,z*sz*.6);m.castShadow=true;g.add(m)});return g}
+
+// ================= 卡通道具（6 主題 × 4 階段） =================
+const SC=[.55,.75,1,1.25];
+function mound(){const m=new THREE.Mesh(new THREE.SphereGeometry(.28,10,8),toon(0xb08b5a));m.scale.y=.35;m.receiveShadow=true;return m}
+function cast(g){g.traverse(o=>{if(o.isMesh){o.castShadow=true}});return g}
+function propCloud(st){const g=new THREE.Group();const col=new THREE.Color(0x5b6270).lerp(new THREE.Color(0xffffff),st/3);
+  const c=cloudShape(col.getHex(),st?.55:.75);c.position.y=1.05;g.add(c);
+  if(st>=2){const s=new THREE.Mesh(new THREE.SphereGeometry(.18,12,10),new THREE.MeshBasicMaterial({color:0xffd24a}));s.position.set(.35,1.35,-.15);g.add(s)}
+  g.add(mound());const ph=R()*6;anims.push({obj:c,fn:(t,o)=>o.position.y=1.05+Math.sin(t*1.6+ph)*.08});return cast(g)}
+function propTree(st){const g=new THREE.Group();if(!st){g.add(mound());return g}
+  const conf=st===1?[[0,0,.22]]:st===2?[[0,0,.38]]:[[-.22,0,.34],[.22,.05,.34],[0,.25,.4]];
+  const h=st===1?.3:.5;const tr=new THREE.Mesh(new THREE.CylinderGeometry(.05,.08,h,8),toon(0x7b5a36));tr.position.y=h/2;g.add(tr);
+  conf.forEach(([x,y,r],i)=>{const m=new THREE.Mesh(new THREE.IcosahedronGeometry(r,0),toon(i%2?0x5bb56a:0x3e9a57));m.position.set(x,h+y+r*.5,0);g.add(m)});
+  const ph=R()*6;anims.push({obj:g,fn:(t,o)=>o.rotation.z=Math.sin(t*1.8+ph)*.05});return cast(g)}
+function propScale(st){const g=new THREE.Group();if(!st){g.add(mound());return g}
+  const pole=new THREE.Mesh(new THREE.CylinderGeometry(.04,.06,.8,8),toon(0x8a6d4a));pole.position.y=.4;g.add(pole);
+  const beam=new THREE.Group();beam.position.y=.8;g.add(beam);
+  const bar=new THREE.Mesh(new THREE.BoxGeometry(.9,.04,.04),toon(0xb5527a));beam.add(bar);
+  [-1,1].forEach(sx=>{const pan=new THREE.Mesh(new THREE.CylinderGeometry(.16,.1,.06,12),toon(0xf1c6d6));pan.position.set(sx*.42,-.22,0);beam.add(pan);
+    if(st>=2){const b=new THREE.Mesh(new THREE.SphereGeometry(.07,8,6),toon(0xffd24a));b.position.set(sx*.42,-.15,0);beam.add(b)}});
+  const ph=R()*6;anims.push({obj:beam,fn:(t,o)=>o.rotation.z=Math.sin(t*1.2+ph)*(st>=3?.03:.15)});return cast(g)}
+function propHouse(st){const g=new THREE.Group();if(!st){g.add(mound());return g}
+  const b=new THREE.Mesh(new THREE.BoxGeometry(.7,.45,.55),toon(0xfff3dc));b.position.y=.23;g.add(b);
+  const roof=new THREE.Mesh(new THREE.ConeGeometry(.56,.38,4),toon(0x6c7a91));roof.position.y=.64;roof.rotation.y=Math.PI/4;g.add(roof);
+  if(st>=2){const d=new THREE.Mesh(new THREE.BoxGeometry(.14,.22,.02),toon(0x7b5a36));d.position.set(0,.11,.28);g.add(d)}
+  if(st>=3){const u=new THREE.Mesh(new THREE.SphereGeometry(.32,12,8,0,Math.PI*2,0,Math.PI/2),toon(0x5cc3e0));u.position.set(.45,1.0,0);g.add(u);
+    const st2=new THREE.Mesh(new THREE.CylinderGeometry(.015,.015,.4),toon(0x555555));st2.position.set(.45,.8,0);g.add(st2)}
+  return cast(g)}
+function propWind(st){const g=new THREE.Group();if(!st){g.add(mound());return g}
+  const h=.7+st*.15;const tw=new THREE.Mesh(new THREE.CylinderGeometry(.025,.05,h,8),toon(0xffffff));tw.position.y=h/2;g.add(tw);
+  const hub=new THREE.Group();hub.position.set(0,h,.05);g.add(hub);
+  for(let i=0;i<3;i++){const b=new THREE.Mesh(new THREE.BoxGeometry(.05,.38,.02),toon(0xffffff));b.position.y=.19;const p=new THREE.Group();p.rotation.z=i*Math.PI*2/3;p.add(b);hub.add(p)}
+  anims.push({obj:hub,fn:(t,o)=>o.rotation.z=-t*(1+st)});
+  for(let i=0;i<st-1;i++){const p=new THREE.Mesh(new THREE.BoxGeometry(.42,.03,.28),toon(0x2c4f8f));p.position.set(.45,.2,(i-.5)*.32*(st-1>1));p.rotation.x=-.5;g.add(p)}
+  return cast(g)}
+function propBin(st){const g=new THREE.Group();if(!st){g.add(mound());const bag=new THREE.Mesh(new THREE.SphereGeometry(.14,8,6),toon(0x555555));bag.position.y=.12;g.add(bag);return cast(g)}
+  [0x3b6fb6,0x3e9a57,0xa5703a].slice(0,st).forEach((c,i)=>{const b=new THREE.Mesh(new THREE.CylinderGeometry(.13,.11,.34,10),toon(c));b.position.set((i-(st-1)/2)*.3,.17,0);g.add(b);
+    const l=new THREE.Mesh(new THREE.CylinderGeometry(.145,.145,.05,10),toon(0xf2f2f2));l.position.set(b.position.x,.36,0);g.add(l)});
+  return cast(g)}
+const PROP=[null,propCloud,propTree,propScale,propHouse,propWind,propBin];
+function makeKid(c){const k=new THREE.Group();const body=new THREE.Mesh(new THREE.CapsuleGeometry(.22,.35,4,10),toon(c));body.position.y=.45;k.add(body);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(.24,14,12),toon(0xffe0c2));head.position.y=1.0;k.add(head);return cast(k)}
+const KIDC=[0xff7f6e,0x6ec1ff,0xffc94d,0xa98bff,0x7fd08a];
+
+// ================= 全國場景 =================
+const LON0=120.95,LAT0=23.75,K=12,COS=Math.cos(LAT0*Math.PI/180);
+const OFFSET={W:[1.3,-.15],Z:[-.05,-.8]};
+function P(id,[lon,lat]){const o=OFFSET[id]||[0,0];return [(lon+o[0]-LON0)*K*COS,(lat+o[1]-LAT0)*K]}
+const nation=makeWorld(0xbfe3f0);
+const pickables=[];const countyG={};
+const LABEL_DX={I:-1.6,O:-1.2,A:-.6,F:.8};
+const CENTER={F:[121.75,25.0],Q:[120.62,23.43],A:[121.56,25.07],E:[120.62,22.95]};
+feats.forEach((f,ci)=>{
+  const id=f.properties.COUNTYID,d=DATA[id];
+  const polys=f.geometry.type==="Polygon"?[f.geometry.coordinates]:f.geometry.coordinates;
+  const big=polys.filter(p=>d3.geoArea({type:"Polygon",coordinates:p})>1.2e-7);
+  const g=new THREE.Group();g.userData.cid=id;
+  const mat=new THREE.MeshToonMaterial({color:SEQ[stageOf(d.submissions)],gradientMap:grad});
+  let largest=null,la=0;
+  big.forEach(poly=>{
+    const ring=r=>r.slice(0,-1).map(c=>{const[x,y]=P(id,c);return new THREE.Vector2(x,y)});
+    const sh=new THREE.Shape(ring(poly[0]));poly.slice(1).forEach(h=>sh.holes.push(new THREE.Path(ring(h))));
+    const geo=new THREE.ExtrudeGeometry(sh,{depth:.6,bevelEnabled:false});geo.rotateX(-Math.PI/2);
+    const m=new THREE.Mesh(geo,mat);m.castShadow=true;m.receiveShadow=true;m.userData.cid=id;g.add(m);pickables.push(m);
+    const pts=ring(poly[0]).map(v=>new THREE.Vector3(v.x,.61,-v.y));pts.push(pts[0]);
+    g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0xffffff})));
+    const a=Math.abs(THREE.ShapeUtils.area(ring(poly[0])));if(a>la){la=a;largest=poly}
+  });
+  let c=CENTER[id]||d3.geoCentroid({type:"Polygon",coordinates:largest});
+  const fp={type:"Feature",geometry:{type:"Polygon",coordinates:largest}};
+  if(!d3.geoContains(fp,c)){const[[x0,y0],[x1,y1]]=d3.geoBounds(fp);for(let i=0;i<400;i++){const p=[x0+R()*(x1-x0),y0+R()*(y1-y0)];if(d3.geoContains(fp,p)){c=p;break}}}
+  const [cx,cy]=P(id,c);
+  const cs=(la<4?.55:la<12?.8:1.15)*1.35;
+  const cl=new THREE.Group();cl.position.set(cx,.6,-cy);cl.scale.setScalar(cs);g.add(cl);
+  const props=[];
+  for(let k=1;k<=6;k++){const st=themeStage(d.themeN[k]);if(!d.submissions)continue;
+    const a=(k-1)/6*Math.PI*2;const p=PROP[k](st);const holder=new THREE.Group();holder.add(p);holder.position.set(Math.cos(a)*.8,0,Math.sin(a)*.8);
+    holder.userData={th:k,base:st?SC[st]:.45};holder.scale.setScalar(.001);cl.add(holder);props.push(holder);
+    holder.traverse(o=>{if(o.isMesh){o.userData.cid=id;pickables.push(o)}});
+    tween(700,kk=>holder.scale.setScalar(.001+kk*holder.userData.base),ease.back,300+ci*60+k*50);
+  }
+  const lb=document.createElement("div");lb.className="lab";lb.innerHTML=SHORT(d.name)+(d.submissions?`<em>${d.submissions}</em>`:"");
+  const lo=new CSS2DObject(lb);lo.position.set(cx+(LABEL_DX[id]||0),1.9*cs+.6,-cy);g.add(lo);
+  if(OFFSET[id]){const ringG=new THREE.RingGeometry(3.2,3.35,48);ringG.rotateX(-Math.PI/2);const rm=new THREE.Mesh(ringG,new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.6}));rm.position.set(cx,-.2,-cy);g.add(rm);lb.innerHTML+="（位置示意）"}
+  countyG[id]={g,mat,props,lb,center:new THREE.Vector3(cx,0,-cy),cs};
+  nation.add(g);
+});
+
+// ================= HUD／圖例 =================
+const hud=document.getElementById("hud");
+function setHud(n,s,sc,ct){hud.innerHTML=`<span><b>${ct}</b>縣市</span><span><b>${sc}</b>所學校</span><span><b>${n}</b>筆試教</span><span><b>${s.toLocaleString()}</b>學生人次</span>`}
+const cityN=D0.cities.reduce((a,c)=>a+c.submissions,0),cityS=D0.cities.reduce((a,c)=>a+c.students,0);
+const allShown=()=>setHud(cityN,cityS,total.schools,total.cities);
+allShown();
+document.getElementById("realbadge").textContent=`✅ 真實資料・網站試教統計 ${D0.generatedAt.slice(0,10)}`;
+let thSel=0;
+function drawLegend(){
+  document.getElementById("stg").innerHTML=STAGE.map((s,i)=>`<span><i class="sw" style="background:${SEQ[i]}"></i>${SICON[i]} ${s}</span>`).join("");
+  document.getElementById("legtxt").innerHTML=thSel
+    ?`地圖顏色＝各縣市在「${TH[thSel].icon} ${TH[thSel].name}」試教過幾份教案：0 份、1 份、2–3 份、4 份以上。`
+    :`地圖顏色＝縣市試教筆數：0、1–4、5–19、20 筆以上。不排名。另有 ${total.submissions-cityN} 筆試教回饋沒填學校或縣市，不在地圖上。<br>每縣市 6 個小道具＝6 大主題（☁️科學・🌳生態・⚖️正義・🏠韌性・🌬️經濟・♻️生活），試教過的教案越多長越大。縣市名旁數字＝試教筆數。`;
+  const M=MONTHLY.months,mx=Math.max(...M.map(m=>m.n));
+  document.getElementById("mbar").innerHTML=M.map(m=>`<div style="height:${m.n/mx*100}%" title="${m.m}：${m.n} 筆"><i>${m.n}</i></div>`).join("");
+  document.getElementById("mlab").innerHTML=M.map(m=>`<span>${+m.m.slice(5)}月</span>`).join("");
+  document.getElementById("mnote").textContent=MONTHLY.note;
+}
+drawLegend();
+const tc=document.getElementById("thchips");
+[0,1,2,3,4,5,6].forEach(k=>{const b=document.createElement("button");b.className="chip"+(k?"":" on");
+  b.innerHTML=k?`<i class="dot" style="background:${TH[k].hex}"></i>${TH[k].name}`:"全部主題";
+  b.onclick=()=>{thSel=k;[...tc.children].forEach(x=>x.classList.toggle("on",x===b));applyTheme()};tc.appendChild(b)});
+function countyColor(d){return SEQ[thSel?themeStage(d.themeN[thSel]):stageOf(d.submissions)]}
+function applyTheme(){
+  Object.entries(countyG).forEach(([id,c])=>{const d=DATA[id];const from=c.mat.color.clone(),to=new THREE.Color(countyColor(d));
+    tween(500,k=>c.mat.color.copy(from).lerp(to,k));
+    c.props.forEach(h=>{const s0=h.scale.x,s1=h.userData.base*(thSel?(h.userData.th===thSel?1.7:.3):1);tween(500,k=>h.scale.setScalar(s0+(s1-s0)*k),ease.back)})});
+  drawLegend();
+}
+
+// ================= 播放成長動畫 =================
+// 依縣市逐校出場：每所學校的小人從海上走到縣市，縣市隨累計筆數變綠。順序依縣市筆數，不代表實際時間先後。
+let playing=false;
+document.getElementById("play").onclick=async()=>{
+  if(playing||mode!=="nation")return;playing=true;const btn=document.getElementById("play");btn.textContent="⏳ 播放中…";
+  if(thSel){thSel=0;[...tc.children].forEach((x,i)=>x.classList.toggle("on",i===0));drawLegend()}
+  camera.position.set(0,46,38);controls.target.set(0,0,-1);
+  Object.entries(countyG).forEach(([id,c])=>{c.mat.color.set(SEQ[0]);c.props.forEach(h=>h.scale.setScalar(.001));DATA[id].shown=0;c.lb.innerHTML=SHORT(DATA[id].name)+(OFFSET[id]?"（位置示意）":"")});
+  let n=0,s=0,sc=0,ct=0;setHud(0,0,0,0);
+  const order=D0.cities.flatMap(c=>c.schools.map(sch=>({c,sch})));
+  const idOf=Object.fromEntries(Object.values(DATA).map(d=>[d.name,d.id]));
+  const step=Math.max(260,Math.min(700,16000/order.length));
+  const jobs=order.map(({c,sch},i)=>(async()=>{
+    await wait(i*step);const id=idOf[c.city],cg=countyG[id],d=DATA[id];
+    const kid=makeKid(KIDC[i%KIDC.length]);const end=cg.center.clone().add(new THREE.Vector3((R()-.5)*1.2,.6,(R()-.5)*1.2));
+    const start=end.clone().add(new THREE.Vector3(end.x>2?9:-9,-.6,4));kid.position.copy(start);kid.scale.setScalar(1.3);nation.add(kid);
+    await tween(1100,k=>{kid.position.lerpVectors(start,end,k);kid.position.y=start.y+(end.y-start.y)*k+Math.abs(Math.sin(k*Math.PI*5))*.9;kid.lookAt(end.x,kid.position.y,end.z)},ease.lin);
+    if(!d.shown)ct++;d.shown+=sch.submissions;n+=sch.submissions;s+=sch.students;sc++;setHud(n,s,sc,ct);
+    const from=cg.mat.color.clone(),to=new THREE.Color(SEQ[stageOf(d.shown)]);tween(400,k=>cg.mat.color.copy(from).lerp(to,k));
+    cg.lb.innerHTML=SHORT(d.name)+`<em>${d.shown}</em>`+(OFFSET[id]?"（位置示意）":"");
+    burst(end);await tween(300,k=>kid.scale.setScalar(1.3*(1-k)+.001));nation.remove(kid);
+  })());
+  await Promise.all(jobs);
+  Object.values(countyG).forEach(c=>c.props.forEach((h,j)=>tween(700,k=>h.scale.setScalar(.001+k*h.userData.base),ease.back,j*80)));
+  await wait(900);allShown();btn.textContent="▶ 再播一次";playing=false;
+};
+function burst(p){for(let q=0;q<8;q++){const sp=new THREE.Mesh(new THREE.OctahedronGeometry(.16),new THREE.MeshBasicMaterial({color:[0xfff27a,0xff9e7a,0x9ee6a0][q%3]}));sp.position.copy(p);nation.add(sp);
+  const a=q/8*Math.PI*2,v=new THREE.Vector3(Math.cos(a)*1.6,2.2,Math.sin(a)*1.6);tween(700,k=>{sp.position.set(p.x+v.x*k,p.y+v.y*k-2.5*k*k,p.z+v.z*k);sp.rotation.y=k*6}).then(()=>nation.remove(sp))}}
+
+// ================= 互動 =================
+const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();let hover=null,mode="nation",scene=nation;
+const tip=document.getElementById("tip");
+let plotPick=[];
+function pick(e){mouse.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mouse,camera);const h=ray.intersectObjects(mode==="nation"?pickables:plotPick,false)[0];return h?h.object:null}
+renderer.domElement.addEventListener("pointermove",e=>{
+  const o=pick(e);
+  if(mode==="nation"){
+    const id=o?o.userData.cid:null;
+    if(id!==hover){if(hover)lift(hover,0);if(id)lift(id,.6);hover=id}
+    if(id){const d=DATA[id];tip.style.display="block";tip.style.left=e.clientX+14+"px";tip.style.top=e.clientY+12+"px";
+      tip.innerHTML=d.submissions?`<b>${d.name}</b>　${SICON[stageOf(d.submissions)]} ${STAGE[stageOf(d.submissions)]}<br>${d.schools.length} 所學校・${d.submissions} 筆試教・${d.students.toLocaleString()} 學生人次<br>試教過 ${d.lessons.length} 份教案：`+[1,2,3,4,5,6].filter(k=>d.themeN[k]).map(k=>`${TH[k].icon}${d.themeN[k]}`).join(" ")+`<br><span style="opacity:.7">點一下進入小島</span>`
+        :`<b>${d.name}</b><br>目前還沒有試教紀錄<br><span style="opacity:.7">點一下看看</span>`}
+    else tip.style.display="none";
+  }else{
+    const u=o?o.userData:{};tip.style.display=(u.lesson||u.school)?"block":"none";
+    if(u.lesson){const l=u.lesson;tip.style.left=e.clientX+14+"px";tip.style.top=e.clientY+12+"px";tip.innerHTML=`<b>${l.keyId}</b> ${LV[l.keyId.split("-")[1]]}<br>試教學生 ${l.students} 人次・點一下看哪些學校`}
+    if(u.school){tip.style.left=e.clientX+14+"px";tip.style.top=e.clientY+12+"px";tip.innerHTML=`<b>${u.school.name}</b><br>${u.school.submissions} 筆試教・${u.school.students} 學生人次`}
+  }
+  renderer.domElement.style.cursor=o?"pointer":"grab";
+});
+let downAt=null;renderer.domElement.addEventListener("pointerdown",e=>downAt=[e.clientX,e.clientY]);
+renderer.domElement.addEventListener("pointerup",e=>{
+  if(!downAt||Math.hypot(e.clientX-downAt[0],e.clientY-downAt[1])>5)return;
+  const o=pick(e);if(!o)return;
+  if(mode==="nation"){if(!playing)enterCounty(o.userData.cid)}
+  else if(o.userData.lesson)select({lesson:o.userData.lesson.keyId});else if(o.userData.school)select({school:o.userData.school.name});
+});
+function lift(id,y){const g=countyG[id].g,y0=g.position.y;tween(250,k=>g.position.y=y0+(y-y0)*k)}
+
+// ================= 縣市小島 =================
+let cur=null,county=null,sel=null;
+function buildCounty(id){
+  const s=makeWorld(0xc9ecf5);const d=DATA[id];plotPick=[];
+  const wob=geo=>{const p=geo.attributes.position;for(let i=0;i<p.count;i++){const x=p.getX(i),z=p.getZ(i),a=Math.atan2(z,x),f=1+.06*Math.sin(5*a)+.04*Math.sin(3*a+1);p.setX(i,x*f);p.setZ(i,z*f)}geo.computeVertexNormals();return geo};
+  const sand=new THREE.Mesh(wob(new THREE.CylinderGeometry(17,18.5,2.4,64,1)),toon(0xe8d29a));sand.position.y=-.9;sand.receiveShadow=true;s.add(sand);
+  const grass=new THREE.Mesh(wob(new THREE.CylinderGeometry(15.4,15.6,.5,64,1)),toon(0x9fd47e));grass.position.y=.45;grass.receiveShadow=true;s.add(grass);
+  const top=.7;
+  // 6 主題區（環狀），區內每份試教過的教案一塊地
+  for(let k=1;k<=6;k++){const T=TH[k],a=(k-1)/6*Math.PI*2-Math.PI/2,zx=Math.cos(a)*7.4,zz=Math.sin(a)*7.4,zr=3.3;
+    const pad=new THREE.Mesh(new THREE.CylinderGeometry(zr,zr,.08,40),toon(new THREE.Color(T.hex).lerp(new THREE.Color(0xffffff),d.themeN[k]?.7:.88).getHex()));pad.position.set(zx,top,zz);pad.receiveShadow=true;s.add(pad);
+    const zl=document.createElement("div");zl.className="zlab";zl.style.background=T.hex;zl.style.opacity=d.themeN[k]?1:.55;zl.textContent=`${T.icon} ${T.name}${d.themeN[k]?"・"+d.themeN[k]+" 份":""}`;
+    const zo=new CSS2DObject(zl);zo.position.set(zx,top+.1,zz-zr-.4);s.add(zo);
+    const ls=d.lessons.filter(l=>l.theme===k),n=ls.length;
+    if(!n){const m=mound();m.position.set(zx,top+.05,zz);s.add(m);continue}
+    const sz=Math.min(1,2.6/Math.sqrt(n+.5));
+    ls.forEach((l,j)=>{const r=n===1?0:zr*.62*Math.sqrt((j+.5)/n),ang=j*2.39996;const px=zx+Math.cos(ang)*r,pz=zz+Math.sin(ang)*r;
+      const plot=new THREE.Mesh(new THREE.CylinderGeometry(.85*sz,.9*sz,.2,24),toon(0xc7a06a));plot.position.set(px,top+.12,pz);plot.receiveShadow=true;plot.userData.lesson=l;s.add(plot);plotPick.push(plot);
+      const st=kidStage(l.students),holder=new THREE.Group();holder.position.set(px,top+.22,pz);s.add(holder);
+      const p=PROP[k](st);holder.add(p);holder.scale.setScalar(.001);const base=SC[st]*1.5*sz;
+      holder.traverse(o=>{if(o.isMesh){o.userData.lesson=l;plotPick.push(o)}});
+      tween(900,kk=>holder.scale.setScalar(.001+kk*base),ease.back,400+(k*4+j)*70);
+      const pl=document.createElement("div");pl.className="plab";pl.textContent=l.keyId;
+      const po=new CSS2DObject(pl);po.position.set(px,top+.2,pz+1.05*sz);s.add(po);
+    });
+  }
+  // 中央廣場：縣市名牌
+  const plaza=new THREE.Mesh(new THREE.CylinderGeometry(2.2,2.3,.12,36),toon(0xfff3dc));plaza.position.set(0,top+.02,0);s.add(plaza);
+  const flag=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,2.4),toon(0x888888));flag.position.set(0,top+1.2,0);s.add(flag);
+  const fl=new THREE.Mesh(new THREE.BoxGeometry(1,.6,.02),toon(0x2f9a5a));fl.position.set(.5,top+2.1,0);s.add(fl);anims.push({obj:fl,fn:(t,o)=>o.rotation.y=Math.sin(t*3)*.3});
+  // 海岸邊的學校小屋（完整校名），筆數越多旗子越高
+  const N=d.schools.length;
+  d.schools.forEach((sch,i)=>{const a=-Math.PI/2+Math.PI/6+(i+.5)/Math.max(N,1)*Math.PI*2,r=13.3;const x=Math.cos(a)*r,z=Math.sin(a)*r;
+    const g=new THREE.Group();g.position.set(x,top,z);g.rotation.y=-a-Math.PI/2;s.add(g);
+    const b=new THREE.Mesh(new THREE.BoxGeometry(1.4,.8,1),toon(0xfff3dc));b.position.y=.4;g.add(b);
+    const roof=new THREE.Mesh(new THREE.ConeGeometry(1.05,.6,4),toon(0xd9634a));roof.position.y=1.1;roof.rotation.y=Math.PI/4;g.add(roof);
+    const h=1+Math.min(sch.submissions,10)*.22,pole=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,h),toon(0x777777));pole.position.set(.9,h/2,0);g.add(pole);
+    const f=new THREE.Mesh(new THREE.BoxGeometry(.45,.28,.01),toon(0x2f9a5a));f.position.set(1.12,h-.14,0);g.add(f);cast(g);
+    g.traverse(o=>{if(o.isMesh){o.userData.school=sch;plotPick.push(o)}});
+    const sl=document.createElement("div");sl.className="slab";sl.textContent=`${sch.name}（${sch.submissions}）`;
+    const so=new CSS2DObject(sl);so.position.set(x*1.02,top+2.2,z*1.02);s.add(so);
+    // 學生小人：每 40 人次 1 個（1–3 個）
+    const nk=Math.max(1,Math.min(3,Math.round(sch.students/40)));
+    for(let q=0;q<nk;q++){const kid=makeKid(KIDC[(i+q)%KIDC.length]);kid.scale.setScalar(.8);s.add(kid);const ph=R()*6,sp=.3+R()*.3,ri=10.6+R()*1.2;
+      anims.push({obj:kid,fn:(t,o)=>{const aa=a+Math.sin(t*sp+ph)*.35;o.position.set(Math.cos(aa)*ri,top+Math.abs(Math.sin(t*6+q))*.15,Math.sin(aa)*ri);o.rotation.y=-aa+(Math.cos(t*sp+ph)>0?0:Math.PI)}})}
+  });
+  if(!N){const k=makeKid(KIDC[0]);k.position.set(0,top,4);s.add(k)}
+  return s;
+}
+async function enterCounty(id,instant=false){
+  mode="busy";tip.style.display="none";if(hover){lift(hover,0);hover=null}
+  const fade=document.getElementById("fade");
+  if(!instant){const c=countyG[id].center,p0=camera.position.clone(),t0=controls.target.clone(),p1=c.clone().add(new THREE.Vector3(0,9,9));
+    await tween(700,k=>{camera.position.lerpVectors(p0,p1,k);controls.target.lerpVectors(t0,c,k)},ease.io);
+    fade.style.opacity=1;await wait(350);}
+  hideLabels(nation);cur=DATA[id];county=buildCounty(id);scene=county;sel=null;
+  const PX=innerWidth>760?7:0;camera.position.set(PX,36,42);controls.target.set(PX,0,0);
+  tc.style.display="none";document.getElementById("play").style.display="none";hud.style.display="none";
+  fade.style.opacity=0;mode="county";
+  document.getElementById("back").style.display="inline-block";document.getElementById("legend").style.display="none";
+  document.getElementById("hint").innerHTML="🌱 點教案地塊看哪些學校試教；點海邊小屋看該校成果";
+  renderPanel();document.getElementById("panel").classList.add("open");
+  tween(1600,k=>camera.position.set(PX,36-8*k,42-10*k),ease.io);
+}
+async function goNation(){
+  if(mode!=="county")return;mode="busy";
+  const fade=document.getElementById("fade");fade.style.opacity=1;await wait(350);
+  hideLabels(county);disposeScene(county);county=null;scene=nation;mode="nation";showLabels(nation);
+  document.getElementById("panel").classList.remove("open");tc.style.display="";document.getElementById("play").style.display="";hud.style.display="";
+  document.getElementById("back").style.display="none";document.getElementById("legend").style.display="";
+  document.getElementById("hint").innerHTML="🖱️ 拖曳旋轉、滾輪縮放；點縣市進入小島，看各校試教了哪些教案";
+  camera.position.set(0,40,33);controls.target.set(0,0,-1);fade.style.opacity=0;
+  if(location.hash)history.replaceState(null,"",location.pathname+location.search);
+}
+window.goNation=goNation;document.getElementById("back").onclick=goNation;
+addEventListener("keydown",e=>{if(e.key==="Escape")goNation()});
+function hideLabels(s){s.traverse(o=>{if(o.isCSS2DObject)o.element.style.display="none"})}
+function showLabels(s){s.traverse(o=>{if(o.isCSS2DObject)o.element.style.display=""})}
+function disposeScene(s){s.traverse(o=>{if(o.isCSS2DObject)o.element.remove();if(o.geometry)o.geometry.dispose()});
+  for(let i=anims.length-1;i>=0;i--){let p=anims[i].obj,inS=false;while(p){if(p===s){inS=true;break}p=p.parent}if(inS)anims.splice(i,1)}}
+function select(x){const same=sel&&((x.lesson&&sel.lesson===x.lesson)||(x.school&&sel.school===x.school));sel=same?null:x;renderPanel()}
+
+const pkLink=k=>`<a class="pk" style="background:${TH[+k[0]].hex}" href="${SITE}/package/${k}" target="_blank" rel="noopener">${k}</a>`;
+function renderPanel(){
+  const d=cur,P=document.getElementById("panel");
+  let h=`<button class="pback" onclick="goNation()">← 回全國地圖</button><h2>${d.name}</h2>`;
+  if(!d.submissions){h+=`<div class="muted">目前還沒有試教紀錄。歡迎${d.name}的學校從<a href="${SITE}" target="_blank" rel="noopener">氣候教育教案網</a>挑一份教案試教，並填寫試教回饋表。</div>`}
+  else{
+    h+=`<div class="muted">${d.schools.length} 所學校・${d.submissions} 筆試教・${d.students.toLocaleString()} 學生人次・試教過 ${d.lessons.length} 份教案</div>`;
+    let list=d.schools;
+    if(sel&&sel.lesson){list=d.schools.filter(s=>s.packages.some(p=>p.keyId===sel.lesson));h+=`<h3>試教 ${pkLink(sel.lesson)} 的學校（${list.length}）</h3>`}
+    else if(sel&&sel.school){list=d.schools.filter(s=>s.name===sel.school);h+=`<h3>學校成果</h3>`}
+    else h+=`<h3>參與學校（${list.length}）</h3>`;
+    h+=list.map(s=>`<div class="sch${sel&&sel.school===s.name?" sel":""}"><b>${s.name}</b> <span class="muted">${s.level}</span><br>${s.submissions} 筆試教・${s.students} 學生人次${s.teachers>1?`・${s.teachers} 位老師`:""}<br>${s.packages.map(p=>pkLink(p.keyId)).join("")}${s.note?`<div class="muted" style="font-size:11px">註：${s.note}</div>`:""}</div>`).join("");
+    if(sel)h+=`<div class="muted"><a href="#" id="clr">← 看全部學校</a></div>`;
+  }
+  h+=`<h3>📚 觀摩資源</h3><div class="res">各校自行發展的教材會放在這裡，供其他縣市參考：<br>
+    <span class="ty">📖 繪本</span><span class="ty">🧰 教具</span><span class="ty">🏫 WSA 全校式教案</span><span class="ty">🎨 學生作品</span><span class="ty">🔗 網站素材連結</span><br>
+    目前尚無投稿。之後學校填「成果投稿表單」提供連結，經計畫團隊審核後會出現在這裡。</div>`;
+  P.innerHTML=h;const clr=document.getElementById("clr");if(clr)clr.onclick=e=>{e.preventDefault();sel=null;renderPanel()};
+}
+
+// ================= 主迴圈 =================
+camera.position.set(0,40,33);controls.target.set(0,0,-1);
+const clock=new THREE.Clock();
+renderer.setAnimationLoop(()=>{
+  const t=clock.getElapsedTime(),now=performance.now();
+  tweens=tweens.filter(w=>{if(now<w.t0)return true;const k=Math.min(1,(now-w.t0)/w.dur);w.fn(w.e(k));if(k>=1){w.res();return false}return true});
+  anims.forEach(a=>a.fn(t,a.obj));
+  controls.update();renderer.render(scene,camera);labelR.render(scene,camera);
+});
+const HP=new URLSearchParams(location.hash.slice(1));
+if(HP.get("county")&&DATA[HP.get("county")])enterCounty(HP.get("county"),true);
+if(HP.get("play"))setTimeout(()=>document.getElementById("play").click(),1200);
+</script>
+</body>
+</html>
