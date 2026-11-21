@@ -6,7 +6,7 @@ interface Props {
   children: ReactNode;
 }
 
-/** 彩蛋：首頁標題在 1.2 秒內連點 3 下，進入「氣候教案群島」3D 頁（手機點擊也可以） */
+/** 彩蛋：在 1.2 秒內連點 3 下進入 href（手機點擊也可以）。首頁標題 →「氣候教案群島」；「學校上傳件數排行」標題 →「縣市試教成果島」 */
 export default function IslandEasterEgg({ href, children }: Props) {
   const clicks = useRef<number[]>([]);
   const onClick = () => {

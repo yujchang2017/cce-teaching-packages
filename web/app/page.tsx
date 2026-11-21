@@ -364,7 +364,7 @@ export default async function Home() {
 
           <div className="bg-white rounded-2xl shadow-warm border border-earth/10 p-5">
             <div className="flex items-baseline justify-between mb-4 flex-wrap gap-2">
-              <h2 className="text-xl font-bold text-ink flex items-center gap-2">🏫 學校上傳件數排行</h2>
+              <h2 className="text-xl font-bold text-ink flex items-center gap-2"><IslandEasterEgg href={withBasePath('/county-map/index.html')}>🏫 學校上傳件數排行</IslandEasterEgg></h2>
               <span className="text-sm text-mute">依件數與主題覆蓋排序</span>
             </div>
             {stats.bySchool.length > 0 ? (
